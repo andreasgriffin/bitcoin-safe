@@ -29,7 +29,6 @@ cd "$PROJECT_ROOT"
 
 PACKAGE="$(python3 "$PROJECT_ROOT/tools/generate_packaging_metadata.py" get application-name)"
 PACKAGE_NAME="$(python3 "$PROJECT_ROOT/tools/generate_packaging_metadata.py" get macos-bundle-name)"
-DMG_BACKGROUND_PATH="$PROJECT_ROOT/tools/resources/dmg-background.png"
 
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported."
 
@@ -246,7 +245,6 @@ info "Creating unsigned .DMG"
     "dmg-package/${PACKAGE_NAME}" \
     "dist/bitcoin_safe-$VERSION-unsigned.dmg" \
     "$PACKAGE" \
-    "$DMG_BACKGROUND_PATH" \
     || fail "Could not create styled .DMG"
 
 # reset poetry config

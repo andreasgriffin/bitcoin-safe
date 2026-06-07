@@ -9,7 +9,6 @@ CONTRIB="$PROJECT_ROOT/tools"
 METADATA_SCRIPT="$PROJECT_ROOT/tools/generate_packaging_metadata.py"
 PACKAGE_NAME="$(python3 "$METADATA_SCRIPT" get macos-bundle-name)"
 DMG_VOLUME_NAME="$(python3 "$METADATA_SCRIPT" get macos-dmg-volume-name)"
-DMG_BACKGROUND_PATH="$PROJECT_ROOT/tools/resources/dmg-background.png"
 
 
 if [ -z "$1" ]; then
@@ -29,8 +28,7 @@ cd "$build_dir"
 "$PROJECT_ROOT/tools/build-mac/create_styled_dmg.sh" \
     "$1" \
     "$build_dir/bitcoin_safe-$VERSION.dmg" \
-    "$DMG_VOLUME_NAME" \
-    "$DMG_BACKGROUND_PATH" || fail "Unable to create styled dmg"
+    "$DMG_VOLUME_NAME" || fail "Unable to create styled dmg"
 
 echo "Done."
 sha256sum bitcoin_safe-$VERSION.dmg

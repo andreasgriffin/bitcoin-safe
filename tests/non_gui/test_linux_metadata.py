@@ -104,23 +104,18 @@ def test_macos_packaging_includes_license_file() -> None:
     assert "LICENSE.txt" not in package_sh
 
 
-def test_macos_packaging_uses_styled_dmg_background() -> None:
-    background_image_path = PROJECT_ROOT / "tools" / "resources" / "dmg-background.png"
+def test_macos_packaging_uses_plain_dmg_creation() -> None:
     create_styled_dmg = (PROJECT_ROOT / "tools" / "build-mac" / "create_styled_dmg.sh").read_text(
         encoding="utf-8"
     )
     make_osx = (PROJECT_ROOT / "tools" / "build-mac" / "make_osx.sh").read_text(encoding="utf-8")
     sign_osx = (PROJECT_ROOT / "tools" / "build-mac" / "sign_osx.sh").read_text(encoding="utf-8")
 
-    assert background_image_path.exists()
-    assert "tools/resources/dmg-background.png" in make_osx
-    assert "tools/resources/dmg-background.png" in sign_osx
-    assert "if exists disk volume_name then" in create_styled_dmg
-    assert 'error "Finder could not see mounted disk "' in create_styled_dmg
-    assert (
-        'set background picture of view_options to file ".background:dmg-background.png"' in create_styled_dmg
-    )
-    assert 'set position of item "Applications" of container window to {470, 215}' in create_styled_dmg
+    assert '"$PACKAGE" \\' in make_osx
+    assert '"$PACKAGE" || fail "Could not create .DMG"' in sign_osx
+    assert '-srcfolder "${STAGING_DIR}"' in create_styled_dmg
+    assert 'ln -s /Applications "${STAGING_DIR}/Applications"' in create_styled_dmg
+    assert "osascript" not in create_styled_dmg
 
 
 def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> None:
