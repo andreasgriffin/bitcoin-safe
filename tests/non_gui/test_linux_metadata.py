@@ -104,18 +104,27 @@ def test_macos_packaging_includes_license_file() -> None:
     assert "LICENSE.txt" not in package_sh
 
 
-def test_macos_packaging_uses_plain_dmg_creation() -> None:
+def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     create_styled_dmg = (PROJECT_ROOT / "tools" / "build-mac" / "create_styled_dmg.sh").read_text(
         encoding="utf-8"
     )
     make_osx = (PROJECT_ROOT / "tools" / "build-mac" / "make_osx.sh").read_text(encoding="utf-8")
+    package_sh = (PROJECT_ROOT / "tools" / "build-mac" / "package.sh").read_text(encoding="utf-8")
     sign_osx = (PROJECT_ROOT / "tools" / "build-mac" / "sign_osx.sh").read_text(encoding="utf-8")
 
-    assert '"$PACKAGE" \\' in make_osx
-    assert '"$PACKAGE" || fail "Could not create .DMG"' in sign_osx
+    assert "tools/resources/dmg-background.png" in make_osx
+    assert "tools/resources/dmg-background.png" in package_sh
+    assert "tools/resources/dmg-background.png" in sign_osx
+    assert (
+        'cp "${BACKGROUND_IMAGE_PATH}" "${STAGING_DIR}/.background/dmg-background.png"' in create_styled_dmg
+    )
+    assert 'set dmg_folder to POSIX file "${MOUNT_DIR}" as alias' in create_styled_dmg
+    assert "open folder dmg_folder" in create_styled_dmg
+    assert "create_plain_dmg" in create_styled_dmg
+    assert "hdiutil convert" in create_styled_dmg
     assert '-srcfolder "${STAGING_DIR}"' in create_styled_dmg
     assert 'ln -s /Applications "${STAGING_DIR}/Applications"' in create_styled_dmg
-    assert "osascript" not in create_styled_dmg
+    assert "osascript" in create_styled_dmg
 
 
 def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> None:
