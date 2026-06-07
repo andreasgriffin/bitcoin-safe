@@ -99,6 +99,9 @@ class NotificationBarCBF(NotificationBar):
         self.optionalButton.setText(self.tr("Open Network Settings"))
         tooltip = self.tr("""Connect to bitcoin nodes (p2p) and download relevant blocks from them.""")
         self.icon_label.textLabel.setToolTip(tooltip)
+        current_network_supports_cbf = BlockchainType.CompactBlockFilter in BlockchainType.active_types(
+            self.network_config.network
+        )
         if (
             self.network_config.server_type == BlockchainType.Esplora
             and "blockstream" in self.network_config.esplora_url
@@ -108,9 +111,15 @@ class NotificationBarCBF(NotificationBar):
                     "Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing"
                 )
             )
-        else:
+        elif current_network_supports_cbf:
             self.icon_label.textLabel.setText(
                 self.tr("Compact Block Filters for p2p syncing is now available")
+            )
+        else:
+            self.icon_label.textLabel.setText(
+                self.tr(
+                    "Compact Block Filters will be activated for supported networks. This network will keep its current server."
+                )
             )
 
         lang_code_short = QLocale.languageToCode(QLocale().language())

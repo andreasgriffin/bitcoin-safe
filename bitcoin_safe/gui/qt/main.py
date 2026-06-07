@@ -784,11 +784,8 @@ class MainWindow(UnlockableMainWindow):
 
     def enable_cbf_and_shutdown(self):
         # remove this method after most have migrated to the Version 1.6
-        self.settings.network_settings_ui.server_type = BlockchainType.CompactBlockFilter
-        if self.config.network_config.p2p_listener_type == P2pListenerType.deactive:
-            self.settings.network_settings_ui.p2p_listener_type = P2pListenerType.automatic
-
-        self.settings.network_settings_ui.on_apply_click()
+        self.config.network_configs.enable_compact_block_filters_where_supported()
+        self.restart(new_startup_network=self.config.network)
 
     def init_p2p_listening(self):
         """Init p2p listening."""

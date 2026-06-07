@@ -587,6 +587,17 @@ class NetworkConfigs(BaseSaveableClass):
             if configs[network.name].network != network:
                 configs[network.name].network = network
 
+    def enable_compact_block_filters_where_supported(self) -> None:
+        """Switch every CBF-capable network to Compact Block Filters."""
+        for network in bdk.Network:
+            if BlockchainType.CompactBlockFilter not in BlockchainType.active_types(network):
+                continue
+
+            network_config = self.configs[network.name]
+            network_config.server_type = BlockchainType.CompactBlockFilter
+            if network_config.p2p_listener_type == P2pListenerType.deactive:
+                network_config.p2p_listener_type = P2pListenerType.automatic
+
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
         """From dump migration."""
