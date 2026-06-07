@@ -3,7 +3,7 @@ name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
 version = "2.0.0rc2"
-description = "A desktop software for managing your cold storage wallets."
+description = "A desktop software for managing your cold storage wallets"
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0-only"
 readme = "README.md"

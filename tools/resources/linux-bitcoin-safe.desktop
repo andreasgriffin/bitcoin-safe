@@ -3,7 +3,7 @@ Type=Application
 Name=Bitcoin Safe
 Exec=org.bitcoin-safe.bitcoin-safe %F
 Icon=bitcoin-safe
-Categories=Utility;
+Terminal=false
+Categories=Utility;Finance;
 Comment=A desktop software for managing your cold storage wallets
 StartupWMClass=Bitcoin Safe
-

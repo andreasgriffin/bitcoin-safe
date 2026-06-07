@@ -43,7 +43,7 @@ from pathlib import Path
 from typing import Literal
 
 from appimage_to_deb_converter import Appimage2debConverter
-from bitcoin_safe.constants import CONTACT_EMAIL
+from bitcoin_safe.app_metadata import APP_METADATA
 from translation_handler import TranslationHandler, run_local
 
 from bitcoin_safe import __version__
@@ -66,7 +66,7 @@ assert ENABLE_TIMERS
 TARGET_LITERAL = Literal["windows", "mac", "appimage", "deb", "flatpak"]
 DEFAULT_MODULE_NAME = "bitcoin_safe"
 DEFAULT_LOCALE_DIR = "gui/locales"
-FLATPAK_APP_ID = "org.bitcoin_safe.BitcoinSafe"
+FLATPAK_APP_ID = APP_METADATA.flatpak_app_id
 FLATPAK_DOCKER_IMAGE = "bitcoin_safe-flatpak-builder-img"
 
 
@@ -189,17 +189,24 @@ class Builder:
     def appimage2deb(self, **kwargs):
         """Appimage2deb."""
         for filename in self.list_files("dist/", extension=".AppImage"):
+            package_name = self.app_name_formatter(self.module_name).lower()
+            desktop_file_name = f"{package_name}.desktop"
             converter = Appimage2debConverter(
                 appimage=filename,
                 output_deb=filename.with_suffix(".deb"),
-                package_name=self.app_name_formatter(self.module_name).lower(),
+                package_name=package_name,
                 version=self.version,
-                maintainer=f"Andreas Griffin <{CONTACT_EMAIL}>",
-                description="A desktop software for managing your cold storage wallets.",
-                homepage="https://www.bitcoin-safe.org",
-                desktop_name=self.app_name_formatter(self.module_name, join_character=" "),
-                desktop_icon_name=self.app_name_formatter(self.module_name).lower() + ".svg",
-                desktop_categories="Utility",
+                maintainer=APP_METADATA.maintainer,
+                description=APP_METADATA.summary,
+                homepage=APP_METADATA.homepage,
+                desktop_entry_content=APP_METADATA.render_desktop_entry(
+                    exec_command=f"/opt/{package_name}/AppRun",
+                    icon_name=f"/opt/{package_name}/{package_name}.svg",
+                ),
+                appstream_component_id=APP_METADATA.flatpak_app_id,
+                appstream_metainfo_content=APP_METADATA.render_metainfo(
+                    launchable_desktop_id=desktop_file_name
+                ),
             )
             converter.convert()
 

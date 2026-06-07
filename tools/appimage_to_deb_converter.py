@@ -48,6 +48,9 @@ class Appimage2debConverter:
         desktop_name=None,
         desktop_icon_name="",
         desktop_categories="Utility",
+        desktop_entry_content="",
+        appstream_component_id=None,
+        appstream_metainfo_content="",
     ):
         """Initialize instance."""
         self.appimage = Path(appimage).resolve()
@@ -68,6 +71,9 @@ class Appimage2debConverter:
         self.desktop_name = desktop_name if desktop_name is not None else package_name
         self.desktop_icon_name = desktop_icon_name
         self.desktop_categories = desktop_categories
+        self.desktop_entry_content = desktop_entry_content
+        self.appstream_component_id = appstream_component_id
+        self.appstream_metainfo_content = appstream_metainfo_content
         self._source_date_epoch = self._resolve_source_date_epoch()
 
     @staticmethod
@@ -178,6 +184,10 @@ exit 0
         applications_dir.mkdir(parents=True, exist_ok=True)
         desktop_file_path = applications_dir / f"{self.package_name}.desktop"
 
+        if self.desktop_entry_content:
+            desktop_file_path.write_text(self.desktop_entry_content, encoding="utf-8")
+            return
+
         # Determine the Exec command:
         # If /opt/<package-name>/AppRun exists, use it; otherwise, fallback to /opt/<package-name>/<package-name>
         target_dir = package_root / "opt" / self.package_name
@@ -198,7 +208,17 @@ exit 0
             lines.append(f"Icon=/opt/{self.package_name}/{self.desktop_icon_name}")
         lines.extend(["Terminal=false", f"Categories={self.desktop_categories}"])
         desktop_content = "\n".join(lines) + "\n"
-        desktop_file_path.write_text(desktop_content)
+        desktop_file_path.write_text(desktop_content, encoding="utf-8")
+
+    def _create_appstream_metadata(self, package_root: Path) -> None:
+        """Install AppStream metadata when provided."""
+        if not self.appstream_component_id or not self.appstream_metainfo_content:
+            return
+
+        metainfo_dir = package_root / "usr" / "share" / "metainfo"
+        metainfo_dir.mkdir(parents=True, exist_ok=True)
+        metainfo_path = metainfo_dir / f"{self.appstream_component_id}.metainfo.xml"
+        metainfo_path.write_text(self.appstream_metainfo_content, encoding="utf-8")
 
     def _build_deb(self, package_root: Path) -> None:
         """Build deb."""
@@ -249,6 +269,7 @@ exit 0
 
             print("Creating desktop entry...")
             self._create_desktop_file(package_root)
+            self._create_appstream_metadata(package_root)
 
             self._normalize_package_tree(package_root)
 

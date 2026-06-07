@@ -35,6 +35,7 @@ mkdir -p "$APPDIR" "$BUILD_CACHEDIR" "$PIP_CACHE_DIR" "$DISTDIR" "$DLL_TARGET_DI
 # potential leftover from setuptools that might make pip put garbage in binary
 rm -rf "$PROJECT_ROOT/build"
 
+python3 "$PROJECT_ROOT/tools/generate_linux_metadata.py" --project-root "$PROJECT_ROOT"
 
 info "downloading some dependencies."
 download_if_not_exist "$BUILD_CACHEDIR/functions.sh" "https://raw.githubusercontent.com/AppImage/pkg2appimage/$PKG2APPIMAGE_COMMIT/functions.sh"
