@@ -31,15 +31,31 @@ MOUNT_DIR="${TEMP_ROOT}/mount"
 APP_NAME="$(basename "${APP_BUNDLE_PATH}")"
 DEVICE_NAME=""
 BACKGROUND_COPY_PATH="${STAGING_DIR}/.background/dmg-background.png"
+DMG_RETRY_ATTEMPTS=30
+
+wait_for_dmg_release() {
+    local attempts=0
+
+    while [ -d "${MOUNT_DIR}" ] && mount | grep -Fq "on ${MOUNT_DIR} "; do
+        if [ "${attempts}" -eq "${DMG_RETRY_ATTEMPTS}" ]; then
+            echo "Timed out waiting for DMG to detach."
+            return 1
+        fi
+        attempts=$((attempts + 1))
+        sleep 1
+    done
+}
 
 detach_dmg() {
     if [ -n "${DEVICE_NAME}" ]; then
         hdiutil detach "${DEVICE_NAME}" -quiet || hdiutil detach "${DEVICE_NAME}" -force -quiet || true
         DEVICE_NAME=""
+        wait_for_dmg_release
         return
     fi
     if [ -d "${MOUNT_DIR}" ] && mount | grep -Fq "on ${MOUNT_DIR} "; then
         hdiutil detach "${MOUNT_DIR}" -quiet || hdiutil detach "${MOUNT_DIR}" -force -quiet || true
+        wait_for_dmg_release
     fi
 }
 
@@ -54,7 +70,7 @@ create_plain_dmg() {
         -srcfolder "${STAGING_DIR}" \
         "${OUTPUT_DMG_PATH}" \
         >/dev/null; do
-        if [ "${attempts}" -eq 10 ]; then
+        if [ "${attempts}" -eq "${DMG_RETRY_ATTEMPTS}" ]; then
             echo "Could not create .DMG"
             return 1
         fi
@@ -74,7 +90,7 @@ convert_compressed_dmg() {
         -imagekey zlib-level=9 \
         -o "${OUTPUT_DMG_PATH}" \
         >/dev/null; do
-        if [ "${attempts}" -eq 10 ]; then
+        if [ "${attempts}" -eq "${DMG_RETRY_ATTEMPTS}" ]; then
             echo "Could not convert staged DMG."
             return 1
         fi

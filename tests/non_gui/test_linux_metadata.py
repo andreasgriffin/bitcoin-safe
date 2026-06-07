@@ -132,6 +132,7 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     assert "APP_ICON_Y=220" in create_styled_dmg
     assert "APPLICATIONS_ICON_X=506" in create_styled_dmg
     assert "APPLICATIONS_ICON_Y=220" in create_styled_dmg
+    assert "DMG_RETRY_ATTEMPTS=30" in create_styled_dmg
     assert "set icon size of view_options to ${ICON_SIZE}" in create_styled_dmg
     assert "set text size of view_options to ${ICON_TEXT_SIZE}" in create_styled_dmg
     assert (
@@ -143,6 +144,8 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
         "{${APPLICATIONS_ICON_X}, ${APPLICATIONS_ICON_Y}}" in create_styled_dmg
     )
     assert "open folder dmg_folder" in create_styled_dmg
+    assert "wait_for_dmg_release" in create_styled_dmg
+    assert 'echo "Timed out waiting for DMG to detach."' in create_styled_dmg
     assert "create_plain_dmg" in create_styled_dmg
     assert "convert_compressed_dmg" in create_styled_dmg
     assert 'echo "Could not convert staged DMG."' in create_styled_dmg
