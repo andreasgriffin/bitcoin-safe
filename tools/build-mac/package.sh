@@ -9,6 +9,7 @@ CONTRIB="$PROJECT_ROOT/tools"
 METADATA_SCRIPT="$PROJECT_ROOT/tools/generate_packaging_metadata.py"
 PACKAGE_NAME="$(python3 "$METADATA_SCRIPT" get macos-bundle-name)"
 DMG_VOLUME_NAME="$(python3 "$METADATA_SCRIPT" get macos-dmg-volume-name)"
+LICENSE_SOURCE_PATH="$PROJECT_ROOT/LICENSE.md"
 
 # note: GCC 10.1 will need an extra option, see https://github.com/bitcoin/bitcoin/pull/19553
 
@@ -74,6 +75,7 @@ echo $VERSION
 rm -rf /tmp/bitcoin_safe-macos/image > /dev/null 2>&1
 mkdir /tmp/bitcoin_safe-macos/image/
 cp -r "$1" /tmp/bitcoin_safe-macos/image/
+cp "$LICENSE_SOURCE_PATH" /tmp/bitcoin_safe-macos/image/LICENSE.txt
 
 build_dir=$(dirname "$1")
 test -n "$build_dir" -a -d "$build_dir" || exit

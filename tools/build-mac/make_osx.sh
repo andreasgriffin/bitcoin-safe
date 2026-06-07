@@ -240,6 +240,10 @@ find "dist/${PACKAGE_NAME}" -type f -print0 | sort -z | xargs -0 shasum -a 256 |
 info "Moving dist/${PACKAGE_NAME} to dmg-package/"
 mv "dist/${PACKAGE_NAME}" dmg-package/
 
+info "Adding top-level license"
+cp "LICENSE.md" "dmg-package/LICENSE.txt"
+touch -h -t '200101220000' "dmg-package/LICENSE.txt"
+
 info "Adding Applications symlink" 
 ln -s /Applications "dmg-package/Applications"
 touch -h -t '200101220000' "dmg-package/Applications"

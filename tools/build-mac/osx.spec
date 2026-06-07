@@ -63,6 +63,7 @@ print(f"Included binaries: {binaries}")
 
 datas = [
     (certifi.where(), "certifi/"), # necessary on mac to avail ssl errors
+    (f"{PROJECT_ROOT}/LICENSE.md", "LICENSE.txt"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/*", f"{PYPKG}/gui/icons"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/icons/hardware_signers/*", f"{PYPKG}/gui/icons/hardware_signers"),
     (f"{PROJECT_ROOT}/{PYPKG}/gui/screenshots/*", f"{PYPKG}/gui/screenshots"),

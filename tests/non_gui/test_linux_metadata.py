@@ -64,6 +64,16 @@ def test_windows_nsi_metadata_matches_generated_metadata() -> None:
     assert windows_nsi_metadata == APP_METADATA.render_windows_nsi_defines()
 
 
+def test_macos_packaging_includes_license_file() -> None:
+    osx_spec = (PROJECT_ROOT / "tools" / "build-mac" / "osx.spec").read_text(encoding="utf-8")
+    make_osx = (PROJECT_ROOT / "tools" / "build-mac" / "make_osx.sh").read_text(encoding="utf-8")
+    package_sh = (PROJECT_ROOT / "tools" / "build-mac" / "package.sh").read_text(encoding="utf-8")
+
+    assert '(f"{PROJECT_ROOT}/LICENSE.md", "LICENSE.txt")' in osx_spec
+    assert 'cp "LICENSE.md" "dmg-package/LICENSE.txt"' in make_osx
+    assert 'cp "$LICENSE_SOURCE_PATH" /tmp/bitcoin_safe-macos/image/LICENSE.txt' in package_sh
+
+
 def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> None:
     appimage_path = tmp_path / "bitcoin-safe.AppImage"
     appimage_path.write_text("stub", encoding="utf-8")
