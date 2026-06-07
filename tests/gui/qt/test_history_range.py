@@ -52,6 +52,7 @@ from ...util import wait_for_sync
 from .helpers import (
     Shutter,
     do_modal_click,
+    get_apply_button,
     main_window_context,
     save_wallet,
     select_manual_entry_signer,
@@ -103,9 +104,7 @@ def test_history_range_coupling(
         save_wallet(
             test_config=test_config,
             wallet_name=wallet_id,
-            save_button=qt_protowallet.wallet_descriptor_ui.button_box.button(
-                QDialogButtonBox.StandardButton.Apply
-            ),
+            save_button=get_apply_button(qt_protowallet.wallet_descriptor_ui.button_box),
         )
 
         qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_id).data

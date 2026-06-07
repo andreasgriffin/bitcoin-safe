@@ -55,6 +55,7 @@ from .helpers import (
     Shutter,
     close_wallet,
     do_modal_click,
+    get_apply_button,
     main_window_context,
     save_wallet,
     select_manual_entry_signer,
@@ -260,9 +261,7 @@ def test_custom_wallet_setup_custom_single_sig(
             save_wallet(
                 test_config=test_config,
                 wallet_name=wallet_name,
-                save_button=qt_protowallet.wallet_descriptor_ui.button_box.button(
-                    QDialogButtonBox.StandardButton.Apply
-                ),
+                save_button=get_apply_button(qt_protowallet.wallet_descriptor_ui.button_box),
             )
 
             assert len(main_window.tab_wallets.root.child_nodes) == 1, "there should be only 1 wallet open"
@@ -359,9 +358,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
             with patch("bitcoin_safe.gui.qt.qt_wallet.Message") as mock_message:
                 do_modal_click(
-                    qt_wallet.wallet_descriptor_ui.button_box.button(
-                        QDialogButtonBox.StandardButton.Apply
-                    ).click,
+                    get_apply_button(qt_wallet.wallet_descriptor_ui.button_box).click,
                     on_proceed_question,
                     qtbot,
                     cls=QMessageBox,

@@ -76,6 +76,7 @@ from .helpers import (
     Shutter,
     close_wallet,
     do_modal_click,
+    get_apply_button,
     main_window_context,
     running_on_github,
     save_wallet,
@@ -396,10 +397,7 @@ def test_wallet_features_multisig(
             set_mnemonic(0)
             set_mnemonic(1)
 
-            save_button = qt_protowallet.wallet_descriptor_ui.button_box.button(
-                QDialogButtonBox.StandardButton.Apply
-            )
-            assert save_button
+            save_button = get_apply_button(qt_protowallet.wallet_descriptor_ui.button_box)
             wallet_file = save_wallet(
                 test_config=test_config,
                 wallet_name=wallet_name,
