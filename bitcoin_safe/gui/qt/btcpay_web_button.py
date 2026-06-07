@@ -39,6 +39,7 @@ from concurrent.futures import Future
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from functools import partial
+from html import escape
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from types import TracebackType
 from typing import Any, cast
@@ -235,22 +236,23 @@ class BTCPayWebButton(QPushButton):
 
         callback_available = self._callback_server_state is not None
         if not self._open_invoice_in_browser(invoice_details.url):
-            self._show_browser_open_failure()
+            self._show_browser_open_failure(invoice_details.url)
             return
 
         if callback_available:
+            message = self.tr("Complete the payment in your browser.")
             self.signal_update_status.emit(
-                self.tr(
-                    "Complete the payment in your browser.\n"
-                    "If there is an issue, please dont hesitate to contact us at: {email}"
-                ).format(email=CONTACT_EMAIL)
-            )
-        else:
-            self.signal_update_status.emit(
-                self.tr(
-                    "Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available."
+                self._status_with_invoice_link(
+                    message,
+                    invoice_details.url,
+                    support_email=CONTACT_EMAIL,
                 )
             )
+        else:
+            message = self.tr(
+                "Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available."
+            )
+            self.signal_update_status.emit(self._status_with_invoice_link(message, invoice_details.url))
 
     def _on_invoice_error(self, invoice_details: BtcPayInvoiceDetails, exc_info: OptExcInfo) -> None:
         self.future_invoice = None
@@ -430,11 +432,29 @@ class BTCPayWebButton(QPushButton):
         invoice_details.paid = True
         self.signal_payment_completed.emit(invoice_details)
 
-    def _show_browser_open_failure(self) -> None:
-        self._stop_callback_server()
+    def _show_browser_open_failure(self, invoice_url: str) -> None:
         self.signal_update_status.emit(
-            self.tr("Could not open your browser automatically. Please try again.")
+            self._status_with_invoice_link(self.tr("Could not open your browser automatically."), invoice_url)
         )
+
+    def _status_with_invoice_link(
+        self, message: str, invoice_url: str, support_email: str | None = None
+    ) -> str:
+        escaped_message = escape(message).replace("\n", "<br>")
+        escaped_url = escape(invoice_url, quote=True)
+        parts = [escaped_message]
+        if support_email:
+            escaped_email = escape(support_email, quote=True)
+            parts.append(
+                self.tr(
+                    "If there is an issue, please do not hesitate to contact us at "
+                    '<a href="mailto:{email}">{email}</a>.'
+                ).format(email=escaped_email)
+            )
+        parts.append(
+            self.tr('If the browser did not open, click <a href="{url}">here</a>.').format(url=escaped_url)
+        )
+        return "<br>".join(parts)
 
     def _has_url_handler(self, url: QUrl) -> bool:
         if not url.isValid():
@@ -541,9 +561,11 @@ class DonationInvoiceWidget(QWidget):
         self.message_input.textChanged.connect(self._sync_message_to_button)
 
         self.status_label = QLabel(self)
+        self.status_label.setTextFormat(Qt.TextFormat.AutoText)
         self.status_label.setTextInteractionFlags(
-            Qt.TextInteractionFlag.TextSelectableByMouse | Qt.TextInteractionFlag.TextSelectableByKeyboard
+            Qt.TextInteractionFlag.TextBrowserInteraction | Qt.TextInteractionFlag.TextSelectableByKeyboard
         )
+        self.status_label.setOpenExternalLinks(True)
         self.status_label.setWordWrap(True)
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 

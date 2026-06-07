@@ -38,6 +38,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
 
 from bitcoin_safe.config import BtcPayInvoiceDetails, UserConfig
+from bitcoin_safe.constants import CONTACT_EMAIL
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.btcpay_web_button import (
     BTCPayWebButton,
@@ -57,14 +58,14 @@ def _payment_button(qtbot, loop_in_thread) -> BTCPayWebButton:
     return button
 
 
-def test_invoice_open_failure_without_callback_server_does_not_show_invoice_url(
+def test_invoice_open_failure_without_callback_server_shows_fallback_link(
     qtbot, loop_in_thread, monkeypatch
 ) -> None:
     button = _payment_button(qtbot=qtbot, loop_in_thread=loop_in_thread)
-    failures: list[bool] = []
+    messages: list[str] = []
+    button.signal_update_status.connect(messages.append)
 
     monkeypatch.setattr(button, "_open_invoice_in_browser", lambda invoice_url: False)
-    monkeypatch.setattr(button, "_show_browser_open_failure", lambda: failures.append(True))
 
     button._on_invoice_created(
         (
@@ -75,7 +76,10 @@ def test_invoice_open_failure_without_callback_server_does_not_show_invoice_url(
         )
     )
 
-    assert failures == [True]
+    assert messages[-1] == (
+        "Could not open your browser automatically.<br>"
+        'If the browser did not open, click <a href="https://example.com/invoice">here</a>.'
+    )
 
 
 def test_invoice_open_success_with_callback_server_updates_status(qtbot, loop_in_thread, monkeypatch) -> None:
@@ -97,6 +101,28 @@ def test_invoice_open_success_with_callback_server_updates_status(qtbot, loop_in
 
     assert button._callback_server_state.invoice_url == "https://example.com/invoice"
     assert messages[-1].startswith("Complete the payment in your browser.")
+    assert f'<a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a>' in messages[-1]
+    assert '<a href="https://example.com/invoice">here</a>' in messages[-1]
+
+
+def test_invoice_open_failure_keeps_callback_server_running(qtbot, loop_in_thread, monkeypatch) -> None:
+    button = _payment_button(qtbot=qtbot, loop_in_thread=loop_in_thread)
+    state = Mock(invoice_url=None)
+    button._callback_server_state = state
+
+    monkeypatch.setattr(button, "_open_invoice_in_browser", lambda invoice_url: False)
+
+    button._on_invoice_created(
+        (
+            200,
+            BtcPayInvoiceDetails(
+                id="invoice-id", url="https://example.com/invoice", bitcoin_address=None, amount=None
+            ),
+        )
+    )
+
+    assert button._callback_server_state is state
+    assert button._callback_server_state.invoice_url == "https://example.com/invoice"
 
 
 def test_open_invoice_in_browser_uses_webopen(monkeypatch, qtbot, loop_in_thread) -> None:
@@ -195,6 +221,28 @@ def test_donation_widget_clears_stale_amount_when_conversion_returns_zero(qtbot,
         widget._sync_amount_to_button()
 
         assert widget.payment_button.amount == 0
+    finally:
+        widget.close()
+        fx.close()
+
+
+def test_donation_widget_status_label_supports_external_links(qtbot, loop_in_thread) -> None:
+    config = UserConfig()
+    config.rates = {"USD": {"value": 100_000, "unit": "$", "name": "US Dollar"}}
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    signal_host = _SignalHost()
+    widget = DonationInvoiceWidget(
+        amount=10,
+        currency_iso="USD",
+        fx=fx,
+        loop_in_thread=loop_in_thread,
+        signal_currency_changed=signal_host.signal,
+        signal_language_switch=signal_host.signal,
+    )
+    qtbot.addWidget(widget)
+
+    try:
+        assert widget.status_label.openExternalLinks() is True
     finally:
         widget.close()
         fx.close()
