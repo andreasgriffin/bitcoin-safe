@@ -27,7 +27,6 @@
 # SOFTWARE.
 #
 import os
-import shutil
 import subprocess
 import tempfile
 from collections.abc import Iterable
@@ -136,9 +135,9 @@ class Appimage2debConverter:
         debian_dir = package_root / "DEBIAN"
         target_dir = package_root / "opt" / self.package_name
         debian_dir.mkdir(parents=True, exist_ok=True)
-        target_dir.mkdir(parents=True, exist_ok=True)
-        # Copy the extracted AppImage contents into /opt/<package_name>.
-        shutil.copytree(str(extracted_folder), str(target_dir), dirs_exist_ok=True, symlinks=True)
+        target_dir.parent.mkdir(parents=True, exist_ok=True)
+        # Keep staging on the same filesystem so we do not duplicate the full AppImage payload in /tmp.
+        extracted_folder.rename(target_dir)
 
     def _create_control_file(self, debian_dir: Path) -> None:
         # Build the control file content line by line.

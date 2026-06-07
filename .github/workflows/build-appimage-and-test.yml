@@ -12,12 +12,39 @@ on:
         description: 'Enter the commit hash to build (leave empty to use the default branch or the branch that triggered the workflow)'
         required: false
         type: string
+      artifact_name_prefix:
+        description: 'Optional prefix for uploaded artifact names'
+        required: false
+        default: ''
+        type: string
       skip_build_and_test_release_tag:
         description: 'Release tag to download prebuilt Linux artifacts instead of building (leave empty to build)'
         required: false
         default: ''
         type: string
+      run_tests:
+        description: 'Run the Linux smoke tests after the build'
+        required: false
+        default: true
+        type: boolean
   workflow_call:
+    inputs:
+      commitHash:
+        required: false
+        type: string
+        default: ''
+      artifact_name_prefix:
+        required: false
+        type: string
+        default: ''
+      skip_build_and_test_release_tag:
+        required: false
+        type: string
+        default: ''
+      run_tests:
+        required: false
+        type: boolean
+        default: true
 
 
 jobs:
@@ -33,22 +60,22 @@ jobs:
 
       # 2) if a SHA was provided, fetch it and switch to it
       - name: Fetch and checkout custom commit
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.commitHash != '' }}
+        if: ${{ inputs.commitHash != '' }}
         run: |
           # this will succeed as long as the commit is reachable from ANY branch on the remote
-          git fetch origin ${{ github.event.inputs.commitHash }}
-          git checkout ${{ github.event.inputs.commitHash }}
+          git fetch origin ${{ inputs.commitHash }}
+          git checkout ${{ inputs.commitHash }}
           
       # Use the build path for all non-dispatch events, or dispatch events that did not request a prebuilt release download.
       # When skip_build_and_test_release_tag is non-empty on workflow_dispatch, the release-download path is used instead.
       - name: Set up Python environment
-        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
       - name: Setup xvfb (Linux)
-        if: ${{ (github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '') && runner.os == 'Linux' }}
+        if: ${{ (github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '') && runner.os == 'Linux' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb \
@@ -73,19 +100,19 @@ jobs:
                                 libxkbcommon-x11-dev 
 
       - name: Install Python dependencies
-        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '' }}
         run: |
           python -m pip install --upgrade pip
           pip install poetry
           poetry install
 
       - name: Run build script
-        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '' }}
         run: poetry run python tools/build.py --targets appimage deb --commit None
 
 
       - name: Check for AppImage file
-        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '' }}
         run: |
           if [ -z "$(find dist -type f -name '*.AppImage.*')" ]; then
             echo "AppImage file is missing"
@@ -93,7 +120,7 @@ jobs:
           fi
 
       - name: Check for deb file
-        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '' }}
         run: |
           if [ -z "$(find dist -type f -name '*.deb')" ]; then
             echo "deb file is missing"
@@ -103,14 +130,15 @@ jobs:
 
 
       - name: Upload Linux artifacts
-        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/upload-artifact@v7
         with:
-          name: linux-artifacts
+          name: ${{ inputs.artifact_name_prefix }}linux-artifacts
           path: dist/
           if-no-files-found: error
 
   test:
+    if: ${{ inputs.run_tests }}
     needs: build
     runs-on: ubuntu-22.04
     strategy:
@@ -122,14 +150,14 @@ jobs:
       XDG_RUNTIME_DIR: /tmp/runtime-bitcoin-safe
     steps:
       - name: Download build artifacts
-        if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '' }}
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '' }}
         uses: actions/download-artifact@v7
         with:
-          name: linux-artifacts
+          name: ${{ inputs.artifact_name_prefix }}linux-artifacts
           path: artifacts
 
       - name: Unpack AppImage archive
-        if: ${{ matrix.package == 'appimage' && (github.event_name != 'workflow_dispatch' || github.event.inputs.skip_build_and_test_release_tag == '') }}
+        if: ${{ matrix.package == 'appimage' && (github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '') }}
         run: |
           set -euo pipefail
           shopt -s globstar nullglob
@@ -149,13 +177,13 @@ jobs:
           fi
 
       - name: Download release artifacts
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_build_and_test_release_tag != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p artifacts
-          gh release download "${{ github.event.inputs.skip_build_and_test_release_tag }}" \
+          gh release download "${{ inputs.skip_build_and_test_release_tag }}" \
             --dir artifacts \
             --repo "${{ github.repository }}"
           shopt -s nullglob
@@ -167,7 +195,7 @@ jobs:
           done
 
       - name: Verify downloaded Linux artifacts
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.skip_build_and_test_release_tag != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_build_and_test_release_tag != '' }}
         run: |
           set -euo pipefail
           if ! find artifacts -type f -name '*.AppImage' -print -quit | grep -q .; then

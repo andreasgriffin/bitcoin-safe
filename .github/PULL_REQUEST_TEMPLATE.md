@@ -10,3 +10,4 @@
 - [ ] Appropriate pytests were added
 - [ ] Documentation is updated
 - [ ] If this PR affects builds or install artifacts, set the `Build-Relevant` label to trigger build workflows
+- [ ] If this PR affects reproducible build outputs, set the `Reproducibility-Relevant` label to trigger the checksum comparison workflow
