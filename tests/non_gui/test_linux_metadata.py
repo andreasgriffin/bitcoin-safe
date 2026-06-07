@@ -32,18 +32,16 @@ from __future__ import annotations
 from pathlib import Path
 
 from tools.appimage_to_deb_converter import Appimage2debConverter
-from tools.generate_packaging_metadata import (
-    APPIMAGE_EXECUTABLE,
-    APPIMAGE_ICON_NAME,
-    DESKTOP_ENTRY_PATH,
-    FLATPAK_DESKTOP_ID,
-    FLATPAK_METAINFO_PATH,
-    WINDOWS_NSI_METADATA_PATH,
-)
 
 from bitcoin_safe.app_metadata import APP_METADATA
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DESKTOP_ENTRY_PATH = Path("tools/resources/linux-bitcoin-safe.desktop")
+FLATPAK_METAINFO_PATH = Path("tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml")
+WINDOWS_NSI_METADATA_PATH = Path("tools/build-wine/bitcoin_safe_metadata.nsh")
+APPIMAGE_EXECUTABLE = "org.bitcoin-safe.bitcoin-safe %F"
+APPIMAGE_ICON_NAME = "bitcoin-safe"
+FLATPAK_DESKTOP_ID = "org.bitcoin_safe.BitcoinSafe.desktop"
 
 
 def test_desktop_entry_matches_generated_metadata() -> None:

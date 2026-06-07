@@ -45,8 +45,6 @@ export WINE_POETRY_CACHE_DIR=$(win_path "$L_POETRY_CACHE_DIR")
 
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported. PROJECT_ROOT contents:\n$(ls -la "$PROJECT_ROOT")"
 
-python3 "$PROJECT_ROOT/tools/generate_packaging_metadata.py" write-files --project-root "$PROJECT_ROOT"
-
 info "Clearing $here/build and $here/dist..."
 rm "$here"/build/* -rf
 rm "$here"/dist/* -rf

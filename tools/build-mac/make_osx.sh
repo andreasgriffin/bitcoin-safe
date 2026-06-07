@@ -27,8 +27,8 @@ mkdir -p "$CACHEDIR" "$DLL_TARGET_DIR"
 
 cd "$PROJECT_ROOT"
 
-PACKAGE="$(python3 "$PROJECT_ROOT/tools/generate_packaging_metadata.py" get application-name)"
-PACKAGE_NAME="$(python3 "$PROJECT_ROOT/tools/generate_packaging_metadata.py" get macos-bundle-name)"
+PACKAGE="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.application_name)')"
+PACKAGE_NAME="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.macos_bundle_name)')"
 DMG_BACKGROUND_PATH="$PROJECT_ROOT/tools/resources/dmg-background.png"
 
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported."

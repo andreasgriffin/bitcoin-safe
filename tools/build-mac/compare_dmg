@@ -11,9 +11,8 @@ RELEASE_DMG="$2"
 CONTRIB_OSX="$(dirname "$(grealpath "$0")")"
 PROJECT_ROOT="$CONTRIB_OSX/../.."
 WORKSPACE="/tmp/bitcoin_safe_compare_dmg"
-METADATA_SCRIPT="$PROJECT_ROOT/tools/generate_packaging_metadata.py"
-PACKAGE="$(python3 "$METADATA_SCRIPT" get application-name)"
-PACKAGE_NAME="$(python3 "$METADATA_SCRIPT" get macos-bundle-name)"
+PACKAGE="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.application_name)')"
+PACKAGE_NAME="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.macos_bundle_name)')"
 
 if [ -z "$UNSIGNED_DMG" ]; then
     echo "usage: $0 <unsigned dmg> <release dmg>"

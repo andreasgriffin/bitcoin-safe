@@ -26,8 +26,6 @@ METADATA_PROBE_REPO_DIR="${WORK_DIR}/metadata-probe-repo"
 METADATA_PROBE_STATE_DIR="${WORK_DIR}/metadata-probe-state"
 source "${SCRIPT_DIR}/flatpak_common.sh"
 
-python3 "${PROJECT_ROOT}/tools/generate_packaging_metadata.py" write-files --project-root "${PROJECT_ROOT}"
-
 resolve_source_date_epoch() {
     if [ -n "${BITCOINSAFE_SOURCE_DATE_EPOCH:-}" ]; then
         printf '%s\n' "${BITCOINSAFE_SOURCE_DATE_EPOCH}"

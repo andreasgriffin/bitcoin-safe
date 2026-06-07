@@ -8,9 +8,8 @@ CONTRIB_OSX="$PROJECT_ROOT/tools/build-mac"
 . "$CONTRIB"/build_tools_util.sh
 . "$CONTRIB_OSX"/ensure_reproducible_dmg_tools.sh
 
-METADATA_SCRIPT="$PROJECT_ROOT/tools/generate_packaging_metadata.py"
-PACKAGE_NAME="$(python3 "$METADATA_SCRIPT" get macos-bundle-name)"
-DMG_VOLUME_NAME="$(python3 "$METADATA_SCRIPT" get macos-dmg-volume-name)"
+PACKAGE_NAME="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.macos_bundle_name)')"
+DMG_VOLUME_NAME="$(python3 -c 'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.macos_dmg_volume_name)')"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 ${PACKAGE_NAME}"
