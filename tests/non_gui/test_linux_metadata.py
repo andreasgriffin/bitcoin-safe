@@ -147,6 +147,8 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     )
     assert "open folder dmg_folder" in create_styled_dmg
     assert "create_plain_dmg" in create_styled_dmg
+    assert "convert_compressed_dmg" in create_styled_dmg
+    assert 'echo "Could not convert staged DMG."' in create_styled_dmg
     assert "hdiutil convert" in create_styled_dmg
     assert '-srcfolder "${STAGING_DIR}"' in create_styled_dmg
     assert 'ln -s /Applications "${STAGING_DIR}/Applications"' in create_styled_dmg

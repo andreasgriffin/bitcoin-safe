@@ -63,6 +63,27 @@ create_plain_dmg() {
     done
 }
 
+convert_compressed_dmg() {
+    local attempts=0
+
+    mkdir -p "$(dirname "${OUTPUT_DMG_PATH}")"
+    rm -f "${OUTPUT_DMG_PATH}"
+    until hdiutil convert \
+        "${RW_DMG_PATH}" \
+        -format UDZO \
+        -imagekey zlib-level=9 \
+        -o "${OUTPUT_DMG_PATH}" \
+        >/dev/null; do
+        if [ "${attempts}" -eq 10 ]; then
+            echo "Could not convert staged DMG."
+            return 1
+        fi
+        attempts=$((attempts + 1))
+        rm -f "${OUTPUT_DMG_PATH}"
+        sleep 1
+    done
+}
+
 cleanup() {
     detach_dmg
     rm -rf "${TEMP_ROOT}" || true
@@ -137,6 +158,4 @@ fi
 sync
 detach_dmg
 
-mkdir -p "$(dirname "${OUTPUT_DMG_PATH}")"
-rm -f "${OUTPUT_DMG_PATH}"
-hdiutil convert "${RW_DMG_PATH}" -format UDZO -imagekey zlib-level=9 -o "${OUTPUT_DMG_PATH}" >/dev/null
+convert_compressed_dmg
