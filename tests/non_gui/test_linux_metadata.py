@@ -127,9 +127,9 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     assert "ICON_SIZE=104" in create_styled_dmg
     assert "ICON_TEXT_SIZE=13" in create_styled_dmg
     assert "APP_ICON_X=132" in create_styled_dmg
-    assert "APP_ICON_Y=200" in create_styled_dmg
+    assert "APP_ICON_Y=170" in create_styled_dmg
     assert "APPLICATIONS_ICON_X=506" in create_styled_dmg
-    assert "APPLICATIONS_ICON_Y=200" in create_styled_dmg
+    assert "APPLICATIONS_ICON_Y=170" in create_styled_dmg
     assert "DMG_RETRY_ATTEMPTS=30" in create_styled_dmg
     assert "set icon size of view_options to ${ICON_SIZE}" in create_styled_dmg
     assert "set text size of view_options to ${ICON_TEXT_SIZE}" in create_styled_dmg
