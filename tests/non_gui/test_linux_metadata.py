@@ -115,12 +115,18 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     assert "tools/resources/dmg-background.png" in make_osx
     assert "tools/resources/dmg-background.png" in package_sh
     assert "tools/resources/dmg-background.png" in sign_osx
+    assert 'BACKGROUND_COPY_PATH="${STAGING_DIR}/.background/dmg-background.png"' in create_styled_dmg
     assert (
-        'cp "${BACKGROUND_IMAGE_PATH}" "${STAGING_DIR}/.background/dmg-background.png"' in create_styled_dmg
+        'sips -z "${WINDOW_HEIGHT}" "${WINDOW_WIDTH}" "${BACKGROUND_COPY_PATH}" >/dev/null'
+        in create_styled_dmg
     )
     assert 'set dmg_folder to POSIX file "${MOUNT_DIR}" as alias' in create_styled_dmg
     assert (
         'set background_image to POSIX file "${MOUNT_DIR}/.background/dmg-background.png" as alias'
+        in create_styled_dmg
+    )
+    assert (
+        "set the bounds of dmg_window to {${WINDOW_LEFT}, ${WINDOW_TOP}, ${WINDOW_RIGHT}, ${WINDOW_BOTTOM}}"
         in create_styled_dmg
     )
     assert "open folder dmg_folder" in create_styled_dmg

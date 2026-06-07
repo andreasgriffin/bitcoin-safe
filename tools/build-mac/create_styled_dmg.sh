@@ -11,6 +11,12 @@ APP_BUNDLE_PATH="${1:?Usage: $0 <app-bundle-path> <output-dmg-path> [volume-name
 OUTPUT_DMG_PATH="${2:?Usage: $0 <app-bundle-path> <output-dmg-path> [volume-name] [background-image-path]}"
 VOLUME_NAME="${3:-Bitcoin Safe}"
 BACKGROUND_IMAGE_PATH="${4:-$(dirname "$0")/../resources/dmg-background.png}"
+WINDOW_LEFT=140
+WINDOW_TOP=120
+WINDOW_WIDTH=640
+WINDOW_HEIGHT=400
+WINDOW_RIGHT=$((WINDOW_LEFT + WINDOW_WIDTH))
+WINDOW_BOTTOM=$((WINDOW_TOP + WINDOW_HEIGHT))
 
 TEMP_ROOT="$(mktemp -d "/tmp/bitcoin_safe_dmg.XXXXXX")"
 STAGING_DIR="${TEMP_ROOT}/staging"
@@ -18,6 +24,7 @@ RW_DMG_PATH="${TEMP_ROOT}/staged.dmg"
 MOUNT_DIR="${TEMP_ROOT}/mount"
 APP_NAME="$(basename "${APP_BUNDLE_PATH}")"
 DEVICE_NAME=""
+BACKGROUND_COPY_PATH="${STAGING_DIR}/.background/dmg-background.png"
 
 detach_dmg() {
     if [ -n "${DEVICE_NAME}" ]; then
@@ -58,9 +65,10 @@ trap cleanup EXIT
 
 mkdir -p "${STAGING_DIR}/.background"
 cp -R "${APP_BUNDLE_PATH}" "${STAGING_DIR}/${APP_NAME}"
-cp "${BACKGROUND_IMAGE_PATH}" "${STAGING_DIR}/.background/dmg-background.png"
+cp "${BACKGROUND_IMAGE_PATH}" "${BACKGROUND_COPY_PATH}"
+sips -z "${WINDOW_HEIGHT}" "${WINDOW_WIDTH}" "${BACKGROUND_COPY_PATH}" >/dev/null
 ln -s /Applications "${STAGING_DIR}/Applications"
-touch -h -t "200101220000" "${STAGING_DIR}/.background/dmg-background.png"
+touch -h -t "200101220000" "${BACKGROUND_COPY_PATH}"
 touch -h -t "200101220000" "${STAGING_DIR}/Applications"
 
 hdiutil create \
@@ -101,7 +109,7 @@ tell application "Finder"
     set current view of dmg_window to icon view
     set toolbar visible of dmg_window to false
     set statusbar visible of dmg_window to false
-    set the bounds of dmg_window to {140, 120, 780, 520}
+    set the bounds of dmg_window to {${WINDOW_LEFT}, ${WINDOW_TOP}, ${WINDOW_RIGHT}, ${WINDOW_BOTTOM}}
     set view_options to the icon view options of dmg_window
     set arrangement of view_options to not arranged
     set icon size of view_options to 128
