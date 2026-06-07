@@ -86,6 +86,7 @@ chflags hidden "${MOUNT_DIR}/.background"
 
 if ! osascript <<EOF
 set dmg_folder to POSIX file "${MOUNT_DIR}" as alias
+set background_image to POSIX file "${MOUNT_DIR}/.background/dmg-background.png" as alias
 tell application "Finder"
     open folder dmg_folder
     repeat 30 times
@@ -105,7 +106,7 @@ tell application "Finder"
     set arrangement of view_options to not arranged
     set icon size of view_options to 128
     set text size of view_options to 14
-    set background picture of view_options to file ".background:dmg-background.png"
+    set background picture of view_options to background_image
     set position of item "${APP_NAME}" of dmg_window to {170, 215}
     set position of item "Applications" of dmg_window to {470, 215}
     update folder dmg_folder without registering applications

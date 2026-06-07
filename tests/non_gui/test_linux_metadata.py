@@ -119,6 +119,10 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
         'cp "${BACKGROUND_IMAGE_PATH}" "${STAGING_DIR}/.background/dmg-background.png"' in create_styled_dmg
     )
     assert 'set dmg_folder to POSIX file "${MOUNT_DIR}" as alias' in create_styled_dmg
+    assert (
+        'set background_image to POSIX file "${MOUNT_DIR}/.background/dmg-background.png" as alias'
+        in create_styled_dmg
+    )
     assert "open folder dmg_folder" in create_styled_dmg
     assert "create_plain_dmg" in create_styled_dmg
     assert "hdiutil convert" in create_styled_dmg
