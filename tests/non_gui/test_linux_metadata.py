@@ -129,10 +129,14 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
         "set the bounds of dmg_window to {${WINDOW_LEFT}, ${WINDOW_TOP}, ${WINDOW_RIGHT}, ${WINDOW_BOTTOM}}"
         in create_styled_dmg
     )
-    assert "APP_ICON_X=150" in create_styled_dmg
-    assert "APP_ICON_Y=215" in create_styled_dmg
-    assert "APPLICATIONS_ICON_X=490" in create_styled_dmg
-    assert "APPLICATIONS_ICON_Y=215" in create_styled_dmg
+    assert "ICON_SIZE=104" in create_styled_dmg
+    assert "ICON_TEXT_SIZE=13" in create_styled_dmg
+    assert "APP_ICON_X=138" in create_styled_dmg
+    assert "APP_ICON_Y=228" in create_styled_dmg
+    assert "APPLICATIONS_ICON_X=506" in create_styled_dmg
+    assert "APPLICATIONS_ICON_Y=228" in create_styled_dmg
+    assert "set icon size of view_options to ${ICON_SIZE}" in create_styled_dmg
+    assert "set text size of view_options to ${ICON_TEXT_SIZE}" in create_styled_dmg
     assert (
         'set position of item "${APP_NAME}" of dmg_window to {${APP_ICON_X}, ${APP_ICON_Y}}'
         in create_styled_dmg

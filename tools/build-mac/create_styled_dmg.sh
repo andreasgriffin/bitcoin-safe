@@ -17,10 +17,12 @@ WINDOW_WIDTH=640
 WINDOW_HEIGHT=400
 WINDOW_RIGHT=$((WINDOW_LEFT + WINDOW_WIDTH))
 WINDOW_BOTTOM=$((WINDOW_TOP + WINDOW_HEIGHT))
-APP_ICON_X=150
-APP_ICON_Y=215
-APPLICATIONS_ICON_X=490
-APPLICATIONS_ICON_Y=215
+ICON_SIZE=104
+ICON_TEXT_SIZE=13
+APP_ICON_X=138
+APP_ICON_Y=228
+APPLICATIONS_ICON_X=506
+APPLICATIONS_ICON_Y=228
 
 TEMP_ROOT="$(mktemp -d "/tmp/bitcoin_safe_dmg.XXXXXX")"
 STAGING_DIR="${TEMP_ROOT}/staging"
@@ -116,8 +118,8 @@ tell application "Finder"
     set the bounds of dmg_window to {${WINDOW_LEFT}, ${WINDOW_TOP}, ${WINDOW_RIGHT}, ${WINDOW_BOTTOM}}
     set view_options to the icon view options of dmg_window
     set arrangement of view_options to not arranged
-    set icon size of view_options to 128
-    set text size of view_options to 14
+    set icon size of view_options to ${ICON_SIZE}
+    set text size of view_options to ${ICON_TEXT_SIZE}
     set background picture of view_options to background_image
     set position of item "${APP_NAME}" of dmg_window to {${APP_ICON_X}, ${APP_ICON_Y}}
     set position of item "Applications" of dmg_window to {${APPLICATIONS_ICON_X}, ${APPLICATIONS_ICON_Y}}
