@@ -746,7 +746,7 @@ class Wizard(WizardBase):
         self.step_container.set_labels(
             [labels[step] for step in self.get_displayed_steps(mn_tuple=mn_tuple) if step in labels]
         )
-        self.send_test_previous_button.setText(self.tr("Previous Step"))
+        self.send_test_previous_button.setText(self.tr("Previous step"))
 
     def _clear_widgets_and_tab_generators(self) -> None:
         """Clear widgets and tab generators."""

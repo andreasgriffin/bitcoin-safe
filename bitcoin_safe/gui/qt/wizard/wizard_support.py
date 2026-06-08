@@ -141,7 +141,7 @@ class BaseTab(QObject):
     def updateUi(self) -> None:
         """UpdateUi."""
         self.apply_next_button_style(self.button_next)
-        self.button_previous.setText(translate("basetab", "Previous Step"))
+        self.button_previous.setText(translate("basetab", "Previous step"))
         self.button_previous.setVisible(self.show_previous_step_button)
         self.button_previous.setEnabled(self.previous_step_enabled)
 

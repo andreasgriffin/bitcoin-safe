@@ -163,7 +163,7 @@ class ImportXpubs(BaseTab):
         self.button_create_wallet.setText(
             self.tr("Skip step") if self.refs.qt_wallet else self.tr("Next step")
         )
-        self.button_previous.setText(self.tr("Previous Step"))
+        self.button_previous.setText(self.tr("Previous step"))
 
         if self.keystore_uis:
             self.button_create_wallet.setVisible(True)
