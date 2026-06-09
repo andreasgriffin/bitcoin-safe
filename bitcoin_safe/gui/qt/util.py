@@ -967,7 +967,7 @@ def clipboard_contains_address(network: bdk.Network) -> bool:
     return ConverterAddress.is_bitcoin_address(clipboard.text(), network)
 
 
-def do_copy(text: str, *, title: str | None = None) -> None:
+def do_copy(text: str, title: str | None = None, parent: QWidget | None = None) -> None:
     """Do copy."""
     clipboard = QApplication.clipboard()
     if not clipboard:
@@ -979,16 +979,17 @@ def do_copy(text: str, *, title: str | None = None) -> None:
         if title is None
         else translate("d", "{} copied to Clipboard").format(title)
     )
-    show_tooltip_after_delay(message)
+    show_tooltip_after_delay(message=message, parent=parent)
 
 
-def show_tooltip_after_delay(message):
+def show_tooltip_after_delay(message: str, parent: QWidget | None = None) -> None:
     """Show tooltip after delay."""
-    timer = QTimer()
     if not ENABLE_TIMERS:
         return
     # tooltip cannot be displayed immediately when called from a menu; wait 200ms
-    timer.singleShot(200, partial(QToolTip.showText, QCursor.pos(), message))
+    QTimer.singleShot(
+        200, partial(QToolTip.showText, QCursor.pos(), message, parent or QApplication.activeWindow())
+    )
 
 
 def qicon_to_pil(qicon: QIcon, size=200) -> PilImage.Image:
