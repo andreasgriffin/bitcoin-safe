@@ -11,4 +11,7 @@
 - [ ] Documentation is updated
 - [ ] If this PR affects builds or install artifacts, set the `Build-Relevant` label to trigger build workflows
 - [ ] If this PR affects reproducible build outputs, set the `Reproducibility-Relevant` label to trigger the checksum comparison workflow
-- [ ] Instruct AI `create a concise summary (bullet points, no stats) for this pr and make a good title`
+- [ ] Instruct AI 
+```
+create a concise summary (bullet points, no stats) for this pr and make a good title
+```
