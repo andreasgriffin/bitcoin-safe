@@ -123,19 +123,22 @@ class RecipientWidget(QWidget):
             dismiss_label_on_focus_loss=False,
         )
 
-        self.amount_layout = QHBoxLayout()
+        self.amount_container = QWidget(self)
+        self.amount_layout = QHBoxLayout(self.amount_container)
+        set_no_margins(self.amount_layout)
         language_switch = cast(SignalProtocol[[]], self.wallet_functions.signals.language_switch)
         self.amount_spin_box = BTCSpinBox(
             network=network,
             signal_language_switch=language_switch,
             btc_symbol=self.wallet_functions.signals.get_btc_symbol() or BitcoinSymbol.ISO.value,
+            parent=self,
         )
-        amount_analyzer = AmountAnalyzer()
+        amount_analyzer = AmountAnalyzer(self)
         amount_analyzer.min_amount = 0
         amount_analyzer.max_amount = int(21e6 * 1e8)
         self.amount_spin_box.setAnalyzer(amount_analyzer)
         self.label_unit = QLabel(self.fx.config.bitcoin_symbol.value if self.fx else BitcoinSymbol.ISO.value)
-        self.send_max_checkbox = QCheckBox()
+        self.send_max_checkbox = QCheckBox(self)
         self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.send_max_checkbox.clicked), self.on_send_max_button_click
         )
@@ -176,7 +179,7 @@ class RecipientWidget(QWidget):
         self.form_layout.addRow(self.address_label, self.address_edit)
         self.form_layout.addRow(self.label_txlabel, self.label_line_edit)
         self.form_layout.addRow(self.fiat_label, self.fiat_layout)
-        self.form_layout.addRow(self.amount_label, self.amount_layout)
+        self.form_layout.addRow(self.amount_label, self.amount_container)
 
         self.set_allow_edit(allow_edit)
         self.label_line_edit.set_label_readonly(not allow_label_edit)

@@ -190,7 +190,7 @@ class TooSmallGapLimitWarningBar(NotificationBar):
             text="",
             optional_button_text="",
             callback_optional_button=self.click_recreate,
-            has_close_button=False,
+            has_close_button=True,
             parent=parent,
         )
         self.text = ""
