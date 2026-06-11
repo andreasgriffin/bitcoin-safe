@@ -76,6 +76,7 @@ from .helpers import (
     Shutter,
     close_wallet,
     do_modal_click,
+    get_apply_button,
     main_window_context,
     running_on_github,
     save_wallet,
@@ -151,10 +152,12 @@ def test_register_multisig_dialog_uses_hardware_signer_default_qr(
 
 @pytest.mark.marker_qt_1
 def test_register_multisig_help_window_reopens_cleanly(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    hardware_signer = HardwareSigners.jade
     dialog = RegisterMultisigInteractionWidget(
         wallet_functions=None,
         wallet=None,
         loop_in_thread=loop_in_thread,
+        hardware_signer=hardware_signer,
     )
     qtbot.addWidget(dialog)
     dialog.show()
@@ -166,6 +169,8 @@ def test_register_multisig_help_window_reopens_cleanly(qtbot: QtBot, loop_in_thr
     assert dialog._help_widget is not None
     assert dialog._help_widget.parentWidget() is None
     assert dialog._help_widget.isWindow()
+    assert dialog._help_widget.sync_tab.count() == 1
+    assert dialog._help_widget.sync_tab.tabText(0) == hardware_signer.display_name
 
     dialog._help_widget.close()
     qtbot.waitUntil(lambda: dialog._help_widget is None)
@@ -176,16 +181,20 @@ def test_register_multisig_help_window_reopens_cleanly(qtbot: QtBot, loop_in_thr
     assert dialog._help_widget is not None
     assert dialog._help_widget.parentWidget() is None
     assert dialog._help_widget.isWindow()
+    assert dialog._help_widget.sync_tab.count() == 1
+    assert dialog._help_widget.sync_tab.tabText(0) == hardware_signer.display_name
 
 
 @pytest.mark.marker_qt_1
 def test_usb_register_multisig_help_window_reopens_cleanly(
     qtbot: QtBot, loop_in_thread: LoopInThread
 ) -> None:
+    hardware_signer = HardwareSigners.jade
     widget = USBRegisterMultisigWidget(
         network=bdk.Network.REGTEST,
         wallet_functions=WalletFunctions(Signals()),
         loop_in_thread=loop_in_thread,
+        hardware_signer=hardware_signer,
     )
     qtbot.addWidget(widget)
     widget.show()
@@ -197,6 +206,8 @@ def test_usb_register_multisig_help_window_reopens_cleanly(
     assert widget._help_widget is not None
     assert widget._help_widget.parentWidget() is None
     assert widget._help_widget.isWindow()
+    assert widget._help_widget.sync_tab.count() == 1
+    assert widget._help_widget.sync_tab.tabText(0) == hardware_signer.display_name
 
     widget._help_widget.close()
     qtbot.waitUntil(lambda: widget._help_widget is None)
@@ -207,6 +218,8 @@ def test_usb_register_multisig_help_window_reopens_cleanly(
     assert widget._help_widget is not None
     assert widget._help_widget.parentWidget() is None
     assert widget._help_widget.isWindow()
+    assert widget._help_widget.sync_tab.count() == 1
+    assert widget._help_widget.sync_tab.tabText(0) == hardware_signer.display_name
 
 
 @pytest.mark.marker_qt_2
@@ -326,13 +339,13 @@ def test_wallet_features_multisig(
             shutter.save(main_window)
 
             # Verify the default 3-of-5 multisig configuration for the fixture.
-            assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 3
-            assert qt_protowallet.wallet_descriptor_ui.spin_signers.value() == 5
+            assert qt_protowallet.wallet_descriptor_ui.spin_req.value() == 2
+            assert qt_protowallet.wallet_descriptor_ui.spin_signers.value() == 3
             assert (
                 qt_protowallet.wallet_descriptor_ui.comboBox_address_type.currentData() == AddressTypes.p2wsh
             )
             assert qt_protowallet.wallet_descriptor_ui.spin_gap.value() == 20
-            assert qt_protowallet.wallet_descriptor_ui.keystore_uis.count() == 5
+            assert qt_protowallet.wallet_descriptor_ui.keystore_uis.count() == 3
 
             shutter.save(main_window)
             check_consistent()
@@ -384,10 +397,7 @@ def test_wallet_features_multisig(
             set_mnemonic(0)
             set_mnemonic(1)
 
-            save_button = qt_protowallet.wallet_descriptor_ui.button_box.button(
-                QDialogButtonBox.StandardButton.Apply
-            )
-            assert save_button
+            save_button = get_apply_button(qt_protowallet.wallet_descriptor_ui.button_box)
             wallet_file = save_wallet(
                 test_config=test_config,
                 wallet_name=wallet_name,

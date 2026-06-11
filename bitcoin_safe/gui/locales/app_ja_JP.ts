@@ -1910,8 +1910,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>&lt;a href="{url}"&gt;対応しているハードウェア署名者&lt;/a&gt;について詳しく見る。</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;対応している署名者&lt;/a&gt;について詳しく見る。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3125,7 +3125,8 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>設定済みサーバー: {server} 位置情報を利用できません。</translation>
+			<translation>設定済みサーバー: {server}
+位置情報を利用できません。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4260,7 +4261,7 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt; 資金を自分が管理しているかどうかを知るには、ウォレットからの支出をテストする必要があります。 &lt;br&gt; そのため、ウォレットに相当額の Bitcoin を送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;極めて重要&lt;/b&gt;です。</translation>
+			<translation>&lt;br&gt;&lt;b&gt;なぜ？&lt;/b&gt; &lt;br&gt; 資金を自分が管理しているかどうかを知るには、ウォレットからの支出をテストする必要があります。 &lt;br&gt; そのため、ウォレットに相当額の Bitcoin を送る前に、ウォレットから支出し、すべての署名者をテストすることが&lt;b&gt;極めて重要&lt;/b&gt;です。                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4469,8 +4470,18 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>デバイスの手順</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>{wallet_name} を登録する</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} の手順</translation>
 		</message>
 	</context>
 	<context>
@@ -5217,6 +5228,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>テスト {number} のために準備しておく</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>共有先...</translation>
 		</message>
@@ -5264,6 +5280,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>署名済み</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>テスト確認済み</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>この署名者は送信テスト {number} で必要です。まだこれで署名しないでください。</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5568,6 +5594,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>デバイスの手順</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>ヘルプ</translation>
 		</message>
@@ -5585,6 +5616,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>ハードウェア署名者でマルチシグウォレットを成功裏に登録した</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} の手順</translation>
 		</message>
 	</context>
 	<context>
@@ -6315,7 +6351,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} 国: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+国: {country}</translation>
 		</message>
 	</context>
 	<context>

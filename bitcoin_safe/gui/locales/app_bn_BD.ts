@@ -1914,8 +1914,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>&lt;a href="{url}"&gt;সমর্থিত হার্ডওয়্যার সাইনার&lt;/a&gt; সম্পর্কে আরও জানুন।</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;সমর্থিত স্বাক্ষরকারীদের&lt;/a&gt; সম্পর্কে আরও জানুন।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3130,7 +3130,8 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>কনফিগার করা সার্ভার: {server} অবস্থান অনুপলব্ধ।</translation>
+			<translation>কনফিগার করা সার্ভার: {server}
+অবস্থান অনুপলব্ধ।</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4263,7 +4264,7 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি তহবিল নিয়ন্ত্রণ করেন কি না তা জানতে, আপনাকে ওয়ালেট থেকে খরচ করার পরীক্ষা করতে হবে। &lt;br&gt; তাই ওয়ালেটে উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে, ওয়ালেট থেকে খরচ করা এবং সব স্বাক্ষরকারীকে পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;।</translation>
+			<translation>&lt;br&gt;&lt;b&gt;কেন?&lt;/b&gt; &lt;br&gt; আপনি তহবিল নিয়ন্ত্রণ করেন কি না তা জানতে, আপনাকে ওয়ালেট থেকে খরচ করার পরীক্ষা করতে হবে। &lt;br&gt; তাই ওয়ালেটে উল্লেখযোগ্য পরিমাণ Bitcoin পাঠানোর আগে, ওয়ালেট থেকে খরচ করা এবং সব স্বাক্ষরকারীকে পরীক্ষা করা &lt;b&gt;অত্যন্ত গুরুত্বপূর্ণ&lt;/b&gt;।                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4472,8 +4473,18 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>ডিভাইস নির্দেশাবলী</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>{wallet_name} নিবন্ধন করুন</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} নির্দেশাবলী</translation>
 		</message>
 	</context>
 	<context>
@@ -5220,6 +5231,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>পরীক্ষা {number}-এর জন্য প্রস্তুত রাখুন</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>এর সাথে শেয়ার করুন...</translation>
 		</message>
@@ -5267,6 +5283,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>স্বাক্ষরিত</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>পরীক্ষা যাচাই করা হয়েছে</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>এই স্বাক্ষরকারী পাঠানোর পরীক্ষা {number}-এ প্রয়োজন। এখনও এটি দিয়ে স্বাক্ষর করবেন না।</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5574,6 +5600,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>ডিভাইস নির্দেশাবলী</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>সহায়তা</translation>
 		</message>
@@ -5591,6 +5622,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>hardware signer-এ multisig wallet সফলভাবে নিবন্ধিত হয়েছে</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} নির্দেশাবলী</translation>
 		</message>
 	</context>
 	<context>
@@ -6321,7 +6357,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} দেশ: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+দেশ: {country}</translation>
 		</message>
 	</context>
 	<context>

@@ -1915,8 +1915,8 @@ poiché la dimensione finale della transazione è sconosciuta.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Scopri di più sui &lt;a href="{url}"&gt;firmatari hardware supportati&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Scopri di più sui &lt;a href="{url}"&gt;firmatari supportati&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3138,7 +3138,8 @@ quindi è normalmente circa {minutes} minuti indietro rispetto alla punta.</tran
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Server configurato: {server} Posizione non disponibile.</translation>
+			<translation>Server configurato: {server}
+Posizione non disponibile.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4279,7 +4280,9 @@ Gli output rimangono invariati; cambia solo la commissione.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Perché?&lt;/b&gt; &lt;br&gt; Per sapere se controlli i fondi, devi testare una spesa dal portafoglio. &lt;br&gt; Quindi, prima di inviare una quantità sostanziale di Bitcoin nel portafoglio, è &lt;b&gt;fondamentale&lt;/b&gt; spendere dal portafoglio e testare tutti i firmatari.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Perché?&lt;/b&gt; &lt;br&gt; Per sapere se controlli i fondi, devi testare una spesa dal portafoglio.
+&lt;br&gt; Quindi, prima di inviare una quantità sostanziale di Bitcoin nel portafoglio, è &lt;b&gt;fondamentale&lt;/b&gt; spendere dal portafoglio e testare tutti i firmatari.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4488,8 +4491,18 @@ Gli output rimangono invariati; cambia solo la commissione.</translation>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Istruzioni del dispositivo</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Registra {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Istruzioni per {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5238,6 +5251,11 @@ Se vuoi continuare a usare entrambi, reimposta ora la chiave di sincronizzazione
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>Tieni pronto per il test {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Condividi con...</translation>
 		</message>
@@ -5285,6 +5303,16 @@ Se vuoi continuare a usare entrambi, reimposta ora la chiave di sincronizzazione
 		<message>
 			<source>Signed</source>
 			<translation>Firmato</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>Test verificato</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>Questo firmatario è necessario nel test di invio {number}. Non firmare ancora con esso.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5593,6 +5621,11 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Istruzioni del dispositivo</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Aiuto</translation>
 		</message>
@@ -5610,6 +5643,11 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Portafoglio multisig registrato con successo sul firmatario hardware</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Istruzioni per {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -6340,7 +6378,9 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} Paese: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+Paese: {country}</translation>
 		</message>
 	</context>
 	<context>

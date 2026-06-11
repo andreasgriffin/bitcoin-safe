@@ -1914,8 +1914,8 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Més informació sobre els &lt;a href="{url}"&gt;signants de maquinari compatibles&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Més informació sobre els &lt;a href="{url}"&gt;signadors admesos&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3137,7 +3137,8 @@ per tant normalment està aproximadament {minutes} minuts darrere de la punta.</
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Servidor configurat: {server} Ubicació no disponible.</translation>
+			<translation>Servidor configurat: {server}
+Ubicació no disponible.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4276,7 +4277,9 @@ Les sortides es mantenen; només canvia la comissió.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controleu els fons, heu de provar de gastar des del moneder. &lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin al moneder, és &lt;b&gt;crucial&lt;/b&gt; gastar des del moneder i provar tots els signants.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Per què?&lt;/b&gt; &lt;br&gt; Per saber si controleu els fons, heu de provar de gastar des del moneder.
+&lt;br&gt; Per tant, abans d’enviar una quantitat substancial de Bitcoin al moneder, és &lt;b&gt;crucial&lt;/b&gt; gastar des del moneder i provar tots els signants.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4485,8 +4488,18 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Instruccions del dispositiu</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Registra {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instruccions de {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5235,6 +5248,11 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>Mantén-lo a punt per a la prova {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Comparteix amb...</translation>
 		</message>
@@ -5282,6 +5300,16 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		<message>
 			<source>Signed</source>
 			<translation>Signat</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>Prova verificada</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>Aquest signador és necessari a la prova d’enviament {number}. Encara no hi signis.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5590,6 +5618,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Instruccions del dispositiu</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Ajuda</translation>
 		</message>
@@ -5607,6 +5640,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Cartera multisignatura registrada correctament al signador de maquinari</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instruccions de {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -6337,7 +6375,9 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} País: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+País: {country}</translation>
 		</message>
 	</context>
 	<context>

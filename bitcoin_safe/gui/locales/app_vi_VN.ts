@@ -1915,8 +1915,8 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Tìm hiểu thêm về &lt;a href="{url}"&gt;các thiết bị ký phần cứng được hỗ trợ&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Tìm hiểu thêm về &lt;a href="{url}"&gt;các bên ký được hỗ trợ&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3138,7 +3138,8 @@ nên thường chậm khoảng {minutes} phút so với tip.</translation>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Máy chủ đã cấu hình: {server} Không có vị trí.</translation>
+			<translation>Máy chủ đã cấu hình: {server}
+Không có vị trí.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4276,7 +4277,9 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Tại sao?&lt;/b&gt; &lt;br&gt; Để biết bạn có kiểm soát số tiền hay không, bạn phải kiểm tra việc chi tiêu từ ví. &lt;br&gt; Vì vậy, trước khi bạn gửi một lượng Bitcoin đáng kể vào ví, việc chi tiêu từ ví và kiểm tra tất cả người ký là &lt;b&gt;cực kỳ quan trọng&lt;/b&gt;.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Tại sao?&lt;/b&gt; &lt;br&gt; Để biết bạn có kiểm soát số tiền hay không, bạn phải kiểm tra việc chi tiêu từ ví.
+&lt;br&gt; Vì vậy, trước khi bạn gửi một lượng Bitcoin đáng kể vào ví, việc chi tiêu từ ví và kiểm tra tất cả người ký là &lt;b&gt;cực kỳ quan trọng&lt;/b&gt;.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4485,8 +4488,18 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Hướng dẫn thiết bị</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Đăng ký {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Hướng dẫn {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5235,6 +5248,11 @@ Nếu bạn muốn tiếp tục dùng cả hai, vui lòng đặt lại khóa đ�
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>Giữ sẵn sàng cho bài kiểm tra {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Chia sẻ với...</translation>
 		</message>
@@ -5282,6 +5300,16 @@ Nếu bạn muốn tiếp tục dùng cả hai, vui lòng đặt lại khóa đ�
 		<message>
 			<source>Signed</source>
 			<translation>Đã ký</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>Đã xác minh bài kiểm tra</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>Bên ký này cần thiết trong bài kiểm tra gửi {number}. Chưa ký bằng bên ký này.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5591,6 +5619,11 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Hướng dẫn thiết bị</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Trợ giúp</translation>
 		</message>
@@ -5608,6 +5641,11 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Đã đăng ký thành công ví multisig trên thiết bị ký phần cứng</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Hướng dẫn {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -6338,7 +6376,9 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} Quốc gia: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+Quốc gia: {country}</translation>
 		</message>
 	</context>
 	<context>

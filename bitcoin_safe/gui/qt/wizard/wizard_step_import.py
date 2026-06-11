@@ -33,7 +33,6 @@ from functools import partial
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtWidgets import (
-    QDialogButtonBox,
     QLabel,
     QMessageBox,
     QPushButton,
@@ -42,7 +41,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
-from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget, VisibilityOption
+from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget
 
 from ..util import MessageType, caught_exception_message
 from .wizard_support import BaseTab, WizardTabInfo
@@ -107,17 +106,13 @@ class ImportXpubs(BaseTab):
             self.keystore_uis = None
         else:
             self.button_next.setHidden(True)
-            self.buttonbox_buttons.append(self.button_create_wallet)
-            self.buttonbox.addButton(self.button_create_wallet, QDialogButtonBox.ButtonRole.AcceptRole)
+            self.buttonbox.add_action_button(self.button_create_wallet)
             self.button_create_wallet.clicked.connect(self._create_wallet)
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
         tutorial_widget.set_callback(partial(self._callback, tutorial_widget))
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
-        )
 
         self.updateUi()
         return tutorial_widget
@@ -168,7 +163,7 @@ class ImportXpubs(BaseTab):
         self.button_create_wallet.setText(
             self.tr("Skip step") if self.refs.qt_wallet else self.tr("Next step")
         )
-        self.button_previous.setText(self.tr("Previous Step"))
+        self.button_previous.setText(self.tr("Previous step"))
 
         if self.keystore_uis:
             self.button_create_wallet.setVisible(True)

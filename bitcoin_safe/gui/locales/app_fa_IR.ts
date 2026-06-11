@@ -1913,8 +1913,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>درباره &lt;a href="{url}"&gt;امضاکننده‌های سخت‌افزاری پشتیبانی‌شده&lt;/a&gt; بیشتر بدانید.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>درباره &lt;a href="{url}"&gt;امضاکنندگان پشتیبانی‌شده&lt;/a&gt; بیشتر بدانید.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3135,7 +3135,8 @@ median-time-past مهر زمانی میانه 11 بلاک اخیر است، بن
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>سرور پیکربندی‌شده: {server} مکان در دسترس نیست.</translation>
+			<translation>سرور پیکربندی‌شده: {server}
+مکان در دسترس نیست.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4274,7 +4275,9 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید کنترل وجوه را در اختیار دارید یا نه، باید خرج کردن از کیف پول را آزمایش کنید. &lt;br&gt; بنابراین پیش از آنکه مقدار قابل توجهی Bitcoin به کیف پول بفرستید، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;حیاتی&lt;/b&gt; است.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;چرا؟&lt;/b&gt; &lt;br&gt; برای اینکه بدانید کنترل وجوه را در اختیار دارید یا نه، باید خرج کردن از کیف پول را آزمایش کنید.
+&lt;br&gt; بنابراین پیش از آنکه مقدار قابل توجهی Bitcoin به کیف پول بفرستید، خرج کردن از کیف پول و آزمایش همه امضاکنندگان &lt;b&gt;حیاتی&lt;/b&gt; است.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4483,8 +4486,18 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>دستورالعمل‌های دستگاه</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>ثبت {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>دستورالعمل‌های {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5233,6 +5246,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>برای آزمایش {number} آماده نگه دارید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>اشتراک‌گذاری با...</translation>
 		</message>
@@ -5280,6 +5298,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>امضا شد</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>آزمایش تأیید شد</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>این امضاکننده در آزمایش ارسال {number} لازم است. هنوز با آن امضا نکنید.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5587,6 +5615,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>دستورالعمل‌های دستگاه</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>راهنما</translation>
 		</message>
@@ -5604,6 +5637,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>کیف پول چندامضایی با موفقیت روی امضاکنندهٔ سخت‌افزاری ثبت شد</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>دستورالعمل‌های {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -6334,7 +6372,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} کشور: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+کشور: {country}</translation>
 		</message>
 	</context>
 	<context>

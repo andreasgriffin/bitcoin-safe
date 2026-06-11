@@ -1914,8 +1914,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>Узнайте больше о &lt;a href="{url}"&gt;поддерживаемых аппаратных подписантах&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>Узнайте больше о &lt;a href="{url}"&gt;поддерживаемых подписантах&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3137,7 +3137,8 @@ Median-time-past — это медианная метка времени пос�
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Настроенный сервер: {server} Местоположение недоступно.</translation>
+			<translation>Настроенный сервер: {server}
+Местоположение недоступно.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4278,7 +4279,9 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Почему?&lt;/b&gt; &lt;br&gt; Чтобы узнать, контролируете ли вы средства, нужно протестировать расходование из кошелька. &lt;br&gt; Поэтому, прежде чем отправлять значительную сумму Bitcoin в кошелек, &lt;b&gt;крайне важно&lt;/b&gt; выполнить расходование из кошелька и проверить всех подписантов.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Почему?&lt;/b&gt; &lt;br&gt; Чтобы узнать, контролируете ли вы средства, нужно протестировать расходование из кошелька.
+&lt;br&gt; Поэтому, прежде чем отправлять значительную сумму Bitcoin в кошелек, &lt;b&gt;крайне важно&lt;/b&gt; выполнить расходование из кошелька и проверить всех подписантов.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4487,8 +4490,18 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Инструкции для устройства</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Зарегистрировать {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Инструкции для {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5237,6 +5250,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>Держите готовым для теста {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Поделиться через...</translation>
 		</message>
@@ -5284,6 +5302,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>Подписано</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>Тест подтвержден</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>Этот подписант нужен в тесте отправки {number}. Пока не подписывайте им.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5592,6 +5620,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Инструкции для устройства</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Помощь</translation>
 		</message>
@@ -5609,6 +5642,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Успешная регистрация мультисигнатурного кошелька на аппаратном подписанте</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Инструкции для {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -6339,7 +6377,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} Страна: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+Страна: {country}</translation>
 		</message>
 	</context>
 	<context>

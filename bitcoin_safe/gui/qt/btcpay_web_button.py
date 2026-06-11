@@ -39,13 +39,13 @@ from concurrent.futures import Future
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from functools import partial
+from html import escape
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from types import TracebackType
 from typing import Any, cast
 from urllib.parse import parse_qs, urljoin, urlparse
 from uuid import uuid4
 
-import requests
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import (
@@ -71,7 +71,7 @@ from bitcoin_safe.config import BtcPayInvoiceDetails, UserConfig
 from bitcoin_safe.constants import CONTACT_EMAIL, LOGO_NAME
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.logging_handlers import mail_contact
-from bitcoin_safe.network_utils import ProxyInfo
+from bitcoin_safe.network_utils import ProxyInfo, post_form_async
 from bitcoin_safe.util import SATOSHIS_PER_BTC, OptExcInfo
 from bitcoin_safe.util_os import webopen
 
@@ -178,8 +178,8 @@ class BTCPayWebButton(QPushButton):
         redirect_url_override: str | None = None,
         checkout_desc: str | None = None,
     ) -> tuple[int, BtcPayInvoiceDetails]:
-        proxies = (
-            ProxyInfo.parse(self.config.network_config.proxy_url).get_requests_proxy_dict()
+        proxy_info = (
+            ProxyInfo.parse(self.config.network_config.proxy_url)
             if self.config.network_config.proxy_url
             else None
         )
@@ -198,12 +198,12 @@ class BTCPayWebButton(QPushButton):
         if checkout_desc:
             request_data["checkoutDesc"] = checkout_desc
 
-        response = requests.post(
-            DONATION_INVOICE_ENDPOINT,
+        response = await post_form_async(
+            url=DONATION_INVOICE_ENDPOINT,
             data=request_data,
+            proxy_info=proxy_info,
+            timeout=20 if proxy_info else 10,
             allow_redirects=False,
-            timeout=20 if proxies else 10,
-            proxies=proxies,
         )
         status_code, invoice_url = response.status_code, response.headers.get("Location")
 
@@ -214,6 +214,7 @@ class BTCPayWebButton(QPushButton):
     # ---------- callbacks ----------
 
     def _on_invoice_created(self, result: tuple[int, BtcPayInvoiceDetails]) -> None:
+        self.future_invoice = None
         status_code, invoice_details = result
         self.setEnabled(True)
 
@@ -235,24 +236,26 @@ class BTCPayWebButton(QPushButton):
 
         callback_available = self._callback_server_state is not None
         if not self._open_invoice_in_browser(invoice_details.url):
-            self._show_browser_open_failure()
+            self._show_browser_open_failure(invoice_details.url)
             return
 
         if callback_available:
+            message = self.tr("Complete the payment in your browser.")
             self.signal_update_status.emit(
-                self.tr(
-                    "Complete the payment in your browser.\n"
-                    "If there is an issue, please dont hesitate to contact us at: {email}"
-                ).format(email=CONTACT_EMAIL)
-            )
-        else:
-            self.signal_update_status.emit(
-                self.tr(
-                    "Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available."
+                self._status_with_invoice_link(
+                    message,
+                    invoice_details.url,
+                    support_email=CONTACT_EMAIL,
                 )
             )
+        else:
+            message = self.tr(
+                "Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available."
+            )
+            self.signal_update_status.emit(self._status_with_invoice_link(message, invoice_details.url))
 
     def _on_invoice_error(self, invoice_details: BtcPayInvoiceDetails, exc_info: OptExcInfo) -> None:
+        self.future_invoice = None
         exc_info_for_logger: tuple[type[BaseException], BaseException, TracebackType | None] | None = None
         if exc_info and exc_info[0] and exc_info[1]:
             exc_info_for_logger = cast(
@@ -268,9 +271,9 @@ class BTCPayWebButton(QPushButton):
         self.signal_payment_completed.emit(invoice_details)
         self._stop_callback_server()
 
-    def cancel_invoice_task(self):
+    def cancel_invoice_task(self) -> None:
         # cancel pending async task if supported
-        if self.future_invoice is not None and self.future_invoice.running():
+        if self.future_invoice is not None and not self.future_invoice.done():
             try:
                 self.future_invoice.cancel()
             except Exception:
@@ -429,11 +432,29 @@ class BTCPayWebButton(QPushButton):
         invoice_details.paid = True
         self.signal_payment_completed.emit(invoice_details)
 
-    def _show_browser_open_failure(self) -> None:
-        self._stop_callback_server()
+    def _show_browser_open_failure(self, invoice_url: str) -> None:
         self.signal_update_status.emit(
-            self.tr("Could not open your browser automatically. Please try again.")
+            self._status_with_invoice_link(self.tr("Could not open your browser automatically."), invoice_url)
         )
+
+    def _status_with_invoice_link(
+        self, message: str, invoice_url: str, support_email: str | None = None
+    ) -> str:
+        escaped_message = escape(message).replace("\n", "<br>")
+        escaped_url = escape(invoice_url, quote=True)
+        parts = [escaped_message]
+        if support_email:
+            escaped_email = escape(support_email, quote=True)
+            parts.append(
+                self.tr(
+                    "If there is an issue, please do not hesitate to contact us at "
+                    '<a href="mailto:{email}">{email}</a>.'
+                ).format(email=escaped_email)
+            )
+        parts.append(
+            self.tr('If the browser did not open, click <a href="{url}">here</a>.').format(url=escaped_url)
+        )
+        return "<br>".join(parts)
 
     def _has_url_handler(self, url: QUrl) -> bool:
         if not url.isValid():
@@ -540,9 +561,11 @@ class DonationInvoiceWidget(QWidget):
         self.message_input.textChanged.connect(self._sync_message_to_button)
 
         self.status_label = QLabel(self)
+        self.status_label.setTextFormat(Qt.TextFormat.AutoText)
         self.status_label.setTextInteractionFlags(
-            Qt.TextInteractionFlag.TextSelectableByMouse | Qt.TextInteractionFlag.TextSelectableByKeyboard
+            Qt.TextInteractionFlag.TextBrowserInteraction | Qt.TextInteractionFlag.TextSelectableByKeyboard
         )
+        self.status_label.setOpenExternalLinks(True)
         self.status_label.setWordWrap(True)
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -631,6 +654,7 @@ class DonateDialog(QWidget):
         self.setMinimumHeight(620)
 
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(40, 40, 40, 40)
 
         logo_label = QLabel()
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -655,16 +679,6 @@ class DonateDialog(QWidget):
         description.setOpenExternalLinks(True)
         layout.addWidget(description)
 
-        contact_label = QLabel(
-            self.tr(
-                "Want to discuss a larger contribution or partnership? Use the contact button "
-                "below to reach us."
-            )
-        )
-        contact_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        contact_label.setWordWrap(True)
-        layout.addWidget(contact_label)
-
         currency_iso = fx.get_currency_iso()
 
         self.donation_widget = DonationInvoiceWidget(
@@ -678,6 +692,16 @@ class DonateDialog(QWidget):
         )
         self.donation_widget.payment_completed.connect(self._on_payment_complete)
         layout.addWidget(self.donation_widget)
+
+        contact_label = QLabel(
+            self.tr(
+                "Want to discuss a larger contribution or partnership? Use the contact button "
+                "below to reach us."
+            )
+        )
+        contact_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        contact_label.setWordWrap(True)
+        layout.addWidget(contact_label)
 
         self.contact_button = QPushButton(self.tr("Email us"))
         self.contact_button.clicked.connect(mail_contact)

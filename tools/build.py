@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
 import logging
 import os
@@ -476,11 +477,52 @@ class Builder:
 
             tarball_path = appimage_path.with_suffix(appimage_path.suffix + ".tar.gz")
             logger.info(f"Creating tarball {tarball_path}")
-            with tarfile.open(tarball_path, "w:gz") as tar:
-                tar.add(appimage_path, arcname=appimage_path.name)
+            source_date_epoch = self.resolve_source_date_epoch()
+            with tarball_path.open("wb") as file_handle:
+                with gzip.GzipFile(
+                    filename="",
+                    mode="wb",
+                    fileobj=file_handle,
+                    mtime=source_date_epoch,
+                ) as gzip_file_handle:
+                    with tarfile.open(fileobj=gzip_file_handle, mode="w") as tar:
+                        tar_info = tar.gettarinfo(str(appimage_path), arcname=appimage_path.name)
+                        tar_info.mtime = source_date_epoch
+                        tar_info.uid = 0
+                        tar_info.gid = 0
+                        tar_info.uname = ""
+                        tar_info.gname = ""
+                        with appimage_path.open("rb") as appimage_file_handle:
+                            tar.addfile(tar_info, appimage_file_handle)
 
             logger.info(f"Removing original AppImage {appimage_path}")
             appimage_path.unlink()
+
+    @staticmethod
+    def resolve_source_date_epoch() -> int:
+        """Resolve a deterministic timestamp for reproducible archive metadata."""
+        epoch = os.environ.get("SOURCE_DATE_EPOCH")
+        if epoch:
+            try:
+                return int(epoch)
+            except ValueError:
+                logger.warning("Invalid SOURCE_DATE_EPOCH value %r. Falling back to git commit time.", epoch)
+
+        try:
+            result = subprocess.run(
+                ["git", "log", "-1", "--format=%ct"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+                text=True,
+            )
+            git_epoch = result.stdout.strip()
+            if git_epoch:
+                return int(git_epoch)
+        except (ValueError, subprocess.CalledProcessError, FileNotFoundError):
+            logger.warning("Failed to resolve git commit time. Falling back to default SOURCE_DATE_EPOCH.")
+
+        return 1530212462
 
     def sign(self):
         """Sign."""

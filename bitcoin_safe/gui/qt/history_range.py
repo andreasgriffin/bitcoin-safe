@@ -46,7 +46,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from .util import add_item_with_top_spacer, svg_tools
+from .util import add_item_with_top_spacer, set_no_margins, svg_tools
 
 if TYPE_CHECKING:
     from .hist_list import HistList
@@ -123,8 +123,7 @@ class DateRangePicker(QWidget):
         self.reset_button.clicked.connect(self.signal_reset_requested.emit)
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(6)
+        set_no_margins(layout)
         add_item_with_top_spacer(layout, self.preset_combo, top_offset_px=self._MACOS_PRESET_TOP_OFFSET_PX)
         add_item_with_top_spacer(layout, self.start_edit, top_offset_px=self._MACOS_START_EDIT_TOP_OFFSET_PX)
         add_item_with_top_spacer(layout, self.to_label, top_offset_px=self._MACOS_TO_LABEL_TOP_OFFSET_PX)

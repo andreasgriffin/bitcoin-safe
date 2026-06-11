@@ -58,7 +58,7 @@ from .wizard_step_plugins import PluginListStep
 from .wizard_step_receive import ReceiveTest
 from .wizard_step_send import SendTest
 from .wizard_step_setup import WalletSetupOptions
-from .wizard_support import BaseTab, FloatingButtonBar, WizardTabInfo
+from .wizard_support import BaseTab, WizardTabInfo
 
 logger = logging.getLogger(__name__)
 
@@ -128,15 +128,6 @@ class Wizard(WizardBase):
 
         _m, n = self.qtwalletbase.get_mn_tuple()
 
-        self.floating_button_box = FloatingButtonBar(
-            self.fill_tx,
-            (self.qt_wallet.uitx_creator.create_tx if self.qt_wallet else self.show_warning_not_initialized),
-            self.go_to_next_index,
-            self.go_to_previous_index,
-            self.qtwalletbase.signals,
-        )
-        self.floating_button_box.fill()
-        self._layout.addWidget(self.floating_button_box)
         self.send_test_previous_button = QPushButton(self)
         self.send_test_previous_button.clicked.connect(self.go_to_previous_index)
         self.send_test_previous_button.setVisible(False)
@@ -146,7 +137,6 @@ class Wizard(WizardBase):
             qtwalletbase=qtwalletbase,
             go_to_next_index=self.go_to_next_index,
             go_to_previous_index=self.go_to_previous_index,
-            floating_button_box=self.floating_button_box,
             signal_create_wallet=self.signal_create_wallet,
             qt_wallet=self.qt_wallet,
             max_test_fund=max_test_fund,
@@ -309,7 +299,7 @@ class Wizard(WizardBase):
         if embedded:
             if self.send_test_previous_button not in creator.button_box.buttons():
                 creator.button_box.addButton(
-                    self.send_test_previous_button, QDialogButtonBox.ButtonRole.RejectRole
+                    self.send_test_previous_button, QDialogButtonBox.ButtonRole.ResetRole
                 )
             self.send_test_previous_button.setVisible(True)
             return
@@ -553,7 +543,6 @@ class Wizard(WizardBase):
         else:
             self._disconnect_send_test_signals()
             self._reset_send_test_runtime_state()
-            self.floating_button_box.setVisible(False)
             if self.qt_wallet:
                 self._configure_creator_for_embedded_send_test(False)
                 self.qt_wallet.uitx_creator.button_box.setVisible(True)
@@ -757,7 +746,7 @@ class Wizard(WizardBase):
         self.step_container.set_labels(
             [labels[step] for step in self.get_displayed_steps(mn_tuple=mn_tuple) if step in labels]
         )
-        self.send_test_previous_button.setText(self.tr("Previous Step"))
+        self.send_test_previous_button.setText(self.tr("Previous step"))
 
     def _clear_widgets_and_tab_generators(self) -> None:
         """Clear widgets and tab generators."""
@@ -777,9 +766,6 @@ class Wizard(WizardBase):
         self._clear_widgets_and_tab_generators()
         self.step_container.close()
         self.step_container.clear_widgets()
-        self.qtwalletbase.outer_layout.removeWidget(self.floating_button_box)
         self.qtwalletbase.outer_layout.removeWidget(self)
-        self.floating_button_box.setParent(None)
-        self.floating_button_box.close()
         self.setParent(None)
         return super().close()

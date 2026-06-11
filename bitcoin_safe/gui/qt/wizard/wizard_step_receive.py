@@ -47,7 +47,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.card_base import CardExpansionMode, CardList
 from bitcoin_safe.gui.qt.qt_wallet import SyncStatus
-from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget, VisibilityOption
+from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget
 from bitcoin_safe.gui.qt.testnet_faucet import open_testnet_faucet
 from bitcoin_safe.html_utils import html_f
 from bitcoin_safe.network_config import get_testnet_faucet
@@ -282,9 +282,6 @@ class ReceiveTest(BaseTab):
 
         tutorial_widget = TutorialWidget(
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
-        )
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
         )
 
         self.updateUi()

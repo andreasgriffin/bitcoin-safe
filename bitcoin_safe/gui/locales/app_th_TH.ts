@@ -1911,8 +1911,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>เรียนรู้เพิ่มเติมเกี่ยวกับ&lt;a href="{url}"&gt;อุปกรณ์ลงนามฮาร์ดแวร์ที่รองรับ&lt;/a&gt;</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>เรียนรู้เพิ่มเติมเกี่ยวกับ&lt;a href="{url}"&gt;ผู้ลงนามที่รองรับ&lt;/a&gt;</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3127,7 +3127,8 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>เซิร์ฟเวอร์ที่กำหนดค่าไว้: {server} ไม่มีข้อมูลตำแหน่ง</translation>
+			<translation>เซิร์ฟเวอร์ที่กำหนดค่าไว้: {server}
+ไม่มีข้อมูลตำแหน่ง</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4260,7 +4261,7 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้รู้ว่าคุณควบคุมเงินอยู่หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าสู่กระเป๋าเงิน การใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมดจึงเป็นสิ่งที่&lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt;</translation>
+			<translation>&lt;br&gt;&lt;b&gt;ทำไม?&lt;/b&gt; &lt;br&gt; เพื่อให้รู้ว่าคุณควบคุมเงินอยู่หรือไม่ คุณต้องทดสอบการใช้จ่ายจากกระเป๋าเงิน &lt;br&gt; ดังนั้นก่อนที่คุณจะส่ง Bitcoin จำนวนมากเข้าสู่กระเป๋าเงิน การใช้จ่ายจากกระเป๋าเงินและทดสอบผู้ลงนามทั้งหมดจึงเป็นสิ่งที่&lt;b&gt;สำคัญอย่างยิ่ง&lt;/b&gt;                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4469,8 +4470,18 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>คำแนะนำของอุปกรณ์</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>ลงทะเบียน {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>คำแนะนำสำหรับ {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5217,6 +5228,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>เตรียมให้พร้อมสำหรับการทดสอบ {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>แชร์กับ...</translation>
 		</message>
@@ -5264,6 +5280,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>ลงนามแล้ว</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>ยืนยันการทดสอบแล้ว</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>ผู้ลงนามนี้จำเป็นในการทดสอบการส่ง {number} อย่าเพิ่งลงนามด้วยผู้ลงนามนี้</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5569,6 +5595,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>คำแนะนำของอุปกรณ์</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>ช่วยเหลือ</translation>
 		</message>
@@ -5586,6 +5617,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>การลงทะเบียนกระเป๋าเงิน multisig บนผู้ลงนามฮาร์ดแวร์เสร็จสิ้นสำเร็จ</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>คำแนะนำสำหรับ {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -6316,7 +6352,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} ประเทศ: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+ประเทศ: {country}</translation>
 		</message>
 	</context>
 	<context>

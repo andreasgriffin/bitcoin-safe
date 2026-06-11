@@ -37,7 +37,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
-from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget, VisibilityOption
+from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget
 from bitcoin_safe.gui.qt.util import set_margins, set_no_margins
 from bitcoin_safe.plugin_framework.plugin_manager import PluginManagerWidget
 
@@ -82,9 +82,6 @@ class PluginListStep(BaseTab):
             self.refs.container, widget, self.buttonbox, buttonbox_always_visible=False
         )
         tutorial_widget.set_callback(self._on_step_activated)
-        tutorial_widget.synchronize_visiblity(
-            VisibilityOption(self.refs.floating_button_box, on_focus_set_visible=False)
-        )
 
         self.updateUi()
         return tutorial_widget

@@ -1914,8 +1914,8 @@ car la taille finale de la transaction est inconnue.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>En savoir plus sur les &lt;a href="{url}"&gt;signataires matériels pris en charge&lt;/a&gt;.</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>En savoir plus sur les &lt;a href="{url}"&gt;signataires pris en charge&lt;/a&gt;.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3137,7 +3137,8 @@ il est donc généralement d’environ {minutes} minutes en retard sur la pointe
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>Serveur configuré : {server} Emplacement indisponible.</translation>
+			<translation>Serveur configuré : {server}
+Emplacement indisponible.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4277,7 +4278,9 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt; Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille. &lt;br&gt; Ainsi, avant d’envoyer un montant substantiel de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;Pourquoi ?&lt;/b&gt; &lt;br&gt; Pour savoir si vous contrôlez les fonds, vous devez tester une dépense depuis le portefeuille.
+&lt;br&gt; Ainsi, avant d’envoyer un montant substantiel de Bitcoin dans le portefeuille, il est &lt;b&gt;crucial&lt;/b&gt; de dépenser depuis le portefeuille et de tester tous les signataires.
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4486,8 +4489,18 @@ Les sorties restent identiques ; seuls les frais changent.</translation>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Instructions de l’appareil</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>Enregistrer {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instructions pour {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -5236,6 +5249,11 @@ Si vous souhaitez continuer à utiliser les deux, veuillez réinitialiser mainte
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>Gardez prêt pour le test {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>Partager avec...</translation>
 		</message>
@@ -5283,6 +5301,16 @@ Si vous souhaitez continuer à utiliser les deux, veuillez réinitialiser mainte
 		<message>
 			<source>Signed</source>
 			<translation>Signé</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>Test vérifié</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>Ce signataire est nécessaire dans le test d’envoi {number}. Ne signez pas encore avec lui.</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5591,6 +5619,11 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>Instructions de l’appareil</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>Aide</translation>
 		</message>
@@ -5608,6 +5641,11 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>Enregistrement réussi du portefeuille multisig sur le signataire matériel</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>Instructions pour {device}</translation>
 		</message>
 	</context>
 	<context>
@@ -6338,7 +6376,9 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label} : {ip} Pays : {country}</translation>
+			<translation>{source}
+{endpoint_label}
+: {ip} Pays : {country}</translation>
 		</message>
 	</context>
 	<context>

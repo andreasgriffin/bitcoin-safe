@@ -1911,8 +1911,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>&lt;a href="{url}"&gt;ပံ့ပိုးထားသော ဟာ့ဒ်ဝဲ လက်မှတ်ထိုးသူများ&lt;/a&gt; အကြောင်း ပိုမိုလေ့လာပါ။</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>&lt;a href="{url}"&gt;ပံ့ပိုးထားသော လက်မှတ်ရေးထိုးသူများ&lt;/a&gt; အကြောင်း ပိုမိုလေ့လာပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3126,7 +3126,8 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>ပြင်ဆင်ထားသော ဆာဗာ: {server} တည်နေရာ မရရှိနိုင်ပါ။</translation>
+			<translation>ပြင်ဆင်ထားသော ဆာဗာ: {server}
+တည်နေရာ မရရှိနိုင်ပါ။</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4259,7 +4260,7 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt; ရန်ပုံငွေများကို သင်ထိန်းချုပ်နိုင်ခြင်းရှိမရှိ သိရန် ပိုက်ဆံအိတ်မှ သုံးစွဲခြင်းကို စမ်းသပ်ရပါမည်။ &lt;br&gt; ထို့ကြောင့် ပိုက်ဆံအိတ်ထဲသို့ Bitcoin ပမာဏများစွာ မပို့မီ ပိုက်ဆံအိတ်မှ သုံးစွဲပြီး လက်မှတ်ထိုးသူအားလုံးကို စမ်းသပ်ရန် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt;ပါသည်။</translation>
+			<translation>&lt;br&gt;&lt;b&gt;ဘာကြောင့်လဲ?&lt;/b&gt; &lt;br&gt; ရန်ပုံငွေများကို သင်ထိန်းချုပ်နိုင်ခြင်းရှိမရှိ သိရန် ပိုက်ဆံအိတ်မှ သုံးစွဲခြင်းကို စမ်းသပ်ရပါမည်။ &lt;br&gt; ထို့ကြောင့် ပိုက်ဆံအိတ်ထဲသို့ Bitcoin ပမာဏများစွာ မပို့မီ ပိုက်ဆံအိတ်မှ သုံးစွဲပြီး လက်မှတ်ထိုးသူအားလုံးကို စမ်းသပ်ရန် &lt;b&gt;အလွန်အရေးကြီး&lt;/b&gt;ပါသည်။                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4468,8 +4469,18 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>စက်အညွှန်းများ</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>{wallet_name} ကို စာရင်းသွင်းပါ</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} လမ်းညွှန်ချက်များ</translation>
 		</message>
 	</context>
 	<context>
@@ -5216,6 +5227,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>စမ်းသပ်မှု {number} အတွက် အဆင်သင့်ထားပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>...ဖြင့် မျှဝေပါ</translation>
 		</message>
@@ -5263,6 +5279,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>လက်မှတ်ထိုးပြီး</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>စမ်းသပ်မှု အတည်ပြုပြီး</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>ဤလက်မှတ်ရေးထိုးသူသည် ပေးပို့စမ်းသပ်မှု {number} တွင် လိုအပ်ပါသည်။ ၎င်းဖြင့် မလက်မှတ်ထိုးသေးပါနှင့်။</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5568,6 +5594,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>စက်အညွှန်းများ</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>အကူအညီ</translation>
 		</message>
@@ -5585,6 +5616,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်ပေါ်တွင် Multisig ပိုက်ဆံအိတ်ကိုအောင်မြင်စွာမှတ်ပုံတင်ခဲ့သည်။</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} လမ်းညွှန်ချက်များ</translation>
 		</message>
 	</context>
 	<context>
@@ -6315,7 +6351,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} နိုင်ငံ: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+နိုင်ငံ: {country}</translation>
 		</message>
 	</context>
 	<context>

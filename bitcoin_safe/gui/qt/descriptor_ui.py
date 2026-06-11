@@ -48,6 +48,7 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QMessageBox,
+    QPushButton,
     QSizePolicy,
     QSpinBox,
     QVBoxLayout,
@@ -59,7 +60,7 @@ from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
-from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins
+from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins, svg_tools
 from bitcoin_safe.hardware_signers import HardwareSigner
 from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.wallet import ProtoWallet, Wallet
@@ -621,19 +622,19 @@ class DescriptorUI(QWidget):
         return None
 
     def create_button_bar(self) -> QDialogButtonBox:
-        # Create buttons and layout
         """Create button bar."""
-        self.button_box = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Apply | QDialogButtonBox.StandardButton.Discard
-        )
-        if _button := self.button_box.button(QDialogButtonBox.StandardButton.Apply):
-            _button.clicked.connect(self.signal_qtwallet_apply_setting_changes.emit)
-        if _button := self.button_box.button(QDialogButtonBox.StandardButton.Discard):
-            _button.clicked.connect(self.signal_qtwallet_cancel_setting_changes.emit)
-        if _button := self.button_box.button(QDialogButtonBox.StandardButton.Discard):
-            _button.clicked.connect(self.signal_qtwallet_cancel_wallet_creation.emit)
+        self.button_box = QDialogButtonBox(self)
+        discard_button = QPushButton(self.tr("Discard"), self.button_box)
+        discard_button.clicked.connect(self.signal_qtwallet_cancel_setting_changes.emit)
+        discard_button.clicked.connect(self.signal_qtwallet_cancel_wallet_creation.emit)
+        self.button_box.addButton(discard_button, QDialogButtonBox.ButtonRole.ResetRole)
 
-        self._layout.addWidget(self.button_box, 0, Qt.AlignmentFlag.AlignRight)
+        apply_button = QPushButton(self.tr("Apply"), self.button_box)
+        apply_button.setIcon(svg_tools.get_QIcon("checkmark.svg"))
+        apply_button.clicked.connect(self.signal_qtwallet_apply_setting_changes.emit)
+        self.button_box.addButton(apply_button, QDialogButtonBox.ButtonRole.AcceptRole)
+
+        self._layout.addWidget(self.button_box)
         return self.button_box
 
     def close(self):

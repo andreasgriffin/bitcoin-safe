@@ -1918,8 +1918,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported hardware signers&lt;/a&gt;.</source>
-			<translation>了解更多关于&lt;a href="{url}"&gt;受支持的硬件签名器&lt;/a&gt;的信息。</translation>
+			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
+			<translation>了解更多关于&lt;a href="{url}"&gt;支持的签名者&lt;/a&gt;的信息。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3139,7 +3139,8 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>已配置服务器：{server} 位置不可用。</translation>
+			<translation>已配置服务器：{server}
+位置不可用。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -4283,7 +4284,7 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道你是否控制这些资金，你必须测试从钱包中支出。 &lt;br&gt; 因此，在你向钱包发送大量 Bitcoin 之前，从钱包中支出并测试所有签名者是&lt;b&gt;至关重要的&lt;/b&gt;。</translation>
+			<translation>&lt;br&gt;&lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道你是否控制这些资金，你必须测试从钱包中支出。 &lt;br&gt; 因此，在你向钱包发送大量 Bitcoin 之前，从钱包中支出并测试所有签名者是&lt;b&gt;至关重要的&lt;/b&gt;。                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4492,8 +4493,18 @@ Outputs stay the same; only the fee changes.</source>
 	<context>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>设备说明</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
 			<source>Register {wallet_name}</source>
 			<translation>注册 {wallet_name}</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} 说明</translation>
 		</message>
 	</context>
 	<context>
@@ -5242,6 +5253,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>Keep ready for test {number}</source>
+			<translation>为测试 {number} 做好准备</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Share with...</source>
 			<translation>分享给……</translation>
 		</message>
@@ -5289,6 +5305,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Signed</source>
 			<translation>已签名</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Test verified</source>
+			<translation>测试已验证</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+			<translation>发送测试 {number} 需要此签名者。暂时不要用它签名。</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5600,6 +5626,11 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
+			<source>Device instructions</source>
+			<translation>设备说明</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
 			<source>Help</source>
 			<translation>帮助</translation>
 		</message>
@@ -5617,6 +5648,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
 			<translation>已在硬件签名器上成功注册多重签名钱包</translation>
+		</message>
+		<name>USBRegisterMultisigWidget</name>
+		<message>
+			<source>{device} instructions</source>
+			<translation>{device} 说明</translation>
 		</message>
 	</context>
 	<context>
@@ -6346,7 +6382,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}：{ip} 国家/地区：{country}</translation>
+			<translation>{source}
+{endpoint_label}：{ip}
+国家/地区：{country}</translation>
 		</message>
 	</context>
 	<context>
