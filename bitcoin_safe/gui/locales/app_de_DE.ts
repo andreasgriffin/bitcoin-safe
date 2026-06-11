@@ -9,7 +9,7 @@
 		<name>AboutTab</name>
 		<message>
 			<source>A secure bitcoin savings wallet for everyone.</source>
-			<translation>Eine sichere Bitcoin-Sparwallet für alle.</translation>
+			<translation>Eine sichere Bitcoin-Spar-Wallet für alle.</translation>
 		</message>
 		<name>AboutTab</name>
 		<message>
@@ -139,7 +139,7 @@
 		<name>AddressDetailsAdvanced</name>
 		<message>
 			<source>Address descriptor</source>
-			<translation>Adressbeschreibung</translation>
+			<translation>Adress-Deskriptor</translation>
 		</message>
 		<name>AddressDetailsAdvanced</name>
 		<message>
@@ -1005,7 +1005,7 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
 		<name>DescriptorUI</name>
 		<message>
 			<source>Required Signers</source>
-			<translation>Erforderliche Unterzeichner</translation>
+			<translation>Erforderliche Signierer</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1169,7 +1169,7 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Congratulations, your wallet is ready. Now protect it!</source>
-			<translation>Herzlichen Glückwunsch, deine Wallet ist bereit. Schütze sie jetzt!</translation>
+			<translation>Herzlichen Glückwunsch, Ihre Wallet ist bereit. Schützen Sie sie jetzt!</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1184,7 +1184,7 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
-			<translation>Befolge die folgenden Schritte, um sicherzustellen, dass du ein sicheres Backup erstellst, mit dem du deine Gelder im schlimmsten Fall wiederherstellen kannst.</translation>
+			<translation>Befolgen Sie die folgenden Schritte, um sicherzustellen, dass Sie ein sicheres Backup erstellen, mit dem Sie Ihre Gelder im schlimmsten Fall wiederherstellen können.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1204,7 +1204,7 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
-			<translation>Schreibe nach dem Drucken die Seed-Phrase von deinem Gerät handschriftlich auf das Blatt, oder bestätige, dass sie bereits auf einem separaten Blatt Papier notiert ist, das zusammen damit aufbewahrt wird.</translation>
+			<translation>Schreiben Sie nach dem Drucken die Seed-Phrase von Ihrem Gerät handschriftlich auf das Blatt oder bestätigen Sie, dass sie bereits auf einem separaten Blatt Papier notiert ist, das zusammen damit aufbewahrt wird.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1214,17 +1214,17 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Please complete the previous steps.</source>
-			<translation>Bitte schließe zuerst die vorherigen Schritte ab.</translation>
+			<translation>Bitte schließen Sie zuerst die vorherigen Schritte ab.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Please select at least one backup sheet to print.</source>
-			<translation>Bitte wähle mindestens ein Backup-Blatt zum Drucken aus.</translation>
+			<translation>Bitte wählen Sie mindestens ein Backup-Blatt zum Drucken aus.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
-			<translation>Drucke die Wiederherstellungsblätter aus, die mit den Geräten verknüpft sind, die du besitzt und kontrollierst.</translation>
+			<translation>Drucken Sie die Wiederherstellungsblätter aus, die mit den Geräten verknüpft sind, die Sie besitzen und kontrollieren.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1249,12 +1249,12 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
-			<translation>Bewahre jeden Signierer zusammen mit seinem Backup-Blatt und den Seed-Wörtern am selben Standort auf.</translation>
+			<translation>Bewahren Sie jeden Signierer zusammen mit seinem Backup-Blatt und den Seed-Wörtern am selben Standort auf.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
-			<translation>Bewahre das Signiergerät und das Backup-Blatt mit den Seed-Wörtern an getrennten sicheren Orten auf.</translation>
+			<translation>Bewahren Sie das Signiergerät und das Backup-Blatt mit den Seed-Wörtern an getrennten sicheren Orten auf.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1274,12 +1274,12 @@ Standardwert 20</translation>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
-			<translation>Deine Wallet wird durch ihr Wiederherstellungsblatt geschützt, das an einem anderen Ort aufbewahrt werden sollte als dein Hardware-Signer. Drucke es aus, füge den Seed bei und bewahre es an einem sicheren, zugangskontrollierten Ort auf. Mit den Seed-Wörtern hast du die volle Kontrolle über deine Wallet.</translation>
+			<translation>Ihre Wallet wird durch ihr Wiederherstellungsblatt geschützt, das an einem anderen Ort aufbewahrt werden sollte als Ihr Hardware-Signierer. Drucken Sie es aus, fügen Sie den Seed bei und bewahren Sie es an einem sicheren, zugangskontrollierten Ort auf. Mit den Seed-Wörtern haben Sie die volle Kontrolle über Ihre Wallet.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
-			<translation>Deine Wallet wird durch {n} Backup-Blätter mit beigefügten Seeds geschützt, die an verschiedenen Orten aufbewahrt werden. Drucke sie aus und platziere sie an sicheren, zugangskontrollierten Orten. Mit {m} davon hast du die volle Kontrolle über deine Wallet.</translation>
+			<translation>Ihre Wallet wird durch {n} Backup-Blätter mit beigefügten Seeds geschützt, die an verschiedenen Orten aufbewahrt werden. Drucken Sie sie aus und bewahren Sie sie an sicheren, zugangskontrollierten Orten auf. Mit {m} davon haben Sie die volle Kontrolle über Ihre Wallet.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -2023,7 +2023,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
 			<translation>Der 8-stellige Fingerprint identifiziert den Seed.
-Du kannst ihn auf den Hardware-Signer schreiben, um verschiedene Seeds und Signiergeräte nachzuverfolgen.</translation>
+Sie können ihn auf den Hardware-Signierer schreiben, um verschiedene Seeds und Signiergeräte nachzuverfolgen.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2095,7 +2095,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-			<translation>Alle {number} Unterzeichner mit den Fingerabdrücken {fingerprints} eintragen</translation>
+			<translation>Alle {number} Signierer mit den Fingerabdrücken {fingerprints} eintragen</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2553,8 +2553,8 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
-			<translation>Hot Wallets sind auf Bitcoin Mainnet deaktiviert.
-Du kannst zu Testnet wechseln, um Bitcoin Safe zu testen, ohne echte Bitcoin zu verwenden.</translation>
+			<translation>Hot Wallets sind auf dem Bitcoin-Mainnet deaktiviert.
+Sie können zu Testnet wechseln, um Bitcoin Safe zu testen, ohne echte Bitcoin zu verwenden.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3029,7 +3029,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Keep your seed phrase safe</source>
-			<translation>Bewahre deine Seed-Phrase sicher auf</translation>
+			<translation>Bewahren Sie Ihre Seed-Phrase sicher auf</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3044,7 +3044,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
-			<translation>Übe in einer risikofreien Umgebung und sieh genau, wie alles funktioniert. Probiere das Senden, Empfangen und Ändern von Gebühren mit Test-Coins aus, die du ohne Reue verlieren kannst.</translation>
+			<translation>Üben Sie in einer risikofreien Umgebung und sehen Sie genau, wie alles funktioniert. Probieren Sie das Senden, Empfangen und Ändern von Gebühren mit Test-Coins aus, die Sie ohne Bedenken verlieren können.</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3069,7 +3069,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
-			<translation>Beginne mit Transaktionen mit solidem Geld oder lerne in einer sicheren Testumgebung. In jedem Fall kannst du später jederzeit eine weitere Wallet erstellen.</translation>
+			<translation>Beginnen Sie mit Transaktionen mit solidem Geld oder lernen Sie in einer sicheren Testumgebung. In jedem Fall können Sie später jederzeit eine weitere Wallet erstellen.</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3099,7 +3099,7 @@ Es liegt also in der Regel etwa {minutes} Minuten hinter der Spitze zurück.</tr
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Where would you like to start?</source>
-			<translation>Wo möchtest du beginnen?</translation>
+			<translation>Wo möchten Sie beginnen?</translation>
 		</message>
 	</context>
 	<context>
@@ -3244,7 +3244,7 @@ von diesen Peers über das Bitcoin-Netzwerk empfangen.</translation>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
-			<translation>Sind Sie sicher, dass '{scheme}' in der esplora URL korrekt ist?</translation>
+			<translation>Sind Sie sicher, dass '{scheme}' in der Esplora-URL korrekt ist?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3320,7 +3320,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Mempool Instance URL</source>
-			<translation>Mempool Instance-URL</translation>
+			<translation>Mempool-Instanz-URL</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3357,12 +3357,12 @@ Leer lassen, um sich auf die automatische Peer-Erkennung zu verlassen.</translat
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please remove the '{scheme}' from the electrum url</source>
-			<translation>Bitte entfernen Sie '{scheme}' aus der Electrum URL</translation>
+			<translation>Bitte entfernen Sie '{scheme}' aus der Electrum-URL</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Please try '{scheme}' at the beginning of the mempool url</source>
-			<translation>Bitte versuchen Sie '{scheme}' am Anfang der Mempool URL</translation>
+			<translation>Bitte versuchen Sie '{scheme}' am Anfang der Mempool-URL</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3452,7 +3452,7 @@ Mehr Peers verbessern die Abdeckung, verbrauchen jedoch mehr Bandbreite und Verb
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Guided setup for your self-custody wallet.</source>
-			<translation>Geführte Einrichtung für deine Self-Custody-Wallet.</translation>
+			<translation>Geführte Einrichtung für Ihre Wallet zur Selbstverwahrung.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3462,12 +3462,12 @@ Mehr Peers verbessern die Abdeckung, verbrauchen jedoch mehr Bandbreite und Verb
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Open the list of supported hardware wallets and signers.</source>
-			<translation>Öffne die Liste der unterstützten Hardware-Wallets und Signierer.</translation>
+			<translation>Öffnen Sie die Liste der unterstützten Hardware-Wallets und Signierer.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Play with an existing wallet that has some test coins to explore safely.</source>
-			<translation>Spiele mit einer bestehenden Wallet, die einige Test-Coins enthält, um sicher zu erkunden.</translation>
+			<translation>Erkunden Sie eine bestehende Wallet mit einigen Test-Coins in einer sicheren Umgebung.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3733,7 +3733,7 @@ Mehr Peers verbessern die Abdeckung, verbrauchen jedoch mehr Bandbreite und Verb
 		<name>PluginListStep</name>
 		<message>
 			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
-			<translation>Prüfe die verfügbaren Plugins für diese Wallet. Du kannst die gewünschten jetzt aktivieren und später jederzeit zum Tab „Plugins“ zurückkehren.</translation>
+			<translation>Prüfen Sie die verfügbaren Plugins für diese Wallet. Sie können die gewünschten jetzt aktivieren und später jederzeit zum Tab „Plugins“ zurückkehren.</translation>
 		</message>
 	</context>
 	<context>
@@ -4286,8 +4286,8 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt; Um zu wissen, ob du die Kontrolle über die Gelder hast, musst du das Ausgeben aus der Wallet testen.
-&lt;br&gt; Bevor du also einen erheblichen Betrag Bitcoin in die Wallet sendest, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus der Wallet auszugeben und alle Unterzeichner zu testen.
+			<translation>&lt;br&gt;&lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt; Um zu wissen, ob Sie die Kontrolle über Ihre Gelder haben, müssen Sie das Ausgeben aus der Wallet testen.
+&lt;br&gt; Bevor Sie also einen erheblichen Betrag Bitcoin in die Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, das Ausgeben aus der Wallet und alle Signierer zu testen.
                         </translation>
 		</message>
 		<name>ReceiveTest</name>
@@ -4308,12 +4308,12 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
-			<translation>Empfange einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an 1 Adresse dieser Wallet.&lt;br&gt;</translation>
+			<translation>Empfangen Sie einen &lt;b&gt;kleinen&lt;/b&gt; Betrag (weniger als {test_amount}) an 1 Adresse dieser Wallet.&lt;br&gt;</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive from faucet</source>
-			<translation>Von Faucet empfangen</translation>
+			<translation>Über Faucet empfangen</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4551,21 +4551,21 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
 		<name>ScreenshotsExportXpub</name>
 		<message>
 			<source>How-to export the wallet information from the hardware signer</source>
-			<translation>Anleitung zum Exportieren der Wallet-Informationen vom Hardware-Unterzeichner</translation>
+			<translation>Anleitung zum Exportieren der Wallet-Informationen vom Hardware-Signierer</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsGenerateSeed</name>
 		<message>
 			<source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-			<translation>Generieren Sie {number} geheime Seed-Wörter auf jedem Hardware-Unterzeichner und schreiben Sie sie auf das Wiederherstellungsblatt</translation>
+			<translation>Generieren Sie {number} geheime Seed-Wörter auf jedem Hardware-Signierer und schreiben Sie sie auf das Wiederherstellungsblatt</translation>
 		</message>
 	</context>
 	<context>
 		<name>ScreenshotsRegisterMultisig</name>
 		<message>
 			<source>Import the multisig information in the hardware signer</source>
-			<translation>Importieren Sie die Multisig-Informationen im Hardware-Unterzeichner</translation>
+			<translation>Importieren Sie die Multisig-Informationen in den Hardware-Signierer</translation>
 		</message>
 	</context>
 	<context>
@@ -4573,7 +4573,7 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>Vergleichen Sie die {number} Wörter auf dem Backup-Papier mit dem Hardware-Unterzeichner.
+			<translation>Vergleichen Sie die {number} Wörter auf dem Backup-Papier mit dem Hardware-Signierer.
 Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		</message>
 	</context>
@@ -4833,7 +4833,7 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		<name>SignatureImporterUSB</name>
 		<message>
 			<source>Please do 'Wallet --&gt; Export --&gt; Export for ...' and register the multisignature wallet on the hardware signer.</source>
-			<translation>Bitte gehen Sie zu 'Wallet --&gt; Export --&gt; Export für ...' und registrieren Sie das Multisignature-Wallet auf dem Hardware-Unterzeichner.</translation>
+			<translation>Bitte gehen Sie zu 'Wallet --&gt; Export --&gt; Export für ...' und registrieren Sie das Multisignatur-Wallet auf dem Hardware-Signierer.</translation>
 		</message>
 		<name>SignatureImporterUSB</name>
 		<message>
@@ -5323,7 +5323,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Use Wallet Seed</source>
-			<translation>Wallet-Seed verwenden</translation>
+			<translation>Seed der Wallet verwenden</translation>
 		</message>
 	</context>
 	<context>
@@ -6288,7 +6288,7 @@ Möchten Sie trotzdem senden?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Secure your Keys</source>
-			<translation>Sichere deine Schlüssel</translation>
+			<translation>Sichern Sie Ihre Schlüssel</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -7386,7 +7386,7 @@ Land: {country}</translation>
 		<name>data</name>
 		<message>
 			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
-			<translation>Die Fingerabdrücke unterscheiden sich. Es werden nur gleiche Fingerabdrücke unterstützt, um sicherzustellen, dass alle abgeleiteten Schlüssel demselben Unterzeichner gehören!</translation>
+			<translation>Die Fingerabdrücke unterscheiden sich. Es werden nur gleiche Fingerabdrücke unterstützt, um sicherzustellen, dass alle abgeleiteten Schlüssel demselben Signierer gehören!</translation>
 		</message>
 	</context>
 	<context>
@@ -7427,7 +7427,7 @@ Land: {country}</translation>
 		<name>gpg</name>
 		<message>
 			<source>Please paste the signer's public key block.</source>
-			<translation>Bitte fügen Sie den öffentlichen Schlüsselblock des Unterzeichners ein.</translation>
+			<translation>Bitte fügen Sie den öffentlichen Schlüsselblock des Signierers ein.</translation>
 		</message>
 		<name>gpg</name>
 		<message>
@@ -7644,10 +7644,10 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. Befestigen Sie das 'Wiederherstellungsblatt' ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;
+			<translation>1. Befestigen Sie das 'Wiederherstellungsblatt' ({number} Wörter) an diesem Papier oder übertragen Sie die 12/24 Wörter auf dieses Papier.&lt;br/&gt;
                  2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;
                  3. Legen Sie jedes Papier an einen anderen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;
-                4. Sie können die Hardware-Unterzeichner entweder a) zusammen mit dem entsprechenden Papier-Seed-Backup oder b) jeden an einem anderen sicheren Ort (falls verfügbar) platzieren   
+                4. Sie können die Hardware-Signierer entweder a) zusammen mit dem entsprechenden Papier-Seed-Backup oder b) jeweils an einem anderen sicheren Ort (falls verfügbar) platzieren   
                 </translation>
 		</message>
 		<name>pdf</name>
@@ -7657,10 +7657,10 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. Befestigen Sie das 'Wiederherstellungsblatt' ({number} Wörter) an dieses Papier oder duplizieren Sie die 12/24 Wörter auf diesem Papier.&lt;br/&gt;
+			<translation>1. Befestigen Sie das 'Wiederherstellungsblatt' ({number} Wörter) an diesem Papier oder übertragen Sie die 12/24 Wörter auf dieses Papier.&lt;br/&gt;
                             2. Falten Sie dieses Papier an der Linie unten &lt;br/&gt;
                             3. Legen Sie dieses Papier an einen sicheren Ort, wo nur Sie Zugang haben&lt;br/&gt;
-                            4. Sie können den Hardware-Unterzeichner entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) platzieren   
+                            4. Sie können den Hardware-Signierer entweder a) zusammen mit dem Papier-Seed-Backup oder b) an einem anderen sicheren Ort (falls verfügbar) platzieren   
                 </translation>
 		</message>
 		<name>pdf</name>
