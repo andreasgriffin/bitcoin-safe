@@ -346,7 +346,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Complete the payment in your browser.</source>
-			<translation/>
+			<translation>Selesaikan pembayaran di browser Anda.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,7 +356,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Could not open your browser automatically.</source>
-			<translation/>
+			<translation>Tidak dapat membuka browser Anda secara otomatis.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -371,12 +371,12 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
-			<translation/>
+			<translation>Jika browser tidak terbuka, klik &lt;a href="{url}"&gt;di sini&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
-			<translation/>
+			<translation>Jika ada masalah, jangan ragu untuk menghubungi kami di &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -987,7 +987,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Apply</source>
-			<translation/>
+			<translation>Terapkan</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -997,7 +997,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Discard</source>
-			<translation/>
+			<translation>Buang</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1779,7 +1779,7 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Langkah sebelumnya</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3532,7 +3532,7 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 		<name>NotificationBarCBF</name>
 		<message>
 			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
-			<translation/>
+			<translation>Compact Block Filters akan diaktifkan untuk jaringan yang didukung. Jaringan ini akan tetap menggunakan server saat ini.</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6259,7 +6259,7 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Langkah sebelumnya</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6485,7 +6485,7 @@ Negara: {country}</translation>
 		<name>basetab</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Langkah sebelumnya</translation>
 		</message>
 	</context>
 	<context>

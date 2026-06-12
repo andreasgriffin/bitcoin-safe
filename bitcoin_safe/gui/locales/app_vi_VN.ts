@@ -346,7 +346,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Complete the payment in your browser.</source>
-			<translation/>
+			<translation>Hoàn tất thanh toán trong trình duyệt của bạn.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,7 +356,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Could not open your browser automatically.</source>
-			<translation/>
+			<translation>Không thể tự động mở trình duyệt của bạn.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -371,12 +371,12 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
-			<translation/>
+			<translation>Nếu trình duyệt không mở, hãy nhấp vào &lt;a href="{url}"&gt;đây&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
-			<translation/>
+			<translation>Nếu có sự cố, vui lòng liên hệ với chúng tôi tại &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -987,7 +987,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Apply</source>
-			<translation/>
+			<translation>Áp dụng</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -997,7 +997,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Discard</source>
-			<translation/>
+			<translation>Hủy bỏ</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1781,7 +1781,7 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Bước trước</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3534,7 +3534,7 @@ Dùng nhiều peer cải thiện phạm vi nhưng dùng nhiều băng thông và
 		<name>NotificationBarCBF</name>
 		<message>
 			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
-			<translation/>
+			<translation>Compact Block Filters sẽ được kích hoạt cho các mạng được hỗ trợ. Mạng này sẽ giữ máy chủ hiện tại.</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6261,7 +6261,7 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<name>Wizard</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Bước trước</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6487,7 +6487,7 @@ Quốc gia: {country}</translation>
 		<name>basetab</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Bước trước</translation>
 		</message>
 	</context>
 	<context>

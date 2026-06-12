@@ -346,7 +346,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Complete the payment in your browser.</source>
-			<translation/>
+			<translation>브라우저에서 결제를 완료하세요.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,7 +356,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Could not open your browser automatically.</source>
-			<translation/>
+			<translation>브라우저를 자동으로 열 수 없습니다.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -371,12 +371,12 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
-			<translation/>
+			<translation>브라우저가 열리지 않았다면 &lt;a href="{url}"&gt;여기&lt;/a&gt;를 클릭하세요.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
-			<translation/>
+			<translation>문제가 있는 경우 &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;로 언제든지 문의해 주세요.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -985,7 +985,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Apply</source>
-			<translation/>
+			<translation>적용</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -995,7 +995,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Discard</source>
-			<translation/>
+			<translation>버리기</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1777,7 +1777,7 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>이전 단계</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3529,7 +3529,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<name>NotificationBarCBF</name>
 		<message>
 			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
-			<translation/>
+			<translation>지원되는 네트워크에 대해 Compact Block Filters가 활성화됩니다. 이 네트워크는 현재 서버를 유지합니다.</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6254,7 +6254,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>이전 단계</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6480,7 +6480,7 @@ Country: {country}</source>
 		<name>basetab</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>이전 단계</translation>
 		</message>
 	</context>
 	<context>

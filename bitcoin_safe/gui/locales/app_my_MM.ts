@@ -346,7 +346,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Complete the payment in your browser.</source>
-			<translation/>
+			<translation>သင့်ဘရောက်ဇာတွင် ငွေပေးချေမှုကို ပြီးစီးအောင်လုပ်ပါ။</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,7 +356,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Could not open your browser automatically.</source>
-			<translation/>
+			<translation>သင့်ဘရောက်ဇာကို အလိုအလျောက် ဖွင့်၍မရပါ။</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -371,12 +371,12 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
-			<translation/>
+			<translation>ဘရောက်ဇာ မဖွင့်ပါက &lt;a href="{url}"&gt;ဤနေရာ&lt;/a&gt; ကို နှိပ်ပါ။</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
-			<translation/>
+			<translation>ပြဿနာရှိပါက &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; သို့ ကျွန်ုပ်တို့ကို ဆက်သွယ်ရန် မတွန့်ဆုတ်ပါနှင့်။</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -986,7 +986,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Apply</source>
-			<translation/>
+			<translation>အသုံးပြုမည်</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -996,7 +996,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Discard</source>
-			<translation/>
+			<translation>စွန့်ပစ်မည်</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1778,7 +1778,7 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3519,7 +3519,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<name>NotificationBarCBF</name>
 		<message>
 			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
-			<translation/>
+			<translation>ပံ့ပိုးထားသော ကွန်ရက်များအတွက် Compact Block Filters ကို ဖွင့်မည်ဖြစ်သည်။ ဤကွန်ရက်သည် လက်ရှိဆာဗာကို ဆက်လက်အသုံးပြုမည်ဖြစ်သည်။</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6237,7 +6237,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6463,7 +6463,7 @@ Country: {country}</source>
 		<name>basetab</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>ယခင်အဆင့်</translation>
 		</message>
 	</context>
 	<context>

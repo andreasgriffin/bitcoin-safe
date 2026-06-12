@@ -346,7 +346,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Complete the payment in your browser.</source>
-			<translation/>
+			<translation>Ödemeyi tarayıcınızda tamamlayın.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,7 +356,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Could not open your browser automatically.</source>
-			<translation/>
+			<translation>Tarayıcınız otomatik olarak açılamadı.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -371,12 +371,12 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
-			<translation/>
+			<translation>Tarayıcı açılmadıysa, &lt;a href="{url}"&gt;buraya&lt;/a&gt; tıklayın.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
-			<translation/>
+			<translation>Bir sorun varsa, lütfen &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; adresinden bizimle iletişime geçmekten çekinmeyin.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -987,7 +987,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Apply</source>
-			<translation/>
+			<translation>Uygula</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -997,7 +997,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Discard</source>
-			<translation/>
+			<translation>Vazgeç</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1780,7 +1780,7 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Önceki adım</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3533,7 +3533,7 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 		<name>NotificationBarCBF</name>
 		<message>
 			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
-			<translation/>
+			<translation>Kompakt Blok Filtreleri desteklenen ağlar için etkinleştirilecek. Bu ağ mevcut sunucusunu koruyacak.</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6260,7 +6260,7 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<name>Wizard</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Önceki adım</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6486,7 +6486,7 @@ Country: {country}</source>
 		<name>basetab</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Önceki adım</translation>
 		</message>
 	</context>
 	<context>
