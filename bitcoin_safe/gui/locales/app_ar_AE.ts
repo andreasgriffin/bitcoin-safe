@@ -346,7 +346,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Complete the payment in your browser.</source>
-			<translation/>
+			<translation>أكمل الدفع في متصفحك.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,7 +356,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Could not open your browser automatically.</source>
-			<translation/>
+			<translation>تعذر فتح متصفحك تلقائيًا.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -371,12 +371,12 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
-			<translation/>
+			<translation>إذا لم يفتح المتصفح، فانقر &lt;a href="{url}"&gt;هنا&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
-			<translation/>
+			<translation>إذا كانت هناك مشكلة، فلا تتردد في التواصل معنا على &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -987,7 +987,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Apply</source>
-			<translation/>
+			<translation>تطبيق</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -997,7 +997,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Discard</source>
-			<translation/>
+			<translation>تجاهل</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1779,7 +1779,7 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>الخطوة السابقة</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3533,7 +3533,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<name>NotificationBarCBF</name>
 		<message>
 			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
-			<translation/>
+			<translation>سيتم تفعيل Compact Block Filters للشبكات المدعومة. ستحتفظ هذه الشبكة بخادمها الحالي.</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6259,7 +6259,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>الخطوة السابقة</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6485,7 +6485,7 @@ Country: {country}</source>
 		<name>basetab</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>الخطوة السابقة</translation>
 		</message>
 	</context>
 	<context>

@@ -346,7 +346,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Complete the payment in your browser.</source>
-			<translation/>
+			<translation>Completa el pago en tu navegador.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,7 +356,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Could not open your browser automatically.</source>
-			<translation/>
+			<translation>No se pudo abrir tu navegador automáticamente.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -371,12 +371,12 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
-			<translation/>
+			<translation>Si el navegador no se abrió, haz clic &lt;a href="{url}"&gt;aquí&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
-			<translation/>
+			<translation>Si hay algún problema, no dudes en contactarnos en &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -987,7 +987,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Apply</source>
-			<translation/>
+			<translation>Aplicar</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -997,7 +997,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Discard</source>
-			<translation/>
+			<translation>Descartar</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1783,7 +1783,7 @@ ya que el tamaño final de la transacción es desconocido.</translation>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Paso anterior</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3538,7 +3538,7 @@ Usar más pares mejora la cobertura, pero utiliza más ancho de banda y conexion
 		<name>NotificationBarCBF</name>
 		<message>
 			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
-			<translation/>
+			<translation>Compact Block Filters se activará para las redes compatibles. Esta red conservará su servidor actual.</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6267,7 +6267,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Paso anterior</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6493,7 +6493,7 @@ País: {country}</translation>
 		<name>basetab</name>
 		<message>
 			<source>Previous step</source>
-			<translation/>
+			<translation>Paso anterior</translation>
 		</message>
 	</context>
 	<context>
