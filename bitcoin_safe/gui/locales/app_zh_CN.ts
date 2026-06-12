@@ -345,9 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>请在浏览器中完成付款。如果有任何问题，请随时通过以下地址联系我们：{email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>无法自动打开浏览器。请重试。</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -368,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>创建发票</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation/>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -978,8 +987,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation/>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>描述符未更改</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation/>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1578,23 +1597,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>创建交易</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>预填交易字段</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>上一步</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1782,8 +1784,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>上一步</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3531,6 +3533,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Compact Block Filters for p2p syncing is now available</source>
 			<translation>紧凑型区块过滤器现已支持点对点同步功能</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation/>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6260,8 +6267,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>上一步</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6486,8 +6493,8 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>上一步</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

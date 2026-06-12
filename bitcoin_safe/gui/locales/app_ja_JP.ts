@@ -345,9 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>ブラウザで支払いを完了してください。問題がある場合は、遠慮なくこちらまでお問い合わせください: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>ブラウザを自動的に開くことができませんでした。もう一度お試しください。</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -368,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>請求書を作成</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation/>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -976,8 +985,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation/>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>ディスクリプターは変更されませんでした</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation/>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1570,23 +1589,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>トランザクションを作成</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>トランザクションフィールドを事前に入力する</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>前のステップ</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1774,8 +1776,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>前のステップ</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3513,6 +3515,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Compact Block Filters for p2p syncing is now available</source>
 			<translation>p2p 同期用のコンパクトブロックフィルターが利用可能になりました</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation/>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6229,8 +6236,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>前のステップ</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6455,8 +6462,8 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>前のステップ</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

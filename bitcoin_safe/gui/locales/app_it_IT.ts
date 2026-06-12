@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>Completa il pagamento nel browser.
-In caso di problemi, non esitare a contattarci all’indirizzo: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ In caso di problemi, non esitare a contattarci all’indirizzo: {email}</transla
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Impossibile aprire automaticamente il browser. Riprova.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ In caso di problemi, non esitare a contattarci all’indirizzo: {email}</transla
 		<message>
 			<source>Create invoice</source>
 			<translation>Crea fattura</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation/>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -978,8 +986,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation/>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>Descrittore invariato</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation/>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1575,23 +1593,6 @@ poiché la dimensione finale della transazione è sconosciuta.</translation>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>Crea Transazione</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>Precompila i campi della transazione</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Passo Precedente</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1779,8 +1780,8 @@ poiché la dimensione finale della transazione è sconosciuta.</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Passo Precedente</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3531,6 +3532,11 @@ L’uso di più peer migliora la copertura ma utilizza più larghezza di banda e
 		<message>
 			<source>Compact Block Filters for p2p syncing is now available</source>
 			<translation>I filtri a blocchi compatti per la sincronizzazione p2p sono ora disponibili</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation/>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6256,8 +6262,8 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Passo Precedente</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6482,8 +6488,8 @@ Paese: {country}</translation>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Passo Precedente</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

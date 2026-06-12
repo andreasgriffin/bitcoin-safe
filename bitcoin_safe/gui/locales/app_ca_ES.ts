@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>Completa el pagament al navegador.
-Si hi ha cap problema, no dubtis a contactar amb nosaltres a: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ Si hi ha cap problema, no dubtis a contactar amb nosaltres a: {email}</translati
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>No s’ha pogut obrir el navegador automàticament. Torneu-ho a provar.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ Si hi ha cap problema, no dubtis a contactar amb nosaltres a: {email}</translati
 		<message>
 			<source>Create invoice</source>
 			<translation>Crear factura</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation/>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -978,8 +986,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation/>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>Descriptor sense canvis</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation/>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1574,23 +1592,6 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>Crea transacció</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>Prefereix camps de transacció</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Pas anterior</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1778,8 +1779,8 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Pas anterior</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -3528,6 +3529,11 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		<message>
 			<source>Compact Block Filters for p2p syncing is now available</source>
 			<translation>Els filtres de blocs compactes per a la sincronització p2p ja estan disponibles</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation/>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -6253,8 +6259,8 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Pas anterior</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6479,8 +6485,8 @@ País: {country}</translation>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Pas anterior</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

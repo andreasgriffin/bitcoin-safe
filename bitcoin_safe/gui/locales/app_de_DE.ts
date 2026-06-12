@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>Schließen Sie die Zahlung in Ihrem Browser ab.
-Wenn es ein Problem gibt, zögern Sie bitte nicht, uns unter folgender Adresse zu kontaktieren: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ Wenn es ein Problem gibt, zögern Sie bitte nicht, uns unter folgender Adresse z
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Ihr Browser konnte nicht automatisch geöffnet werden. Bitte versuchen Sie es erneut.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ Wenn es ein Problem gibt, zögern Sie bitte nicht, uns unter folgender Adresse z
 		<message>
 			<source>Create invoice</source>
 			<translation>Rechnung erstellen</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation/>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation/>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -979,8 +987,18 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation/>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>Deskriptor unverändert</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation/>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1579,23 +1597,6 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>Transaktion erstellen</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>Transaktionsfelder vorfüllen</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Vorheriger Schritt</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1783,8 +1784,8 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Vorheriger Schritt</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2022,14 +2023,16 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>Der 8-stellige Fingerprint identifiziert den Seed.
-Du kannst ihn auf den Hardware-Signer schreiben, um verschiedene Seeds und Signiergeräte nachzuverfolgen.</translation>
+			<translation>Der 8-stellige Fingerabdruck identifiziert den Seed.
+Sie können ihn auf den Hardware-Signierer schreiben,
+um verschiedene Seeds und Signaturgeräte auseinanderhalten zu können.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>The key origin is needed to construct
 transactions (PSBTs) correctly and is connected to the xPub.</source>
-			<translation>Die Schlüsselherkunft wird benötigt, um Transaktionen (PSBTs) korrekt zu erstellen, und ist mit dem xPub verbunden.</translation>
+			<translation>Die Schlüsselherkunft wird benötigt,
+um Transaktionen (PSBTs) korrekt zu erstellen, und ist mit dem xPub verbunden.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3409,7 +3412,10 @@ Mempool-Instanz: {server}</translation>
 plugin and during subscription purchase!
 Hostname-based server location and DNS-seed discovery
 are not resolved through the proxy in this version.</source>
-			<translation>Der Proxy gilt nicht für das Sync&amp;Chat-Plugin und während des Kaufs eines Abonnements! Hostname-basierte Serverstandorte und DNS-Seed-Erkennung werden in dieser Version nicht über den Proxy aufgelöst.</translation>
+			<translation>Der Proxy gilt nicht für das Sync&amp;Chat-Plugin
+und während des Kaufs eines Abonnements!
+Die Ermittlung des Serverstandorts anhand des Hostnamens und die Erkennung von DNS-Seeds
+werden in dieser Version nicht über den Proxy abgewickelt.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3536,6 +3542,11 @@ Mehr Peers verbessern die Abdeckung, verbrauchen jedoch mehr Bandbreite und Verb
 		<message>
 			<source>Compact Block Filters for p2p syncing is now available</source>
 			<translation>Kompakte Blockfilter für p2p-Synchronisierung sind jetzt verfügbar</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation/>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -4114,7 +4125,9 @@ Was ist passiert: {happened_text}</translation>
 Saved copies to:
 {path}</source>
 			<translation>Entfernte Transaktion(en) in Wallet '{wallet}':
+
 {txs}
+
 Gespeicherte Kopien unter:
 {path}</translation>
 		</message>
@@ -4286,8 +4299,10 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt; Um zu wissen, ob du die Kontrolle über die Gelder hast, musst du das Ausgeben aus der Wallet testen.
-&lt;br&gt; Bevor du also einen erheblichen Betrag Bitcoin in die Wallet sendest, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus der Wallet auszugeben und alle Unterzeichner zu testen.
+			<translation>&lt;br&gt;&lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;
+Um zu wissen, ob du die Kontrolle über die Gelder hast, musst du das Ausgeben aus der Wallet testen.
+&lt;br&gt;
+Bevor du also einen erheblichen Betrag Bitcoin in die Wallet sendest, ist es &lt;b&gt;entscheidend&lt;/b&gt;, aus der Wallet auszugeben und alle Unterzeichner zu testen.
                         </translation>
 		</message>
 		<name>ReceiveTest</name>
@@ -6267,8 +6282,8 @@ Möchten Sie trotzdem senden?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Vorheriger Schritt</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6493,8 +6508,8 @@ Land: {country}</translation>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Vorheriger Schritt</translation>
+			<source>Previous step</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
