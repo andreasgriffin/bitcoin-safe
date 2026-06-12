@@ -11,6 +11,9 @@ RELEASE_DMG="$2"
 CONTRIB_OSX="$(dirname "$(grealpath "$0")")"
 PROJECT_ROOT="$CONTRIB_OSX/../.."
 WORKSPACE="/tmp/bitcoin_safe_compare_dmg"
+. "$CONTRIB_OSX"/app_metadata.sh
+PACKAGE="$(bitcoin_safe_application_name "$PROJECT_ROOT")"
+PACKAGE_NAME="$(bitcoin_safe_macos_bundle_name "$PROJECT_ROOT")"
 
 if [ -z "$UNSIGNED_DMG" ]; then
     echo "usage: $0 <unsigned dmg> <release dmg>"
@@ -32,18 +35,18 @@ DMG_UNSIGNED_UNPACKED="$WORKSPACE/dmg1"
 DMG_RELEASE_UNPACKED="$WORKSPACE/dmg2"
 
 hdiutil attach "$UNSIGNED_DMG"
-cp -r /Volumes/Bitcoin_Safe "$DMG_UNSIGNED_UNPACKED"
-hdiutil detach /Volumes/Bitcoin_Safe
+cp -r "/Volumes/${PACKAGE}" "$DMG_UNSIGNED_UNPACKED"
+hdiutil detach "/Volumes/${PACKAGE}"
 
 hdiutil attach "$RELEASE_DMG"
-cp -r /Volumes/Bitcoin_Safe "$DMG_RELEASE_UNPACKED"
-hdiutil detach /Volumes/Bitcoin_Safe
+cp -r "/Volumes/${PACKAGE}" "$DMG_RELEASE_UNPACKED"
+hdiutil detach "/Volumes/${PACKAGE}"
 
 # copy signatures from RELEASE_DMG to UNSIGNED_DMG
 echo "Extracting signatures from release app..."
-QUIET="1" "$CONTRIB_OSX/extract_sigs.sh" "$DMG_RELEASE_UNPACKED"/Bitcoin_Safe.app
+QUIET="1" "$CONTRIB_OSX/extract_sigs.sh" "$DMG_RELEASE_UNPACKED"/"$PACKAGE_NAME"
 echo "Applying extracted signatures to unsigned app..."
-QUIET="1" "$CONTRIB_OSX/apply_sigs.sh" "$DMG_UNSIGNED_UNPACKED"/Bitcoin_Safe.app mac_extracted_sigs.tar.gz
+QUIET="1" "$CONTRIB_OSX/apply_sigs.sh" "$DMG_UNSIGNED_UNPACKED"/"$PACKAGE_NAME" mac_extracted_sigs.tar.gz
 
 rm mac_extracted_sigs.tar.gz
 rm -rf "$DMG_UNSIGNED_UNPACKED"

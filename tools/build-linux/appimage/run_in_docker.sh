@@ -35,7 +35,6 @@ mkdir -p "$APPDIR" "$BUILD_CACHEDIR" "$PIP_CACHE_DIR" "$DISTDIR" "$DLL_TARGET_DI
 # potential leftover from setuptools that might make pip put garbage in binary
 rm -rf "$PROJECT_ROOT/build"
 
-
 info "downloading some dependencies."
 download_if_not_exist "$BUILD_CACHEDIR/functions.sh" "https://raw.githubusercontent.com/AppImage/pkg2appimage/$PKG2APPIMAGE_COMMIT/functions.sh"
 verify_hash "$BUILD_CACHEDIR/functions.sh" "8f67711a28635b07ce539a9b083b8c12d5488c00003d6d726c7b134e553220ed"

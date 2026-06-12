@@ -7,10 +7,6 @@ set -e
 # ======================
 PYTHON_VERSION=3.12.3
 PY_VER_MAJOR="3.12"  # as it appears in fs paths
-EXECUTABLE_NAME="run_Bitcoin_Safe"
-PACKAGE='Bitcoin Safe'
-PACKAGE_NAME="$PACKAGE.app"
-GIT_REPO=https://github.com/andreasgriffin/bitcoin_safe
 
 export GCC_STRIP_BINARIES="1"
 export PYTHONDONTWRITEBYTECODE=1  # don't create __pycache__/ with .pyc
@@ -21,6 +17,7 @@ export PYTHONDONTWRITEBYTECODE=1  # don't create __pycache__/ with .pyc
 CONTRIB_OSX="$(dirname "$(realpath "$0")")"
 CONTRIB="$CONTRIB_OSX/.."
 PROJECT_ROOT="$CONTRIB/.."
+. "$CONTRIB_OSX"/app_metadata.sh
 CACHEDIR="$CONTRIB_OSX/.cache"
 export DLL_TARGET_DIR="$CACHEDIR/dlls"
 PIP_CACHE_DIR="$CACHEDIR/pip_cache"
@@ -30,6 +27,10 @@ POETRY_CACHE_DIR="$CACHEDIR/poetry_cache"
 mkdir -p "$CACHEDIR" "$DLL_TARGET_DIR"
 
 cd "$PROJECT_ROOT"
+
+PACKAGE="$(bitcoin_safe_application_name "$PROJECT_ROOT")"
+PACKAGE_NAME="$(bitcoin_safe_macos_bundle_name "$PROJECT_ROOT")"
+DMG_BACKGROUND_PATH="$PROJECT_ROOT/tools/resources/dmg-background.png"
 
 git -C "$PROJECT_ROOT" rev-parse 2>/dev/null || fail "Building outside a git clone is not supported."
 
@@ -241,27 +242,13 @@ find "dist/${PACKAGE_NAME}" -type f -print0 | sort -z | xargs -0 shasum -a 256 |
 info "Moving dist/${PACKAGE_NAME} to dmg-package/"
 mv "dist/${PACKAGE_NAME}" dmg-package/
 
-info "Adding Applications symlink" 
-ln -s /Applications "dmg-package/Applications"
-touch -h -t '200101220000' "dmg-package/Applications"
-
 info "Creating unsigned .DMG"
-# Workaround resource busy bug on github on MacOS 13
-# https://github.com/actions/runner-images/issues/7522
-# package all of build/ to also include the Applications symlink 
-i=0
-until     hdiutil create \
-            -fs HFS+ \
-            -volname "$PACKAGE" \
-            -srcfolder "dmg-package" \
-            "dist/bitcoin_safe-$VERSION-unsigned.dmg"     
-do
-    if [ $i -eq 10 ]; then  
-        fail "Could not create .DMG"; 
-    fi
-    i=$((i+1))
-    sleep 1
-done
+"$CONTRIB_OSX/create_styled_dmg.sh" \
+    "dmg-package/${PACKAGE_NAME}" \
+    "dist/bitcoin_safe-$VERSION-unsigned.dmg" \
+    "$PACKAGE" \
+    "$DMG_BACKGROUND_PATH" \
+    || fail "Could not create styled .DMG"
 
 # reset poetry config
 poetry config virtualenvs.create true
