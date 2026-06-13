@@ -42,7 +42,7 @@ from functools import partial
 from json import JSONDecodeError
 from pathlib import Path
 from types import FrameType
-from typing import Literal, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -181,7 +181,7 @@ class MainWindow(UnlockableMainWindow):
 
     def __init__(
         self,
-        network: Literal["bitcoin", "regtest", "signet", "testnet"] | None = None,
+        network: bdk.Network | None = None,
         config: UserConfig | None = None,
         open_files_at_startup: list[str] | None = None,
         **kwargs,
@@ -197,7 +197,7 @@ class MainWindow(UnlockableMainWindow):
         else:
             logger.debug("UserConfig will be created new")
         self.config = config if config else UserConfig.from_file()
-        self.config.network = bdk.Network[network.upper()] if network else self.config.network
+        self.config.network = network if network else self.config.network
         self.external_registry = ExternalPluginRegistry.from_config(self.config)
         self.new_startup_network: bdk.Network | None = None
         self._before_close_was_run = False
