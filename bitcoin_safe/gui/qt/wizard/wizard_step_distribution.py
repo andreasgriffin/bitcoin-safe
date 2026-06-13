@@ -255,7 +255,7 @@ class DistributeSeeds(BaseTab):
         print_layout.addWidget(self.label_print_section)
 
         self.sheet_previews_scroll_area = InvisibleScrollArea(self.print_section)
-        self.sheet_previews_scroll_area.setWidgetResizable(False)
+        self.sheet_previews_scroll_area.setWidgetResizable(True)
         self.sheet_previews_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.sheet_previews_scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.sheet_previews_scroll_area.setAlignment(Qt.AlignmentFlag.AlignHCenter)
@@ -439,9 +439,8 @@ class DistributeSeeds(BaseTab):
             size_hint_height=118,
             parent=card,
         )
-        preview.setMinimumHeight(112)
         preview.setMaximumHeight(130)
-        layout.addWidget(preview, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(preview, 1, Qt.AlignmentFlag.AlignHCenter)
 
         if not self._is_single_sig():
             checkbox = QCheckBox(card)
@@ -464,7 +463,7 @@ class DistributeSeeds(BaseTab):
         scrollbar = self.sheet_previews_scroll_area.horizontalScrollBar()
         scrollbar_height = scrollbar.sizeHint().height() if scrollbar else 0
         content_height = self.sheet_previews_scroll_area.content_widget.sizeHint().height()
-        self.sheet_previews_scroll_area.setFixedHeight(content_height + scrollbar_height)
+        self.sheet_previews_scroll_area.setMaximumHeight(content_height + scrollbar_height)
 
     def _selected_sheet_indexes(self) -> list[int]:
         if self._is_single_sig():
