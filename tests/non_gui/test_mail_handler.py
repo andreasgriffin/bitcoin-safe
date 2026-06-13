@@ -36,6 +36,7 @@ from unittest.mock import patch
 from _pytest.logging import LogCaptureFixture
 
 from bitcoin_safe.logging_handlers import mail_error_repot, text_error_report
+from bitcoin_safe.logging_setup import setup_logging
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +74,23 @@ def test_exception_logging(caplog: LogCaptureFixture) -> None:
                 mock_compose_email.assert_called_once()
                 # Assert that the mocked function was called
                 mock_OpenLogHandler_emit.assert_called_once()
+
+
+def test_setup_logging_is_idempotent(caplog: LogCaptureFixture) -> None:
+    """Repeated setup_logging calls must not duplicate error handlers."""
+    setup_logging()
+    setup_logging()
+
+    with patch("bitcoin_safe.logging_handlers.OpenLogHandler.emit") as mock_open_log_handler_emit:
+        mock_open_log_handler_emit.return_value = "Mocked OpenLogHandler.emit"
+        with patch("bitcoin_safe.logging_handlers.compose_email") as mock_compose_email:
+            mock_compose_email.return_value = "Mocked Function"
+
+            with caplog.at_level(logging.INFO):
+                logger.critical("this should compose an email", exc_info=sys.exc_info())
+
+            mock_compose_email.assert_called_once()
+            mock_open_log_handler_emit.assert_called_once()
 
 
 def test_text_error_report_includes_plugin_diagnostics() -> None:

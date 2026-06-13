@@ -46,6 +46,8 @@ from bitcoin_safe.logging_handlers import (
     RelativePathFormatter,
 )
 
+_LOGGING_CONFIGURED = False
+
 
 def get_config_dir() -> Path:
     """Get config dir."""
@@ -63,6 +65,10 @@ def get_log_file() -> Path:
 def setup_logging() -> None:
     # Configuring formatters
     """Setup logging."""
+    global _LOGGING_CONFIGURED
+    if _LOGGING_CONFIGURED:
+        return
+
     relative_path_formatter = RelativePathFormatter(
         fmt="%(asctime)s - %(levelname)s - [%(threadName)s] - %(name)s - %(message)s"
     )
@@ -77,9 +83,7 @@ def setup_logging() -> None:
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(relative_path_formatter)
 
-    mail_handler = (
-        MailHandler()
-    )  # Assuming MailHandler is correctly implemented in bitcoin_safe.logging_handlers
+    mail_handler = MailHandler()
     mail_handler.setLevel(logging.CRITICAL)
     mail_handler.setFormatter(relative_path_formatter)
     # Assuming 'must_include_exc_info' is handled internally in the MailHandler implementation
@@ -121,6 +125,8 @@ def setup_logging() -> None:
 
     # Install the message handler as early as possible
     qInstallMessageHandler(qt_message_handler)
+
+    _LOGGING_CONFIGURED = True
 
     logger.info("========================= Starting Bitcoin Safe ========================")
     logger.info(f"Version: {__version__}")
