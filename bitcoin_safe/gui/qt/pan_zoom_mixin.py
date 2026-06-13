@@ -115,6 +115,7 @@ class TransformPanZoomMixin(PanZoomInputMixin):
 
     DEFAULT_WHEEL_ZOOM_FACTOR = 1.2
     _pan_zoom_wheel_zoom_factor: float
+    _pan_zoom_touchpad_wheel_zooms: bool
 
     def _pan_zoom_view(self) -> TransformPanZoomView:
         """Return self cast to the protocol expected by this mixin."""
@@ -124,9 +125,11 @@ class TransformPanZoomMixin(PanZoomInputMixin):
         self,
         wheel_zoom_factor: float = DEFAULT_WHEEL_ZOOM_FACTOR,
         touchpad_wheel_suppression_seconds: float = PanZoomInputMixin.DEFAULT_TOUCHPAD_WHEEL_SUPPRESSION_SECONDS,
+        touchpad_wheel_zooms: bool = False,
     ) -> None:
         """Initialize transform pan/zoom state."""
         self._pan_zoom_wheel_zoom_factor = wheel_zoom_factor
+        self._pan_zoom_touchpad_wheel_zooms = touchpad_wheel_zooms
         self.init_pan_zoom_input(touchpad_wheel_suppression_seconds=touchpad_wheel_suppression_seconds)
 
     def pan_zoom_reset_zoom(self, preserve_center: bool = True) -> None:
@@ -171,6 +174,12 @@ class TransformPanZoomMixin(PanZoomInputMixin):
             if self.pan_zoom_touchpad_wheel_is_suppressed():
                 event.accept()
                 return True
+            if wheel_zooms and self._pan_zoom_touchpad_wheel_zooms:
+                steps = self.pan_zoom_wheel_steps(event)
+                if steps != 0:
+                    self.pan_zoom_zoom_by_steps(steps)
+                    event.accept()
+                    return True
             delta = self.pan_zoom_wheel_pan_delta(event)
             if not delta.isNull():
                 self.pan_zoom_pan_by_pixels(delta)
