@@ -36,6 +36,7 @@ from PyQt6.QtGui import QStandardItem
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.gui.qt.color_corrected_treeview import ColorCorrectedTreeView
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole, MyTreeView
 from bitcoin_safe.signals import Signals
 
@@ -86,3 +87,52 @@ def test_mytreeview_filter_matches_clipboard_content(qtbot: QtBot, test_config: 
 
     assert tree_view.filter("plain") == [True, True, True, False]
     assert not _is_hidden(tree_view, 3)
+
+
+def test_mytreeview_selection_override_not_applied_for_non_windows_style(
+    monkeypatch, qtbot: QtBot, test_config: UserConfig
+) -> None:
+    tree_view = DummyTreeView(config=test_config)
+    qtbot.addWidget(tree_view)
+    tree_view.setStyleSheet("QTreeView { border: none; }")
+
+    monkeypatch.setattr(tree_view, "_needs_selection_text_override", lambda: False)
+
+    tree_view._refresh_selection_style_sheet()
+
+    assert tree_view.styleSheet() == "QTreeView { border: none; }"
+
+
+def test_mytreeview_selection_override_applied_for_windows_style(
+    monkeypatch, qtbot: QtBot, test_config: UserConfig
+) -> None:
+    tree_view = DummyTreeView(config=test_config)
+    qtbot.addWidget(tree_view)
+
+    monkeypatch.setattr(tree_view, "_needs_selection_text_override", lambda: True)
+
+    tree_view._refresh_selection_style_sheet()
+
+    palette = tree_view.palette()
+    selection_color = palette.color(palette.ColorRole.HighlightedText).name()
+    selector = f'QTreeView[objectName="{tree_view.objectName()}"]::item:selected'
+
+    assert f"color: {selection_color};" in tree_view.styleSheet()
+    assert "background-color:" not in tree_view.styleSheet()
+    assert selector in tree_view.styleSheet()
+    assert tree_view.objectName().startswith("DummyTreeView.")
+
+
+def test_colorcorrectedtreeview_keeps_managed_override_when_stylesheet_changes(
+    monkeypatch, qtbot: QtBot
+) -> None:
+    tree_view = ColorCorrectedTreeView()
+    qtbot.addWidget(tree_view)
+
+    monkeypatch.setattr(tree_view, "_needs_selection_text_override", lambda: True)
+
+    tree_view.setStyleSheet("QTreeView { border: none; }")
+
+    assert "QTreeView { border: none; }" in tree_view.styleSheet()
+    assert f'QTreeView[objectName="{tree_view.objectName()}"]::item:selected' in tree_view.styleSheet()
+    assert tree_view.objectName().startswith("ColorCorrectedTreeView.")
