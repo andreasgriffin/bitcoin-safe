@@ -38,7 +38,7 @@ from PyQt6.QtCore import Qt
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUI, KeyStoreUiState
-from bitcoin_safe.gui.qt.util import ColorScheme
+from bitcoin_safe.gui.qt.util import ColorScheme, svg_tools_hardware_signer
 from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.wallet import ProtoWallet
@@ -101,7 +101,11 @@ def test_keystore_ui_add_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> No
     widget = _make_widget(qtbot, loop_in_thread)
 
     assert widget.state == KeyStoreUiState.Add
-    assert widget.header_icon.text() == "+"
+    actual_pixmap = widget.header_icon.pixmap()
+    assert actual_pixmap is not None
+    expected_icon = svg_tools_hardware_signer.get_QIcon(HardwareSigners.generic.icon_name)
+    expected_pixmap = expected_icon.pixmap(actual_pixmap.size(), widget.devicePixelRatioF())
+    assert actual_pixmap.toImage() == expected_pixmap.toImage()
     assert widget.sizePolicy().verticalPolicy() == widget.sizePolicy().Policy.Fixed
     assert widget.combo_brand.isVisible()
     assert widget.combo_model.isVisible()

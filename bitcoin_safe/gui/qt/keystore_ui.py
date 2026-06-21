@@ -593,14 +593,12 @@ class KeyStoreUI(CardBase):
         self._apply_state()
 
     def _update_header_icon(self) -> None:
-        if self.state == KeyStoreUiState.Add:
-            self.header_icon.clear()
-            self.header_icon.setStyleSheet("font-size: 28px; font-weight: 600;")
-            self.header_icon.setText("+")
-            return
-
         self.header_icon.setStyleSheet("")
-        hardware_signer = self.selected_hardware_signer or HardwareSigners.generic
+        hardware_signer = (
+            HardwareSigners.generic
+            if self.state == KeyStoreUiState.Add
+            else self.selected_hardware_signer or HardwareSigners.generic
+        )
         pixmap = svg_tools_hardware_signer.get_QIcon(hardware_signer.icon_name).pixmap(34, 34)
         self.header_icon.setPixmap(pixmap)
         self.header_icon.setText("")
