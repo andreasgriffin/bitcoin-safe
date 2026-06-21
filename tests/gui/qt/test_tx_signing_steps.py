@@ -394,6 +394,7 @@ def test_show_qr_code_opens_popup_and_shows_import_only_detail(qtbot: QtBot, loo
     signer_ui = card.body.findChild(SignerUI)
     assert signer_ui
     assert signer_ui.button.text() == "Scan QR code"
+    assert signer_ui.button.isDefault()
 
     body_button_texts = {button.text() for button in card.body.findChildren(QPushButton)}
     assert body_button_texts == {"Scan QR code"}

@@ -213,6 +213,7 @@ class KeyStoreUI(CardBase):
         self.combo_model = QComboBox(self.header_widget)
         self.button_confirm_signer = QPushButton(self.header_widget)
         self.button_confirm_signer.setEnabled(False)
+        self.button_confirm_signer.setDefault(True)
         self.add_controls_layout.addWidget(self.combo_brand)
         self.add_controls_layout.addWidget(self.combo_model)
         self.add_controls_layout.addWidget(self.button_confirm_signer)
@@ -488,6 +489,9 @@ class KeyStoreUI(CardBase):
         self.combo_model.blockSignals(False)
         self._update_confirm_button()
         self._update_device_type_help()
+        if brand_name:
+            self.button_confirm_signer.setFocus(Qt.FocusReason.OtherFocusReason)
+            self.button_confirm_signer.setDefault(True)
 
     def _update_confirm_button(self) -> None:
         self.button_confirm_signer.setEnabled(self.combo_model.currentData() is not None)
@@ -581,6 +585,7 @@ class KeyStoreUI(CardBase):
         hardware_signer = HardwareSigners.from_id(self.combo_model.currentData())
         if not hardware_signer:
             return
+        self.button_confirm_signer.setDefault(False)
         self.select_hardware_signer(hardware_signer)
 
     def select_hardware_signer(self, hardware_signer: HardwareSigner) -> None:
@@ -664,6 +669,13 @@ class KeyStoreUI(CardBase):
         return bool(
             self.edit_fingerprint.text().strip() and self.key_origin and self.edit_xpub.text().strip()
         )
+
+    def focus_device_selection(self) -> None:
+        """Focus the signer brand selector when device selection is available."""
+        if not self.combo_brand.isVisible() or not self.combo_brand.isEnabled():
+            return
+        self.button_confirm_signer.setDefault(False)
+        self.combo_brand.setFocus(Qt.FocusReason.OtherFocusReason)
 
     def expand(self) -> None:
         """Show the full signer card."""

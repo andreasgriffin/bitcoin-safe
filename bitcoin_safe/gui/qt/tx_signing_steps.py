@@ -39,7 +39,7 @@ from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.dialogs import AutoScanMode
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QSize, Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -429,6 +429,9 @@ class TxSigningDeviceCard(CardBase):
         signer_ui = SignerUI(qr_importer, self.psbt, self.network)
         signer_ui.layout_keystore_buttons.setContentsMargins(0, 0, 0, 0)
         self._show_detail_widget(signer_ui)
+        signer_ui.button.setAutoDefault(True)
+        signer_ui.button.setDefault(True)
+        signer_ui.button.setFocus(Qt.FocusReason.OtherFocusReason)
 
     def _show_qr_export_widget(self, qr_type: QrExportType) -> None:
         """Show the QR export popup using the preferred type for this signer."""
@@ -600,7 +603,17 @@ class TxSigningDeviceList(QWidget):
             self.card_list.add_card(card)
 
         self.card_list.collapse_all()
+        QTimer.singleShot(0, self._focus_first_sign_now_button)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+
+    def _focus_first_sign_now_button(self) -> None:
+        """Make the next sign-now action the active default button."""
+        for card in self.cards:
+            card.button_sign.setDefault(False)
+            if card.guidance.state != TxSigningHeaderState.sign_now:
+                continue
+            card.button_sign.setDefault(True)
+            return
 
     def _guidance_for_device(
         self,

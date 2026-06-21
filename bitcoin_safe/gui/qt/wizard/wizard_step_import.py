@@ -102,6 +102,7 @@ class ImportXpubs(BaseTab):
         self.widget_layout.addWidget(self.label_import)
 
         self.button_create_wallet = QPushButton("", self.buttonbox)
+        self.button_create_wallet.setDefault(True)
         if self.refs.qt_wallet:
             self.keystore_uis = None
         else:
@@ -168,6 +169,8 @@ class ImportXpubs(BaseTab):
         if self.keystore_uis:
             self.button_create_wallet.setVisible(True)
             self.button_create_wallet.setEnabled(self.can_go_to_next_step())
+            if self.can_go_to_next_step():
+                self.button_create_wallet.setFocus()
             self.button_previous.setVisible(True)
 
     def set_visibilities(self, should_be_visible: bool) -> None:
@@ -176,7 +179,8 @@ class ImportXpubs(BaseTab):
             self._ensure_keystore_uis()
         if should_be_visible and self.keystore_uis:
             self.keystore_uis.set_keystore_ui_from_protowallet()
-            self.set_current_signer(min(self.keystore_uis.currentIndex(), self.keystore_uis.count() - 1))
+            if not self.keystore_uis.focus_first_unselected_brand_selector():
+                self.set_current_signer(min(self.keystore_uis.currentIndex(), self.keystore_uis.count() - 1))
 
     def close(self) -> None:
         """Close."""
