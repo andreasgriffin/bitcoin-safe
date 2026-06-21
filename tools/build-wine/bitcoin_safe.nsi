@@ -6,10 +6,17 @@
 ;--------------------------------
 ;Variables
 
+  Var RunningInstalledApp
+  Var ProcessCheckExitCode
+  Var ProcessCheckOutput
+  Var ProcessCheckAttemptsLeft
+
   !define PRODUCT_NAME "Bitcoin Safe"
   !define PRODUCT_WEB_SITE "https://github.com/andreasgriffin/bitcoin-safe"
   !define PRODUCT_PUBLISHER "Andreas Griffin"
   !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+  !define RUNNING_PROCESS_POLL_ATTEMPTS 20
+  !define RUNNING_PROCESS_POLL_DELAY_MS 500
 
 ;--------------------------------
 ;General
@@ -90,6 +97,41 @@
 ;--------------------------------
 ;Installer Sections
 
+Function DetectRunningInstalledApp
+  StrCpy $RunningInstalledApp "0"
+
+  IfFileExists "$INSTDIR\bitcoin_safe-*.exe" 0 done
+  IfFileExists "$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" 0 done
+
+  System::Call 'Kernel32::SetEnvironmentVariable(t, t)i("BITCOIN_SAFE_INSTALL_DIR", "$INSTDIR").r0'
+  nsExec::ExecToStack '"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "$$ErrorActionPreference = ''Stop''; $$installDir = [System.IO.Path]::GetFullPath($$env:BITCOIN_SAFE_INSTALL_DIR); $$prefix = $$installDir.TrimEnd(''\'') + ''\''; $$running = Get-CimInstance Win32_Process | Where-Object { $$path = $$_.ExecutablePath; $$name = [System.IO.Path]::GetFileName($$path); $$path -and $$path.StartsWith($$prefix, [System.StringComparison]::OrdinalIgnoreCase) -and $$name -like ''bitcoin_safe-*.exe'' } | Select-Object -First 1; if ($$running) { ''running'' } else { ''stopped'' }"'
+  Pop $ProcessCheckExitCode
+  Pop $ProcessCheckOutput
+  ${If} $ProcessCheckExitCode == "0"
+  ${AndIf} $ProcessCheckOutput == "running"
+    StrCpy $RunningInstalledApp "1"
+  ${EndIf}
+done:
+FunctionEnd
+
+Function EnsureInstalledAppNotRunning
+  StrCpy $ProcessCheckAttemptsLeft ${RUNNING_PROCESS_POLL_ATTEMPTS}
+retry:
+  Call DetectRunningInstalledApp
+  ${If} $RunningInstalledApp != "1"
+    Return
+  ${EndIf}
+
+  IntOp $ProcessCheckAttemptsLeft $ProcessCheckAttemptsLeft - 1
+  ${If} $ProcessCheckAttemptsLeft > 0
+    Sleep ${RUNNING_PROCESS_POLL_DELAY_MS}
+    Goto retry
+  ${EndIf}
+
+  MessageBox mb_iconstop "Bitcoin Safe is still running from:$\r$\n$INSTDIR$\r$\n$\r$\nClose Bitcoin Safe and run the installer again."
+  Quit
+FunctionEnd
+
 ;Check if we have Administrator rights
 Function .onInit
 	UserInfo::GetAccountType
@@ -99,12 +141,14 @@ Function .onInit
 		SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
 		Quit
 	${EndIf}
+  Call EnsureInstalledAppNotRunning
 FunctionEnd
 
 Section
-  SetOutPath $INSTDIR
+  Call EnsureInstalledAppNotRunning
 
   ;Uninstall previous version files
+  SetOutPath $INSTDIR
   RMDir /r "$INSTDIR\*.*"
   Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\*.*"
