@@ -96,7 +96,11 @@ function do_pip() {
 }
 
 info "Installing required pip packages for building..."
-do_pip -Ir ./tools/deterministic-build/requirements-build.txt
+build_requirements_file="./tools/deterministic-build/requirements-build.txt"
+if [[ "$(uname -m)" == "x86_64" ]]; then
+    build_requirements_file="./tools/deterministic-build/requirements-build-mac-x86_64.txt"
+fi
+do_pip -Ir "$build_requirements_file"
 
 info "Installing some Brew tools for compilation"
 brew install autoconf automake libtool gettext coreutils pkgconfig

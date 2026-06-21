@@ -48,6 +48,13 @@ btcpay-tools = { git = "https://github.com/andreasgriffin/btcpay-tools.git", bra
 aiohttp = "^3.12.13"
 aiohttp-socks = "^0.10.1"
 pycryptodome = "^3.23.0"  # for hash160, since it is not in default openssl
+cryptography = [
+    # macOS Intel / x86_64: keep the last version with compatible wheels
+    { version = "48.0.1", markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'" },
+
+    # Everything else: resolve to newest compatible version at lock/update time
+    { version = ">=49.0.0", markers = "sys_platform != 'darwin' or platform_machine != 'x86_64'" },
+]
 
 
 
