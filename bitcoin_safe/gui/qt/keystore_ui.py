@@ -491,7 +491,6 @@ class KeyStoreUI(CardBase):
         self._update_device_type_help()
         if brand_name:
             self.button_confirm_signer.setFocus(Qt.FocusReason.OtherFocusReason)
-            self.button_confirm_signer.setDefault(True)
 
     def _update_confirm_button(self) -> None:
         self.button_confirm_signer.setEnabled(self.combo_model.currentData() is not None)
