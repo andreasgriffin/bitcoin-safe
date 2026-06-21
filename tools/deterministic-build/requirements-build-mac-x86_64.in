@@ -1,0 +1,4 @@
+-r requirements-build.in
+
+# cryptography 49.0.0 no longer ships a macOS x86_64 wheel.
+cryptography==48.0.1
