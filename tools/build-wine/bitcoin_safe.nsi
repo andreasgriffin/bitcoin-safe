@@ -6,10 +6,18 @@
 ;--------------------------------
 ;Variables
 
+  Var RunningInstalledApp
+  Var ProcessCheckAttemptsLeft
+  Var InstalledExeSearchHandle
+  Var InstalledExeName
+  Var InstalledExePath
+
   !define PRODUCT_NAME "Bitcoin Safe"
   !define PRODUCT_WEB_SITE "https://github.com/andreasgriffin/bitcoin-safe"
   !define PRODUCT_PUBLISHER "Andreas Griffin"
   !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+  !define RUNNING_PROCESS_POLL_ATTEMPTS 20
+  !define RUNNING_PROCESS_POLL_DELAY_MS 500
 
 ;--------------------------------
 ;General
@@ -90,6 +98,49 @@
 ;--------------------------------
 ;Installer Sections
 
+Function DetectRunningInstalledApp
+  StrCpy $RunningInstalledApp "0"
+
+  FindFirst $InstalledExeSearchHandle $InstalledExeName "$INSTDIR\bitcoin_safe-*.exe"
+  IfErrors done
+
+check_next_exe:
+  StrCpy $InstalledExePath "$INSTDIR\$InstalledExeName"
+  System::Call 'kernel32::CreateFileW(w "$InstalledExePath", i 0x40000000, i 0, i 0, i 3, i 0x80, i 0) i.r0'
+  ${If} $0 == -1
+    StrCpy $RunningInstalledApp "1"
+    FindClose $InstalledExeSearchHandle
+    Return
+  ${EndIf}
+
+  System::Call 'kernel32::CloseHandle(i r0)'
+  FindNext $InstalledExeSearchHandle $InstalledExeName
+  IfErrors done_find
+  Goto check_next_exe
+
+done_find:
+  FindClose $InstalledExeSearchHandle
+done:
+FunctionEnd
+
+Function EnsureInstalledAppNotRunning
+  StrCpy $ProcessCheckAttemptsLeft ${RUNNING_PROCESS_POLL_ATTEMPTS}
+retry:
+  Call DetectRunningInstalledApp
+  ${If} $RunningInstalledApp != "1"
+    Return
+  ${EndIf}
+
+  IntOp $ProcessCheckAttemptsLeft $ProcessCheckAttemptsLeft - 1
+  ${If} $ProcessCheckAttemptsLeft > 0
+    Sleep ${RUNNING_PROCESS_POLL_DELAY_MS}
+    Goto retry
+  ${EndIf}
+
+  MessageBox mb_iconstop "Bitcoin Safe is still running from:$\r$\n$INSTDIR$\r$\n$\r$\nClose Bitcoin Safe and run the installer again."
+  Quit
+FunctionEnd
+
 ;Check if we have Administrator rights
 Function .onInit
 	UserInfo::GetAccountType
@@ -99,12 +150,14 @@ Function .onInit
 		SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
 		Quit
 	${EndIf}
+  Call EnsureInstalledAppNotRunning
 FunctionEnd
 
 Section
-  SetOutPath $INSTDIR
+  Call EnsureInstalledAppNotRunning
 
   ;Uninstall previous version files
+  SetOutPath $INSTDIR
   RMDir /r "$INSTDIR\*.*"
   Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\*.*"
