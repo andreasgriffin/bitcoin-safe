@@ -445,7 +445,7 @@ files = []
 develop = false
 
 [package.dependencies]
-bitcoin-qr-tools = {git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", branch = "main"}
+bitcoin-qr-tools = {git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", branch = "ait-for-mac-permission"}
 bitcoin-safe-lib = {git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main"}
 cbor2 = "^5.6.3"
 nostr-sdk = "^0.44.0"
@@ -455,8 +455,8 @@ requests = "^2.31.0"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
-reference = "main"
-resolved_reference = "4863bc3fb0e3cdafa3ec09e0d4683cd2f58009c2"
+reference = "ait-for-mac-permission"
+resolved_reference = "9d8998bbdc858bea9135cbbea825709fb105b8dc"
 
 [[package]]
 name = "bitcoin-qr-tools"
@@ -485,8 +485,8 @@ segno = "1.6.1"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
-reference = "main"
-resolved_reference = "c9749c9c486435e2eac8c5b5fc829d86acec9087"
+reference = "ait-for-mac-permission"
+resolved_reference = "afeb6f825c82653d30973c6152c260b261992579"
 
 [[package]]
 name = "bitcoin-safe-lib"
@@ -601,7 +601,7 @@ files = []
 develop = false
 
 [package.dependencies]
-bitcoin-nostr-chat = {git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", branch = "main"}
+bitcoin-nostr-chat = {git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", branch = "ait-for-mac-permission"}
 bitcoin-safe-lib = {git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main"}
 pydantic = "^2.10.6"
 PyYAML = "^6.0.2"
@@ -610,8 +610,8 @@ requests = "^2.32.3"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/btcpay-tools.git"
-reference = "main"
-resolved_reference = "2b4af5a71d7f0b8832127d733e6607a11bfd39f5"
+reference = "ait-for-mac-permission"
+resolved_reference = "c2ba5395727552af7fc760230aa5b3d64b8672cd"
 
 [[package]]
 name = "build"
@@ -5158,4 +5158,4 @@ type = ["pytest-mypy (>=1.0.1) ; platform_python_implementation != \"PyPy\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "de1c902dadc079ba19eb5745b7d4f37c68a37296a9cbb8448085d2dd772129c0"
+content-hash = "8a277e318cef3d957bd2da499502d4fb643e11b90e43dabbbd0e644ae60a4bfa"
