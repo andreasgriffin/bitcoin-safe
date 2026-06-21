@@ -31,13 +31,14 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
+from functools import partial
 from typing import cast
 
 from bitcoin_qr_tools.data import SignerInfo
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
-from PyQt6.QtCore import QTimer, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.card_base import CardList
@@ -174,7 +175,9 @@ class KeyStoreUIs(QWidget):
             return False
 
         self.setCurrentIndex(index)
-        QTimer.singleShot(0, self._keystore_uis[index].focus_device_selection)
+        QTimer.singleShot(
+            0, partial(self._keystore_uis[index].combo_brand.setFocus, Qt.FocusReason.OtherFocusReason)
+        )
         return True
 
     def expand_only(self, index: int) -> None:

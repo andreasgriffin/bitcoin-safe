@@ -670,13 +670,6 @@ class KeyStoreUI(CardBase):
             self.edit_fingerprint.text().strip() and self.key_origin and self.edit_xpub.text().strip()
         )
 
-    def focus_device_selection(self) -> None:
-        """Focus the signer brand selector when device selection is available."""
-        if not self.combo_brand.isVisible() or not self.combo_brand.isEnabled():
-            return
-        self.button_confirm_signer.setDefault(False)
-        self.combo_brand.setFocus(Qt.FocusReason.OtherFocusReason)
-
     def expand(self) -> None:
         """Show the full signer card."""
         if self.is_expanded:
