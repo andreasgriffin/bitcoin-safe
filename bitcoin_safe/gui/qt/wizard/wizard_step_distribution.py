@@ -33,7 +33,7 @@ from dataclasses import dataclass
 from functools import partial
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from PyQt6.QtCore import QLocale, Qt
+from PyQt6.QtCore import QLocale, Qt, QTimer
 from PyQt6.QtGui import QPalette
 from PyQt6.QtWidgets import (
     QCheckBox,
@@ -91,6 +91,7 @@ class RegisterMultisig(BaseTab):
         self.label_import = QLabel()
         widget_layout.addWidget(self.label_import)
         self.custom_yes_button = QPushButton("", self.buttonbox)
+        self.custom_yes_button.setDefault(True)
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
         self.buttonbox.add_action_button(self.custom_yes_button)
 
@@ -147,6 +148,9 @@ class RegisterMultisig(BaseTab):
 
         self.apply_next_button_style(self.custom_yes_button)
         self.custom_yes_button.setEnabled(self.has_registered_all_signers())
+        if self.has_registered_all_signers():
+            self.custom_yes_button.setFocus()
+
         for keystore_ui in self.keystore_uis.getAllTabData().values():
             keystore_ui.updateUi()
         self.custom_yes_button.setVisible(True)
@@ -266,6 +270,7 @@ class DistributeSeeds(BaseTab):
         print_layout.addWidget(self.sheet_previews_scroll_area)
 
         self.button_print_backup_sheets = QPushButton(widget)
+        self.button_print_backup_sheets.setDefault(True)
         self.button_print_backup_sheets.setIcon(svg_tools.get_QIcon("print.svg"))
         self.button_print_backup_sheets.clicked.connect(self._on_print_backup_sheets)
         print_layout.addWidget(self.button_print_backup_sheets)
@@ -659,6 +664,10 @@ class DistributeSeeds(BaseTab):
         )
         self.backup_sheets_printed = True
         self._refresh_action_buttons()
+        QTimer.singleShot(0, partial(self.button_print_backup_sheets.setDefault, False))
+        QTimer.singleShot(
+            0, partial(self.checkbox_seed_words_attached.setFocus, Qt.FocusReason.OtherFocusReason)
+        )
 
     def _on_seed_words_attached_toggled(self, checked: bool) -> None:
         self.seed_words_attached_confirmed = checked

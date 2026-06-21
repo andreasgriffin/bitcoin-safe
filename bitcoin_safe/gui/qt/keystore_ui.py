@@ -213,6 +213,7 @@ class KeyStoreUI(CardBase):
         self.combo_model = QComboBox(self.header_widget)
         self.button_confirm_signer = QPushButton(self.header_widget)
         self.button_confirm_signer.setEnabled(False)
+        self.button_confirm_signer.setDefault(True)
         self.add_controls_layout.addWidget(self.combo_brand)
         self.add_controls_layout.addWidget(self.combo_model)
         self.add_controls_layout.addWidget(self.button_confirm_signer)
@@ -488,6 +489,8 @@ class KeyStoreUI(CardBase):
         self.combo_model.blockSignals(False)
         self._update_confirm_button()
         self._update_device_type_help()
+        if brand_name:
+            self.button_confirm_signer.setFocus(Qt.FocusReason.OtherFocusReason)
 
     def _update_confirm_button(self) -> None:
         self.button_confirm_signer.setEnabled(self.combo_model.currentData() is not None)
@@ -581,6 +584,7 @@ class KeyStoreUI(CardBase):
         hardware_signer = HardwareSigners.from_id(self.combo_model.currentData())
         if not hardware_signer:
             return
+        self.button_confirm_signer.setDefault(False)
         self.select_hardware_signer(hardware_signer)
 
     def select_hardware_signer(self, hardware_signer: HardwareSigner) -> None:

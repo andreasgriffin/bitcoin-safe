@@ -429,6 +429,8 @@ class TxSigningDeviceCard(CardBase):
         signer_ui = SignerUI(qr_importer, self.psbt, self.network)
         signer_ui.layout_keystore_buttons.setContentsMargins(0, 0, 0, 0)
         self._show_detail_widget(signer_ui)
+        signer_ui.button.setDefault(True)
+        signer_ui.button.setFocus(Qt.FocusReason.OtherFocusReason)
 
     def _show_qr_export_widget(self, qr_type: QrExportType) -> None:
         """Show the QR export popup using the preferred type for this signer."""
