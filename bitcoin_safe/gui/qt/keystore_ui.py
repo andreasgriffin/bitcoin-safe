@@ -32,6 +32,7 @@ from __future__ import annotations
 import enum
 import logging
 from collections.abc import Callable
+from functools import partial
 from typing import cast
 
 import bdkpython as bdk
@@ -790,24 +791,28 @@ class KeyStoreUI(CardBase):
             return
         if self._device_help_widget:
             self._device_help_widget.close()
-        self._device_help_widget = ScreenshotsExportXpub(hardware_signers=[hardware_signer], parent=None)
-        self._device_help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
+        device_help_widget = ScreenshotsExportXpub(hardware_signers=[hardware_signer], parent=None)
+        device_help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
         self.signal_tracker.connect(
-            cast(SignalProtocol[[QObject | None]], self._device_help_widget.destroyed),
-            self._clear_device_help_widget,
+            cast(SignalProtocol[[QObject | None]], device_help_widget.destroyed),
+            partial(self._clear_device_help_widget, device_help_widget),
         )
-        self._device_help_widget.setWindowTitle(
+        device_help_widget.setWindowTitle(
             self.tr("{device} instructions").format(device=hardware_signer.display_name)
         )
-        self._device_help_widget.setWindowFlag(Qt.WindowType.Window, True)
-        self._device_help_widget.show()
-        self._device_help_widget.raise_()
-        self._device_help_widget.activateWindow()
+        device_help_widget.setWindowFlag(Qt.WindowType.Window, True)
+        self._device_help_widget = device_help_widget
+        device_help_widget.show()
+        device_help_widget.raise_()
+        device_help_widget.activateWindow()
 
-    def _clear_device_help_widget(self, destroyed_widget: QObject | None = None) -> None:
+    def _clear_device_help_widget(
+        self, device_help_widget: QWidget, destroyed_widget: QObject | None = None
+    ) -> None:
         """Clear the cached device instructions window after it closes."""
         _ = destroyed_widget
-        self._device_help_widget = None
+        if self._device_help_widget is device_help_widget:
+            self._device_help_widget = None
 
     def _request_show_register_multisig(self) -> None:
         """Request the multisig registration dialog from the owner."""

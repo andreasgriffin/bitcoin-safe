@@ -305,6 +305,29 @@ def test_device_instructions_open_in_top_level_window(qtbot: QtBot, loop_in_thre
     assert widget._device_help_widget.isWindow()
 
 
+def test_device_instruction_cleanup_ignores_previous_window(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+
+    widget.show_device_instructions()
+    first_window = widget._device_help_widget
+
+    widget.show_device_instructions()
+    second_window = widget._device_help_widget
+
+    assert first_window is not None
+    assert second_window is not None
+    assert second_window is not first_window
+
+    widget._clear_device_help_widget(first_window)
+    assert widget._device_help_widget is second_window
+
+    widget._clear_device_help_widget(second_window)
+    assert widget._device_help_widget is None
+
+
 def test_keystore_ui_read_only_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread, read_only_mode=True)
     keystore = create_test_seed_keystores(
