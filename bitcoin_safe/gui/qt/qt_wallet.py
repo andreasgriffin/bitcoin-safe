@@ -2179,7 +2179,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             logger.info(self.tr("No file selected"))
             return
 
-        with open(file_path, "w") as file:
+        with open(file_path, "w", encoding="utf-8") as file:
             file.write(s)
 
     def export_labels(self) -> None:
@@ -2195,7 +2195,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             logger.info(self.tr("No file selected"))
             return
 
-        with open(file_path, "w") as file:
+        with open(file_path, "w", encoding="utf-8") as file:
             file.write(s)
 
     def import_bip329_labels(self) -> None:

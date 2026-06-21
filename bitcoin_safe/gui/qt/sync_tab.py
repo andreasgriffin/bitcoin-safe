@@ -97,7 +97,9 @@ class BackupNsecNotificationBar(NotificationBar):
         if not filename:
             return None
 
-        with open(filename, "w") as file:
+        # Use UTF-8 explicitly because Windows may default to cp1252, which cannot
+        # encode some translated strings such as U+2011 (non-breaking hyphen).
+        with open(filename, "w", encoding="utf-8") as file:
             file.write(
                 self.tr("Sync key of wallet {wallet_id}:  {nsec}").format(
                     wallet_id=self.wallet_id, nsec=self.nsec

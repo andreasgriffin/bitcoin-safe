@@ -469,9 +469,9 @@ class SankeyWidget(QWidget):
 
         self.draw_content(QPainter(generator), workaround_for_svg=True)
 
-        with open(str(filename)) as file:
+        with open(str(filename), encoding="utf-8") as file:
             contents = file.read()
-        with open(str(filename), "w") as file:
+        with open(str(filename), "w", encoding="utf-8") as file:
             defs = ""
             for color_name, (start_color, end_color) in self.gradient_dict.items():
                 gradient_name = f"linear{color_name.lstrip('#')}"

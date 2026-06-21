@@ -111,7 +111,7 @@ def export_recipients_csv(
             return None
 
     path = Path(file_path)
-    with path.open("w", newline="") as file:
+    with path.open("w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerows(recipients_to_csv_rows(recipients=recipients, network=network))
 

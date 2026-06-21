@@ -30,7 +30,9 @@
 from __future__ import annotations
 
 import enum
+from pathlib import Path
 
+import pytest
 from PyQt6.QtCore import QModelIndex
 from PyQt6.QtGui import QStandardItem
 from pytestqt.qtbot import QtBot
@@ -136,3 +138,16 @@ def test_colorcorrectedtreeview_keeps_managed_override_when_stylesheet_changes(
     assert "QTreeView { border: none; }" in tree_view.styleSheet()
     assert f'QTreeView[objectName="{tree_view.objectName()}"]::item:selected' in tree_view.styleSheet()
     assert tree_view.objectName().startswith("ColorCorrectedTreeView.")
+
+
+def test_mytreeview_csv_export_writes_utf8(tmp_path: Path, test_config: UserConfig) -> None:
+    tree_view = DummyTreeView(config=test_config)
+    tree_view.append_row(text="Sync\u2011label", key="sync")
+
+    file_path = tree_view.proxy.csv_drag_keys_to_file_path(file_path=str(tmp_path / "export.csv"))
+    exported_csv = Path(file_path).read_text(encoding="utf-8")
+
+    with pytest.raises(UnicodeEncodeError):
+        exported_csv.encode("cp1252")
+
+    assert "Sync\u2011label" in exported_csv

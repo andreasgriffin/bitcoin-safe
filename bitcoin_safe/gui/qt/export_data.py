@@ -972,7 +972,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         if not filename:
             return None
 
-        with open(filename, "w") as file:
+        with open(filename, "w", encoding="utf-8") as file:
             file.write(s)
         return filename
 
