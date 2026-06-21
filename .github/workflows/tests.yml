@@ -10,6 +10,29 @@ on:
   workflow_dispatch:
 
 jobs:
+  deterministic-build-compile-check:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Rebuild deterministic build requirements
+        run: bash tools/deterministic-build/compile.sh
+
+      - name: Fail if deterministic build files changed
+        run: |
+          set -euo pipefail
+          if [ -n "$(git status --short)" ]; then
+            echo "Running tools/deterministic-build/compile.sh produced changes:"
+            git status --short
+            git --no-pager diff
+            exit 1
+          fi
+
   linux-tests:
     strategy:
       matrix:
