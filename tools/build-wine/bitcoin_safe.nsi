@@ -7,9 +7,10 @@
 ;Variables
 
   Var RunningInstalledApp
-  Var ProcessCheckExitCode
-  Var ProcessCheckOutput
   Var ProcessCheckAttemptsLeft
+  Var InstalledExeSearchHandle
+  Var InstalledExeName
+  Var InstalledExePath
 
   !define PRODUCT_NAME "Bitcoin Safe"
   !define PRODUCT_WEB_SITE "https://github.com/andreasgriffin/bitcoin-safe"
@@ -100,17 +101,25 @@
 Function DetectRunningInstalledApp
   StrCpy $RunningInstalledApp "0"
 
-  IfFileExists "$INSTDIR\bitcoin_safe-*.exe" 0 done
-  IfFileExists "$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" 0 done
+  FindFirst $InstalledExeSearchHandle $InstalledExeName "$INSTDIR\bitcoin_safe-*.exe"
+  IfErrors done
 
-  System::Call 'Kernel32::SetEnvironmentVariable(t, t)i("BITCOIN_SAFE_INSTALL_DIR", "$INSTDIR").r0'
-  nsExec::ExecToStack '"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "$$ErrorActionPreference = ''Stop''; $$installDir = [System.IO.Path]::GetFullPath($$env:BITCOIN_SAFE_INSTALL_DIR); $$prefix = $$installDir.TrimEnd(''\'') + ''\''; $$running = Get-CimInstance Win32_Process | Where-Object { $$path = $$_.ExecutablePath; $$name = [System.IO.Path]::GetFileName($$path); $$path -and $$path.StartsWith($$prefix, [System.StringComparison]::OrdinalIgnoreCase) -and $$name -like ''bitcoin_safe-*.exe'' } | Select-Object -First 1; if ($$running) { ''running'' } else { ''stopped'' }"'
-  Pop $ProcessCheckExitCode
-  Pop $ProcessCheckOutput
-  ${If} $ProcessCheckExitCode == "0"
-  ${AndIf} $ProcessCheckOutput == "running"
+check_next_exe:
+  StrCpy $InstalledExePath "$INSTDIR\$InstalledExeName"
+  System::Call 'kernel32::CreateFileW(w "$InstalledExePath", i 0x40000000, i 0, i 0, i 3, i 0x80, i 0) i.r0'
+  ${If} $0 == -1
     StrCpy $RunningInstalledApp "1"
+    FindClose $InstalledExeSearchHandle
+    Return
   ${EndIf}
+
+  System::Call 'kernel32::CloseHandle(i r0)'
+  FindNext $InstalledExeSearchHandle $InstalledExeName
+  IfErrors done_find
+  Goto check_next_exe
+
+done_find:
+  FindClose $InstalledExeSearchHandle
 done:
 FunctionEnd
 
