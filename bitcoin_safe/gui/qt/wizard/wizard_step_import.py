@@ -179,8 +179,8 @@ class ImportXpubs(BaseTab):
             self._ensure_keystore_uis()
         if should_be_visible and self.keystore_uis:
             self.keystore_uis.set_keystore_ui_from_protowallet()
-            if not self.keystore_uis.focus_first_unselected_brand_selector():
-                self.set_current_signer(min(self.keystore_uis.currentIndex(), self.keystore_uis.count() - 1))
+            self.set_current_signer(min(self.keystore_uis.currentIndex(), self.keystore_uis.count() - 1))
+            self.keystore_uis.focus_first_unselected_brand_selector()
 
     def close(self) -> None:
         """Close."""
