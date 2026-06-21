@@ -366,7 +366,7 @@ class MySortModel(QSortFilterProxyModel):
                 prefix=f"{self.drag_key} ",
             )
 
-        with os.fdopen(file_descriptor, "w") as file:
+        with os.fdopen(file_descriptor, "w", encoding="utf-8") as file:
             file.write(csv_string)
 
         logger.debug(f"CSV Table saved to {file_path}")
