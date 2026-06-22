@@ -140,6 +140,15 @@ def test_selecting_device_type_updates_header_label_before_xpub(
     assert widget.header_title.text() == HardwareSigners.krux_diy.display_name
 
 
+def test_update_ui_keeps_selected_signer_name_in_header(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+    widget.updateUi()
+
+    assert widget.header_title.text() == HardwareSigners.krux_diy.display_name
+
+
 def test_keystore_ui_empty_state_hides_seed_on_mainnet(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread, network=bdk.Network.BITCOIN)
     _select_signer(widget, HardwareSigners.krux_diy.id)

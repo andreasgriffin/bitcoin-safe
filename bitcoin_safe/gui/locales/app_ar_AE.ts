@@ -1864,11 +1864,6 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Add New Signer</source>
-			<translation>إضافة موقّع جديد</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
 			<source>Bluetooth</source>
 			<translation>Bluetooth</translation>
 		</message>
@@ -2006,6 +2001,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>اختر طراز الموقّع</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>حدد المُوقّع الخاص بك</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>

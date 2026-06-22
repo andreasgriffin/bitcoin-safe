@@ -1863,11 +1863,6 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Add New Signer</source>
-			<translation>လက်မှတ်ရေးထိုးသူ အသစ် ထည့်ရန်</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
 			<source>Bluetooth</source>
 			<translation>Bluetooth</translation>
 		</message>
@@ -2005,6 +2000,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>လက်မှတ်ထိုးသူ မော်ဒယ် ရွေးပါ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>သင့်လက်မှတ်ထိုးသူကို ရွေးချယ်ပါ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
