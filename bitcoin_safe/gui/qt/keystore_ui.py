@@ -185,6 +185,14 @@ class KeyStoreUI(CardBase):
             return
         self.set_hardware_signer_label(self._fallback_hardware_signer_label)
 
+    def _header_title_text(self) -> str:
+        """Return the current header title for the signer card."""
+        return (
+            self.tr("Select your signer")
+            if self.selected_hardware_signer is None
+            else self.hardware_signer_label
+        )
+
     def _build_widgets(self) -> None:
         self.card_frame = self
         self.card_layout = self.root_layout
@@ -1060,9 +1068,7 @@ class KeyStoreUI(CardBase):
         )
         self.edit_seed.input_field.display_name = self.label_seed.textLabel.text()
 
-        self.header_title.setText(
-            self.tr("Select your signer") if self.state == KeyStoreUiState.Add else self.hardware_signer_label
-        )
+        self.header_title.setText(self._header_title_text())
         self.textEdit_description.setPlaceholderText(
             self.tr("Write here notes relative to this signer, memos, etc...")
         )
