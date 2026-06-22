@@ -166,7 +166,6 @@ class KeyStoreUI(CardBase):
         self._build_widgets()
         self._connect_signals()
         self.updateUi()
-        self._apply_state()
 
     def set_hardware_signer_label(self, value: str) -> None:
         """Update the derived signer label used by the UI and USB workflows."""
@@ -405,13 +404,13 @@ class KeyStoreUI(CardBase):
             cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self.format_all_fields
         )
         self.signal_tracker.connect(
-            cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged), self._apply_state
+            cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged), self.updateUi
         )
         self.signal_tracker.connect(
-            cast(SignalProtocol[[]], self.edit_fingerprint.input_field.textChanged), self._apply_state
+            cast(SignalProtocol[[]], self.edit_fingerprint.input_field.textChanged), self.updateUi
         )
         self.signal_tracker.connect(
-            cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self._apply_state
+            cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self.updateUi
         )
         self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.textEdit_description.textChanged), self._update_header_subtitle
@@ -553,7 +552,7 @@ class KeyStoreUI(CardBase):
         self._device_type_editing = True
         self.counter_register_button_clicked = 0
         self._set_combo_selection(self.selected_hardware_signer)
-        self._apply_state()
+        self.updateUi()
 
     def _analysis_fields(self) -> list[AnalyzerLineEdit | AnalyzerTextEdit]:
         """Return the fields contributing to signer validation state."""
@@ -594,7 +593,7 @@ class KeyStoreUI(CardBase):
         self.counter_register_button_clicked = 0
         self.set_selected_hardware_signer(hardware_signer)
         self.signal_ui_changed.emit()
-        self._apply_state()
+        self.updateUi()
 
     def _update_header_icon(self) -> None:
         self.header_icon.setStyleSheet("")
@@ -672,14 +671,14 @@ class KeyStoreUI(CardBase):
         if self.is_expanded:
             return
         super().expand()
-        self._apply_state()
+        self.updateUi()
 
     def collapse(self) -> None:
         """Show only the signer card header."""
         if not self.is_expanded:
             return
         super().collapse()
-        self._apply_state()
+        self.updateUi()
 
     def _update_header_clickability(self) -> None:
         self._update_header_cursor()
@@ -749,9 +748,6 @@ class KeyStoreUI(CardBase):
         for button in self.edit_seed.button_container.buttons:
             button.setVisible(not read_only_fields and show_seed_input)
 
-        self.header_title.setText(
-            self.tr("Add New Signer") if self.state == KeyStoreUiState.Add else self.hardware_signer_label
-        )
         self._update_header_icon()
         self._update_connect_buttons(connect_visible=connect_visible)
         self._update_help_visibility()
@@ -819,7 +815,7 @@ class KeyStoreUI(CardBase):
     def _request_show_register_multisig(self) -> None:
         """Request the multisig registration dialog from the owner."""
         self.counter_register_button_clicked += 1
-        self._apply_state()
+        self.updateUi()
         self.request_show_register_multisig.emit(self.selected_hardware_signer)
 
     def on_edit_seed_changed(self, text: str) -> None:
@@ -947,7 +943,7 @@ class KeyStoreUI(CardBase):
         self.edit_xpub.setText(signer_info.xpub)
         self.key_origin = signer_info.key_origin
         self.edit_fingerprint.setText(signer_info.fingerprint)
-        self._apply_state()
+        self.updateUi()
 
     def _get_signer_info_from_descriptor(self, data: Data) -> SignerInfo | None:
         """Decode descriptor-like data into signer info when possible."""
@@ -1065,7 +1061,7 @@ class KeyStoreUI(CardBase):
         self.edit_seed.input_field.display_name = self.label_seed.textLabel.text()
 
         self.header_title.setText(
-            self.tr("Add New Signer") if self.state == KeyStoreUiState.Add else self.hardware_signer_label
+            self.tr("Select your signer") if self.state == KeyStoreUiState.Add else self.hardware_signer_label
         )
         self.textEdit_description.setPlaceholderText(
             self.tr("Write here notes relative to this signer, memos, etc...")
@@ -1182,7 +1178,7 @@ class KeyStoreUI(CardBase):
                 self.edit_seed.setText(mnemonic)
 
         self._device_type_editing = False
-        self._apply_state()
+        self.updateUi()
 
     def close(self) -> bool:
         """Close."""
