@@ -1870,11 +1870,6 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Add New Signer</source>
-			<translation>添加新签名器</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
 			<source>Bluetooth</source>
 			<translation>蓝牙</translation>
 		</message>
@@ -2012,6 +2007,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>选择签名器型号</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>选择你的签名器</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>

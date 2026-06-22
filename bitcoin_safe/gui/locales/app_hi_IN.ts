@@ -1864,11 +1864,6 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Add New Signer</source>
-			<translation>नया साइनर जोड़ें</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
 			<source>Bluetooth</source>
 			<translation>Bluetooth</translation>
 		</message>
@@ -2006,6 +2001,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>साइनर मॉडल चुनें</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>अपना हस्ताक्षरकर्ता चुनें</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>

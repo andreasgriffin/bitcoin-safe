@@ -1866,11 +1866,6 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Add New Signer</source>
-			<translation>Thêm Người ký Mới</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
 			<source>Bluetooth</source>
 			<translation>Bluetooth</translation>
 		</message>
@@ -2008,6 +2003,11 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		<message>
 			<source>Select the signer model</source>
 			<translation>Chọn mẫu người ký</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>Chọn người ký của bạn</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>

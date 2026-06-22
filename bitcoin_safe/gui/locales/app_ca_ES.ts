@@ -1865,11 +1865,6 @@ ja que la mida final de la transacció és desconeguda.</translation>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Add New Signer</source>
-			<translation>Afegeix nou signador</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
 			<source>Bluetooth</source>
 			<translation>Bluetooth</translation>
 		</message>
@@ -2007,6 +2002,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Select the signer model</source>
 			<translation>Selecciona el model del signant</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>Seleccioneu el vostre signador</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>

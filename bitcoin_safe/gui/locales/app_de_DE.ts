@@ -1870,11 +1870,6 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Add New Signer</source>
-			<translation>Neuen Signierer hinzufügen</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
 			<source>Bluetooth</source>
 			<translation>Bluetooth</translation>
 		</message>
@@ -2012,6 +2007,11 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<message>
 			<source>Select the signer model</source>
 			<translation>Signer-Modell auswählen</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>Wähle deinen Signierer aus</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>

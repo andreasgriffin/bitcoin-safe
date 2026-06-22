@@ -619,7 +619,8 @@
 		<message>
 			<source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>பெற்றோர் பரிவர்த்தனையை இழுக்க இந்த கட்டணத்துடன் உங்கள் மாற்றுத் தொகையைச் செலவிடவும் (CPFP). இணைந்த parent+child கட்டண விகிதம் இலக்கு block-ஐச் சந்திக்க வேண்டும்.</translation>
+			<translation>பெற்றோர் பரிவர்த்தனையை இழுக்க இந்த கட்டணத்துடன் உங்கள் மாற்றுத் தொகையைச் செலவிடவும் (CPFP).
+இணைந்த parent+child கட்டண விகிதம் இலக்கு block-ஐச் சந்திக்க வேண்டும்.</translation>
 		</message>
 	</context>
 	<context>
@@ -721,13 +722,15 @@ The combined parent+child fee rate should meet the target block.</source>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>{used_addresses} முகவரிகளில், ஏற்கனவே பிற முகவரிகளுடன் இணைக்கும் பரிவர்த்தனைகள் உள்ளன. வகையை மாற்ற விரும்புகிறீர்களா?</translation>
+			<translation>{used_addresses}
+முகவரிகளில், ஏற்கனவே பிற முகவரிகளுடன் இணைக்கும் பரிவர்த்தனைகள் உள்ளன. வகையை மாற்ற விரும்புகிறீர்களா?</translation>
 		</message>
 		<name>CategoryManager</name>
 		<message>
 			<source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>{used_addresses} முகவரிகளில், ஏற்கனவே பிற முகவரிகளுடன் இணைக்கும் பரிவர்த்தனைகள் உள்ளன. அவற்றின் வகையை மாற்ற விரும்புகிறீர்களா?</translation>
+			<translation>{used_addresses}
+முகவரிகளில், ஏற்கனவே பிற முகவரிகளுடன் இணைக்கும் பரிவர்த்தனைகள் உள்ளன. அவற்றின் வகையை மாற்ற விரும்புகிறீர்களா?</translation>
 		</message>
 	</context>
 	<context>
@@ -1147,7 +1150,7 @@ Default 20</source>
 		<name>DeviceManager</name>
 		<message>
 			<source>Untrusted</source>
-			<translation>நம்பகமற்றது </translation>
+			<translation>நம்பகமற்றது</translation>
 		</message>
 	</context>
 	<context>
@@ -1457,7 +1460,8 @@ Default 20</source>
 		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
-			<translation>பரிவர்த்தனையின் இறுதி அளவு தெரியாததால், கட்டண விகிதத்தை துல்லியமாக அறிய முடியாது.</translation>
+			<translation>பரிவர்த்தனையின் இறுதி அளவு தெரியாததால்,
+கட்டண விகிதத்தை துல்லியமாக அறிய முடியாது.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1507,7 +1511,8 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>பரிவர்த்தனை கட்டணம்: {fee}, மேலும் {sent} அனுப்பப்படுகிறது!</translation>
+			<translation>பரிவர்த்தனை கட்டணம்:
+{fee}, மேலும் {sent} அனுப்பப்படுகிறது!</translation>
 		</message>
 		<name>FeeWarningBar</name>
 		<message>
@@ -1860,11 +1865,6 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>Add New Signer</source>
-			<translation>புதிய Signer சேர்க்கவும்</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
 			<source>Bluetooth</source>
 			<translation>Bluetooth</translation>
 		</message>
@@ -2005,6 +2005,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Select your signer</source>
+			<translation>உங்கள் கையொப்பமிடுபவரைத் தேர்ந்தெடுக்கவும்</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>தேர்ந்தெடுக்கப்பட்ட முகவரி வகை {type} க்கான நிலையானது {expected_key_origin}. உறுதியாக தெரியாவிட்டால் திருத்தவும்.</translation>
 		</message>
@@ -2013,7 +2018,8 @@ since the final size of the transaction is unknown.</source>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>8 இலக்க fingerprint seed-ஐ அடையாளம் காண்கிறது. வெவ்வேறு seeds மற்றும் signing devices-ஐ கண்காணிக்க, அதை hardware signer மீது எழுதலாம்.</translation>
+			<translation>8 இலக்க fingerprint seed-ஐ அடையாளம் காண்கிறது.
+வெவ்வேறு seeds மற்றும் signing devices-ஐ கண்காணிக்க, அதை hardware signer மீது எழுதலாம்.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2025,7 +2031,8 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 		<message>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>seed என்பது பரிவர்த்தனை கையொப்பமிடலை செயல்படுத்தும் ரகசியம். single signature wallet-க்கு அது நிதிகளின் முழு கட்டுப்பாட்டையும் அளிக்கிறது.</translation>
+			<translation>seed என்பது பரிவர்த்தனை கையொப்பமிடலை செயல்படுத்தும் ரகசியம்.
+single signature wallet-க்கு அது நிதிகளின் முழு கட்டுப்பாட்டையும் அளிக்கிறது.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2071,7 +2078,8 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>{msg}
 Do you want to proceed anyway?</source>
-			<translation>{msg} இருந்தும் தொடர விரும்புகிறீர்களா?</translation>
+			<translation>{msg}
+இருந்தும் தொடர விரும்புகிறீர்களா?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2190,7 +2198,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation>sender wallet-ஐ திறந்து இந்த transaction-ஐ edit செய்யவும்.</translation>
+			<translation> sender wallet-ஐ திறந்து இந்த transaction-ஐ edit செய்யவும்.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2430,7 +2438,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>A wallet with id {name} is already open.  </source>
-			<translation>{id {name} உடைய wallet ஏற்கனவே திறந்துள்ளது.</translation>
+			<translation>{id {name} உடைய wallet ஏற்கனவே திறந்துள்ளது.  </translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2541,7 +2549,8 @@ Do you want to proceed anyway?</source>
 		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
-			<translation>Bitcoin Mainnet இல் hot wallets முடக்கப்பட்டுள்ளன. உண்மையான Bitcoin பயன்படுத்தாமல் Bitcoin Safe-ஐ சோதிக்க Testnet-க்கு மாறலாம்.</translation>
+			<translation>Bitcoin Mainnet இல் hot wallets முடக்கப்பட்டுள்ளன.
+உண்மையான Bitcoin பயன்படுத்தாமல் Bitcoin Safe-ஐ சோதிக்க Testnet-க்கு மாறலாம்.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2782,7 +2791,8 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		<message>
 			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-			<translation>இந்த பணப்பை இன்னும் syncing நிலையில் உள்ளது, அதை மூடினால் syncing மீண்டும் தொடங்க வேண்டியிருக்கும். பணப்பையை திறந்தே வைத்திருக்க விரும்புகிறீர்களா?</translation>
+			<translation>இந்த பணப்பை இன்னும் syncing நிலையில் உள்ளது, அதை மூடினால் syncing மீண்டும் தொடங்க வேண்டியிருக்கும்.
+பணப்பையை திறந்தே வைத்திருக்க விரும்புகிறீர்களா?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2828,7 +2838,8 @@ Do you want to keep the wallet open?</source>
 		<message>
 			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-			<translation>பணப்பைகள் இன்னும் syncing நிலையில் உள்ளன, app-ஐ மூடினால் syncing மீண்டும் தொடங்க வேண்டியிருக்கும். அதற்கு பதிலாக tray-க்கு மறைக்க விரும்புகிறீர்களா?</translation>
+			<translation>பணப்பைகள் இன்னும் syncing நிலையில் உள்ளன, app-ஐ மூடினால் syncing மீண்டும் தொடங்க வேண்டியிருக்கும்.
+அதற்கு பதிலாக tray-க்கு மறைக்க விரும்புகிறீர்களா?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2969,7 +2980,10 @@ Do you want to hide to tray instead?</source>
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>குறிப்பிட்ட block வெட்டப்படும் வரை தாமதிக்க block உயரத்தைப் பயன்படுத்தவும். குறிப்பிட்ட network time (median-time-past) வரை தாமதிக்க தேதி/நேரத்தைப் பயன்படுத்தவும். Median-time-past என்பது கடைசி 11 blocks இன் median timestamp ஆகும், எனவே இது பொதுவாக tip-ஐ விட சுமார் {minutes} நிமிடங்கள் பின்தங்கியிருக்கும்.</translation>
+			<translation>குறிப்பிட்ட block வெட்டப்படும் வரை தாமதிக்க block உயரத்தைப் பயன்படுத்தவும்.
+குறிப்பிட்ட network time (median-time-past) வரை தாமதிக்க தேதி/நேரத்தைப் பயன்படுத்தவும்.
+Median-time-past என்பது கடைசி 11 blocks இன் median timestamp ஆகும்,
+எனவே இது பொதுவாக tip-ஐ விட சுமார் {minutes} நிமிடங்கள் பின்தங்கியிருக்கும்.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3098,7 +3112,7 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;   </translation>
+			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3124,7 +3138,8 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>கட்டமைக்கப்பட்ட server: {server} இருப்பிடம் கிடைக்கவில்லை.</translation>
+			<translation>கட்டமைக்கப்பட்ட server: {server}
+இருப்பிடம் கிடைக்கவில்லை.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3266,7 +3281,9 @@ received from these peers via the bitcoin network.</source>
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>server connection-இல் பிழை. {responses} இருந்தும் தொடர விரும்புகிறீர்களா?</translation>
+			<translation>server connection-இல் பிழை.
+{responses}
+இருந்தும் தொடர விரும்புகிறீர்களா?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3317,7 +3334,8 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Optional list of peers (one per line) the listener should try first.
 Keep it empty to rely on automatic peer discovery.</source>
-			<translation>listener முதலில் முயற்சிக்க வேண்டிய peers-ன் விருப்பப்பட்டியல் (ஒவ்வொரு வரியிலும் ஒன்று). automatic peer discovery-ஐ நம்ப இதை காலியாக விடவும்.</translation>
+			<translation>listener முதலில் முயற்சிக்க வேண்டிய peers-ன் விருப்பப்பட்டியல் (ஒவ்வொரு வரியிலும் ஒன்று).
+automatic peer discovery-ஐ நம்ப இதை காலியாக விடவும்.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3359,7 +3377,9 @@ Keep it empty to rely on automatic peer discovery.</source>
 			<source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>Responses: {name}: {status} Mempool Instance: {server}</translation>
+			<translation>Responses:
+{name}: {status}
+Mempool Instance: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3390,7 +3410,10 @@ are not resolved through the proxy in this version.</source>
 It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
 Connected peers do not learn anything about your wallet or your transactions.
 Using more peers improves coverage but uses more bandwidth and connections.</source>
-			<translation>Bitcoin peers-க்கு listener ஒரே நேரத்தில் எத்தனை connections அமைக்கும் என்பதை இது நிர்ணயிக்கிறது. app இயங்கும் போது broadcast ஆகும் பரிவர்த்தனைகளையே இது கேட்கும், எனவே startup க்கு முன் mempools-இல் இருந்த எதையும் இது தவறவிடும். இணைக்கப்பட்ட peers உங்கள் wallet அல்லது உங்கள் பரிவர்த்தனைகள் பற்றி எதையும் அறியாது. அதிக peers பயன்படுத்துவது coverage-ஐ மேம்படுத்தும் ஆனால் bandwidth மற்றும் connections அதிகமாக பயன்படுத்தும்.</translation>
+			<translation>Bitcoin peers-க்கு listener ஒரே நேரத்தில் எத்தனை connections அமைக்கும் என்பதை இது நிர்ணயிக்கிறது.
+app இயங்கும் போது broadcast ஆகும் பரிவர்த்தனைகளையே இது கேட்கும், எனவே startup க்கு முன் mempools-இல் இருந்த எதையும் இது தவறவிடும்.
+இணைக்கப்பட்ட peers உங்கள் wallet அல்லது உங்கள் பரிவர்த்தனைகள் பற்றி எதையும் அறியாது.
+அதிக peers பயன்படுத்துவது coverage-ஐ மேம்படுத்தும் ஆனால் bandwidth மற்றும் connections அதிகமாக பயன்படுத்தும்.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3862,7 +3885,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<name>QTWallet</name>
 		<message>
 			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>TxID(s)-ஆல் மாற்றப்பட்டது: {new_txid}</translation>
+			<translation>  TxID(s)-ஆல் மாற்றப்பட்டது: {new_txid}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -3874,7 +3897,9 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>TxID: {txid} {replaced_by_block} என்ன நடந்தது: {happened_text}</translation>
+			<translation>TxID: {txid}
+{replaced_by_block}
+என்ன நடந்தது: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4020,7 +4045,8 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>New transaction in wallet '{wallet}':
 {txs}</source>
-			<translation>புதிய transaction in wallet '{wallet}': {txs}</translation>
+			<translation>புதிய transaction in wallet '{wallet}':
+{txs}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4085,7 +4111,10 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 
 Saved copies to:
 {path}</source>
-			<translation>Wallet '{wallet}' இல் Transaction(s) அகற்றப்பட்டது: {txs} Saved copies to: {path}</translation>
+			<translation>Wallet '{wallet}' இல் Transaction(s) அகற்றப்பட்டது:
+{txs}
+Saved copies to:
+{path}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4118,7 +4147,9 @@ Saved copies to:
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>transactions {} unconfirmed in-mempool ஆக மட்டுமே சேர்க்கப்பட முடியும். இருந்தும் தொடர விரும்புகிறீர்களா?</translation>
+			<translation>transactions
+{}
+unconfirmed in-mempool ஆக மட்டுமே சேர்க்கப்பட முடியும். இருந்தும் தொடர விரும்புகிறீர்களா?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4135,7 +4166,8 @@ Do you want to continue anyway?</source>
 			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>இது wallet view-இலிருந்து transaction-ஐ மட்டும் அகற்றும். இது ஏற்கனவே Bitcoin network-க்கு broadcast செய்யப்பட்டுள்ளதால், இன்னும் confirm ஆக வாய்ப்புள்ளது. இருந்தும் wallet-இலிருந்து அகற்ற விரும்புகிறீர்களா?</translation>
+			<translation>இது wallet view-இலிருந்து transaction-ஐ மட்டும் அகற்றும்.
+இது ஏற்கனவே Bitcoin network-க்கு broadcast செய்யப்பட்டுள்ளதால், இன்னும் confirm ஆக வாய்ப்புள்ளது. இருந்தும் wallet-இலிருந்து அகற்ற விரும்புகிறீர்களா?</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -4176,7 +4208,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>{number} new transactions in wallet '{wallet}':
 {txs}</source>
-			<translation>wallet '{wallet}' இல் {number} புதிய transactions: {txs}</translation>
+			<translation>wallet '{wallet}' இல் {number} புதிய transactions:
+{txs}</translation>
 		</message>
 	</context>
 	<context>
@@ -4208,7 +4241,8 @@ Do you want to remove it from the wallet anyway?</source>
 		<message>
 			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>காட்டப்பட்ட இலக்கு வேகத்தில் replacement (RBF) transaction உருவாக்க இந்த fee-ஐ பயன்படுத்தவும். Outputs மாறாது; fee மட்டும் மாறும்.</translation>
+			<translation>காட்டப்பட்ட இலக்கு வேகத்தில் replacement (RBF) transaction உருவாக்க இந்த fee-ஐ பயன்படுத்தவும்.
+Outputs மாறாது; fee மட்டும் மாறும்.</translation>
 		</message>
 	</context>
 	<context>
@@ -4248,7 +4282,8 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;ஏன்?&lt;/b&gt; &lt;br&gt; நிதிகளை நீங்கள் கட்டுப்படுத்துகிறீர்களா என்பதை அறிய, wallet-இலிருந்து செலவிடுவதை test செய்ய வேண்டும். &lt;br&gt; ஆகவே wallet-க்கு கணிசமான அளவு Bitcoin அனுப்புவதற்கு முன், wallet-இலிருந்து செலவிட்டு அனைத்து signers-ஐ test செய்வது &lt;b&gt;மிக அவசியம்&lt;/b&gt;.</translation>
+			<translation>&lt;br&gt;&lt;b&gt;ஏன்?&lt;/b&gt; &lt;br&gt; நிதிகளை நீங்கள் கட்டுப்படுத்துகிறீர்களா என்பதை அறிய, wallet-இலிருந்து செலவிடுவதை test செய்ய வேண்டும்.
+&lt;br&gt; ஆகவே wallet-க்கு கணிசமான அளவு Bitcoin அனுப்புவதற்கு முன், wallet-இலிருந்து செலவிட்டு அனைத்து signers-ஐ test செய்வது &lt;b&gt;மிக அவசியம்&lt;/b&gt;.                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4533,7 +4568,8 @@ Outputs stay the same; only the fee changes.</source>
 		<message>
 			<source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>backup paper-இல் உள்ள {number} words-ஐ hardware signer-உடன் ஒப்பிடவும். இங்கே தவறு செய்தால், உங்கள் பணம் இழக்கப்படும்!</translation>
+			<translation>backup paper-இல் உள்ள {number} words-ஐ hardware signer-உடன் ஒப்பிடவும்.
+இங்கே தவறு செய்தால், உங்கள் பணம் இழக்கப்படும்!</translation>
 		</message>
 	</context>
 	<context>
@@ -4932,7 +4968,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SyncChatToolButton</name>
 		<message>
 			<source>Share with trusted devices</source>
-			<translation>trusted devices உடன் பகிரவும் </translation>
+			<translation>trusted devices உடன் பகிரவும்</translation>
 		</message>
 	</context>
 	<context>
@@ -4990,7 +5026,8 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>இந்த wallet கடைசியாக மற்றொரு computer-இல் பயன்படுத்தப்பட்டது. இரண்டையும் தொடர்ந்து பயன்படுத்த விரும்பினால், Chat &amp; Sync sync key (nsec)-ஐ இப்போது reset செய்யவும்.</translation>
+			<translation>இந்த wallet கடைசியாக மற்றொரு computer-இல் பயன்படுத்தப்பட்டது.
+இரண்டையும் தொடர்ந்து பயன்படுத்த விரும்பினால், Chat &amp; Sync sync key (nsec)-ஐ இப்போது reset செய்யவும்.</translation>
 		</message>
 		<name>SyncClient</name>
 		<message>
@@ -5310,7 +5347,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxidLabel</name>
 		<message>
 			<source>Txid: </source>
-			<translation>Txid:</translation>
+			<translation>Txid: </translation>
 		</message>
 		<name>TxidLabel</name>
 		<message>
@@ -5356,7 +5393,9 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 {sync_key}
 
  Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>உங்கள் sync key: {sync_key} அதை சேமிக்கவும், 'import sync key' கிளிக் செய்தால் nostr relays இலிருந்து உங்கள் labels மீட்டமைக்கப்பட வேண்டும்.</translation>
+			<translation>உங்கள் sync key:
+{sync_key}
+அதை சேமிக்கவும், 'import sync key' கிளிக் செய்தால் nostr relays இலிருந்து உங்கள் labels மீட்டமைக்கப்பட வேண்டும்.</translation>
 		</message>
 	</context>
 	<context>
@@ -5410,7 +5449,8 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		<message>
 			<source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>fee rate-ஐ குறைந்தது {minimum} ஆக மாற்றவும், இல்லையெனில் நீங்கள் அதை broadcast செய்ய முடியாமல் போகலாம்.</translation>
+			<translation>fee rate-ஐ குறைந்தது {minimum} ஆக மாற்றவும்,
+இல்லையெனில் நீங்கள் அதை broadcast செய்ய முடியாமல் போகலாம்.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5468,7 +5508,7 @@ txid:outpoint</source>
 		<name>UITx_Viewer</name>
 		<message>
 			<source>Label: </source>
-			<translation>Label:</translation>
+			<translation>Label: </translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5484,7 +5524,8 @@ txid:outpoint</source>
 		<message>
 			<source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>transaction-ஐ broadcast செய்ய முதலில் wallet-ஐ திறக்கவும். அல்லது {url} வழியாக broadcast செய்யலாம்</translation>
+			<translation>transaction-ஐ broadcast செய்ய முதலில் wallet-ஐ திறக்கவும்.
+அல்லது {url} வழியாக broadcast செய்யலாம்</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5515,7 +5556,8 @@ Or you can broadcast via {url}</source>
 		<message>
 			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>இந்த transaction இன்னும் செல்லுபடியாகவில்லை (nLocktime set). Broadcasting தோல்வியடையும். இருந்தும் broadcast செய்ய விரும்புகிறீர்களா?</translation>
+			<translation>இந்த transaction இன்னும் செல்லுபடியாகவில்லை (nLocktime set).
+Broadcasting தோல்வியடையும். இருந்தும் broadcast செய்ய விரும்புகிறீர்களா?</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5757,7 +5799,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>Update file verify செய்யப்பட்டது, ஆனால் automatic install செய்யப்படவில்லை: {reason}</translation>
+			<translation>Update file verify செய்யப்பட்டது, ஆனால் automatic install செய்யப்படவில்லை:
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -6195,7 +6238,7 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source> and </source>
-			<translation>மற்றும்</translation>
+			<translation> மற்றும் </translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6336,7 +6379,9 @@ Do you want to broadcast anyway?</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}</source>
-			<translation>{source} {endpoint_label}: {ip} நாடு: {country}</translation>
+			<translation>{source}
+{endpoint_label}: {ip}
+நாடு: {country}</translation>
 		</message>
 	</context>
 	<context>
@@ -7494,7 +7539,7 @@ Country: {country}</source>
 		<name>net_conf</name>
 		<message>
 			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>உங்கள் bitcoind-ஐ "bitcoind -chain=signet" உடன் run செய்யவும்</translation>
+			<translation>உங்கள் bitcoind-ஐ "bitcoind -chain=signet" உடன் run செய்யவும்  </translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7515,7 +7560,8 @@ Country: {country}</source>
 		<message>
 			<source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-			<translation>server உங்கள் IP address-ஐ wallet addresses உடன் associate செய்ய முடியும். {link} போன்ற உங்கள் சொந்த server-ஐ பயன்படுத்துவது சிறந்தது.</translation>
+			<translation>server உங்கள் IP address-ஐ wallet addresses உடன் associate செய்ய முடியும்.
+{link} போன்ற உங்கள் சொந்த server-ஐ பயன்படுத்துவது சிறந்தது.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -7574,7 +7620,9 @@ It is best to use your own server, such as {link}.</source>
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>புதியதாக broadcast செய்யப்பட்ட transactions-ஐ உடனடியாக கண்டறிய, bitcoin p2p traffic-ஐ passively listen செய்யவும் (bitcoin node போல). இது உங்கள் wallet பற்றி எதையும் reveal செய்யாது. மேலும் அறிய இங்கே click செய்யவும்.</translation>
+			<translation>புதியதாக broadcast செய்யப்பட்ட transactions-ஐ உடனடியாக கண்டறிய, bitcoin p2p traffic-ஐ passively listen செய்யவும் (bitcoin node போல).
+இது உங்கள் wallet பற்றி எதையும் reveal செய்யாது.
+மேலும் அறிய இங்கே click செய்யவும்.</translation>
 		</message>
 	</context>
 	<context>
@@ -7585,7 +7633,7 @@ Click here to learn more.</source>
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. ''Recovery sheet' ({number} words)-ஐ இந்த paper-க்கு attach செய்யவும் அல்லது 12/24 words-ஐ இந்த paper-ல் duplicate செய்யவும்.&lt;br/&gt; 2. கீழே உள்ள line-இல் இந்த paper-ஐ fold செய்யவும் &lt;br/&gt; 3. ஒவ்வொரு paper-ஐயும் உங்களுக்கு மட்டும் access உள்ள வேறு வேறு secure location-களில் வைக்கவும்&lt;br/&gt; 4. hardware signers-ஐ a) தொடர்புடைய paper seed backup உடன் சேர்த்து வைக்கலாம், அல்லது b) ஒவ்வொன்றையும் இன்னொரு secure location-இல் தனியாக வைக்கலாம் (available இருந்தால்) </translation>
+			<translation>1. ''Recovery sheet' ({number} words)-ஐ இந்த paper-க்கு attach செய்யவும் அல்லது 12/24 words-ஐ இந்த paper-ல் duplicate செய்யவும்.&lt;br/&gt; 2. கீழே உள்ள line-இல் இந்த paper-ஐ fold செய்யவும் &lt;br/&gt; 3. ஒவ்வொரு paper-ஐயும் உங்களுக்கு மட்டும் access உள்ள வேறு வேறு secure location-களில் வைக்கவும்&lt;br/&gt; 4. hardware signers-ஐ a) தொடர்புடைய paper seed backup உடன் சேர்த்து வைக்கலாம், அல்லது b) ஒவ்வொன்றையும் இன்னொரு secure location-இல் தனியாக வைக்கலாம் (available இருந்தால்)                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -7594,7 +7642,7 @@ Click here to learn more.</source>
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. ''Recovery sheet' ({number} words)-ஐ இந்த paper-க்கு attach செய்யவும் அல்லது 12/24 words-ஐ இந்த paper-ல் duplicate செய்யவும்.&lt;br/&gt; 2. கீழே உள்ள line-இல் இந்த paper-ஐ fold செய்யவும் &lt;br/&gt; 3. இந்த paper-ஐ உங்களுக்கு மட்டும் access உள்ள secure location-இல் வைக்கவும்&lt;br/&gt; 4. hardware signer-ஐ a) paper seed backup உடன் சேர்த்து வைக்கலாம், அல்லது b) மற்றொரு secure location-இல் வைக்கலாம் (available இருந்தால்)</translation>
+			<translation>1. ''Recovery sheet' ({number} words)-ஐ இந்த paper-க்கு attach செய்யவும் அல்லது 12/24 words-ஐ இந்த paper-ல் duplicate செய்யவும்.&lt;br/&gt; 2. கீழே உள்ள line-இல் இந்த paper-ஐ fold செய்யவும் &lt;br/&gt; 3. இந்த paper-ஐ உங்களுக்கு மட்டும் access உள்ள secure location-இல் வைக்கவும்&lt;br/&gt; 4. hardware signer-ஐ a) paper seed backup உடன் சேர்த்து வைக்கலாம், அல்லது b) மற்றொரு secure location-இல் வைக்கலாம் (available இருந்தால்)                </translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8238,7 +8286,8 @@ Click here to learn more.</source>
 			<source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>உங்கள் BitBox02-இல் pairing code-ஐ compare செய்து confirm செய்யவும்: {code}</translation>
+			<translation>உங்கள் BitBox02-இல் pairing code-ஐ compare செய்து confirm செய்யவும்:
+{code}</translation>
 		</message>
 	</context>
 	<context>
@@ -8256,7 +8305,8 @@ Click here to learn more.</source>
 		<message>
 			<source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>அதிக fee உடன் original transaction-ஐ double-spend செய்ய முயற்சிக்கிறது. RBF-signaled transactions-இல் மட்டுமே வேலை செய்யும்; வெற்றி உறுதி செய்யப்படாது.</translation>
+			<translation>அதிக fee உடன் original transaction-ஐ double-spend செய்ய முயற்சிக்கிறது.
+RBF-signaled transactions-இல் மட்டுமே வேலை செய்யும்; வெற்றி உறுதி செய்யப்படாது.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8268,7 +8318,8 @@ Only works on RBF-signaled transactions and is not guaranteed to succeed.</sourc
 			<source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent pending transaction-ன் change output-ஐ அதிக fee உடன் spend செய்து, இரண்டையும் block-இல் சேர்க்க உதவுகிறது. available change output இருந்தாலும் combined fee rate உயர்த்தப்பட்டாலும் மட்டுமே வேலை செய்யும்.</translation>
+			<translation>Child-Pays-For-Parent pending transaction-ன் change output-ஐ அதிக fee உடன் spend செய்து, இரண்டையும் block-இல் சேர்க்க உதவுகிறது.
+available change output இருந்தாலும் combined fee rate உயர்த்தப்பட்டாலும் மட்டுமே வேலை செய்யும்.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8290,7 +8341,9 @@ Works only if you have an available change output and raise the combined fee rat
 			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>Replace-By-Fee இந்த transaction-ன் அதிக fee உடைய புதிய version உருவாக்குகிறது. original இன்னும் unconfirmed ஆக இருக்கும்போது confirmation-ஐ speed up செய்ய இதைப் பயன்படுத்தவும். original transaction RBF signal செய்ய வேண்டும், மேலும் உங்கள் wallet change output own செய்ய வேண்டும்.</translation>
+			<translation>Replace-By-Fee இந்த transaction-ன் அதிக fee உடைய புதிய version உருவாக்குகிறது.
+original இன்னும் unconfirmed ஆக இருக்கும்போது confirmation-ஐ speed up செய்ய இதைப் பயன்படுத்தவும்.
+original transaction RBF signal செய்ய வேண்டும், மேலும் உங்கள் wallet change output own செய்ய வேண்டும்.</translation>
 		</message>
 		<name>util</name>
 		<message>
@@ -8686,7 +8739,7 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<name>wallet</name>
 		<message>
 			<source>Sending to addresses: </source>
-			<translation>Sending to addresses:</translation>
+			<translation>Sending to addresses: </translation>
 		</message>
 		<name>wallet</name>
 		<message>
