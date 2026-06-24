@@ -4482,8 +4482,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} を登録する</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>「{wallet_name}」を登録</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>「{wallet_name}」を「{device}」に登録</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>使用する予定のすべてのハードウェア署名機に、このマルチシグウォレットを登録してください。そうすることで、ハードウェア署名機はトランザクションのおつりアドレスを検証できます。</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4733,6 +4743,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. ハードウェア署名機でQRコードをスキャン</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. 署名済みメッセージを検出</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>提供されたアドレスの派生パスを特定できませんでした。</translation>
 		</message>
@@ -4740,6 +4760,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>メッセージが短すぎます。</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>メッセージに署名すると、ハードウェア署名機はこのコンピューターからスキャンできる2つ目のQRコードを提供します</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QRコードをスキャン</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5220,6 +5250,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. ハードウェア署名機でQRコードをスキャン</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. 署名済みPSBTをスキャン</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>折りたたむ</translation>
 		</message>
@@ -5237,6 +5277,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>テスト {number} のために準備しておく</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>PSBTに署名すると、ハードウェア署名機はこのコンピューターからスキャンできる2つ目のQRコードを提供します</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QRコードをスキャン</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

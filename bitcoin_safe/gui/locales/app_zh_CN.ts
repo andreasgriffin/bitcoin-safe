@@ -4505,8 +4505,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>注册 {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>注册“{wallet_name}”</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>将“{wallet_name}”注册到“{device}”</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>请在你计划使用的每个硬件签名器上注册此多签钱包。这样，硬件签名器就可以验证交易的找零地址。</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4757,6 +4767,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. 使用硬件签名器扫描二维码</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. 检测已签名消息</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>无法确定所提供的地址的派生路径。</translation>
 		</message>
@@ -4764,6 +4784,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>消息太短。</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>签署消息后，你的硬件签名器将提供第二个二维码，你可以从这台电脑扫描该二维码</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>扫描二维码</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5245,6 +5275,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. 使用硬件签名器扫描二维码</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. 扫描已签名的 PSBT</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>折叠</translation>
 		</message>
@@ -5262,6 +5302,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>为测试 {number} 做好准备</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>签署 PSBT 后，你的硬件签名器将提供第二个二维码，你可以从这台电脑扫描该二维码</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>扫描二维码</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

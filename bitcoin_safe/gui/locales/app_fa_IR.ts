@@ -4497,8 +4497,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>ثبت {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>ثبت '{wallet_name}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>ثبت '{wallet_name}' در '{device}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>این کیف پول چندامضایی را روی هر امضاکننده سخت‌افزاری که قصد استفاده از آن را دارید ثبت کنید. به این ترتیب امضاکننده سخت‌افزاری می‌تواند آدرس‌های باقی‌مانده تراکنش‌ها را تأیید کند.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4749,6 +4759,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. کد QR را با امضاکننده سخت‌افزاری اسکن کنید</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. پیام امضاشده را شناسایی کنید</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>مسیر اشتقاق برای آدرس ارائه‌شده قابل تعیین نیست.</translation>
 		</message>
@@ -4756,6 +4776,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>پیام خیلی کوتاه است.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>پس از امضای پیام، امضاکننده سخت‌افزاری شما یک کد QR دوم ارائه می‌دهد که می‌توانید آن را از این رایانه اسکن کنید</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>اسکن کد QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5237,6 +5267,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. کد QR را با امضاکننده سخت‌افزاری اسکن کنید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. PSBT امضاشده را اسکن کنید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>جمع کردن</translation>
 		</message>
@@ -5254,6 +5294,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>برای آزمایش {number} آماده نگه دارید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>پس از امضای PSBT، امضاکننده سخت‌افزاری شما یک کد QR دوم ارائه می‌دهد که می‌توانید آن را از این رایانه اسکن کنید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>اسکن کد QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

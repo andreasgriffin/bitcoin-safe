@@ -4482,8 +4482,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>ลงทะเบียน {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>ลงทะเบียน '{wallet_name}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>ลงทะเบียน '{wallet_name}' กับ '{device}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>ลงทะเบียนกระเป๋าเงิน multisig นี้บนอุปกรณ์ลงนามฮาร์ดแวร์ทุกเครื่องที่คุณวางแผนจะใช้ วิธีนี้จะช่วยให้อุปกรณ์ลงนามฮาร์ดแวร์ตรวจสอบที่อยู่เงินทอนของธุรกรรมได้</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4733,6 +4743,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. สแกนรหัส QR ด้วยอุปกรณ์ลงนามฮาร์ดแวร์</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. ตรวจพบข้อความที่ลงนามแล้ว</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>ไม่สามารถระบุเส้นทางการอนุพันธ์สำหรับที่อยู่ที่ระบุได้</translation>
 		</message>
@@ -4740,6 +4760,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>ข้อความสั้นเกินไป</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>เมื่อคุณลงนามข้อความแล้ว อุปกรณ์ลงนามฮาร์ดแวร์ของคุณจะให้รหัส QR ที่สองซึ่งคุณสามารถสแกนจากคอมพิวเตอร์เครื่องนี้ได้</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>สแกนรหัส QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5220,6 +5250,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. สแกนรหัส QR ด้วยอุปกรณ์ลงนามฮาร์ดแวร์</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. สแกน PSBT ที่ลงนามแล้ว</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>ยุบ</translation>
 		</message>
@@ -5237,6 +5277,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>เตรียมให้พร้อมสำหรับการทดสอบ {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>เมื่อคุณลงนาม PSBT แล้ว อุปกรณ์ลงนามฮาร์ดแวร์ของคุณจะให้รหัส QR ที่สองซึ่งคุณสามารถสแกนจากคอมพิวเตอร์เครื่องนี้ได้</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>สแกนรหัส QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

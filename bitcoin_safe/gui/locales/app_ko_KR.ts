@@ -4494,8 +4494,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} 등록하기</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>'{wallet_name}' 등록</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>'{wallet_name}'을(를) '{device}'에 등록</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>사용할 모든 하드웨어 서명기에 이 다중 서명 지갑을 등록하세요. 이렇게 하면 하드웨어 서명기가 거래의 거스름 주소를 확인할 수 있습니다.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4746,6 +4756,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. 하드웨어 서명기로 QR 코드 스캔</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. 서명된 메시지 감지</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>제공된 주소에 대한 파생 경로를 확인할 수 없습니다.</translation>
 		</message>
@@ -4753,6 +4773,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>메시지가 너무 짧습니다.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>메시지에 서명하면 하드웨어 서명기가 이 컴퓨터에서 스캔할 수 있는 두 번째 QR 코드를 제공합니다</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR 코드 스캔</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5234,6 +5264,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. 하드웨어 서명기로 QR 코드 스캔</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. 서명된 PSBT 스캔</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>접기</translation>
 		</message>
@@ -5251,6 +5291,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>테스트 {number}을 위해 준비해 두세요</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>PSBT에 서명하면 하드웨어 서명기가 이 컴퓨터에서 스캔할 수 있는 두 번째 QR 코드를 제공합니다</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR 코드 스캔</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

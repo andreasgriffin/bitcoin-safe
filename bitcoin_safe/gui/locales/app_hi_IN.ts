@@ -4484,8 +4484,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} पंजीकृत करें</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>'{wallet_name}' पंजीकृत करें</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>'{wallet_name}' को '{device}' पर पंजीकृत करें</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>इस मल्टीसिग वॉलेट को हर उस हार्डवेयर साइनर पर पंजीकृत करें जिसे आप उपयोग करने की योजना बना रहे हैं। इससे हार्डवेयर साइनर लेन-देन के चेंज पतों को सत्यापित कर सकता है।</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4735,6 +4745,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. हार्डवेयर साइनर से QR कोड स्कैन करें</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. हस्ताक्षरित संदेश का पता लगाएँ</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>प्रदान किए गए पते के लिए व्युत्पत्ति पथ निर्धारित नहीं किया जा सका।</translation>
 		</message>
@@ -4742,6 +4762,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>संदेश बहुत छोटा है।</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>संदेश पर हस्ताक्षर करने के बाद, आपका हार्डवेयर साइनर दूसरा QR कोड प्रदान करेगा जिसे आप इस कंप्यूटर से स्कैन कर सकते हैं</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR कोड स्कैन करें</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5222,6 +5252,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. हार्डवेयर साइनर से QR कोड स्कैन करें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. हस्ताक्षरित PSBT स्कैन करें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>संक्षिप्त करें</translation>
 		</message>
@@ -5239,6 +5279,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>परीक्षण {number} के लिए तैयार रखें</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>PSBT पर हस्ताक्षर करने के बाद, आपका हार्डवेयर साइनर दूसरा QR कोड प्रदान करेगा जिसे आप इस कंप्यूटर से स्कैन कर सकते हैं</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR कोड स्कैन करें</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
