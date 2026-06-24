@@ -43,7 +43,7 @@ from pathlib import Path
 from typing import Literal
 
 from appimage_to_deb_converter import Appimage2debConverter
-from bitcoin_safe.constants import CONTACT_EMAIL
+from bitcoin_safe.constants import CONTACT_EMAIL, ANDREAS_GRIFFIN_EMAIL
 from translation_handler import TranslationHandler, run_local
 
 from bitcoin_safe import __version__
@@ -194,7 +194,7 @@ class Builder:
                 output_deb=filename.with_suffix(".deb"),
                 package_name=self.app_name_formatter(self.module_name).lower(),
                 version=self.version,
-                maintainer=f"Andreas Griffin <{CONTACT_EMAIL}>",
+                maintainer=f"Andreas Griffin <{ANDREAS_GRIFFIN_EMAIL}>",
                 description="A desktop software for managing your cold storage wallets.",
                 homepage="https://www.bitcoin-safe.org",
                 desktop_name=self.app_name_formatter(self.module_name, join_character=" "),

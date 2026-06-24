@@ -57,7 +57,7 @@ from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QLineEdit, QVBoxL
 
 from bitcoin_safe.btcpay_config import BTCPAY_SUBSCRIPTION_CONFIG
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.constants import CONTACT_EMAIL
+from bitcoin_safe.constants import SUPPORT_EMAIL
 from bitcoin_safe.descriptors import hash_from_descriptor
 from bitcoin_safe.gui.qt.util import Message, MessageType, open_website
 from bitcoin_safe.i18n import translate
@@ -562,7 +562,7 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         return translate(
             "subscription",
             "{reason} Please retry later. If it still does not work, contact {email}.",
-        ).format(reason=reason, email=CONTACT_EMAIL)
+        ).format(reason=reason, email=SUPPORT_EMAIL)
 
     @staticmethod
     def _error_from_exc_info(error_info: ExcInfo | BaseException | None) -> BaseException | None:

@@ -44,7 +44,7 @@ from bitcoin_safe.plugin_framework.plugin_diagnostics import (
     format_external_plugin_diagnostics_as_text,
 )
 
-from .constants import CONTACT_EMAIL
+from .constants import BUG_REPORT_EMAIL, FEEDBACK_EMAIL, SUPPORT_EMAIL
 from .simple_mailer import compose_email
 
 
@@ -83,7 +83,7 @@ def text_error_report(error_report: str, file_path: Path | None = None) -> str:
     if file_path:
         body += f"You can see the full logfile at: {file_path}\n\n"
 
-    body += f"Please email this to: {CONTACT_EMAIL}\n\n"
+    body += f"Please email this to: {BUG_REPORT_EMAIL}\n\n"
     body += f"{subject}\n\n"
     body += f"""Error:
             {error_report}
@@ -104,7 +104,7 @@ def mail_error_repot(error_report: str) -> None:
 
     body += get_system_info_as_text()
     body += format_external_plugin_diagnostics_as_text()
-    return compose_email(CONTACT_EMAIL, subject, body)
+    return compose_email(BUG_REPORT_EMAIL, subject, body)
 
 
 def mail_feedback() -> None:
@@ -113,15 +113,15 @@ def mail_feedback() -> None:
     body = ""
 
     body += get_system_info_as_text()
-    return compose_email(CONTACT_EMAIL, subject, body)
+    return compose_email(FEEDBACK_EMAIL, subject, body)
 
 
-def mail_contact() -> None:
+def mail_help_contact() -> None:
     """Mail feedback."""
     subject = "Contact"
     body = ""
 
-    return compose_email(CONTACT_EMAIL, subject, body)
+    return compose_email(SUPPORT_EMAIL, subject, body)
 
 
 class RelativePathFormatter(logging.Formatter):
