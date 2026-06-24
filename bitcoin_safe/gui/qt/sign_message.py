@@ -39,7 +39,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QGridLayout,
@@ -56,7 +56,7 @@ from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
 from bitcoin_safe.descriptors import get_address_bip32_path
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
 from bitcoin_safe.gui.qt.dialogs import show_textedit_message
-from bitcoin_safe.gui.qt.export_data import QrToolButton
+from bitcoin_safe.gui.qt.export_data import QrFollowUpActionGroup, QrToolButton
 from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.i18n import translate
@@ -121,17 +121,22 @@ class SignMessageBase(QWidget):
         self.sign_usb_button.clicked.connect(self.on_sign_usb_message_button)
 
         # qr
+        qr_follow_up_group = self._build_qr_scan_follow_up_group()
         self.sign_qr_button = QrToolButton(
             data=self.get_data(),
             signals_min=signals_min,
             network=network,
             loop_in_thread=loop_in_thread,
             parent=self,
+            qr_companion_widget=qr_follow_up_group,
         )
         self.sign_qr_button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.sign_qr_button.setText("")
-        self.sign_qr_button.export_qr_widget.signal_close.connect(self.dialog_open_qr_scanner)
+        qr_follow_up_group.signal_action_requested.connect(self._open_qr_scanner_from_popup_follow_up)
         self.sign_qr_button.export_qr_widget.signal_show.connect(self.on_show_export_widget)
+        self.sign_qr_button.export_qr_widget.group_qr.setTitle(
+            self.tr("1. Scan QR code with hardware signer")
+        )
 
         self.signals_min.language_switch.connect(self.updateUI)
         self.updateUI()
@@ -152,6 +157,18 @@ class SignMessageBase(QWidget):
     def get_bip32_path(self) -> str:
         """Return the BIP32 path used for signing."""
 
+    def _build_qr_scan_follow_up_group(self) -> QrFollowUpActionGroup:
+        group = QrFollowUpActionGroup(
+            title=self.tr("2. Detect signed message"),
+            description=self.tr(
+                "Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer"
+            ),
+            button_text=self.tr("Scan QR code"),
+            button_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename),
+            parent=self,
+        )
+        return group
+
     def dialog_open_qr_scanner(self) -> None:
         """Dialog open qr scanner."""
         self._qr_scanner = SimpleQrScanner(
@@ -161,6 +178,11 @@ class SignMessageBase(QWidget):
             display_result=False,
         )
         self._qr_scanner.signal_raw_content.connect(self.on_raw_content)
+
+    def _open_qr_scanner_from_popup_follow_up(self) -> None:
+        export_widget = self.sign_qr_button.export_qr_widget
+        export_widget.close()
+        QTimer.singleShot(0, self.dialog_open_qr_scanner)
 
     def on_raw_content(self, o: object):
         """On raw content."""

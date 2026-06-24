@@ -39,7 +39,7 @@ from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.dialogs import AutoScanMode
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QSize, Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -51,7 +51,12 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode, CardList
-from bitcoin_safe.gui.qt.export_data import ExportDataSimple, FileToolButton, SyncChatToolButton
+from bitcoin_safe.gui.qt.export_data import (
+    ExportDataSimple,
+    FileToolButton,
+    QrFollowUpActionGroup,
+    SyncChatToolButton,
+)
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.qr_components.square_buttons import CloseButton
 from bitcoin_safe.gui.qt.send_test_schedule import SendTestStepPlan
@@ -453,9 +458,38 @@ class TxSigningDeviceCard(CardBase):
             enable_qr=True,
             network=self.network,
             loop_in_thread=self.loop_in_thread,
+            qr_companion_widget=self._build_qr_scan_follow_up_group(),
         )
+        self.qr_export_widget.group_qr.setTitle(self.tr("1. Scan QR code with hardware signer"))
         self.qr_export_widget.set_minimum_size_as_floating_window()
         return self.qr_export_widget
+
+    def _build_qr_scan_follow_up_group(self) -> QrFollowUpActionGroup:
+        qr_importer = self._qr_importer()
+        group = QrFollowUpActionGroup(
+            title=self.tr("2. Scan signed PSBT"),
+            description=self.tr(
+                "Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer"
+            ),
+            button_text=qr_importer.label if qr_importer else self.tr("Scan QR code"),
+            button_icon=svg_tools.get_QIcon(qr_importer.keystore_type.icon_filename) if qr_importer else None,
+            parent=self.body,
+        )
+        group.signal_action_requested.connect(self._close_export_popup_and_scan_qr)
+        return group
+
+    def _close_export_popup_and_scan_qr(self) -> None:
+        export_widget = self.qr_export_widget
+        if not export_widget:
+            return
+        export_widget.close()
+        QTimer.singleShot(0, self._sign_from_qr_popup_follow_up)
+
+    def _sign_from_qr_popup_follow_up(self) -> None:
+        qr_importer = self._qr_importer()
+        if not qr_importer:
+            return
+        qr_importer.sign(self.psbt)
 
     def _show_file_detail(self) -> None:
         file_importer = self._file_importer()

@@ -54,6 +54,7 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QGroupBox,
     QHBoxLayout,
+    QLabel,
     QPushButton,
     QSizePolicy,
     QToolButton,
@@ -61,6 +62,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.descriptor_export_tools import DescriptorExportTools, shorten_filename
 from bitcoin_safe.gui.qt.recipient_csv import export_recipients_csv, get_recipients_from_data
 from bitcoin_safe.gui.qt.signer_ui import SignerUI
@@ -110,6 +112,33 @@ class DataGroupBox(QGroupBox):
     def setData(self, data) -> None:
         """SetData."""
         self.data = data
+
+
+class QrFollowUpActionGroup(DataGroupBox):
+    signal_action_requested = cast(SignalProtocol[[]], pyqtSignal())
+
+    def __init__(
+        self,
+        title: str,
+        description: str,
+        button_text: str,
+        button_icon: QIcon | None = None,
+        parent: QWidget | None = None,
+    ) -> None:
+        """Initialize instance."""
+        super().__init__(title=title, parent=parent)
+        self.set_layout(QHBoxLayout())
+
+        self.description_label = QLabel(description, self)
+        self.description_label.setWordWrap(True)
+        self.description_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        self._layout.addWidget(self.description_label, stretch=1)
+
+        self.button_action = QPushButton(button_text, self)
+        if button_icon:
+            self.button_action.setIcon(button_icon)
+        self.button_action.clicked.connect(self.signal_action_requested.emit)
+        self._layout.addWidget(self.button_action, alignment=Qt.AlignmentFlag.AlignVCenter)
 
 
 def pretty_name(data_type: DataType) -> str:
@@ -641,6 +670,7 @@ class HorizontalImportExportGroups(QWidget):
         enable_file=True,
         enable_usb=True,
         enable_clipboard=True,
+        qr_companion_widget: QWidget | None = None,
         **kwargs,
     ) -> None:
         """Initialize instance."""
@@ -651,19 +681,30 @@ class HorizontalImportExportGroups(QWidget):
         self._layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
 
         # qr
+        self.qr_column = QWidget(self)
+        self.qr_column_layout = QVBoxLayout(self.qr_column)
+        self.qr_column_layout.setContentsMargins(0, 0, 0, 0)
+        self.qr_column_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.qr_column.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+
         self.group_qr = DataGroupBox("QR Code")
         self.group_qr.set_layout(QHBoxLayout())
         self.group_qr._layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        if enable_qr:
-            self._layout.addWidget(self.group_qr)
+        self.qr_column_layout.addWidget(self.group_qr)
+        self._layout.addWidget(self.qr_column)
 
-        self.group_qr_buttons = QWidget(self)
-        self.group_qr_buttons_layout = QVBoxLayout(self.group_qr_buttons)
+        self.group_qr._layout.addStretch()
+
+        self.group_qr_buttons_layout = QVBoxLayout()
         self.group_qr_buttons_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.group_qr._layout.addWidget(self.group_qr_buttons)
+        self.group_qr._layout.addLayout(self.group_qr_buttons_layout)
 
         # one of the groupboxes i have to make expanding, otherwise nothing is expanding
         self.group_qr.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        self.qr_companion_widget = qr_companion_widget
+        if self.qr_companion_widget:
+            self.qr_column_layout.addWidget(self.qr_companion_widget)
+        self.qr_column.setVisible(enable_qr)
 
         # file
         self.group_file = DataGroupBox("File")
@@ -698,6 +739,9 @@ class ExportDataSimple(HorizontalImportExportGroups):
     signal_set_qr_images = cast(SignalProtocol[[list[str]]], pyqtSignal(list))
     signal_close = cast(SignalProtocol[[]], pyqtSignal())
     signal_show = cast(SignalProtocol[[]], pyqtSignal())
+    floating_window_min_width = 650
+    floating_window_min_height = 300
+    floating_qr_min_size = 220
 
     def __init__(
         self,
@@ -713,6 +757,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         enable_usb=True,
         enable_clipboard=True,
         wallet_name: str = "MultiSig",
+        qr_companion_widget: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(
@@ -721,7 +766,9 @@ class ExportDataSimple(HorizontalImportExportGroups):
             enable_file=enable_file,
             enable_usb=enable_usb,
             enable_clipboard=enable_clipboard,
+            qr_companion_widget=qr_companion_widget,
         )
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         self.loop_in_thread = loop_in_thread
         self.network = network
         self.sync_client = sync_client if sync_client else {}
@@ -736,6 +783,7 @@ class ExportDataSimple(HorizontalImportExportGroups):
         # qr
         self.qr_label = QRCodeWidgetSVG(always_animate=True, parent=self.group_qr)
         self.qr_label.set_always_animate(True)
+        self.qr_label.setMinimumSize(self.floating_qr_min_size, self.floating_qr_min_size)
         self.group_qr._layout.insertWidget(0, self.qr_label)
 
         self.button_enlarge_qr = QPushButton()
@@ -779,7 +827,8 @@ class ExportDataSimple(HorizontalImportExportGroups):
 
     def set_minimum_size_as_floating_window(self):
         """Set minimum size as floating window."""
-        self.setMinimumSize(650, 300)
+        self.setMinimumWidth(self.floating_window_min_width)
+        self.setMinimumHeight(max(self.floating_window_min_height, self.minimumSizeHint().height()))
 
     def refresh_qr_and_file_menus_if_needed(self):
         """Refresh qr and file menus if needed."""
@@ -999,6 +1048,7 @@ class QrToolButton(QToolButton):
         parent: QWidget | None = None,
         button_prefix: str = "",
         wallet_name: str = "MultiSig",
+        qr_companion_widget: QWidget | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
@@ -1014,6 +1064,7 @@ class QrToolButton(QToolButton):
             network=network,
             loop_in_thread=loop_in_thread,
             wallet_name=wallet_name,
+            qr_companion_widget=qr_companion_widget,
         )
         self.export_qr_widget.set_minimum_size_as_floating_window()
 
