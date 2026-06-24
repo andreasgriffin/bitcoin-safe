@@ -31,10 +31,12 @@ from dataclasses import dataclass
 from types import SimpleNamespace
 
 import bdkpython as bdk
+from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.unified_encoder import QrExportTypes
 from PyQt6.QtWidgets import QPushButton
 from pytestqt.qtbot import QtBot
 
+from bitcoin_safe.gui.qt.export_data import ExportDataSimple
 from bitcoin_safe.gui.qt.signer_ui import SignedUI
 from bitcoin_safe.gui.qt.tx_signing_steps import (
     ExportImportUI,
@@ -377,7 +379,7 @@ def _make_guided_steps_widget(
     return widget, keystores
 
 
-def test_show_qr_code_opens_popup_and_shows_import_only_detail(qtbot: QtBot, loop_in_thread) -> None:
+def test_show_qr_code_opens_popup_with_follow_up_scan_group(qtbot: QtBot, loop_in_thread) -> None:
     card = _make_qr_device_card(qtbot, loop_in_thread)
 
     button_show_qr = next(
@@ -390,14 +392,23 @@ def test_show_qr_code_opens_popup_and_shows_import_only_detail(qtbot: QtBot, loo
     qtbot.waitUntil(export_widget.isVisible)
 
     assert card.body.findChild(ExportImportUI) is None
-
     signer_ui = card.body.findChild(SignerUI)
     assert signer_ui
     assert signer_ui.button.text() == "Scan QR code"
     assert signer_ui.button.isDefault()
 
-    body_button_texts = {button.text() for button in card.body.findChildren(QPushButton)}
-    assert body_button_texts == {"Scan QR code"}
+    assert {button.text() for button in card.body.findChildren(QPushButton)} == {"Scan QR code"}
+
+    follow_up_group = next(
+        group
+        for group in export_widget.findChildren(type(export_widget.group_qr))
+        if group.title() == "2. Scan signed PSBT"
+    )
+    assert follow_up_group
+    scan_button = next(
+        button for button in follow_up_group.findChildren(QPushButton) if button.text() == "Scan QR code"
+    )
+    assert scan_button
     export_widget.close()
 
 
@@ -622,6 +633,83 @@ def test_generic_signer_qr_popup_keeps_qr_type_choice_visible(qtbot: QtBot, loop
     qtbot.waitUntil(export_widget.isVisible)
     assert export_widget.combo_qr_type.isVisible()
     export_widget.close()
+
+
+def test_qr_popup_scan_button_closes_popup_before_opening_scanner(
+    qtbot: QtBot, loop_in_thread, monkeypatch
+) -> None:
+    card = _make_qr_device_card(qtbot, loop_in_thread)
+
+    button_show_qr = next(
+        button for button in card.body.findChildren(QPushButton) if button.text() == "Show QR Code"
+    )
+    button_show_qr.click()
+
+    export_widget = card.qr_export_widget
+    assert export_widget
+    qtbot.waitUntil(export_widget.isVisible)
+
+    follow_up_group = next(
+        group
+        for group in export_widget.findChildren(type(export_widget.group_qr))
+        if group.title() == "2. Scan signed PSBT"
+    )
+    scan_button = next(
+        button for button in follow_up_group.findChildren(QPushButton) if button.text() == "Scan QR code"
+    )
+
+    qr_importer = card._qr_importer()
+    assert qr_importer
+    sign_calls: list[bool] = []
+
+    def fake_sign(psbt: bdk.Psbt, sign_options=None) -> None:
+        sign_calls.append(export_widget.isVisible())
+
+    monkeypatch.setattr(qr_importer, "sign", fake_sign)
+    scan_button.click()
+    qtbot.waitUntil(lambda: bool(sign_calls))
+
+    assert sign_calls == [False]
+
+
+def test_manual_qr_popup_close_does_not_open_scanner(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:
+    card = _make_qr_device_card(qtbot, loop_in_thread)
+
+    button_show_qr = next(
+        button for button in card.body.findChildren(QPushButton) if button.text() == "Show QR Code"
+    )
+    button_show_qr.click()
+
+    export_widget = card.qr_export_widget
+    assert export_widget
+    qtbot.waitUntil(export_widget.isVisible)
+
+    qr_importer = card._qr_importer()
+    assert qr_importer
+    sign_calls: list[bool] = []
+    monkeypatch.setattr(qr_importer, "sign", lambda psbt, sign_options=None: sign_calls.append(True))
+    export_widget.close()
+    qtbot.wait(50)
+
+    assert not sign_calls
+
+
+def test_export_data_simple_without_qr_companion_keeps_single_qr_group(qtbot: QtBot, loop_in_thread) -> None:
+    widget = ExportDataSimple(
+        data=Data.from_psbt(tr_psbt_singlesig, network=bdk.Network.REGTEST),
+        signals_min=Signals(),
+        network=bdk.Network.REGTEST,
+        loop_in_thread=loop_in_thread,
+        enable_clipboard=False,
+        enable_usb=False,
+        enable_file=False,
+        enable_qr=True,
+    )
+    qtbot.addWidget(widget)
+
+    qr_groups = [group for group in widget.findChildren(type(widget.group_qr)) if group.title() == "QR Code"]
+    assert len(qr_groups) == 1
+    assert widget.qr_companion_widget is None
 
 
 def test_detail_widget_is_vertically_centered(qtbot: QtBot, loop_in_thread) -> None:
