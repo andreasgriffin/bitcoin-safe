@@ -116,7 +116,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wizard.wizard import ImportXpubs, TutorialStep, WalletSetupOptions, Wizard
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
-from bitcoin_safe.logging_handlers import mail_contact, mail_feedback
+from bitcoin_safe.logging_handlers import mail_feedback, mail_help_contact
 from bitcoin_safe.logging_setup import get_log_file
 from bitcoin_safe.network_config import P2pListenerType, Peers
 from bitcoin_safe.network_utils import ProxyInfo
@@ -1127,9 +1127,9 @@ class MainWindow(UnlockableMainWindow):
         )
 
         self.menu_contact = self.menu_help.add_menu("")
-        self.action_contact_email = self.menu_contact.add_action(
+        self.action_help_contact_email = self.menu_contact.add_action(
             "",
-            mail_contact,
+            mail_help_contact,
         )
         self.action_contact_via_nostr = self.menu_contact.add_action(
             "",
@@ -1317,7 +1317,7 @@ class MainWindow(UnlockableMainWindow):
         self.menu_feedback.setTitle(self.tr("&Feedback"))
         self.menu_contact.setTitle(self.tr("&Contact"))
         self.action_community.setText(self.tr("&Community forum"))
-        self.action_contact_email.setText(self.tr("&Send Email"))
+        self.action_help_contact_email.setText(self.tr("&Send Email"))
         self.action_contact_via_nostr.setText(self.tr("&Nostr DM"))
         self.action_contact_via_X.setText(self.tr("&X/Twitter DM"))
         self.action_open_issue_github.setText(self.tr("&Open issue in github"))

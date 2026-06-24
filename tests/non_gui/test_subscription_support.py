@@ -40,7 +40,7 @@ from btcpay_tools.btcpay_subscription_nostr.service import (
 from btcpay_tools.config import PlanDuration
 
 from bitcoin_safe.config import UserConfig
-from bitcoin_safe.constants import CONTACT_EMAIL
+from bitcoin_safe.constants import SUPPORT_EMAIL
 from bitcoin_safe.plugin_framework.subscription_manager import (
     StoredSubscriptionStatus,
     SubscriptionManager,
@@ -166,7 +166,7 @@ def test_trial_purchase_timeout_error_text_asks_to_retry_and_contact_support() -
 
     assert "free trial activation timed out" in error_text
     assert "retry later" in error_text
-    assert CONTACT_EMAIL in error_text
+    assert SUPPORT_EMAIL in error_text
 
 
 def test_error_from_exc_info_returns_original_exception() -> None:
