@@ -4502,8 +4502,18 @@ Gli output rimangono invariati; cambia solo la commissione.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>Registra {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>Registra '{wallet_name}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>Registra '{wallet_name}' su '{device}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Registra questo wallet multisig su ogni firmatario hardware che prevedi di usare. In questo modo il firmatario hardware può verificare gli indirizzi di resto delle transazioni.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4754,6 +4764,16 @@ Se commetti un errore qui, i tuoi soldi sono persi!</translation>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Scansiona il codice QR con il firmatario hardware</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. Rileva messaggio firmato</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>Impossibile determinare il percorso di derivazione per l’indirizzo fornito.</translation>
 		</message>
@@ -4761,6 +4781,16 @@ Se commetti un errore qui, i tuoi soldi sono persi!</translation>
 		<message>
 			<source>Message too short.</source>
 			<translation>Messaggio troppo corto.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Dopo aver firmato il messaggio, il tuo firmatario hardware fornirà un secondo codice QR che potrai scansionare da questo computer</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Scansiona codice QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5242,6 +5272,16 @@ Se vuoi continuare a usare entrambi, reimposta ora la chiave di sincronizzazione
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Scansiona il codice QR con il firmatario hardware</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. Scansiona PSBT firmato</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Comprimi</translation>
 		</message>
@@ -5259,6 +5299,16 @@ Se vuoi continuare a usare entrambi, reimposta ora la chiave di sincronizzazione
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Tieni pronto per il test {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Dopo aver firmato il PSBT, il tuo firmatario hardware fornirà un secondo codice QR che potrai scansionare da questo computer</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Scansiona codice QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

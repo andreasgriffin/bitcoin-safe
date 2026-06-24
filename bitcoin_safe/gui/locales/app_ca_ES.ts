@@ -4499,8 +4499,18 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>Registra {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>Registra «{wallet_name}»</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>Registra «{wallet_name}» a «{device}»</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Registra aquesta cartera multisig a cada signador de maquinari que tinguis previst utilitzar. Així, el signador de maquinari podrà verificar les adreces de canvi de les transaccions.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4751,6 +4761,16 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Escaneja el codi QR amb el signador de maquinari</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. Detecta el missatge signat</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>No s’ha pogut determinar el camí de derivació per a l’adreça proporcionada.</translation>
 		</message>
@@ -4758,6 +4778,16 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		<message>
 			<source>Message too short.</source>
 			<translation>Missatge massa curt.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Un cop hagis signat el missatge, el teu signador de maquinari proporcionarà un segon codi QR que podràs escanejar des d’aquest ordinador</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Escaneja codi QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5239,6 +5269,16 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Escaneja el codi QR amb el signador de maquinari</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. Escaneja el PSBT signat</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Replega</translation>
 		</message>
@@ -5256,6 +5296,16 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Mantén-lo a punt per a la prova {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Un cop hagis signat el PSBT, el teu signador de maquinari proporcionarà un segon codi QR que podràs escanejar des d’aquest ordinador</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Escaneja codi QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

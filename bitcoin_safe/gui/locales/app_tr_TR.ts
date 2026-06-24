@@ -4499,8 +4499,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} kaydet</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>'{wallet_name}' cüzdanını kaydet</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>'{wallet_name}' cüzdanını '{device}' cihazına kaydet</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Bu çok imzalı cüzdanı kullanmayı planladığınız her donanım imzalayıcıya kaydedin. Böylece donanım imzalayıcı, işlemlerin para üstü adreslerini doğrulayabilir.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4751,6 +4761,16 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. QR kodunu donanım imzalayıcıyla tarayın</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. İmzalı mesajı algıla</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>Sağlanan adres için türetme yolu belirlenemedi.</translation>
 		</message>
@@ -4758,6 +4778,16 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		<message>
 			<source>Message too short.</source>
 			<translation>Mesaj çok kısa.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Mesajı imzaladıktan sonra, donanım imzalayıcınız bu bilgisayardan tarayabileceğiniz ikinci bir QR kodu sağlayacaktır</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR kodu tara</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5239,6 +5269,16 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. QR kodunu donanım imzalayıcıyla tarayın</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. İmzalı PSBT'yi tara</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Daralt</translation>
 		</message>
@@ -5256,6 +5296,16 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Test {number} için hazır tutun</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>PSBT'yi imzaladıktan sonra, donanım imzalayıcınız bu bilgisayardan tarayabileceğiniz ikinci bir QR kodu sağlayacaktır</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR kodu tara</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

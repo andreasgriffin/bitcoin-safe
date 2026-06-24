@@ -4499,8 +4499,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>تسجيل {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>تسجيل '{wallet_name}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>تسجيل '{wallet_name}' على '{device}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>سجّل محفظة التوقيع المتعدد هذه على كل جهاز توقيع عتادي تخطط لاستخدامه. بهذه الطريقة يمكن لجهاز التوقيع العتادي التحقق من عناوين التغيير في المعاملات.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4751,6 +4761,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. امسح رمز QR باستخدام جهاز التوقيع العتادي</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. اكتشاف الرسالة الموقّعة</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>تعذر تحديد مسار الاشتقاق للعنوان المقدم.</translation>
 		</message>
@@ -4758,6 +4778,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>الرسالة قصيرة جداً.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>بعد توقيعك للرسالة، سيوفر جهاز التوقيع العتادي رمز QR ثانياً يمكنك مسحه من هذا الكمبيوتر</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>مسح رمز الاستجابة السريعة</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5239,6 +5269,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. امسح رمز QR باستخدام جهاز التوقيع العتادي</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. مسح PSBT الموقّع</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>طي</translation>
 		</message>
@@ -5256,6 +5296,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>أبقِه جاهزًا للاختبار {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>بعد توقيعك لـ PSBT، سيوفر جهاز التوقيع العتادي رمز QR ثانياً يمكنك مسحه من هذا الكمبيوتر</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>مسح رمز الاستجابة السريعة</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

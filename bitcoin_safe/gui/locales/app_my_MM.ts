@@ -4481,8 +4481,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} ကို စာရင်းသွင်းပါ</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>'{wallet_name}' ကို မှတ်ပုံတင်ပါ</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>'{wallet_name}' ကို '{device}' တွင် မှတ်ပုံတင်ပါ</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>သင်အသုံးပြုရန် ရည်ရွယ်ထားသော hardware signer တိုင်းတွင် ဤ multisig ပိုက်ဆံအိတ်ကို မှတ်ပုံတင်ပါ။ ထိုသို့ပြုလုပ်ခြင်းဖြင့် hardware signer သည် လွှဲပြောင်းမှုများ၏ change address များကို အတည်ပြုနိုင်ပါသည်။</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4732,6 +4742,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. hardware signer ဖြင့် QR ကုဒ်ကို စကန်ဖတ်ပါ</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. လက်မှတ်ထိုးထားသော မက်ဆေ့ချ်ကို ရှာဖွေပါ</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>ပေးထားသော လိပ်စာအတွက် မျိုးဆက်လမ်းကြောင်းကို မသတ်မှတ်နိုင်ပါ။</translation>
 		</message>
@@ -4739,6 +4759,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>စာကြောင့်ရှုပ်ထွေးနေသည်။</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>မက်ဆေ့ချ်ကို လက်မှတ်ထိုးပြီးပါက သင့် hardware signer သည် ဤကွန်ပျူတာမှ စကန်ဖတ်နိုင်သော ဒုတိယ QR ကုဒ်ကို ပေးပါမည်</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR ကုဒ်စကင်နာ</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5219,6 +5249,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. hardware signer ဖြင့် QR ကုဒ်ကို စကန်ဖတ်ပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. လက်မှတ်ထိုးထားသော PSBT ကို စကန်ဖတ်ပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>ခေါက်သိမ်းမည်</translation>
 		</message>
@@ -5236,6 +5276,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>စမ်းသပ်မှု {number} အတွက် အဆင်သင့်ထားပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>PSBT ကို လက်မှတ်ထိုးပြီးပါက သင့် hardware signer သည် ဤကွန်ပျူတာမှ စကန်ဖတ်နိုင်သော ဒုတိယ QR ကုဒ်ကို ပေးပါမည်</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR ကုဒ်စကင်နာ</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

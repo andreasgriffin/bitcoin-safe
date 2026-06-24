@@ -4498,8 +4498,18 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>Daftarkan {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>Daftarkan '{wallet_name}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>Daftarkan '{wallet_name}' ke '{device}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Daftarkan dompet multisig ini pada setiap penanda tangan perangkat keras yang akan Anda gunakan. Dengan begitu, penanda tangan perangkat keras dapat memverifikasi alamat kembalian transaksi.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4750,6 +4760,16 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Pindai kode QR dengan penanda tangan perangkat keras</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. Deteksi pesan yang ditandatangani</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>Tidak dapat menentukan jalur derivasi untuk alamat yang diberikan.</translation>
 		</message>
@@ -4757,6 +4777,16 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		<message>
 			<source>Message too short.</source>
 			<translation>Pesan terlalu pendek.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Setelah Anda menandatangani pesan, penanda tangan perangkat keras Anda akan menyediakan kode QR kedua yang dapat Anda pindai dari komputer ini</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Pindai kode QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5238,6 +5268,16 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Pindai kode QR dengan penanda tangan perangkat keras</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. Pindai PSBT yang ditandatangani</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Ciutkan</translation>
 		</message>
@@ -5255,6 +5295,16 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Siapkan untuk tes {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Setelah Anda menandatangani PSBT, penanda tangan perangkat keras Anda akan menyediakan kode QR kedua yang dapat Anda pindai dari komputer ini</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Pindai kode QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>

@@ -4499,8 +4499,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>Зареєструвати {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>Зареєструвати «{wallet_name}»</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>Зареєструвати «{wallet_name}» на «{device}»</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Зареєструйте цей мультипідписний гаманець на кожному апаратному підписувачі, який плануєте використовувати. Так апаратний підписувач зможе перевіряти адреси решти в транзакціях.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4751,6 +4761,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Відскануйте QR-код апаратним підписувачем</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. Виявити підписане повідомлення</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>Не вдалося визначити шлях деривації для наданої адреси.</translation>
 		</message>
@@ -4758,6 +4778,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>Повідомлення надто коротке.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Після того як ви підпишете повідомлення, ваш апаратний підписувач надасть другий QR-код, який можна відсканувати з цього комп’ютера</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Сканувати QR-код</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5239,6 +5269,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Відскануйте QR-код апаратним підписувачем</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. Відсканувати підписаний PSBT</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Згорнути</translation>
 		</message>
@@ -5256,6 +5296,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Тримайте готовим для тесту {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Після того як ви підпишете PSBT, ваш апаратний підписувач надасть другий QR-код, який можна відсканувати з цього комп’ютера</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Сканувати QR-код</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
