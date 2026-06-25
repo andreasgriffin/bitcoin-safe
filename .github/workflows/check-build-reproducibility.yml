@@ -12,34 +12,28 @@ on:
   push:
     tags:
       - "**"
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
 
 jobs:
   linux-run-1:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     uses: ./.github/workflows/build-appimage-and-test.yml
     with:
-      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'push' && github.sha || '' }}
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'push' && github.sha || '' }}
       artifact_name_prefix: repro-linux-run-1-
       run_tests: false
     secrets: inherit
 
   linux-run-2:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     uses: ./.github/workflows/build-appimage-and-test.yml
     with:
-      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'push' && github.sha || '' }}
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'push' && github.sha || '' }}
       artifact_name_prefix: repro-linux-run-2-
       run_tests: false
     secrets: inherit
 
   compare-linux:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     needs:
       - linux-run-1
       - linux-run-2
@@ -131,25 +125,25 @@ jobs:
           exit 1
 
   flatpak-run-1:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     uses: ./.github/workflows/build-flatpak-and-test.yml
     with:
-      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'push' && github.sha || '' }}
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'push' && github.sha || '' }}
       artifact_name_prefix: repro-flatpak-run-1-
       run_tests: false
     secrets: inherit
 
   flatpak-run-2:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     uses: ./.github/workflows/build-flatpak-and-test.yml
     with:
-      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'push' && github.sha || '' }}
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'push' && github.sha || '' }}
       artifact_name_prefix: repro-flatpak-run-2-
       run_tests: false
     secrets: inherit
 
   compare-flatpak:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     needs:
       - flatpak-run-1
       - flatpak-run-2
@@ -179,25 +173,25 @@ jobs:
             --label Flatpak
 
   windows-run-1:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     uses: ./.github/workflows/build-windows-and-test.yml
     with:
-      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'push' && github.sha || '' }}
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'push' && github.sha || '' }}
       artifact_name_prefix: repro-windows-run-1-
       run_tests: false
     secrets: inherit
 
   windows-run-2:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     uses: ./.github/workflows/build-windows-and-test.yml
     with:
-      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.event_name == 'push' && github.sha || '' }}
+      commitHash: ${{ github.event_name == 'workflow_dispatch' && inputs.commitHash || github.event_name == 'push' && github.sha || '' }}
       artifact_name_prefix: repro-windows-run-2-
       run_tests: false
     secrets: inherit
 
   compare-windows:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Reproducibility-Relevant')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     needs:
       - windows-run-1
       - windows-run-2
