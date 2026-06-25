@@ -963,7 +963,8 @@ ya tienen transacciones que enlazan con otras direcciones. ¿Seguro que quieres 
 		<message>
 			<source>This "descriptor" contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-			<translation>Este "descriptor" contiene toda la información para reconstruir la cartera. ¡Por favor, respalda este descriptor para poder recuperar los fondos!</translation>
+			<translation>Este “descriptor” contiene toda la información para reconstruir el monedero.
+¡Respalda este descriptor para poder recuperar los fondos!</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -1042,7 +1043,7 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>Wallet name</source>
-			<translation>Primero inicia la prueba gratuita y luego gestiona o actualiza la suscripción aquí.</translation>
+			<translation>Nombre del monedero</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1225,7 +1226,7 @@ Default 20</source>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Open instructions for viewing seed words on this signer.</source>
-			<translation>Ubicación 2</translation>
+			<translation>Abra instrucciones para ver palabras de semilla en este firmante.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1265,7 +1266,7 @@ Default 20</source>
 		<name>DistributeSeeds</name>
 		<message>
 			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
-			<translation>Dispositivo firmante</translation>
+			<translation>Guarde cada firmante junto con su hoja de respaldo y las palabras clave en el mismo lugar.</translation>
 		</message>
 		<name>DistributeSeeds</name>
 		<message>
@@ -1349,7 +1350,7 @@ Default 20</source>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Thanks for Bitcoin Safe!</source>
-			<translation>Mensaje (opcional)</translation>
+			<translation>¡Gracias por Bitcoin Safe!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1443,7 +1444,7 @@ Default 20</source>
 		<name>ExternalPaidPluginWidget</name>
 		<message>
 			<source>Delete Plugin</source>
-			<translation>¡Gracias por Bitcoin Safe!</translation>
+			<translation>Eliminar Complemento</translation>
 		</message>
 	</context>
 	<context>
@@ -2021,14 +2022,17 @@ ya que el tamaño final de la transacción es desconocido.</translation>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>La huella de 8 dígitos identifica la seed.
-Puedes escribirla en el firmante de hardware para llevar un seguimiento de distintas seeds y dispositivos de firma.</translation>
+			<translation>La huella de 8 dígitos identifica la semilla.
+Puedes
+escribirla en el firmante de hardware para llevar un
+seguimiento de distintas seeds y dispositivos de firma.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>The key origin is needed to construct
 transactions (PSBTs) correctly and is connected to the xPub.</source>
-			<translation>El origen de la clave es necesario para construir correctamente las transacciones (PSBT) y está conectado a la xPub.</translation>
+			<translation>El origen de la clave es necesario
+para construir correctamente las transacciones (PSBT) y está conectado a la xPub.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2987,7 +2991,7 @@ so it is typically about {minutes} minutes behind the tip.</source>
 Use fecha/hora para retrasar hasta una hora de red específica (median-time-past).
 Median-time-past es la marca de tiempo mediana de los últimos 11 bloques,
 por
-lo que normalmente está aproximadamente {minutes} minutos detrás de la punta.</translation>
+lo que normalmente está aproximadamente {minutes} minutos detrás del consejo.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
@@ -3126,7 +3130,7 @@ lo que normalmente está aproximadamente {minutes} minutos detrás de la punta.<
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>Eliminar Plugin</translation>
+			<translation>Bitcoin Safe descarga sumarios de bloque desde múltiples nodos po privacidad. Tras inicializar sincronías, las actualizaciones serán rápidas.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3184,7 +3188,8 @@ Ubicación no disponible.</translation>
 		<message>
 			<source>Recently broadcasted messages are received
 from these peers via the bitcoin network.</source>
-			<translation>Los mensajes transmitidos recientemente se reciben de estos peers a través de la red bitcoin.</translation>
+			<translation>Los mensajes transmitidos recientemente se reciben
+desde estas parejas a través de la red bitcoin.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3200,7 +3205,8 @@ from these peers via the bitcoin network.</source>
 		<message>
 			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
 received from these peers via the bitcoin network.</source>
-			<translation>Los resúmenes cortos (Compact Block Filters) y los bloques bitcoin se reciben de estos peers a través de la red bitcoin.</translation>
+			<translation>Se incluyen resúmenes breves (filtros de bloques compactos) y bloques
+de bitcoin recibidos de estas parejas a través de la red bitcoin.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3407,7 +3413,10 @@ Mempool Instance: {server}</translation>
 plugin and during subscription purchase!
 Hostname-based server location and DNS-seed discovery
 are not resolved through the proxy in this version.</source>
-			<translation>El proxy no se aplica al plugin Sync&amp;Chat ni durante la compra de la suscripción. La ubicación del servidor basada en el nombre de host y el descubrimiento DNS-seed no se resuelven a través del proxy en esta versión.</translation>
+			<translation>El proxy no se aplica al complemento Sync&amp;Chat
+ni durante la compra de la suscripción.
+El lugar del servidor basada en el nombre de host y el descubrimiento
+DNS-seed no se resuelven a través del proxy en esta versión.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3500,7 +3509,7 @@ Usar más pares mejora la cobertura, pero utiliza más ancho de banda y conexion
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>wallet_name</source>
-			<translation>wallet_name</translation>
+			<translation>nombre_monedero</translation>
 		</message>
 	</context>
 	<context>
@@ -3902,9 +3911,8 @@ Usar más pares mejora la cobertura, pero utiliza más ancho de banda y conexion
 			<source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID:
-{txid}
-  {replaced_by_block}
+			<translation>- TxID: {txid}
+{replaced_by_block}
   Qué ocurrió: {happened_text}</translation>
 		</message>
 		<name>QTWallet</name>
@@ -4117,8 +4125,10 @@ Usar más pares mejora la cobertura, pero utiliza más ancho de banda y conexion
 
 Saved copies to:
 {path}</source>
-			<translation>Transacción(es) eliminada(s) en la cartera '{wallet}':
+			<translation>Transacción(es) eliminada(s) en la Monedero '{wallet}':
+
 {txs}
+
 Copias guardadas en:
 {path}</translation>
 		</message>
@@ -4290,8 +4300,10 @@ Las salidas permanecen iguales; solo cambia la comisión.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;¿Por qué?&lt;/b&gt; &lt;br&gt; Para saber si controlas los fondos, tienes que probar el gasto desde la cartera.
-&lt;br&gt; Por tanto, antes de enviar una cantidad sustancial de Bitcoin a la cartera, es &lt;b&gt;crucial&lt;/b&gt; gastar desde la cartera y probar todos los firmantes.
+			<translation>&lt;br&gt;&lt;b&gt;¿Por qué?&lt;/b&gt;&lt;br&gt;
+                        Para saber si controlas los fondos, tienes que probar el gasto desde la cartera.
+                        &lt;br&gt;
+                         Por tanto, antes de enviar una cantidad sustancial de Bitcoin a la cartera, es &lt;b&gt;crucial&lt;/b&gt; gastar desde la cartera y probar todos los firmantes.
                         </translation>
 		</message>
 		<name>ReceiveTest</name>
