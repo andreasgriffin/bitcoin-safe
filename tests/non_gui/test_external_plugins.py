@@ -66,6 +66,7 @@ from bitcoin_safe.plugin_framework.builtin_plugins import (
 )
 from bitcoin_safe.plugin_framework.external_plugin_registry import (
     ExternalPluginRegistry,
+    suggested_plugin_source_display_name,
 )
 from bitcoin_safe.plugin_framework.external_plugin_registry_dataclasses import (
     ExternalPluginCatalogEntry,
@@ -1173,6 +1174,14 @@ def test_external_registry_derives_archive_url_from_raw_github_manifest_url() ->
     assert archive_url == "https://github.com/andreasgriffin/bitcoin-safe-plugins/archive/main.zip"
 
 
+def test_external_registry_derives_archive_url_from_github_manifest_url() -> None:
+    manifest_url = "https://github.com/andreasgriffin/bitcoin-safe-plugins/raw/main/source.toml"
+
+    archive_url = ExternalPluginRegistry._archive_url_from_manifest_url(manifest_url, "main")
+
+    assert archive_url == "https://github.com/andreasgriffin/bitcoin-safe-plugins/archive/main.zip"
+
+
 def test_external_registry_normalizes_repo_url_to_manifest_url() -> None:
     manifest_url = ExternalPluginRegistry._normalize_manifest_url(
         "https://dummyurl.org/andreasgriffin/bitcoin-safe-plugins"
@@ -1191,6 +1200,51 @@ def test_external_registry_normalizes_git_repo_url_to_manifest_url() -> None:
     assert (
         manifest_url == "https://dummyurl.org/andreasgriffin/bitcoin-safe-plugins/raw/branch/main/source.toml"
     )
+
+
+def test_external_registry_normalizes_github_repo_url_to_manifest_url() -> None:
+    manifest_url = ExternalPluginRegistry._normalize_manifest_url(
+        "https://github.com/andreasgriffin/bitcoin-safe-plugins"
+    )
+
+    assert manifest_url == "https://github.com/andreasgriffin/bitcoin-safe-plugins/raw/main/source.toml"
+
+
+def test_external_registry_normalizes_github_blob_manifest_url() -> None:
+    manifest_url = ExternalPluginRegistry._normalize_manifest_url(
+        "https://github.com/andreasgriffin/bitcoin-safe-plugins/blob/main/source.toml"
+    )
+
+    assert manifest_url == "https://github.com/andreasgriffin/bitcoin-safe-plugins/raw/main/source.toml"
+
+
+@pytest.mark.parametrize(
+    ("source_url", "expected"),
+    [
+        (
+            "https://dummyurl.org/andreasgriffin/bitcoin-safe-plugins/raw/branch/main/source.toml",
+            "Gitea bitcoin-safe-plugins",
+        ),
+        (
+            "https://github.com/andreasgriffin/bitcoin-safe-plugins/raw/main/source.toml",
+            "GitHub bitcoin-safe-plugins",
+        ),
+        (
+            "https://raw.githubusercontent.com/andreasgriffin/bitcoin-safe-plugins/main/source.toml",
+            "GitHub bitcoin-safe-plugins",
+        ),
+        (
+            "https://github.com/andreasgriffin/bitcoin-safe-plugins.git",
+            "GitHub bitcoin-safe-plugins",
+        ),
+    ],
+)
+def test_suggested_plugin_source_display_name(source_url: str, expected: str) -> None:
+    assert suggested_plugin_source_display_name(source_url) == expected
+
+
+def test_suggested_plugin_source_display_name_returns_none_for_unsupported_url() -> None:
+    assert suggested_plugin_source_display_name("https://example.invalid/plugins/source.toml") is None
 
 
 def test_external_registry_install_plugin_restores_previous_files_on_swap_failure(
@@ -1398,8 +1452,32 @@ def test_external_registry_fetch_and_verify_manifest_uses_proxy_info(tmp_path: P
     )
 
 
+@pytest.mark.parametrize(
+    ("manifest_url", "expected_metadata_url", "expected_archive_url"),
+    [
+        (
+            "https://dummy.example/org/repo/raw/branch/main/source.toml",
+            "https://dummy.example/org/repo/raw/branch/main/plugins/test-plugin/pyproject.toml",
+            "https://dummy.example/org/repo/archive/main.zip",
+        ),
+        (
+            "https://github.com/org/repo/raw/main/source.toml",
+            "https://github.com/org/repo/raw/main/plugins/test-plugin/pyproject.toml",
+            "https://github.com/org/repo/archive/main.zip",
+        ),
+        (
+            "https://raw.githubusercontent.com/org/repo/main/source.toml",
+            "https://raw.githubusercontent.com/org/repo/main/plugins/test-plugin/pyproject.toml",
+            "https://github.com/org/repo/archive/main.zip",
+        ),
+    ],
+)
 def test_external_registry_remote_metadata_and_archive_fetches_use_proxy_info(
-    tmp_path: Path, monkeypatch
+    tmp_path: Path,
+    monkeypatch,
+    manifest_url: str,
+    expected_metadata_url: str,
+    expected_archive_url: str,
 ) -> None:
     config = _make_config(tmp_path)
     config.network_config.proxy_url = "socks5h://127.0.0.1:9050"
@@ -1430,7 +1508,7 @@ def test_external_registry_remote_metadata_and_archive_fetches_use_proxy_info(
     source = PluginSource(
         source_id="test-source",
         display_name="Test Source",
-        manifest_url="https://dummy.example/org/repo/raw/branch/main/source.toml",
+        manifest_url=manifest_url,
         pinned_source_public_key="key",
         auth_config=PluginSourceAuthConfig(),
     )
@@ -1469,8 +1547,8 @@ def test_external_registry_remote_metadata_and_archive_fetches_use_proxy_info(
     assert metadata.bundle_id == "test-plugin"
     assert plugin_dir == prepared_plugin_dir
     assert len(captured_calls) == 2
-    assert captured_calls[0][0].endswith("/plugins/test-plugin/pyproject.toml")
-    assert captured_calls[1][0].endswith("/archive/main.zip")
+    assert captured_calls[0][0] == expected_metadata_url
+    assert captured_calls[1][0] == expected_archive_url
     assert all(proxy_info is not None for _, proxy_info in captured_calls)
     assert all(
         proxy_info and proxy_info.get_url() == "socks5h://127.0.0.1:9050" for _, proxy_info in captured_calls
