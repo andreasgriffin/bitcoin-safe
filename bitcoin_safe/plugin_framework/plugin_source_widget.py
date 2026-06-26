@@ -59,6 +59,7 @@ from bitcoin_safe.plugin_framework.external_plugin_registry import (
     ExternalPluginRegistry,
     PluginSource,
     PluginSourceAuthConfig,
+    suggested_plugin_source_display_name,
 )
 from bitcoin_safe.plugin_framework.plugin_display import format_version_with_hash
 from bitcoin_safe.plugin_framework.plugin_list_widget import (
@@ -76,6 +77,7 @@ class AddPluginSourceDialog(QDialog):
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setWindowTitle(self.tr("Add Plugin Source"))
+        self._last_auto_display_name: str | None = None
 
         layout = QVBoxLayout(self)
         form = QFormLayout()
@@ -95,6 +97,7 @@ class AddPluginSourceDialog(QDialog):
         form.addRow(self.tr("Display name"), self.display_name_edit)
         form.addRow(self.tr("Bearer token"), self.bearer_token_edit)
         form.addRow(self.tr("Pinned public key"), self.pinned_key_edit)
+        self.manifest_url_edit.textChanged.connect(self._autofill_display_name)
 
         self.buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel,
@@ -118,6 +121,22 @@ class AddPluginSourceDialog(QDialog):
             else KnownGPGKeys.andreasgriffin.key.strip()
         )
         return manifest_url, display_name, auth_config, pinned_key
+
+    def _autofill_display_name(self, manifest_url: str) -> None:
+        current_display_name = self.display_name_edit.text().strip()
+        if current_display_name and current_display_name != self._last_auto_display_name:
+            return
+
+        suggested_display_name = suggested_plugin_source_display_name(manifest_url.strip())
+        if suggested_display_name is None:
+            if current_display_name == self._last_auto_display_name:
+                self.display_name_edit.clear()
+            self._last_auto_display_name = None
+            return
+
+        if current_display_name != suggested_display_name:
+            self.display_name_edit.setText(suggested_display_name)
+        self._last_auto_display_name = suggested_display_name
 
 
 class PluginSourceWidget(BasePluginWidget):
