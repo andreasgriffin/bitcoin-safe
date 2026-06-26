@@ -2023,8 +2023,7 @@ ya que el tamaño final de la transacción es desconocido.</translation>
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
 			<translation>La huella de 8 dígitos identifica la semilla.
-Puedes
-escribirla en el firmante de hardware para llevar un
+Puedes escribirla en el firmante de hardware para llevar
 seguimiento de distintas seeds y dispositivos de firma.</translation>
 		</message>
 		<name>KeyStoreUI</name>
@@ -2990,8 +2989,7 @@ so it is typically about {minutes} minutes behind the tip.</source>
 			<translation>Use la altura de bloque para retrasar hasta que se mine un bloque específico.
 Use fecha/hora para retrasar hasta una hora de red específica (median-time-past).
 Median-time-past es la marca de tiempo mediana de los últimos 11 bloques,
-por
-lo que normalmente está aproximadamente {minutes} minutos detrás del consejo.</translation>
+por lo que normalmente es cercano a {minutes} minutos detrás del consejo.</translation>
 		</message>
 		<name>NLocktimeGroupBox</name>
 		<message>
