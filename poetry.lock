@@ -456,7 +456,7 @@ requests = "^2.31.0"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git"
 reference = "main"
-resolved_reference = "4863bc3fb0e3cdafa3ec09e0d4683cd2f58009c2"
+resolved_reference = "1fe88d0a5c76d012415391cf687f3bb64a2d0cdc"
 
 [[package]]
 name = "bitcoin-qr-tools"
