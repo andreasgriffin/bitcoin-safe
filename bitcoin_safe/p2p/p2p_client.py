@@ -666,7 +666,7 @@ class P2PClient(QObject):
             await self.disconnect()
             return
 
-        logger.debug(f"<- {cmd} ({length} bytes)")
+        # logger.debug(f"<- {cmd} ({length} bytes)")
 
         # 4) Generic rate limiter
         self._enforce_rate_limit(self._msg_times, MAX_MSGS_PER_SEC, "message")

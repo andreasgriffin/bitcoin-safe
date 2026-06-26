@@ -187,6 +187,8 @@ class NetworkSettingsUI(QWidget):
     signal_apply_and_shutdown = cast(SignalProtocol[[bdk.Network]], pyqtSignal(bdk.Network))
     signal_cancel = cast(SignalProtocol[[]], pyqtSignal())
 
+    ignored_missing_in_UI = ["p2p_autodiscover_additional_peers", "mempool_data"]
+
     def __init__(
         self,
         network: bdk.Network,
@@ -768,7 +770,8 @@ class NetworkSettingsUI(QWidget):
             if name.startswith("_"):
                 continue
             if not hasattr(self, name):
-                logger.error(f"set_ui: {name} not present in {self.__class__.__name__}")
+                if name not in self.ignored_missing_in_UI:
+                    logger.error(f"set_ui: {name} not present in {self.__class__.__name__}")
                 continue
             setattr(self, name, getattr(network_config, name))
 

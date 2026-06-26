@@ -45,6 +45,7 @@ from bitcoin_safe_lib.storage import BaseSaveableClass, Encrypt, SaveAllClass
 from bitcoin_safe_lib.util import fast_version
 from PyQt6.QtCore import QCoreApplication
 
+from bitcoin_safe.fx_types import FXProvider
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.util import current_project_dir
@@ -96,6 +97,7 @@ class UserConfig(BaseSaveableClass):
         NetworkConfigs.__name__: NetworkConfigs,
         BitcoinSymbol.__name__: BitcoinSymbol,
         BtcPayInvoiceDetails.__name__: BtcPayInvoiceDetails,
+        FXProvider.__name__: FXProvider,
     }
     VERSION = "0.3.8"
 
