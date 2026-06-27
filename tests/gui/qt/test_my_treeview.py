@@ -35,6 +35,7 @@ from pathlib import Path
 import pytest
 from PyQt6.QtCore import QModelIndex
 from PyQt6.QtGui import QStandardItem
+from PyQt6.QtWidgets import QApplication, QStyleFactory
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
@@ -118,10 +119,14 @@ def test_mytreeview_selection_override_applied_for_windows_style(
     palette = tree_view.palette()
     selection_color = palette.color(palette.ColorRole.HighlightedText).name()
     selector = f'QTreeView[objectName="{tree_view.objectName()}"]::item:selected'
+    hover_selector = f'QTreeView[objectName="{tree_view.objectName()}"]::item:hover'
+    selected_hover_selector = f'QTreeView[objectName="{tree_view.objectName()}"]::item:selected:hover'
 
     assert f"color: {selection_color};" in tree_view.styleSheet()
     assert "background-color:" not in tree_view.styleSheet()
     assert selector in tree_view.styleSheet()
+    assert hover_selector in tree_view.styleSheet()
+    assert selected_hover_selector in tree_view.styleSheet()
     assert tree_view.objectName().startswith("DummyTreeView.")
 
 
@@ -137,7 +142,36 @@ def test_colorcorrectedtreeview_keeps_managed_override_when_stylesheet_changes(
 
     assert "QTreeView { border: none; }" in tree_view.styleSheet()
     assert f'QTreeView[objectName="{tree_view.objectName()}"]::item:selected' in tree_view.styleSheet()
+    assert f'QTreeView[objectName="{tree_view.objectName()}"]::item:hover' in tree_view.styleSheet()
     assert tree_view.objectName().startswith("ColorCorrectedTreeView.")
+
+
+def test_colorcorrectedtreeview_detects_windows11_after_stylesheet_wrap(qtbot: QtBot) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    if "windows11" not in {name.lower() for name in QStyleFactory.keys()}:
+        pytest.skip("windows11 Qt style is not available on this machine")
+
+    old_style = app.style()
+    old_style_name = old_style.objectName() if old_style else ""
+    windows11_style = QStyleFactory.create("windows11")
+    assert windows11_style is not None
+    app.setStyle(windows11_style)
+
+    try:
+        tree_view = ColorCorrectedTreeView()
+        qtbot.addWidget(tree_view)
+        tree_view.setStyleSheet("QTreeView { border: none; }")
+
+        assert tree_view.style().metaObject().className() == "QStyleSheetStyle"
+        assert tree_view._needs_selection_text_override()
+        assert f'QTreeView[objectName="{tree_view.objectName()}"]::item:selected' in tree_view.styleSheet()
+        assert f'QTreeView[objectName="{tree_view.objectName()}"]::item:hover' in tree_view.styleSheet()
+    finally:
+        if old_style_name:
+            restored_style = QStyleFactory.create(old_style_name)
+            if restored_style is not None:
+                app.setStyle(restored_style)
 
 
 def test_mytreeview_csv_export_writes_utf8(tmp_path: Path, test_config: UserConfig) -> None:

@@ -30,7 +30,7 @@
 from __future__ import annotations
 
 from PyQt6.QtCore import QEvent
-from PyQt6.QtWidgets import QTreeView, QWidget
+from PyQt6.QtWidgets import QApplication, QTreeView, QWidget
 
 
 class ColorCorrectedTreeView(QTreeView):
@@ -38,7 +38,7 @@ class ColorCorrectedTreeView(QTreeView):
 
     _SELECTION_STYLE_MARKER_START = "/* colorcorrectedtreeview-selection-override:start */"
     _SELECTION_STYLE_MARKER_END = "/* colorcorrectedtreeview-selection-override:end */"
-    _WINDOWS_STYLE_NAMES = frozenset({"windows", "windowsvista", "windows11"})
+    _WINDOWS_STYLE_NAMES = frozenset({"windows", "windowsvista", "windows11", "qwindows11style"})
 
     def __init__(self, parent: QWidget | None = None) -> None:
         """Initialize instance."""
@@ -62,18 +62,25 @@ class ColorCorrectedTreeView(QTreeView):
     def _needs_selection_text_override(self) -> bool:
         """Return whether the current Qt style needs an explicit selection text override."""
         style_names: set[str] = set()
-        style = self.style()
-        if not style:
-            return False
-        style_names.add(style.objectName().lower())
-        if meta_object := style.metaObject():
-            style_names.add(meta_object.className().lower())
+        instance_style = None
+        try:
+            # this is needed, in case self.style().objectName().lower()  == ""
+            instance_style = QApplication.instance().style()  # type: ignore
+        except Exception:
+            pass
+        for style in [self.style(), instance_style]:
+            if not style:
+                continue
+            style_names.add(style.objectName().lower())
+            if meta_object := style.metaObject():
+                style_names.add(meta_object.className().lower())
 
-        return any(
+        result = any(
             windows_style_name in style_name
             for style_name in style_names
             for windows_style_name in self._WINDOWS_STYLE_NAMES
         )
+        return result
 
     def _selection_style_override(self) -> str:
         """Return the guarded selection-color override stylesheet."""
@@ -82,7 +89,13 @@ class ColorCorrectedTreeView(QTreeView):
         tree_view_selector = f'QTreeView[objectName="{self.objectName()}"]'
         return f"""
 {self._SELECTION_STYLE_MARKER_START}
+{tree_view_selector}::item:hover {{
+    color: {selection_color};
+}}
 {tree_view_selector}::item:selected {{
+    color: {selection_color};
+}}
+{tree_view_selector}::item:selected:hover {{
     color: {selection_color};
 }}
 {tree_view_selector}::item:selected:active {{
