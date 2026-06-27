@@ -735,8 +735,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>स्वयं-प्रतिलिपि प्रकाशित नहीं की जा सकी</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>स्वयं-प्रतिलिपि प्रकाशित नहीं की जा सकी: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for} से पुष्टि लंबित है</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>प्रकाशन विफल होने के कारण लंबित: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>लंबित: {waiting_for}. विफल: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient} के लिए प्रकाशन विफल रहा</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient} के लिए प्रकाशन विफल रहा: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>सभी प्राप्तकर्ताओं को प्रकाशित किया गया और स्वयं-प्रतिलिपि प्राप्त हुई</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>आप केवल PSBTs या लेन-देन ही भेज सकते हैं</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>स्वयं-प्रतिलिपि</translation>
 		</message>
 	</context>
 	<context>

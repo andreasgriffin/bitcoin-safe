@@ -735,8 +735,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>ကိုယ်ပိုင်မိတ္တူကို ထုတ်ဝေ၍မရပါ</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>ကိုယ်ပိုင်မိတ္တူကို ထုတ်ဝေ၍မရပါ: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for} ထံမှ အတည်ပြုချက်ကို စောင့်ဆိုင်းနေသည်</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>ထုတ်ဝေမှုများ မအောင်မြင်သောကြောင့် ဆိုင်းငံ့ထားသည်: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>ဆိုင်းငံ့ထားသည်: {waiting_for}။ မအောင်မြင်: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient} အတွက် ထုတ်ဝေမှု မအောင်မြင်ပါ</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient} အတွက် ထုတ်ဝေမှု မအောင်မြင်ပါ: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>လက်ခံသူအားလုံးထံ ထုတ်ဝေပြီး ကိုယ်ပိုင်မိတ္တူကို လက်ခံရရှိပြီးပါပြီ</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>PSBTs သို့မဟုတ်ငွေလွှဲများကိုသာပို့နိုင်သည်</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>ကိုယ်ပိုင်မိတ္တူ</translation>
 		</message>
 	</context>
 	<context>

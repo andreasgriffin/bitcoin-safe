@@ -735,8 +735,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>ไม่สามารถเผยแพร่สำเนาของตนเองได้</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>ไม่สามารถเผยแพร่สำเนาของตนเองได้: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>รอการยืนยันจาก {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>ค้างอยู่เนื่องจากการเผยแพร่ล้มเหลว: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>ค้างอยู่: {waiting_for} ล้มเหลว: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>การเผยแพร่สำหรับ {recipient} ล้มเหลว</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>การเผยแพร่สำหรับ {recipient} ล้มเหลว: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>เผยแพร่ไปยังผู้รับทั้งหมดแล้ว และได้รับสำเนาของตนเองแล้ว</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>คุณสามารถส่งได้เฉพาะ PSBTs หรือธุรกรรมเท่านั้น</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>สำเนาของตนเอง</translation>
 		</message>
 	</context>
 	<context>
