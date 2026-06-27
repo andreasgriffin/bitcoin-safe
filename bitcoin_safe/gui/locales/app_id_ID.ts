@@ -736,8 +736,53 @@ memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengub
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>Tidak dapat memublikasikan salinan sendiri</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>Tidak dapat memublikasikan salinan sendiri: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>Menunggu konfirmasi dari {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>Tertunda karena publikasi gagal: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>Tertunda: {waiting_for}. Gagal: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>Publikasi gagal untuk {recipient}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>Publikasi gagal untuk {recipient}: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>Dipublikasikan ke semua penerima dan salinan sendiri diterima</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>Anda hanya bisa mengirim PSBT atau transaksi</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>salinan sendiri</translation>
 		</message>
 	</context>
 	<context>

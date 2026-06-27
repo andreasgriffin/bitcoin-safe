@@ -736,8 +736,53 @@ adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onları
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>Kendi kopya yayımlanamadı</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>Kendi kopya yayımlanamadı: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for} tarafından onay bekleniyor</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>Başarısız yayımlamalar nedeniyle beklemede: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>Beklemede: {waiting_for}. Başarısız: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient} için yayımlama başarısız oldu</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient} için yayımlama başarısız oldu: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>Tüm alıcılara yayımlandı ve kendi kopya alındı</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>Sadece PSBT veya işlemler gönderebilirsiniz</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>kendi kopya</translation>
 		</message>
 	</context>
 	<context>

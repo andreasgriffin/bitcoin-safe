@@ -736,8 +736,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>无法发布自副本</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>无法发布自副本：{error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>正在等待 {waiting_for} 确认</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>由于发布失败而待处理：{failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>待处理：{waiting_for}。失败：{failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>向 {recipient} 发布失败</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>向 {recipient} 发布失败：{error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>已发布给所有接收者，并已收到自副本</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>您仅可发送 PSBT 或交易</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>自副本</translation>
 		</message>
 	</context>
 	<context>

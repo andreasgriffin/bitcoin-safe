@@ -735,8 +735,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>নিজস্ব অনুলিপি প্রকাশ করা যায়নি</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>নিজস্ব অনুলিপি প্রকাশ করা যায়নি: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for} থেকে নিশ্চিতকরণ অপেক্ষমাণ</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>প্রকাশনা ব্যর্থ হওয়ার কারণে অপেক্ষমাণ: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>অপেক্ষমাণ: {waiting_for}. ব্যর্থ: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient}-এর জন্য প্রকাশনা ব্যর্থ হয়েছে</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient}-এর জন্য প্রকাশনা ব্যর্থ হয়েছে: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>সব প্রাপকের কাছে প্রকাশ করা হয়েছে এবং নিজস্ব অনুলিপি পাওয়া গেছে</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>আপনি শুধুমাত্র PSBT বা লেনদেন পাঠাতে পারেন</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>নিজস্ব অনুলিপি</translation>
 		</message>
 	</context>
 	<context>

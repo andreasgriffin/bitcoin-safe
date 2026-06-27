@@ -736,8 +736,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>تعذّر نشر النسخة الذاتية</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>تعذّر نشر النسخة الذاتية: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>في انتظار التأكيد من {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>معلّق بسبب عمليات نشر فاشلة: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>معلّق: {waiting_for}. فشل: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>فشل النشر إلى {recipient}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>فشل النشر إلى {recipient}: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>تم النشر إلى جميع المستلمين وتم استلام النسخة الذاتية</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>يمكنك إرسال PSBTs أو المعاملات فقط</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>النسخة الذاتية</translation>
 		</message>
 	</context>
 	<context>

@@ -739,8 +739,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>சுய நகலை வெளியிட முடியவில்லை</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>சுய நகலை வெளியிட முடியவில்லை: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for} இடமிருந்து உறுதிப்படுத்தல் நிலுவையில் உள்ளது</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>வெளியீடுகள் தோல்வியடைந்ததால் நிலுவையில் உள்ளது: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>நிலுவையில்: {waiting_for}. தோல்வி: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient} க்கு வெளியிடுதல் தோல்வியடைந்தது</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient} க்கு வெளியிடுதல் தோல்வியடைந்தது: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>அனைத்து பெறுநர்களுக்கும் வெளியிடப்பட்டது மற்றும் சுய நகல் பெறப்பட்டது</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>நீங்கள் PSBTகள் அல்லது பரிவர்த்தனைகளை மட்டுமே அனுப்ப முடியும்</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>சுய நகல்</translation>
 		</message>
 	</context>
 	<context>

@@ -736,8 +736,53 @@ haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Sind Sie 
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>Selbstkopie konnte nicht veröffentlicht werden</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>Selbstkopie konnte nicht veröffentlicht werden: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>Bestätigung von {waiting_for} ausstehend</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>Ausstehend wegen fehlgeschlagener Veröffentlichungen: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>Ausstehend: {waiting_for}. Fehlgeschlagen: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>Veröffentlichung für {recipient} fehlgeschlagen</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>Veröffentlichung für {recipient} fehlgeschlagen: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>Für alle Empfänger veröffentlicht und Selbstkopie empfangen</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>Sie können nur PSBTs oder Transaktionen senden</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>Selbstkopie</translation>
 		</message>
 	</context>
 	<context>
