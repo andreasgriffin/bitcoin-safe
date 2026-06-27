@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import platform
+import runpy
 import site
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_dynamic_libs, copy_metadata
 from PyInstaller.building.api import COLLECT, EXE, PYZ
@@ -33,6 +34,9 @@ PACKAGE_NAME='Bitcoin Safe.app'
 PYPKG='bitcoin_safe'
 PROJECT_ROOT = os.path.abspath(".")
 ICONS_FILE=f"{PROJECT_ROOT}/tools/resources/icon.icns"
+EXTERNAL_PLUGIN_HIDDENIMPORTS = runpy.run_path(
+    f"{PROJECT_ROOT}/tools/build_pyinstaller_hiddenimports.py"
+)["EXTERNAL_PLUGIN_HIDDENIMPORTS"]
 
 
 VERSION = os.environ.get("BITCOIN_SAFE_VERSION")
@@ -45,6 +49,9 @@ block_cipher = None
 hiddenimports = [] 
 hiddenimports += collect_submodules('pkg_resources')  # workaround for https://github.com/pypa/setuptools/issues/1963
 hiddenimports += collect_submodules('hwilib') # otherwise hwilib doesnt get packaged
+# External plugins are imported dynamically from the user config dir, so their
+# imports of plugin-host and packaged-app modules must be bundled explicitly.
+hiddenimports += list(EXTERNAL_PLUGIN_HIDDENIMPORTS)
 
 packages_with_dlls = [ 'bdkpython', 'nostr_sdk', 'pyzbar', 'pygame', "numpy.libs", "cv2"]
 
