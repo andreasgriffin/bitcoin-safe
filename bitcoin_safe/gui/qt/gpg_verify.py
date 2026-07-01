@@ -32,7 +32,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-import pgpy
+import pysequoia
 from PyQt6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
@@ -58,7 +58,7 @@ class GpgVerificationResult:
     """Container for PGP verification outcome."""
 
     message: str
-    signer_keys: list[pgpy.PGPKey] = field(default_factory=list)
+    signer_keys: list[pysequoia.Cert] = field(default_factory=list)
 
     @property
     def success(self) -> bool:
@@ -122,7 +122,7 @@ def verify_gpg_signed_message(
     if signer_keys:
         body = translate("gpg", "PGP signature is valid.")
         for signer_key in signer_keys:
-            fingerprint = str(signer_key.fingerprint)
+            fingerprint = SignatureVerifyer._normalize_fingerprint(signer_key.fingerprint)
             link = keyserver_url_for_fingerprint(fingerprint)
             if link:
                 body += f' ({translate("gpg", "Fingerprint")}: <a href="{link}">{fingerprint}</a>)'

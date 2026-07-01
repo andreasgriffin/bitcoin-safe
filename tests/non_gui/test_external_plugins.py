@@ -41,6 +41,7 @@ from types import SimpleNamespace, TracebackType
 from typing import Any
 
 import bdkpython as bdk
+import pysequoia
 import pytest
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
@@ -941,10 +942,6 @@ def test_plugin_manager_refresh_external_state_keeps_installed_plugin_when_newer
     monkeypatch.setattr(
         "bitcoin_safe.plugin_framework.external_plugin_registry.SignatureVerifyer", _FakeVerifier
     )
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.external_plugin_registry.pgpy.PGPSignature.from_blob",
-        lambda _blob: (_ for _ in ()).throw(ValueError("no parse")),
-    )
 
     previous_known_classes = PluginManager.known_classes.copy()
     try:
@@ -1422,10 +1419,6 @@ def test_external_registry_fetch_and_verify_manifest_uses_proxy_info(tmp_path: P
         "bitcoin_safe.plugin_framework.external_plugin_registry.SignatureVerifyer", _FakeVerifier
     )
     monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.external_plugin_registry.pgpy.PGPSignature.from_blob",
-        lambda _blob: (_ for _ in ()).throw(ValueError("no parse")),
-    )
-    monkeypatch.setattr(
         registry,
         "_parse_source_manifest",
         lambda _text, manifest_url: replace(manifest, manifest_url=manifest_url),
@@ -1450,6 +1443,155 @@ def test_external_registry_fetch_and_verify_manifest_uses_proxy_info(tmp_path: P
         proxy_info and proxy_info.get_url() == "socks5h://127.0.0.1:9050"
         for proxy_info in captured_proxy_infos
     )
+
+
+def test_external_registry_fetch_and_verify_manifest_accepts_signing_subkey(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Test steps:
+    - Build a minimal source manifest.
+    - Sign it with a generated certificate's signing subkey.
+    - Confirm the detached signer fingerprint differs from the cert fingerprint.
+    - Verify through `_fetch_and_verify_manifest`.
+    - Assert verification succeeds and resolves the primary fingerprint.
+    """
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    manifest_bytes = (
+        b'schema_version = "1"\n'
+        b'source_id = "test-source"\n'
+        b'display_name = "Test Source"\n'
+        b"source_serial = 1\n"
+        b"plugins = []\n"
+    )
+    cert = pysequoia.Cert.generate(user_id="source@example.com")
+    signature_bytes = pysequoia.sign(
+        cert.secrets.signer(),
+        manifest_bytes,
+        mode=pysequoia.SignatureMode.DETACHED,
+    )
+    detached_signature = pysequoia.Sig.from_bytes(signature_bytes)
+
+    assert (
+        str(detached_signature.issuer_fingerprint).replace(" ", "").upper()
+        != str(cert.fingerprint).replace(" ", "").upper()
+    )
+
+    def _fake_fetch_bytes(url: str, headers: dict[str, str], proxy_info: ProxyInfo | None) -> bytes:
+        del headers, proxy_info
+        if url.endswith(".asc"):
+            return signature_bytes
+        return manifest_bytes
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.external_plugin_registry.fetch_bytes", _fake_fetch_bytes
+    )
+
+    fetched_manifest, _manifest_bytes, _signature_bytes, _metadata_texts = (
+        registry._fetch_and_verify_manifest(
+            manifest_url="https://dummy.example/source.toml",
+            pinned_source_public_key=str(cert),
+            auth_config=PluginSourceAuthConfig(),
+            last_seen_source_serial=0,
+        )
+    )
+
+    assert fetched_manifest.source_id == "test-source"
+    assert fetched_manifest.signer_fingerprint == str(cert.fingerprint).replace(" ", "").upper()
+
+
+def test_external_registry_fetch_and_verify_manifest_rejects_modified_subkey_signed_manifest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Test steps:
+    - Sign an original manifest payload with a signing subkey.
+    - Serve a modified manifest with the original detached signature.
+    - Run the normal manifest verification path.
+    - Assert verification fails because the bytes no longer match.
+    """
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    original_manifest_bytes = (
+        b'schema_version = "1"\n'
+        b'source_id = "test-source"\n'
+        b'display_name = "Test Source"\n'
+        b"source_serial = 1\n"
+        b"plugins = []\n"
+    )
+    modified_manifest_bytes = (
+        b'schema_version = "1"\n'
+        b'source_id = "test-source"\n'
+        b'display_name = "Tampered Source"\n'
+        b"source_serial = 1\n"
+        b"plugins = []\n"
+    )
+    cert = pysequoia.Cert.generate(user_id="source@example.com")
+    signature_bytes = pysequoia.sign(
+        cert.secrets.signer(),
+        original_manifest_bytes,
+        mode=pysequoia.SignatureMode.DETACHED,
+    )
+
+    def _fake_fetch_bytes(url: str, headers: dict[str, str], proxy_info: ProxyInfo | None) -> bytes:
+        del headers, proxy_info
+        if url.endswith(".asc"):
+            return signature_bytes
+        return modified_manifest_bytes
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.external_plugin_registry.fetch_bytes", _fake_fetch_bytes
+    )
+
+    with pytest.raises(ExternalPluginError, match="Source manifest signature verification failed"):
+        registry._fetch_and_verify_manifest(
+            manifest_url="https://dummy.example/source.toml",
+            pinned_source_public_key=str(cert),
+            auth_config=PluginSourceAuthConfig(),
+            last_seen_source_serial=0,
+        )
+
+
+def test_external_registry_fetch_and_verify_manifest_rejects_subkey_signature_from_wrong_cert(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Test steps:
+    - Sign a manifest with one certificate's signing subkey.
+    - Pin a different public certificate for verification.
+    - Keep the detached signature otherwise valid.
+    - Run `_fetch_and_verify_manifest`.
+    - Assert verification fails with the wrong certificate.
+    """
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    manifest_bytes = (
+        b'schema_version = "1"\n'
+        b'source_id = "test-source"\n'
+        b'display_name = "Test Source"\n'
+        b"source_serial = 1\n"
+        b"plugins = []\n"
+    )
+    signing_cert = pysequoia.Cert.generate(user_id="source@example.com")
+    wrong_cert = pysequoia.Cert.generate(user_id="wrong@example.com")
+    signature_bytes = pysequoia.sign(
+        signing_cert.secrets.signer(),
+        manifest_bytes,
+        mode=pysequoia.SignatureMode.DETACHED,
+    )
+
+    def _fake_fetch_bytes(url: str, headers: dict[str, str], proxy_info: ProxyInfo | None) -> bytes:
+        del headers, proxy_info
+        if url.endswith(".asc"):
+            return signature_bytes
+        return manifest_bytes
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.external_plugin_registry.fetch_bytes", _fake_fetch_bytes
+    )
+
+    with pytest.raises(ExternalPluginError, match="Source manifest signature verification failed"):
+        registry._fetch_and_verify_manifest(
+            manifest_url="https://dummy.example/source.toml",
+            pinned_source_public_key=str(wrong_cert),
+            auth_config=PluginSourceAuthConfig(),
+            last_seen_source_serial=0,
+        )
 
 
 @pytest.mark.parametrize(
@@ -1611,10 +1753,6 @@ def test_external_registry_refresh_sources_caches_plugin_metadata_for_local_cata
     )
     monkeypatch.setattr(
         "bitcoin_safe.plugin_framework.external_plugin_registry.SignatureVerifyer", _FakeVerifier
-    )
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.external_plugin_registry.pgpy.PGPSignature.from_blob",
-        lambda _blob: (_ for _ in ()).throw(ValueError("no parse")),
     )
 
     refreshed = asyncio.run(registry.refresh_sources(recheck_installed=False))
@@ -2408,10 +2546,6 @@ def test_external_registry_keeps_installed_plugin_when_newer_catalog_version_is_
     )
     monkeypatch.setattr(
         "bitcoin_safe.plugin_framework.external_plugin_registry.SignatureVerifyer", _FakeVerifier
-    )
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.external_plugin_registry.pgpy.PGPSignature.from_blob",
-        lambda _blob: (_ for _ in ()).throw(ValueError("no parse")),
     )
 
     refreshed = asyncio.run(registry.refresh_sources(recheck_installed=False))

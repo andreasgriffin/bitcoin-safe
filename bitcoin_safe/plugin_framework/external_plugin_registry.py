@@ -43,7 +43,6 @@ from types import ModuleType
 from typing import Any, cast
 from urllib.parse import ParseResult, unquote, urljoin, urlparse
 
-import pgpy
 import tomllib  # pyright: ignore[reportMissingImports]
 from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from packaging.specifiers import InvalidSpecifier, SpecifierSet
@@ -85,6 +84,10 @@ from bitcoin_safe.plugin_framework.plugin_source_models import (
 from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer, SimpleGPGKey
 
 logger = logging.getLogger(__name__)
+
+
+def _normalize_fingerprint(value: object) -> str:
+    return str(value).replace(" ", "").upper()
 
 
 @dataclass(frozen=True)
@@ -734,26 +737,19 @@ class ExternalPluginRegistry(BaseSaveableClass):
             proxy_info=self._requests_proxy_info(),
         )
 
+        # Start with an empty verifier so no previously trusted/imported keys can match here.
         verifyer = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+        # Import exactly the pinned source cert; only this cert and its valid subkeys are allowed.
         imported_key = verifyer.import_public_key_block(pinned_source_public_key)
-        try:
-            signature = pgpy.PGPSignature.from_blob(signature_bytes)
-            detached_signer_fingerprint = (
-                str(signature.signer_fingerprint).replace(" ", "").upper()
-                if isinstance(signature, pgpy.PGPSignature)
-                else None
-            )
-        except Exception:
-            detached_signer_fingerprint = None
-        expected_fingerprint = str(imported_key.fingerprint).replace(" ", "").upper()
-        if detached_signer_fingerprint and detached_signer_fingerprint != expected_fingerprint:
-            raise ExternalPluginError("Source manifest signer does not match the pinned key.")
+        expected_fingerprint = _normalize_fingerprint(imported_key.fingerprint)
         with tempfile.TemporaryDirectory(prefix="bitcoin-safe-source-manifest-") as temp_dir_str:
             temp_dir = Path(temp_dir_str)
             manifest_path = temp_dir / SOURCE_MANIFEST_FILENAME
             signature_path = temp_dir / f"{SOURCE_MANIFEST_FILENAME}{SOURCE_SIGNATURE_SUFFIX}"
             manifest_path.write_bytes(manifest_bytes)
             signature_path.write_bytes(signature_bytes)
+            # Verification can only succeed if the signature chains back to that imported cert.
+            # Any other key, even one trusted elsewhere, is absent from this verifier and will fail.
             verified, signer_fingerprint = verifyer.verify_detached_signature_with_fingerprint(
                 manifest_path, signature_path
             )

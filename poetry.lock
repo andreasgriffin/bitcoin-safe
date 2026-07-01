@@ -2785,21 +2785,6 @@ files = [
 ]
 
 [[package]]
-name = "pgpy"
-version = "0.6.0"
-description = "Pretty Good Privacy for Python"
-optional = false
-python-versions = ">=3.6"
-groups = ["main"]
-files = [
-    {file = "PGPy-0.6.0.tar.gz", hash = "sha256:279c2e353f4c3a319f00bd9bd582456e420f8a3ac6de2b4e9731444746828383"},
-]
-
-[package.dependencies]
-cryptography = ">=3.3.2"
-pyasn1 = "*"
-
-[[package]]
 name = "pillow"
 version = "12.2.0"
 description = "Python Imaging Library (fork)"
@@ -3255,18 +3240,6 @@ python-versions = "*"
 groups = ["main"]
 files = [
     {file = "pyaes-1.6.1.tar.gz", hash = "sha256:02c1b1405c38d3c370b085fb952dd8bea3fadcee6411ad99f312cc129c536d8f"},
-]
-
-[[package]]
-name = "pyasn1"
-version = "0.6.3"
-description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-files = [
-    {file = "pyasn1-0.6.3-py3-none-any.whl", hash = "sha256:a80184d120f0864a52a073acc6fc642847d0be408e7c7252f31390c0f4eadcde"},
-    {file = "pyasn1-0.6.3.tar.gz", hash = "sha256:697a8ecd6d98891189184ca1fa05d1bb00e2f84b5977c481452050549c8a72cf"},
 ]
 
 [[package]]
@@ -3820,6 +3793,138 @@ files = [
     {file = "pyqt6_sip-13.11.1-cp314-cp314-win_amd64.whl", hash = "sha256:581e287bf42587593b88b30d9db06ed0fccbf40f345a5bd3ec3f00a5692e2430"},
     {file = "pyqt6_sip-13.11.1-cp314-cp314-win_arm64.whl", hash = "sha256:42b62530a9b6a9c6e29c2941b8ab78258652da0aeae4eb1fc9a0631d19a7a7b2"},
     {file = "pyqt6_sip-13.11.1.tar.gz", hash = "sha256:869c5b48afe38e55b1ee0dd72182b0886e968cc509b98023ff50010b013ce1be"},
+]
+
+[[package]]
+name = "pysequoia"
+version = "0.1.34"
+description = "Provides OpenPGP facilities using Sequoia-PGP library"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "pysequoia-0.1.34-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b697f6eca5dcf974c29a2507fbd2e054c3dd4dcbe164824aba0f46ebd662b942"},
+    {file = "pysequoia-0.1.34-cp310-cp310-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:e091c63f534c9c18704c425a5fa206952eaa8356fc2a86e295e2fe9649776770"},
+    {file = "pysequoia-0.1.34-cp310-cp310-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:8ce06557a1e3ea28dd4eec673147fa058acf1d92e3cbde62d0a4d0131fa41b84"},
+    {file = "pysequoia-0.1.34-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:9ac7e3dce397ea6ba90c165e98922f9d9ee6e76515443145f241c721b68cb733"},
+    {file = "pysequoia-0.1.34-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f0b17562f8fedb8d959519a11bfd80e2b94f9494d3c188e81177a6b275567571"},
+    {file = "pysequoia-0.1.34-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:c035da00c7285effd280dd392cf4602b00214bb71260c1ad2586bfb385b950f9"},
+    {file = "pysequoia-0.1.34-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:26b52c5fbad5b74e0c3f15e5ccc8bb555627671f72fcedba32ed0384b76c2ed9"},
+    {file = "pysequoia-0.1.34-cp310-cp310-musllinux_1_2_armv7l.whl", hash = "sha256:2a4fb2fca581884a4ac511305a954684c4e468e02ce5e49f7c80bde5ac4eb023"},
+    {file = "pysequoia-0.1.34-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:47280b94253a2eebe96750160afc655acd73f4986c47fa738e9d1219466c1676"},
+    {file = "pysequoia-0.1.34-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:dce47389359677b7b13e7e1602c4832e9c2996b509a7b202471c42314667f5ab"},
+    {file = "pysequoia-0.1.34-cp310-cp310-win_amd64.whl", hash = "sha256:957a3b949e4cb48038475e5c68f8ec9f169f42b68f939548bd112f3c68498843"},
+    {file = "pysequoia-0.1.34-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:63d8c9118c1661305a56d19fc21dde63d4e21eba4454c65e26367bcd195443df"},
+    {file = "pysequoia-0.1.34-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:cdd0b4c34ed6113906b6c0dfa72a982e5a45f67b5b53a81baa3e116d3d726d1a"},
+    {file = "pysequoia-0.1.34-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:28e3f936cf57d6cc5ec192986ce905170ef3598e83c2b425dc7f73bfc9509f13"},
+    {file = "pysequoia-0.1.34-cp311-cp311-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:436cdd0c9c498e2c44bd792badb76cad80c0e3094f6be85a8f0879089b34117f"},
+    {file = "pysequoia-0.1.34-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:402fd8f3a24815039ea4e45eda838bf14d6f50d3d6f1f8a2679ca43181dcae69"},
+    {file = "pysequoia-0.1.34-cp311-cp311-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:37600fc12de8d492b4fc0c54267fb68c5a190d5e84fed76e7b383d9767d8361f"},
+    {file = "pysequoia-0.1.34-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3fa3b8738bb64c37e98dd24ffb59ba3648abc3af7abafafb262885cf4b9c261c"},
+    {file = "pysequoia-0.1.34-cp311-cp311-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:7434c74d3f0b3f77f86bc3d307bc286c825d242424c71e8c32577a155d909363"},
+    {file = "pysequoia-0.1.34-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:723cbea00fdd16784959b2af40d961f4d6708deebd397b636d5a45610bec1ee8"},
+    {file = "pysequoia-0.1.34-cp311-cp311-musllinux_1_2_armv7l.whl", hash = "sha256:678b73b0f8a1415ee93a1d1b8d016758c3126046378a4b4be8b74367444a5d80"},
+    {file = "pysequoia-0.1.34-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:99121fdb0a8fee47ab0de728115057b364e8f47ab923949ee74a5eb7da74c234"},
+    {file = "pysequoia-0.1.34-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:8f332126d98bd3ac93155eefc1f24f3dbcd4a6c650f929c8e409051a75e77db2"},
+    {file = "pysequoia-0.1.34-cp311-cp311-win_amd64.whl", hash = "sha256:3d033626b48a0a1b0c253bbb31268557160b5db3bf92091cef846aa02ef9639a"},
+    {file = "pysequoia-0.1.34-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:4671c2187451a1dcaf7da4dd73812acb8041f318c821994961f2144ae3fc2759"},
+    {file = "pysequoia-0.1.34-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:053f2218f1e43b82de7546261235983718e8012a3d08ad4484c22ee3dcac5517"},
+    {file = "pysequoia-0.1.34-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:de0a808ad0db07aae3b73f73e5470d8276dd79d16e96f3116102d6c5dc21bab5"},
+    {file = "pysequoia-0.1.34-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:0d8f9ab2481e6b8e6b9daea6ce3ea3cd2337a89a5206359e82a1161946a66eb9"},
+    {file = "pysequoia-0.1.34-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:91fcb2240293aa91f4f5d9f8ab8e2060205f5cfb9030ad99244e27088c4e8e57"},
+    {file = "pysequoia-0.1.34-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:384332325cf1505140acef5151264114897dd88be1b890cd68fcaaa4e846a2e3"},
+    {file = "pysequoia-0.1.34-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:53fbf47e678d4b792fe9047ffc34477dd42ca0f16bd60924c341eed28092fff0"},
+    {file = "pysequoia-0.1.34-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:86ddb6d541308e8bf737ecd5722277b659e49a33a818006c51e5013cdb988364"},
+    {file = "pysequoia-0.1.34-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:8790529cb0932114a61f2a23102178039e663a259931f2e3b47c302b8c1495fe"},
+    {file = "pysequoia-0.1.34-cp312-cp312-musllinux_1_2_armv7l.whl", hash = "sha256:f668be3d04a439bc894d3968e4fa45466890f83265222cb33d45448f345ccbc0"},
+    {file = "pysequoia-0.1.34-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:b07036fe69acad2c4afed4cedffc2a35b164ddaf4ba28f28e6685dd880c9c533"},
+    {file = "pysequoia-0.1.34-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:26d3e896f09de78f56f557ce204ff93d15998d84a573f38bb8c0ab32ff1e56d2"},
+    {file = "pysequoia-0.1.34-cp312-cp312-win_amd64.whl", hash = "sha256:12c812fbe08c1dc58261ffe2bd9712026775cf1f791e0c171e028c16c092c615"},
+    {file = "pysequoia-0.1.34-cp312-cp312-win_arm64.whl", hash = "sha256:0e6e9629fb1a5170f7a2914aa4cd04bef6c7e6b46122d1540ed70df63e2db266"},
+    {file = "pysequoia-0.1.34-cp313-cp313-macosx_10_12_x86_64.whl", hash = "sha256:e29d9bfbb362a4b9abb8872c9fcaccfaa77ca6d537e3f2d444dde1bb0e88725e"},
+    {file = "pysequoia-0.1.34-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:4dc5a0762d8a89930fef844982a0cd45e2d5d955ee3706587d101e8ce47908dc"},
+    {file = "pysequoia-0.1.34-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:bf28e95b7f2003b6958d498ea493da6bb43919e0d7c8f1dcb8094e479a88f8fa"},
+    {file = "pysequoia-0.1.34-cp313-cp313-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:8d4271d714a1d56ae223ae2549fcdb4e17b40faf0512f6f1843191e3e4726019"},
+    {file = "pysequoia-0.1.34-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:a2a51f4c730b69837b3f8e1792893e2c39fcbdc91745591f25a2acda336cd189"},
+    {file = "pysequoia-0.1.34-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:ecd60d832efc2cc2e5ab928f733673af0d88b4a40c22fcc8a066ab46743d3b77"},
+    {file = "pysequoia-0.1.34-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9b9929d7e9219ffeaa9e97c6e2bc52d965e1897f3248b8ff00175776c008598e"},
+    {file = "pysequoia-0.1.34-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:12cfd97620b0f73d7b3ec8fe55980bbb05a25a1ee22846fbff6a8d91eed3440e"},
+    {file = "pysequoia-0.1.34-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:66168c661ebed7e7725fbb10f20eb681fc3cb372ecdc99b923b6d97aa13bbc70"},
+    {file = "pysequoia-0.1.34-cp313-cp313-musllinux_1_2_armv7l.whl", hash = "sha256:6560769f675bf9a123cbae4b226208e546a3c5035ea3e00a6eee961bc39021f6"},
+    {file = "pysequoia-0.1.34-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:7cd44a5d2b5b1ccfb6e84e91aecc8796eed70263eb3afdbdc5d685f686aa0162"},
+    {file = "pysequoia-0.1.34-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:798b317643846113816a78c4726b2c612737274cbc72d67690fe8c31deee40dd"},
+    {file = "pysequoia-0.1.34-cp313-cp313-win32.whl", hash = "sha256:e8f9a2d18131302489fa3eb1395d1641f8fa2c48101b34594757d6cff5392623"},
+    {file = "pysequoia-0.1.34-cp313-cp313-win_amd64.whl", hash = "sha256:be8a3492ab9cd26f47ce5ced449fc81185d9c2d46ed1e94e0eaa4507b8b6dab1"},
+    {file = "pysequoia-0.1.34-cp313-cp313-win_arm64.whl", hash = "sha256:7d616087bbbe914117c2c6e852d6577bed4ebae131f9f69bff67a6b478b1bdbf"},
+    {file = "pysequoia-0.1.34-cp313-cp313t-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c0120f57fb0e8f0e1d25d1205eb13bca584207aa37d34a4c04df6886ff0c6d2c"},
+    {file = "pysequoia-0.1.34-cp313-cp313t-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:8c6185569d4bcc48198e99f4dccc20bd64ce5ef7d0e411d47d9aa2f2d00bf2b8"},
+    {file = "pysequoia-0.1.34-cp313-cp313t-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:6a187a6f814c6e0bdc00ad1843916795daa535fce0945671e55ecbea2748c77c"},
+    {file = "pysequoia-0.1.34-cp313-cp313t-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:fa86c81cbc2bb8ffc80b7cb7f252ac8f595129f75a037565f4a56e169ba086b7"},
+    {file = "pysequoia-0.1.34-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:626a4aec16bbb8b5d12f15d6c7082ad7bb25ddaf97d0d7efe9d3ab7351655515"},
+    {file = "pysequoia-0.1.34-cp313-cp313t-musllinux_1_2_armv7l.whl", hash = "sha256:d8b8f7970e99fac611e94829a44c7f28b8f0c78d2f49b45ba6b9c3ee77bbc726"},
+    {file = "pysequoia-0.1.34-cp313-cp313t-musllinux_1_2_i686.whl", hash = "sha256:01cea7a9e1db7565588be969386d2563f8907d030bfbee34f99db1ec5b3b7fcf"},
+    {file = "pysequoia-0.1.34-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:b936a98ae7d06bc0621ff8b9a98049ab00b508c82ad050c89823827fd4574f04"},
+    {file = "pysequoia-0.1.34-cp314-cp314-macosx_10_12_x86_64.whl", hash = "sha256:5a0c7f1935e1edaea4aace0f6c194c7dd16add6fb852fee688a90ed0b416396a"},
+    {file = "pysequoia-0.1.34-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:ce7ca5c96cd98b1842c2156201e87eec8d8c03989577bc1fcb34d415b0f9df5c"},
+    {file = "pysequoia-0.1.34-cp314-cp314-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:aa163d5227964ae87b4cdb406bd3d8c0ee17fa6ac2df661e7c87e597d9c151e1"},
+    {file = "pysequoia-0.1.34-cp314-cp314-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:7f9e17c4cc17a4ff3cacf6b06b72ff2445c9d7c079b0f419d097a106b6c4e6b5"},
+    {file = "pysequoia-0.1.34-cp314-cp314-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:8439262fc6dd6eda743ca36db132e803fc48f384edc1950af57b5f20f5d3d7ed"},
+    {file = "pysequoia-0.1.34-cp314-cp314-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:cde6a82a46f69287bd4b64a7b47aea6b77aaa924191e50fb0e370850b7c00fc2"},
+    {file = "pysequoia-0.1.34-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9409922f31be815eac1eb5714837be068517b3facd2b1bd7dbc5ebec4ec9b0ab"},
+    {file = "pysequoia-0.1.34-cp314-cp314-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:6f70cbaa6f3e8623159691869ef694ad02d5684b5d44e540679e1a69fd1e3508"},
+    {file = "pysequoia-0.1.34-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:9c73fb061c4e50e67b3174aa7489c36fa683b0ef35d640731e3bd238fc65dd5c"},
+    {file = "pysequoia-0.1.34-cp314-cp314-musllinux_1_2_armv7l.whl", hash = "sha256:98a5ac4a8cb094b34edfee00d2dc6eefaad00cf0b33b296460f7168391d39176"},
+    {file = "pysequoia-0.1.34-cp314-cp314-musllinux_1_2_i686.whl", hash = "sha256:de9e92449ee01a227c5a124a5255d98fced88f656bfb260a95e943117560c90b"},
+    {file = "pysequoia-0.1.34-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:c5ce6167e114fe5d666451cdb6fdd09282bc4facd58166822d937af160303a24"},
+    {file = "pysequoia-0.1.34-cp314-cp314-win_amd64.whl", hash = "sha256:7329a9ec4382044e0e6e741ea0193745a48cbda8b1bfb7eab40bfc343de80fdd"},
+    {file = "pysequoia-0.1.34-cp314-cp314-win_arm64.whl", hash = "sha256:34bfd901a3cf1f29d82724407b82b5a8f1624d67d0679fe18f6e593361209b78"},
+    {file = "pysequoia-0.1.34-cp314-cp314t-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:77955009a28721c3c6a397d96dfc0c51ebd22361242214a5126442d0ea7340f1"},
+    {file = "pysequoia-0.1.34-cp314-cp314t-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:de542bba94ec4a8555c530c133186ae1a408098135b44b1e70b2ab20b4b1838b"},
+    {file = "pysequoia-0.1.34-cp314-cp314t-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:f460f658de1460336e8c1322ec7647d1aba7686ec2d5c8d503fd77b507f9abcb"},
+    {file = "pysequoia-0.1.34-cp314-cp314t-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:ecd93298f1cc750932b4f4aa476dfe34ea7c55c787518d086f86badb01ee3064"},
+    {file = "pysequoia-0.1.34-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:9982d70b5242c1e3a3efe79ae1047ad71c3e80ff5c36266915a6dd8502a924c0"},
+    {file = "pysequoia-0.1.34-cp314-cp314t-musllinux_1_2_armv7l.whl", hash = "sha256:d7bb3b5484308758c9b6285e7167c3f88d13a464c241a724ae304ba223ac549e"},
+    {file = "pysequoia-0.1.34-cp314-cp314t-musllinux_1_2_i686.whl", hash = "sha256:21f0fd51da08e8c116007183b9918804a149a88f685455be30050d2311386373"},
+    {file = "pysequoia-0.1.34-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:11038397b5e3a8da25b9d5e7c0fb1c24e905f36f822e49776ae45ecac327cbae"},
+    {file = "pysequoia-0.1.34-cp315-cp315-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:70c3d64229653883edf02f59aab51bafceea2960728d2df48763360db2d7f413"},
+    {file = "pysequoia-0.1.34-cp315-cp315-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:c748b5aba3adb781c35a3430c91c2b4147e5c3f1d182f9a8a1c332d17b3d99f7"},
+    {file = "pysequoia-0.1.34-cp37-cp37m-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0f8cd397b52aa751e9fc6e9be8ed0e8454d9ea7d8f62d6d34bd5a16c42750eb1"},
+    {file = "pysequoia-0.1.34-cp37-cp37m-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:7bea7ed706c412aed479bc11b8b0b09670d4f4d19fdbebb283a5e933f1000b1c"},
+    {file = "pysequoia-0.1.34-cp37-cp37m-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:06e0588a185efdaf15ddb3fea54e9b2cc047e3bcfc74bc0284be086fd3fd6e55"},
+    {file = "pysequoia-0.1.34-cp37-cp37m-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:5f37d7ce029f2cdde124329319cc1bd5a7878b0af206fd1b48076970344c5dc3"},
+    {file = "pysequoia-0.1.34-cp37-cp37m-musllinux_1_2_aarch64.whl", hash = "sha256:06005af6cfa21805050a73794ab9bdc6d78a27aa49cd897d9702b27350bb0e99"},
+    {file = "pysequoia-0.1.34-cp37-cp37m-musllinux_1_2_armv7l.whl", hash = "sha256:f101f48d8fea6768bf985965fdd8ca78a3a7d508f292360b5b2498dc7510486d"},
+    {file = "pysequoia-0.1.34-cp37-cp37m-musllinux_1_2_i686.whl", hash = "sha256:db67e3d93e75f6f96cafe6004df95295cd5f9090d0c337cb697443e982f29cba"},
+    {file = "pysequoia-0.1.34-cp37-cp37m-musllinux_1_2_x86_64.whl", hash = "sha256:194ee0febb290f29c5b90009b66376575814c64e6cd9bdcfef13716338d555f5"},
+    {file = "pysequoia-0.1.34-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8aeb2117a74630946018e7710fc7b1884330ad5cd0ee3daec52e030b3fbce56e"},
+    {file = "pysequoia-0.1.34-cp38-cp38-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:6a54a64135fc4ce721c5cc5307051fcfce0da7da93dd90896bc06eef5d160141"},
+    {file = "pysequoia-0.1.34-cp38-cp38-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:24853949f41e05f3c2d9c79fe1a11a5bd77c19479e03cf965711a422268a7193"},
+    {file = "pysequoia-0.1.34-cp38-cp38-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:4c11c589b46f61e5fa08aa561babe068a38a6205e438b7b35ef82397e55d187a"},
+    {file = "pysequoia-0.1.34-cp38-cp38-musllinux_1_2_aarch64.whl", hash = "sha256:5a94e2b5e3b6f896dad94cbcb0add081db68c5073a3064520d2401abb3c3d839"},
+    {file = "pysequoia-0.1.34-cp38-cp38-musllinux_1_2_armv7l.whl", hash = "sha256:5955b412a4621756838ccb6c4c01602bbc3eac2664083d92cfaf6a06d2a2b2e0"},
+    {file = "pysequoia-0.1.34-cp38-cp38-musllinux_1_2_i686.whl", hash = "sha256:4c1edfbcc692a05f2c228d5c3b95f5e0931afad3213582fd844281720ef7b8f8"},
+    {file = "pysequoia-0.1.34-cp38-cp38-musllinux_1_2_x86_64.whl", hash = "sha256:85c60dcfe13bf7c3de41c0815e558e7970fd1d5414fa96b83df85d99ac4a85aa"},
+    {file = "pysequoia-0.1.34-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5b927cb7f591dcf47f681e3cacaa679fcaedcf5f279bbd9c2fd4d50ba9dae8eb"},
+    {file = "pysequoia-0.1.34-cp39-cp39-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:b08120c27cc2e684ef14d025aa4179e69039fd717de413b4edd4138b7801b11a"},
+    {file = "pysequoia-0.1.34-cp39-cp39-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:d8ac5978752d01d145d88792c9bcfe6c9e16d46a63cc328938dc9c619cf86522"},
+    {file = "pysequoia-0.1.34-cp39-cp39-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:accb27ba8b7c5b81fccb56d69060d60c9453e9f957c0e8b9da8defc70f400dff"},
+    {file = "pysequoia-0.1.34-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:eff9b66b540a0713663533a38f7a529d30cf05cdbad080543863c71dd8b95ecc"},
+    {file = "pysequoia-0.1.34-cp39-cp39-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:118c7d1b6b7be35c936b089089dd5fb81cdd4e4ff6bd650f31ca1281c5141867"},
+    {file = "pysequoia-0.1.34-cp39-cp39-musllinux_1_2_aarch64.whl", hash = "sha256:559500609faf259ae421113e589b324ee365163ae18287675375b7b1bb6a0854"},
+    {file = "pysequoia-0.1.34-cp39-cp39-musllinux_1_2_armv7l.whl", hash = "sha256:ef8377a4edb7977f2e97cf7bbbb12bf2e938528d4a9c7207f57953872e9bd61a"},
+    {file = "pysequoia-0.1.34-cp39-cp39-musllinux_1_2_i686.whl", hash = "sha256:42451137ecf74f98013779cc6e907fd4b5c3d29e2182b199cda133136c72822e"},
+    {file = "pysequoia-0.1.34-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:f5c4b5ba3cb1d57e3b95eae6f92d54cbae98f99c3072c0b4637d69ef00817349"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:cfdb1e544fad9c7b5d3e4dcccddb27c6a5f1e27c97de00d7d857780ef80447f4"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:e3def981ab428565925c37d7a6f9f1776fe829a5b31ca74fa34856b574d31d40"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:e047b757dc718331cd57299b6d641b14184b31247fade74bca6cb2432625c529"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:2677de30656ee3647e86e87276de772a2bfee3e509394b8925bf780d7bf91628"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3a6b2bb111ff4ddf899b5c4ed3ef3c828aeab86901f9bb8107bd4baced35d64c"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-manylinux_2_5_i686.manylinux1_i686.whl", hash = "sha256:f026c32db681755354f05388614d3884bb1c633af91261d5ad535d380b53c824"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-musllinux_1_2_aarch64.whl", hash = "sha256:a08477c346743e276e8c8da95aee4860b54161ed71b72dd269e13ccfa5f1d452"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-musllinux_1_2_armv7l.whl", hash = "sha256:ecebfe9e00ee5894bf6c89fad87ba576f91ab3c988b102a261ec01fa6b3b54f2"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-musllinux_1_2_i686.whl", hash = "sha256:7345da1071c7003ddede5f8fb7796ab97e0a8ce95e1d28d71b04fbeee08c8c78"},
+    {file = "pysequoia-0.1.34-pp311-pypy311_pp73-musllinux_1_2_x86_64.whl", hash = "sha256:50ebe01fe683086acb28e725765749903a4cbf0616f1be3fc6352c411d4f2b43"},
+    {file = "pysequoia-0.1.34.tar.gz", hash = "sha256:a5427e7cc695d4d95ca4ecdc06a09d79809efd761dd58f5777029ad6105b53c9"},
 ]
 
 [[package]]
@@ -5159,4 +5264,4 @@ type = ["pytest-mypy (>=1.0.1) ; platform_python_implementation != \"PyPy\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14"
-content-hash = "951ae12327f349c8283e66efb080340538aeba9bdbd813e09efd2c74fbd20e3b"
+content-hash = "de78013467795dae7bc78b771165e3c7cf6b6f09a8e7bd18940b742482564aba"
