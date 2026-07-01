@@ -7870,11 +7870,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>မမှန်ကန်သော လက်မှတ်ကို တွေ့ရှိပါသည်</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>အများပြည်သူ့သော့ကို ထည့်သွင်းမရပါ: {exc}</translation>
 		</message>
@@ -7920,8 +7915,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>လုံခြုံရေးမှတ်စု: အတည်ပြုခြင်းသည် အတွင်းပါရှိသော &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; စာကြည့်တိုက်ကို အသုံးပြုပါသည်။ သင့် keyring မှ ယုံကြည်မှုဆိုင်ရာ ဆက်တင်များ၊ ပြန်လည်ရုပ်သိမ်းမှုများ သို့မဟုတ် သက်တမ်းကုန်ဆုံးချိန်များကို မလေးစားပါ။ တန်ဖိုးမြင့် မက်ဆေ့ချ်များကို &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; ဖြင့် စစ်ဆေးပါ။</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>လုံခြုံရေးမှတ်ချက်: အတည်ပြုခြင်းသည် ထည့်သွင်းပါဝင်ပြီးသား &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; လိုင်ဘရယ်ရီကို အသုံးပြုသည်။ ၎င်းသည် သင့် keyring ထဲမှ ယုံကြည်မှု ဆက်တင်များ၊ ပြန်လည်ရုပ်သိမ်းမှုများ သို့မဟုတ် သက်တမ်းကုန်ဆုံးချိန်များကို မလိုက်နာပါ။ တန်ဖိုးမြင့် မက်ဆေ့ချ်များကို &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; ဖြင့် အတည်ပြုပါ။</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7942,11 +7937,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>အများပြည်သူ့သော့ မရှိပါ</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>လက်မှတ် အမျိုးအစား မမှန်ပါ: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

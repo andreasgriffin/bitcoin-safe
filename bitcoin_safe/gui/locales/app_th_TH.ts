@@ -7871,11 +7871,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>ตรวจพบลายเซ็นไม่ถูกต้อง</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>ไม่สามารถนำเข้ากุญแจสาธารณะได้: {exc}</translation>
 		</message>
@@ -7921,8 +7916,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>หมายเหตุด้านความปลอดภัย: การตรวจสอบใช้ไลบรารี &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; ที่มีมาในตัว ซึ่งจะไม่คำนึงถึงการตั้งค่าความเชื่อถือ การเพิกถอน หรือเวลาหมดอายุจากพวงกุญแจของคุณ โปรดตรวจสอบข้อความที่มีมูลค่าสูงด้วย &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>หมายเหตุด้านความปลอดภัย: การตรวจสอบใช้ไลบรารี &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; ที่มีมาในตัว ไลบรารีนี้จะไม่ยึดตามการตั้งค่าความเชื่อถือ การเพิกถอน หรือเวลาหมดอายุจากพวงกุญแจของคุณ โปรดตรวจสอบข้อความที่มีมูลค่าสูงด้วย &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7943,11 +7938,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>ไม่พบกุญแจสาธารณะ</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>ประเภทลายเซ็นไม่ถูกต้อง: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

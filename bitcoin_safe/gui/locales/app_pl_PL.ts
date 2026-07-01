@@ -7905,11 +7905,6 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>Wykryto nieprawidłowy podpis</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>Nie można zaimportować klucza publicznego: {exc}</translation>
 		</message>
@@ -7955,8 +7950,8 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Uwaga dotycząca bezpieczeństwa: weryfikacja używa wbudowanej biblioteki &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Nie uwzględnia ona ustawień zaufania, unieważnień ani terminów ważności z Twojego breloka kluczy. Wiadomości o wysokiej wartości weryfikuj za pomocą &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Uwaga dotycząca bezpieczeństwa: weryfikacja używa wbudowanej biblioteki &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt;. Nie uwzględnia ona ustawień zaufania, unieważnień ani terminów wygaśnięcia z Twojego zbioru kluczy. Zweryfikuj wiadomości o wysokiej wartości za pomocą &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7977,11 +7972,6 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>klucz publiczny nieobecny</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>nieprawidłowy typ podpisu: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

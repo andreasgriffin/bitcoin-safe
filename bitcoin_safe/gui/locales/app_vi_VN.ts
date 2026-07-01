@@ -7896,11 +7896,6 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>Phát hiện chữ ký xấu</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>Không thể nhập khóa công khai: {exc}</translation>
 		</message>
@@ -7946,8 +7941,8 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Lưu ý bảo mật: xác minh dùng thư viện &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; tích hợp. Nó không tôn trọng thiết lập tin cậy, thu hồi, hay thời hạn hết hạn từ keyring của bạn. Vui lòng xác minh các tin nhắn giá trị cao bằng &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Lưu ý bảo mật: quá trình xác minh sử dụng thư viện &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; tích hợp sẵn. Thư viện này không tuân theo các cài đặt tin cậy, việc thu hồi hoặc thời gian hết hạn từ bộ khóa của bạn. Vui lòng xác minh các tin nhắn có giá trị cao bằng &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7968,11 +7963,6 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>khóa công khai không hiện diện</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>sai kiểu chữ ký: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

@@ -7897,11 +7897,6 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>Kötü imza tespit edildi</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>Genel anahtar içe aktarılamadı: {exc}</translation>
 		</message>
@@ -7947,8 +7942,8 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Güvenlik notu: doğrulama, yerleşik &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; kütüphanesini kullanır. Anahtarlığınızdan gelen güven ayarlarını, iptalleri veya son kullanma tarihlerini dikkate almaz. Lütfen yüksek değerli mesajları &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; ile doğrulayın.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Güvenlik notu: Doğrulama, yerleşik &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; kitaplığını kullanır. Anahtar halkanızdaki güven ayarlarını, iptalleri veya son kullanma sürelerini dikkate almaz. Lütfen yüksek değerli mesajları &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; ile doğrulayın.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7969,11 +7964,6 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>genel anahtar mevcut değil</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>yanlış imza türü: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

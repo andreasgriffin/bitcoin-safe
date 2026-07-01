@@ -7875,11 +7875,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>খারাপ signature শনাক্ত হয়েছে</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>public key ইম্পোর্ট করা যায়নি: {exc}</translation>
 		</message>
@@ -7925,8 +7920,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>নিরাপত্তা নোট: যাচাইয়ের জন্য built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library ব্যবহার করা হয়। এটি আপনার keyring-এর trust setting, revocation, বা expiration time মানে না। উচ্চ-মূল্যের message-এর ক্ষেত্রে অনুগ্রহ করে &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; দিয়ে যাচাই করুন।</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>নিরাপত্তা নোট: যাচাইকরণ একটি বিল্ট-ইন &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; লাইব্রেরি ব্যবহার করে। এটি আপনার কীরিং থেকে বিশ্বাসের সেটিংস, প্রত্যাহার বা মেয়াদোত্তীর্ণ হওয়ার সময় মানে না। অনুগ্রহ করে উচ্চ-মূল্যের বার্তাগুলি &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; দিয়ে যাচাই করুন।</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7947,11 +7942,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>public key উপস্থিত নেই</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>ভুল signature type: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>
