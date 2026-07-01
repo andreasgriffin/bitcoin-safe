@@ -73,7 +73,7 @@ logger = logging.getLogger(__name__)
 def get_disclaimer_text():
     return translate(
         "pgp",
-        'Security note: verification uses a built-in <a href="https://github.com/SecurityInnovation/PGPy">pgpy</a> '
+        'Security note: verification uses a built-in <a href="https://github.com/wiktor-k/pysequoia">PySequoia</a> '
         "library. It does not honor trust settings, revocations, or expiration times from your keyring. "
         'Please verify high value messages with <a href="https://gnupg.org/">GPG</a>.',
     )
