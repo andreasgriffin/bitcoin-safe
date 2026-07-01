@@ -867,6 +867,14 @@ def release_sort_key(version: str, date: str) -> tuple[Version, str]:
     return parsed_version, date
 
 
+def is_prerelease_version(version: str) -> bool:
+    try:
+        return Version(version).is_prerelease or Version(version).is_devrelease
+    except InvalidVersion:
+        lowered = version.lower()
+        return any(marker in lowered for marker in ("a", "b", "rc", "dev"))
+
+
 def write_metainfo(path: Path, context: SourceContext) -> None:
     upstream_path = context.tree_root / "tools/build-linux/flatpak" / f"{APP_ID}.metainfo.xml"
     root = ET.fromstring(upstream_path.read_text(encoding="utf-8"))
@@ -875,7 +883,11 @@ def write_metainfo(path: Path, context: SourceContext) -> None:
         releases_node = ET.SubElement(root, "releases")
         existing_release_nodes: list[ET.Element] = []
     else:
-        existing_release_nodes = [copy.deepcopy(release) for release in releases_node.findall("release")]
+        existing_release_nodes = [
+            copy.deepcopy(release)
+            for release in releases_node.findall("release")
+            if release.get("version") and not is_prerelease_version(release.get("version", ""))
+        ]
         releases_node.clear()
 
     release_nodes_by_version: dict[str, ET.Element] = {}
@@ -885,6 +897,8 @@ def write_metainfo(path: Path, context: SourceContext) -> None:
             release_nodes_by_version[version] = release_node
 
     for release in fetch_release_notes(context.repo_url):
+        if release.prerelease or is_prerelease_version(release.version):
+            continue
         release_element = ET.Element(
             "release",
             {
