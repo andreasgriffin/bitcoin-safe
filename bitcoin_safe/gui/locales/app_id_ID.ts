@@ -7896,11 +7896,6 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>Tanda tangan tidak valid terdeteksi</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>Tidak dapat mengimpor kunci publik: {exc}</translation>
 		</message>
@@ -7946,8 +7941,8 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Catatan keamanan: verifikasi menggunakan pustaka bawaan &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Pustaka ini tidak memperhatikan pengaturan kepercayaan, pencabutan, atau waktu kedaluwarsa dari keyring Anda. Harap verifikasi pesan bernilai tinggi dengan &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Catatan keamanan: verifikasi menggunakan pustaka &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; bawaan. Pustaka ini tidak mematuhi pengaturan kepercayaan, pencabutan, atau waktu kedaluwarsa dari keyring Anda. Harap verifikasi pesan bernilai tinggi dengan &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7968,11 +7963,6 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>kunci publik tidak tersedia</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>jenis tanda tangan salah: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

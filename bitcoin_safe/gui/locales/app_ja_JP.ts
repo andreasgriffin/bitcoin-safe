@@ -7869,11 +7869,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>不正な署名が検出されました</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>公開鍵をインポートできませんでした: {exc}</translation>
 		</message>
@@ -7919,8 +7914,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>セキュリティに関する注意: 検証には組み込みの &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; ライブラリを使用します。キーリングの信頼設定、失効、または有効期限は考慮されません。高価値のメッセージは &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; で検証してください。</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>セキュリティに関する注意: 検証には組み込みの &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; ライブラリが使用されます。このライブラリは、キーリングの信頼設定、失効、または有効期限を考慮しません。重要度の高いメッセージは &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; で検証してください。</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7941,11 +7936,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>公開鍵が存在しません</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>誤った署名タイプ: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

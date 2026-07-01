@@ -7894,11 +7894,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>تم اكتشاف توقيع غير صالح</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>تعذر استيراد المفتاح العام: {exc}</translation>
 		</message>
@@ -7944,8 +7939,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>ملاحظة أمنية: تستخدم عملية التحقق مكتبة &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; المدمجة. وهي لا تأخذ في الاعتبار إعدادات الثقة أو الإلغاءات أو تواريخ الانتهاء من حلقة المفاتيح الخاصة بك. يُرجى التحقق من الرسائل ذات القيمة العالية باستخدام &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>ملاحظة أمنية: يستخدم التحقق مكتبة &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; مدمجة. وهي لا تراعي إعدادات الثقة أو عمليات الإبطال أو أوقات انتهاء الصلاحية من حلقة المفاتيح الخاصة بك. يُرجى التحقق من الرسائل عالية القيمة باستخدام &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7966,11 +7961,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>المفتاح العام غير موجود</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>نوع توقيع غير صحيح: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

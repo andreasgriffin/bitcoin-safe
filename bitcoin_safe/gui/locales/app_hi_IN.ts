@@ -7874,11 +7874,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>अमान्य हस्ताक्षर का पता चला</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>सार्वजनिक कुंजी आयात नहीं की जा सकी: {exc}</translation>
 		</message>
@@ -7924,8 +7919,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>सुरक्षा सूचना: सत्यापन अंतर्निहित &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; लाइब्रेरी का उपयोग करता है। यह आपके कीरिंग से प्राप्त विश्वास सेटिंग्स, निरस्तीकरण या समाप्ति समय का सम्मान नहीं करता। कृपया उच्च मूल्य वाले संदेशों को &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; से सत्यापित करें।</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>सुरक्षा नोट: सत्यापन एक बिल्ट-इन &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; लाइब्रेरी का उपयोग करता है। यह आपके कीरिंग से विश्वास सेटिंग्स, निरस्तीकरणों या समाप्ति समयों का पालन नहीं करता। कृपया उच्च-मूल्य वाले संदेशों को &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; से सत्यापित करें।</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7946,11 +7941,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>सार्वजनिक कुंजी मौजूद नहीं है</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>गलत हस्ताक्षर प्रकार: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

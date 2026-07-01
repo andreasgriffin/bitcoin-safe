@@ -7897,11 +7897,6 @@ Fes clic aquí per saber-ne més.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>S’ha detectat una signatura incorrecta</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>No s’ha pogut importar la clau pública: {exc}</translation>
 		</message>
@@ -7947,8 +7942,8 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Nota de seguretat: la verificació utilitza la biblioteca integrada &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. No té en compte la configuració de confiança, les revocacions ni les dates de caducitat del vostre clauer de claus. Verifiqueu els missatges d’alt valor amb &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Nota de seguretat: la verificació utilitza una biblioteca &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; integrada. No respecta la configuració de confiança, les revocacions ni les dates de caducitat del vostre anell de claus. Verifiqueu els missatges d’alt valor amb &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7969,11 +7964,6 @@ Fes clic aquí per saber-ne més.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>clau pública no present</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>tipus de signatura incorrecte: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

@@ -7889,11 +7889,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>잘못된 서명이 감지되었습니다</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>공개 키를 가져올 수 없습니다: {exc}</translation>
 		</message>
@@ -7939,8 +7934,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>보안 참고 사항: 검증은 내장된 &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; 라이브러리를 사용합니다. 키링의 신뢰 설정, 폐기 정보 또는 만료 시간은 고려하지 않습니다. 고액 가치의 메시지는 &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;로 확인해 주세요.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>보안 참고: 검증에는 내장 &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; 라이브러리가 사용됩니다. 이 라이브러리는 키링의 신뢰 설정, 철회 또는 만료 시간을 적용하지 않습니다. 중요한 메시지는 &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;로 확인하세요.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7961,11 +7956,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>공개 키가 존재하지 않습니다</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>잘못된 서명 유형: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

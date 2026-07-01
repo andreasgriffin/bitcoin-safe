@@ -7912,11 +7912,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>检测到无效签名</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>无法导入公钥：{exc}</translation>
 		</message>
@@ -7962,8 +7957,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>安全提示：验证过程使用内置的 &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; 库。该库不会遵循密钥环中的信任设置、撤销状态或过期时间。请使用 &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; 对高价值消息进行验证。</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>安全提示：验证使用内置的 &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; 库。它不会遵循您密钥环中的信任设置、吊销或过期时间。请使用 &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; 验证高价值消息。</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7984,11 +7979,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>公钥不存在</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>错误的签名类型：{signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

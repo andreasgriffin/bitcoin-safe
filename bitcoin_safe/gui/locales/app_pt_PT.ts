@@ -7926,11 +7926,6 @@ Clique aqui para saber mais.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>Assinatura inválida detetada</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>Não foi possível importar a chave pública: {exc}</translation>
 		</message>
@@ -7976,8 +7971,8 @@ Clique aqui para saber mais.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Nota de segurança: a verificação utiliza a biblioteca integrada &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Não respeita as definições de confiança, revogações ou datas de expiração do seu porta-chaves. Verifique mensagens de alto valor com &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Nota de segurança: a verificação utiliza uma biblioteca &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; integrada. Ela não respeita definições de confiança, revogações nem datas de expiração do seu porta-chaves. Verifique mensagens de elevado valor com &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7998,11 +7993,6 @@ Clique aqui para saber mais.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>chave pública não presente</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>tipo de assinatura incorreto: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

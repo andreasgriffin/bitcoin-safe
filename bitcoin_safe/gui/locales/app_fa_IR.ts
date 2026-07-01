@@ -7894,11 +7894,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>امضای نامعتبر شناسایی شد</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>امکان وارد کردن کلید عمومی وجود ندارد: {exc}</translation>
 		</message>
@@ -7944,8 +7939,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>یادداشت امنیتی: فرایند تأیید از کتابخانهٔ داخلی &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; استفاده می‌کند. این فرایند تنظیمات اعتماد، ابطال‌ها یا زمان‌های انقضا را از حلقهٔ کلید شما در نظر نمی‌گیرد. لطفاً پیام‌های با ارزش بالا را با &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; تأیید کنید.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>نکته امنیتی: راستی‌آزمایی از یک کتابخانه داخلی &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; استفاده می‌کند. این کتابخانه تنظیمات اعتماد، لغوها یا زمان‌های انقضا را از keyring شما رعایت نمی‌کند. لطفاً پیام‌های با ارزش بالا را با &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; راستی‌آزمایی کنید.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7966,11 +7961,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>کلید عمومی موجود نیست</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>نوع امضای نادرست: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

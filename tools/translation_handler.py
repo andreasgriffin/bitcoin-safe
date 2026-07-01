@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import csv
 import logging
+import os
 import operator
 import shlex
 import subprocess
@@ -49,11 +50,18 @@ logger = logging.getLogger(__name__)
 target_key = "translation"
 location_key = "context"
 source_key = "source"
+lowest_priority_niceness = 19
 
 
-def run_local(cmd) -> CompletedProcess:
-    """Run local."""
-    completed_process = subprocess.run(shlex.split(cmd), check=True)
+def run_local(cmd: str, niceness: int | None = None) -> CompletedProcess:
+    """Run a local command, optionally with lower CPU priority on POSIX."""
+    if niceness is None or os.name != "posix":
+        return subprocess.run(shlex.split(cmd), check=True)
+
+    def set_niceness() -> None:
+        os.nice(niceness)
+
+    completed_process = subprocess.run(shlex.split(cmd), check=True, preexec_fn=set_niceness)
     return completed_process
 
 
@@ -260,7 +268,10 @@ Content to translate:
         def process(language):
             """Process."""
             ts_file = self._ts_file(language)
-            run_local(f"pylupdate6  {' '.join(python_files)} -no-obsolete  -ts {ts_file}")  # -no-obsolete
+            run_local(
+                f"pylupdate6  {' '.join(python_files)} -no-obsolete  -ts {ts_file}",
+                niceness=lowest_priority_niceness,
+            )  # -no-obsolete
             ts_to_csv(ts_file, ts_file.with_suffix(".csv"))
             self.sort_csv(
                 ts_file.with_suffix(".csv"),
@@ -300,7 +311,10 @@ Content to translate:
 
     def compile(self):
         """Compile."""
-        run_local(f"/usr/lib/qt6/bin/lrelease   {' '.join(self.get_all_ts_files())}")
+        run_local(
+            f"/usr/lib/qt6/bin/lrelease   {' '.join(self.get_all_ts_files())}",
+            niceness=lowest_priority_niceness,
+        )
 
     def insert_chatgpt_translations(
         self,
