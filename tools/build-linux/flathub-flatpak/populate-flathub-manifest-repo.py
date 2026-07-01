@@ -1258,6 +1258,9 @@ def generate_repo(output_dir: Path, context: SourceContext) -> None:
         obsolete_normalizer.unlink()
         log_step(f"Removed obsolete generated file {obsolete_normalizer}")
     refresh_normalized_svg(context.tree_root)
+    upstream_metainfo = context.tree_root / "tools/build-linux/flatpak" / f"{APP_ID}.metainfo.xml"
+    log_step(f"Refreshing upstream metainfo release history in {upstream_metainfo}")
+    write_metainfo(upstream_metainfo, context)
     upstream_manifest = load_yaml(
         context.tree_root / "tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.yml"
     )
