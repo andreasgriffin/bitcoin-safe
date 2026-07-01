@@ -19,6 +19,20 @@
     <category>Utility</category>
     <category>Finance</category>
   </categories>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://bitcoin-safe.org/screenshots/screenshots%2001.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://bitcoin-safe.org/screenshots/screenshots%2002.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://bitcoin-safe.org/screenshots/screenshots%2003.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://bitcoin-safe.org/screenshots/screenshots%2004.png</image>
+    </screenshot>
+  </screenshots>
   <releases>
     <release version="2.0.1" date="2026-07-01"/>
   </releases>  
