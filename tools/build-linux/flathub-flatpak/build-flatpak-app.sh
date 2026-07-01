@@ -115,10 +115,9 @@ find "${APP_VENV_ROOT}" -type f \
 find "${APP_VENV_ROOT}" -path '*/__pycache__*' -delete
 
 install -Dm755 run-bitcoin-safe.sh /app/bin/run-bitcoin-safe.sh
-python3 normalize-svg-icon.py tools/resources/icon.svg org.bitcoin_safe.BitcoinSafe.svg
-install -Dm644 org.bitcoin_safe.BitcoinSafe.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
+install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
 install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoin_safe.BitcoinSafe.png
-install -Dm644 org.bitcoin_safe.BitcoinSafe.metainfo.xml /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
+install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
 sed \
     -e 's#^Exec=.*#Exec=run-bitcoin-safe.sh %F#' \
     -e 's#^Icon=.*#Icon=org.bitcoin_safe.BitcoinSafe#' \

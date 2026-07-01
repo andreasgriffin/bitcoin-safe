@@ -283,7 +283,7 @@ modules:
             rewrite_python_entrypoint_shebang "/app/bin/${executable_name}"
         done
         install -Dm755 tools/build-linux/flatpak/run-bitcoin-safe.sh /app/bin/run-bitcoin-safe.sh
-        install -Dm644 tools/resources/icon.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
+        install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
         install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoin_safe.BitcoinSafe.png
         install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
         sed \

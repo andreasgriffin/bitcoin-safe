@@ -364,7 +364,7 @@ write_metadata_probe_files() {
         "${METADATA_PROBE_STATE_DIR}"
     mkdir -p "${METADATA_PROBE_SOURCE_DIR}" "${METADATA_PROBE_BIN_DIR}"
 
-    cp "${PROJECT_ROOT}/tools/resources/icon.svg" "${METADATA_PROBE_SOURCE_DIR}/icon.svg"
+    cp "${PROJECT_ROOT}/tools/build-linux/flatpak/${APP_ID}.svg" "${METADATA_PROBE_SOURCE_DIR}/${APP_ID}.svg"
     cp "${PROJECT_ROOT}/tools/resources/icon-128.png" "${METADATA_PROBE_SOURCE_DIR}/icon-128.png"
     cp "${PROJECT_ROOT}/tools/resources/linux-bitcoin-safe.desktop" \
         "${METADATA_PROBE_SOURCE_DIR}/linux-bitcoin-safe.desktop"
@@ -389,7 +389,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 run-bitcoin-safe.sh /app/bin/run-bitcoin-safe.sh
-      - install -Dm644 icon.svg /app/share/icons/hicolor/scalable/apps/${APP_ID}.svg
+      - install -Dm644 ${APP_ID}.svg /app/share/icons/hicolor/scalable/apps/${APP_ID}.svg
       - install -Dm644 icon-128.png /app/share/icons/hicolor/128x128/apps/${APP_ID}.png
       - install -Dm644 ${APP_ID}.metainfo.xml /app/share/metainfo/${APP_ID}.metainfo.xml
       - |

@@ -59,7 +59,7 @@ RUNTIME_ENV = {
 }
 NAMESPACE = {"": "http://www.freedesktop.org/standards/appstream/1.0"}
 MANIFEST_FILENAME = f"{APP_ID}.yml"
-HELPER_FILENAMES = ["normalize-svg-icon.py", "build-flatpak-app.sh", "run-bitcoin-safe.sh"]
+HELPER_FILENAMES = ["build-flatpak-app.sh", "run-bitcoin-safe.sh"]
 VENDOR_ROOT = "/app/share/bitcoin-safe/vendor"
 BUILD_BACKEND_VENDOR_DIR = f"{VENDOR_ROOT}/build-backends"
 RUNTIME_VENDOR_DIR = f"{VENDOR_ROOT}/runtime"
@@ -935,6 +935,18 @@ def copy_manifest_support_files(output_dir: Path) -> None:
         shutil.copyfile(source, destination)
 
 
+def refresh_normalized_svg(tree_root: Path) -> None:
+    source_svg = tree_root / "tools/resources/icon.svg"
+    output_svg = tree_root / "tools/build-linux/flatpak" / f"{APP_ID}.svg"
+    normalizer = tree_root / "tools/build-linux/flatpak/normalize-svg-icon.py"
+    log_step(f"Refreshing normalized SVG {output_svg}")
+    run_command(
+        [sys.executable, str(normalizer), str(source_svg), str(output_svg)],
+        tree_root,
+        description="Normalizing app SVG canvas to a square upstream build artifact",
+    )
+
+
 def build_manifest(
     upstream_manifest: dict[str, Any],
     release: ReleaseInfo,
@@ -973,8 +985,6 @@ def build_manifest(
                         "sha256": app_source_sha256,
                     },
                     {"type": "file", "path": "build-flatpak-app.sh"},
-                    {"type": "file", "path": "normalize-svg-icon.py"},
-                    {"type": "file", "path": f"{APP_ID}.metainfo.xml"},
                     {"type": "file", "path": "run-bitcoin-safe.sh"},
                 ],
             },
@@ -1235,6 +1245,19 @@ def write_dependency_modules(
 def generate_repo(output_dir: Path, context: SourceContext) -> None:
     log_step(f"Generating Flathub manifest repo in {output_dir}")
     log_step("Loading upstream Flatpak manifest and Poetry lockfile")
+    obsolete_metainfo = output_dir / f"{APP_ID}.metainfo.xml"
+    if obsolete_metainfo.exists():
+        obsolete_metainfo.unlink()
+        log_step(f"Removed obsolete generated file {obsolete_metainfo}")
+    obsolete_svg = output_dir / f"{APP_ID}.svg"
+    if obsolete_svg.exists():
+        obsolete_svg.unlink()
+        log_step(f"Removed obsolete generated file {obsolete_svg}")
+    obsolete_normalizer = output_dir / "normalize-svg-icon.py"
+    if obsolete_normalizer.exists():
+        obsolete_normalizer.unlink()
+        log_step(f"Removed obsolete generated file {obsolete_normalizer}")
+    refresh_normalized_svg(context.tree_root)
     upstream_manifest = load_yaml(
         context.tree_root / "tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.yml"
     )
@@ -1246,8 +1269,6 @@ def generate_repo(output_dir: Path, context: SourceContext) -> None:
     log_step("Writing flathub.json and README")
     write_flathub_json(output_dir / "flathub.json")
     write_readme(output_dir / "README.md", context.release)
-    log_step(f"Writing metainfo {APP_ID}.metainfo.xml with GitHub release history")
-    write_metainfo(output_dir / f"{APP_ID}.metainfo.xml", context)
     copy_manifest_support_files(output_dir)
     write_dependency_modules(output_dir, context.release, context, main_packages, all_packages)
 
