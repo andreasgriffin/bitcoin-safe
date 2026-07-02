@@ -86,5 +86,5 @@ def update_flatpak_metainfo_release(file_path: str, new_version: str) -> None:
 
 update_poetry_version("pyproject.toml", __version__)
 update_flatpak_metainfo_release(
-    "tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml", __version__
+    "tools/build-linux/flathub-flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml", __version__
 )

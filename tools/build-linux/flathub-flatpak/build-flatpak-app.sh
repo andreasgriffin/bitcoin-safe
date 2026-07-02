@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FLATHUB_ASSET_DIR="tools/build-linux/flathub-flatpak"
+
 export PYTHONDONTWRITEBYTECODE=1
 export TZ=UTC
 : "${SOURCE_DATE_EPOCH:?SOURCE_DATE_EPOCH must be set for reproducible Flatpak builds}"
@@ -9,20 +12,25 @@ export TZ=UTC
 PYVER="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
 BUILD_CACHE_ROOT="${PWD}/.cache"
 TOOL_VENV_ROOT="${PWD}/.tool-venv"
-APP_VENV_ROOT="/app"
+APP_PYTHON="$(command -v python3)"
 PIP_CACHE_DIR="${BUILD_CACHE_ROOT}/pip"
 POETRY_CACHE_DIR="${BUILD_CACHE_ROOT}/poetry"
 POETRY_WHEEL_DIR="${BUILD_CACHE_ROOT}/poetry-wheel"
-APP_SITE_PACKAGES="${APP_VENV_ROOT}/lib/python${PYVER}/site-packages"
+APP_SITE_PACKAGES="/app/lib/python${PYVER}/site-packages"
 VENDOR_ROOT="/app/share/bitcoin-safe/vendor"
 BUILD_BACKENDS_DIR="${VENDOR_ROOT}/build-backends"
 RUNTIME_VENDOR_DIR="${VENDOR_ROOT}/runtime"
 GIT_VENDOR_DIR="${VENDOR_ROOT}/git-packages"
 
+if [ -z "${APP_PYTHON}" ]; then
+    echo "python3 is not available in the Flatpak build environment." >&2
+    exit 1
+fi
+
 verify_runtime_import() {
     local module_name="$1"
-    "${APP_VENV_ROOT}/bin/python" -c "import ${module_name}" \
-        || { echo "Failed to import ${module_name} from the Flatpak runtime venv." >&2; exit 1; }
+    "${APP_PYTHON}" -c "import ${module_name}" \
+        || { echo "Failed to import ${module_name} from the BaseApp Python runtime." >&2; exit 1; }
 }
 
 install_git_packages() {
@@ -39,10 +47,11 @@ PY
     )
 
     for archive_name in "${git_archives[@]}"; do
-        "${APP_VENV_ROOT}/bin/python" -m pip install \
+        "${APP_PYTHON}" -m pip install \
             --ignore-installed \
             --no-dependencies \
             --no-warn-script-location \
+            --prefix=/app \
             --cache-dir "${PIP_CACHE_DIR}" \
             "${GIT_VENDOR_DIR}/${archive_name}"
     done
@@ -62,9 +71,6 @@ python3 -m venv "${TOOL_VENV_ROOT}"
     --cache-dir "${PIP_CACHE_DIR}" \
     -r "${BUILD_BACKENDS_DIR}/requirements-build-backends.txt"
 
-python3 -m venv "${APP_VENV_ROOT}"
-"${APP_VENV_ROOT}/bin/python" -m ensurepip --upgrade
-
 rm -rf "${POETRY_WHEEL_DIR}"
 mkdir -p "${POETRY_WHEEL_DIR}"
 export POETRY_CACHE_DIR
@@ -73,21 +79,24 @@ export PIP_DISABLE_PIP_VERSION_CHECK=1
 export PIP_NO_INDEX=1
 export PIP_FIND_LINKS="${BUILD_BACKENDS_DIR} ${RUNTIME_VENDOR_DIR} ${GIT_VENDOR_DIR}"
 
-"${APP_VENV_ROOT}/bin/python" -m pip install \
+"${APP_PYTHON}" -m pip install \
     --ignore-installed \
     --no-dependencies \
     --no-warn-script-location \
+    --no-compile \
+    --prefix=/app \
     --cache-dir "${PIP_CACHE_DIR}" \
     -r "${RUNTIME_VENDOR_DIR}/requirements-runtime.txt"
 
 install_git_packages
 
 "${TOOL_VENV_ROOT}/bin/poetry" build -f wheel --output "${POETRY_WHEEL_DIR}"
-"${APP_VENV_ROOT}/bin/python" -m pip install \
+"${APP_PYTHON}" -m pip install \
     --ignore-installed \
     --no-dependencies \
     --no-warn-script-location \
     --no-compile \
+    --prefix=/app \
     --cache-dir "${PIP_CACHE_DIR}" \
     "${POETRY_WHEEL_DIR}"/*.whl
 
@@ -98,26 +107,16 @@ rm -rf "${APP_SITE_PACKAGES}/Cryptodome/SelfTest"
 rm -rf "${APP_SITE_PACKAGES}/psutil/tests" \
     "${APP_SITE_PACKAGES}/qrcode/tests" \
     "${APP_SITE_PACKAGES}/websocket/tests"
-rm -rf "${APP_VENV_ROOT}/include"
-rm -rf "${APP_SITE_PACKAGES}/ensurepip"
-rm -f \
-    "${APP_VENV_ROOT}/bin/Activate.ps1" \
-    "${APP_VENV_ROOT}/bin/activate" \
-    "${APP_VENV_ROOT}/bin/activate.csh" \
-    "${APP_VENV_ROOT}/bin/activate.fish" \
-    "${APP_VENV_ROOT}/bin/pip" \
-    "${APP_VENV_ROOT}/bin/pip3" \
-    "${APP_VENV_ROOT}/bin/pip${PYVER}"
-find "${APP_VENV_ROOT}" -name '.git' -type d -print0 | xargs -0 --no-run-if-empty rm -rf
-find "${APP_VENV_ROOT}" -type f \
+find /app -name '.git' -type d -print0 | xargs -0 --no-run-if-empty rm -rf
+find /app -type f \
     \( -name '.gitmodules' -o -name '.gitignore' -o -name '.gitattributes' -o -name '.gitkeep' \) \
     -delete
-find "${APP_VENV_ROOT}" -path '*/__pycache__*' -delete
+find /app -path '*/__pycache__*' -delete
 
-install -Dm755 run-bitcoin-safe.sh /app/bin/run-bitcoin-safe.sh
-install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
+install -Dm755 "${SCRIPT_DIR}/run-bitcoin-safe.sh" /app/bin/run-bitcoin-safe.sh
+install -Dm644 "${FLATHUB_ASSET_DIR}/org.bitcoin_safe.BitcoinSafe.svg" /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
 install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoin_safe.BitcoinSafe.png
-install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
+install -Dm644 "${FLATHUB_ASSET_DIR}/org.bitcoin_safe.BitcoinSafe.metainfo.xml" /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
 sed \
     -e 's#^Exec=.*#Exec=run-bitcoin-safe.sh %F#' \
     -e 's#^Icon=.*#Icon=org.bitcoin_safe.BitcoinSafe#' \
@@ -127,9 +126,17 @@ install -Dm644 org.bitcoin_safe.BitcoinSafe.desktop /app/share/applications/org.
 mkdir -p /app/app
 ln -sfn ../share /app/app/share
 
+mkdir -p /app/lib/plugins
+for runtime_plugin_dir in /usr/lib/plugins/*; do
+    plugin_dir_name="$(basename "${runtime_plugin_dir}")"
+    if [ ! -e "/app/lib/plugins/${plugin_dir_name}" ]; then
+        ln -s "${runtime_plugin_dir}" "/app/lib/plugins/${plugin_dir_name}"
+    fi
+done
+
 verify_runtime_import appdirs
 verify_runtime_import bitcoin_safe
 
 find /app -path '*/__pycache__*' -delete
-rm -rf "${VENDOR_ROOT}"
+rm -rf "${VENDOR_ROOT}" "${TOOL_VENV_ROOT}" "${BUILD_CACHE_ROOT}" dist org.bitcoin_safe.BitcoinSafe.desktop
 find /app -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +

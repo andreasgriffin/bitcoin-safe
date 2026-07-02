@@ -1,8 +1,5 @@
 #!/bin/bash
 
-LIBUSB_VERSION="4239bc3a50014b8e6a5a2a59df1fff3b7469543b"
-# ^ tag v1.0.26
-
 set -e
 
 . $(dirname "$0")/build_tools_util.sh || (echo "Could not source build_tools_util.sh" && exit 1)
@@ -10,14 +7,19 @@ set -e
 here="$(dirname "$(realpath "$0" 2> /dev/null || grealpath "$0")")"
 CONTRIB="$here"
 PROJECT_ROOT="$CONTRIB/.."
+NATIVE_DEPENDENCIES_FILE="$CONTRIB/native_git_dependencies.sh"
+
+. "$NATIVE_DEPENDENCIES_FILE"
+
+LIBUSB_VERSION="$LIBUSB_COMMIT"
 
 pkgname="libusb"
-info "Building $pkgname..."
+info "Building $pkgname at ${LIBUSB_TAG} (${LIBUSB_VERSION})..."
 
 (
     cd "$CONTRIB"
     if [ ! -d libusb ]; then
-        git clone https://github.com/libusb/libusb.git
+        git clone "$LIBUSB_URL"
     fi
     cd libusb
     if ! $(git cat-file -e ${LIBUSB_VERSION}) ; then

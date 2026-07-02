@@ -29,6 +29,8 @@ RUN apt-get update -q && \
         flatpak-builder \
         git \
         librsvg2-common \
+        python3-packaging \
+        python3-yaml \
         python3 \
         sudo \
         tar && \
