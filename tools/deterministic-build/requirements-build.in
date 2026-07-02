@@ -1,4 +1,4 @@
-pip==26.1.1
-setuptools==82.0.1
-wheel==0.47.0
-poetry==2.4.0
+pip
+setuptools
+wheel
+poetry
