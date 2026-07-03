@@ -1,4 +1,34 @@
 #!/usr/bin/env python3
+
+#
+# Bitcoin Safe
+# Copyright (C) 2026 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
 from __future__ import annotations
 
 import argparse
@@ -98,7 +128,6 @@ INTERNAL_GENERATED_DEPENDENCY_MODULES = {
 AppSourceMode = Literal["archive", "local-dir"]
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_OUTPUT_DIR = SCRIPT_DIR / "build" / "generated-repo"
-DEFAULT_OUTPUT_DIR_DOC = "tools/build-linux/flathub-flatpak/build/generated-repo"
 NORMALIZE_SVG_SCRIPT = "normalize-svg-icon.py"
 METAINFO_FILENAME = f"{APP_ID}.metainfo.xml"
 SVG_FILENAME = f"{APP_ID}.svg"
@@ -811,106 +840,6 @@ def write_flathub_json(path: Path) -> None:
             # , "aarch64"  https://pypi.org/project/bdkpython/#files  is not available for linux arm64
         },
     )
-
-
-def write_readme(path: Path, release: ReleaseInfo) -> None:
-    text = f"""# {APP_ID}
-
-Flathub-style Flatpak packaging for [Bitcoin Safe]({DEFAULT_SOURCE_REPO_URL}).
-
-## Maintainer Workflow
-# Bitcoin Safe
-# Copyright (C) 2026 Andreas Griffin
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of version 3 of the GNU General Public License as
-# published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
-#
-# The above copyright notice and this permission notice shall be
-# included in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-#
-
-Run:
-
-```sh
-./populate-flathub-manifest-repo.py
-```
-
-By default the script writes the generated manifest repo to:
-
-```sh
-{DEFAULT_OUTPUT_DIR_DOC}
-```
-
-and then runs local validation:
-
-- `flatpak-builder --show-manifest`
-- `flatpak-builder-lint manifest` when `org.flatpak.Builder` is installed
-- `flatpak-builder --user --install-deps-from=flathub --repo=repo build-dir {MANIFEST_FILENAME}`
-
-Use these flags to skip parts of that default flow:
-
-- `--skip-validate`
-- `--skip-lint`
-- `--skip-build`
-
-Use this flag to launch the built app after a successful local build:
-
-- `--run-flatpak`
-
-To run the local checks on Ubuntu, install the builder tools and lint helper first:
-
-```sh
-sudo apt update
-sudo apt install flatpak flatpak-builder
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak install flathub org.kde.Platform//{FLATHUB_KDE_RUNTIME_VERSION} org.kde.Sdk//{FLATHUB_KDE_RUNTIME_VERSION} {PYQT_BASEAPP_ID}//{FLATHUB_KDE_RUNTIME_VERSION} org.flatpak.Builder
-```
-
-By default the generator reads from `{DEFAULT_SOURCE_REPO_URL}` and uses the most recently published GitHub release, including prereleases.
-
-Source selection works like this:
-
-- if you pass `--local-source-checkout`, that local checkout is used for manifests, lockfile, and assets
-- otherwise, if you pass `--source-repo-url`, that upstream repo is used
-- otherwise, the generator falls back to `{DEFAULT_SOURCE_REPO_URL}`
-
-You can override the defaults with:
-
-- `--release-tag <tag>`
-- `--source-repo-url <url>`
-- `--local-source-checkout <path>`
-- `--app-source-mode local-dir` to make the generated manifest point at that local checkout instead of a release archive
-- `--refresh` to explicitly update the checked-in generated SVG and metainfo files first
-
-The generator is the only Flatpak manifest source of truth:
-
-- it defines the Flatpak manifest in Python instead of reading a checked-in YAML manifest
-- by default replaces local staged sources with pinned release archives
-- replaces build-time dependency resolution with generated, pinned dependency manifests
-- relies on `{PYQT_BASEAPP_ID}//{FLATHUB_KDE_RUNTIME_VERSION}` for the core PyQt runtime instead of vendoring PyQt into the app
-- keeps normal runs side-effect-free by checking tracked generated assets instead of rewriting them
-
-Flathub builds from the checked-in files in this repo, not from Docker.
-"""
-    path.write_text(text.rstrip() + "\n", encoding="utf-8")
 
 
 def append_release_notes_description(parent: ET.Element, body: str) -> None:
@@ -1638,9 +1567,8 @@ def generate_repo(
     main_packages, all_packages = evaluate_packages(lock_payload)
     app_source_entry = build_app_source_entry(context, output_dir, app_source_mode)
 
-    log_step("Writing flathub.json and README")
+    log_step("Writing flathub.json")
     write_flathub_json(output_dir / "flathub.json")
-    write_readme(output_dir / "README.md", context.release)
     write_dependency_modules(
         output_dir,
         context,
