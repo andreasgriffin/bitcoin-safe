@@ -117,7 +117,6 @@ MANIFEST_CLEANUP_COMMANDS = [
     "\\( -name '.gitmodules' -o -name '.gitignore' -o -name '.gitattributes' -o -name '.gitkeep' \\) "
     "-delete",
     "find /app -path '*/__pycache__*' -delete",
-    'find /app -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +',
 ]
 BASE_MANIFEST: dict[str, Any] = {
     "app-id": APP_ID,
