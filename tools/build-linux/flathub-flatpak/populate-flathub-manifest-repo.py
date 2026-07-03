@@ -100,6 +100,8 @@ SVG_FILENAME = f"{APP_ID}.svg"
 HELPER_FILENAMES = [
     "build-flatpak-app.sh",
     "run-bitcoin-safe.sh",
+    "requirements-build-backends.txt",
+    "requirements-runtime.txt",
 ]
 NATIVE_GIT_DEPENDENCIES_FILE = Path(__file__).resolve().parents[2] / "native_git_dependencies.sh"
 BASE_MANIFEST: dict[str, Any] = {
