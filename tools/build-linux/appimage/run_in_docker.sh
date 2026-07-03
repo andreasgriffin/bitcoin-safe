@@ -9,7 +9,6 @@ DISTDIR="$CONTRIB_APPIMAGE/dist"
 BUILDDIR="$CONTRIB_APPIMAGE/build/appimage"
 APPDIR="$BUILDDIR/bitcoin_safe.AppDir"
 BUILD_CACHEDIR="$CONTRIB_APPIMAGE/.cache/appimage"
-DESKTOP_ICON_NAME="org.bitcoin_safe.BitcoinSafe"
 export DLL_TARGET_DIR="$BUILD_CACHEDIR/dlls"
 PIP_CACHE_DIR="$CONTRIB_APPIMAGE/.cache/pip_cache"
 POETRY_WHEEL_DIR="$CONTRIB_APPIMAGE/.cache/poetry_wheel"
@@ -139,10 +138,8 @@ cp /usr/lib/x86_64-linux-gnu/libzbar.so.0 "$APPDIR/usr/lib/libzbar.so"  # otherw
 
 
 info "desktop integration."
-sed -e 's#^Exec=.*#Exec=AppRun %F#' \
-    "$CONTRIB/resources/linux-bitcoin-safe.desktop" \
-    > "$APPDIR/bitcoin-safe.desktop"
-cp "$CONTRIB/resources/icon.svg" "$APPDIR/${DESKTOP_ICON_NAME}.svg"
+cp "$CONTRIB_APPIMAGE/bitcoin-safe.desktop" "$APPDIR/bitcoin-safe.desktop"
+cp "$CONTRIB/resources/icon.svg" "$APPDIR/bitcoin-safe.svg"
 
 
 # add launcher
