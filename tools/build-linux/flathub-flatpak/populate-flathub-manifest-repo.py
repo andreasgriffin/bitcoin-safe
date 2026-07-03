@@ -582,31 +582,6 @@ def github_release_archive_url(repo_url: str, tag_name: str) -> str:
     return f"https://github.com{path}/archive/refs/tags/{quoted_tag}.tar.gz"
 
 
-def github_raw_file_url(repo_url: str, ref: str, relative_path: str) -> str:
-    slug = github_repo_slug(repo_url)
-    quoted_ref = urllib.parse.quote(ref, safe="")
-    quoted_path = "/".join(urllib.parse.quote(part, safe="") for part in relative_path.split("/"))
-    return f"https://raw.githubusercontent.com/{slug}/{quoted_ref}/{quoted_path}"
-
-
-def upstream_file_source_entry(
-    repo_url: str,
-    ref: str,
-    relative_path: str,
-    *,
-    dest_filename: str | None = None,
-) -> dict[str, str]:
-    url = github_raw_file_url(repo_url, ref, relative_path)
-    source = {
-        "type": "file",
-        "url": url,
-        "sha256": download_sha256(url),
-    }
-    if dest_filename:
-        source["dest-filename"] = dest_filename
-    return source
-
-
 def extract_archive_to_temp(url: str) -> Path:
     data = binary_request(url)
     tempdir = Path(tempfile.mkdtemp(prefix="bitcoin-safe-src-"))
@@ -1337,22 +1312,10 @@ def build_manifest(context: SourceContext, app_source_entry: dict[str, str]) -> 
                 "name": "bitcoin-safe",
                 "buildsystem": "simple",
                 "build-commands": [
-                    "bash build-flatpak-app.sh",
+                    "bash tools/build-linux/flathub-flatpak/build-flatpak-app.sh",
                 ],
                 "sources": [
                     app_source_entry,
-                    upstream_file_source_entry(
-                        context.repo_url,
-                        context.release.tag_name,
-                        "tools/build-linux/flathub-flatpak/build-flatpak-app.sh",
-                        dest_filename="build-flatpak-app.sh",
-                    ),
-                    upstream_file_source_entry(
-                        context.repo_url,
-                        context.release.tag_name,
-                        "tools/build-linux/flathub-flatpak/run-bitcoin-safe.sh",
-                        dest_filename="run-bitcoin-safe.sh",
-                    ),
                 ],
             },
         ]
