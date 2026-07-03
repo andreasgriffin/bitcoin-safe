@@ -135,6 +135,10 @@ BASE_MANIFEST: dict[str, Any] = {
     },
     "cleanup": [
         "/share/bitcoin-safe/vendor",
+        "/include",
+        "/lib/pkgconfig",
+        "/share/doc",
+        "/share/man",
     ],
     "cleanup-commands": MANIFEST_CLEANUP_COMMANDS,
     "finish-args": [
@@ -1260,12 +1264,6 @@ def build_native_modules(
                 "-DHIDAPI_BUILD_HIDTEST=OFF",
                 "-DHIDAPI_BUILD_TESTGUI=OFF",
             ],
-            "cleanup": [
-                "/include",
-                "/lib/pkgconfig",
-                "/share/doc",
-                "/share/man",
-            ],
             "sources": [
                 native_git_source_entry(dependencies["hidapi"]),
             ],
@@ -1291,10 +1289,6 @@ def build_native_modules(
             ],
             "cleanup": [
                 "/bin",
-                "/include",
-                "/lib/pkgconfig",
-                "/share/doc",
-                "/share/man",
             ],
             "sources": [
                 native_git_source_entry(dependencies["zbar"]),
