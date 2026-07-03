@@ -67,6 +67,9 @@ VENDOR_ROOT = "/app/share/bitcoin-safe/vendor"
 BUILD_BACKEND_VENDOR_DIR = f"{VENDOR_ROOT}/build-backends"
 RUNTIME_VENDOR_DIR = f"{VENDOR_ROOT}/runtime"
 GIT_VENDOR_DIR = f"{VENDOR_ROOT}/git-packages"
+BUILD_BACKEND_SOURCE_SUBDIR = "_vendor/build-backends"
+RUNTIME_SOURCE_SUBDIR = "_vendor/runtime"
+GIT_SOURCE_SUBDIR = "_vendor/git-packages"
 FORCE_SDIST_PACKAGES: set[str] = set()
 GIT_RUNTIME_DEPENDENCY_OVERRIDES: dict[str, list[str]] = {
     # bitcoin-safe-lib imports packaging.version.Version at runtime but does not
@@ -1186,24 +1189,16 @@ def path_for_manifest(source_path: Path, manifest_dir: Path) -> str:
         return str(source_path)
 
 
-def source_entry_filename(source: dict[str, str]) -> str:
-    if dest_filename := source.get("dest-filename"):
-        return dest_filename
-    if path := source.get("path"):
-        return Path(path).name
-    if url := source.get("url"):
-        return Path(urllib.parse.unquote(urllib.parse.urlparse(url).path)).name
-    raise RuntimeError(f"Unable to determine filename for source entry: {source}")
-
-
 def install_app_source_file_command(relative_path: str, destination_path: str) -> str:
     return f"install -Dm644 {shlex.quote(relative_path)} {shlex.quote(destination_path)}"
 
 
-def copy_source_entries_command(source_entries: list[dict[str, str]], destination_dir: str) -> str:
-    filenames = [source_entry_filename(source) for source in source_entries]
-    quoted_filenames = " ".join(shlex.quote(filename) for filename in filenames)
-    return f"cp -t {shlex.quote(destination_dir)} {quoted_filenames}"
+def stage_source_entries(source_entries: list[dict[str, str]], source_subdir: str) -> list[dict[str, str]]:
+    return [{**source, "dest": source_subdir} for source in source_entries]
+
+
+def copy_source_subdir_command(source_subdir: str, destination_dir: str) -> str:
+    return f"cp -t {shlex.quote(destination_dir)} {shlex.quote(source_subdir)}/*"
 
 
 def build_app_source_entry(
@@ -1484,10 +1479,12 @@ def write_dependency_modules(
         refresh=refresh,
     )
     build_backend_sources = [package["source"] for package in backend_packages]
+    staged_build_backend_sources = stage_source_entries(build_backend_sources, BUILD_BACKEND_SOURCE_SUBDIR)
     runtime_sources = [
         artifact_source_entry(package["name"], package["version"], package["chosen_artifact"], pypi)
         for package in runtime_packages
     ]
+    staged_runtime_sources = stage_source_entries(runtime_sources, RUNTIME_SOURCE_SUBDIR)
 
     git_sources = []
     git_lock = []
@@ -1513,6 +1510,8 @@ def write_dependency_modules(
         )
 
     serialize_json(output_dir / "git-packages-lock.json", git_lock)
+    staged_git_sources = stage_source_entries(git_sources, GIT_SOURCE_SUBDIR)
+    staged_git_lock_source = {"type": "file", "path": "git-packages-lock.json", "dest": GIT_SOURCE_SUBDIR}
 
     serialize_json(
         output_dir / "python3-build-backends.json",
@@ -1525,9 +1524,9 @@ def write_dependency_modules(
                     f"tools/build-linux/flathub-flatpak/{BUILD_BACKEND_REQUIREMENTS_FILENAME}",
                     f"{BUILD_BACKEND_VENDOR_DIR}/{BUILD_BACKEND_REQUIREMENTS_FILENAME}",
                 ),
-                copy_source_entries_command(build_backend_sources, BUILD_BACKEND_VENDOR_DIR),
+                copy_source_subdir_command(BUILD_BACKEND_SOURCE_SUBDIR, BUILD_BACKEND_VENDOR_DIR),
             ],
-            "sources": [app_source_entry, *build_backend_sources],
+            "sources": [app_source_entry, *staged_build_backend_sources],
         },
     )
 
@@ -1542,9 +1541,9 @@ def write_dependency_modules(
                     f"tools/build-linux/flathub-flatpak/{RUNTIME_REQUIREMENTS_FILENAME}",
                     f"{RUNTIME_VENDOR_DIR}/{RUNTIME_REQUIREMENTS_FILENAME}",
                 ),
-                copy_source_entries_command(runtime_sources, RUNTIME_VENDOR_DIR),
+                copy_source_subdir_command(RUNTIME_SOURCE_SUBDIR, RUNTIME_VENDOR_DIR),
             ],
-            "sources": [app_source_entry, *runtime_sources],
+            "sources": [app_source_entry, *staged_runtime_sources],
         },
     )
 
@@ -1555,9 +1554,9 @@ def write_dependency_modules(
             "buildsystem": "simple",
             "build-commands": [
                 f"install -d {GIT_VENDOR_DIR}",
-                f"cp -t {GIT_VENDOR_DIR} ./*",
+                copy_source_subdir_command(GIT_SOURCE_SUBDIR, GIT_VENDOR_DIR),
             ],
-            "sources": [{"type": "file", "path": "git-packages-lock.json"}] + git_sources,
+            "sources": [staged_git_lock_source, *staged_git_sources],
         },
     )
 
