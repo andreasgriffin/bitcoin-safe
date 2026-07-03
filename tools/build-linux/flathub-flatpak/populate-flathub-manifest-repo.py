@@ -10,6 +10,7 @@ import io
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -97,6 +98,8 @@ DEFAULT_OUTPUT_DIR_DOC = "tools/build-linux/flathub-flatpak/build/generated-repo
 NORMALIZE_SVG_SCRIPT = "normalize-svg-icon.py"
 METAINFO_FILENAME = f"{APP_ID}.metainfo.xml"
 SVG_FILENAME = f"{APP_ID}.svg"
+BUILD_BACKEND_REQUIREMENTS_FILENAME = "requirements-build-backends.txt"
+RUNTIME_REQUIREMENTS_FILENAME = "requirements-runtime.txt"
 NATIVE_GIT_DEPENDENCIES_FILE = Path(__file__).resolve().parents[2] / "native_git_dependencies.sh"
 BASE_MANIFEST: dict[str, Any] = {
     "app-id": APP_ID,
@@ -1037,6 +1040,14 @@ def tracked_normalizer_path() -> Path:
     return flathub_flatpak_dir() / NORMALIZE_SVG_SCRIPT
 
 
+def tracked_build_backend_requirements_path() -> Path:
+    return flathub_flatpak_dir() / BUILD_BACKEND_REQUIREMENTS_FILENAME
+
+
+def tracked_runtime_requirements_path() -> Path:
+    return flathub_flatpak_dir() / RUNTIME_REQUIREMENTS_FILENAME
+
+
 def read_xml_template(path: Path) -> ET.Element:
     return ET.fromstring(path.read_text(encoding="utf-8"))
 
@@ -1161,11 +1172,63 @@ def ensure_tracked_generated_assets(context: SourceContext, *, refresh: bool) ->
         )
 
 
+def ensure_tracked_dependency_requirements(
+    backend_packages: list[dict[str, Any]],
+    runtime_packages: list[dict[str, Any]],
+    *,
+    refresh: bool,
+) -> None:
+    tracked_files = [
+        (
+            tracked_build_backend_requirements_path(),
+            backend_packages,
+            "Flathub build backend requirements",
+        ),
+        (
+            tracked_runtime_requirements_path(),
+            runtime_packages,
+            "Flathub runtime requirements",
+        ),
+    ]
+    with tempfile.TemporaryDirectory(prefix="bitcoin-safe-flathub-requirements-") as tempdir_name:
+        tempdir = Path(tempdir_name)
+        for tracked_path, packages, description in tracked_files:
+            tracked_path.parent.mkdir(parents=True, exist_ok=True)
+            generated_path = tempdir / tracked_path.name
+            render_requirements(generated_path, packages)
+            refresh_or_validate_generated_file(
+                generated_path,
+                tracked_path,
+                refresh=refresh,
+                description=description,
+            )
+
+
 def path_for_manifest(source_path: Path, manifest_dir: Path) -> str:
     try:
         return os.path.relpath(source_path, manifest_dir)
     except ValueError:
         return str(source_path)
+
+
+def source_entry_filename(source: dict[str, str]) -> str:
+    if dest_filename := source.get("dest-filename"):
+        return dest_filename
+    if path := source.get("path"):
+        return Path(path).name
+    if url := source.get("url"):
+        return Path(urllib.parse.unquote(urllib.parse.urlparse(url).path)).name
+    raise RuntimeError(f"Unable to determine filename for source entry: {source}")
+
+
+def install_app_source_file_command(relative_path: str, destination_path: str) -> str:
+    return f"install -Dm644 {shlex.quote(relative_path)} {shlex.quote(destination_path)}"
+
+
+def copy_source_entries_command(source_entries: list[dict[str, str]], destination_dir: str) -> str:
+    filenames = [source_entry_filename(source) for source in source_entries]
+    quoted_filenames = " ".join(shlex.quote(filename) for filename in filenames)
+    return f"cp -t {shlex.quote(destination_dir)} {quoted_filenames}"
 
 
 def build_app_source_entry(
@@ -1418,10 +1481,12 @@ def prepare_runtime_packages(
 
 def write_dependency_modules(
     output_dir: Path,
-    release: ReleaseInfo,
     context: SourceContext,
     main_packages: list[dict[str, Any]],
     all_packages: dict[str, dict[str, Any]],
+    app_source_entry: dict[str, str],
+    *,
+    refresh: bool,
 ) -> None:
     log_step("Resolving Python dependencies from poetry.lock")
     pypi = PypiIndex()
@@ -1450,31 +1515,16 @@ def write_dependency_modules(
                 backend_packages.append(package)
                 known_backend_names.add(normalize_project_name(package["name"]))
     log_step(f"Resolved {len(backend_packages)} build backend packages")
-    use_local_requirement_files = context.release.tag_name == "local-build"
-    if use_local_requirement_files:
-        render_requirements(output_dir / "requirements-build-backends.txt", backend_packages)
-        render_requirements(output_dir / "requirements-runtime.txt", runtime_packages)
-
-    build_backend_requirements_source = (
-        {"type": "file", "path": "requirements-build-backends.txt"}
-        if use_local_requirement_files
-        else upstream_file_source_entry(
-            context.repo_url,
-            context.release.tag_name,
-            "tools/build-linux/flathub-flatpak/requirements-build-backends.txt",
-            dest_filename="requirements-build-backends.txt",
-        )
+    ensure_tracked_dependency_requirements(
+        backend_packages,
+        runtime_packages,
+        refresh=refresh,
     )
-    runtime_requirements_source = (
-        {"type": "file", "path": "requirements-runtime.txt"}
-        if use_local_requirement_files
-        else upstream_file_source_entry(
-            context.repo_url,
-            context.release.tag_name,
-            "tools/build-linux/flathub-flatpak/requirements-runtime.txt",
-            dest_filename="requirements-runtime.txt",
-        )
-    )
+    build_backend_sources = [package["source"] for package in backend_packages]
+    runtime_sources = [
+        artifact_source_entry(package["name"], package["version"], package["chosen_artifact"], pypi)
+        for package in runtime_packages
+    ]
 
     git_sources = []
     git_lock = []
@@ -1508,10 +1558,13 @@ def write_dependency_modules(
             "buildsystem": "simple",
             "build-commands": [
                 f"install -d {BUILD_BACKEND_VENDOR_DIR}",
-                f"cp -t {BUILD_BACKEND_VENDOR_DIR} ./*",
+                install_app_source_file_command(
+                    f"tools/build-linux/flathub-flatpak/{BUILD_BACKEND_REQUIREMENTS_FILENAME}",
+                    f"{BUILD_BACKEND_VENDOR_DIR}/{BUILD_BACKEND_REQUIREMENTS_FILENAME}",
+                ),
+                copy_source_entries_command(build_backend_sources, BUILD_BACKEND_VENDOR_DIR),
             ],
-            "sources": [build_backend_requirements_source]
-            + [package["source"] for package in backend_packages],
+            "sources": [app_source_entry, *build_backend_sources],
         },
     )
 
@@ -1522,13 +1575,13 @@ def write_dependency_modules(
             "buildsystem": "simple",
             "build-commands": [
                 f"install -d {RUNTIME_VENDOR_DIR}",
-                f"cp -t {RUNTIME_VENDOR_DIR} ./*",
+                install_app_source_file_command(
+                    f"tools/build-linux/flathub-flatpak/{RUNTIME_REQUIREMENTS_FILENAME}",
+                    f"{RUNTIME_VENDOR_DIR}/{RUNTIME_REQUIREMENTS_FILENAME}",
+                ),
+                copy_source_entries_command(runtime_sources, RUNTIME_VENDOR_DIR),
             ],
-            "sources": [runtime_requirements_source]
-            + [
-                artifact_source_entry(package["name"], package["version"], package["chosen_artifact"], pypi)
-                for package in runtime_packages
-            ],
+            "sources": [app_source_entry, *runtime_sources],
         },
     )
 
@@ -1565,7 +1618,15 @@ def generate_dependency_modules(output_dir: Path, tree_root: Path) -> None:
         release=dummy_release,
         tree_root=tree_root,
     )
-    write_dependency_modules(output_dir, dummy_release, context, main_packages, all_packages)
+    app_source_entry = build_app_source_entry(context, output_dir, "local-dir")
+    write_dependency_modules(
+        output_dir,
+        context,
+        main_packages,
+        all_packages,
+        app_source_entry,
+        refresh=False,
+    )
 
 
 def generate_repo(
@@ -1609,7 +1670,14 @@ def generate_repo(
     log_step("Writing flathub.json and README")
     write_flathub_json(output_dir / "flathub.json")
     write_readme(output_dir / "README.md", context.release)
-    write_dependency_modules(output_dir, context.release, context, main_packages, all_packages)
+    write_dependency_modules(
+        output_dir,
+        context,
+        main_packages,
+        all_packages,
+        app_source_entry,
+        refresh=refresh,
+    )
 
     log_step(f"Writing main manifest {MANIFEST_FILENAME}")
     manifest = build_manifest(context, app_source_entry)
@@ -1911,7 +1979,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--refresh",
         action="store_true",
-        help="Refresh the checked-in generated SVG and metainfo assets before generating the manifest repo.",
+        help=(
+            "Refresh the checked-in generated SVG, metainfo, and requirements files before generating "
+            "the manifest repo."
+        ),
     )
     parser.add_argument("--output-dir", default=str(DEFAULT_OUTPUT_DIR))
     parser.add_argument("--skip-validate", action="store_true")
