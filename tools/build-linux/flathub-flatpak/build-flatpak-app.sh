@@ -9,14 +9,12 @@ export PYTHONDONTWRITEBYTECODE=1
 export TZ=UTC
 : "${SOURCE_DATE_EPOCH:?SOURCE_DATE_EPOCH must be set for reproducible Flatpak builds}"
 
-PYVER="$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
 BUILD_CACHE_ROOT="${PWD}/.cache"
 TOOL_VENV_ROOT="${PWD}/.tool-venv"
 APP_PYTHON="$(command -v python3)"
 PIP_CACHE_DIR="${BUILD_CACHE_ROOT}/pip"
 POETRY_CACHE_DIR="${BUILD_CACHE_ROOT}/poetry"
 POETRY_WHEEL_DIR="${BUILD_CACHE_ROOT}/poetry-wheel"
-APP_SITE_PACKAGES="/app/lib/python${PYVER}/site-packages"
 VENDOR_ROOT="/app/share/bitcoin-safe/vendor"
 BUILD_BACKENDS_DIR="${VENDOR_ROOT}/build-backends"
 RUNTIME_VENDOR_DIR="${VENDOR_ROOT}/runtime"
@@ -103,26 +101,11 @@ install_git_packages
 verify_runtime_import appdirs
 verify_runtime_import bitcoin_safe
 
-rm -rf "${APP_SITE_PACKAGES}/Cryptodome/SelfTest"
-rm -rf "${APP_SITE_PACKAGES}/psutil/tests" \
-    "${APP_SITE_PACKAGES}/qrcode/tests" \
-    "${APP_SITE_PACKAGES}/websocket/tests"
-find /app -name '.git' -type d -print0 | xargs -0 --no-run-if-empty rm -rf
-find /app -type f \
-    \( -name '.gitmodules' -o -name '.gitignore' -o -name '.gitattributes' -o -name '.gitkeep' \) \
-    -delete
-find /app -path '*/__pycache__*' -delete
-
 install -Dm755 "${SCRIPT_DIR}/run-bitcoin-safe.sh" /app/bin/run-bitcoin-safe.sh
 install -Dm644 "${FLATHUB_ASSET_DIR}/org.bitcoin_safe.BitcoinSafe.svg" /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
 install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoin_safe.BitcoinSafe.png
 install -Dm644 "${FLATHUB_ASSET_DIR}/org.bitcoin_safe.BitcoinSafe.metainfo.xml" /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
-sed \
-    -e 's#^Exec=.*#Exec=run-bitcoin-safe.sh %F#' \
-    -e 's#^Icon=.*#Icon=org.bitcoin_safe.BitcoinSafe#' \
-    tools/resources/linux-bitcoin-safe.desktop \
-    > org.bitcoin_safe.BitcoinSafe.desktop
-install -Dm644 org.bitcoin_safe.BitcoinSafe.desktop /app/share/applications/org.bitcoin_safe.BitcoinSafe.desktop
+install -Dm644 tools/resources/linux-bitcoin-safe.desktop /app/share/applications/org.bitcoin_safe.BitcoinSafe.desktop
 mkdir -p /app/app
 ln -sfn ../share /app/app/share
 
@@ -137,6 +120,4 @@ done
 verify_runtime_import appdirs
 verify_runtime_import bitcoin_safe
 
-find /app -path '*/__pycache__*' -delete
-rm -rf "${VENDOR_ROOT}" "${TOOL_VENV_ROOT}" "${BUILD_CACHE_ROOT}" dist org.bitcoin_safe.BitcoinSafe.desktop
-find /app -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
+rm -rf "${TOOL_VENV_ROOT}" "${BUILD_CACHE_ROOT}" dist

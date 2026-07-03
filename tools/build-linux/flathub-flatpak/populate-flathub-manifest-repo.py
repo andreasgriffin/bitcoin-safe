@@ -44,6 +44,7 @@ PYQT_BASEAPP_ID = "com.riverbankcomputing.PyQt.BaseApp"
 FLATPAK_PYTHON_FULL_VERSION = "3.13.0"
 FLATPAK_PYTHON_VERSION = "3.13"
 FLATPAK_PYTHON_TAG = "cp313"
+APP_SITE_PACKAGES_DIR = f"/app/lib/python{FLATPAK_PYTHON_VERSION}/site-packages"
 PIP_INSTALL_ARGS = "--ignore-installed --no-build-isolation --prefix=${FLATPAK_DEST}"
 PIP_OFFLINE_INSTALL_ARGS = (
     '--ignore-installed --no-build-isolation --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST}'
@@ -104,6 +105,20 @@ SVG_FILENAME = f"{APP_ID}.svg"
 BUILD_BACKEND_REQUIREMENTS_FILENAME = "requirements-build-backends.txt"
 RUNTIME_REQUIREMENTS_FILENAME = "requirements-runtime.txt"
 NATIVE_GIT_DEPENDENCIES_FILE = Path(__file__).resolve().parents[2] / "native_git_dependencies.sh"
+MANIFEST_CLEANUP_COMMANDS = [
+    "/app/cleanup-BaseApp.sh",
+    f"rm -rf {APP_SITE_PACKAGES_DIR}/Cryptodome/SelfTest",
+    "rm -rf "
+    f"{APP_SITE_PACKAGES_DIR}/psutil/tests "
+    f"{APP_SITE_PACKAGES_DIR}/qrcode/tests "
+    f"{APP_SITE_PACKAGES_DIR}/websocket/tests",
+    "find /app -name '.git' -type d -print0 | xargs -0 --no-run-if-empty rm -rf",
+    "find /app -type f "
+    "\\( -name '.gitmodules' -o -name '.gitignore' -o -name '.gitattributes' -o -name '.gitkeep' \\) "
+    "-delete",
+    "find /app -path '*/__pycache__*' -delete",
+    'find /app -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +',
+]
 BASE_MANIFEST: dict[str, Any] = {
     "app-id": APP_ID,
     "runtime": "org.kde.Platform",
@@ -118,9 +133,10 @@ BASE_MANIFEST: dict[str, Any] = {
             "BASEAPP_REMOVE_WEBENGINE=1",
         ]
     },
-    "cleanup-commands": [
-        "/app/cleanup-BaseApp.sh",
+    "cleanup": [
+        "/share/bitcoin-safe/vendor",
     ],
+    "cleanup-commands": MANIFEST_CLEANUP_COMMANDS,
     "finish-args": [
         "--share=network",
         "--share=ipc",

@@ -400,13 +400,7 @@ modules:
       - install -Dm644 ${APP_ID}.svg /app/share/icons/hicolor/scalable/apps/${APP_ID}.svg
       - install -Dm644 icon-128.png /app/share/icons/hicolor/128x128/apps/${APP_ID}.png
       - install -Dm644 ${APP_ID}.metainfo.xml /app/share/metainfo/${APP_ID}.metainfo.xml
-      - |
-        sed \\
-            -e 's#^Exec=.*#Exec=run-bitcoin-safe.sh %F#' \\
-            -e 's#^Icon=.*#Icon=${APP_ID}#' \\
-            linux-bitcoin-safe.desktop \\
-            > ${APP_ID}.desktop
-      - install -Dm644 ${APP_ID}.desktop /app/share/applications/${APP_ID}.desktop
+      - install -Dm644 linux-bitcoin-safe.desktop /app/share/applications/${APP_ID}.desktop
       - mkdir -p /app/app
       - ln -sfn ../share /app/app/share
     sources:
