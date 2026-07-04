@@ -141,11 +141,6 @@ MANIFEST_CLEANUP_COMMANDS = [
     f"{APP_SITE_PACKAGES_DIR}/psutil/tests "
     f"{APP_SITE_PACKAGES_DIR}/qrcode/tests "
     f"{APP_SITE_PACKAGES_DIR}/websocket/tests",
-    "find /app -name '.git' -type d -print0 | xargs -0 --no-run-if-empty rm -rf",
-    "find /app -type f "
-    "\\( -name '.gitmodules' -o -name '.gitignore' -o -name '.gitattributes' -o -name '.gitkeep' \\) "
-    "-delete",
-    "find /app -path '*/__pycache__*' -delete",
 ]
 BASE_MANIFEST: dict[str, Any] = {
     "app-id": APP_ID,
