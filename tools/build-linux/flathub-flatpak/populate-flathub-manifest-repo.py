@@ -1240,7 +1240,7 @@ def build_manifest(context: SourceContext, app_source_entry: dict[str, str]) -> 
                 "name": "bitcoin-safe",
                 "buildsystem": "simple",
                 "build-commands": [
-                    "bash tools/build-linux/flathub-flatpak/build-flatpak-app.sh",
+                    "make -f tools/build-linux/flathub-flatpak/Makefile flatpak-app",
                 ],
                 "sources": [
                     app_source_entry,

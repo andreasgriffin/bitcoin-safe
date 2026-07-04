@@ -1,0 +1,105 @@
+SHELL := /bin/bash
+.ONESHELL:
+.SHELLFLAGS := -eu -o pipefail -c
+
+FLATHUB_ASSET_DIR := tools/build-linux/flathub-flatpak
+BUILD_CACHE_ROOT := $(CURDIR)/.cache
+TOOL_VENV_ROOT := $(CURDIR)/.tool-venv
+APP_PYTHON := python3
+PIP_CACHE_DIR := $(BUILD_CACHE_ROOT)/pip
+POETRY_CACHE_DIR := $(BUILD_CACHE_ROOT)/poetry
+POETRY_WHEEL_DIR := $(BUILD_CACHE_ROOT)/poetry-wheel
+VENDOR_ROOT := /app/share/bitcoin-safe/vendor
+BUILD_BACKENDS_DIR := $(VENDOR_ROOT)/build-backends
+RUNTIME_VENDOR_DIR := $(VENDOR_ROOT)/runtime
+GIT_VENDOR_DIR := $(VENDOR_ROOT)/git-packages
+
+.PHONY: flatpak-app install-git-packages verify-runtime-imports
+
+flatpak-app:
+	command -v "$(APP_PYTHON)" >/dev/null
+	export PYTHONDONTWRITEBYTECODE=1
+	"$(APP_PYTHON)" -m venv "$(TOOL_VENV_ROOT)"
+	"$(TOOL_VENV_ROOT)/bin/python" -m ensurepip --upgrade
+
+	# Build frontend and backend tooling only need to exist in the temporary
+	# tool venv; runtime packages are installed directly into /app below.
+	"$(TOOL_VENV_ROOT)/bin/python" -m pip install \
+		--no-build-isolation \
+		--no-dependencies \
+		--no-index \
+		--find-links "$(BUILD_BACKENDS_DIR)" \
+		--no-warn-script-location \
+		--cache-dir "$(PIP_CACHE_DIR)" \
+		-r "$(BUILD_BACKENDS_DIR)/requirements-build-backends.txt"
+
+	rm -rf "$(POETRY_WHEEL_DIR)"
+	mkdir -p "$(POETRY_WHEEL_DIR)"
+	export POETRY_CACHE_DIR="$(POETRY_CACHE_DIR)"
+	export PIP_CONFIG_FILE=/dev/null
+	export PIP_DISABLE_PIP_VERSION_CHECK=1
+	export PIP_NO_INDEX=1
+	export PIP_FIND_LINKS="$(BUILD_BACKENDS_DIR) $(RUNTIME_VENDOR_DIR) $(GIT_VENDOR_DIR)"
+
+	"$(APP_PYTHON)" -m pip install \
+		--ignore-installed \
+		--no-dependencies \
+		--no-warn-script-location \
+		--no-compile \
+		--prefix=/app \
+		--cache-dir "$(PIP_CACHE_DIR)" \
+		-r "$(RUNTIME_VENDOR_DIR)/requirements-runtime.txt"
+
+	$(MAKE) install-git-packages
+
+	"$(TOOL_VENV_ROOT)/bin/poetry" build -f wheel --output "$(POETRY_WHEEL_DIR)"
+	"$(APP_PYTHON)" -m pip install \
+		--ignore-installed \
+		--no-dependencies \
+		--no-warn-script-location \
+		--no-compile \
+		--prefix=/app \
+		--cache-dir "$(PIP_CACHE_DIR)" \
+		"$(POETRY_WHEEL_DIR)"/*.whl
+
+	$(MAKE) verify-runtime-imports
+
+	install -Dm755 "$(FLATHUB_ASSET_DIR)/run-bitcoin-safe.sh" /app/bin/run-bitcoin-safe.sh
+	install -Dm644 "$(FLATHUB_ASSET_DIR)/org.bitcoin_safe.BitcoinSafe.svg" /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
+	install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoin_safe.BitcoinSafe.png
+	install -Dm644 "$(FLATHUB_ASSET_DIR)/org.bitcoin_safe.BitcoinSafe.metainfo.xml" /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
+	install -Dm644 tools/resources/linux-bitcoin-safe.desktop /app/share/applications/org.bitcoin_safe.BitcoinSafe.desktop
+	mkdir -p /app/app
+	ln -sfn ../share /app/app/share
+
+	mkdir -p /app/lib/plugins
+	for runtime_plugin_dir in /usr/lib/plugins/*; do
+		plugin_dir_name="$$(basename "$${runtime_plugin_dir}")"
+		if [ ! -e "/app/lib/plugins/$${plugin_dir_name}" ]; then
+			ln -s "$${runtime_plugin_dir}" "/app/lib/plugins/$${plugin_dir_name}"
+		fi
+	done
+
+	$(MAKE) verify-runtime-imports
+
+	rm -rf "$(TOOL_VENV_ROOT)" "$(BUILD_CACHE_ROOT)" dist
+
+install-git-packages:
+	metadata_path="$(GIT_VENDOR_DIR)/git-packages-lock.json"
+	mapfile -t git_archives < <(
+		"$(APP_PYTHON)" -c 'import json, sys; [print(package["archive_filename"]) for package in json.load(open(sys.argv[1], encoding="utf-8"))]' "$${metadata_path}"
+	)
+
+	for archive_name in "$${git_archives[@]}"; do
+		"$(APP_PYTHON)" -m pip install \
+			--ignore-installed \
+			--no-dependencies \
+			--no-warn-script-location \
+			--prefix=/app \
+			--cache-dir "$(PIP_CACHE_DIR)" \
+			"$(GIT_VENDOR_DIR)/$${archive_name}"
+	done
+
+verify-runtime-imports:
+	"$(APP_PYTHON)" -c 'import appdirs'
+	"$(APP_PYTHON)" -c 'import bitcoin_safe'
