@@ -6,8 +6,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FLATHUB_ASSET_DIR="tools/build-linux/flathub-flatpak"
 
 export PYTHONDONTWRITEBYTECODE=1
-export TZ=UTC
-: "${SOURCE_DATE_EPOCH:?SOURCE_DATE_EPOCH must be set for reproducible Flatpak builds}"
 
 BUILD_CACHE_ROOT="${PWD}/.cache"
 TOOL_VENV_ROOT="${PWD}/.tool-venv"
