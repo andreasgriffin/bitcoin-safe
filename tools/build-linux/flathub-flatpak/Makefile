@@ -2,6 +2,7 @@ SHELL := /bin/bash
 .ONESHELL:
 .SHELLFLAGS := -eu -o pipefail -c
 
+THIS_MAKEFILE := $(firstword $(MAKEFILE_LIST))
 FLATHUB_ASSET_DIR := tools/build-linux/flathub-flatpak
 BUILD_CACHE_ROOT := $(CURDIR)/.cache
 TOOL_VENV_ROOT := $(CURDIR)/.tool-venv
@@ -50,7 +51,7 @@ flatpak-app:
 		--cache-dir "$(PIP_CACHE_DIR)" \
 		-r "$(RUNTIME_VENDOR_DIR)/requirements-runtime.txt"
 
-	$(MAKE) install-git-packages
+	$(MAKE) -f "$(THIS_MAKEFILE)" install-git-packages
 
 	"$(TOOL_VENV_ROOT)/bin/poetry" build -f wheel --output "$(POETRY_WHEEL_DIR)"
 	"$(APP_PYTHON)" -m pip install \
@@ -62,7 +63,7 @@ flatpak-app:
 		--cache-dir "$(PIP_CACHE_DIR)" \
 		"$(POETRY_WHEEL_DIR)"/*.whl
 
-	$(MAKE) verify-runtime-imports
+	$(MAKE) -f "$(THIS_MAKEFILE)" verify-runtime-imports
 
 	install -Dm755 "$(FLATHUB_ASSET_DIR)/run-bitcoin-safe.sh" /app/bin/run-bitcoin-safe.sh
 	install -Dm644 "$(FLATHUB_ASSET_DIR)/org.bitcoin_safe.BitcoinSafe.svg" /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
@@ -80,7 +81,7 @@ flatpak-app:
 		fi
 	done
 
-	$(MAKE) verify-runtime-imports
+	$(MAKE) -f "$(THIS_MAKEFILE)" verify-runtime-imports
 
 	rm -rf "$(TOOL_VENV_ROOT)" "$(BUILD_CACHE_ROOT)" dist
 
