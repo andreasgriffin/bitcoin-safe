@@ -12,10 +12,8 @@ POETRY_CACHE_DIR := $(BUILD_CACHE_ROOT)/poetry
 POETRY_WHEEL_DIR := $(BUILD_CACHE_ROOT)/poetry-wheel
 VENDOR_ROOT := /app/share/bitcoin-safe/vendor
 BUILD_BACKENDS_DIR := $(VENDOR_ROOT)/build-backends
-RUNTIME_VENDOR_DIR := $(VENDOR_ROOT)/runtime
-GIT_VENDOR_DIR := $(VENDOR_ROOT)/git-packages
 
-.PHONY: flatpak-app install-git-packages verify-runtime-imports
+.PHONY: flatpak-app verify-runtime-imports
 
 flatpak-app:
 	command -v "$(APP_PYTHON)" >/dev/null
@@ -39,19 +37,6 @@ flatpak-app:
 	export POETRY_CACHE_DIR="$(POETRY_CACHE_DIR)"
 	export PIP_CONFIG_FILE=/dev/null
 	export PIP_DISABLE_PIP_VERSION_CHECK=1
-	export PIP_NO_INDEX=1
-	export PIP_FIND_LINKS="$(BUILD_BACKENDS_DIR) $(RUNTIME_VENDOR_DIR) $(GIT_VENDOR_DIR)"
-
-	"$(APP_PYTHON)" -m pip install \
-		--ignore-installed \
-		--no-dependencies \
-		--no-warn-script-location \
-		--no-compile \
-		--prefix=/app \
-		--cache-dir "$(PIP_CACHE_DIR)" \
-		-r "$(RUNTIME_VENDOR_DIR)/requirements-runtime.txt"
-
-	$(MAKE) -f "$(THIS_MAKEFILE)" install-git-packages
 
 	"$(TOOL_VENV_ROOT)/bin/poetry" build -f wheel --output "$(POETRY_WHEEL_DIR)"
 	"$(APP_PYTHON)" -m pip install \
@@ -84,22 +69,6 @@ flatpak-app:
 	$(MAKE) -f "$(THIS_MAKEFILE)" verify-runtime-imports
 
 	rm -rf "$(TOOL_VENV_ROOT)" "$(BUILD_CACHE_ROOT)" dist
-
-install-git-packages:
-	metadata_path="$(GIT_VENDOR_DIR)/git-packages-lock.json"
-	mapfile -t git_archives < <(
-		"$(APP_PYTHON)" -c 'import json, sys; [print(package["archive_filename"]) for package in json.load(open(sys.argv[1], encoding="utf-8"))]' "$${metadata_path}"
-	)
-
-	for archive_name in "$${git_archives[@]}"; do
-		"$(APP_PYTHON)" -m pip install \
-			--ignore-installed \
-			--no-dependencies \
-			--no-warn-script-location \
-			--prefix=/app \
-			--cache-dir "$(PIP_CACHE_DIR)" \
-			"$(GIT_VENDOR_DIR)/$${archive_name}"
-	done
 
 verify-runtime-imports:
 	"$(APP_PYTHON)" -c 'import appdirs'

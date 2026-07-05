@@ -96,8 +96,6 @@ NAMESPACE = {"": "http://www.freedesktop.org/standards/appstream/1.0"}
 MANIFEST_FILENAME = f"{APP_ID}.yml"
 VENDOR_ROOT = "/app/share/bitcoin-safe/vendor"
 BUILD_BACKEND_VENDOR_DIR = f"{VENDOR_ROOT}/build-backends"
-RUNTIME_VENDOR_DIR = f"{VENDOR_ROOT}/runtime"
-GIT_VENDOR_DIR = f"{VENDOR_ROOT}/git-packages"
 BUILD_BACKEND_SOURCE_SUBDIR = "_vendor/build-backends"
 RUNTIME_SOURCE_SUBDIR = "_vendor/runtime"
 GIT_SOURCE_SUBDIR = "_vendor/git-packages"
@@ -1143,6 +1141,16 @@ def copy_source_subdir_command(source_subdir: str, destination_dir: str) -> str:
     return f"cp -t {shlex.quote(destination_dir)} {shlex.quote(source_subdir)}/*"
 
 
+def pip_env_prefix(*find_links: str) -> str:
+    return (
+        "env "
+        "PIP_CONFIG_FILE=/dev/null "
+        "PIP_DISABLE_PIP_VERSION_CHECK=1 "
+        "PIP_NO_INDEX=1 "
+        f"PIP_FIND_LINKS={shlex.quote(' '.join(find_links))}"
+    )
+
+
 def build_app_source_entry(
     context: SourceContext, output_dir: Path, app_source_mode: AppSourceMode
 ) -> dict[str, str]:
@@ -1419,7 +1427,6 @@ def write_dependency_modules(
     staged_runtime_sources = stage_source_entries(runtime_sources, RUNTIME_SOURCE_SUBDIR)
 
     git_sources = []
-    git_lock = []
     for package in git_packages:
         archive_url = github_archive_url(package["source"]["url"], package["source"]["resolved_reference"])
         archive_filename = (
@@ -1433,17 +1440,8 @@ def write_dependency_modules(
                 "sha256": download_sha256(archive_url),
             }
         )
-        git_lock.append(
-            {
-                "name": package["name"],
-                "archive_filename": archive_filename,
-                "url": archive_url,
-            }
-        )
 
-    serialize_json(output_dir / "git-packages-lock.json", git_lock)
     staged_git_sources = stage_source_entries(git_sources, GIT_SOURCE_SUBDIR)
-    staged_git_lock_source = {"type": "file", "path": "git-packages-lock.json", "dest": GIT_SOURCE_SUBDIR}
 
     serialize_json(
         output_dir / "python3-build-backends.json",
@@ -1468,12 +1466,16 @@ def write_dependency_modules(
             "name": "python3-runtime",
             "buildsystem": "simple",
             "build-commands": [
-                f"install -d {RUNTIME_VENDOR_DIR}",
-                install_app_source_file_command(
-                    f"tools/build-linux/flathub-flatpak/{RUNTIME_REQUIREMENTS_FILENAME}",
-                    f"{RUNTIME_VENDOR_DIR}/{RUNTIME_REQUIREMENTS_FILENAME}",
+                (
+                    f"{pip_env_prefix(BUILD_BACKEND_VENDOR_DIR, f'file://${{PWD}}/{RUNTIME_SOURCE_SUBDIR}')} "
+                    "python3 -m pip install "
+                    "--ignore-installed "
+                    "--no-dependencies "
+                    "--no-warn-script-location "
+                    "--no-compile "
+                    "--prefix=/app "
+                    f"-r tools/build-linux/flathub-flatpak/{RUNTIME_REQUIREMENTS_FILENAME}"
                 ),
-                copy_source_subdir_command(RUNTIME_SOURCE_SUBDIR, RUNTIME_VENDOR_DIR),
             ],
             "sources": [app_source_entry, *staged_runtime_sources],
         },
@@ -1485,10 +1487,18 @@ def write_dependency_modules(
             "name": "python3-git-packages",
             "buildsystem": "simple",
             "build-commands": [
-                f"install -d {GIT_VENDOR_DIR}",
-                copy_source_subdir_command(GIT_SOURCE_SUBDIR, GIT_VENDOR_DIR),
+                (
+                    f"{pip_env_prefix(BUILD_BACKEND_VENDOR_DIR)} "
+                    "python3 -m pip install "
+                    "--ignore-installed "
+                    "--no-dependencies "
+                    "--no-warn-script-location "
+                    "--no-compile "
+                    "--prefix=/app "
+                    f"{GIT_SOURCE_SUBDIR}/*"
+                ),
             ],
-            "sources": [staged_git_lock_source, *staged_git_sources],
+            "sources": staged_git_sources,
         },
     )
 
@@ -1547,6 +1557,7 @@ def generate_repo(
         log_step(f"Removed obsolete generated file {obsolete_normalizer}")
     for obsolete_filename in (
         "build-flatpak-app.sh",
+        "git-packages-lock.json",
         "run-bitcoin-safe.sh",
         "requirements-build-backends.txt",
         "requirements-runtime.txt",
