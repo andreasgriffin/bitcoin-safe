@@ -1467,7 +1467,7 @@ def write_dependency_modules(
             "buildsystem": "simple",
             "build-commands": [
                 (
-                    f"{pip_env_prefix(BUILD_BACKEND_VENDOR_DIR, f'file://${{PWD}}/{RUNTIME_SOURCE_SUBDIR}')} "
+                    f"{pip_env_prefix(BUILD_BACKEND_VENDOR_DIR, RUNTIME_SOURCE_SUBDIR)} "
                     "python3 -m pip install "
                     "--ignore-installed "
                     "--no-dependencies "
