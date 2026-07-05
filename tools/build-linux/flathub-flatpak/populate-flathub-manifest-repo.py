@@ -74,7 +74,7 @@ PYQT_BASEAPP_ID = "com.riverbankcomputing.PyQt.BaseApp"
 FLATPAK_PYTHON_FULL_VERSION = "3.13.0"
 FLATPAK_PYTHON_VERSION = "3.13"
 FLATPAK_PYTHON_TAG = "cp313"
-APP_SITE_PACKAGES_DIR = f"/app/lib/python{FLATPAK_PYTHON_VERSION}/site-packages"
+APP_SITE_PACKAGES_CLEANUP_DIR = f"/lib/python{FLATPAK_PYTHON_VERSION}/site-packages"
 PIP_INSTALL_ARGS = "--ignore-installed --no-build-isolation --prefix=${FLATPAK_DEST}"
 PIP_OFFLINE_INSTALL_ARGS = (
     '--ignore-installed --no-build-isolation --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST}'
@@ -136,11 +136,6 @@ RUNTIME_REQUIREMENTS_FILENAME = "requirements-runtime.txt"
 NATIVE_GIT_DEPENDENCIES_FILE = Path(__file__).resolve().parents[2] / "native_git_dependencies.sh"
 MANIFEST_CLEANUP_COMMANDS = [
     "/app/cleanup-BaseApp.sh",
-    f"rm -rf {APP_SITE_PACKAGES_DIR}/Cryptodome/SelfTest",
-    "rm -rf "
-    f"{APP_SITE_PACKAGES_DIR}/psutil/tests "
-    f"{APP_SITE_PACKAGES_DIR}/qrcode/tests "
-    f"{APP_SITE_PACKAGES_DIR}/websocket/tests",
 ]
 BASE_MANIFEST: dict[str, Any] = {
     "app-id": APP_ID,
@@ -160,6 +155,10 @@ BASE_MANIFEST: dict[str, Any] = {
         "/share/bitcoin-safe/vendor",
         "/include",
         "/lib/pkgconfig",
+        f"{APP_SITE_PACKAGES_CLEANUP_DIR}/Cryptodome/SelfTest",
+        f"{APP_SITE_PACKAGES_CLEANUP_DIR}/psutil/tests",
+        f"{APP_SITE_PACKAGES_CLEANUP_DIR}/qrcode/tests",
+        f"{APP_SITE_PACKAGES_CLEANUP_DIR}/websocket/tests",
         "/share/doc",
         "/share/man",
     ],
