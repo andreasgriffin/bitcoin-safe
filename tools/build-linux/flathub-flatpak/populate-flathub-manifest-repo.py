@@ -74,7 +74,7 @@ PYQT_BASEAPP_ID = "com.riverbankcomputing.PyQt.BaseApp"
 FLATPAK_PYTHON_FULL_VERSION = "3.13.0"
 FLATPAK_PYTHON_VERSION = "3.13"
 FLATPAK_PYTHON_TAG = "cp313"
-APP_SITE_PACKAGES_CLEANUP_DIR = f"/lib/python{FLATPAK_PYTHON_VERSION}/site-packages"
+APP_SITE_PACKAGES_CLEANUP_GLOB = "/lib/python3.*/site-packages"
 PIP_INSTALL_ARGS = "--ignore-installed --no-build-isolation --prefix=${FLATPAK_DEST}"
 PIP_OFFLINE_INSTALL_ARGS = (
     '--ignore-installed --no-build-isolation --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST}'
@@ -153,10 +153,10 @@ BASE_MANIFEST: dict[str, Any] = {
         "/share/bitcoin-safe/vendor",
         "/include",
         "/lib/pkgconfig",
-        f"{APP_SITE_PACKAGES_CLEANUP_DIR}/Cryptodome/SelfTest",
-        f"{APP_SITE_PACKAGES_CLEANUP_DIR}/psutil/tests",
-        f"{APP_SITE_PACKAGES_CLEANUP_DIR}/qrcode/tests",
-        f"{APP_SITE_PACKAGES_CLEANUP_DIR}/websocket/tests",
+        f"{APP_SITE_PACKAGES_CLEANUP_GLOB}/Cryptodome/SelfTest",
+        f"{APP_SITE_PACKAGES_CLEANUP_GLOB}/psutil/tests",
+        f"{APP_SITE_PACKAGES_CLEANUP_GLOB}/qrcode/tests",
+        f"{APP_SITE_PACKAGES_CLEANUP_GLOB}/websocket/tests",
         "/share/doc",
         "/share/man",
     ],
@@ -1141,14 +1141,15 @@ def copy_source_subdir_command(source_subdir: str, destination_dir: str) -> str:
     return f"cp -t {shlex.quote(destination_dir)} {shlex.quote(source_subdir)}/*"
 
 
-def pip_env_prefix(*find_links: str) -> str:
-    return (
-        "env "
-        "PIP_CONFIG_FILE=/dev/null "
-        "PIP_DISABLE_PIP_VERSION_CHECK=1 "
-        "PIP_NO_INDEX=1 "
-        f"PIP_FIND_LINKS={shlex.quote(' '.join(find_links))}"
-    )
+def pip_build_options(*find_links: str) -> dict[str, list[str]]:
+    return {
+        "env": [
+            "PIP_CONFIG_FILE=/dev/null",
+            "PIP_DISABLE_PIP_VERSION_CHECK=1",
+            "PIP_NO_INDEX=1",
+            f"PIP_FIND_LINKS={' '.join(find_links)}",
+        ]
+    }
 
 
 def build_app_source_entry(
@@ -1465,9 +1466,9 @@ def write_dependency_modules(
         {
             "name": "python3-runtime",
             "buildsystem": "simple",
+            "build-options": pip_build_options(BUILD_BACKEND_VENDOR_DIR, RUNTIME_SOURCE_SUBDIR),
             "build-commands": [
                 (
-                    f"{pip_env_prefix(BUILD_BACKEND_VENDOR_DIR, RUNTIME_SOURCE_SUBDIR)} "
                     "python3 -m pip install "
                     "--ignore-installed "
                     "--no-dependencies "
@@ -1486,9 +1487,9 @@ def write_dependency_modules(
         {
             "name": "python3-git-packages",
             "buildsystem": "simple",
+            "build-options": pip_build_options(BUILD_BACKEND_VENDOR_DIR),
             "build-commands": [
                 (
-                    f"{pip_env_prefix(BUILD_BACKEND_VENDOR_DIR)} "
                     "python3 -m pip install "
                     "--ignore-installed "
                     "--no-dependencies "
