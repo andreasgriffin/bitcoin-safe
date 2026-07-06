@@ -821,19 +821,7 @@ def render_requirements(path: Path, packages: list[dict[str, Any]]) -> None:
 
 
 def serialize_json(path: Path, payload: Any) -> None:
-    set_literals: dict[str, str] = {}
-
-    def default(obj: Any) -> Any:
-        if isinstance(obj, (set, frozenset)):
-            key = f"__SET_LITERAL_{len(set_literals)}__"
-            set_literals[key] = "{" + ", ".join(json.dumps(item) for item in sorted(obj)) + "}"
-            return key
-        raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
-
-    text = json.dumps(payload, indent=4, default=default)
-    for key, literal in set_literals.items():
-        text = text.replace(json.dumps(key), literal)
-    path.write_text(text + "\n", encoding="utf-8")
+    path.write_text(json.dumps(payload, indent=4) + "\n", encoding="utf-8")
 
 
 def write_flathub_json(path: Path) -> None:
@@ -1153,13 +1141,13 @@ def copy_source_subdir_command(source_subdir: str, destination_dir: str) -> str:
     return f"cp -t {shlex.quote(destination_dir)} {shlex.quote(source_subdir)}/*"
 
 
-def pip_build_options(*find_links: str) -> dict[str, set[str]]:
+def pip_build_options(*find_links: str) -> dict[str, dict[str, str]]:
     return {
         "env": {
-            "PIP_CONFIG_FILE=/dev/null",
-            "PIP_DISABLE_PIP_VERSION_CHECK=1",
-            "PIP_NO_INDEX=1",
-            f"PIP_FIND_LINKS={' '.join(find_links)}",
+            "PIP_CONFIG_FILE": "/dev/null",
+            "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+            "PIP_NO_INDEX": "1",
+            "PIP_FIND_LINKS": " ".join(find_links),
         }
     }
 
