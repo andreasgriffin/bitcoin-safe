@@ -1141,14 +1141,14 @@ def copy_source_subdir_command(source_subdir: str, destination_dir: str) -> str:
     return f"cp -t {shlex.quote(destination_dir)} {shlex.quote(source_subdir)}/*"
 
 
-def pip_build_options(*find_links: str) -> dict[str, list[str]]:
+def pip_build_options(*find_links: str) -> dict[str, set[str]]:
     return {
-        "env": [
+        "env": {
             "PIP_CONFIG_FILE=/dev/null",
             "PIP_DISABLE_PIP_VERSION_CHECK=1",
             "PIP_NO_INDEX=1",
             f"PIP_FIND_LINKS={' '.join(find_links)}",
-        ]
+        }
     }
 
 
