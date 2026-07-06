@@ -821,7 +821,19 @@ def render_requirements(path: Path, packages: list[dict[str, Any]]) -> None:
 
 
 def serialize_json(path: Path, payload: Any) -> None:
-    path.write_text(json.dumps(payload, indent=4) + "\n", encoding="utf-8")
+    set_literals: dict[str, str] = {}
+
+    def default(obj: Any) -> Any:
+        if isinstance(obj, (set, frozenset)):
+            key = f"__SET_LITERAL_{len(set_literals)}__"
+            set_literals[key] = "{" + ", ".join(json.dumps(item) for item in sorted(obj)) + "}"
+            return key
+        raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
+    text = json.dumps(payload, indent=4, default=default)
+    for key, literal in set_literals.items():
+        text = text.replace(json.dumps(key), literal)
+    path.write_text(text + "\n", encoding="utf-8")
 
 
 def write_flathub_json(path: Path) -> None:
