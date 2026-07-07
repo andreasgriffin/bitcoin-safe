@@ -37,6 +37,7 @@ from typing import Any
 from bitcoin_safe_lib.storage import SaveAllClass, filtered_for_init
 from btcpay_tools.config import BTCPayConfig
 
+from bitcoin_safe.network_utils import ExternalPluginError  # noqa: F401  (re-exported)
 from bitcoin_safe.plugin_framework.plugin_bundle import RuntimePluginBundle
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_identity import PluginSource as PluginClientSource
@@ -46,10 +47,6 @@ logger = logging.getLogger(__name__)
 SOURCE_MANIFEST_FILENAME = "source.toml"
 SOURCE_SIGNATURE_SUFFIX = ".asc"
 SUPPORTED_PLUGIN_API_VERSION = "1"
-
-
-class ExternalPluginError(Exception):
-    pass
 
 
 @dataclass(frozen=True)

@@ -53,7 +53,14 @@ from bitcoin_safe.util import default_timeout
 logger = logging.getLogger(__name__)
 
 
-class RequestsGetException(Exception):
+class ExternalPluginError(Exception):
+    """Error raised when an external plugin operation (e.g. downloading a
+    plugin source) fails. Defined here so ``fetch_bytes`` can raise it and
+    plugin-framework callers catch it via ``except ExternalPluginError``.
+    """
+
+
+class RequestsGetException(ExternalPluginError):
     pass
 
 
