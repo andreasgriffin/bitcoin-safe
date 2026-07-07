@@ -138,7 +138,7 @@ cp /usr/lib/x86_64-linux-gnu/libzbar.so.0 "$APPDIR/usr/lib/libzbar.so"  # otherw
 
 
 info "desktop integration."
-cp "$CONTRIB/resources/linux-bitcoin-safe.desktop" "$APPDIR/bitcoin-safe.desktop"
+cp "$CONTRIB_APPIMAGE/bitcoin-safe.desktop" "$APPDIR/bitcoin-safe.desktop"
 cp "$CONTRIB/resources/icon.svg" "$APPDIR/bitcoin-safe.svg"
 
 

@@ -8,13 +8,14 @@ APP_ID="${3:-org.bitcoin_safe.BitcoinSafe}"
 FLATPAK_BRANCH="stable"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MANIFEST_PATH="${SCRIPT_DIR}/${APP_ID}.yml"
 INSTALL_AND_TEST_SCRIPT="${SCRIPT_DIR}/install_and_smoke_test_bundle.sh"
 WORK_DIR="${SCRIPT_DIR}/build"
 REPRO_DEBUG_ROOT_DIR="${WORK_DIR}/repro-debug"
 REPRO_DEBUG_DIR="${BITCOINSAFE_FLATPAK_REPRO_DEBUG_DIR:-${REPRO_DEBUG_ROOT_DIR}/latest}"
 METADATA_PROBE_DEBUG_DIR="${REPRO_DEBUG_DIR}/metadata-probe"
 SOURCE_STAGING_DIR="${WORK_DIR}/source-tree"
+GENERATED_REPO_DIR="${WORK_DIR}/generated-repo"
+GENERATED_MANIFEST_PATH="${GENERATED_REPO_DIR}/${APP_ID}.yml"
 BUILDER_DIR="${WORK_DIR}/builder"
 REPO_DIR="${WORK_DIR}/repo"
 STATE_DIR="${WORK_DIR}/state"
@@ -334,26 +335,32 @@ PY
 }
 
 get_manifest_field() {
-    python3 - <<'PY' "${MANIFEST_PATH}" "$1"
+    python3 - <<'PY' "$1" "$2"
 from pathlib import Path
-import re
 import sys
 
 manifest_text = Path(sys.argv[1]).read_text(encoding="utf-8")
 field_name = sys.argv[2]
-match = re.search(rf"^{re.escape(field_name)}:\s*\"?([^\n\"]+)\"?\s*$", manifest_text, re.MULTILINE)
-if not match:
+
+for raw_line in manifest_text.splitlines():
+    if not raw_line.startswith(f"{field_name}:"):
+        continue
+    value = raw_line.split(":", 1)[1].strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        value = value[1:-1]
+    print(value)
+    break
+else:
     raise SystemExit(f"Missing required manifest field: {field_name}")
-print(match.group(1).strip())
 PY
 }
 
 write_metadata_probe_files() {
     local runtime runtime_version sdk
 
-    runtime="$(get_manifest_field "runtime")"
-    runtime_version="$(get_manifest_field "runtime-version")"
-    sdk="$(get_manifest_field "sdk")"
+    runtime="$(get_manifest_field "${GENERATED_MANIFEST_PATH}" "runtime")"
+    runtime_version="$(get_manifest_field "${GENERATED_MANIFEST_PATH}" "runtime-version")"
+    sdk="$(get_manifest_field "${GENERATED_MANIFEST_PATH}" "sdk")"
 
     rm -rf \
         "${METADATA_PROBE_SOURCE_DIR}" \
@@ -364,11 +371,12 @@ write_metadata_probe_files() {
         "${METADATA_PROBE_STATE_DIR}"
     mkdir -p "${METADATA_PROBE_SOURCE_DIR}" "${METADATA_PROBE_BIN_DIR}"
 
-    cp "${PROJECT_ROOT}/tools/build-linux/flatpak/${APP_ID}.svg" "${METADATA_PROBE_SOURCE_DIR}/${APP_ID}.svg"
+    cp "${SOURCE_STAGING_DIR}/tools/build-linux/flathub-flatpak/${APP_ID}.svg" "${METADATA_PROBE_SOURCE_DIR}/${APP_ID}.svg"
     cp "${PROJECT_ROOT}/tools/resources/icon-128.png" "${METADATA_PROBE_SOURCE_DIR}/icon-128.png"
     cp "${PROJECT_ROOT}/tools/resources/linux-bitcoin-safe.desktop" \
         "${METADATA_PROBE_SOURCE_DIR}/linux-bitcoin-safe.desktop"
-    cp "${SCRIPT_DIR}/${APP_ID}.metainfo.xml" "${METADATA_PROBE_SOURCE_DIR}/${APP_ID}.metainfo.xml"
+    cp "${SOURCE_STAGING_DIR}/tools/build-linux/flathub-flatpak/${APP_ID}.metainfo.xml" \
+        "${METADATA_PROBE_SOURCE_DIR}/${APP_ID}.metainfo.xml"
 
     cat > "${METADATA_PROBE_BIN_DIR}/run-bitcoin-safe.sh" <<'EOF'
 #!/bin/sh
@@ -392,13 +400,7 @@ modules:
       - install -Dm644 ${APP_ID}.svg /app/share/icons/hicolor/scalable/apps/${APP_ID}.svg
       - install -Dm644 icon-128.png /app/share/icons/hicolor/128x128/apps/${APP_ID}.png
       - install -Dm644 ${APP_ID}.metainfo.xml /app/share/metainfo/${APP_ID}.metainfo.xml
-      - |
-        sed \\
-            -e 's#^Exec=.*#Exec=run-bitcoin-safe.sh %F#' \\
-            -e 's#^Icon=.*#Icon=${APP_ID}#' \\
-            linux-bitcoin-safe.desktop \\
-            > ${APP_ID}.desktop
-      - install -Dm644 ${APP_ID}.desktop /app/share/applications/${APP_ID}.desktop
+      - install -Dm644 linux-bitcoin-safe.desktop /app/share/applications/${APP_ID}.desktop
       - mkdir -p /app/app
       - ln -sfn ../share /app/app/share
     sources:
@@ -478,13 +480,53 @@ stage_source_tree() {
             --exclude='__pycache__' \
             --exclude='*.pyc' \
             --exclude='tools/build-linux/flatpak/build' \
+            --exclude='tools/build-linux/flathub-flatpak/build' \
             -cf - . | tar -C "${SOURCE_STAGING_DIR}" -xf -
     fi
 
     # The copied tree inherits fresh filesystem mtimes from tar/extract, so
     # reset them to the commit timestamp before flatpak-builder sees them.
     normalize_tree_timestamps "${SOURCE_STAGING_DIR}"
+}
+
+get_flathub_generator_python() {
+    local generator_python
+
+    generator_python="python3"
+    if command -v poetry >/dev/null 2>&1; then
+        generator_python="$(poetry -C "${PROJECT_ROOT}" env info --executable 2>/dev/null || printf '%s\n' python3)"
+    fi
+
+    "${generator_python}" -c 'import yaml, packaging' >/dev/null 2>&1 \
+        || fail "Python build dependencies for the Flathub generator are missing. Install PyYAML and packaging, or run from the project Poetry environment."
+
+    printf '%s\n' "${generator_python}"
+}
+
+generate_manifest_repo() {
+    local generator_script
+    local generator_python
+
+    generator_script="${PROJECT_ROOT}/tools/build-linux/flathub-flatpak/populate-flathub-manifest-repo.py"
+    generator_python="$(get_flathub_generator_python)"
+
+    info "Generating Flatpak manifest repo from the Flathub generator."
+    rm -rf "${GENERATED_REPO_DIR}"
+    mkdir -p "${GENERATED_REPO_DIR}"
+
+    "${generator_python}" "${generator_script}" \
+        --local-source-checkout "${SOURCE_STAGING_DIR}" \
+        --output-dir "${GENERATED_REPO_DIR}" \
+        --app-source-mode local-dir \
+        --skip-validate
+
+    test -f "${GENERATED_MANIFEST_PATH}" || fail "Missing generated manifest at ${GENERATED_MANIFEST_PATH}."
+
+    # The generator writes the manifest repo into GENERATED_REPO_DIR. Keep both
+    # the staged tree and generated repo pinned to the build timestamp.
+    normalize_tree_timestamps "${SOURCE_STAGING_DIR}" "${GENERATED_REPO_DIR}"
     emit_tree_manifest "${SOURCE_STAGING_DIR}" "${REPRO_DEBUG_DIR}" "source-tree"
+    emit_tree_manifest "${GENERATED_REPO_DIR}" "${REPRO_DEBUG_DIR}" "generated-repo"
 }
 
 build_flatpak_bundle() {
@@ -500,16 +542,19 @@ build_flatpak_bundle() {
     mkdir -p "${BUILDER_DIR}" "${REPO_DIR}" "${STATE_DIR}" "${DIST_DIR}" "${WORK_DIR}"
 
     info "Building Flatpak manifest."
-    run_with_dbus_session flatpak-builder \
-        --user \
-        --arch="${arch}" \
-        --disable-rofiles-fuse \
-        --force-clean \
-        --install-deps-from=flathub \
-        --override-source-date-epoch="${SOURCE_DATE_EPOCH}" \
-        --state-dir="${STATE_DIR}" \
-        "${BUILDER_DIR}" \
-        "${MANIFEST_PATH}"
+    (
+        cd "${GENERATED_REPO_DIR}"
+        run_with_dbus_session flatpak-builder \
+            --user \
+            --arch="${arch}" \
+            --disable-rofiles-fuse \
+            --force-clean \
+            --install-deps-from=flathub \
+            --override-source-date-epoch="${SOURCE_DATE_EPOCH}" \
+            --state-dir="${STATE_DIR}" \
+            "${BUILDER_DIR}" \
+            "$(basename "${GENERATED_MANIFEST_PATH}")"
+    )
 
     emit_tree_manifest "${BUILDER_DIR}/files" "${REPRO_DEBUG_DIR}" "builder-files"
 
@@ -560,8 +605,9 @@ print_flatpak_toolchain_summary
 emit_build_context "${REPRO_DEBUG_DIR}"
 check_flatpak_sandbox_support
 ensure_flathub_remote
-run_metadata_compose_smoke_test
 stage_source_tree
+generate_manifest_repo
+run_metadata_compose_smoke_test
 build_flatpak_bundle
 
 if [ "${BITCOINSAFE_FLATPAK_SKIP_INSTALL_AND_TEST:-0}" = "1" ]; then

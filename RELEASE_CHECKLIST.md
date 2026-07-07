@@ -21,6 +21,11 @@
 * `bash fetch_release.sh` in website repo
 * Publish release notes
 
+## Publish on Flathub
+* Run vscode "Flathub Build&Run" with the release tag
+* Create a PR on https://github.com/flathub/org.bitcoin_safe.BitcoinSafe  and test the test build
+* Merge the PR  --> check update on https://flathub.org/en/apps/org.bitcoin_safe.BitcoinSafe 
+
 
 ## Maybe
 * Update features in https://github.com/thebitcoinhole/software-wallets  and check in https://github.com/bitcoin-dot-org/Bitcoin.org/
