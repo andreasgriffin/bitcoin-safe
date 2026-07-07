@@ -239,6 +239,8 @@ find "$PYDIR"/site-packages -mindepth 1 -maxdepth 1 -type d -name '*.dist-info' 
     ! -name 'slip10-*.dist-info' -exec rm -rf {} +
 rm -rf "$PYDIR"/site-packages/*.egg-info/
 
+# Normalize permissions so local umask or wheel metadata does not affect the SquashFS payload.
+chmod -R u=rwX,go=rX "$APPDIR"
 
 export TZ=UTC
 find -exec touch -h -d "@${SOURCE_DATE_EPOCH}" {} +
