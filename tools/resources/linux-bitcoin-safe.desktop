@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Bitcoin Safe
-Exec=run-bitcoin-safe.sh %F
-Icon=org.bitcoin_safe.BitcoinSafe
-Categories=Utility;
-Comment=A desktop software for managing your cold storage wallets
-StartupWMClass=Bitcoin Safe

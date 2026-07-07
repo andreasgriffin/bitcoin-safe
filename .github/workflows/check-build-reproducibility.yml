@@ -111,7 +111,7 @@ jobs:
           set -euo pipefail
           APPIMAGE_A=$(find artifacts/linux-run-1 -type f -name '*.AppImage' | head -n 1)
           APPIMAGE_B=$(find artifacts/linux-run-2 -type f -name '*.AppImage' | head -n 1)
-          bash tools/build-linux/appimage/appimage-diff-report.sh \
+          bash tools/build_linux/appimage/appimage-diff-report.sh \
             --work artifacts/appimage-diff-report \
             "$APPIMAGE_A" \
             "$APPIMAGE_B"
@@ -247,7 +247,7 @@ jobs:
       - name: Run Windows setup diff report
         if: ${{ steps.compare_windows_setup.outcome == 'failure' }}
         run: |
-          python tools/build-wine/compare_setup_builds.py \
+          python tools/build_wine/compare_setup_builds.py \
             --local artifacts/windows-run-1 \
             --cloud artifacts/windows-run-2 \
             --local-json artifacts/windows-run-1/setup-compare-local.json \
