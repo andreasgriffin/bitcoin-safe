@@ -56,14 +56,6 @@ def parse_args() -> argparse.Namespace:
         help="GitHub release tag or arbitrary commit hash to build from.",
     )
     parser.add_argument(
-        "--refresh",
-        action="store_true",
-        help=(
-            "Refresh the checked-in generated SVG, metainfo, and requirements files before generating "
-            "the manifest repo."
-        ),
-    )
-    parser.add_argument(
         "--refresh-tracked-only",
         action="store_true",
         help="Refresh only the checked-in Flathub assets and requirements from a local checkout.",
@@ -116,10 +108,6 @@ def main() -> None:
         repo_builder.log_step("Tracked Flathub file refresh completed successfully")
         return
 
-    if args.refresh and not local_source_checkout:
-        raise RuntimeError(
-            "--refresh requires --local-source-checkout so tracked files can be updated safely"
-        )
     if args.app_source_mode == "local-dir" and not local_source_checkout:
         raise RuntimeError("--app-source-mode local-dir requires --local-source-checkout")
     if args.run_flatpak and args.skip_validate:
@@ -132,7 +120,7 @@ def main() -> None:
         local_source_checkout=str(local_source_checkout) if local_source_checkout else None,
         release_tag=tag_name,
     )
-    if args.refresh:
+    if local_source_checkout:
         tracked_repo_files.refresh_tracked_files_for_context(context)
 
     repo_builder.clean_transient_artifacts(output_dir)

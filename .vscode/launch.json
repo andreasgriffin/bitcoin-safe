@@ -336,7 +336,6 @@
       "args": [
         "--run-flatpak",
         "--release-tag", "${input:flathubReleaseTag}",
-        "--refresh",
         "--local-source-checkout", ".",
         "--output-dir", "../org.bitcoin_safe.BitcoinSafe/"
       ],
