@@ -57,6 +57,8 @@ tar xf "$BUILD_CACHEDIR/Python-$PYTHON_VERSION.tar.xz" -C "$BUILD_CACHEDIR"
     cd "$BUILD_CACHEDIR/Python-$PYTHON_VERSION"
     LC_ALL=C export BUILD_DATE=$(date -u -d "@$SOURCE_DATE_EPOCH" "+%b %d %Y")
     LC_ALL=C export BUILD_TIME=$(date -u -d "@$SOURCE_DATE_EPOCH" "+%H:%M:%S")
+    # Avoid linker-generated build IDs so repeated builds produce identical ELF metadata.
+    export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,--build-id=none"
     # Patch taken from Ubuntu http://archive.ubuntu.com/ubuntu/pool/main/p/python3.12/python3.12_3.12.3-1.debian.tar.xz
     patch -p1 < "$CONTRIB_APPIMAGE/patches/python-3.12-reproducible-buildinfo.diff"
     ./configure \
