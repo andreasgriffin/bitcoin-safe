@@ -38,6 +38,6 @@ compile_requirements() {
 
 compile_requirements "tools/deterministic-build/requirements-build.in" "tools/deterministic-build/requirements-build.txt"
 compile_requirements \
-    "tools/deterministic-build/requirements-build-mac-x86_64.in" \
-    "tools/deterministic-build/requirements-build-mac-x86_64.txt" \
+    "tools/deterministic-build/requirements-build_mac_x86_64.in" \
+    "tools/deterministic-build/requirements-build_mac_x86_64.txt" \
     "cryptography"

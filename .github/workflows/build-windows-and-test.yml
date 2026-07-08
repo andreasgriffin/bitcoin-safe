@@ -170,7 +170,7 @@ jobs:
       - name: Compare signed and unsigned files
         if: ${{ inputs.skip_build_and_test_release_tag == '' && inputs.signing-policy-slug != '' }}
         run: |
-          tools/build-wine/verify_signed_executables.sh dist signpath-signed portable setup
+          tools/build_wine/verify_signed_executables.sh dist signpath-signed portable setup
 
   test-portable:
     if: ${{ inputs.run_tests }}

@@ -100,7 +100,7 @@ jobs:
           name: ${{ inputs.artifact_name_prefix }}flatpak-artifacts
           path: |
             dist/*.flatpak
-            tools/build-linux/flatpak/build/repro-debug/**
+            tools/build_linux/flathub_flatpak/build/repro-debug/**
           if-no-files-found: error
 
   test:
@@ -180,7 +180,7 @@ jobs:
             echo "No Flatpak bundle found for smoke test"
             exit 1
           fi
-          bash tools/build-linux/flatpak/install_and_smoke_test_bundle.sh "$BUNDLE_PATH" org.bitcoin_safe.BitcoinSafe
+          bash tools/build_linux/flathub_flatpak/install_and_smoke_test_bundle.sh "$BUNDLE_PATH" org.bitcoin_safe.BitcoinSafe
 
       - name: Upload Flatpak startup logs
         if: always()
@@ -189,8 +189,8 @@ jobs:
           name: flatpak-startup-logs
           path: |
             artifacts/repro-debug/**
-            tools/build-linux/flatpak/build/flatpak-run.log
-            tools/build-linux/flatpak/build/flatpak-screenshot-*.xwd
-            tools/build-linux/flatpak/build/flatpak-screenshot-*.png
+            tools/build_linux/flathub_flatpak/build/flatpak-run.log
+            tools/build_linux/flathub_flatpak/build/flatpak-screenshot-*.xwd
+            tools/build_linux/flathub_flatpak/build/flatpak-screenshot-*.png
             ${{ env.HOME }}/.var/app/org.bitcoin_safe.BitcoinSafe/config/bitcoin_safe/bitcoin_safe.log
           if-no-files-found: ignore

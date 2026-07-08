@@ -332,11 +332,12 @@
       "name": "Flathub Build&Run",
       "type": "debugpy",
       "request": "launch",
-      "program": "tools/build-linux/flathub-flatpak/populate-flathub-manifest-repo.py",
+      "module": "tools.build_linux.flathub_flatpak.populate_cli",
       "args": [
         "--run-flatpak",
         "--release-tag", "${input:flathubReleaseTag}",
-        "--local-source-checkout", ".", "--output-dir","../flathub"
+        "--local-source-checkout", ".",
+        "--output-dir", "../org.bitcoin_safe.BitcoinSafe/"
       ],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}",
