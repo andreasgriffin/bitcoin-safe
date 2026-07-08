@@ -76,6 +76,14 @@ def _select_signer(widget: KeyStoreUI, signer_id: str) -> None:
     widget.confirm_device_type_selection()
 
 
+def _set_account_number(widget: KeyStoreUI, monkeypatch, account_number: int) -> None:
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.keystore_ui.QInputDialog.getInt",
+        lambda *args, **kwargs: (account_number, True),
+    )
+    widget.action_set_account_number.trigger()
+
+
 def _make_descriptor_strings(
     address_type: AddressType, network: bdk.Network = bdk.Network.REGTEST
 ) -> tuple[SignerInfo, str, str]:
@@ -355,6 +363,7 @@ def test_keystore_ui_read_only_state(qtbot: QtBot, loop_in_thread: LoopInThread)
     assert not widget.connect_help_label.isVisible()
     assert not widget.button_device_instructions.isVisible()
     assert widget.action_device_instructions.isVisible()
+    assert not widget.action_set_account_number.isVisible()
     assert widget.button_register.isVisible()
     assert widget.edit_fingerprint.input_field.isReadOnly()
     widget.counter_register_button_clicked = 1
@@ -430,6 +439,7 @@ def test_keystore_ui_transport_buttons_set_matching_autoscan_mode(
     autoscan_modes: list[AutoScanMode] = []
     key_origins: list[str] = []
     _select_signer(widget, HardwareSigners.jade.id)
+    _set_account_number(widget, monkeypatch, 1)
 
     monkeypatch.setattr(widget.usb_gui, "set_autoscan_mode", lambda mode: autoscan_modes.append(mode))
     monkeypatch.setattr(
@@ -443,8 +453,8 @@ def test_keystore_ui_transport_buttons_set_matching_autoscan_mode(
 
     assert autoscan_modes == [AutoScanMode.USB, AutoScanMode.BLUETOOTH]
     assert key_origins == [
-        AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST),
-        AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST),
+        "m/48h/1h/1h/2h",
+        "m/48h/1h/1h/2h",
     ]
 
 
@@ -466,6 +476,42 @@ def test_keystore_ui_unexpected_key_origin_uses_warning_styling(
     warning_color = ColorScheme.WARNING.as_color(background=True).name()
     assert warning_color in widget.edit_key_origin.input_field.styleSheet()
     assert warning_color in widget.edit_xpub.input_field.styleSheet()
+
+
+def test_set_account_number_updates_key_origin_and_clears_xpub(
+    qtbot: QtBot, loop_in_thread: LoopInThread, monkeypatch
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.jade.id)
+    keystore = create_test_seed_keystores(
+        signers=1,
+        key_origins=[AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)],
+        network=bdk.Network.REGTEST,
+    )[0]
+    widget.set_using_signer_info(SignerInfo(keystore.fingerprint, keystore.key_origin, keystore.xpub))
+    widget.counter_register_button_clicked = 1
+
+    _set_account_number(widget, monkeypatch, 1)
+
+    assert widget.key_origin == "m/48h/1h/1h/2h"
+    assert widget.edit_xpub.text() == ""
+    assert widget.counter_register_button_clicked == 0
+    assert widget.label_account_number.isVisible()
+    assert widget.edit_account_number.isVisible()
+    assert widget.edit_account_number.text() == "1"
+
+
+def test_account_number_row_hidden_for_default_account(
+    qtbot: QtBot, loop_in_thread: LoopInThread, monkeypatch
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.jade.id)
+
+    _set_account_number(widget, monkeypatch, 0)
+
+    assert widget.key_origin == AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)
+    assert not widget.label_account_number.isVisible()
+    assert not widget.edit_account_number.isVisible()
 
 
 def test_collapsed_keystore_ui_expands_on_header_click(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:

@@ -51,6 +51,7 @@ from PyQt6.QtWidgets import (
     QComboBox,
     QGridLayout,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QLineEdit,
     QPushButton,
@@ -245,6 +246,9 @@ class KeyStoreUI(CardBase):
         self.menu_button_menu = Menu(self.button_menu)
         self.button_menu.setMenu(self.menu_button_menu)
         self.action_device_instructions = self.menu_button_menu.add_action(slot=self.show_device_instructions)
+        self.action_set_account_number = self.menu_button_menu.add_action(
+            slot=self.show_set_account_number_dialog
+        )
         self.action_reregister = self.menu_button_menu.add_action(slot=self._request_show_register_multisig)
         self.action_change_device_type = self.menu_button_menu.add_action(slot=self.start_device_type_change)
         self.header_actions_layout.addWidget(self.button_menu)
@@ -314,6 +318,15 @@ class KeyStoreUI(CardBase):
         self.signal_tracker.connect(self.edit_fingerprint.signal_data, self._on_handle_input)
         self.edit_fingerprint.input_field.setAnalyzer(FingerprintAnalyzer(parent=self))
 
+        self.label_account_number = IconLabel(parent=self.left_widget)
+        self.edit_account_number = ButtonEdit(
+            input_field=AnalyzerLineEdit(),
+            signal_update=self.signals_min.language_switch,
+            close_all_video_widgets=self.signals_min.close_all_video_widgets,
+            parent=self.left_widget,
+        )
+        self.edit_account_number.setReadOnly(True)
+
         self.label_key_origin = IconLabel(parent=self.left_widget)
         self.edit_key_origin_input = QCompleterLineEdit(self.network)
         self.edit_key_origin = ButtonEdit(
@@ -362,12 +375,16 @@ class KeyStoreUI(CardBase):
         self.details_layout.setColumnStretch(2, 1)
         self.details_layout.addWidget(self.label_fingerprint, 0, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
         self.details_layout.addWidget(self.edit_fingerprint, 0, 2)
-        self.details_layout.addWidget(self.label_key_origin, 1, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
-        self.details_layout.addWidget(self.edit_key_origin, 1, 2)
-        self.details_layout.addWidget(self.label_xpub, 2, 0, alignment=Qt.AlignmentFlag.AlignTop)
-        self.details_layout.addWidget(self.edit_xpub, 2, 2)
-        self.details_layout.addWidget(self.label_seed, 3, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
-        self.details_layout.addWidget(self.edit_seed, 3, 2)
+        self.details_layout.addWidget(
+            self.label_account_number, 1, 0, alignment=Qt.AlignmentFlag.AlignVCenter
+        )
+        self.details_layout.addWidget(self.edit_account_number, 1, 2)
+        self.details_layout.addWidget(self.label_key_origin, 2, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
+        self.details_layout.addWidget(self.edit_key_origin, 2, 2)
+        self.details_layout.addWidget(self.label_xpub, 3, 0, alignment=Qt.AlignmentFlag.AlignTop)
+        self.details_layout.addWidget(self.edit_xpub, 3, 2)
+        self.details_layout.addWidget(self.label_seed, 4, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
+        self.details_layout.addWidget(self.edit_seed, 4, 2)
         self.left_layout.addWidget(self.details_widget, alignment=Qt.AlignmentFlag.AlignTop)
 
         self.right_widget = QWidget(self.content_splitter)
@@ -697,12 +714,64 @@ class KeyStoreUI(CardBase):
             return False
         return True
 
+    def _current_account_number(self) -> int | None:
+        """Return the account index encoded in the current or default key origin."""
+        return SimplePubKeyProvider.get_account_index(self.get_key_origin())
+
+    def _details_have_content(self) -> bool:
+        """Whether any signer detail field already contains meaningful data."""
+        return any(
+            (
+                self.edit_fingerprint.text().strip(),
+                self.edit_key_origin.text().strip(),
+                self.edit_xpub.text().strip(),
+                self.edit_seed.text().strip(),
+            )
+        )
+
+    def show_set_account_number_dialog(self) -> None:
+        """Prompt for a signer account number and update the current key origin."""
+        if self.read_only_mode or self.selected_hardware_signer is None:
+            return
+
+        address_type = self.get_address_type()
+        current_account_number = self._current_account_number()
+        if current_account_number is None:
+            current_account_number = 0
+
+        account_number, accepted = QInputDialog.getInt(
+            self,
+            self.tr("Set account number"),
+            self.tr("Account number"),
+            current_account_number,
+            0,
+            2**31 - 1,
+            1,
+        )
+        if not accepted:
+            return
+
+        new_key_origin = address_type.key_origin(self.network, account_number=account_number)
+        if new_key_origin == self.key_origin:
+            return
+
+        self.key_origin = new_key_origin
+        self.edit_xpub.setText("")
+
+        self.counter_register_button_clicked = 0
+        self.format_all_fields()
+        self.signal_ui_changed.emit()
+        self.updateUi()
+
     def _apply_state(self) -> None:
         self._state = self._determine_state()
         is_add_state = self.state == KeyStoreUiState.Add
         show_device_selection = is_add_state or self._device_type_editing
         show_content = self.selected_hardware_signer is not None
-        has_details = self.state in (KeyStoreUiState.Filled, KeyStoreUiState.ReadOnly)
+        has_details = (
+            self.state in (KeyStoreUiState.Filled, KeyStoreUiState.ReadOnly) or self._details_have_content()
+        )
+        show_account_number = has_details and (self._current_account_number() not in [None, 0])
         show_seed_input = self._show_seed_input()
         connect_visible = self.state in (KeyStoreUiState.Empty, KeyStoreUiState.Filled)
         show_expanded_content = self.is_expanded and show_content
@@ -715,6 +784,12 @@ class KeyStoreUI(CardBase):
         self.header_actions_layout.setEnabled(not is_add_state)
         self.button_menu.setVisible(
             not is_add_state and not self._device_type_editing and self.selected_hardware_signer is not None
+        )
+        self.action_set_account_number.setVisible(
+            not self.read_only_mode and self.selected_hardware_signer is not None
+        )
+        self.action_set_account_number.setEnabled(
+            not self.read_only_mode and self.selected_hardware_signer is not None
         )
         self.button_device_instructions.setVisible(
             not self._device_type_editing and self.button_device_instructions.isVisible()
@@ -737,6 +812,8 @@ class KeyStoreUI(CardBase):
         for widget in (
             self.label_fingerprint,
             self.edit_fingerprint,
+            self.label_account_number,
+            self.edit_account_number,
             self.label_key_origin,
             self.edit_key_origin,
             self.label_xpub,
@@ -746,6 +823,8 @@ class KeyStoreUI(CardBase):
         ):
             widget.setVisible(has_details)
 
+        self.label_account_number.setVisible(show_account_number)
+        self.edit_account_number.setVisible(show_account_number)
         self.label_seed.setVisible(show_seed_input)
         self.edit_seed.setVisible(show_seed_input)
 
@@ -1048,6 +1127,16 @@ class KeyStoreUI(CardBase):
         )
         self.edit_fingerprint.input_field.display_name = self.label_fingerprint.textLabel.text()
 
+        self.label_account_number.setText(self.tr("Account number"))
+        self.label_account_number.set_icon_as_help(
+            tooltip=self.tr(
+                "The account number is encoded in the derivation path and selects the signer xPub."
+            )
+        )
+        account_number = self._current_account_number()
+        self.edit_account_number.setText("" if account_number in [None, 0] else str(account_number))
+        self.edit_account_number.input_field.display_name = self.label_account_number.textLabel.text()
+
         self.label_key_origin.setText(self.tr("Derivation path"))
         self.label_key_origin.set_icon_as_help(
             tooltip=self.tr(
@@ -1084,6 +1173,7 @@ class KeyStoreUI(CardBase):
         self.button_device_instructions.setText(self.tr("Device instructions"))
         self.action_device_instructions.setText(self.tr("Device instructions"))
         self.button_register.setText(self.tr("Register"))
+        self.action_set_account_number.setText(self.tr("Set account number..."))
         self.action_reregister.setText(self.tr("Reregister multisig"))
         self.action_change_device_type.setText(self.tr("Change device type"))
         self.button_connect_qr.setText(self.tr("QR Code"))
@@ -1097,7 +1187,7 @@ class KeyStoreUI(CardBase):
 
     def _on_hwi_click(self, autoscan_mode: AutoScanMode) -> None:
         """On hwi click."""
-        key_origin = self.get_address_type().key_origin(self.network)
+        key_origin = self.get_key_origin()
         self.usb_gui.set_autoscan_mode(autoscan_mode)
         try:
             result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)
