@@ -96,7 +96,8 @@ jobs:
                                libxrender-dev \
                                libxi-dev \
                                libxkbcommon-dev \
-                               libxkbcommon-x11-dev 
+                               libxkbcommon-x11-dev \
+                               libpulse0
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
 
     - name: Start Xvfb

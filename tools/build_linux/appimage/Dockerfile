@@ -91,6 +91,7 @@ RUN apt-get update -q  && \
 # app runtime dependencies
 RUN apt-get update -q  && \
     apt-get install -qy  \ 
+        libpulse0 \
         libzbar0  
         
 # other needed for systems that lack libxcb  by default (linux Mint)

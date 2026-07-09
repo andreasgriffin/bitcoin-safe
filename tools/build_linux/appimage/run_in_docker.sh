@@ -28,6 +28,7 @@ PKG2APPIMAGE_COMMIT="a9c85b7e61a3a883f4a35c41c5decb5af88b6b5d"
 VERSION=$(git describe --tags --dirty --always --abbrev=20)
 list_dirty_files
 APPIMAGE="$DISTDIR/bitcoin_safe-$VERSION-x86_64.AppImage"
+QT_PYTHON_DIR="$APPDIR/usr/lib/python${PY_VER_MAJOR}/site-packages/PyQt6"
 
 rm -rf "$BUILDDIR"
 mkdir -p "$APPDIR" "$BUILD_CACHEDIR" "$PIP_CACHE_DIR" "$DISTDIR" "$DLL_TARGET_DIR"
@@ -171,6 +172,25 @@ info "Copying additional libraries"
     cp -f /usr/lib/x86_64-linux-gnu/libxkbcommon-x11* "$APPDIR"/usr/lib/x86_64-linux-gnu || fail "Could not copy libxkbcommon-x11"
     # some distros lack some libxcb libraries (see https://github.com/Electron-Cash/Electron-Cash/issues/2196)
     cp -f /usr/lib/x86_64-linux-gnu/libxcb-* "$APPDIR"/usr/lib/x86_64-linux-gnu || fail "Could not copy libxcb"
+    mkdir -p "$APPDIR/usr/lib/x86_64-linux-gnu/pulseaudio"
+    cp -f /usr/lib/x86_64-linux-gnu/libpulse.so.0* "$APPDIR"/usr/lib/x86_64-linux-gnu \
+        || fail "Could not copy libpulse"
+    cp -f /usr/lib/x86_64-linux-gnu/pulseaudio/libpulsecommon-*.so "$APPDIR"/usr/lib/x86_64-linux-gnu/pulseaudio \
+        || fail "Could not copy libpulsecommon"
+)
+
+info "Verifying QtMultimedia pulse dependencies"
+(
+    export LD_LIBRARY_PATH="$APPDIR/usr/lib:$QT_PYTHON_DIR/Qt6/lib:$APPDIR/usr/lib/x86_64-linux-gnu:$APPDIR/usr/lib/x86_64-linux-gnu/pulseaudio"
+    for library in \
+        "$QT_PYTHON_DIR/Qt6/lib/libQt6Multimedia.so.6" \
+        "$QT_PYTHON_DIR/QtMultimedia.abi3.so"
+    do
+        ldd "$library" | tee /tmp/qtmultimedia-ldd.txt
+        if grep -E 'libpulse\.so\.0 => not found|libpulsecommon.*=> not found' /tmp/qtmultimedia-ldd.txt >/dev/null; then
+            fail "QtMultimedia dependency verification failed for $library"
+        fi
+    done
 )
 
  

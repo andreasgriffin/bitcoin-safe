@@ -486,7 +486,7 @@ segno = "1.6.1"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
 reference = "main"
-resolved_reference = "3d3b737c9a0b25df02cbc8cad9fecf34f7ac1554"
+resolved_reference = "453ccd09aa0fb5f1356d93f997b8dd2237022f75"
 
 [[package]]
 name = "bitcoin-safe-lib"
