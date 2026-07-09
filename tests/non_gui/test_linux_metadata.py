@@ -397,11 +397,49 @@ def test_checked_in_metainfo_preserves_release_history_and_non_generated_section
         release_date="2030-01-01",
     )
 
-    assert "<summary>A desktop software for managing your cold storage wallets</summary>" in rendered_metainfo
+    assert f"<summary>{APP_METADATA.summary}</summary>" in rendered_metainfo
     assert "<p>\u2022 Step-by-step Single and Multisig setup</p>" in rendered_metainfo
-    assert "<image>https://example.invalid/shot.png</image>" in rendered_metainfo
+    assert '<color type="primary" scheme_preference="light">#0d6efd</color>' in rendered_metainfo
+    assert '<color type="primary" scheme_preference="dark">#37517e</color>' in rendered_metainfo
+    assert "<keyword>hardware wallet</keyword>" in rendered_metainfo
+    assert "<image>https://example.invalid/shot.png</image>" not in rendered_metainfo
+    assert (
+        "<image>https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%201.png</image>"
+        in rendered_metainfo
+    )
     assert '<release version="1.2.3" date="2026-01-01" />' in rendered_metainfo
     assert 'date="2030-01-01"' not in rendered_metainfo
+
+
+def test_packaging_screenshot_placeholders_are_centralized() -> None:
+    placeholders = APP_METADATA.packaging_screenshot_placeholders
+
+    assert placeholders.windows == (
+        "https://bitcoin-safe.org/packaging_screenshots/win/screenshots%2001.png",
+        "https://bitcoin-safe.org/packaging_screenshots/win/screenshots%2002.png",
+        "https://bitcoin-safe.org/packaging_screenshots/win/screenshots%2003.png",
+        "https://bitcoin-safe.org/packaging_screenshots/win/screenshots%2004.png",
+    )
+    assert placeholders.flatpak == (
+        "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%201.png",
+        "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%202.png",
+        "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%203.png",
+        "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%204.png",
+    )
+    assert placeholders.appimage == (
+        "https://bitcoin-safe.org/packaging_screenshots/appimage/appimage%201.png",
+        "https://bitcoin-safe.org/packaging_screenshots/appimage/appimage%202.png",
+        "https://bitcoin-safe.org/packaging_screenshots/appimage/appimage%203.png",
+        "https://bitcoin-safe.org/packaging_screenshots/appimage/appimage%204.png",
+    )
+    assert placeholders.deb == (
+        "https://bitcoin-safe.org/packaging_screenshots/deb/deb%201.png",
+        "https://bitcoin-safe.org/packaging_screenshots/deb/deb%202.png",
+        "https://bitcoin-safe.org/packaging_screenshots/deb/deb%203.png",
+        "https://bitcoin-safe.org/packaging_screenshots/deb/deb%204.png",
+    )
+    assert placeholders.mac == ("https://bitcoin-safe.org/packaging_screenshots/mac/1.png",)
+    assert APP_METADATA.appstream_screenshot_urls == placeholders.flatpak
 
 
 def test_release_notes_helpers_resolve_versioned_markdown_files(tmp_path: Path) -> None:

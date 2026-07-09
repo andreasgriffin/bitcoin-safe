@@ -4,7 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-only</project_license>
   <name>Bitcoin Safe</name>
-  <summary>A desktop software for managing your cold storage wallets</summary>
+  <summary>Manage your cold storage wallets</summary>
   <developer id="org.bitcoin_safe">
     <name>Andreas Griffin</name>
   </developer>
@@ -18,22 +18,38 @@
   </description>
   <url type="homepage">https://www.bitcoin-safe.org</url>
   <content_rating type="oars-1.1" />
+  <branding>
+    <color type="primary" scheme_preference="light">#f7931a</color>
+    <color type="primary" scheme_preference="dark">#f7931a</color>
+  </branding>
   <categories>
     <category>Utility</category>
     <category>Finance</category>
   </categories>
+  <keywords>
+    <keyword>bitcoin</keyword>
+    <keyword>crypto</keyword>
+    <keyword>multisig</keyword>
+    <keyword>wallet</keyword>
+    <keyword>btc</keyword>
+    <keyword>cold wallet</keyword>
+    <keyword>hardware wallet</keyword>
+    <keyword>PSBT</keyword>
+    <keyword>air-gapped</keyword>
+    <keyword>self-custody</keyword>
+  </keywords>
   <screenshots>
     <screenshot type="default">
-      <image>https://bitcoin-safe.org/screenshots/screenshots%2001.png</image>
+      <image>https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%201.png</image>
     </screenshot>
     <screenshot>
-      <image>https://bitcoin-safe.org/screenshots/screenshots%2002.png</image>
+      <image>https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%202.png</image>
     </screenshot>
     <screenshot>
-      <image>https://bitcoin-safe.org/screenshots/screenshots%2003.png</image>
+      <image>https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%203.png</image>
     </screenshot>
     <screenshot>
-      <image>https://bitcoin-safe.org/screenshots/screenshots%2004.png</image>
+      <image>https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%204.png</image>
     </screenshot>
   </screenshots>
   <releases>

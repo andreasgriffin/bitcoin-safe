@@ -2,7 +2,7 @@
 !define PRODUCT_NAME "Bitcoin Safe"
 !define PRODUCT_WEB_SITE "https://www.bitcoin-safe.org"
 !define PRODUCT_PUBLISHER "Andreas Griffin"
-!define PRODUCT_SUMMARY "A desktop software for managing your cold storage wallets"
+!define PRODUCT_SUMMARY "Manage your cold storage wallets"
 !define PRODUCT_INSTALLER_COMMENTS "The installer for Bitcoin Safe"
 !define PRODUCT_COPYRIGHT "2023-2026 Andreas Griffin"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
