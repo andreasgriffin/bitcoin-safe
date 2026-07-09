@@ -594,6 +594,8 @@ class WalletSetupOptions(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         self.label_wallet_name.setText(self.tr("Wallet name"))
         self.label_templates.setText(self.tr("Choose a wallet template"))
