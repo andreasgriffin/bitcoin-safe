@@ -54,11 +54,23 @@ MANAGED_METAINFO_TAGS = frozenset(
         "description",
         "url",
         "content_rating",
+        "branding",
         "categories",
+        "keywords",
+        "screenshots",
         "releases",
     }
 )
 PRESERVED_METAINFO_TAGS = frozenset({"releases"})
+
+
+@dataclass(frozen=True)
+class PackagingScreenshotPlaceholders:
+    windows: tuple[str, ...]
+    flatpak: tuple[str, ...]
+    appimage: tuple[str, ...]
+    deb: tuple[str, ...]
+    mac: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -74,11 +86,15 @@ class ApplicationMetadata:
     project_license: str
     metadata_license: str
     desktop_categories: tuple[str, ...]
+    search_keywords: tuple[str, ...]
     flatpak_app_id: str
     copyright_year_range: str
     macos_camera_usage_description: str
     macos_executable_name: str
     source_repository: str
+    brand_color_light: str
+    brand_color_dark: str
+    packaging_screenshot_placeholders: PackagingScreenshotPlaceholders
 
     @property
     def version(self) -> str:
@@ -93,6 +109,10 @@ class ApplicationMetadata:
         return ";".join(self.desktop_categories) + ";"
 
     @property
+    def desktop_keywords_entry(self) -> str:
+        return ";".join(self.search_keywords) + ";"
+
+    @property
     def copyright_notice(self) -> str:
         return f"{self.copyright_year_range} {self.developer_name}"
 
@@ -103,6 +123,10 @@ class ApplicationMetadata:
     @property
     def macos_dmg_volume_name(self) -> str:
         return self.application_name
+
+    @property
+    def appstream_screenshot_urls(self) -> tuple[str, ...]:
+        return self.packaging_screenshot_placeholders.flatpak
 
     def render_debian_copyright(self, package_name: str) -> str:
         return (
@@ -132,6 +156,7 @@ class ApplicationMetadata:
             f"Icon={icon_name}",
             "Terminal=false",
             f"Categories={self.desktop_categories_entry}",
+            f"Keywords={self.desktop_keywords_entry}",
             f"Comment={self.summary}",
             f"StartupWMClass={self.desktop_startup_wm_class}",
         ]
@@ -139,6 +164,11 @@ class ApplicationMetadata:
 
     def render_metainfo(self, launchable_desktop_id: str, release_date: str) -> str:
         paragraphs = "\n".join(f"    <p>{escape(paragraph)}</p>" for paragraph in self.description_paragraphs)
+        categories = "\n".join(
+            f"    <category>{escape(category)}</category>" for category in self.desktop_categories
+        )
+        keywords = "\n".join(f"    <keyword>{escape(keyword)}</keyword>" for keyword in self.search_keywords)
+        screenshots = self._render_metainfo_screenshots()
         return (
             '<?xml version="1.0" encoding="UTF-8"?>\n'
             '<component type="desktop-application">\n'
@@ -156,15 +186,40 @@ class ApplicationMetadata:
             "  </description>\n"
             f'  <url type="homepage">{escape(self.homepage)}</url>\n'
             '  <content_rating type="oars-1.1"/>\n'
+            "  <branding>\n"
+            f'    <color type="primary" scheme_preference="light">{escape(self.brand_color_light)}</color>\n'
+            f'    <color type="primary" scheme_preference="dark">{escape(self.brand_color_dark)}</color>\n'
+            "  </branding>\n"
             "  <categories>\n"
-            "    <category>Utility</category>\n"
-            "    <category>Finance</category>\n"
+            f"{categories}\n"
             "  </categories>\n"
+            "  <keywords>\n"
+            f"{keywords}\n"
+            "  </keywords>\n"
+            f"{screenshots}"
             "  <releases>\n"
             f'    <release version="{escape(self.version)}" date="{escape(release_date)}"/>\n'
             "  </releases>\n"
             "</component>\n"
         )
+
+    def _render_metainfo_screenshots(self) -> str:
+        if not self.appstream_screenshot_urls:
+            return ""
+
+        screenshot_entries: list[str] = []
+        for index, image_url in enumerate(self.appstream_screenshot_urls):
+            screenshot_type_attribute = ' type="default"' if index == 0 else ""
+            screenshot_entries.extend(
+                (
+                    f"    <screenshot{screenshot_type_attribute}>",
+                    f"      <image>{escape(image_url)}</image>",
+                    "    </screenshot>",
+                )
+            )
+
+        screenshots = "\n".join(screenshot_entries)
+        return f"  <screenshots>\n{screenshots}\n  </screenshots>\n"
 
     def render_checked_in_metainfo(
         self,
@@ -358,7 +413,7 @@ def resolve_latest_git_tag_date(repository_root: Path | None) -> str | None:
 APP_METADATA = ApplicationMetadata(
     application_name="Bitcoin Safe",
     desktop_startup_wm_class="Bitcoin Safe",
-    summary="A desktop software for managing your cold storage wallets",
+    summary="Manage your cold storage wallets",
     description_paragraphs=(
         "• Step-by-step Single and Multisig setup",
         "• Support for all major hardware signers (QR, USB, SD-card)",
@@ -373,9 +428,50 @@ APP_METADATA = ApplicationMetadata(
     project_license="GPL-3.0-only",
     metadata_license="CC0-1.0",
     desktop_categories=("Utility", "Finance"),
+    search_keywords=(
+        "bitcoin",
+        "crypto",
+        "multisig",
+        "wallet",
+        "btc",
+        "cold wallet",
+        "hardware wallet",
+        "PSBT",
+        "air-gapped",
+        "self-custody",
+    ),
     flatpak_app_id="org.bitcoin_safe.BitcoinSafe",
     copyright_year_range="2023-2026",
     macos_camera_usage_description="Bitcoin Safe would like to access the camera to scan QR codes",
     macos_executable_name="run_Bitcoin_Safe",
     source_repository="https://github.com/andreasgriffin/bitcoin-safe",
+    brand_color_light="#f7931a",
+    brand_color_dark="#f7931a",
+    packaging_screenshot_placeholders=PackagingScreenshotPlaceholders(
+        windows=(
+            "https://bitcoin-safe.org/packaging_screenshots/win/screenshots%2001.png",
+            "https://bitcoin-safe.org/packaging_screenshots/win/screenshots%2002.png",
+            "https://bitcoin-safe.org/packaging_screenshots/win/screenshots%2003.png",
+            "https://bitcoin-safe.org/packaging_screenshots/win/screenshots%2004.png",
+        ),
+        flatpak=(
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%201.png",
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%202.png",
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%203.png",
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%204.png",
+        ),
+        appimage=(
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%201.png",
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%202.png",
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%203.png",
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%204.png",
+        ),
+        deb=(
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%201.png",
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%202.png",
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%203.png",
+            "https://bitcoin-safe.org/packaging_screenshots/flatpak/flatpak%204.png",
+        ),
+        mac=("https://bitcoin-safe.org/packaging_screenshots/mac/1.png",),
+    ),
 )

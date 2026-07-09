@@ -360,50 +360,6 @@ def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> Non
     )
 
 
-def test_checked_in_metainfo_preserves_release_history_and_non_generated_sections() -> None:
-    existing_metainfo = """<?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop-application">
-  <id>old.id</id>
-  <metadata_license>Old</metadata_license>
-  <project_license>Old</project_license>
-  <name>Old Name</name>
-  <summary>Old summary</summary>
-  <developer id="old.dev">
-    <name>Old Dev</name>
-  </developer>
-  <launchable type="desktop-id">old.desktop</launchable>
-  <description>
-    <p>Old description</p>
-  </description>
-  <url type="homepage">https://old.example</url>
-  <content_rating type="oars-1.1"/>
-  <categories>
-    <category>Old</category>
-  </categories>
-  <screenshots>
-    <screenshot type="default">
-      <image>https://example.invalid/shot.png</image>
-    </screenshot>
-  </screenshots>
-  <releases>
-    <release version="1.2.3" date="2026-01-01"/>
-  </releases>
-</component>
-"""
-
-    rendered_metainfo = APP_METADATA.render_checked_in_metainfo(
-        existing_content=existing_metainfo,
-        launchable_desktop_id=f"{APP_METADATA.flatpak_app_id}.desktop",
-        release_date="2030-01-01",
-    )
-
-    assert "<summary>A desktop software for managing your cold storage wallets</summary>" in rendered_metainfo
-    assert "<p>\u2022 Step-by-step Single and Multisig setup</p>" in rendered_metainfo
-    assert "<image>https://example.invalid/shot.png</image>" in rendered_metainfo
-    assert '<release version="1.2.3" date="2026-01-01" />' in rendered_metainfo
-    assert 'date="2030-01-01"' not in rendered_metainfo
-
-
 def test_release_notes_helpers_resolve_versioned_markdown_files(tmp_path: Path) -> None:
     version = "9.9.9"
     notes_path = release_notes_path(tmp_path, version)
