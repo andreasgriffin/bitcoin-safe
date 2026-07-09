@@ -1266,14 +1266,24 @@ def set_translucent(widget: QWidget):
     )
 
 
-def set_margins(layout: QLayout, margins: Mapping[Qt.Edge, int], reset_other_margins=False) -> None:
-    """Set one or more margins on a QLayout, each to its own value.
+def set_margins(
+    layout: QLayout,
+    margins: Mapping[Qt.Edge, int] | None = None,
+    reset_other_margins: bool = False,
+    default_margin_multipliers: Mapping[Qt.Edge, float] | None = None,
+) -> None:
+    """Set one or more margins on a QLayout.
 
     :param layout: the layout whose contents-margins you want to adjust
-    :param margins: a map from Qt.Edge.{LeftEdge,TopEdge,RightEdge,BottomEdge} to the new margin (in pixels)
-        for that edge
+    :param margins: map from Qt.Edge to explicit margin values in pixels
+    :param reset_other_margins: if True, start from style default margins instead of current margins
+    :param default_margin_multipliers: map from Qt.Edge to a multiplier of that edge's style default margin
     """
-    if reset_other_margins:
+
+    margins = margins or {}
+    default_margin_multipliers = default_margin_multipliers or {}
+
+    def get_default_margins() -> tuple[int, int, int, int]:
         app = QApplication.instance()
 
         if app is None:
@@ -1283,17 +1293,39 @@ def set_margins(layout: QLayout, margins: Mapping[Qt.Edge, int], reset_other_mar
 
         style = qapp.style()
         if not style:
-            return
+            return 0, 0, 0, 0
 
-        left, top, right, bottom = (
+        return (
             style.pixelMetric(QStyle.PixelMetric.PM_LayoutLeftMargin),
             style.pixelMetric(QStyle.PixelMetric.PM_LayoutTopMargin),
             style.pixelMetric(QStyle.PixelMetric.PM_LayoutRightMargin),
             style.pixelMetric(QStyle.PixelMetric.PM_LayoutBottomMargin),
         )
+
+    default_left, default_top, default_right, default_bottom = get_default_margins()
+
+    if reset_other_margins:
+        left, top, right, bottom = (
+            default_left,
+            default_top,
+            default_right,
+            default_bottom,
+        )
     else:
         cm = layout.contentsMargins()
         left, top, right, bottom = cm.left(), cm.top(), cm.right(), cm.bottom()
+
+    for edge, multiplier in default_margin_multipliers.items():
+        if edge == Qt.Edge.LeftEdge:
+            left = round(default_left * multiplier)
+        elif edge == Qt.Edge.TopEdge:
+            top = round(default_top * multiplier)
+        elif edge == Qt.Edge.RightEdge:
+            right = round(default_right * multiplier)
+        elif edge == Qt.Edge.BottomEdge:
+            bottom = round(default_bottom * multiplier)
+        else:
+            raise ValueError(f"Unsupported edge: {edge!r}")
 
     for edge, val in margins.items():
         if edge == Qt.Edge.LeftEdge:
