@@ -100,9 +100,9 @@ backports-zstd==1.6.0 \
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   pbs-installer
-build==1.5.0 \
-    --hash=sha256:13f3eecb844759ab66efec90ca17639bbf14dc06cb2fdf37a9010322d9c50a6f \
-    --hash=sha256:302c22c3ba2a0fd5f3911918651341ebb3896176cbdec15bd421f80b1afc7647
+build==1.5.1 \
+    --hash=sha256:94e17f1db803ab22f46049376c44c8437c52090f0dfdf1adc43df56542d644fb \
+    --hash=sha256:f1a58fe2e5af5b0238a07b9e70207492c79ddebbdb1ad954fc86d62a56be3e0d
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry
@@ -653,9 +653,9 @@ pyproject-hooks==1.2.0 \
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   build
     #   poetry
-python-discovery==1.4.3 \
-    --hash=sha256:ad57d7045a862460d4a235986c33f13ed707d3aeb9153fa47eb7dfd0d4673289 \
-    --hash=sha256:b6e1e4a7d9e3f6948c39746ffe8218225162d738ba39d05ab1d2f6c1cac4878c
+python-discovery==1.4.4 \
+    --hash=sha256:5cad33982d412c1f3ffb8f9ca4ea292c9680bca3942451d30b69c37fce53a4a3 \
+    --hash=sha256:abebe9120b43453b68c908acfb1e72a19d1a959ed2cb620ad38fc57d08056dbe
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   virtualenv

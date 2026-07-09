@@ -37,7 +37,7 @@ from heapq import heappop, heappush
 from typing import Any
 
 import bdkpython as bdk
-from bitcoin_safe_lib.util import time_logger
+from bitcoin_safe_lib.util import network_kind, time_logger
 
 logger = logging.getLogger(__name__)
 
@@ -376,7 +376,7 @@ class ChangeSetConverter:
             if network is None:
                 return None
             # If your bdk has a dedicated constructor, keep as-is:
-            return bdk.Descriptor(descriptor_str, network)
+            return bdk.Descriptor(descriptor_str, network_kind=network_kind(network))
 
         def _deserialize_chainchange(data: dict[str, Any]) -> bdk.ChainChange:
             """Deserialize chainchange."""

@@ -32,6 +32,7 @@ from __future__ import annotations
 import json
 
 import bdkpython as bdk
+from bitcoin_safe_lib.util import network_kind
 
 from bitcoin_safe.persister.changeset_converter import ChangeSetConverter
 
@@ -41,11 +42,11 @@ initial_txs = [
 ]
 descriptor: bdk.Descriptor = bdk.Descriptor(
     "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/0/*)",
-    bdk.Network.REGTEST,
+    network_kind=network_kind(bdk.Network.REGTEST),
 )
 change_descriptor: bdk.Descriptor = bdk.Descriptor(
     "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/1/*)",
-    bdk.Network.REGTEST,
+    network_kind=network_kind(bdk.Network.REGTEST),
 )
 
 

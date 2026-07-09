@@ -36,6 +36,7 @@ from pathlib import Path
 import bdkpython as bdk
 import pytest
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.util import network_kind
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe import wallet as wallet_module
@@ -63,14 +64,14 @@ def _make_single_sig_wallet(
     seed_str = test_seeds[24]
     mnemonic = bdk.Mnemonic.from_string(seed_str)
     descriptor = bdk.Descriptor.new_bip84(
-        secret_key=bdk.DescriptorSecretKey(config.network, mnemonic, ""),
+        secret_key=bdk.DescriptorSecretKey(network_kind(config.network), mnemonic, ""),
         keychain_kind=bdk.KeychainKind.EXTERNAL,
-        network=config.network,
+        network_kind=network_kind(config.network),
     )
     change_descriptor = bdk.Descriptor.new_bip84(
-        secret_key=bdk.DescriptorSecretKey(config.network, mnemonic, ""),
+        secret_key=bdk.DescriptorSecretKey(network_kind(config.network), mnemonic, ""),
         keychain_kind=bdk.KeychainKind.INTERNAL,
-        network=config.network,
+        network_kind=network_kind(config.network),
     )
     assert change_descriptor
     descriptor_str = str(descriptor)

@@ -410,28 +410,28 @@ tests = ["PyHamcrest (>=2.0.2)", "mypy", "pytest (>=4.6)", "pytest-benchmark", "
 
 [[package]]
 name = "bdkpython"
-version = "2.3.1"
+version = "3.0.0"
 description = "The Python language bindings for the Bitcoin Development Kit"
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "bdkpython-2.3.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:39c16141a69c736c889e21a5ab3649d65a592ceb7c67678f0ac396670a428741"},
-    {file = "bdkpython-2.3.1-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:e2e87a912d7ac8a15f1b931593709766a08e9dccf3c80412170275afa2633eba"},
-    {file = "bdkpython-2.3.1-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:7fc913d2dab0110a547dd39edb6f43fdbb041a5e2efa31267ea29a464cd638dc"},
-    {file = "bdkpython-2.3.1-cp310-cp310-win_amd64.whl", hash = "sha256:f69521987355fdb297438553445c2cdc10aaa4ee817aadd7a91197e27329519a"},
-    {file = "bdkpython-2.3.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:4c8d4d9b7328a9754ccb46d7b39f6c9f37590bba021e9e666ac49bf213b6c44a"},
-    {file = "bdkpython-2.3.1-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:d6a20cd8765e0678507df8660ccaddb3fbe183b06bd4ae1ae2936826ba07fee6"},
-    {file = "bdkpython-2.3.1-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:171c4f2c4e8f23bc9a1ee7f0eb2bbd6ce7c23038abf58a1bd396567269349440"},
-    {file = "bdkpython-2.3.1-cp311-cp311-win_amd64.whl", hash = "sha256:19fe712de3071368c79fa64bda9aad38cc9fa7d3d106411e40968ddaf5cd9f4c"},
-    {file = "bdkpython-2.3.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f07477d8139973891cc6048a820049867fdeb57e7b33f1b9f390b148083b4421"},
-    {file = "bdkpython-2.3.1-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:72f1a1e68ed2591ed1220c74f6eabcc55d7b4f4a06a061d59682060e153a5e7e"},
-    {file = "bdkpython-2.3.1-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:1e1a67e3cca819d1dc1cabea217cf0fe178c98ec60c73ccc128f464ae122d673"},
-    {file = "bdkpython-2.3.1-cp312-cp312-win_amd64.whl", hash = "sha256:26fcd627e0aa6c5b5782ec3d47cb7c101a71e6d02fefa6b777d117392e874904"},
-    {file = "bdkpython-2.3.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:1d8e56831d4ab330926b3d152bed90801f9d4e02de6613c95892705df576635d"},
-    {file = "bdkpython-2.3.1-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:84f2972151ec5ad5f436ba7c5f2bbb68132c3aea7f55e4a835f92428432ca695"},
-    {file = "bdkpython-2.3.1-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:ba6553eae92f2328cff268ed654d39da04516ebbf8ef9a84d46f99e70ecd2c85"},
-    {file = "bdkpython-2.3.1-cp313-cp313-win_amd64.whl", hash = "sha256:069340a38e2a99752c78b0fed402a7b8a4f0e17d6936979c7ab0c74c07b4fb9a"},
+    {file = "bdkpython-3.0.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:ebf6a8feabc546d74301c495f1b6a79888e822cad4eb2e8315043fd07abc840e"},
+    {file = "bdkpython-3.0.0-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:a946d91e7dc15b66cfba4afb380c63f2fdc64d38808e767d00a598020791e9de"},
+    {file = "bdkpython-3.0.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:8a619e8b3729c2c729d1ba500ff5c52b8dd73700564a919ef5e0f4a9440e46f8"},
+    {file = "bdkpython-3.0.0-cp310-cp310-win_amd64.whl", hash = "sha256:2d5ec75b0fe2bf9311244009ceee397c9d81fd59a6ddf76ceb25c2acfea92e96"},
+    {file = "bdkpython-3.0.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:da136484617ed7378233c82f8fa60c1718bcbb44afec40943fe3383ec1724465"},
+    {file = "bdkpython-3.0.0-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:7a991fc960b8326314f44220b7f809f94b6e1f00fb5eff5d2e336649c5df3b31"},
+    {file = "bdkpython-3.0.0-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:0593ad8826224238ce4ec64edf4e0614f52a076cf957547045b31aba949429cb"},
+    {file = "bdkpython-3.0.0-cp311-cp311-win_amd64.whl", hash = "sha256:5a4fe52f6eaa575c84fbd4b7ccb8e97ffdfb27cb38663aa8d0479564ead1edae"},
+    {file = "bdkpython-3.0.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:83c56e7dd2aebb08c2fb986e508b42734b25ce2ed9b3afcbe7aacecd9136ca5a"},
+    {file = "bdkpython-3.0.0-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:b58b12ffe32ee5e926815d17fa0886e3f8c3a72d039c20b4c4f99b815f7b8750"},
+    {file = "bdkpython-3.0.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:6caa884cff14d11b6517140eed05adcac3d034df4374e3ff0b7a994f9ffab265"},
+    {file = "bdkpython-3.0.0-cp312-cp312-win_amd64.whl", hash = "sha256:ada19e5f2a96a08d50309ef702f592f4315ecc1719d06b7dad82eac3bd46282f"},
+    {file = "bdkpython-3.0.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:9e8e9fbe91211ada4c0e5bc36c7d8aa66a403813cace75d474f770348827a2f4"},
+    {file = "bdkpython-3.0.0-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:7fdce39cc527efba74ce4a3cecf117439ce8cd08116351e15ae41538d8d210a2"},
+    {file = "bdkpython-3.0.0-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:38b4cbccb5039bd7ca93f9f26ee37f23b922ce60fda45110a80b56a46de02fa0"},
+    {file = "bdkpython-3.0.0-cp313-cp313-win_amd64.whl", hash = "sha256:500e82dc03e6f8034349c822380d9c4e8b3bfee6c08ade320334d5b18543f40d"},
 ]
 
 [[package]]
@@ -470,7 +470,7 @@ develop = false
 
 [package.dependencies]
 base58 = "^2.1.1"
-bdkpython = "^2.0.0"
+bitcoin-safe-lib = {git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main"}
 hwi = {git = "https://github.com/andreasgriffin/HWI.git", branch = "master"}
 mss = "^9.0.1"
 numpy = "^2.0.1"
@@ -486,11 +486,11 @@ segno = "1.6.1"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
 reference = "main"
-resolved_reference = "a3d10dff6d7257240f1bfded36ed8aad6be172da"
+resolved_reference = "3d3b737c9a0b25df02cbc8cad9fecf34f7ac1554"
 
 [[package]]
 name = "bitcoin-safe-lib"
-version = "2.1.3"
+version = "3.0.0"
 description = "Python tools and library"
 optional = false
 python-versions = ">=3.10,<4"
@@ -499,7 +499,7 @@ files = []
 develop = false
 
 [package.dependencies]
-bdkpython = "^2.0.0"
+bdkpython = "^3.0.0"
 cryptography = ">=46.0.5"
 numpy = "2.2.1"
 packaging = "^26.2"
@@ -509,11 +509,11 @@ pyqt6 = "^6.9.0"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-safe-lib.git"
 reference = "main"
-resolved_reference = "9f2636b19a44ca4ae01f8b0ff4c0582fe5cb93ad"
+resolved_reference = "24c9a182ab96c79a976892564cdfd5c163d432f2"
 
 [[package]]
 name = "bitcoin-usb"
-version = "4.3.2"
+version = "5.0.0"
 description = "Wrapper around hwi, such that one can sign bdk PSBTs directly"
 optional = false
 python-versions = ">=3.10,<3.14"
@@ -523,7 +523,6 @@ develop = false
 
 [package.dependencies]
 aioitertools = "^0.13.0"
-bdkpython = "^2.0.0"
 bitcoin-safe-lib = {git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main"}
 bleak = "^0.22.3"
 cbor2 = "<5.8.0"
@@ -538,7 +537,7 @@ trezor = "^0.20.0"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-usb.git"
 reference = "main"
-resolved_reference = "5c000c9416dae5afabcee119f3a95de7ccba0166"
+resolved_reference = "f07aae8eb85e392e193e124e689b169c9da3f7af"
 
 [[package]]
 name = "bleak"
@@ -616,14 +615,14 @@ resolved_reference = "ad910a68616288358dea1f614916d92addcefbf3"
 
 [[package]]
 name = "build"
-version = "1.5.0"
+version = "1.5.1"
 description = "A simple, correct Python build frontend"
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "build-1.5.0-py3-none-any.whl", hash = "sha256:13f3eecb844759ab66efec90ca17639bbf14dc06cb2fdf37a9010322d9c50a6f"},
-    {file = "build-1.5.0.tar.gz", hash = "sha256:302c22c3ba2a0fd5f3911918651341ebb3896176cbdec15bd421f80b1afc7647"},
+    {file = "build-1.5.1-py3-none-any.whl", hash = "sha256:f1a58fe2e5af5b0238a07b9e70207492c79ddebbdb1ad954fc86d62a56be3e0d"},
+    {file = "build-1.5.1.tar.gz", hash = "sha256:94e17f1db803ab22f46049376c44c8437c52090f0dfdf1adc43df56542d644fb"},
 ]
 
 [package.dependencies]
@@ -636,7 +635,7 @@ tomli = {version = ">=1.1.0", markers = "python_version < \"3.11\""}
 [package.extras]
 keyring = ["keyring"]
 uv = ["uv (>=0.1.18)"]
-virtualenv = ["virtualenv (>=20.17) ; python_version >= \"3.10\" and python_version < \"3.14\"", "virtualenv (>=20.31) ; python_version >= \"3.14\""]
+virtualenv = ["virtualenv (>=20.36.1)"]
 
 [[package]]
 name = "cachecontrol"
@@ -3995,14 +3994,14 @@ pyvirtualdisplay = ">=1.3"
 
 [[package]]
 name = "python-discovery"
-version = "1.4.3"
+version = "1.4.4"
 description = "Python interpreter discovery"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "python_discovery-1.4.3-py3-none-any.whl", hash = "sha256:b6e1e4a7d9e3f6948c39746ffe8218225162d738ba39d05ab1d2f6c1cac4878c"},
-    {file = "python_discovery-1.4.3.tar.gz", hash = "sha256:ad57d7045a862460d4a235986c33f13ed707d3aeb9153fa47eb7dfd0d4673289"},
+    {file = "python_discovery-1.4.4-py3-none-any.whl", hash = "sha256:abebe9120b43453b68c908acfb1e72a19d1a959ed2cb620ad38fc57d08056dbe"},
+    {file = "python_discovery-1.4.4.tar.gz", hash = "sha256:5cad33982d412c1f3ffb8f9ca4ea292c9680bca3942451d30b69c37fce53a4a3"},
 ]
 
 [package.dependencies]
@@ -5241,4 +5240,4 @@ type = ["pytest-mypy (>=1.0.1) ; platform_python_implementation != \"PyPy\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14"
-content-hash = "de78013467795dae7bc78b771165e3c7cf6b6f09a8e7bd18940b742482564aba"
+content-hash = "8ebbbd7745f90504c571d4da2c59fc2a000f7b3f25436048f66a5fb93814d112"

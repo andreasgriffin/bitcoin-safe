@@ -1430,7 +1430,7 @@ class MainWindow(UnlockableMainWindow):
             return
 
         widget.set_network_config()
-        widget.set_cbf_peer_count(self.config.network_config.cbf_connections)
+        cbf_peer_hosts: list[str] = []
         widget.clear_wallet_progress()
 
         if self.p2p_listener:
@@ -1448,6 +1448,8 @@ class MainWindow(UnlockableMainWindow):
                 continue
             if qt_wallet.config.network_config.server_type != BlockchainType.CompactBlockFilter:
                 continue
+            wallet_cbf_peer_hosts = client.get_connected_cbf_peer_hosts()
+            cbf_peer_hosts.extend(wallet_cbf_peer_hosts)
             if client.sync_status not in [SyncStatus.syncing, SyncStatus.unknown]:
                 continue
             widget.set_wallet_progress(
@@ -1455,6 +1457,9 @@ class MainWindow(UnlockableMainWindow):
                 wallet_title=qt_wallet.wallet.id,
                 progress_info=client.progress_info,
             )
+
+        widget.set_cbf_peer_hosts(list(dict.fromkeys(cbf_peer_hosts)))
+        widget.set_cbf_peer_count(len(cbf_peer_hosts))
 
     def open_network_map(self) -> None:
         if self.global_network_map_widget:

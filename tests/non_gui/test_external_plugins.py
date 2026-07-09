@@ -46,6 +46,7 @@ import pytest
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.storage import BaseSaveableClass
+from bitcoin_safe_lib.util import network_kind
 from btcpay_tools.btcpay_subscription_nostr.service import (
     SubscriptionManagementPhase,
     SubscriptionManagementStatus,
@@ -392,7 +393,7 @@ def _installed_source_plugin_metadata(
 def _test_descriptor() -> bdk.Descriptor:
     return bdk.Descriptor(
         "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/0/*)",
-        bdk.Network.REGTEST,
+        network_kind=network_kind(bdk.Network.REGTEST),
     )
 
 
@@ -991,7 +992,7 @@ def test_create_runtime_plugin_clients_uses_generic_from_dump(qapp: QApplication
         context=context,
         descriptor=bdk.Descriptor(
             "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/0/*)",
-            bdk.Network.REGTEST,
+            network_kind=network_kind(bdk.Network.REGTEST),
         ),
     )
 
@@ -1106,7 +1107,7 @@ def test_create_runtime_plugin_clients_accepts_factory_hook(qapp: QApplication, 
         context=_make_runtime_context(tmp_path),
         descriptor=bdk.Descriptor(
             "wpkh([44250c36/84'/1'/0']tpubDCrUjjHLB1fxk1oRveETjw62z8jsUuqx7JkBUW44VBszGmcY3Eun3apwVcE5X2bfF5MsM3uvuQDed6Do33ZN8GiWcnj2QPqVDspFT1AyZJ9/0/*)",
-            bdk.Network.REGTEST,
+            network_kind=network_kind(bdk.Network.REGTEST),
         ),
     )
 

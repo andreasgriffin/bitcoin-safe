@@ -795,6 +795,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         history_initial_sync_widget = self.get_or_create_history_initial_sync_widget()
         history_initial_sync_widget.set_progress_info(progress_info)
         history_initial_sync_widget.set_cbf_peer_count(self.config.network_config.cbf_connections)
+        self._refresh_history_initial_sync_cbf_peers(history_initial_sync_widget)
         self._update_history_initial_sync_overlay_visibility()
 
     def should_show_initial_sync_placeholder(self) -> bool:
@@ -808,6 +809,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.history_tab_content_stack.setCurrentWidget(self.get_or_create_history_initial_sync_widget())
         else:
             self.history_tab_content_stack.setCurrentWidget(self.history_tab_content)
+
+    def _refresh_history_initial_sync_cbf_peers(self, widget: NetworkMapWidget) -> None:
+        if not self.wallet.client:
+            widget.set_cbf_peer_hosts([])
+            return
+        widget.set_cbf_peer_hosts(self.wallet.client.get_connected_cbf_peer_hosts())
 
     def get_or_create_history_initial_sync_widget(self) -> NetworkMapWidget:
         if self.network_map_widget:
@@ -2149,6 +2156,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             history_initial_sync_widget.set_p2p_listener_peers([c.peer for c in p2p_connections])
         if total_discovered_peers is not None:
             history_initial_sync_widget.set_nodes(total_discovered_peers)
+        self._refresh_history_initial_sync_cbf_peers(history_initial_sync_widget)
 
     async def _sync_revealed_spks(self):
         "Syncs all revealed skps"
