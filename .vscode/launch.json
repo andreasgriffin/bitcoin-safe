@@ -343,6 +343,19 @@
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Prepare VSCode Launch",
     }, {
+      "name": "Local Flatpak Build&Run",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "tools.build_linux.flathub_flatpak.populate_cli",
+      "args": [
+        "--run-flatpak", 
+        "--local-source-checkout", ".",
+        "--app-source-mode","local-dir"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Prepare VSCode Launch",
+    }, {
       "name": "Sign",
       "type": "debugpy",
       "request": "launch",
