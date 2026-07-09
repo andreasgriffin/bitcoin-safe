@@ -26,6 +26,7 @@ LD_PATHS=(
     "${APPDIR}/usr/lib/"
     "${APPDIR}/usr/lib/python3.12/site-packages/PyQt6/Qt6/lib"
     "${APPDIR}/usr/lib/x86_64-linux-gnu"
+    "${APPDIR}/usr/lib/x86_64-linux-gnu/pulseaudio"
 )
 
 # Join array elements by colon, preserving any existing LD_LIBRARY_PATH
