@@ -56,7 +56,7 @@ from bitcoin_safe.gui.qt.util import do_copy, set_translucent, svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
-from ..util import to_color_name
+from ..util import set_margins, to_color_name
 
 logger = logging.getLogger(__name__)
 
@@ -314,7 +314,10 @@ class QuickReceive(QWidget):
         main_layout = QVBoxLayout(self)
         header_widget = QWidget(self)
         header_layout = QHBoxLayout(header_widget)
-        header_layout.setContentsMargins(0, 0, 0, 0)
+        set_margins(
+            header_layout,
+            default_margin_multipliers={Qt.Edge.BottomEdge: 0, Qt.Edge.RightEdge: 0, Qt.Edge.TopEdge: 0.5},
+        )
 
         self.label_title = QLabel(title)
         font = QFont()
@@ -327,9 +330,14 @@ class QuickReceive(QWidget):
         self.manage_categories_button.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         self.manage_categories_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.manage_categories_button.setFlat(True)
+        self.manage_categories_button.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         self.manage_categories_button.setText(translate("QuickReceive", "Manage Categories"))
         self.manage_categories_button.setToolTip(translate("QuickReceive", "Open the category manager"))
         self.manage_categories_button.clicked.connect(self.signal_manage_categories_requested.emit)
+        self.manage_categories_button.setObjectName(f"{id(self)}")
+        self.manage_categories_button.setStyleSheet(
+            f"#{self.manage_categories_button.objectName()}  {{  margin-right: 0px; }}"
+        )
         header_layout.addWidget(self.manage_categories_button)
 
         main_layout.addWidget(header_widget)
