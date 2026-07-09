@@ -190,6 +190,8 @@ class SendTest(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         self.refresh_cards()
 

@@ -143,6 +143,8 @@ class RegisterMultisig(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         self.label_import.setText(self.tr("Register the multisig wallet on each signing device."))
 
@@ -706,6 +708,8 @@ class DistributeSeeds(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         m, n = self.refs.qtwalletbase.get_mn_tuple()
         self.label_title.setText(self.tr("Congratulations, your wallet is ready. Now protect it!"))

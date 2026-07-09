@@ -159,6 +159,8 @@ class ImportXpubs(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         self.label_import.setText(self.tr("Import hardware signer information into Bitcoin Safe"))
         self.button_create_wallet.setText(

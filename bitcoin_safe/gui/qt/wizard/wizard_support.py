@@ -112,6 +112,7 @@ class BaseTab(QObject):
         self.show_previous_step_button = show_previous_step_button
 
         self.loop_in_thread = loop_in_thread
+        self._is_closed = False
         self.signal_tracker = SignalTracker()
         self.buttonbox = WizardNavigationBar(
             go_to_next_index=self.refs.go_to_next_index,
@@ -133,6 +134,11 @@ class BaseTab(QObject):
     def button_previous(self) -> QPushButton:
         """Button previous."""
         return self.buttonbox.button_previous
+
+    @property
+    def is_closed(self) -> bool:
+        """Return whether this tab is already in teardown."""
+        return self._is_closed
 
     @abstractmethod
     def create(self) -> TutorialWidget:
@@ -213,6 +219,8 @@ class BaseTab(QObject):
 
     def close(self) -> None:
         """Close."""
+        if self._is_closed:
+            return
+        self._is_closed = True
         self.signal_tracker.disconnect_all()
         self.setParent(None)
-        del self.refs
