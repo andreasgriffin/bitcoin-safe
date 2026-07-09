@@ -2,7 +2,7 @@
 name = "bitcoin-safe"
 # the version here and in all other places in this toml are updated automatically
 # from the source: bitcoin_safe/__init__.py
-version = "2.0.1"
+version = "2.1.0"
 description = "A desktop software for managing your cold storage wallets."
 authors = [ "andreasgriffin <andreasgriffin@proton.me>",]
 license = "GPL-3.0-only"
@@ -29,7 +29,6 @@ python = ">=3.10,<3.14"
 fpdf2 = "^2.7.4"
 requests = "^2.31.0"
 pyyaml = "^6.0"
-bdkpython ="^2.2.0"
 hwi = ">=3.2.0"
 appdirs = "^1.4.4"
 reportlab = "4.0.8"
@@ -43,7 +42,7 @@ pysocks = "^1.7.1"
 bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", branch = "main"  }
 bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", branch = "main" }
 bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", branch = "main" }
-bitcoin-safe-lib  = {  git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main" }
+bitcoin-safe-lib = {  git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main" }
 btcpay-tools = { git = "https://github.com/andreasgriffin/btcpay-tools.git", branch = "main" }
 aiohttp = "^3.12.13"
 aiohttp-socks = "^0.10.1"

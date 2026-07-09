@@ -37,6 +37,7 @@ from pathlib import Path
 from typing import cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.util import network_kind
 
 
 def parse_args() -> argparse.Namespace:
@@ -168,8 +169,8 @@ async def run_sync(args: argparse.Namespace) -> None:
 
     persister = bdk.Persister.new_in_memory()
 
-    descriptor = bdk.Descriptor(args.descriptor, network=network)
-    change_descriptor = bdk.Descriptor(args.change_descriptor, network=network)
+    descriptor = bdk.Descriptor(args.descriptor, network_kind=network_kind(network))
+    change_descriptor = bdk.Descriptor(args.change_descriptor, network_kind=network_kind(network))
 
     wallet = bdk.Wallet(
         descriptor=descriptor,

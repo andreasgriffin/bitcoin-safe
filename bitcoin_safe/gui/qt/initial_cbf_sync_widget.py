@@ -940,7 +940,7 @@ class NetworkMapWidget(QWidget):
                     "<span style='color:{color}'>●</span> CBF peers: {total} "
                     "<span style='color:{gray}'>(mapped: {mapped})</span>"
                 ).format(
-                    total=max(cbf_peer_count, len(cbf_peer_hosts)),
+                    total=cbf_peer_count,
                     mapped=len(cbf_points),
                     color=self.map_widget._CBF_COLOR.name(),
                     gray=gray,

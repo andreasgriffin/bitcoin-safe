@@ -54,6 +54,7 @@ class Client:
     MAX_PROGRESS_WHILE_SYNC = 0.99
     BROADCAST_TIMEOUT = 3
     MIN_BROADCAST_FEE_QUERY_TIMEOUT = 0.5
+    CBF_PEER_INFO_TIMEOUT = 0.2
 
     def __init__(
         self,
@@ -295,6 +296,24 @@ class Client:
         except Exception as exc:
             logger.warning(f"Could not determine backend min broadcast fee rate: {exc}")
             return None
+
+    def get_connected_cbf_peer_hosts(self) -> list[str]:
+        """Return connected compact block filter peer hosts when available."""
+        if not isinstance(self.client, CbfSync):
+            return []
+        if not self.client.client:
+            return self.client.connected_peer_hosts()
+
+        try:
+            return self.loop_in_thread.run_foreground(
+                asyncio.wait_for(self.client.peer_info(), timeout=self.CBF_PEER_INFO_TIMEOUT)
+            )
+        except (asyncio.TimeoutError, TimeoutError) as exc:
+            logger.debug(f"Could not refresh CBF peer info before timeout: {exc}")
+            return self.client.connected_peer_hosts()
+        except Exception as exc:
+            logger.debug(f"Could not refresh CBF peer info: {exc}")
+            return self.client.connected_peer_hosts()
 
     async def _get_electrum_relay_fee(self) -> float:
         """Fetch Electrum relay fee on the background loop thread."""

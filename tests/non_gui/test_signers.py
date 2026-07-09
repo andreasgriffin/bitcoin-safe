@@ -42,6 +42,7 @@ from bitcoin_qr_tools.multipath_descriptor import convert_to_multipath_descripto
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.tx_util import hex_to_serialized, serialized_to_hex
+from bitcoin_safe_lib.util import network_kind
 from PyQt6.QtCore import QObject, pyqtSignal
 from pytestqt.qtbot import QtBot
 
@@ -181,18 +182,19 @@ def pytest_bdk_setup_multisig(bitcoin_core: Path, m=2, n=3, network=bdk.Network.
         mnemonic = bdk.Mnemonic.from_string(seed)
 
         return bdk.Descriptor.new_bip84(
-            secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
+            secret_key=bdk.DescriptorSecretKey(network_kind(network), mnemonic, ""),
             keychain_kind=bdk.KeychainKind.EXTERNAL,
-            network=network,
+            network_kind=network_kind(network),
         )
 
     def create_wallet(descriptor: bdk.Descriptor):
         """Create wallet."""
+        descriptor, change_descriptor = descriptor.to_single_descriptors()
         wallet = bdk.Wallet(
             descriptor=descriptor,
-            change_descriptor=None,
+            change_descriptor=change_descriptor,
             network=network,
-            connection=bdk.Connection.new_in_memory(),
+            persister=bdk.Persister.new_in_memory(),
         )
 
         return wallet
@@ -244,16 +246,12 @@ def pytest_bdk_setup_single_sig(bitcoin_core: Path, network=bdk.Network.REGTEST)
     mnemonic = bdk.Mnemonic.from_string(test_seeds[50])
     logger.debug(f"mnemonic = {mnemonic}")
 
-    secret_key = bdk.DescriptorSecretKey(network, mnemonic, "")
+    secret_key = bdk.DescriptorSecretKey(network_kind(network), mnemonic, "")
     descriptor = bdk.Descriptor.new_bip84(
-        secret_key=secret_key,
-        keychain_kind=bdk.KeychainKind.EXTERNAL,
-        network=network,
+        secret_key=secret_key, keychain_kind=bdk.KeychainKind.EXTERNAL, network_kind=network_kind(network)
     )
     change_descriptor = bdk.Descriptor.new_bip84(
-        secret_key=secret_key,
-        keychain_kind=bdk.KeychainKind.INTERNAL,
-        network=network,
+        secret_key=secret_key, keychain_kind=bdk.KeychainKind.INTERNAL, network_kind=network_kind(network)
     )
     logger.debug(f"descriptor = {descriptor}")
 

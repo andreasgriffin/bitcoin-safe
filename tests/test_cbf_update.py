@@ -38,6 +38,7 @@ import asyncio
 from pathlib import Path
 
 import bdkpython as bdk
+from bitcoin_safe_lib.util import network_kind
 
 from bitcoin_safe.cbf.cbf_sync import CbfSync
 
@@ -50,14 +51,14 @@ def _build_test_wallet(network: bdk.Network) -> tuple[bdk.Wallet, bdk.Persister,
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
     )
     external_descriptor = bdk.Descriptor.new_bip86(
-        secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
+        secret_key=bdk.DescriptorSecretKey(network_kind(network), mnemonic, ""),
         keychain_kind=bdk.KeychainKind.EXTERNAL,
-        network=network,
+        network_kind=network_kind(network),
     )
     change_descriptor = bdk.Descriptor.new_bip86(
-        secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
+        secret_key=bdk.DescriptorSecretKey(network_kind(network), mnemonic, ""),
         keychain_kind=bdk.KeychainKind.INTERNAL,
-        network=network,
+        network_kind=network_kind(network),
     )
     persister = bdk.Persister.new_in_memory()
     wallet = bdk.Wallet(

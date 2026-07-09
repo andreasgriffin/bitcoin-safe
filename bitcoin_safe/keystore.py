@@ -36,7 +36,7 @@ from typing import Any, Literal
 import bdkpython as bdk
 from bitcoin_qr_tools.signer_info import SignerInfo
 from bitcoin_safe_lib.storage import BaseSaveableClass, SaveAllClass, filtered_for_init
-from bitcoin_safe_lib.util import fast_version
+from bitcoin_safe_lib.util import fast_version, network_kind
 from bitcoin_usb.address_types import (
     AddressTypes,
     ConstDerivationPaths,
@@ -261,7 +261,7 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
                 descriptor_public_key,
                 "0" * 8,
                 bdk.KeychainKind.EXTERNAL,
-                network,
+                network_kind(network),
             )
 
             return True

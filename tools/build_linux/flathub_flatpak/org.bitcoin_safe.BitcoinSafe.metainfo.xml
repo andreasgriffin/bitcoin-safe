@@ -37,6 +37,17 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.1.0" date="2026-07-09">
+      <description>
+        <p>Highlights</p>
+        <ul>
+          <li>Upgrade Bitcoin Dev Kit (BDK) to 3.0</li>
+          <li>Reenable custom account xpub fetching for USB signers</li>
+          <li>Show the connected Bitcoin nodes for compact block filter fetching on the map</li>
+          <li>Bug fixes</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.0.1" date="2026-07-07">
       <description>
         <p>Minor changes to support Flatpak creation.</p>
