@@ -177,13 +177,15 @@ class WalletTemplateStatCard(BaseWalletTemplateCardFrame):
         super().__init__(parent)
         self._title = title
         self._svg_content = svg_content
+        self._border_radius = 0
+        self.background_color = None
 
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         self.setMaximumWidth(self._peferred_width)
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(12, 10, 12, 10)
-        layout.setSpacing(10)
+        layout.setContentsMargins(10, 4, 10, 8)
+        layout.setSpacing(8)
 
         self.icon = AspectRatioSvgWidget(parent=self)
         self.icon.setFixedSize(35, 35)
@@ -249,6 +251,11 @@ class WalletTemplateStatCard(BaseWalletTemplateCardFrame):
         self.label_subtitle.setStyleSheet(f"color: {to_color_name(surface_colors.muted_text)};")
         self._refresh_icon()
         super().refresh_style()
+
+    def _get_style_content(self):
+        surface_colors = get_neutral_surface_colors()
+        divider_color = to_color_name(color_with_alpha(surface_colors.panel_border, 160))
+        return f"border: none; border-bottom: 1px solid {divider_color};"
 
     def _refresh_icon(self) -> None:
         icon_color = self.palette().color(QPalette.ColorRole.WindowText).name()
