@@ -1022,8 +1022,25 @@ class KeyStoreUI(CardBase):
         if analyzer_message.state == AnalyzerState.Invalid:
             Message(analyzer_message.msg, type=MessageType.Error, parent=self)
             return
-        if analyzer_message.state == AnalyzerState.Warning and not question_dialog(
-            self.tr("{msg}\nDo you want to proceed anyway?").format(msg=analyzer_message.msg),
+        if analyzer_message.state == AnalyzerState.Warning and question_dialog(
+            self.tr("{msg}").format(msg=analyzer_message.msg),
+            true_button=self.tr("Abort and try later"),
+            false_button=self.tr("Ignore warning and proceed"),
+        ):
+            return
+
+        if (
+            (old := self.key_origin)
+            and old != (new := signer_info.key_origin)
+            and (
+                (old_account_number := SimplePubKeyProvider.get_account_index(old))
+                != (new_account_number := SimplePubKeyProvider.get_account_index(new))
+            )
+            and not question_dialog(
+                self.tr(
+                    "The account changed from {current_account_number} to {new_account_number}. Proceed?"
+                ).format(current_account_number=old_account_number, new_account_number=new_account_number)
+            )
         ):
             return
 

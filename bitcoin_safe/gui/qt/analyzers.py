@@ -35,7 +35,7 @@ from collections.abc import Callable
 import bdkpython as bdk
 from bitcoin_qr_tools.data import ConverterXpub
 from bitcoin_qr_tools.multipath_descriptor import is_valid_descriptor
-from bitcoin_usb.address_types import SimplePubKeyProvider
+from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider, get_all_address_types
 from PyQt6.QtCore import QObject
 from PyQt6.QtWidgets import QWidget
 
@@ -61,6 +61,45 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
         self.get_expected_key_origin = get_expected_key_origin
         self.network = network
 
+    def _get_address_type_for_key_origin(self, key_origin: str) -> AddressType | None:
+        account_number = SimplePubKeyProvider.get_account_index(key_origin)
+        if account_number is None:
+            return None
+
+        for address_type in get_all_address_types():
+            if address_type.key_origin(self.network, account_number=account_number) == key_origin:
+                return address_type
+
+        return None
+
+    def _get_address_type_mismatch_message(self, key_origin: str, expected_key_origin: str) -> str | None:
+        provided_address_type = self._get_address_type_for_key_origin(key_origin)
+        expected_address_type = self._get_address_type_for_key_origin(expected_key_origin)
+        if (
+            provided_address_type is None
+            or expected_address_type is None
+            or provided_address_type == expected_address_type
+        ):
+            return None
+
+        if provided_address_type.is_multisig != expected_address_type.is_multisig:
+            provided_kind = (
+                self.tr("multi-sig") if provided_address_type.is_multisig else self.tr("single-sig")
+            )
+            expected_kind = (
+                self.tr("multi-sig") if expected_address_type.is_multisig else self.tr("single-sig")
+            )
+            return self.tr("This looks like a {provided_kind} QR. Expected: {expected_kind}.").format(
+                provided_kind=provided_kind,
+                expected_kind=expected_kind,
+            )
+
+        return self.tr("{given} looks like {provided_type}, but this wallet expects {expected_type}.").format(
+            given=key_origin,
+            provided_type=provided_address_type.name,
+            expected_type=expected_address_type.name,
+        )
+
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
         """Analyze."""
         if not input:
@@ -77,7 +116,7 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
             return AnalyzerMessage("Expected Key Origin", AnalyzerState.Valid)
         else:
             network_index_input = SimplePubKeyProvider.get_network_index(input)
-            network_index_expected = SimplePubKeyProvider.get_network_index(input)
+            network_index_expected = SimplePubKeyProvider.get_network_index(expected_key_origin)
             if (network_index_input is not None) and network_index_input != network_index_expected:
                 return AnalyzerMessage(
                     self.tr(
@@ -92,6 +131,8 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
                     ),
                     AnalyzerState.Invalid,
                 )
+            elif message := self._get_address_type_mismatch_message(input, expected_key_origin):
+                return AnalyzerMessage(message, AnalyzerState.Warning)
             elif SimplePubKeyProvider.key_origin_identical_disregarding_account(input, expected_key_origin):
                 return AnalyzerMessage(
                     self.tr(
@@ -103,7 +144,12 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
                     AnalyzerState.Warning,
                 )
             else:
-                return AnalyzerMessage(self.tr("Unexpected xpub origin"), AnalyzerState.Warning)
+                return AnalyzerMessage(
+                    self.tr(
+                        "The provided xpub origin {given} does not match the expectation {expected}"
+                    ).format(given=input, expected=expected_key_origin),
+                    AnalyzerState.Warning,
+                )
 
 
 class FingerprintAnalyzer(BaseAnalyzer, QObject):
