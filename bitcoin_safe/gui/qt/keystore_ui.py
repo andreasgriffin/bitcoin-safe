@@ -1041,10 +1041,11 @@ class KeyStoreUI(CardBase):
         if analyzer_message.state == AnalyzerState.Invalid:
             Message(analyzer_message.msg, type=MessageType.Error, parent=self)
             return
-        if analyzer_message.state == AnalyzerState.Warning and question_dialog(
+        if analyzer_message.state == AnalyzerState.Warning and not question_dialog(
             self.tr("{msg}").format(msg=analyzer_message.msg),
-            true_button=self.tr("Abort and try later"),
-            false_button=self.tr("Ignore warning and proceed"),
+            true_button=self.tr("Ignore warning and proceed"),
+            false_button=self.tr("Abort and try later"),
+            default_is_true_button=False,
         ):
             return
 
