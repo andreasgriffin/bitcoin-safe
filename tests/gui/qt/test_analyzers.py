@@ -68,7 +68,7 @@ def test_key_origin_analyzer_warns_for_singlesig_multisig_mixup(qtbot: QtBot) ->
     analysis = analyzer.analyze(AddressTypes.p2wpkh.key_origin(bdk.Network.REGTEST))
 
     assert analysis.state == AnalyzerState.Warning
-    assert analysis.msg == "This looks like a single-sig QR. Expected: multi-sig."
+    assert analysis.msg == "This looks like a single-sig. Expected: multi-sig."
 
 
 def test_key_origin_analyzer_warns_for_wrong_singlesig_address_type(qtbot: QtBot) -> None:

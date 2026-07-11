@@ -89,7 +89,7 @@ class KeyOriginAnalyzer(BaseAnalyzer, QObject):
             expected_kind = (
                 self.tr("multi-sig") if expected_address_type.is_multisig else self.tr("single-sig")
             )
-            return self.tr("This looks like a {provided_kind} QR. Expected: {expected_kind}.").format(
+            return self.tr("This looks like a {provided_kind}. Expected: {expected_kind}.").format(
                 provided_kind=provided_kind,
                 expected_kind=expected_kind,
             )
