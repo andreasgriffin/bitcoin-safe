@@ -130,7 +130,7 @@ def test_keystore_ui_empty_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> 
     assert widget.left_widget.isVisible()
     assert widget.right_widget.isVisible()
     assert widget.connect_help_label.isVisible()
-    assert widget.connect_help_label.textLabel.text() == "Connect"
+    assert widget.connect_help_label.textLabel.text() == "Device instructions"
     assert widget.button_connect_qr.isVisible()
     assert not widget.edit_fingerprint.isVisible()
     assert widget.edit_seed.isVisible()
