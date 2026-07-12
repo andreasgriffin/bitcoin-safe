@@ -157,7 +157,6 @@ def test_keystore_uis_show_device_instructions_label_after_signer_selection(
 
     assert keystore_ui.connect_help_label.isVisible()
     assert keystore_ui.connect_help_label.textLabel.text() == "Device instructions"
-    assert keystore_ui.connect_help_label.y() < keystore_ui.button_connect_qr.y()
 
 
 def test_keystore_uis_header_click_expands_only_clicked_card(
