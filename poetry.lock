@@ -486,7 +486,7 @@ segno = "1.6.1"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
 reference = "main"
-resolved_reference = "453ccd09aa0fb5f1356d93f997b8dd2237022f75"
+resolved_reference = "b73032171827c7543e21ebc76f59c2879f100986"
 
 [[package]]
 name = "bitcoin-safe-lib"
@@ -1880,7 +1880,7 @@ qt = ["pyside2 (>=5.14.0,<6.0.0) ; python_version < \"3.10\""]
 type = "git"
 url = "https://github.com/andreasgriffin/HWI.git"
 reference = "master"
-resolved_reference = "38ccb5169365d2a635539ef828ab46ed81dd1205"
+resolved_reference = "8d454d7aa725bce78e50d7ab12d3cae40b77404e"
 
 [[package]]
 name = "identify"
@@ -4728,14 +4728,14 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 
 [[package]]
 name = "virtualenv"
-version = "21.6.0"
+version = "21.6.1"
 description = "Virtual Python Environment builder"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "virtualenv-21.6.0-py3-none-any.whl", hash = "sha256:bce9d097950fef9d81129b333babfb7767072850c2f1acce0ec536708401bfd1"},
-    {file = "virtualenv-21.6.0.tar.gz", hash = "sha256:e18a4d750f2b64dea73e72ffde3922f3c52365fabdc8157ebd3da20d031c4734"},
+    {file = "virtualenv-21.6.1-py3-none-any.whl", hash = "sha256:afe991df855715a2b2f60edfcc0107ef95a79fdfd8cb4cdaa71603d1c12e463b"},
+    {file = "virtualenv-21.6.1.tar.gz", hash = "sha256:15f978b7cd329f24855ff4a0c4b4899cc7678589f49adbdcbbb4d3232e641128"},
 ]
 
 [package.dependencies]

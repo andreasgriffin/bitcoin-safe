@@ -130,6 +130,35 @@ def test_keystore_uis_expand_only_collapses_other_cards(qtbot: QtBot, loop_in_th
     assert second.is_expanded
 
 
+def test_keystore_uis_show_device_instructions_label_after_signer_selection(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    protowallet = ProtoWallet(
+        wallet_id="wallet",
+        threshold=1,
+        network=bdk.Network.REGTEST,
+        keystores=[None],
+        address_type=AddressTypes.p2wsh,
+    )
+    widget = KeyStoreUIs(
+        get_editable_protowallet=lambda: protowallet,
+        get_address_type=lambda: AddressTypes.p2wsh,
+        signals_min=SignalsMin(),
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+    widget.resize(420, 220)
+    widget.show()
+
+    keystore_ui = list(widget.getAllTabData().values())[0]
+    keystore_ui.combo_brand.setCurrentText(HardwareSigners.jade.brand_name)
+    keystore_ui.combo_model.setCurrentText(HardwareSigners.jade.display_name)
+    keystore_ui.confirm_device_type_selection()
+
+    assert keystore_ui.connect_help_label.isVisible()
+    assert keystore_ui.connect_help_label.textLabel.text() == "Device instructions"
+
+
 def test_keystore_uis_header_click_expands_only_clicked_card(
     qtbot: QtBot, loop_in_thread: LoopInThread
 ) -> None:
@@ -185,3 +214,60 @@ def test_keystore_uis_uses_card_list_scroll_behavior(qtbot: QtBot, loop_in_threa
     assert widget.currentIndex() == 5
     assert widget.scroll_area.verticalScrollBar().maximum() > 0
     assert widget.scroll_area.verticalScrollBar().value() > 0
+
+
+def test_keystore_uis_reports_duplicate_xpub_signer_slots(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    protowallet = ProtoWallet(
+        wallet_id="wallet",
+        threshold=2,
+        network=bdk.Network.REGTEST,
+        keystores=[None, None],
+        address_type=AddressTypes.p2wsh,
+    )
+    widget = KeyStoreUIs(
+        get_editable_protowallet=lambda: protowallet,
+        get_address_type=lambda: AddressTypes.p2wsh,
+        signals_min=SignalsMin(),
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+    widget.show()
+
+    first, second = list(widget.getAllTabData().values())
+    for keystore_ui in (first, second):
+        keystore_ui.combo_brand.setCurrentText(HardwareSigners.krux_diy.brand_name)
+        keystore_ui.combo_model.setCurrentText(HardwareSigners.krux_diy.display_name)
+        keystore_ui.confirm_device_type_selection()
+
+    first_keystore, second_keystore = create_test_seed_keystores(
+        signers=2,
+        key_origins=[AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)] * 2,
+        network=bdk.Network.REGTEST,
+    )
+    first.set_using_signer_info(
+        SignerInfo(
+            fingerprint=first_keystore.fingerprint,
+            key_origin=first_keystore.key_origin,
+            xpub=first_keystore.xpub,
+        )
+    )
+    second.set_using_signer_info(
+        SignerInfo(
+            fingerprint=second_keystore.fingerprint,
+            key_origin=second_keystore.key_origin,
+            xpub=first_keystore.xpub,
+        )
+    )
+    widget.ui_keystore_ui_change()
+
+    messages = widget.get_warning_and_error_messages([first, second])
+    expected_message = (
+        "Signer slots 1, 2 contain the same xpub. This usually means the same signer export "
+        "was imported twice. Please import a different device or account for each signer."
+    )
+
+    assert first.edit_xpub.toolTip() == expected_message
+    assert second.edit_xpub.toolTip() == expected_message
+    assert first.get_worst_analysis().msg == expected_message
+    assert second.get_worst_analysis().msg == expected_message
+    assert any(message.msg == expected_message for message in messages)

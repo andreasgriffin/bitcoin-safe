@@ -35,7 +35,7 @@ from functools import partial
 from typing import cast
 
 import bdkpython as bdk
-from bitcoin_qr_tools.data import Data, DecodingException
+from bitcoin_qr_tools.data import Data, DecodingException, WrongNetwork
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
@@ -342,9 +342,11 @@ class ButtonEdit(QWidget):
 
         def _exception_callback(e: Exception) -> None:
             """Exception callback."""
-            if isinstance(e, DecodingException):
+            if isinstance(e, (DecodingException, WrongNetwork)):
                 if question_dialog(
-                    self.tr("Could not recognize the input. Do you want to scan again?"),
+                    self.tr(
+                        "Could not recognize the input. Do you want to scan again?\n\nThe error was: {error}"
+                    ).format(error=str(e)),
                     true_button=self.tr("Scan again"),
                 ):
                     self.input_qr_from_camera(

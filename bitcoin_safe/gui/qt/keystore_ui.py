@@ -149,6 +149,7 @@ class KeyStoreUI(CardBase):
         self._device_type_editing = False
         self._selected_hardware_signer: HardwareSigner | None = None
         self._device_help_widget: QWidget | None = None
+        self._duplicate_xpub_message = ""
         self.signal_tracker = SignalTracker()
         self._state = KeyStoreUiState.Add
         self._status_pixmaps = {
@@ -587,14 +588,26 @@ class KeyStoreUI(CardBase):
             self.edit_xpub.input_field,
         ]
 
+    def _duplicate_xpub_analysis(self) -> AnalyzerMessage | None:
+        if not self._duplicate_xpub_message:
+            return None
+        return AnalyzerMessage(self._duplicate_xpub_message, AnalyzerState.Invalid)
+
+    def _effective_xpub_analysis(self) -> AnalyzerMessage:
+        duplicate_analysis = self._duplicate_xpub_analysis()
+        if duplicate_analysis:
+            return duplicate_analysis
+        return self.edit_xpub.input_field.analyze_text(self.edit_xpub.text())
+
     def get_analysis_list(self, min_state: AnalyzerState = AnalyzerState.Valid) -> list[AnalyzerMessage]:
         """Return analyzer messages for the visible signer detail fields."""
         analysis_list: list[AnalyzerMessage] = []
         for field in self._analysis_fields():
-            analyzer = field.analyzer()
-            if not analyzer:
-                continue
-            analysis = analyzer.analyze(field.text())
+            analysis = (
+                self._effective_xpub_analysis()
+                if field is self.edit_xpub.input_field
+                else field.analyze_text(field.text())
+            )
             if analysis.state >= min_state:
                 analysis_list.append(analysis)
         return analysis_list
@@ -652,8 +665,9 @@ class KeyStoreUI(CardBase):
         )
         self.button_device_instructions.setVisible(visible and self.state != KeyStoreUiState.ReadOnly)
         self.action_device_instructions.setVisible(visible)
-        if self.state in (KeyStoreUiState.Empty, KeyStoreUiState.Filled):
-            self.connect_help_label.setVisible(visible)
+        self.connect_help_label.setVisible(
+            self.is_expanded and visible and self.state in (KeyStoreUiState.Empty, KeyStoreUiState.Filled)
+        )
 
     def _update_connect_buttons(self, connect_visible: bool = True) -> None:
         hardware_signer = self.selected_hardware_signer or HardwareSigners.generic
@@ -807,7 +821,6 @@ class KeyStoreUI(CardBase):
         self.set_body_content_visible(show_content)
         self.left_widget.setVisible(show_expanded_content)
         self.right_widget.setVisible(show_expanded_content)
-        self.connect_help_label.setVisible(show_expanded_content and connect_visible)
 
         for widget in (
             self.label_fingerprint,
@@ -964,7 +977,7 @@ class KeyStoreUI(CardBase):
         expected_key_origin = self.get_expected_key_origin()
         key_origin_value = self.key_origin
         key_origin_analysis = self.edit_key_origin_input.analyze_text(key_origin_value)
-        xpub_analysis = self.edit_xpub.input_field.analyze_text(self.edit_xpub.text())
+        xpub_analysis = self._effective_xpub_analysis()
 
         key_origin_state: AnalyzerState | None = None
         key_origin_tooltip = ""
@@ -1009,6 +1022,12 @@ class KeyStoreUI(CardBase):
         """Get expected key origin."""
         return self.get_address_type().key_origin(self.network)
 
+    def set_duplicate_xpub_message(self, message: str) -> None:
+        if self._duplicate_xpub_message == message:
+            return
+        self._duplicate_xpub_message = message
+        self.format_all_fields()
+
     def get_key_origin(self) -> str:
         """Get key origin."""
         key_origin = self.edit_key_origin.text().strip()
@@ -1023,7 +1042,25 @@ class KeyStoreUI(CardBase):
             Message(analyzer_message.msg, type=MessageType.Error, parent=self)
             return
         if analyzer_message.state == AnalyzerState.Warning and not question_dialog(
-            self.tr("{msg}\nDo you want to proceed anyway?").format(msg=analyzer_message.msg),
+            self.tr("{msg}").format(msg=analyzer_message.msg),
+            true_button=self.tr("Ignore warning and proceed"),
+            false_button=self.tr("Abort and try later"),
+            default_is_true_button=False,
+        ):
+            return
+
+        if (
+            (old := self.key_origin)
+            and old != (new := signer_info.key_origin)
+            and (
+                (old_account_number := SimplePubKeyProvider.get_account_index(old))
+                != (new_account_number := SimplePubKeyProvider.get_account_index(new))
+            )
+            and not question_dialog(
+                self.tr(
+                    "The account changed from {current_account_number} to {new_account_number}. Proceed?"
+                ).format(current_account_number=old_account_number, new_account_number=new_account_number)
+            )
         ):
             return
 
@@ -1113,7 +1150,7 @@ class KeyStoreUI(CardBase):
     def updateUi(self) -> None:
         """UpdateUi."""
         self.label_description.setText(self.tr("Personal notes:"))
-        self.connect_help_label.setText(self.tr("Connect"))
+        self.connect_help_label.setText(self.tr("Device instructions"))
         self.connect_help_label.set_icon_as_help(
             tooltip=self.tr("Import signer data with QR, USB, Bluetooth, or text/file import.")
         )

@@ -1,4 +1,4 @@
-# dependency-input-sha256: 1d88cd304044c190dd82c75ee5a9c5d655741bbb669fa1b31d9d93ba0835034c
+# dependency-input-sha256: 23a40ceeeaa50a896f9a8a805c33702e436e27778be777b9acd38c0abf52fe34
 packaging==26.2 --hash=sha256:5fc45236b9446107ff2415ce77c807cee2862cb6fac22b8a73826d0693b0980e
 pyproject-hooks==1.2.0 --hash=sha256:9e5c6bfa8dcc30091c74b0cf803c81fdd29d94f01992a7707bc97babb1141913
 build==1.5.1 --hash=sha256:f1a58fe2e5af5b0238a07b9e70207492c79ddebbdb1ad954fc86d62a56be3e0d
@@ -43,7 +43,7 @@ tomlkit==0.15.0 --hash=sha256:4dbc8f0fc024412b57ced8757ac7461305126a648ff8c2c807
 trove-classifiers==2026.6.1.19 --hash=sha256:ab4c4ec93cc4a4e7815fa759906e05e6bb3f2fbd92ea0f897288c6a43efd15b3
 distlib==0.4.3 --hash=sha256:4b0ce306c966eb73bc3a7b6abad017c556dadd92c44701562cd528ac7fde4d5b
 python-discovery==1.4.4 --hash=sha256:abebe9120b43453b68c908acfb1e72a19d1a959ed2cb620ad38fc57d08056dbe
-virtualenv==21.6.0 --hash=sha256:bce9d097950fef9d81129b333babfb7767072850c2f1acce0ec536708401bfd1
+virtualenv==21.6.1 --hash=sha256:afe991df855715a2b2f60edfcc0107ef95a79fdfd8cb4cdaa71603d1c12e463b
 poetry==2.4.1 --hash=sha256:a91f13279a3c9add0d12c5ca5c7cb173622930a5c8272fee68c751cb5c72f951
 setuptools==83.0.0 --hash=sha256:29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3
 wheel==0.47.0 --hash=sha256:212281cab4dff978f6cedd499cd893e1f620791ca6ff7107cf270781e587eced

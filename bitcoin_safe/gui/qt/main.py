@@ -2496,10 +2496,11 @@ class MainWindow(UnlockableMainWindow):
         self.network_choice_welcome_screen.remove_me()
 
     def _ask_if_full_scan(self) -> bool | None:
-        return question_dialog(
-            text=self.tr("Was this wallet ever used before?"),
-            true_button=self.tr("Yes, full scan for transactions"),
-            false_button=self.tr("No, quick scan"),
+        return not question_dialog(
+            text=self.tr("Is this a new wallet?"),
+            true_button=self.tr("Yes"),
+            false_button=self.tr("No, do a full scan"),
+            default_is_true_button=False,
         )
 
     def create_qtwallet_from_protowallet(
