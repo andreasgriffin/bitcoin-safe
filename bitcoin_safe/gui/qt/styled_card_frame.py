@@ -54,13 +54,13 @@ class BaseCardFrame(QFrame):
         )
 
     def refresh_style(self) -> None:
-        self.setStyleSheet(
-            f"""
+        stylesheet = f"""
             #{self.objectName()} {{
                 {self._get_style_content()}
             }}
             """
-        )
+        if self.styleSheet() != stylesheet:
+            self.setStyleSheet(stylesheet)
 
 
 class BaseBorderCardFrame(BaseCardFrame):

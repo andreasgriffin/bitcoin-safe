@@ -206,6 +206,7 @@ bitcoin_safe.dist-info
 *.xcf
 
 screenshots*/
+.codex-artifacts/
 .DS_Store
 
 profile.html

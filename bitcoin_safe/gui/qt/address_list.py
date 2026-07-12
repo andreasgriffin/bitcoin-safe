@@ -687,6 +687,7 @@ class AddressList(MyTreeView[str]):
         """Update content."""
         if self.maybe_defer_update():
             return
+        ColorScheme.update_from_widget(self)
         logger.debug(f"{self.__class__.__name__} update")
         self._before_update_content()
 

@@ -38,7 +38,6 @@ from PyQt6.QtCore import pyqtSignal
 from bitcoin_safe.btcpay_config import BTCPAY_SUBSCRIPTION_CONFIG
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
-from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.paid_plugin_client import PaidPluginClient
 from bitcoin_safe.plugin_framework.subscription_price_lookup import SubscriptionPriceLookup
@@ -103,7 +102,7 @@ class BusinessPlanItem(PaidPluginClient):
         super().__init__(
             config=config,
             fx=fx,
-            icon=svg_tools.get_QIcon("stars4.svg"),
+            icon="stars4.svg",
             loop_in_thread=loop_in_thread,
             enabled=False,
             additional_access_providers=[],

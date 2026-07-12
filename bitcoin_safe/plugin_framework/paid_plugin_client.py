@@ -32,6 +32,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from functools import partial
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
@@ -100,7 +101,7 @@ class PaidPluginClient(PluginClient):
         config: UserConfig,
         fx: FX,
         loop_in_thread: LoopInThread | None,
-        icon: QIcon,
+        icon: QIcon | Path | str,
         btcpay_config: BTCPayConfig,
         enabled: bool,
         additional_access_providers: list[Callable[[], bool]] | None,

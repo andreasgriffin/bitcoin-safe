@@ -35,8 +35,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon, QResizeEvent
+from PyQt6.QtCore import QEvent, QObject, QSize, Qt, pyqtSignal
+from PyQt6.QtGui import QColor, QIcon, QPalette, QResizeEvent
 from PyQt6.QtWidgets import QApplication, QPushButton, QToolButton, QWidget
 from pytestqt.qtbot import QtBot
 
@@ -82,6 +82,41 @@ def test_square_button(qapp: QApplication) -> None:
     assert isinstance(button, QToolButton)
     assert button.parent() == parent
     assert button.icon().cacheKey() == icon.cacheKey()
+
+
+def test_square_button_re_renders_theme_icon_on_palette_change(qtbot: QtBot) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    parent = QWidget()
+    button = SquareButton("bi--copy.svg", parent)
+    qtbot.addWidget(parent)
+    button.show()
+    qtbot.waitExposed(button)
+
+    def render_with_palette(window: str, text: str):
+        palette = QPalette(original_palette)
+        palette.setColor(QPalette.ColorRole.Window, QColor(window))
+        palette.setColor(QPalette.ColorRole.WindowText, QColor(text))
+        palette.setColor(QPalette.ColorRole.Text, QColor(text))
+        palette.setColor(QPalette.ColorRole.ButtonText, QColor(text))
+        palette.setColor(QPalette.ColorRole.Dark, QColor(text))
+        app.setPalette(palette)
+        QApplication.sendEvent(button, QEvent(QEvent.Type.ApplicationPaletteChange))
+        qtbot.wait(10)
+        pixmap = button.icon().pixmap(button.iconSize())
+        assert not pixmap.isNull()
+        return pixmap.toImage()
+
+    try:
+        light_image = render_with_palette("#ffffff", "#101010")
+        dark_image = render_with_palette("#101010", "#f5f5f5")
+    finally:
+        app.setPalette(original_palette)
+        QApplication.sendEvent(button, QEvent(QEvent.Type.ApplicationPaletteChange))
+
+    assert light_image != dark_image
 
 
 def test_buttons_field_initialization(qapp: QApplication) -> None:

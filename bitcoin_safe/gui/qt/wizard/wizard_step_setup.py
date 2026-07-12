@@ -63,7 +63,7 @@ from ..util import (
     svg_tools,
     to_color_name,
 )
-from .wizard_support import BaseTab, WizardTabInfo
+from .wizard_support import BaseTab, ThemeAwareStepWidget, WizardTabInfo
 
 
 @dataclass(frozen=True)
@@ -284,7 +284,7 @@ class WalletSetupOptions(BaseTab):
 
     def create(self) -> TutorialWidget:
         """Create."""
-        widget = QWidget()
+        widget = ThemeAwareStepWidget(self)
         widget_layout = QVBoxLayout(widget)
         widget_layout.setContentsMargins(28, 24, 28, 24)
         widget_layout.setSpacing(22)

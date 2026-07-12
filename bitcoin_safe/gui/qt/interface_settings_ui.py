@@ -36,6 +36,7 @@ from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
+    QApplication,
     QComboBox,
     QFormLayout,
     QHBoxLayout,
@@ -51,6 +52,7 @@ from bitcoin_safe.gui.qt.language_chooser import (
     LanguageChooser,
     create_language_combobox,
 )
+from bitcoin_safe.theme import ThemeMode, apply_theme_mode
 
 from ...fx import FX
 from .currency_combobox import CurrencyComboBox, CurrencyGroup, CurrencyGroupFormatting
@@ -100,12 +102,21 @@ class InterfaceSettingsUi(QWidget):
         idx = self.bitcoin_symbol_combo.findData(self.config.bitcoin_symbol)
         self.bitcoin_symbol_combo.setCurrentIndex(idx if idx >= 0 else 0)
 
+        self.theme_combo: QComboBox | None = None
+        self.theme_combo = QComboBox(self)
+        self.theme_combo.addItem("", ThemeMode.SYSTEM)
+        self.theme_combo.addItem("", ThemeMode.LIGHT)
+        self.theme_combo.addItem("", ThemeMode.DARK)
+        idx = self.theme_combo.findData(self.config.theme_mode)
+        self.theme_combo.setCurrentIndex(idx if idx >= 0 else 0)
+
         # 3) Layout
         form = QFormLayout(self)
         form.setHorizontalSpacing(FORM_LABEL_FIELD_SPACING)
         self.label_language = QLabel("")
         self.label_currency = QLabel("")
         self.label_bitcoin_symbol = QLabel("")
+        self.label_theme = QLabel("")
         self.label_app_lock_password = QLabel("")
 
         self.app_lock_password_status = QLabel("")
@@ -122,6 +133,8 @@ class InterfaceSettingsUi(QWidget):
         form.addRow(self.label_language, self.language_combo)
         form.addRow(self.label_currency, self.currency_combo)
         form.addRow(self.label_bitcoin_symbol, self.bitcoin_symbol_combo)
+        if self.theme_combo is not None:
+            form.addRow(self.label_theme, self.theme_combo)
         form.addRow(self.label_app_lock_password, self.app_lock_controls)
 
         # 4) initial selection
@@ -133,6 +146,8 @@ class InterfaceSettingsUi(QWidget):
         self.language_combo.currentIndexChanged.connect(self._on_language_changed)
         self.currency_combo.currentIndexChanged.connect(self._on_currency_changed)
         self.bitcoin_symbol_combo.currentIndexChanged.connect(self._on_bitcoin_symbol_changed)
+        if self.theme_combo is not None:
+            self.theme_combo.currentIndexChanged.connect(self._on_theme_changed)
         self.button_set_app_lock_password.clicked.connect(self._on_set_app_lock_password)
         self.button_clear_app_lock_password.clicked.connect(self._on_clear_app_lock_password)
 
@@ -160,6 +175,18 @@ class InterfaceSettingsUi(QWidget):
         symbol = self.bitcoin_symbol_combo.currentData()
         self.config.bitcoin_symbol = symbol or BitcoinSymbol.ISO
         self.language_chooser.signals_currency_switch.emit()
+
+    def _on_theme_changed(self, _idx: int) -> None:
+        """Apply the selected app theme."""
+        if self.theme_combo is None:
+            return
+
+        selected_theme_mode = self.theme_combo.currentData()
+        theme_mode = selected_theme_mode if isinstance(selected_theme_mode, ThemeMode) else ThemeMode.SYSTEM
+        self.config.theme_mode = theme_mode
+        app = QApplication.instance()
+        if isinstance(app, QApplication):
+            apply_theme_mode(app, theme_mode)
 
     def refresh_app_lock_status(self) -> None:
         has_password = self.config.has_app_lock_password()
@@ -211,6 +238,11 @@ class InterfaceSettingsUi(QWidget):
         self.label_language.setText("Language")
         self.label_currency.setText("Currency")
         self.label_bitcoin_symbol.setText("Bitcoin symbol")
+        if self.theme_combo is not None:
+            self.label_theme.setText("Theme")
+            self.theme_combo.setItemText(0, self.tr("System"))
+            self.theme_combo.setItemText(1, self.tr("Light"))
+            self.theme_combo.setItemText(2, self.tr("Dark"))
         self.label_app_lock_password.setText("App lock")
         self.button_clear_app_lock_password.setText("Clear")
         self.refresh_app_lock_status()

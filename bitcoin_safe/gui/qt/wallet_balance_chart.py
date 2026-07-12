@@ -75,7 +75,13 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.execute_config import ENABLE_TIMERS
 from bitcoin_safe.gui.qt.pan_zoom_mixin import PanZoomInputMixin
-from bitcoin_safe.gui.qt.util import ColorScheme, blend_qcolors, set_translucent, svg_tools
+from bitcoin_safe.gui.qt.util import (
+    ColorScheme,
+    blend_qcolors,
+    set_translucent,
+    should_process_theme_change,
+    svg_tools,
+)
 from bitcoin_safe.pythonbdk_types import TransactionDetails
 from bitcoin_safe.signals import UpdateFilter, WalletSignals
 from bitcoin_safe.util import monotone_increasing_timestamps
@@ -512,13 +518,6 @@ class BalanceChart(QWidget):
         self._full_time_range: tuple[datetime.datetime, datetime.datetime] | None = None
         self._full_value_range: tuple[float, float] | None = None
         self._suppress_range_signal = False
-        color_text = blend_qcolors(
-            self.palette().color(QPalette.ColorRole.Dark), self.palette().color(QPalette.ColorRole.Text)
-        )
-        color_major_grid = (
-            adjust_brightness(color_text, -0.3) if is_dark_mode() else adjust_brightness(color_text, 0.5)
-        )
-
         self.chart = QChart()
         if legend := self.chart.legend():
             legend.hide()
@@ -555,9 +554,6 @@ class BalanceChart(QWidget):
 
         # Create DateTime axis for X
         self.datetime_axis = QDateTimeAxis()
-        self.datetime_axis.setLabelsColor(color_text)
-        self.datetime_axis.setTitleBrush(color_text)
-        self.datetime_axis.setGridLineColor(color_major_grid)
         x_values = [
             datetime.datetime.now().timestamp() - self.default_buffer_time_in_sec,
             datetime.datetime.now().timestamp() + self.default_buffer_time_in_sec,
@@ -569,9 +565,6 @@ class BalanceChart(QWidget):
 
         # Create Value axis for Y
         self.value_axis = QValueAxis()
-        self.value_axis.setLabelsColor(color_text)
-        self.value_axis.setTitleBrush(color_text)
-        self.value_axis.setGridLineColor(color_major_grid)
 
         self.chart.addAxis(self.datetime_axis, Qt.AlignmentFlag.AlignBottom)
         self.chart.addAxis(self.value_axis, Qt.AlignmentFlag.AlignLeft)
@@ -610,6 +603,32 @@ class BalanceChart(QWidget):
 
         # Set layout
         self.setLayout(self._layout)
+        self._refresh_palette_colors()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh palette-derived chart colors when the app theme changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self._refresh_palette_colors()
+
+    def _refresh_palette_colors(self) -> None:
+        """Update chart colors that depend on the current palette."""
+        color_text = blend_qcolors(
+            self.palette().color(QPalette.ColorRole.Dark), self.palette().color(QPalette.ColorRole.Text)
+        )
+        color_major_grid = (
+            adjust_brightness(color_text, -0.3) if is_dark_mode() else adjust_brightness(color_text, 0.5)
+        )
+        self.datetime_axis.setLabelsColor(color_text)
+        self.datetime_axis.setTitleBrush(color_text)
+        self.datetime_axis.setGridLineColor(color_major_grid)
+        self.value_axis.setLabelsColor(color_text)
+        self.value_axis.setTitleBrush(color_text)
+        self.value_axis.setGridLineColor(color_major_grid)
+        if viewport := self.chart_view.viewport():
+            viewport.update()
+        self.chart_view.update()
+        self.update()
 
     def set_value_axis_label_format(self, max_value: float) -> None:
         """Set value axis label format."""

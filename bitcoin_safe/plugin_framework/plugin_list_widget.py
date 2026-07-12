@@ -32,10 +32,11 @@ from __future__ import annotations
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from functools import partial
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
-from PyQt6.QtCore import QSize, Qt, QTimer
+from PyQt6.QtCore import QEvent, QSize, Qt, QTimer
 from PyQt6.QtGui import QIcon, QPalette
 from PyQt6.QtWidgets import (
     QApplication,
@@ -51,7 +52,12 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import (
+    get_neutral_surface_colors,
+    should_process_theme_change,
+    svg_tools,
+    to_color_name,
+)
 
 if TYPE_CHECKING:
     from bitcoin_safe.plugin_framework.paid_plugin_client import PaidPluginClient
@@ -65,10 +71,11 @@ class BasePluginWidget(CardBase):
         title: str,
         description: str,
         provider: str,
-        icon: QIcon,
+        icon: QIcon | Path | str,
         icon_size: tuple[int, int] = (40, 40),
         parent: QWidget | None = None,
     ) -> None:
+        self._theme_assets_ready = False
         super().__init__(parent=parent, expansion_mode=CardExpansionMode.FIXED_EXPANDED)
         self.icon_size = icon_size
 
@@ -169,19 +176,42 @@ class BasePluginWidget(CardBase):
         self.management_section.setVisible(False)
         self.controls_container.setVisible(False)
         self.set_body_content_visible(False)
+        self._theme_assets_ready = True
         self.set_plugin_metadata(title=title, description=description, provider=provider, icon=icon)
+
+    def _refresh_theme_assets(self) -> None:
+        surface_colors = get_neutral_surface_colors()
+        title_color = to_color_name(self.palette().color(QPalette.ColorRole.WindowText))
+        muted_color = to_color_name(surface_colors.muted_text)
+
+        self.background_color = surface_colors.panel_background
+        self.refresh_style()
+        self.hline.setStyleSheet(f"color: {to_color_name(QPalette.ColorRole.Mid)}")
+        self.title_label.setStyleSheet(f"color: {title_color};")
+        self.version_label.setStyleSheet(f"color: {muted_color};")
+        self.metadata_separator_label.setStyleSheet(f"color: {muted_color};")
+        self.provider_label.setStyleSheet(f"color: {muted_color};")
+        self.description_label.setStyleSheet(f"color: {muted_color};")
+        self.status_label.setStyleSheet(f"color: {muted_color};")
 
     def set_plugin_metadata(
         self,
         title: str,
         description: str,
         provider: str,
-        icon: QIcon,
+        icon: QIcon | Path | str,
     ) -> None:
         self.title_label.setText(f"<b>{title}</b>")
         self.provider_label.setText(self.tr("Provided by: {provider}").format(provider=provider))
         self.description_label.setText(description)
-        self.icon_label.setPixmap(icon.pixmap(QSize(*self.icon_size), self.devicePixelRatioF()))
+        self._refresh_theme_assets()
+        self.set_icon(icon, self.icon_size)
+
+    def _on_theme_change(self) -> None:
+        super()._on_theme_change()
+        if not self._theme_assets_ready:
+            return
+        self._refresh_theme_assets()
 
     def set_icon_action(self, callback: Callable[[], None] | None, enabled: bool) -> None:
         try:
@@ -806,19 +836,31 @@ class SectionHeader(QWidget):
         self.title_label.setFont(title_font)
         self.title_row.addWidget(self.title_label)
 
-        divider = QFrame(self)
-        divider.setFrameShape(QFrame.Shape.HLine)
-        divider.setFrameShadow(QFrame.Shadow.Sunken)
-        self.title_row.addWidget(divider, stretch=1)
+        self.divider = QFrame(self)
+        self.divider.setFrameShape(QFrame.Shape.HLine)
+        self.divider.setFrameShadow(QFrame.Shadow.Sunken)
+        self.title_row.addWidget(self.divider, stretch=1)
 
         self.description_label = QLabel(description, self)
         self.description_label.setWordWrap(True)
         self.description_label.setForegroundRole(QPalette.ColorRole.Dark)
         self.description_label.setVisible(bool(description))
         layout.addWidget(self.description_label)
+        self.refresh_style()
 
     def add_title_widget(self, widget: QWidget) -> None:
         self.title_row.addWidget(widget)
+
+    def refresh_style(self) -> None:
+        """Refresh palette-aware colors."""
+        surface_colors = get_neutral_surface_colors()
+        self.description_label.setStyleSheet(f"color: {to_color_name(surface_colors.muted_text)};")
+        self.divider.setStyleSheet(f"color: {to_color_name(QPalette.ColorRole.Mid)}")
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self.refresh_style()
 
 
 class PluginListWidget(QWidget):

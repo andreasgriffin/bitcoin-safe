@@ -32,9 +32,10 @@ from __future__ import annotations
 import logging
 import sys
 from collections.abc import Callable
+from pathlib import Path
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QIcon
+from PyQt6.QtCore import QEvent, Qt
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -49,7 +50,12 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 
 from .qr_components.square_buttons import CloseButton
-from .util import adjust_bg_color_for_darkmode, set_margins
+from .util import (
+    adjust_brightness,
+    is_dark_mode,
+    set_margins,
+    should_process_theme_change,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +73,8 @@ class NotificationBar(QWidget):
         super().__init__(parent)
         self._layout = QHBoxLayout(self)
         self.color: QColor | None = None
+        self._base_background_color: QColor | None = None
+        self._styled_widgets: list[QWidget] = []
         self._layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         set_margins(
@@ -104,6 +112,8 @@ class NotificationBar(QWidget):
         """Add styled widget."""
         if widget.parent() is not self:
             widget.setParent(self)
+        if widget not in self._styled_widgets:
+            self._styled_widgets.append(widget)
         if self.color:
             self.style_widget(widget, color=self.color)
         self._layout.insertWidget(self._layout.count() - 2, widget)
@@ -114,23 +124,56 @@ class NotificationBar(QWidget):
 
     def style_widget(self, button: QWidget, color: QColor):
         """Style widget."""
-        button.setAttribute(Qt.WidgetAttribute.WA_StyledBackground)
-        button.setObjectName(button.__class__.__name__)
-        button.setStyleSheet(f"#{button.objectName()} {{ background-color: {color.name()};}}")
+        button.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        object_name = button.__class__.__name__
+        if button.objectName() != object_name:
+            button.setObjectName(object_name)
+        stylesheet = f"#{button.objectName()} {{ background-color: {color.name()};}}"
+        if button.styleSheet() != stylesheet:
+            button.setStyleSheet(stylesheet)
 
-    def set_background_color(self, color: QColor) -> None:
-        """Set background color."""
+    def _apply_background_color(self, color: QColor, clear_base_background: bool) -> None:
+        """Apply the current background color to all notification bar widgets."""
+        if clear_base_background:
+            self._base_background_color = None
         self.color = color
         self.style_widget(self, color=color)
         self.style_widget(self.optionalButton, color=color)
+        for widget in self._styled_widgets:
+            self.style_widget(widget, color=color)
 
-    def set_icon(self, icon: QIcon | None, sizes: tuple[int | None, int | None] = (None, None)) -> None:
+    def set_background_color(self, color: QColor) -> None:
+        """Set background color."""
+        self._apply_background_color(color, clear_base_background=True)
+
+    def set_background_base_color(self, color: QColor) -> None:
+        """Set a background color that should be adjusted for the active theme."""
+        self._base_background_color = color
+        self._apply_background_color(self._themed_background_color(color), clear_base_background=False)
+
+    def _themed_background_color(self, color: QColor) -> QColor:
+        """Adjust a base background color using this widget's current palette."""
+        return adjust_brightness(color, -0.4) if is_dark_mode() else color
+
+    def set_icon(self, icon: str | Path | None, sizes: tuple[int | None, int | None] = (None, None)) -> None:
         """Set icon."""
         self.icon_label.set_icon(icon=icon, sizes=sizes)
 
     def updateUi(self) -> None:
         """UpdateUi."""
         self.closeButton.setAccessibleName(self.tr("Close notification"))
+
+    def _refresh_theme_background(self) -> None:
+        if self._base_background_color is not None:
+            self.set_background_base_color(self._base_background_color)
+        elif self.color is not None:
+            self.set_background_color(self.color)
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh theme-derived notification colors and icons."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self._refresh_theme_background()
 
 
 if __name__ == "__main__":
@@ -146,8 +189,10 @@ if __name__ == "__main__":
             layout.setSpacing(0)
 
             self.notificationBar = NotificationBar(text="my notification")
-            self.notificationBar.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
-            self.notificationBar.set_icon(QIcon("../icons/bitcoin-testnet.svg"))
+            self.notificationBar.set_background_color(
+                self.notificationBar._themed_background_color(QColor("lightblue"))
+            )
+            self.notificationBar.set_icon("bitcoin-testnet.svg")
             layout.addWidget(self.notificationBar)
             layout.addWidget(QTextEdit("some text"))
 

@@ -60,7 +60,6 @@ class Settings(QTabWidget):
     ) -> None:
         """Initialize instance."""
         super().__init__(parent=parent)
-        self.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.signals = signals
         self.language_chooser = language_chooser
         self._license_dialog = LicenseDialog(self)

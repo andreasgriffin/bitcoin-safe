@@ -36,27 +36,26 @@ from typing import cast
 from bitcoin_qr_tools.gui.qr_widgets import QRCodeWidgetSVG
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.util import insert_invisible_spaces_for_wordwrap
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QKeyEvent, QMouseEvent, QPalette
 from PyQt6.QtWidgets import (
-    QFrame,
     QGraphicsOpacityEffect,
     QHBoxLayout,
     QLabel,
     QPushButton,
-    QScrollArea,
     QSizePolicy,
     QSpacerItem,
     QVBoxLayout,
     QWidget,
 )
 
+from bitcoin_safe.gui.qt.invisible_scroll_area import InvisibleScrollArea
 from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
 from bitcoin_safe.gui.qt.util import do_copy, set_translucent, svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
-from ..util import set_margins, to_color_name
+from ..util import category_color, set_margins, should_process_theme_change, to_color_name
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +66,8 @@ class TitledComponent(QWidget):
         super().__init__(parent=parent)
         self._layout = QVBoxLayout(self)
         self._layout.setSpacing(3)
+        self._background_color = hex_color
+        self._border_color = border_color
 
         self.title = QLabel(title, self)
         self._radius = 20
@@ -89,11 +90,15 @@ class TitledComponent(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
         self.setObjectName(str(id(self)))
+        self.refresh_style()
+
+    def refresh_style(self) -> None:
+        """Reapply the component stylesheet."""
         self.setStyleSheet(
             f"""
                 #{self.objectName()} {{
-                    background-color: {hex_color};
-                    border: {"none" if border_color is None else f"2px dashed {border_color}"};
+                    background-color: {self._background_color};
+                    border: {"none" if self._border_color is None else f"2px dashed {self._border_color}"};
                     border-radius: 10px;
                 }}
                 """
@@ -173,6 +178,11 @@ class ReceiveGroup(TitledComponent):
 
     def updateUi(self):
         """UpdateUi."""
+        self._background_color = category_color(self.category).name()
+        self.refresh_style()
+        self.force_new_button.setIcon(svg_tools.get_QIcon("reset-update.svg"))
+        self.copy_button.setIcon(svg_tools.get_QIcon("bi--copy.svg"))
+        self.qr_button.setIcon(svg_tools.get_QIcon("bi--qr-code.svg"))
         self.force_new_button.setToolTip(self.tr("Get next address"))
         self.copy_button.setToolTip(self.tr("Copy address to clipboard"))
         self.qr_button.setToolTip(self.tr("Magnify QR code"))
@@ -246,9 +256,18 @@ class AddCategoryButton(TitledComponent):
     def updateUi(self) -> None:
         # self.title.setText(self.tr("Add New Category"))
         """UpdateUi."""
+        icon = svg_tools.get_QIcon("bi--plus-lg.svg")
+        self.icon_label.setPixmap(icon.pixmap(QSize(36, 36), self.devicePixelRatioF()))
         self.caption_label.setText(self.tr("Add new category"))
         self.caption_label_sub.setText(self.tr("KYC Exchange, Private, ..."))
         self.setToolTip(self.tr("Add new category"))
+        self.refresh_style()
+
+    def refresh_style(self) -> None:
+        """Refresh palette-derived styling."""
+        self._background_color = to_color_name(QPalette.ColorRole.Midlight)
+        self._border_color = to_color_name(QPalette.ColorRole.Mid)
+        super().refresh_style()
 
     def mouseReleaseEvent(self, a0: QMouseEvent | None) -> None:
         """MouseReleaseEvent."""
@@ -286,7 +305,9 @@ class QuickReceive(QWidget):
         # Horizontal Layout for Scroll Area content
 
         # Content Widget for the Scroll Area
-        self.content_widget = QWidget(parent)
+        self.scroll_area = InvisibleScrollArea(self)
+        self.scroll_area.setWidgetResizable(True)
+        self.content_widget = self.scroll_area.content_widget
         self.content_widget.setAutoFillBackground(True)
         self.content_widget_layout = QHBoxLayout(self.content_widget)
         # self.content_widget_layout.setContentsMargins(0, 0, 0, 0)  # Left, Top, Right, Bottom margins
@@ -298,17 +319,7 @@ class QuickReceive(QWidget):
         )
         self.content_widget_layout.addItem(self._trailing_spacer)
 
-        # Scroll Area
-        self.scroll_area = QScrollArea()
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setWidget(self.content_widget)
-        self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
-
         set_translucent(self.content_widget)
-
-        # 2) scroll‐area viewport (where it actually paints)
-        if viewport := self.scroll_area.viewport():
-            set_translucent(viewport)
 
         # Main Layout
         main_layout = QVBoxLayout(self)
@@ -405,8 +416,15 @@ class QuickReceive(QWidget):
     def updateUi(self):
         """UpdateUi."""
         self.label_title.setText(translate("QuickReceive", "Quick Receive"))
+        self.manage_categories_button.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         self.manage_categories_button.setText(translate("QuickReceive", "Manage Categories"))
         self.manage_categories_button.setToolTip(translate("QuickReceive", "Open the category manager"))
         self.add_category_button.updateUi()
         for gb in self.group_boxes:
             gb.updateUi()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh translucent surfaces when the app palette changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self.updateUi()

@@ -41,7 +41,8 @@ from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.gui.qt.qr_components.quick_receive import ReceiveGroup
+from bitcoin_safe.gui.qt.invisible_scroll_area import InvisibleScrollArea
+from bitcoin_safe.gui.qt.qr_components.quick_receive import QuickReceive, ReceiveGroup
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 
 from ...helpers import TestConfig
@@ -53,6 +54,15 @@ logger = logging.getLogger(__name__)
 def _strip_invisible(text: str) -> str:
     # Remove zero-width or BOM characters that can appear in rendered labels.
     return text.replace("\u200b", "").replace("\ufeff", "")
+
+
+def test_quick_receive_uses_invisible_scroll_area(qtbot: QtBot) -> None:
+    widget = QuickReceive()
+    qtbot.addWidget(widget)
+
+    assert isinstance(widget.scroll_area, InvisibleScrollArea)
+    assert widget.content_widget is widget.scroll_area.content_widget
+    assert "border: none;" in widget.scroll_area.styleSheet()
 
 
 @pytest.mark.marker_qt_3

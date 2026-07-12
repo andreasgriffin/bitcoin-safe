@@ -60,7 +60,6 @@ from bitcoin_safe.gui.qt.util import (
     Message,
     MessageType,
     set_no_margins,
-    svg_tools,
 )
 from bitcoin_safe.plugin_framework.builtin_plugins import (
     BUILTIN_PLUGIN_BUNDLES,
@@ -160,7 +159,7 @@ class PluginManagerWidget(QWidget):
         self.node = SidebarNode[object](
             data=self,
             widget=self,
-            icon=svg_tools.get_QIcon("bi--gear.svg"),
+            icon="bi--gear.svg",
             title="",
         )
         self.updateUi()
@@ -1467,13 +1466,6 @@ class PluginManager(BaseSaveableClass):
             if existing_client.plugin_source == PluginClientSource.EXTERNAL
             and existing_client.plugin_bundle_id == bundle_id
         ]
-        for removed_client in removed_clients:
-            if not removed_client.enabled:
-                continue
-            try:
-                removed_client.set_enabled(False)
-            except Exception:
-                logger.exception("Could not disable plugin %s before deletion.", removed_client.plugin_id)
         if not question_dialog(
             text=self.widget.tr("Delete installed plugin {plugin}?").format(plugin=plugin_name),
             title=self.widget.tr("Delete Installed Plugin"),
@@ -1482,7 +1474,13 @@ class PluginManager(BaseSaveableClass):
         ):
             return
 
+        reenable_clients: list[PluginClient] = []
         try:
+            for removed_client in removed_clients:
+                if not removed_client.enabled:
+                    continue
+                removed_client.set_enabled(False)
+                reenable_clients.append(removed_client)
             self.external_registry.remove_installed_plugin(bundle_id)
             self.serialized_client_dumps = self._merge_serialized_client_payloads(
                 [
@@ -1501,6 +1499,13 @@ class PluginManager(BaseSaveableClass):
             self._refresh_after_registry_change(runtime_changed)
             logger.info("Deleted plugin %s.", plugin_name)
         except ExternalPluginError as exc:
+            for removed_client in reenable_clients:
+                try:
+                    removed_client.set_enabled(True)
+                except Exception:
+                    logger.exception(
+                        "Could not restore plugin %s after failed deletion.", removed_client.plugin_id
+                    )
             Message(str(exc), type=MessageType.Error, parent=self.parent or self.widget)
 
     def clone(self, class_kwargs: dict | None = None):

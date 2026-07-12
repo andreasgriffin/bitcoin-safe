@@ -39,7 +39,7 @@ from typing import cast
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.time_util import AgeStyle, age
-from PyQt6.QtCore import QLocale, QPointF, QRectF, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QLocale, QPointF, QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QColor,
     QFont,
@@ -78,6 +78,7 @@ from bitcoin_safe.util import resource_path
 from .cbf_progress_bar import CBFProgressBar
 from .icon_label import IconLabel
 from .styled_card_frame import BaseBorderCardFrame
+from .util import get_neutral_surface_colors, should_process_theme_change
 
 logger = logging.getLogger(__name__)
 
@@ -730,6 +731,11 @@ class NetworkMapWidget(QWidget):
         self._sync_wallet_progress_visibility()
         self._refresh_points_and_legend()
 
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self._refresh_progress_card_styles()
+
     def _has_active_wallet_scan(self) -> bool:
         if self.config.network_config.server_type != BlockchainType.CompactBlockFilter:
             return False
@@ -895,6 +901,11 @@ class NetworkMapWidget(QWidget):
             and self.config.network_config.server_type == BlockchainType.CompactBlockFilter
             and has_cards
         )
+
+    def _refresh_progress_card_styles(self) -> None:
+        for card in [self.local_progress_card, *self._wallet_progress_cards.values()]:
+            card.background_color = get_neutral_surface_colors().panel_background
+            card.refresh_style()
 
     def _refresh_points_and_legend(self) -> None:
         p2p_connections = tuple(self._p2p_connections)

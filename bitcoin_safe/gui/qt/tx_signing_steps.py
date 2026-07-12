@@ -63,7 +63,13 @@ from bitcoin_safe.gui.qt.send_test_schedule import SendTestStepPlan
 from bitcoin_safe.gui.qt.signer_ui import SignedUI, SignerUI
 from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
 from bitcoin_safe.gui.qt.tx_util import get_clients
-from bitcoin_safe.gui.qt.util import clear_layout, set_no_margins, svg_tools, svg_tools_hardware_signer
+from bitcoin_safe.gui.qt.util import (
+    clear_layout,
+    get_neutral_surface_colors,
+    set_no_margins,
+    svg_tools,
+    svg_tools_hardware_signer,
+)
 from bitcoin_safe.hardware_signers import FeatureLevel, HardwareSigner, HardwareSigners
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
@@ -223,7 +229,7 @@ class TxSigningDeviceCard(CardBase):
 
         self.set_title(device.label)
         self.set_subtitle(device.subtitle)
-        self.set_icon(svg_tools_hardware_signer.get_QIcon(device.hardware_signer.icon_name))
+        self.set_icon(device.hardware_signer.icon_name, svg_tools_custom=svg_tools_hardware_signer)
 
         self.button_sign = QPushButton(self.header_right_widget)
         self.button_sign.clicked.connect(self.signal_expand_requested.emit)
@@ -245,6 +251,10 @@ class TxSigningDeviceCard(CardBase):
         self._show_initial_body()
         self.collapse()
         self.updateUi()
+
+    def _on_theme_change(self) -> None:
+        self.background_color = get_neutral_surface_colors().panel_background
+        super()._on_theme_change()
 
     def expand(self) -> None:
         """Expand and show the correct first body for this device state."""
@@ -298,7 +308,7 @@ class TxSigningDeviceCard(CardBase):
             return
         if self.guidance.state == TxSigningHeaderState.test_verified:
             self.header_status.setText(self.tr("Test verified"))
-            self.header_status.set_icon(svg_tools.get_QIcon("checkmark.svg"))
+            self.header_status.set_icon("checkmark.svg")
             return
         if self.guidance.state == TxSigningHeaderState.keep_ready:
             next_test_number = self.guidance.next_test_number or 1
