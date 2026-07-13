@@ -339,6 +339,7 @@ class SourceCatalogItem(QObject):
         SignalProtocol[[ExternalPluginCatalogEntry]],
         pyqtSignal(ExternalPluginCatalogEntry),
     )
+    signal_delete_requested = cast(SignalProtocol[[str]], pyqtSignal(str))
     signal_request_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
     signal_enabled_changed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
     signal_needs_persist = cast(SignalProtocol[[]], pyqtSignal())
@@ -393,6 +394,9 @@ class SourceCatalogItem(QObject):
     def show_install_button(self) -> bool:
         return self.entry.installed_version is None or self.entry.update_available
 
+    def can_delete_plugin(self) -> bool:
+        return self.entry.installed_version is not None
+
     def _available_update_target_text(self) -> str:
         return format_version_with_hash(
             self,
@@ -402,6 +406,10 @@ class SourceCatalogItem(QObject):
 
     def trigger_install(self) -> None:
         self.signal_install_requested.emit(self.entry)
+
+    def request_delete(self) -> None:
+        if self.can_delete_plugin():
+            self.signal_delete_requested.emit(self.entry.bundle_id)
 
     def create_plugin_widget(
         self,
