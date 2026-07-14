@@ -3440,6 +3440,82 @@ def test_plugin_manager_keeps_payload_pending_when_client_from_dump_fails_then_r
         manager.close()
 
 
+def test_plugin_manager_preserves_live_client_payload_when_runtime_client_becomes_unavailable(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    monkeypatch.setattr(
+        PluginManager,
+        "_refresh_external_state",
+        classmethod(lambda cls, context, external_registry: {}),
+    )
+
+    client = _DisplayMetadataPluginClient()
+    client.set_plugin_identity(
+        plugin_source=PluginClientSource.EXTERNAL,
+        plugin_bundle_id="test-plugin",
+    )
+    manager = PluginManager(
+        clients=[client],
+        parent=None,
+        **_plugin_manager_init_kwargs(tmp_path),
+    )
+
+    try:
+        monkeypatch.setattr(manager, "_all_client_classes", lambda: [])
+
+        manager.create_and_connect_clients(
+            descriptor=_test_descriptor(),
+            wallet_id="wallet-id",
+            category_core=SimpleNamespace(),
+        )
+
+        dumped = manager.dump()
+
+        assert manager.clients == []
+        assert len(manager.serialized_client_dumps) == 1
+        assert PluginManager._payload_identity(manager.serialized_client_dumps[0]) == client.plugin_id
+        assert dumped["serialized_client_dumps"] == manager.serialized_client_dumps
+    finally:
+        manager.close()
+
+
+def test_plugin_manager_discards_snapshot_payload_when_live_client_survives_rebuild(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    monkeypatch.setattr(
+        PluginManager,
+        "_refresh_external_state",
+        classmethod(lambda cls, context, external_registry: {}),
+    )
+
+    client = _DisplayMetadataPluginClient()
+    client.set_plugin_identity(
+        plugin_source=PluginClientSource.EXTERNAL,
+        plugin_bundle_id="test-plugin",
+    )
+    manager = PluginManager(
+        clients=[client],
+        parent=None,
+        **_plugin_manager_init_kwargs(tmp_path),
+    )
+
+    try:
+        monkeypatch.setattr(manager, "_all_client_classes", lambda: [client.__class__])
+
+        manager.create_and_connect_clients(
+            descriptor=_test_descriptor(),
+            wallet_id="wallet-id",
+            category_core=SimpleNamespace(),
+        )
+
+        assert manager.clients == [client]
+        assert manager.serialized_client_dumps == []
+    finally:
+        manager.close()
+
+
 def test_delete_installed_source_plugin_keeps_serialized_payload_and_clears_permissions(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:

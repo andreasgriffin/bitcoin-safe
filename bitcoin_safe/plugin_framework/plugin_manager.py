@@ -994,8 +994,29 @@ class PluginManager(BaseSaveableClass):
             client.updateUi()
         self.widget.updateUi()
 
+    def _serialized_existing_client_payloads(self, existing_clients: list[PluginClient]) -> list[str]:
+        return self._merge_serialized_client_payloads(
+            [self._serialize_client_payload(client) for client in existing_clients]
+        )
+
+    def _retain_unrestored_existing_client_payloads(
+        self,
+        serialized_existing_client_payloads: list[str],
+    ) -> None:
+        restored_plugin_ids = {client.plugin_id for client in self.clients}
+        unresolved_payloads: list[str] = []
+        for payload in serialized_existing_client_payloads:
+            identity = self._payload_identity(payload)
+            if identity is not None and identity in restored_plugin_ids:
+                continue
+            unresolved_payloads.append(payload)
+        self.serialized_client_dumps = self._merge_serialized_client_payloads(
+            [*self.serialized_client_dumps, *unresolved_payloads]
+        )
+
     def _restore_or_create_clients(self, descriptor: bdk.Descriptor) -> None:
         existing_clients = self.clients.copy()
+        serialized_existing_client_payloads = self._serialized_existing_client_payloads(existing_clients)
         self.clients.clear()
         candidate_classes = {
             cls
@@ -1021,6 +1042,7 @@ class PluginManager(BaseSaveableClass):
                 self._register_client(restored_pending_client)
             elif discovered_client := discovered_clients_by_class.get(cls):
                 self._register_client(discovered_client)
+        self._retain_unrestored_existing_client_payloads(serialized_existing_client_payloads)
 
     def create_and_connect_clients(
         self,
