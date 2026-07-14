@@ -93,6 +93,12 @@ class TxExport(BaseHardwareSignerInteractionWidget):
 
         self.updateUi()
 
+    def refresh_theme_icons(self) -> None:
+        """Rebuild palette-aware icons for the export controls."""
+        self.export_qr_button.refresh_theme_icons()
+        self.button_export_file.refresh_theme_icons()
+        self.button_sync_share.refresh_theme_icons()
+
     def updateUi(self) -> None:
         """UpdateUi."""
         self.export_qr_button.updateUi()

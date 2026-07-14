@@ -47,7 +47,7 @@ from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, Unifie
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from nostr_sdk import PublicKey
-from PyQt6.QtCore import QLocale, QSignalBlocker, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QLocale, QSignalBlocker, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QShowEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
@@ -66,7 +66,7 @@ from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.descriptor_export_tools import DescriptorExportTools, shorten_filename
 from bitcoin_safe.gui.qt.recipient_csv import export_recipients_csv, get_recipients_from_data
 from bitcoin_safe.gui.qt.signer_ui import SignerUI
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import should_process_theme_change, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import DataExportPDF
@@ -232,6 +232,19 @@ class FileToolButton(QToolButton):
 
         self.set_data(data=data)
         self.updateUi()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh palette-colored icons when the theme changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0, include_style_change=True, include_enabled_change=True):
+            self.refresh_theme_icons()
+
+    def refresh_theme_icons(self) -> None:
+        """Rebuild the button and menu icons for the current palette."""
+        if not hasattr(self, "_menu") or not hasattr(self, "data"):
+            return
+        self.setIcon(svg_tools.get_QIcon("bi--download.svg"))
+        self.refresh_menu()
 
     def _fill_menu(self):
         """Fill menu."""
@@ -516,6 +529,16 @@ class SyncChatToolButton(QToolButton):
         self.setIcon(svg_tools.get_QIcon(SYNC_CHAT_ICON_NAME))
 
         self.updateUi()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh palette-colored icons when the theme changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0, include_style_change=True, include_enabled_change=True):
+            self.refresh_theme_icons()
+
+    def refresh_theme_icons(self) -> None:
+        """Rebuild the button icon for the current palette."""
+        self.setIcon(svg_tools.get_QIcon(SYNC_CHAT_ICON_NAME))
 
     def _share_with_device(
         self, wallet_id: str, sync_client: SyncClient, receiver_public_key_bech32: str | None = None
@@ -1077,6 +1100,19 @@ class QrToolButton(QToolButton):
 
         self._fill_menu()
         self.updateUi()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh palette-colored icons when the theme changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0, include_style_change=True, include_enabled_change=True):
+            self.refresh_theme_icons()
+
+    def refresh_theme_icons(self) -> None:
+        """Rebuild the button and menu icons for the current palette."""
+        if not hasattr(self, "_menu") or not hasattr(self, "export_qr_widget"):
+            return
+        self.setIcon(svg_tools.get_QIcon("bi--qr-code.svg"))
+        self._fill_menu()
 
     def select_export_type(self, export_type: QrExportType) -> None:
         """Select the QR export type without opening the export dialog."""
