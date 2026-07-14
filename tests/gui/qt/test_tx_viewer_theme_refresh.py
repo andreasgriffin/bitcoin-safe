@@ -40,6 +40,7 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.export_data import FileToolButton, QrToolButton, SyncChatToolButton
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.gui.qt.util import remember_theme_state
 from bitcoin_safe.signals import SignalsMin
 from tests.non_gui.test_psbt_util import p2wsh_psbt_0_1of1
 
@@ -74,9 +75,7 @@ def test_file_toolbutton_refreshes_button_and_menu_icons_on_palette_change(qtbot
     assert _icon_color(file_action.icon()) == QColor("red")
 
 
-def test_qr_toolbutton_refreshes_icon_on_palette_change(
-    qapp: QApplication, qtbot: QtBot, loop_in_thread, monkeypatch
-) -> None:
+def test_qr_toolbutton_refreshes_icon_on_palette_change(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:
     button = QrToolButton(
         data=Data(p2wsh_psbt_0_1of1.extract_tx(), DataType.Tx, bdk.Network.REGTEST),
         signals_min=SignalsMin(),
@@ -91,15 +90,11 @@ def test_qr_toolbutton_refreshes_icon_on_palette_change(
         lambda _icon_name: refreshed_icon,
     )
 
-    original_palette = QPalette(qapp.palette())
-    updated_palette = QPalette(original_palette)
+    remember_theme_state(button)
+    updated_palette = QPalette(button.palette())
     updated_palette.setColor(QPalette.ColorRole.WindowText, QColor("#55ff55"))
-
-    try:
-        qapp.setPalette(updated_palette)
-        QApplication.sendEvent(button, QEvent(QEvent.Type.ApplicationPaletteChange))
-    finally:
-        qapp.setPalette(original_palette)
+    button.setPalette(updated_palette)
+    button.changeEvent(QEvent(QEvent.Type.PaletteChange))
 
     assert _icon_color(button.icon()) == QColor("green")
 
