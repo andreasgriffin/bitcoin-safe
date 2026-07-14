@@ -1,6 +1,6 @@
 #
 # Bitcoin Safe
-# Copyright (C) 2024-2026 Andreas Griffin
+# Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of version 3 of the GNU General Public License as
@@ -27,32 +27,27 @@
 # SOFTWARE.
 #
 
-from __future__ import annotations
-
 from PyQt6.QtCore import QEvent
-from PyQt6.QtWidgets import QScrollArea, QWidget
+from pytestqt.qtbot import QtBot
 
-from .util import should_process_theme_change
+from bitcoin_safe.gui.qt.ui_tx.spinbox import AnalyzerSpinBox
 
 
-class InvisibleScrollArea(QScrollArea):
-    def __init__(self, parent=None) -> None:
-        """Initialize instance."""
-        super().__init__(parent=parent)
+def test_analyzer_spinbox_ignores_style_change_event(qtbot: QtBot) -> None:
+    widget = AnalyzerSpinBox()
+    qtbot.addWidget(widget)
+    widget.setReadOnly(True)
 
-        self.setObjectName(f"{id(self)}")
-        self.setStyleSheet(f"#{self.objectName()}  {{ background: transparent; border: none; }}")
+    widget.changeEvent(QEvent(QEvent.Type.StyleChange))
 
-        self.content_widget = QWidget(self)
-        self.content_widget.setObjectName(f"{id(self.content_widget)}")
-        self.content_widget.setStyleSheet(
-            f"#{self.content_widget.objectName()}  {{ background: transparent; border: none; }}"
-        )
+    assert "background: transparent;" in widget.styleSheet()
 
-        self.setWidget(self.content_widget)
 
-    def changeEvent(self, a0: QEvent | None) -> None:
-        super().changeEvent(a0)
-        if should_process_theme_change(self, a0):
-            if viewport := self.viewport():
-                viewport.update()
+def test_analyzer_spinbox_handles_palette_change_event(qtbot: QtBot) -> None:
+    widget = AnalyzerSpinBox()
+    qtbot.addWidget(widget)
+    widget.setReadOnly(True)
+
+    widget.changeEvent(QEvent(QEvent.Type.PaletteChange))
+
+    assert "background: transparent;" in widget.styleSheet()

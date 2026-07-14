@@ -45,8 +45,8 @@ from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.dialogs import AutoScanMode
 from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import QObject, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import QEvent, QObject, Qt, pyqtSignal
+from PyQt6.QtGui import QIcon, QPalette, QPixmap
 from PyQt6.QtWidgets import (
     QComboBox,
     QGridLayout,
@@ -63,7 +63,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING
 from bitcoin_safe.gui.qt.analyzers import (
     FingerprintAnalyzer,
     KeyOriginAnalyzer,
@@ -98,7 +98,15 @@ from ...keystore import KeyStore, KeyStoreImporterTypes
 from ...signals import SignalsMin
 from .block_change_signals import BlockChangesSignals
 from .dialog_import import ImportDialog
-from .util import Message, MessageType, set_margins
+from .util import (
+    ColorScheme,
+    Message,
+    MessageType,
+    get_neutral_surface_colors,
+    is_theme_change_event,
+    set_margins,
+    to_color_name,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -136,6 +144,8 @@ class KeyStoreUI(CardBase):
         show_register_button: bool = True,
     ) -> None:
         """Initialize instance."""
+        self._theme_assets_ready = False
+        self._theme_refresh_in_progress = False
         super().__init__(parent=parent, expansion_mode=CardExpansionMode.EXPANDABLE)
         self.signals_min = signals_min
         self._fallback_hardware_signer_label = hardware_signer_label
@@ -152,20 +162,16 @@ class KeyStoreUI(CardBase):
         self._duplicate_xpub_message = ""
         self.signal_tracker = SignalTracker()
         self._state = KeyStoreUiState.Add
-        self._status_pixmaps = {
-            AnalyzerState.Valid: svg_tools.get_pixmap("checkmark.svg", size=(22, 22)),
-            AnalyzerState.Warning: svg_tools.get_pixmap("warning.svg", size=(22, 22)),
-            AnalyzerState.Invalid: svg_tools.get_pixmap("error.svg", size=(22, 22)),
-        }
+        self._status_pixmaps = self._build_status_pixmaps()
 
         self.usb_gui = USBGui(
             self.network,
             initalization_label=self.hardware_signer_label,
             loop_in_thread=loop_in_thread,
-            window_icon=svg_tools.get_QIcon(LOGO_NAME),
         )
 
         self._build_widgets()
+        self._theme_assets_ready = True
         self._connect_signals()
         self.updateUi()
 
@@ -194,6 +200,40 @@ class KeyStoreUI(CardBase):
             if self.selected_hardware_signer is None
             else self.hardware_signer_label
         )
+
+    def _build_status_pixmaps(self) -> dict[AnalyzerState, QPixmap]:
+        return {
+            AnalyzerState.Valid: svg_tools.get_pixmap("checkmark.svg", size=(22, 22)),
+            AnalyzerState.Warning: svg_tools.get_pixmap("warning.svg", size=(22, 22)),
+            AnalyzerState.Invalid: svg_tools.get_pixmap("error.svg", size=(22, 22)),
+        }
+
+    def _refresh_theme_assets(self) -> None:
+        if not self._theme_assets_ready:
+            return
+        self._status_pixmaps = self._build_status_pixmaps()
+        self.button_device_instructions.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
+        self.button_menu.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
+        self.button_connect_qr.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename))
+        self.button_connect_usb.enabled_icon = svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename)
+        if not self.button_connect_usb.timer.isActive():
+            self.button_connect_usb.setIcon(self.button_connect_usb.enabled_icon)
+        self.button_connect_bluetooth.enabled_icon = svg_tools.get_QIcon("bi--bluetooth.svg")
+        if not self.button_connect_bluetooth.timer.isActive():
+            self.button_connect_bluetooth.setIcon(self.button_connect_bluetooth.enabled_icon)
+        self.button_connect_import.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.file.icon_filename))
+
+    def _refresh_card_style(self) -> None:
+        if not self._theme_assets_ready:
+            return
+        surface_colors = get_neutral_surface_colors()
+        self.background_color = surface_colors.panel_background
+        self.refresh_style()
+        subtitle_palette = self.header_subtitle.palette()
+        subtitle_palette.setColor(self.header_subtitle.foregroundRole(), surface_colors.muted_text)
+        self.header_subtitle.setPalette(subtitle_palette)
+        self.hline.setStyleSheet(f"color: {to_color_name(QPalette.ColorRole.Mid)}")
+        self._update_header_icon()
 
     def _build_widgets(self) -> None:
         self.card_frame = self
@@ -233,7 +273,6 @@ class KeyStoreUI(CardBase):
         self.header_right_layout.addWidget(self.header_actions_widget)
 
         self.button_device_instructions = QPushButton(self.header_widget)
-        self.button_device_instructions.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
         self.header_actions_layout.addWidget(self.button_device_instructions)
 
         self.button_register = QPushButton(self.header_widget)
@@ -242,7 +281,6 @@ class KeyStoreUI(CardBase):
         self.button_menu = QToolButton(self.header_widget)
         self.button_menu.setAutoRaise(True)
         self.button_menu.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-        self.button_menu.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         self.button_menu.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
         self.menu_button_menu = Menu(self.button_menu)
         self.button_menu.setMenu(self.menu_button_menu)
@@ -284,13 +322,12 @@ class KeyStoreUI(CardBase):
         self.connect_layout.addStretch()
 
         self.button_connect_qr = QPushButton(self.left_widget)
-        self.button_connect_qr.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename))
         self.connect_layout.addWidget(self.button_connect_qr)
 
         self.button_connect_usb = SpinningButton(
             text="",
             signal_stop_spinning=self.usb_gui.signal_end_hwi_blocker,
-            enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            enabled_icon=QIcon(),
             timeout=60,
             parent=self.left_widget,
         )
@@ -299,14 +336,13 @@ class KeyStoreUI(CardBase):
         self.button_connect_bluetooth = SpinningButton(
             text="",
             signal_stop_spinning=self.usb_gui.signal_end_hwi_blocker,
-            enabled_icon=svg_tools.get_QIcon("bi--bluetooth.svg"),
+            enabled_icon=QIcon(),
             timeout=60,
             parent=self.left_widget,
         )
         self.connect_layout.addWidget(self.button_connect_bluetooth)
 
         self.button_connect_import = QPushButton(self.left_widget)
-        self.button_connect_import.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.file.icon_filename))
         self.connect_layout.addWidget(self.button_connect_import)
 
         self.label_fingerprint = IconLabel(parent=self.left_widget)
@@ -1149,6 +1185,9 @@ class KeyStoreUI(CardBase):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        ColorScheme.update_from_widget(self)
+        self._refresh_card_style()
+        self._refresh_theme_assets()
         self.label_description.setText(self.tr("Personal notes:"))
         self.connect_help_label.setText(self.tr("Device instructions"))
         self.connect_help_label.set_icon_as_help(
@@ -1221,6 +1260,25 @@ class KeyStoreUI(CardBase):
 
         self._update_header_subtitle()
         self._apply_state()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if self._theme_assets_ready and is_theme_change_event(a0):
+            self._refresh_theme_dependent_ui()
+
+    def eventFilter(self, a0: QObject | None, a1: QEvent | None) -> bool:
+        return super().eventFilter(a0, a1)
+
+    def _refresh_theme_dependent_ui(self) -> None:
+        if not self._theme_assets_ready or self._theme_refresh_in_progress:
+            return
+
+        self._theme_refresh_in_progress = True
+        try:
+            self.updateUi()
+            self.format_all_fields()
+        finally:
+            self._theme_refresh_in_progress = False
 
     def _on_hwi_click(self, autoscan_mode: AutoScanMode) -> None:
         """On hwi click."""

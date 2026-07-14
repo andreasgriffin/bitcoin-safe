@@ -35,12 +35,15 @@ import json
 from datetime import timedelta
 from typing import Any
 
-from PyQt6.QtCore import QRectF
+from PyQt6.QtCore import QEvent, QRectF
+from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
 from bitcoin_safe.geoip_rough import RoughGeoIpDatabase
 from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
+from bitcoin_safe.gui.qt.util import get_neutral_surface_colors, to_color_name
 from bitcoin_safe.network_config import Peer
 from bitcoin_safe.pythonbdk_types import BlockchainType
 
@@ -257,6 +260,41 @@ def test_network_map_widget_visibility_depends_on_network_mode(
         assert widget.wallet_progress_section.isHidden() == expected["wallet_progress_hidden"]
         assert widget.cbf_legend_label.isHidden() == expected["cbf_legend_hidden"]
         assert widget.server_legend_label.isHidden() == expected["server_legend_hidden"]
+
+
+def test_network_map_sync_progress_card_updates_background_on_palette_change(
+    qtbot: QtBot, test_config
+) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    test_config.network_config.server_type = BlockchainType.CompactBlockFilter
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.cbf_initial_sync)
+    qtbot.addWidget(widget)
+    widget.show()
+    qtbot.waitExposed(widget)
+
+    def apply_palette(window: str, text: str) -> str:
+        palette = QPalette(original_palette)
+        palette.setColor(QPalette.ColorRole.Window, QColor(window))
+        palette.setColor(QPalette.ColorRole.WindowText, QColor(text))
+        app.setPalette(palette)
+        QApplication.sendEvent(widget, QEvent(QEvent.Type.ApplicationPaletteChange))
+        qtbot.wait(10)
+        return to_color_name(get_neutral_surface_colors().panel_background)
+
+    try:
+        light_background = apply_palette("#ffffff", "#111111")
+        assert f"background: {light_background};" in widget.local_progress_card.styleSheet()
+
+        dark_background = apply_palette("#111111", "#f5f5f5")
+        assert f"background: {dark_background};" in widget.local_progress_card.styleSheet()
+    finally:
+        app.setPalette(original_palette)
+        QApplication.sendEvent(widget, QEvent(QEvent.Type.ApplicationPaletteChange))
+
+    assert light_background != dark_background
 
 
 def test_network_map_widget_renders_multiple_wallet_progress_rows(qtbot: QtBot, test_config) -> None:

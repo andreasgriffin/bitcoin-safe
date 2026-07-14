@@ -35,8 +35,11 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import AddressType, AddressTypes
 from bitcoin_usb.dialogs import AutoScanMode
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
+from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUI, KeyStoreUiState
 from bitcoin_safe.gui.qt.util import ColorScheme, svg_tools_hardware_signer
 from bitcoin_safe.hardware_signers import HardwareSigners
@@ -112,7 +115,7 @@ def test_keystore_ui_add_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> No
     actual_pixmap = widget.header_icon.pixmap()
     assert actual_pixmap is not None
     expected_icon = svg_tools_hardware_signer.get_QIcon(HardwareSigners.generic.icon_name)
-    expected_pixmap = expected_icon.pixmap(actual_pixmap.size(), widget.devicePixelRatioF())
+    expected_pixmap = expected_icon.pixmap(34, 34)
     assert actual_pixmap.toImage() == expected_pixmap.toImage()
     assert widget.sizePolicy().verticalPolicy() == widget.sizePolicy().Policy.Fixed
     assert widget.combo_brand.isVisible()
@@ -385,6 +388,40 @@ def test_keystore_ui_read_only_state_can_hide_register_button(
 
     assert widget.state == KeyStoreUiState.ReadOnly
     assert not widget.button_register.isVisible()
+
+
+def test_keystore_ui_refreshes_detail_warning_colors_on_palette_change(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    def apply_palette(window: str, text: str) -> tuple[str, str]:
+        palette = QPalette(original_palette)
+        palette.setColor(QPalette.ColorRole.Window, QColor(window))
+        palette.setColor(QPalette.ColorRole.WindowText, QColor(text))
+        palette.setColor(QPalette.ColorRole.Base, QColor(window))
+        palette.setColor(QPalette.ColorRole.Text, QColor(text))
+        palette.setColor(QPalette.ColorRole.Button, QColor(window))
+        palette.setColor(QPalette.ColorRole.ButtonText, QColor(text))
+        app.setPalette(palette)
+        qtbot.wait(10)
+        widget.edit_xpub.format_edit(AnalyzerState.Warning)
+        return widget.edit_xpub.input_field.styleSheet(), widget.background_color.name()
+
+    try:
+        light_stylesheet, light_background = apply_palette("#ffffff", "#101010")
+        dark_stylesheet, dark_background = apply_palette("#111111", "#f5f5f5")
+    finally:
+        app.setPalette(original_palette)
+        qtbot.wait(10)
+
+    assert "#ffd49a" in light_stylesheet
+    assert "#8a4b00" in dark_stylesheet
+    assert light_stylesheet != dark_stylesheet
+    assert light_background != dark_background
 
 
 def test_register_multisig_emit_request_signal(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:

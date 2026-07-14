@@ -37,7 +37,6 @@ from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
-from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.signals import SignalsMin
 
 logger = logging.getLogger(__name__)
@@ -80,7 +79,7 @@ class WizardBase(QWidget):
             title=self.tr("Wizard"),
             data=self,
             widget=self,
-            icon=svg_tools.get_QIcon("stars4.svg"),
+            icon="stars4.svg",
             parent=self,
         )
 

@@ -47,7 +47,7 @@ from typing import Any, Protocol
 
 import pysequoia
 import requests
-from pysequoia.packet import Packet, PacketPile, Tag
+from pysequoia.packet import Packet, PacketPile, Tag  # pyright: ignore[reportMissingModuleSource]
 
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.util import default_timeout

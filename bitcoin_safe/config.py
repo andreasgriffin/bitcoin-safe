@@ -48,6 +48,7 @@ from PyQt6.QtCore import QCoreApplication
 from bitcoin_safe.fx_types import FXProvider
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
 from bitcoin_safe.pythonbdk_types import BlockchainType
+from bitcoin_safe.theme import ThemeMode
 from bitcoin_safe.util import current_project_dir
 
 from .execute_config import DEFAULT_LANG_CODE, DEFAULT_MAINNET
@@ -98,8 +99,9 @@ class UserConfig(BaseSaveableClass):
         BitcoinSymbol.__name__: BitcoinSymbol,
         BtcPayInvoiceDetails.__name__: BtcPayInvoiceDetails,
         FXProvider.__name__: FXProvider,
+        ThemeMode.__name__: ThemeMode,
     }
-    VERSION = "0.3.8"
+    VERSION = "0.3.9"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -130,6 +132,7 @@ class UserConfig(BaseSaveableClass):
         self.language_code: str = DEFAULT_LANG_CODE
         self.currency: str = "USD"
         self.bitcoin_symbol: BitcoinSymbol = BitcoinSymbol.ISO
+        self.theme_mode: ThemeMode = ThemeMode.SYSTEM
         self.rates: dict[str, dict[str, Any]] = {}
         self.historical_rates: dict[float, dict[str, float]] = {}
         self.last_tab_title: list[str] = []

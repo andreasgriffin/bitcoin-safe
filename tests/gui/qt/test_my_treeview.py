@@ -33,14 +33,14 @@ import enum
 from pathlib import Path
 
 import pytest
-from PyQt6.QtCore import QModelIndex
-from PyQt6.QtGui import QStandardItem
+from PyQt6.QtCore import QEvent, QModelIndex
+from PyQt6.QtGui import QColor, QPalette, QStandardItem
 from PyQt6.QtWidgets import QApplication, QStyleFactory
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.color_corrected_treeview import ColorCorrectedTreeView
-from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole, MyTreeView
+from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole, MyTreeView, TreeViewWithToolbar
 from bitcoin_safe.signals import Signals
 
 
@@ -172,6 +172,74 @@ def test_colorcorrectedtreeview_detects_windows11_after_stylesheet_wrap(qtbot: Q
             restored_style = QStyleFactory.create(old_style_name)
             if restored_style is not None:
                 app.setStyle(restored_style)
+
+
+def test_colorcorrectedtreeview_refreshes_selection_override_on_palette_change(
+    qtbot: QtBot, monkeypatch
+) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    tree_view = ColorCorrectedTreeView()
+    qtbot.addWidget(tree_view)
+    monkeypatch.setattr(tree_view, "_needs_selection_text_override", lambda: True)
+
+    def apply_palette(highlighted_text: str) -> str:
+        palette = QPalette(original_palette)
+        palette.setColor(QPalette.ColorRole.HighlightedText, QColor(highlighted_text))
+        app.setPalette(palette)
+        QApplication.sendEvent(tree_view, QEvent(QEvent.Type.PaletteChange))
+        qtbot.wait(10)
+        return tree_view.styleSheet()
+
+    try:
+        light_stylesheet = apply_palette("#111111")
+        dark_stylesheet = apply_palette("#f5f5f5")
+    finally:
+        app.setPalette(original_palette)
+        QApplication.sendEvent(tree_view, QEvent(QEvent.Type.PaletteChange))
+
+    assert light_stylesheet != dark_stylesheet
+    assert "#f5f5f5" in dark_stylesheet
+
+
+def test_treeview_with_toolbar_re_renders_theme_icon_on_palette_change(
+    qtbot: QtBot, test_config: UserConfig
+) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    tree_view = DummyTreeView(config=test_config)
+    widget = TreeViewWithToolbar(searchable_list=tree_view, config=test_config)
+    widget.create_layout()
+    qtbot.addWidget(widget)
+    widget.show()
+    qtbot.waitExposed(widget)
+
+    def render_with_palette(window: str, text: str):
+        palette = QPalette(original_palette)
+        palette.setColor(QPalette.ColorRole.Window, QColor(window))
+        palette.setColor(QPalette.ColorRole.WindowText, QColor(text))
+        palette.setColor(QPalette.ColorRole.Text, QColor(text))
+        palette.setColor(QPalette.ColorRole.ButtonText, QColor(text))
+        palette.setColor(QPalette.ColorRole.Dark, QColor(text))
+        app.setPalette(palette)
+        QApplication.sendEvent(widget, QEvent(QEvent.Type.ApplicationPaletteChange))
+        qtbot.wait(10)
+        pixmap = widget.toolbar_button.icon().pixmap(widget.toolbar_button.iconSize())
+        assert not pixmap.isNull()
+        return pixmap.toImage()
+
+    try:
+        light_image = render_with_palette("#ffffff", "#101010")
+        dark_image = render_with_palette("#101010", "#f5f5f5")
+    finally:
+        app.setPalette(original_palette)
+        QApplication.sendEvent(widget, QEvent(QEvent.Type.ApplicationPaletteChange))
+
+    assert light_image != dark_image
 
 
 def test_mytreeview_csv_export_writes_utf8(tmp_path: Path, test_config: UserConfig) -> None:

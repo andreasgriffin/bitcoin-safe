@@ -1,6 +1,6 @@
 #
 # Bitcoin Safe
-# Copyright (C) 2024-2026 Andreas Griffin
+# Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of version 3 of the GNU General Public License as
@@ -27,32 +27,37 @@
 # SOFTWARE.
 #
 
-from __future__ import annotations
-
 from PyQt6.QtCore import QEvent
-from PyQt6.QtWidgets import QScrollArea, QWidget
+from pytestqt.qtbot import QtBot
 
-from .util import should_process_theme_change
+from bitcoin_safe.gui.qt.wizard.wizard_support import ThemeAwareStepWidget
 
 
-class InvisibleScrollArea(QScrollArea):
-    def __init__(self, parent=None) -> None:
-        """Initialize instance."""
-        super().__init__(parent=parent)
+class DummyTab:
+    def __init__(self) -> None:
+        self.is_closed = False
+        self.update_calls = 0
 
-        self.setObjectName(f"{id(self)}")
-        self.setStyleSheet(f"#{self.objectName()}  {{ background: transparent; border: none; }}")
+    def updateUi(self) -> None:
+        self.update_calls += 1
 
-        self.content_widget = QWidget(self)
-        self.content_widget.setObjectName(f"{id(self.content_widget)}")
-        self.content_widget.setStyleSheet(
-            f"#{self.content_widget.objectName()}  {{ background: transparent; border: none; }}"
-        )
 
-        self.setWidget(self.content_widget)
+def test_theme_aware_step_widget_updates_open_tab_on_palette_change(qtbot: QtBot) -> None:
+    tab = DummyTab()
+    widget = ThemeAwareStepWidget(tab=tab)
+    qtbot.addWidget(widget)
 
-    def changeEvent(self, a0: QEvent | None) -> None:
-        super().changeEvent(a0)
-        if should_process_theme_change(self, a0):
-            if viewport := self.viewport():
-                viewport.update()
+    widget.changeEvent(QEvent(QEvent.Type.ApplicationPaletteChange))
+
+    assert tab.update_calls == 1
+
+
+def test_theme_aware_step_widget_skips_closed_tab_on_palette_change(qtbot: QtBot) -> None:
+    tab = DummyTab()
+    tab.is_closed = True
+    widget = ThemeAwareStepWidget(tab=tab)
+    qtbot.addWidget(widget)
+
+    widget.changeEvent(QEvent(QEvent.Type.ApplicationPaletteChange))
+
+    assert tab.update_calls == 0

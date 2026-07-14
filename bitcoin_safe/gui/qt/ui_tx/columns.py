@@ -32,7 +32,7 @@ from __future__ import annotations
 import logging
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from PyQt6.QtCore import QSignalBlocker, Qt
+from PyQt6.QtCore import QEvent, QSignalBlocker, Qt
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (
     QCheckBox,
@@ -54,6 +54,7 @@ from bitcoin_safe.gui.qt.ui_tx.fee_group import FeeGroup
 from bitcoin_safe.gui.qt.util import (
     set_margins,
     set_no_margins,
+    should_process_theme_change,
     sort_id_to_icon,
     svg_tools,
 )
@@ -281,7 +282,6 @@ class ColumnFee(BaseColumn):
 
         self.toolbutton_advanced = QToolButton()
         self.toolbutton_advanced.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
-        self.toolbutton_advanced.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
 
         self.menu_advanced = Menu(self)
         self.action_set_nlocktime = QAction(self)
@@ -291,6 +291,7 @@ class ColumnFee(BaseColumn):
         self.toolbutton_advanced.setMenu(self.menu_advanced)
         self.toolbutton_advanced.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
         self.header_widget.h_laylout.addWidget(self.toolbutton_advanced)
+        self.updateUi()
 
     def _on_nlocktime_toggled(self, checked: bool) -> None:
         """On nlocktime toggled."""
@@ -338,6 +339,13 @@ class ColumnFee(BaseColumn):
                 title = self.tr("Confirmed")
         self.header_widget.set_icon(icon_text)
         self.header_widget.label_title.setText(title)
+        self.toolbutton_advanced.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         self.action_set_nlocktime.setText(self.tr("Show nLocktime"))
         self.nlocktime_group.updateUi()
         self.fee_group.updateUi()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh toolbar SVGs when the app theme changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0, include_style_change=True):
+            self.updateUi()

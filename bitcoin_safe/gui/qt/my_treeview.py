@@ -136,7 +136,7 @@ from bitcoin_safe.wallet import TxStatus
 from ...config import UserConfig
 from ...i18n import translate
 from .color_corrected_treeview import ColorCorrectedTreeView
-from .util import do_copy, set_no_margins
+from .util import do_copy, set_no_margins, should_process_theme_change
 
 logger = logging.getLogger(__name__)
 
@@ -676,6 +676,13 @@ class MyTreeView(ColorCorrectedTreeView, BaseSaveableClass, Generic[T]):
         )
         d["selected_ids"] = self.get_selected_keys(role=MyItemDataRole.ROLE_CLIPBOARD_DATA)
         return d
+
+    def changeEvent(self, event: QEvent | None) -> None:
+        """Refresh toolbar icons when the palette changes."""
+        super().changeEvent(event)
+        if should_process_theme_change(self, event):
+            self.updateUi()
+            self.update_content()
 
     @classmethod
     def _do_hidden_column_migration(cls, dct: dict[str, Any]):
@@ -1695,13 +1702,12 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
             "",
         )
 
-        toolbar_button = QToolButton(self)
+        self.toolbar_button = QToolButton(self)
 
-        toolbar_button.clicked.connect(partial(self.menu.exec, QCursor.pos()))
-        toolbar_button.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
-        toolbar_button.setMenu(self.menu)
-        toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-        toolbar_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.toolbar_button.clicked.connect(partial(self.menu.exec, QCursor.pos()))
+        self.toolbar_button.setMenu(self.menu)
+        self.toolbar_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.toolbar_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.toolbar = QWidget(self)
         self.toolbar_layout = QHBoxLayout(self.toolbar)
         set_no_margins(self.toolbar_layout)
@@ -1718,7 +1724,7 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
         self.toolbar_layout.addWidget(self.balance_label)
         self.toolbar_layout.addStretch()
         self.toolbar_layout.addWidget(self.search_edit)
-        self.toolbar_layout.addWidget(toolbar_button)
+        self.toolbar_layout.addWidget(self.toolbar_button)
         self.fill_menu_hiddden_columns()
 
     def insert_filter_widget(self, widget: QWidget) -> None:
@@ -1763,7 +1769,14 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
         self.search_edit.setPlaceholderText(translate("mytreeview", "Type to filter"))
         self.action_export_as_csv.setText(translate("mytreeview", "Export as CSV"))
         self.menu_hiddden_columns.setTitle(translate("mytreeview", "Visible columns"))
+        self.toolbar_button.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         self.fill_menu_hiddden_columns()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh toolbar icons when the palette changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self.updateUi()
 
     def close(self) -> bool:
         """Close."""

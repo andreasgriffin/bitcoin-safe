@@ -86,7 +86,7 @@ class BackupNsecNotificationBar(NotificationBar):
         self.wallet_id = ""
         self.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
         self.optionalButton.setIcon(svg_tools.get_QIcon("bi--download.svg"))
-        self.set_icon(svg_tools.get_QIcon("bi--download.svg"))
+        self.set_icon("bi--download.svg")
         self.setVisible(False)
         self.icon_label.textLabel.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
@@ -203,7 +203,7 @@ class SyncClient(PluginClient):
         device_info: dict[str, str] | None = None,
     ):
         """Initialize instance."""
-        super().__init__(enabled=enabled, icon=svg_tools.get_QIcon(SYNC_CHAT_ICON_NAME))
+        super().__init__(enabled=enabled, icon=SYNC_CHAT_ICON_NAME)
         self.close_all_video_widgets: SignalProtocol[[]] | None = None
         self.label_syncer: LabelSyncer | None = None
         self.device_info = device_info or {}

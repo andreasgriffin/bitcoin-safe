@@ -39,7 +39,7 @@ from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6 import QtCore, QtGui
 from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QMessageBox, QSizePolicy
+from PyQt6.QtWidgets import QApplication, QMessageBox, QSizePolicy
 
 from bitcoin_safe.gui.qt.analyzers import AddressAnalyzer
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit, SquareButton
@@ -212,17 +212,13 @@ class AddressEdit(ButtonEdit):
 
     def format_address_field(self, wallet: Wallet | None) -> None:
         """Format address field."""
-        palette = QtGui.QPalette()
-        background_color = None
-
-        background_color = None
+        palette = QtGui.QPalette(QApplication.palette())
         if wallet:
             background_color = self.color_address(
                 self.address, wallet, wallet_signals=self.wallet_functions.wallet_signals[wallet.id]
             )
-
-        if background_color:
-            palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
+            if background_color:
+                palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
 
         self.input_field.setPalette(palette)
         self.input_field.update()

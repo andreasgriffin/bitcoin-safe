@@ -29,13 +29,14 @@
 
 from __future__ import annotations
 
+import weakref
 from abc import abstractmethod
 from collections.abc import Callable
 from typing import TYPE_CHECKING, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
-from PyQt6.QtCore import QObject
+from PyQt6.QtCore import QEvent, QObject
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QWidget
 
@@ -45,7 +46,7 @@ from bitcoin_safe.i18n import translate
 from ....pdfrecovery import TEXT_24_WORDS
 from ..qt_wallet import QTWallet, QtWalletBase
 from ..step_progress_bar import StepProgressContainer, TutorialWidget
-from ..util import svg_tools
+from ..util import should_process_theme_change, svg_tools
 
 if TYPE_CHECKING:
     from .wizard import TutorialStep, Wizard
@@ -224,3 +225,19 @@ class BaseTab(QObject):
         self._is_closed = True
         self.signal_tracker.disconnect_all()
         self.setParent(None)
+
+
+class ThemeAwareStepWidget(QWidget):
+    def __init__(self, tab: BaseTab, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
+        super().__init__(parent)
+        self._tab_ref: weakref.ReferenceType[BaseTab] = weakref.ref(tab)
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh the owning wizard step when the app palette changes."""
+        super().changeEvent(a0)
+        if not should_process_theme_change(self, a0):
+            return
+        if tab := self._tab_ref():
+            if not tab.is_closed:
+                tab.updateUi()

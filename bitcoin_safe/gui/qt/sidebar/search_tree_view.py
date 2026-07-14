@@ -32,6 +32,7 @@ from __future__ import annotations
 import logging
 import sys
 from collections.abc import Callable
+from pathlib import Path
 
 from PyQt6.QtCore import QItemSelectionModel, QModelIndex, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
@@ -59,6 +60,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from bitcoin_safe.gui.qt.util import svg_tools
 
 logger = logging.getLogger(__name__)
 
@@ -171,7 +174,7 @@ class ResultItem:
         self,
         text: str,
         parent: ResultItem | None = None,
-        icon: QIcon | None = None,
+        icon: QIcon | Path | str | None = None,
         obj=None,
         obj_key: str | None = None,
     ) -> None:
@@ -355,7 +358,11 @@ class CustomTreeView(QTreeView):
             model_item = CustomItem()
             model_item.setText(child.text)
             if child.icon:
-                model_item.setIcon(child.icon)
+                if isinstance(child.icon, QIcon):
+                    icon = child.icon
+                else:
+                    icon = svg_tools.get_QIcon(str(child.icon))
+                model_item.setIcon(icon)
             model_item.setEditable(False)
             model_item.result_item = child
             if model_parent:

@@ -33,10 +33,11 @@ import logging
 import sys
 from collections.abc import Callable
 from functools import partial
+from pathlib import Path
 from typing import Generic, TypeVar, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
-from PyQt6.QtCore import QPoint, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QPoint, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QFocusEvent, QIcon, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import (
     QApplication,
@@ -59,8 +60,12 @@ from bitcoin_safe.gui.qt.qr_components.square_buttons import (
 )
 from bitcoin_safe.gui.qt.util import (
     get_neutral_surface_colors,
+    is_theme_change_event,
+    propagate_theme_change_to_descendants,
     set_no_margins,
     set_translucent,
+    should_process_theme_change,
+    svg_tools,
     to_color_name,
 )
 
@@ -152,7 +157,9 @@ class SidebarRow(QWidget):
 
     def style_widget(self, widget: QWidget):
         """Style widget."""
-        self.setStyleSheet(self.get_css(widget=widget))
+        css = self.get_css(widget=widget)
+        if self.styleSheet() != css:
+            self.setStyleSheet(css)
 
     def set_focus(self, focused: bool) -> None:
         """Mirror focus state onto the parent row for custom styling."""
@@ -166,16 +173,18 @@ class SidebarRow(QWidget):
 class SidebarButton(QPushButton):
     """Checkable sidebar button with instance-scoped styles and adjustable indent."""
 
-    def __init__(self, text: str, icon: QIcon | None = None, indent: float = 0, bf=False):
+    def __init__(self, text: str, icon: QIcon | Path | str | None = None, indent: float = 0, bf=False):
         """Initialize instance."""
         super().__init__(text)
         self._bold = bf
         self._indent = indent
+        self._icon_name = icon if isinstance(icon, (str, Path)) else None
+        self._icon = icon if isinstance(icon, QIcon) else None
         self.setFlat(True)
         set_translucent(self)
 
         if icon:
-            self.setIcon(icon)
+            self.set_icon_source(icon)
 
         self.setObjectName(str(id(self)) + "button")
         self.setFixedHeight(36)
@@ -197,11 +206,34 @@ class SidebarButton(QPushButton):
         super().focusOutEvent(a0)
         self._update_row_focus(False)
 
+    def changeEvent(self, e: QEvent | None) -> None:
+        """Refresh palette-dependent button styling and icons."""
+        super().changeEvent(e)
+        if should_process_theme_change(self, e):
+            self._apply_style()
+            self.refresh_icon()
+
     def setIndent(self, indent: float, bf=False) -> None:
         """SetIndent."""
         self._indent = indent
         self._bold = bf
         self._apply_style()
+
+    def set_icon_source(self, icon: QIcon | Path | str | None) -> None:
+        """Set the icon source and apply it."""
+        self._icon_name = icon if isinstance(icon, (str, Path)) else None
+        self._icon = icon if isinstance(icon, QIcon) else None
+        self.refresh_icon()
+
+    def refresh_icon(self) -> None:
+        """Re-render the icon from its current source."""
+        if self._icon_name:
+            super().setIcon(svg_tools.get_QIcon(str(self._icon_name)))
+            return
+        if self._icon:
+            super().setIcon(self._icon)
+            return
+        super().setIcon(QIcon())
 
     def _apply_style(self) -> None:
         """Apply style."""
@@ -216,7 +248,8 @@ class SidebarButton(QPushButton):
     {font_weight}
 }}"""
         css += f"\n#{self.objectName()}:focus {{\n    outline: none;\n    background-color: transparent;\n}}"
-        self.setStyleSheet(css)
+        if self.styleSheet() != css:
+            self.setStyleSheet(css)
 
 
 TT = TypeVar("TT")
@@ -248,7 +281,7 @@ class SidebarNode(QFrame, Generic[TT]):
         data: TT,
         widget: QWidget | None = None,
         hide_header: bool = False,
-        icon: QIcon | None = None,
+        icon: QIcon | Path | str | None = None,
         closable: bool = False,
         hidable: bool = False,
         collapsible: bool = True,
@@ -284,6 +317,9 @@ class SidebarNode(QFrame, Generic[TT]):
 
         surface_colors = get_neutral_surface_colors()
         self.background_color = background_color
+        self._uses_default_selected_color = selected_color is None
+        self._uses_default_hover_color = hover_color is None
+        self._uses_default_selected_hover_color = selected_hover_color is None
         self.selected_color = selected_color or surface_colors.content_background
         self.hover_color = hover_color or surface_colors.row_hover
         self.selected_hover_color = selected_hover_color or self.selected_color
@@ -327,10 +363,10 @@ class SidebarNode(QFrame, Generic[TT]):
             text = text.replace("&", "&&")
         self.header_btn.setText(text)
 
-    def setIcon(self, icon: QIcon) -> None:
+    def setIcon(self, icon: QIcon | Path | str | None) -> None:
         """SetIcon."""
         self.icon = icon
-        self.header_btn.setIcon(icon)
+        self.header_btn.set_icon_source(icon)
 
     def setToolTip(self, a0: str | None) -> None:
         """SetToolTip."""
@@ -617,6 +653,26 @@ class SidebarNode(QFrame, Generic[TT]):
     def _sync_content_visibility(self) -> None:
         """Sync content visibility."""
         self.content.setVisible(bool(self.child_nodes and self.expanded and self.collapsible))
+
+    def refresh_style(self) -> None:
+        """Refresh palette-dependent colors and icons for this subtree."""
+        surface_colors = get_neutral_surface_colors()
+        if self._uses_default_selected_color:
+            self.selected_color = surface_colors.content_background
+        if self._uses_default_hover_color:
+            self.hover_color = surface_colors.row_hover
+        if self._uses_default_selected_hover_color:
+            self.selected_hover_color = self.selected_color
+
+        self.header_row.hover_color = self.hover_color
+        self.header_row.selected_color = self.selected_color
+        self.header_row.selected_hover_color = self.selected_hover_color
+        self.header_row.style_widget(self.header_row)
+        self.header_btn.refresh_icon()
+        self.header_btn.update()
+
+        for child in self.child_nodes:
+            child.refresh_style()
 
     # -------------------- Tree helpers --------------------
 
@@ -927,9 +983,7 @@ class SidebarTree(QWidget, Generic[TT]):
         self._surface_colors = get_neutral_surface_colors()
 
         self.stack.setAutoFillBackground(True)  # ensure it actually fills from its palette
-        pal = self.stack.palette()
-        pal.setColor(QPalette.ColorRole.Window, self._surface_colors.content_background)
-        self.stack.setPalette(pal)
+        self._refresh_stack_palette()
 
         self.stack.currentChanged.connect(self._on_stack_current_changed)  # NEW
 
@@ -1012,6 +1066,23 @@ class SidebarTree(QWidget, Generic[TT]):
         self._shortcut_next.setContext(Qt.ShortcutContext.ApplicationShortcut)
         self._shortcut_prev.activated.connect(partial(self._select_relative, -1))
         self._shortcut_next.activated.connect(partial(self._select_relative, +1))
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh the stacked-page background when the application palette changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self._refresh_stack_palette()
+            for node in self.roots:
+                node.refresh_style()
+        if is_theme_change_event(a0):
+            propagate_theme_change_to_descendants(self.stack)
+
+    def _refresh_stack_palette(self) -> None:
+        """Apply the current neutral surface color to the stacked-page background."""
+        self._surface_colors = get_neutral_surface_colors()
+        palette = self.stack.palette()
+        palette.setColor(QPalette.ColorRole.Window, self._surface_colors.content_background)
+        self.stack.setPalette(palette)
 
     @property
     def roots(self) -> list[SidebarNode[TT]]:

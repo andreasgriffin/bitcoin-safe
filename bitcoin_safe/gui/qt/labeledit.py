@@ -43,7 +43,6 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLineEdit,
     QSizePolicy,
-    QStyle,
     QVBoxLayout,
     QWidget,
 )
@@ -57,6 +56,8 @@ from bitcoin_safe.wallet import (
     get_wallet_of_address,
     get_wallets,
 )
+
+from .util import should_process_theme_change
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +125,11 @@ class LabelLineEdit(QLineEdit):
         else:
             super().keyPressEvent(a0)
 
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self.update()
+
 
 class LabelAndCategoryEdit(QWidget):
     def __init__(
@@ -164,14 +170,10 @@ class LabelAndCategoryEdit(QWidget):
 
     def _format_category_edit(self) -> None:
         """Format category edit."""
-        palette = QtGui.QPalette()
-        background_color = None
+        palette = QtGui.QPalette(QApplication.palette())
 
         if self.category_edit.text():
-            background_color = category_color(self.category_edit.text())
-            palette.setColor(QtGui.QPalette.ColorRole.Base, background_color)
-        else:
-            palette = (self.category_edit.style() or QStyle()).standardPalette()
+            palette.setColor(QtGui.QPalette.ColorRole.Base, category_color(self.category_edit.text()))
 
         self.category_edit.setPalette(palette)
         self.category_edit.update()
@@ -216,6 +218,11 @@ class LabelAndCategoryEdit(QWidget):
     def set_label_readonly(self, value: bool):
         """Set label readonly."""
         self.label_edit.setReadOnly(value)
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self._format_category_edit()
 
 
 class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):

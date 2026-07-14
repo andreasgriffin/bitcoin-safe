@@ -3646,6 +3646,102 @@ def test_delete_installed_source_plugin_by_bundle_id_preserves_pending_payload(
         manager.close()
 
 
+def test_delete_installed_source_plugin_cancel_keeps_enabled_state(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+
+    monkeypatch.setattr(
+        PluginManager,
+        "_refresh_external_state",
+        classmethod(lambda cls, context, external_registry: {}),
+    )
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.plugin_manager.question_dialog", lambda **kwargs: False
+    )
+
+    client = _LoadTrackingPluginClient(enabled=True)
+    client.set_plugin_identity(
+        plugin_source=PluginClientSource.EXTERNAL,
+        plugin_bundle_id="test-plugin",
+    )
+    manager = PluginManager(
+        clients=[client],
+        plugin_permissions={client.plugin_id: {PluginPermission.LABELS}},
+        parent=None,
+        **_plugin_manager_init_kwargs(tmp_path),
+    )
+
+    removed_bundle_ids: list[str] = []
+
+    try:
+        monkeypatch.setattr(
+            manager.external_registry,
+            "remove_installed_plugin",
+            lambda bundle_id: removed_bundle_ids.append(bundle_id),
+        )
+
+        manager.delete_installed_source_plugin(client)
+
+        assert removed_bundle_ids == []
+        assert client.enabled
+        assert client.load_calls == 0
+        assert client.unload_calls == 0
+        assert manager.clients == [client]
+        assert client.plugin_id in manager.plugin_permissions
+    finally:
+        manager.close()
+
+
+def test_delete_installed_source_plugin_failed_remove_restores_enabled_state(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+
+    monkeypatch.setattr(
+        PluginManager,
+        "_refresh_external_state",
+        classmethod(lambda cls, context, external_registry: {}),
+    )
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_manager.question_dialog", lambda **kwargs: True)
+
+    client = _LoadTrackingPluginClient(enabled=True)
+    client.set_plugin_identity(
+        plugin_source=PluginClientSource.EXTERNAL,
+        plugin_bundle_id="test-plugin",
+    )
+    manager = PluginManager(
+        clients=[client],
+        plugin_permissions={client.plugin_id: {PluginPermission.LABELS}},
+        parent=None,
+        **_plugin_manager_init_kwargs(tmp_path),
+    )
+
+    messages: list[str] = []
+
+    try:
+        monkeypatch.setattr(
+            manager.external_registry,
+            "remove_installed_plugin",
+            lambda bundle_id: (_ for _ in ()).throw(ExternalPluginError(f"boom: {bundle_id}")),
+        )
+        monkeypatch.setattr(
+            "bitcoin_safe.plugin_framework.plugin_manager.Message",
+            lambda text, **kwargs: messages.append(text),
+        )
+
+        manager.delete_installed_source_plugin(client)
+
+        assert messages == ["boom: test-plugin"]
+        assert client.enabled
+        assert client.load_calls == 1
+        assert client.unload_calls == 1
+        assert manager.clients == [client]
+        assert client.plugin_id in manager.plugin_permissions
+    finally:
+        manager.close()
+
+
 def test_source_catalog_item_allows_delete_for_installed_plugin(qapp: QApplication) -> None:
     del qapp
     item = SourceCatalogItem(

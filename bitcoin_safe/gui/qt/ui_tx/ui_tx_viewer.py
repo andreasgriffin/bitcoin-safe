@@ -119,7 +119,6 @@ from ..util import (
     Message,
     MessageType,
     add_to_buttonbox,
-    adjust_bg_color_for_darkmode,
     caught_exception_message,
     clear_layout,
     set_margins,
@@ -146,8 +145,7 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
             has_close_button=True,
             parent=parent,
         )
-        color = adjust_bg_color_for_darkmode(QColor("lightblue"))
-        self.set_background_color(color)
+        self.set_background_base_color(QColor("lightblue"))
 
         self.optionalButton.setVisible(False)
 
@@ -370,28 +368,28 @@ class UITx_Viewer(UITx_Base):
         self.button_edit_tx = add_to_buttonbox(
             self.buttonBox,
             "",
-            button_info(ButtonInfoType.edit).icon,
+            button_info(ButtonInfoType.edit).icon_name,
             on_clicked=partial(self.edit, None),
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
         self.button_rbf = add_to_buttonbox(
             self.buttonBox,
             "",
-            button_info(ButtonInfoType.rbf).icon,
+            button_info(ButtonInfoType.rbf).icon_name,
             on_clicked=self.rbf,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
         self.button_cpfp_tx = add_to_buttonbox(
             self.buttonBox,
             "",
-            button_info(ButtonInfoType.cpfp).icon,
+            button_info(ButtonInfoType.cpfp).icon_name,
             on_clicked=self.cpfp,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
         self.button_back = add_to_buttonbox(
             self.buttonBox,
             "",
-            icon_name=svg_tools.get_QIcon("bi--arrow-left-short.svg"),
+            icon_name="bi--arrow-left-short.svg",
             on_clicked=self.navigate_tab_history_backward,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )

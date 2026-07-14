@@ -40,6 +40,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.util import is_int
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import (
+    QEvent,
     Qt,
     pyqtSignal,
 )
@@ -71,6 +72,7 @@ from bitcoin_safe.gui.qt.util import (
     MessageType,
     set_margins,
     set_no_margins,
+    should_process_theme_change,
     svg_tools,
 )
 from bitcoin_safe.gui.qt.wrappers import Menu
@@ -390,12 +392,12 @@ class NotificationBarRecipient(NotificationBar):
         super().updateUi()
         if self.wallet_id is None:
             self.icon_label.setText("")
-            self.set_icon(svg_tools.get_QIcon("bi--person-no-left-margin.svg"))
+            self.set_icon("bi--person-no-left-margin.svg")
         else:
             self.icon_label.setText(
                 self.tr("This address belongs to wallet: <b>{wallet_id}</b>").format(wallet_id=self.wallet_id)
             )
-            self.set_icon(svg_tools.get_QIcon("bi--wallet2.svg"))
+            self.set_icon("bi--wallet2.svg")
         self.icon_label.setToolTip("")
 
     def set_wallet_id(self, wallet_id: str | None):
@@ -639,24 +641,16 @@ class Recipients(QWidget):
         self.header_widget.label_title.setText(self.tr("Recipients"))
 
         self.add_recipient_button = QPushButton("")
-        self.add_recipient_button.setIcon(svg_tools.get_QIcon("bi--person-add.svg"))
         self.add_recipient_button.clicked.connect(self.add_recipient)
 
         self.toolbutton_csv = QToolButton()
         self.toolbutton_csv.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        self.toolbutton_csv.setIcon(svg_tools.get_QIcon("bi--filetype-csv.svg"))
 
         menu = Menu(self)
-        self.action_import_csv = menu.add_action(
-            "", self.import_csv, icon=svg_tools.get_QIcon("bi--upload.svg")
-        )
-        self.action_export_csv = menu.add_action(
-            "", self.on_action_export_csv, icon=svg_tools.get_QIcon("bi--download.svg")
-        )
+        self.action_import_csv = menu.add_action("", self.import_csv)
+        self.action_export_csv = menu.add_action("", self.on_action_export_csv)
         menu.addSeparator()
-        self.action_export_csv_template = menu.add_action(
-            "", self.on_action_export_csv_template, icon=svg_tools.get_QIcon("bi--layout-three-columns.svg")
-        )
+        self.action_export_csv_template = menu.add_action("", self.on_action_export_csv_template)
 
         self.toolbutton_csv.setMenu(menu)
         self.toolbutton_csv.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
@@ -756,17 +750,28 @@ class Recipients(QWidget):
     def updateUi(self) -> None:
         """UpdateUi."""
         self.add_recipient_button.setText(self.tr("Add Recipient"))
+        self.add_recipient_button.setIcon(svg_tools.get_QIcon("bi--person-add.svg"))
         if self.header_widget:
             self.update_recipient_title()
 
+        self.toolbutton_csv.setIcon(svg_tools.get_QIcon("bi--filetype-csv.svg"))
         self.toolbutton_csv.setText(self.tr("Import/Export") if self.allow_edit else self.tr("Export"))
 
+        self.action_export_csv_template.setIcon(svg_tools.get_QIcon("bi--layout-three-columns.svg"))
         self.action_export_csv_template.setText(self.tr("Export CSV Template"))
+        self.action_import_csv.setIcon(svg_tools.get_QIcon("bi--upload.svg"))
         self.action_import_csv.setText(self.tr("Import CSV file"))
 
+        self.action_export_csv.setIcon(svg_tools.get_QIcon("bi--download.svg"))
         self.action_export_csv.setText(self.tr("Export as CSV file"))
         for placeholder in self._hidden_recipient_placeholders:
             placeholder.updateUi()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh toolbar SVGs when the app theme changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0, include_style_change=True):
+            self.updateUi()
 
     def _insert_list_widget(self, widget: QWidget) -> None:
         """Insert a widget into the recipients list."""
