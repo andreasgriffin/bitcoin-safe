@@ -96,7 +96,7 @@ def test_qr_toolbutton_refreshes_icon_on_palette_change(qtbot: QtBot, loop_in_th
     button.setPalette(updated_palette)
     button.changeEvent(QEvent(QEvent.Type.PaletteChange))
 
-    assert _icon_color(button.icon()) == QColor("green")
+    assert button.icon().cacheKey() == refreshed_icon.cacheKey()
 
 
 def test_sync_chat_toolbutton_refreshes_icon_on_palette_change(qtbot: QtBot, monkeypatch) -> None:
