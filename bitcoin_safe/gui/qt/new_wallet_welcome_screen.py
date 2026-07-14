@@ -54,6 +54,8 @@ from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode, SidebarTree
 from bitcoin_safe.gui.qt.styled_card_frame import BaseBorderCardFrame
 from bitcoin_safe.gui.qt.util import (
+    Message,
+    MessageType,
     color_with_alpha,
     get_neutral_surface_colors,
     is_theme_change_event,
@@ -65,6 +67,8 @@ from bitcoin_safe.hardware_signers import SUPPORTED_HARDWARE_SIGNERS_URL
 from bitcoin_safe.signals import Signals
 
 logger = logging.getLogger(__name__)
+
+METROVAULT_SIGNER_URL = "https://bitcoin-safe.org/en/library/supported-hardware-signers/metrovault/"
 
 
 class _ConfigWithWalletDir(Protocol):
@@ -104,6 +108,7 @@ class WelcomeActionCard(CardBase):
         self.label_description.setTextFormat(Qt.TextFormat.RichText)
         self._opacity_effect = QGraphicsOpacityEffect(self)
         self.setGraphicsEffect(self._opacity_effect)
+        self._available = True
         self.updateUi()
 
     def set_content(self, title: str, description: str) -> None:
@@ -116,9 +121,21 @@ class WelcomeActionCard(CardBase):
         self._apply_visual_state()
         self._refresh_theme_dependent_ui()
 
+    def set_available(self, available: bool) -> None:
+        """Toggle between actionable and greyed-out states without disabling child links."""
+        self._available = available
+        self.set_header_clickable(available)
+        self._apply_visual_state()
+
+    def _is_header_activatable(self) -> bool:
+        """Allow unavailable cards to intercept clicks and explain why they are disabled."""
+        return not self._available or super()._is_header_activatable()
+
     def _apply_visual_state(self) -> None:
         self.background_color = get_neutral_surface_colors().panel_background
-        self._opacity_effect.setOpacity(self._disabled_opacity if not self.isEnabled() else 1.0)
+        self._opacity_effect.setOpacity(
+            self._disabled_opacity if not self.isEnabled() or not self._available else 1.0
+        )
 
     def changeEvent(self, a0: QEvent | None) -> None:
         """Refresh card styling when the theme or enabled state changes."""
@@ -481,6 +498,15 @@ class NewWalletWelcomeScreen(QWidget):
 
     def on_click_hot_wallet(self) -> None:
         """Create a hot wallet."""
+        if self.network == bdk.Network.BITCOIN:
+            Message(
+                self.tr(
+                    "Hot wallets are disabled on Bitcoin Mainnet.\nYou can switch to Testnet to test Bitcoin Safe without using real Bitcoin."
+                ),
+                type=MessageType.Warning,
+                parent=self,
+            )
+            return
         self.signal_onclick_hot_wallet.emit()
         self.signal_remove_me.emit(self)
 
@@ -556,6 +582,9 @@ class NewWalletWelcomeScreen(QWidget):
             "hardware_signers/generic-hardware-wallet-icon.svg", self.left_column
         )
         self.card_custom_wallet = WelcomeActionCard("material-symbols--signature.svg", self.left_column)
+        self.hot_wallet_help_label = IconLabel(parent=self.card_hot_wallet.header_widget)
+        self.hot_wallet_help_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.card_hot_wallet.header_right_layout.addWidget(self.hot_wallet_help_label)
         self.connect_devices_help_label = IconLabel(parent=self.card_connect_devices.header_widget)
         self.connect_devices_help_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.card_connect_devices.header_right_layout.addWidget(self.connect_devices_help_label)
@@ -586,7 +615,7 @@ class NewWalletWelcomeScreen(QWidget):
         on_testnet = not on_mainnet
 
         self.card_demo_wallet.setVisible(on_testnet)
-        self.card_hot_wallet.setEnabled(on_testnet)
+        self.card_hot_wallet.set_available(on_testnet)
         self.card_demo_wallet.updateUi()
         self.card_hot_wallet.updateUi()
         self.card_connect_devices.updateUi()
@@ -611,6 +640,12 @@ class NewWalletWelcomeScreen(QWidget):
                     "to safely hold secrets representing money.</small>"
                 )
             ),
+        )
+        self.hot_wallet_help_label.setVisible(on_mainnet)
+        self.hot_wallet_help_label.setText(self.tr("No signer available?"))
+        self.hot_wallet_help_label.set_icon_as_help(
+            self.tr("Learn how to turn an Android phone into a dedicated bitcoin signer."),
+            METROVAULT_SIGNER_URL,
         )
         self.card_connect_devices.set_content(
             title=self.tr("Connect Device(s)"),

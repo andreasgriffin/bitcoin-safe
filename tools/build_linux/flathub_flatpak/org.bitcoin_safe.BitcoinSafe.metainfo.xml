@@ -57,9 +57,11 @@
       <description>
         <p>Highlights</p>
         <ul>
+          <li>Light/Dark theme switching</li>
+          <li>Added MetroVault support</li>
           <li>Upgrade Bitcoin Dev Kit (BDK) to 3.0</li>
-          <li>Reenable custom account xpub fetching for USB signers</li>
           <li>Show the connected Bitcoin nodes for compact block filter fetching on the map</li>
+          <li>Re-store custom account xpub fetching for USB signers</li>
           <li>Bug fixes</li>
         </ul>
       </description>

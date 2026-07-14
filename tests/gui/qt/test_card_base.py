@@ -29,6 +29,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import Mock
+
 import bdkpython as bdk
 from PyQt6.QtCore import QEvent, Qt
 from PyQt6.QtGui import QColor, QPalette
@@ -37,6 +39,7 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode, CardList
 from bitcoin_safe.gui.qt.new_wallet_welcome_screen import (
+    METROVAULT_SIGNER_URL,
     NetworkChoiceCard,
     NetworkChoiceWelcomeScreen,
     NewWalletWelcomeScreen,
@@ -425,3 +428,31 @@ def test_network_choice_welcome_screen_refreshes_cards_on_palette_change(qtbot: 
     assert to_color_name(screen.card_secure_wallet.cta_panel.background_color) == to_color_name(
         get_neutral_surface_colors().panel_background
     )
+
+
+def test_mainnet_hot_wallet_card_keeps_help_link_clickable(qtbot: QtBot, monkeypatch) -> None:
+    screen = NewWalletWelcomeScreen(network=bdk.Network.BITCOIN, signals=Signals())
+    qtbot.addWidget(screen)
+    screen.show()
+    qtbot.waitExposed(screen)
+
+    hot_wallet_clicked = Mock()
+    message_mock = Mock()
+    open_mock = Mock()
+    screen.signal_onclick_hot_wallet.connect(hot_wallet_clicked)
+    monkeypatch.setattr("bitcoin_safe.gui.qt.new_wallet_welcome_screen.Message", message_mock)
+    monkeypatch.setattr("bitcoin_safe.gui.qt.icon_label.webopen", open_mock)
+
+    assert screen.hot_wallet_help_label.isVisible()
+    assert screen.hot_wallet_help_label.textLabel.text() == "No signer available?"
+    assert screen.card_hot_wallet.graphicsEffect() is not None
+    assert screen.card_hot_wallet.header_title.cursor().shape() == Qt.CursorShape.ArrowCursor
+
+    qtbot.mouseClick(screen.card_hot_wallet.header_title, Qt.MouseButton.LeftButton)
+    hot_wallet_clicked.assert_not_called()
+    message_mock.assert_called_once()
+    assert "Hot wallets are disabled on Bitcoin Mainnet." in message_mock.call_args.args[0]
+    assert message_mock.call_args.kwargs["type"].name == "Warning"
+
+    qtbot.mouseClick(screen.hot_wallet_help_label.textLabel, Qt.MouseButton.LeftButton)
+    open_mock.assert_called_once_with(METROVAULT_SIGNER_URL)

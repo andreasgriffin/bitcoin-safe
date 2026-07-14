@@ -40,6 +40,7 @@ from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes
 logger = logging.getLogger(__name__)
 
 SUPPORTED_HARDWARE_SIGNERS_URL = "https://bitcoin-safe.org/en/knowledge/supported-hardware-signers/"
+METROVAULT_REPOSITORY_URL = "https://github.com/gorunjinian/MetroVault"
 
 
 def _signer_info_url(path: str | None = None) -> str:
@@ -251,6 +252,22 @@ class HardwareSigners:
         info_url=_signer_info_url("jade-plus"),
         icon_filename="jade-plus-icon.svg",
         screenshot_name="jade",
+    )
+    metrovault = HardwareSigner(
+        id="metrovault",
+        brand_name="MetroVault",
+        display_name="MetroVault",
+        qr_types=[
+            QrExportTypes.bbqr,
+            QrExportTypes.ur,
+            DescriptorQrExportTypes.default,
+            DescriptorQrExportTypes.text,
+            SignMessageRequestQrExportTypes.text,
+        ],
+        descriptor_export_types=[DescriptorExportTypes.default, DescriptorExportTypes.text],
+        usb=FeatureLevel.not_capable,
+        info_url=METROVAULT_REPOSITORY_URL,
+        icon_filename="metrovault-icon.svg",
     )
     passport = HardwareSigner(
         id="passport",
