@@ -757,6 +757,7 @@ class SourceCatalogItemWidget(BasePluginWidget):
             parent=parent,
         )
         self.install_button = self.add_spinning_detail_button()
+        self.delete_button = self.add_spinning_management_button()
         self.updateUi()
 
     def updateUi(self) -> None:
@@ -776,6 +777,13 @@ class SourceCatalogItemWidget(BasePluginWidget):
             callback=self.item.trigger_install,
             visible=self.item.show_install_button(),
             enable=True,
+        )
+        self._set_button_action(
+            button=self.delete_button,
+            text=self.tr("Delete Plugin"),
+            callback=self.item.request_delete,
+            visible=self.item.can_delete_plugin(),
+            enable=self.item.can_delete_plugin(),
         )
         self._sync_section_visibility()
 

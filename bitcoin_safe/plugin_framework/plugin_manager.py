@@ -790,6 +790,7 @@ class PluginManager(BaseSaveableClass):
         for entry in entries:
             item = SourceCatalogItem(entry=entry, parent=self.parent)
             item.signal_install_requested.connect(self.install_source_plugin)
+            item.signal_delete_requested.connect(self.delete_installed_source_plugin_by_bundle_id)
             self.source_catalog_items.append(item)
 
     def get_instance(self, cls: type[T], clients: list[PluginClient] | None = None) -> T | None:
@@ -1422,14 +1423,12 @@ class PluginManager(BaseSaveableClass):
         except ExternalPluginError as exc:
             Message(str(exc), type=MessageType.Error, parent=self.parent or self.widget)
 
+    def delete_installed_source_plugin_by_bundle_id(self, bundle_id: str) -> None:
+        entry = self.available_source_plugins_by_bundle_id.get(bundle_id)
+        plugin_name = entry.display_name if entry else bundle_id
+        self._delete_installed_source_plugin(bundle_id=bundle_id, plugin_name=plugin_name)
+
     def delete_installed_source_plugin(self, client: PluginClient) -> None:
-        if client.enabled:
-            Message(
-                self.widget.tr("Disable the plugin before deleting it."),
-                type=MessageType.Error,
-                parent=self.parent or self.widget,
-            )
-            return
         if client.plugin_bundle_id is None:
             Message(
                 self.widget.tr("This plugin cannot be deleted."),
@@ -1437,8 +1436,24 @@ class PluginManager(BaseSaveableClass):
                 parent=self.parent or self.widget,
             )
             return
+        self._delete_installed_source_plugin(bundle_id=client.plugin_bundle_id, plugin_name=client.title)
+
+    def _delete_installed_source_plugin(self, bundle_id: str, plugin_name: str) -> None:
+        removed_clients = [
+            existing_client
+            for existing_client in self.clients
+            if existing_client.plugin_source == PluginClientSource.EXTERNAL
+            and existing_client.plugin_bundle_id == bundle_id
+        ]
+        for removed_client in removed_clients:
+            if not removed_client.enabled:
+                continue
+            try:
+                removed_client.set_enabled(False)
+            except Exception:
+                logger.exception("Could not disable plugin %s before deletion.", removed_client.plugin_id)
         if not question_dialog(
-            text=self.widget.tr("Delete installed plugin {plugin}?").format(plugin=client.title),
+            text=self.widget.tr("Delete installed plugin {plugin}?").format(plugin=plugin_name),
             title=self.widget.tr("Delete Installed Plugin"),
             true_button=self.widget.tr("Delete"),
             false_button=self.widget.tr("Cancel"),
@@ -1446,14 +1461,7 @@ class PluginManager(BaseSaveableClass):
             return
 
         try:
-            bundle_id = client.plugin_bundle_id
             self.external_registry.remove_installed_plugin(bundle_id)
-            removed_clients = [
-                existing_client
-                for existing_client in self.clients
-                if existing_client.plugin_source == PluginClientSource.EXTERNAL
-                and existing_client.plugin_bundle_id == bundle_id
-            ]
             self.serialized_client_dumps = self._merge_serialized_client_payloads(
                 [
                     *self.serialized_client_dumps,
@@ -1469,7 +1477,7 @@ class PluginManager(BaseSaveableClass):
             self._reconnect_client_signals()
             runtime_changed = self._refresh_external_registry_state()
             self._refresh_after_registry_change(runtime_changed)
-            logger.info("Deleted plugin %s.", client.title)
+            logger.info("Deleted plugin %s.", plugin_name)
         except ExternalPluginError as exc:
             Message(str(exc), type=MessageType.Error, parent=self.parent or self.widget)
 

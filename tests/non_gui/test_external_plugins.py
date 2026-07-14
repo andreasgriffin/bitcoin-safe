@@ -3489,6 +3489,124 @@ def test_delete_installed_source_plugin_keeps_serialized_payload_and_clears_perm
         manager.close()
 
 
+def test_enabled_external_plugin_widget_hides_delete_button(qapp: QApplication) -> None:
+    del qapp
+
+    client = _LoadTrackingPluginClient(enabled=True)
+    client.set_plugin_identity(
+        plugin_source=PluginClientSource.EXTERNAL,
+        plugin_bundle_id="test-plugin",
+    )
+    widget = client.create_plugin_widget(parent=None)
+
+    try:
+        assert not client.can_delete_plugin()
+        assert widget.delete_button.isHidden()
+    finally:
+        widget.close()
+        client.close()
+
+
+def test_delete_installed_source_plugin_by_bundle_id_preserves_pending_payload(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+
+    monkeypatch.setattr(
+        PluginManager,
+        "_refresh_external_state",
+        classmethod(lambda cls, context, external_registry: {}),
+    )
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_manager.question_dialog", lambda **kwargs: True)
+
+    client = _DisplayMetadataPluginClient()
+    client.set_plugin_identity(
+        plugin_source=PluginClientSource.EXTERNAL,
+        plugin_bundle_id="broken-plugin",
+    )
+    payload = _serialized_client_payload(client)
+    client.close()
+
+    manager = PluginManager(
+        clients=[],
+        serialized_client_dumps=[payload],
+        parent=None,
+        **_plugin_manager_init_kwargs(tmp_path),
+    )
+
+    removed_bundle_ids: list[str] = []
+
+    try:
+        monkeypatch.setattr(
+            manager.external_registry,
+            "remove_installed_plugin",
+            lambda bundle_id: removed_bundle_ids.append(bundle_id),
+        )
+        monkeypatch.setattr(manager, "_refresh_external_registry_state", lambda: False)
+        monkeypatch.setattr(manager, "_refresh_after_registry_change", lambda runtime_changed: None)
+        manager.available_source_plugins_by_bundle_id = {
+            "broken-plugin": ExternalPluginCatalogEntry(
+                source_id="source-id",
+                source_display_name="Source",
+                bundle_id="broken-plugin",
+                version="1.0.0",
+                display_name="Broken Plugin",
+                description="",
+                provider="Tests",
+                entrypoint="plugins/broken",
+                plugin_api_version="1",
+                app_version_specifier=">=0",
+                folder_hash="hash",
+                release_ref="main",
+                installed_version="1.0.0",
+            )
+        }
+
+        manager.delete_installed_source_plugin_by_bundle_id("broken-plugin")
+
+        assert removed_bundle_ids == ["broken-plugin"]
+        assert manager.serialized_client_dumps == [payload]
+    finally:
+        manager.close()
+
+
+def test_source_catalog_item_allows_delete_for_installed_plugin(qapp: QApplication) -> None:
+    del qapp
+    item = SourceCatalogItem(
+        entry=ExternalPluginCatalogEntry(
+            source_id="source-id",
+            source_display_name="Source",
+            bundle_id="broken-plugin",
+            version="1.0.0",
+            display_name="Broken Plugin",
+            description="",
+            provider="Tests",
+            entrypoint="plugins/broken",
+            plugin_api_version="1",
+            app_version_specifier=">=0",
+            folder_hash="hash",
+            release_ref="main",
+            installed_version="1.0.0",
+        ),
+        parent=None,
+    )
+    deleted_bundle_ids: list[str] = []
+    item.signal_delete_requested.connect(deleted_bundle_ids.append)
+
+    widget = item.create_plugin_widget(parent=None)
+
+    try:
+        assert item.can_delete_plugin()
+        assert not widget.delete_button.isHidden()
+        assert widget.delete_button.isEnabled()
+
+        item.request_delete()
+
+        assert deleted_bundle_ids == ["broken-plugin"]
+    finally:
+        widget.close()
+
+
 def test_plugin_manager_widget_sidebar_rebuild_keeps_other_enabled_plugins_visible(
     qapp: QApplication,
 ) -> None:
