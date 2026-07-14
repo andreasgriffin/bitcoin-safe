@@ -34,7 +34,7 @@ from types import SimpleNamespace
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from PyQt6.QtCore import QEvent
-from PyQt6.QtGui import QColor, QIcon, QPixmap
+from PyQt6.QtGui import QColor, QIcon, QPalette, QPixmap
 from PyQt6.QtWidgets import QApplication, QPushButton
 from pytestqt.qtbot import QtBot
 
@@ -74,7 +74,9 @@ def test_file_toolbutton_refreshes_button_and_menu_icons_on_palette_change(qtbot
     assert _icon_color(file_action.icon()) == QColor("red")
 
 
-def test_qr_toolbutton_refreshes_icon_on_palette_change(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:
+def test_qr_toolbutton_refreshes_icon_on_palette_change(
+    qapp: QApplication, qtbot: QtBot, loop_in_thread, monkeypatch
+) -> None:
     button = QrToolButton(
         data=Data(p2wsh_psbt_0_1of1.extract_tx(), DataType.Tx, bdk.Network.REGTEST),
         signals_min=SignalsMin(),
@@ -89,7 +91,15 @@ def test_qr_toolbutton_refreshes_icon_on_palette_change(qtbot: QtBot, loop_in_th
         lambda _icon_name: refreshed_icon,
     )
 
-    button.changeEvent(QEvent(QEvent.Type.PaletteChange))
+    original_palette = QPalette(qapp.palette())
+    updated_palette = QPalette(original_palette)
+    updated_palette.setColor(QPalette.ColorRole.WindowText, QColor("#55ff55"))
+
+    try:
+        qapp.setPalette(updated_palette)
+        QApplication.sendEvent(button, QEvent(QEvent.Type.ApplicationPaletteChange))
+    finally:
+        qapp.setPalette(original_palette)
 
     assert _icon_color(button.icon()) == QColor("green")
 
