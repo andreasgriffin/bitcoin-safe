@@ -997,7 +997,7 @@ haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Sind Sie 
 		<name>DescriptorEdit</name>
 		<message>
 			<source>Register with hardware signers</source>
-			<translation>Mit Hardware‑Signern registrieren</translation>
+			<translation>Mit Hardware‑Signierern registrieren</translation>
 		</message>
 		<name>DescriptorEdit</name>
 		<message>
@@ -1153,7 +1153,7 @@ Standardwert 20</translation>
 		<name>DeviceDialog</name>
 		<message>
 			<source>Scanning for compatible Bluetooth hardware signers.</source>
-			<translation>Suche nach kompatiblen Bluetooth-Hardware-Signern.</translation>
+			<translation>Nach kompatiblen Bluetooth-Hardware-Signierern suchen.</translation>
 		</message>
 		<name>DeviceDialog</name>
 		<message>
@@ -1168,7 +1168,7 @@ Standardwert 20</translation>
 		<name>DeviceDialog</name>
 		<message>
 			<source>Unlock your hardware signer</source>
-			<translation>Entsperren Sie Ihren Hardware-Signer</translation>
+			<translation>Entsperren Sie Ihren Hardware-Signierer</translation>
 		</message>
 		<name>DeviceDialog</name>
 		<message>
@@ -1451,7 +1451,7 @@ Standardwert 20</translation>
 		<name>ExportDataSimple</name>
 		<message>
 			<source>Export {data_type} to hardware signer</source>
-			<translation>Export {data_type} an Hardware-Signer</translation>
+			<translation>{data_type} an Hardware-Signierer exportieren</translation>
 		</message>
 		<name>ExportDataSimple</name>
 		<message>
@@ -1521,7 +1521,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>FeeGroup</name>
 		<message>
 			<source>in ~{n}. Block</source>
-			<translation>in ~{n}. Block</translation>
+			<translation>in ungefähr {n} Blöcken</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1820,7 +1820,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Import hardware signer information into Bitcoin Safe</source>
-			<translation>Hardware-Signer-Informationen in Bitcoin Safe importieren</translation>
+			<translation>Hardware-Signierer-Informationen in Bitcoin Safe importieren</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1956,7 +1956,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
-			<translation>Signer-Daten per QR, USB, Bluetooth oder Text-/Dateiimport importieren.</translation>
+			<translation>Signiererdaten per QR, USB, Bluetooth oder Text-/Dateiimport importieren.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1981,7 +1981,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Open the signer guide</source>
-			<translation>Signer-Anleitung öffnen</translation>
+			<translation>Signiereranleitung öffnen</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1991,12 +1991,12 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>Bitte stellen Sie sicher, dass keine anderen Programme auf den Hardware-Signer zugreifen</translation>
+			<translation>Bitte stellen Sie sicher, dass keine anderen Programme auf den Hardware-Signierer zugreifen</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Please import the information from all hardware signers first</source>
-			<translation>Bitte importieren Sie zuerst die Informationen von allen Hardware-Signern</translation>
+			<translation>Bitte importieren Sie zuerst die Informationen von allen Hardware-Signierern</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2046,17 +2046,17 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Select the signer brand</source>
-			<translation>Signer-Marke auswählen</translation>
+			<translation>Signierermarke auswählen</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Select the signer model</source>
-			<translation>Signer-Modell auswählen</translation>
+			<translation>Signierermodell auswählen</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Select your signer</source>
-			<translation>Wähle deinen Signierer aus</translation>
+			<translation>Wählen Sie Ihren Signierer aus</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2068,8 +2068,8 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 			<source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>Der 8-stellige Fingerprint identifiziert den Seed.
-Sie können ihn auf den Hardware-Signierer schreiben, um verschiedene Seeds und Signiergeräte nachzuverfolgen.</translation>
+			<translation>Der 8-stellige Fingerabdruck identifiziert den Seed.
+Sie können ihn auf dem Hardware-Signierer notieren, um verschiedene Seeds und Signiergeräte auseinanderzuhalten.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2108,7 +2108,7 @@ Bei einer Single-Signature-Wallet gibt er die volle Kontrolle über die Gelder.<
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Write here notes relative to this signer, memos, etc...</source>
-			<translation>Schreibe hier Notizen zu diesem Signer, Memos usw...</translation>
+			<translation>Schreiben Sie hier Notizen, Memos usw. zu diesem Signierer.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2147,7 +2147,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Please import the complete data for Signer {i}!</source>
-			<translation>Bitte importieren Sie die vollständigen Daten für Signer {i}!</translation>
+			<translation>Bitte importieren Sie die vollständigen Daten für Signierer {i}!</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2284,7 +2284,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;Descriptor for hardware signers</source>
-			<translation>&amp;Deskriptor für Hardware-Signer</translation>
+			<translation>&amp;Deskriptor für Hardware-Signierer</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2454,7 +2454,7 @@ Möchten Sie trotzdem fortfahren?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;USB Signer Tools</source>
-			<translation>&amp;USB-Signer-Werkzeuge</translation>
+			<translation>&amp;USB-Signierer-Werkzeuge</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -4343,8 +4343,10 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt; Um zu wissen, ob Sie die Kontrolle über Ihre Gelder haben, müssen Sie das Ausgeben aus der Wallet testen.
-&lt;br&gt; Bevor Sie also einen erheblichen Betrag Bitcoin in die Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, das Ausgeben aus der Wallet und alle Signierer zu testen.
+			<translation>&lt;br&gt;&lt;b&gt;Warum?&lt;/b&gt; &lt;br&gt;
+Um sicherzustellen, dass Sie die Kontrolle über Ihre Gelder haben, müssen Sie eine Testtransaktion aus der Wallet durchführen.
+&lt;br&gt;
+Bevor Sie also einen erheblichen Bitcoin-Betrag an die Wallet senden, ist es &lt;b&gt;entscheidend&lt;/b&gt;, eine Testtransaktion aus der Wallet durchzuführen und alle Signierer zu testen.
                         </translation>
 		</message>
 		<name>ReceiveTest</name>
@@ -4570,7 +4572,7 @@ Die Ausgaben bleiben unverändert, nur die Gebühr ändert sich.</translation>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
-			<translation>Registrieren Sie diese Multisig-Wallet auf jedem Hardware-Signer, den Sie verwenden möchten. So kann der Hardware-Signer die Wechselgeldadressen von Transaktionen überprüfen.</translation>
+			<translation>Registrieren Sie diese Multisig-Wallet auf jedem Hardware-Signierer, den Sie verwenden möchten. So kann der Hardware-Signierer die Wechselgeldadressen von Transaktionen überprüfen.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4822,7 +4824,7 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		<name>SignMessageBase</name>
 		<message>
 			<source>1. Scan QR code with hardware signer</source>
-			<translation>1. QR-Code mit dem Hardware-Signer scannen</translation>
+			<translation>1. QR-Code mit dem Hardware-Signierer scannen</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -4842,7 +4844,7 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
-			<translation>Nachdem Sie die Nachricht signiert haben, stellt Ihr Hardware-Signer einen zweiten QR-Code bereit, den Sie von diesem Computer aus scannen können</translation>
+			<translation>Nachdem Sie die Nachricht signiert haben, stellt Ihr Hardware-Signierer einen zweiten QR-Code bereit, den Sie von diesem Computer aus scannen können</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5235,7 +5237,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>ToolGui</name>
 		<message>
 			<source>USB Signer Tools</source>
-			<translation>USB-Signer Werkzeuge</translation>
+			<translation>USB-Signierer-Werkzeuge</translation>
 		</message>
 		<name>ToolGui</name>
 		<message>
@@ -5330,7 +5332,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>1. Scan QR code with hardware signer</source>
-			<translation>1. QR-Code mit dem Hardware-Signer scannen</translation>
+			<translation>1. QR-Code mit dem Hardware-Signierer scannen</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5360,7 +5362,7 @@ Wenn Sie beide weiterhin verwenden möchten, setzen Sie bitte jetzt den Chat &am
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
-			<translation>Nachdem Sie das PSBT signiert haben, stellt Ihr Hardware-Signer einen zweiten QR-Code bereit, den Sie von diesem Computer aus scannen können</translation>
+			<translation>Nachdem Sie das PSBT signiert haben, stellt Ihr Hardware-Signierer einen zweiten QR-Code bereit, den Sie von diesem Computer aus scannen können</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5755,12 +5757,12 @@ Möchten Sie trotzdem senden?</translation>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Register Multisig wallet on hardware signer</source>
-			<translation>Multisig-Wallet auf Hardware-Signer registrieren</translation>
+			<translation>Multisig-Wallet auf Hardware-Signierer registrieren</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
 			<source>Successfully registered multisig wallet on hardware signer</source>
-			<translation>Multisig-Wallet erfolgreich auf Hardware-Signer registriert</translation>
+			<translation>Multisig-Wallet erfolgreich auf Hardware-Signierer registriert</translation>
 		</message>
 		<name>USBRegisterMultisigWidget</name>
 		<message>
@@ -6365,7 +6367,7 @@ Möchten Sie trotzdem senden?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Import signer info</source>
-			<translation>Signer-Infos importieren</translation>
+			<translation>Signiererinformationen importieren</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6385,7 +6387,7 @@ Möchten Sie trotzdem senden?</translation>
 		<name>Wizard</name>
 		<message>
 			<source>Register multisig on signers</source>
-			<translation>Multisig auf Signern registrieren</translation>
+			<translation>Multisig auf Signierern registrieren</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -7426,7 +7428,7 @@ Land: {country}</translation>
 		<name>d</name>
 		<message>
 			<source>Connect to USB signer</source>
-			<translation>Mit dem USB-Signer verbinden</translation>
+			<translation>Mit dem USB-Signierer verbinden</translation>
 		</message>
 		<name>d</name>
 		<message>
@@ -7863,7 +7865,7 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		<name>pdf</name>
 		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
-			<translation>Geheime Seed-Wörter für einen Hardware-Signer: Niemals in einen Computer eingeben. Niemals ein Bild davon machen.</translation>
+			<translation>Geheime Seed-Wörter für einen Hardware-Signierer: Niemals in einen Computer eingeben. Niemals ein Bild davon machen.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
