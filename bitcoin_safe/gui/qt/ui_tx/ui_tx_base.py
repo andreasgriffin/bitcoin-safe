@@ -53,7 +53,6 @@ from bitcoin_safe.gui.qt.ui_tx.fee_group import (
 )
 from bitcoin_safe.gui.qt.ui_tx.recipients import Recipients
 from bitcoin_safe.gui.qt.ui_tx.util import get_rbf_fee_label
-from bitcoin_safe.gui.qt.util import adjust_bg_color_for_darkmode
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
 from bitcoin_safe.locktime_estimation import (
     MAX_NLOCKTIME,
@@ -88,7 +87,7 @@ class RBFBar(NotificationBar):
 
         self.network = network
         self.setVisible(False)
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
+        self.set_background_base_color(QColor("lightblue"))
 
     def set_infos(
         self, conflicing_txids: set[str], current_fee: FeeInfo | None, min_fee_rate: float | None
@@ -123,7 +122,7 @@ class CPFPBar(NotificationBar):
 
         self.network = network
         self.setVisible(False)
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
+        self.set_background_base_color(QColor("lightblue"))
 
     def set_infos(
         self,
@@ -154,7 +153,7 @@ class NLocktimeFutureWarningBar(NotificationBar):
         """Initialize instance."""
         super().__init__(text=text, optional_button_text="", has_close_button=False, parent=parent)
         self.network = network
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
+        self.set_background_base_color(QColor("#FFDF00"))
         self.setVisible(False)
 
     @staticmethod

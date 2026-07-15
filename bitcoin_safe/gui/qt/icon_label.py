@@ -30,17 +30,18 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QEvent, QObject, QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon, QMouseEvent
+from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 from bitcoin_safe.gui.qt.util import svg_tools
 
-from .util import set_no_margins
+from .util import set_no_margins, should_process_theme_change
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +74,8 @@ class IconLabel(QWidget):
         self._icon_on_right = icon_on_right
 
         self.click_url: str | None = None
+        self._icon_name: str | Path | None = None
+        self._icon_sizes: tuple[int | None, int | None] = (None, None)
 
         # Icon Label
         self.icon_label = ClickableLabel()
@@ -113,17 +116,25 @@ class IconLabel(QWidget):
         a0 = a0.replace("\n", "<br>")
         self.textLabel.setText(a0)
 
-    def set_icon(self, icon: QIcon | None, sizes: tuple[int | None, int | None] = (None, None)) -> None:
+    def set_icon(self, icon: str | Path | None, sizes: tuple[int | None, int | None] = (None, None)) -> None:
         """Set icon."""
-        self.icon_label.setVisible(bool(icon))
-        if icon:
-            # compute single-line text height (font metrics)
-            fm = self.textLabel.fontMetrics()
-            line_height = fm.height()
+        self._icon_name = icon
+        self._icon_sizes = sizes
+        self._apply_icon()
 
-            pixmap_sizes = [s if s else line_height for s in sizes]
-            self.icon_label.setPixmap(icon.pixmap(QSize(*pixmap_sizes), self.devicePixelRatioF()))
-            self.icon_label.setFixedSize(QSize(*pixmap_sizes))
+    def _apply_icon(self) -> None:
+        icon_name = str(self._icon_name) if self._icon_name else None
+        icon = svg_tools.get_QIcon(icon_name) if icon_name else None
+        self.icon_label.setVisible(bool(icon))
+        if not icon:
+            self.icon_label.clear()
+            return
+
+        fm = self.textLabel.fontMetrics()
+        line_height = fm.height()
+        pixmap_sizes = [s if s else line_height for s in self._icon_sizes]
+        self.icon_label.setPixmap(icon.pixmap(QSize(*pixmap_sizes), self.devicePixelRatioF()))
+        self.icon_label.setFixedSize(QSize(*pixmap_sizes))
 
     def on_icon_click(self):
         """On icon click."""
@@ -139,15 +150,21 @@ class IconLabel(QWidget):
         self.textLabel.setToolTip(effective_tooltip)
         self.click_url = click_url
         if self.click_url:
-            self.set_icon(svg_tools.get_QIcon("bi--question-circle-link.svg"))
+            self.set_icon("bi--question-circle-link.svg")
             self.icon_label.setCursor(Qt.CursorShape.PointingHandCursor)
             self.textLabel.setCursor(Qt.CursorShape.PointingHandCursor)
             self.setCursor(Qt.CursorShape.PointingHandCursor)
         else:
-            self.set_icon(svg_tools.get_QIcon("bi--question-circle.svg"))
+            self.set_icon("bi--question-circle.svg")
             self.icon_label.unsetCursor()
             self.textLabel.unsetCursor()
             self.unsetCursor()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Re-render theme-colored SVG icons when the palette changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self._apply_icon()
 
     def eventFilter(self, a0: QObject | None, a1: QEvent | None) -> bool:
         """Handle clicks locally for clickable help labels."""

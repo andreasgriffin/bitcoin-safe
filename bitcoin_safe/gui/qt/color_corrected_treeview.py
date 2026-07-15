@@ -32,6 +32,8 @@ from __future__ import annotations
 from PyQt6.QtCore import QEvent
 from PyQt6.QtWidgets import QApplication, QTreeView, QWidget
 
+from .util import is_theme_change_event
+
 
 class ColorCorrectedTreeView(QTreeView):
     """QTreeView variant that fixes selected item text colors for Windows styles."""
@@ -49,9 +51,7 @@ class ColorCorrectedTreeView(QTreeView):
     def changeEvent(self, event: QEvent | None) -> None:
         """React to palette and style changes that affect selection colors."""
         super().changeEvent(event)
-        if not event:
-            return
-        if event.type() in {QEvent.Type.StyleChange, QEvent.Type.PaletteChange}:
+        if is_theme_change_event(event, include_style_change=True):
             self._refresh_selection_style_sheet()
 
     def setStyleSheet(self, styleSheet: str | None) -> None:

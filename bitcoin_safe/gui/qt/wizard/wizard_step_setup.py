@@ -63,7 +63,7 @@ from ..util import (
     svg_tools,
     to_color_name,
 )
-from .wizard_support import BaseTab, WizardTabInfo
+from .wizard_support import BaseTab, ThemeAwareStepWidget, WizardTabInfo
 
 
 @dataclass(frozen=True)
@@ -177,13 +177,15 @@ class WalletTemplateStatCard(BaseWalletTemplateCardFrame):
         super().__init__(parent)
         self._title = title
         self._svg_content = svg_content
+        self._border_radius = 0
+        self.background_color = None
 
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         self.setMaximumWidth(self._peferred_width)
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(12, 10, 12, 10)
-        layout.setSpacing(10)
+        layout.setContentsMargins(10, 4, 10, 8)
+        layout.setSpacing(8)
 
         self.icon = AspectRatioSvgWidget(parent=self)
         self.icon.setFixedSize(35, 35)
@@ -250,6 +252,11 @@ class WalletTemplateStatCard(BaseWalletTemplateCardFrame):
         self._refresh_icon()
         super().refresh_style()
 
+    def _get_style_content(self):
+        surface_colors = get_neutral_surface_colors()
+        divider_color = to_color_name(color_with_alpha(surface_colors.panel_border, 160))
+        return f"border: none; border-bottom: 1px solid {divider_color};"
+
     def _refresh_icon(self) -> None:
         icon_color = self.palette().color(QPalette.ColorRole.WindowText).name()
         self.icon.setSvgContent(self._svg_content.replace("currentColor", icon_color))
@@ -277,7 +284,7 @@ class WalletSetupOptions(BaseTab):
 
     def create(self) -> TutorialWidget:
         """Create."""
-        widget = QWidget()
+        widget = ThemeAwareStepWidget(self)
         widget_layout = QVBoxLayout(widget)
         widget_layout.setContentsMargins(28, 24, 28, 24)
         widget_layout.setSpacing(22)
@@ -594,6 +601,8 @@ class WalletSetupOptions(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         self.label_wallet_name.setText(self.tr("Wallet name"))
         self.label_templates.setText(self.tr("Choose a wallet template"))

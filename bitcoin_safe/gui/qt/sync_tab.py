@@ -41,7 +41,7 @@ from bitcoin_nostr_chat.ui.util import short_key
 from bitcoin_qr_tools.data import DataType
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.storage import filtered_for_init
-from PyQt6.QtCore import QObject, Qt
+from PyQt6.QtCore import QEvent, QObject, Qt
 from PyQt6.QtGui import QAction, QColor
 from PyQt6.QtWidgets import QPushButton, QWidget
 
@@ -51,8 +51,8 @@ from bitcoin_safe.gui.qt.controlled_groupbox import ControlledGroupbox
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import (
     Message,
-    adjust_bg_color_for_darkmode,
     save_file_dialog,
+    should_process_theme_change,
     svg_tools,
 )
 from bitcoin_safe.signals import Signals
@@ -73,15 +73,14 @@ class BackupNsecNotificationBar(NotificationBar):
         )
         self.nsec = ""
         self.wallet_id = ""
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("lightblue")))
-        self.optionalButton.setIcon(svg_tools.get_QIcon("bi--download.svg"))
-        self.set_icon(svg_tools.get_QIcon("bi--download.svg"))
+        self.set_background_base_color(QColor("lightblue"))
+        self.set_icon("bi--download.svg")
         self.setVisible(False)
         self.icon_label.textLabel.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
         self.import_button = QPushButton(self)
-        self.import_button.setIcon(svg_tools.get_QIcon("bi--upload.svg"))
         self.add_styled_widget(self.import_button)
+        self.updateUi()
 
     def on_optional_button(self):
         """On optional button."""
@@ -120,8 +119,15 @@ class BackupNsecNotificationBar(NotificationBar):
 
     def updateUi(self):
         """UpdateUi."""
+        self.optionalButton.setIcon(svg_tools.get_QIcon("bi--download.svg"))
+        self.import_button.setIcon(svg_tools.get_QIcon("bi--upload.svg"))
         self.import_button.setText(self.tr("Restore labels"))
         self.optionalButton.setText(self.tr("Save sync key"))
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self.updateUi()
 
 
 class SyncTab(ControlledGroupbox):

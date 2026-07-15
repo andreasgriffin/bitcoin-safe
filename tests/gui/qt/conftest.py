@@ -36,7 +36,9 @@ import platform
 import pytest
 
 from bitcoin_safe.constants import MIN_RELAY_FEE
+from bitcoin_safe.pythonbdk_types import Balance
 from bitcoin_safe.signature_manager import Asset, GitHubRelease
+from bitcoin_safe.wallet import Wallet
 
 
 def _disable_fx_update(self) -> None:
@@ -166,3 +168,25 @@ def mock__ask_if_wallet_should_remain_open(monkeypatch):
         "bitcoin_safe.gui.qt.main.MainWindow._ask_if_wallet_should_remain_open", lambda self: False
     )
     yield
+
+
+_GLOBAL_PALETTE_GUI_TEST_MODULES = {
+    "test_button_edit.py",
+    "test_card_base.py",
+    "test_icon_label.py",
+    "test_initial_cbf_sync_widget.py",
+    "test_keystore_ui.py",
+    "test_my_treeview.py",
+    "test_notification_bar.py",
+    "test_theme_change_guard.py",
+    "test_theme_switching.py",
+    "test_tx_signing_steps_theme.py",
+}
+
+
+@pytest.fixture(autouse=True)
+def suspend_wallet_balance_queries_for_global_palette_tests(request, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep global palette GUI tests from triggering backend balance queries in stale widgets."""
+    if request.node.fspath.basename not in _GLOBAL_PALETTE_GUI_TEST_MODULES:
+        return
+    monkeypatch.setattr(Wallet, "get_balance", lambda self: Balance())

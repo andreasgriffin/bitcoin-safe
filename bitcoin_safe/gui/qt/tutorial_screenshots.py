@@ -39,12 +39,11 @@ from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.synced_tab_widget import SyncedTabWidget
-from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import TEXT_24_WORDS
 
 from ...hardware_signers import HardwareSigners
-from .util import adjust_bg_color_for_darkmode, screenshot_path
+from .util import screenshot_path
 
 logger = logging.getLogger(__name__)
 
@@ -120,8 +119,8 @@ class SeedWarningBar(NotificationBar):
             has_close_button=False,
             parent=parent,
         )
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(svg_tools.get_QIcon("warning.svg"))
+        self.set_background_base_color(QColor("#FFDF00"))
+        self.set_icon("warning.svg")
 
         self.optionalButton.setVisible(False)
 

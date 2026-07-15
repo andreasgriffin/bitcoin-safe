@@ -329,6 +329,33 @@
       "console": "integratedTerminal",
       "preLaunchTask": "Prepare VSCode Launch",
     }, {
+      "name": "Flathub Build&Run",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "tools.build_linux.flathub_flatpak.populate_cli",
+      "args": [
+        "--run-flatpak",
+        "--release-tag", "${input:flathubReleaseTag}",
+        "--local-source-checkout", ".",
+        "--output-dir", "../org.bitcoin_safe.BitcoinSafe/"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Prepare VSCode Launch",
+    }, {
+      "name": "Local Flatpak Build&Run",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "tools.build_linux.flathub_flatpak.populate_cli",
+      "args": [
+        "--run-flatpak", 
+        "--local-source-checkout", ".",
+        "--app-source-mode","local-dir"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Prepare VSCode Launch",
+    }, {
       "name": "Sign",
       "type": "debugpy",
       "request": "launch",
@@ -371,6 +398,11 @@
       "type": "promptString",
       "description": "Locale directory relative to that project folder",
       "default": "locales"
+    },
+    {
+      "id": "flathubReleaseTag",
+      "type": "promptString",
+      "description": "Git tag or commit hash to use for --release-tag"
     }
   ]
 }

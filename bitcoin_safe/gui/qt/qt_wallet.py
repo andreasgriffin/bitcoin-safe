@@ -84,7 +84,6 @@ from bitcoin_safe.gui.qt.qt_wallet_base import QtWalletBase, SyncStatus
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
-from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
@@ -254,7 +253,7 @@ class QTProtoWallet(QtWalletBase):
         settings_node = SidebarNode[object](
             widget=wallet_descriptor_ui,
             data=wallet_descriptor_ui,
-            icon=svg_tools.get_QIcon("bi--text-left.svg"),
+            icon="bi--text-left.svg",
             title=self.tr("Setup wallet"),
             parent=self,
         )
@@ -715,8 +714,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.fiat_value_label_title.setText(self.tr("Value"))
         self.category_manager.updateUi()
         self.quick_receive.updateUi()
+        self.wallet_balance_chart.updateUi()
         if self.network_map_widget:
             self.network_map_widget.updateUi()
+        if self.plugin_manager:
+            self.plugin_manager.updateUi()
         self.wallet_corruption_warning_bar.updateUi()
         self._update_history_initial_sync_overlay_visibility()
 
@@ -795,6 +797,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         history_initial_sync_widget = self.get_or_create_history_initial_sync_widget()
         history_initial_sync_widget.set_progress_info(progress_info)
         history_initial_sync_widget.set_cbf_peer_count(self.config.network_config.cbf_connections)
+        self._refresh_history_initial_sync_cbf_peers(history_initial_sync_widget)
         self._update_history_initial_sync_overlay_visibility()
 
     def should_show_initial_sync_placeholder(self) -> bool:
@@ -808,6 +811,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             self.history_tab_content_stack.setCurrentWidget(self.get_or_create_history_initial_sync_widget())
         else:
             self.history_tab_content_stack.setCurrentWidget(self.history_tab_content)
+
+    def _refresh_history_initial_sync_cbf_peers(self, widget: NetworkMapWidget) -> None:
+        if not self.wallet.client:
+            widget.set_cbf_peer_hosts([])
+            return
+        widget.set_cbf_peer_hosts(self.wallet.client.get_connected_cbf_peer_hosts())
 
     def get_or_create_history_initial_sync_widget(self) -> NetworkMapWidget:
         if self.network_map_widget:
@@ -878,7 +887,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         settings_node = SidebarNode[object](
             data=wallet_descriptor_ui,
             widget=wallet_descriptor_ui,
-            icon=svg_tools.get_QIcon("bi--text-left.svg"),
+            icon="bi--text-left.svg",
             title="",
             parent=self,
         )
@@ -1475,7 +1484,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         send_node = SidebarNode[object](
             data=uitx_creator,
             widget=uitx_creator,
-            icon=svg_tools.get_QIcon("bi--send.svg"),
+            icon="bi--send.svg",
             title="",
             parent=self,
         )
@@ -1753,7 +1762,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         hist_node = SidebarNode(
             data=tab,
             widget=tab,
-            icon=svg_tools.get_QIcon("ic--sharp-timeline.svg"),
+            icon="ic--sharp-timeline.svg",
             title="",
         )
         tabs.insertChildNode(
@@ -1837,9 +1846,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         tab = self.create_list_tab(address_list_with_toolbar, tabs)
 
-        address_node = SidebarNode(
-            data=tab, widget=tab, icon=svg_tools.get_QIcon("ic--baseline-call-received.svg"), title=""
-        )
+        address_node = SidebarNode(data=tab, widget=tab, icon="ic--baseline-call-received.svg", title="")
         tabs.insertChildNode(
             1,
             address_node,
@@ -2149,6 +2156,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             history_initial_sync_widget.set_p2p_listener_peers([c.peer for c in p2p_connections])
         if total_discovered_peers is not None:
             history_initial_sync_widget.set_nodes(total_discovered_peers)
+        self._refresh_history_initial_sync_cbf_peers(history_initial_sync_widget)
 
     async def _sync_revealed_spks(self):
         "Syncs all revealed skps"

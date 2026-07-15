@@ -89,12 +89,16 @@ def test_main_uses_sanitized_network() -> None:
     with (
         patch.object(app_main, "QApplication", return_value=app),
         patch.object(app_main, "check_compatibility"),
-        patch.object(app_main, "is_gnome_dark_mode", return_value=False),
-        patch.object(app_main, "set_dark_palette"),
+        patch.object(app_main.UserConfig, "exists", return_value=False),
+        patch.object(app_main, "apply_theme_mode"),
         patch.object(app_main, "MainWindow", return_value=window) as main_window_cls,
     ):
         app_main.main(startup_args)
 
-    main_window_cls.assert_called_once_with(network=None, open_files_at_startup=["wallet.psbt"])
+    main_window_cls.assert_called_once_with(
+        network=None,
+        config=None,
+        open_files_at_startup=["wallet.psbt"],
+    )
     window.show.assert_called_once()
     app.exec.assert_called_once()

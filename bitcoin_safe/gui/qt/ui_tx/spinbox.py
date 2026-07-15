@@ -33,7 +33,7 @@ import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6 import QtGui
-from PyQt6.QtCore import QLocale, QSignalBlocker, Qt, pyqtBoundSignal
+from PyQt6.QtCore import QEvent, QLocale, QSignalBlocker, Qt, pyqtBoundSignal
 from PyQt6.QtWidgets import (
     QAbstractSpinBox,
     QApplication,
@@ -47,9 +47,35 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
+from bitcoin_safe.gui.qt.util import should_process_theme_change
 
 
 class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
+    def __init__(self, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
+        super().__init__(parent)
+        self._refreshing_theme_style = False
+
+    def _refresh_theme_style(self) -> None:
+        """Reapply the style that matches the current read-only state."""
+        if self._refreshing_theme_style:
+            return
+
+        self._refreshing_theme_style = True
+        try:
+            self._apply_theme_style()
+            if lineedit := self.lineEdit():
+                lineedit.update()
+            self.update()
+        finally:
+            self._refreshing_theme_style = False
+
+    def _apply_theme_style(self) -> None:
+        """Apply the stylesheet for the current read-only mode."""
+        style_sheet = self.get_style_sheet(self.isReadOnly())
+        if self.styleSheet() != style_sheet:
+            self.setStyleSheet(style_sheet)
+
     def get_style_sheet(self, ro: bool) -> str:
         """Get style sheet."""
         self.setObjectName(f"{id(self)}")
@@ -93,7 +119,15 @@ class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
         if lineedit := self.lineEdit():
             lineedit.setReadOnly(r)
 
-        self.setStyleSheet(self.get_style_sheet(r))
+        self._refresh_theme_style()
+
+    def changeEvent(self, e: QEvent | None) -> None:
+        """Refresh custom spinbox styling when the app theme changes."""
+        super().changeEvent(e)
+        if self._refreshing_theme_style:
+            return
+        if should_process_theme_change(self, e):
+            self._refresh_theme_style()
 
 
 class AnalyzerSpinBox(LabelStyleReadOnlQDoubleSpinBox):
@@ -130,6 +164,10 @@ class AnalyzerSpinBox(LabelStyleReadOnlQDoubleSpinBox):
         error = bool(self.text()) and (analysis.state != AnalyzerState.Valid)
         self.format_as_error(error)
         self.setToolTip(analysis.msg if error else "")
+
+    def _apply_theme_style(self) -> None:
+        """Reapply analyzer-dependent styling for the active theme."""
+        self.format_and_apply_validator()
 
 
 class FiatSpinBox(LabelStyleReadOnlQDoubleSpinBox):

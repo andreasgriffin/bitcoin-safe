@@ -50,7 +50,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike, UiElements
-from bitcoin_safe.gui.qt.util import ColorScheme, Message, MessageType, svg_tools
+from bitcoin_safe.gui.qt.util import ColorScheme, Message, MessageType
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
@@ -99,7 +99,7 @@ class WalletGraphClient(PluginClient):
         self, signals: Signals, network: bdk.Network, enabled: bool = False, parent: QWidget | None = None
     ) -> None:
         """Initialize instance."""
-        super().__init__(enabled=enabled, icon=svg_tools.get_QIcon("wallet-graph-icon.svg"), parent=parent)
+        super().__init__(enabled=enabled, icon="wallet-graph-icon.svg", parent=parent)
         self.signals = signals
         self.network = network
         self.wallet_id: str | None = None

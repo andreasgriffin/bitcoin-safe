@@ -37,13 +37,13 @@ from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.util_os import show_file_in_explorer
-from PyQt6.QtCore import QPoint, pyqtSignal
+from PyQt6.QtCore import QEvent, QPoint, pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.sidebar.search_sidebar_tree import SearchSidebarTree
 from bitcoin_safe.gui.qt.sidebar.search_tree_view import ResultItem, SearchTreeView
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode, SidebarTree
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import should_process_theme_change
 from bitcoin_safe.gui.qt.wrappers import Menu
 
 logger = logging.getLogger(__name__)
@@ -105,7 +105,7 @@ class RecentlyOpenedWalletsGroup(QWidget):
         self.signal_open_wallet = signal_open_wallet
         self.wallet_dir = Path(wallet_dir)
         self.hide_extension = hide_extension
-        self.wallet_icon = svg_tools.get_QIcon("bi--wallet2.svg")
+        self.wallet_icon = "bi--wallet2.svg"
         self.recent_wallet_paths: list[str] = []
         self.all_wallet_paths: list[str] = []
         self._rebuilding = False
@@ -247,3 +247,9 @@ class RecentlyOpenedWalletsGroup(QWidget):
             slot=partial(show_file_in_explorer, filename=Path(file_path)),
         )
         menu.exec(position)
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Re-render sidebar icons when the application theme changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self.sidebar_tree.root.refresh_style()

@@ -55,9 +55,23 @@ def test_q_supports_usb() -> None:
     assert HardwareSigners.q.usb == FeatureLevel.supported
 
 
+def test_metrovault_brand_exposes_single_matching_model() -> None:
+    """Test MetroVault appears as a single-model mobile signer brand."""
+    assert [signer.id for signer in HardwareSigners.models_for_brand("MetroVault")] == [
+        HardwareSigners.metrovault.id
+    ]
+    assert HardwareSigners.metrovault.display_name == "MetroVault"
+    assert HardwareSigners.metrovault.icon_name == "metrovault-icon.svg"
+
+
 def test_infer_from_text_matches_display_name() -> None:
     """Test free-form text inference resolves a known display name."""
     assert HardwareSigners.infer_from_text("Krux App backup") == HardwareSigners.krux_diy
+
+
+def test_infer_from_text_matches_metrovault() -> None:
+    """Test free-form text inference resolves MetroVault by name."""
+    assert HardwareSigners.infer_from_text("MetroVault signer backup") == HardwareSigners.metrovault
 
 
 def test_signer_ids_are_unique() -> None:

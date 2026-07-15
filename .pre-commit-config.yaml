@@ -95,6 +95,7 @@ repos:
         files: pyproject.toml
         additional_dependencies:
           - tomlkit
+          - packaging
           
       - id: optional-precommit-checks
         name: Optional Precommit Checks

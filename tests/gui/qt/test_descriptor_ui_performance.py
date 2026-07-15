@@ -227,6 +227,27 @@ def test_descriptor_ui_protowallet_mode_keeps_wallet_definition_editable(
 
 
 @pytest.mark.marker_qt_1
+def test_descriptor_ui_can_reduce_to_singlesig_with_incomplete_signers(
+    qtbot: QtBot,
+    test_config: TestConfig,
+) -> None:
+    descriptor_ui, loop_in_thread, wallet = _build_descriptor_ui(qtbot=qtbot, test_config=test_config)
+    try:
+        descriptor_ui.spin_req.setValue(1)
+        descriptor_ui.spin_signers.setValue(1)
+
+        assert descriptor_ui.spin_req.value() == 1
+        assert descriptor_ui.spin_signers.value() == 1
+        assert descriptor_ui.keystore_uis.count() == 1
+        assert descriptor_ui.protowallet.is_multisig() is False
+    finally:
+        descriptor_ui.close()
+        if wallet:
+            wallet.close()
+        loop_in_thread.stop()
+
+
+@pytest.mark.marker_qt_1
 def test_descriptor_ui_existing_wallet_mode_locks_descriptor_changes(
     qtbot: QtBot,
     test_config: TestConfig,

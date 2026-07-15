@@ -41,7 +41,6 @@ from bitcoin_safe.network_config import get_testnet_faucet
 from bitcoin_safe.signals import SignalsMin
 
 from .testnet_faucet import open_testnet_faucet
-from .util import adjust_bg_color_for_darkmode, svg_tools
 
 logger = logging.getLogger(__name__)
 
@@ -64,9 +63,8 @@ class NotificationBarRegtest(NotificationBar):
         )
         self.network = network
         self.signals_min = signals_min
-        color = adjust_bg_color_for_darkmode(QColor("lightblue"))
-        self.set_background_color(color)
-        self.set_icon(svg_tools.get_QIcon(f"bitcoin-{network.name.lower()}.svg"))
+        self.set_background_base_color(QColor("lightblue"))
+        self.set_icon(f"bitcoin-{network.name.lower()}.svg")
         self.optionalButton.setHidden(False)
 
         self.faucet = get_testnet_faucet(network=self.network)
@@ -85,6 +83,8 @@ class NotificationBarRegtest(NotificationBar):
     def updateUi(self) -> None:
         """UpdateUi."""
         super().updateUi()
+        self.set_background_base_color(QColor("lightblue"))
+        self.set_icon(f"bitcoin-{self.network.name.lower()}.svg")
         self.faucet_button.setText(self.tr("Get {testnet} coins").format(testnet=self.network.name.lower()))
         self.faucet_button.setHidden(not bool(self.faucet))
         self.optionalButton.setText(self.tr("Open Network Settings"))

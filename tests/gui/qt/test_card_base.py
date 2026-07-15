@@ -29,13 +29,26 @@
 
 from __future__ import annotations
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QLabel
+from unittest.mock import Mock
+
+import bdkpython as bdk
+from PyQt6.QtCore import QEvent, Qt
+from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtWidgets import QApplication, QGraphicsOpacityEffect, QLabel
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode, CardList
-from bitcoin_safe.gui.qt.new_wallet_welcome_screen import WelcomeActionCard
+from bitcoin_safe.gui.qt.new_wallet_welcome_screen import (
+    METROVAULT_SIGNER_URL,
+    NetworkChoiceCard,
+    NetworkChoiceWelcomeScreen,
+    NewWalletWelcomeScreen,
+    WelcomeActionCard,
+)
+from bitcoin_safe.gui.qt.util import get_neutral_surface_colors, to_color_name
 from bitcoin_safe.gui.qt.wizard.wizard_step_cards import TutorialTxCard, TutorialTxCardState
+from bitcoin_safe.signals import Signals
+from bitcoin_safe.theme import create_dark_palette, create_light_palette
 
 
 def _make_card(title: str, body_height: int = 120) -> CardBase:
@@ -237,3 +250,209 @@ def test_welcome_action_card_uses_card_base_clickable_header(qtbot: QtBot) -> No
 
     with qtbot.waitSignal(card.clicked):
         qtbot.mouseClick(card.header_title, Qt.MouseButton.LeftButton)
+
+
+def test_welcome_action_card_update_ui_refreshes_background(qtbot: QtBot) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    card = WelcomeActionCard("bi--wallet2.svg")
+    qtbot.addWidget(card)
+    card.set_content("Demo", "Description")
+
+    def apply_palette(window: str, text: str) -> tuple[str, str, str]:
+        palette = QPalette(original_palette)
+        palette.setColor(QPalette.ColorRole.Window, QColor(window))
+        palette.setColor(QPalette.ColorRole.Base, QColor(window))
+        palette.setColor(QPalette.ColorRole.WindowText, QColor(text))
+        palette.setColor(QPalette.ColorRole.Text, QColor(text))
+        palette.setColor(QPalette.ColorRole.ButtonText, QColor(text))
+        app.setPalette(palette)
+        card.changeEvent(QEvent(QEvent.Type.PaletteChange))
+        return (
+            to_color_name(card.background_color),
+            card.label_title.palette().color(card.label_title.foregroundRole()).name(),
+            card.label_description.palette().color(card.label_description.foregroundRole()).name(),
+        )
+
+    try:
+        light_background, light_title_style, light_description_style = apply_palette("#ffffff", "#111111")
+        dark_background, dark_title_style, dark_description_style = apply_palette("#111111", "#f5f5f5")
+    finally:
+        app.setPalette(original_palette)
+        card.changeEvent(QEvent(QEvent.Type.PaletteChange))
+
+    assert light_background != dark_background
+    assert light_title_style != dark_title_style
+    assert light_description_style != dark_description_style
+
+
+def test_welcome_action_card_uses_disabled_opacity_when_disabled(qtbot: QtBot) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    card = WelcomeActionCard("bi--wallet2.svg")
+    qtbot.addWidget(card)
+    card.set_content("Hot Single Signature Wallet", "Disabled on Mainnet")
+
+    try:
+        card.setEnabled(True)
+        qtbot.wait(10)
+        effect = card.graphicsEffect()
+        assert isinstance(effect, QGraphicsOpacityEffect)
+        enabled_opacity = effect.opacity()
+
+        card.setEnabled(False)
+        qtbot.wait(10)
+        disabled_opacity = effect.opacity()
+    finally:
+        app.setPalette(original_palette)
+        card.changeEvent(QEvent(QEvent.Type.PaletteChange))
+
+    assert enabled_opacity == 1.0
+    assert disabled_opacity == WelcomeActionCard._disabled_opacity
+
+
+def test_welcome_action_card_keeps_disabled_opacity_for_explicit_theme_palettes(qtbot: QtBot) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    card = WelcomeActionCard("bi--wallet2.svg")
+    qtbot.addWidget(card)
+    card.set_content("Hot Single Signature Wallet", "Disabled on Mainnet")
+    card.setEnabled(False)
+
+    try:
+        app.setPalette(create_light_palette(original_palette))
+        card.changeEvent(QEvent(QEvent.Type.ApplicationPaletteChange))
+        effect = card.graphicsEffect()
+        assert isinstance(effect, QGraphicsOpacityEffect)
+        light_disabled_opacity = effect.opacity()
+
+        app.setPalette(create_dark_palette(original_palette))
+        card.changeEvent(QEvent(QEvent.Type.ApplicationPaletteChange))
+        dark_disabled_opacity = effect.opacity()
+    finally:
+        app.setPalette(original_palette)
+        card.changeEvent(QEvent(QEvent.Type.ApplicationPaletteChange))
+
+    assert light_disabled_opacity == WelcomeActionCard._disabled_opacity
+    assert dark_disabled_opacity == WelcomeActionCard._disabled_opacity
+
+
+def test_network_choice_card_update_ui_refreshes_backgrounds(qtbot: QtBot) -> None:
+    card = NetworkChoiceCard("bitcoin-bitcoin.svg")
+    qtbot.addWidget(card)
+
+    card.background_color = None
+    card.cta_panel.background_color = None
+    card.changeEvent(QEvent(QEvent.Type.PaletteChange))
+
+    surface_colors = get_neutral_surface_colors()
+    assert to_color_name(card.background_color) == to_color_name(surface_colors.content_background)
+    assert to_color_name(card.cta_panel.background_color) == to_color_name(surface_colors.panel_background)
+
+
+def test_new_wallet_welcome_screen_refreshes_cards_on_palette_change(qtbot: QtBot) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    screen = NewWalletWelcomeScreen(network=bdk.Network.TESTNET, signals=Signals())
+    qtbot.addWidget(screen)
+
+    def apply_palette(window: str, text: str) -> str:
+        palette = QPalette(original_palette)
+        palette.setColor(QPalette.ColorRole.Window, QColor(window))
+        palette.setColor(QPalette.ColorRole.Base, QColor(window))
+        palette.setColor(QPalette.ColorRole.WindowText, QColor(text))
+        palette.setColor(QPalette.ColorRole.Text, QColor(text))
+        palette.setColor(QPalette.ColorRole.ButtonText, QColor(text))
+        app.setPalette(palette)
+        screen.hide()
+        QApplication.sendEvent(screen, QEvent(QEvent.Type.ApplicationPaletteChange))
+        screen.show()
+        qtbot.waitExposed(screen)
+        qtbot.wait(10)
+        return screen.card_demo_wallet.styleSheet()
+
+    try:
+        light_stylesheet = apply_palette("#ffffff", "#111111")
+        dark_stylesheet = apply_palette("#111111", "#f5f5f5")
+    finally:
+        app.setPalette(original_palette)
+        screen.hide()
+        QApplication.sendEvent(screen, QEvent(QEvent.Type.ApplicationPaletteChange))
+
+    assert light_stylesheet != dark_stylesheet
+    assert to_color_name(screen.card_demo_wallet.background_color) == to_color_name(
+        get_neutral_surface_colors().panel_background
+    )
+
+
+def test_network_choice_welcome_screen_refreshes_cards_on_palette_change(qtbot: QtBot) -> None:
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    screen = NetworkChoiceWelcomeScreen(signals=Signals())
+    qtbot.addWidget(screen)
+
+    def apply_palette(window: str, text: str) -> str:
+        palette = QPalette(original_palette)
+        palette.setColor(QPalette.ColorRole.Window, QColor(window))
+        palette.setColor(QPalette.ColorRole.Base, QColor(window))
+        palette.setColor(QPalette.ColorRole.WindowText, QColor(text))
+        palette.setColor(QPalette.ColorRole.Text, QColor(text))
+        palette.setColor(QPalette.ColorRole.ButtonText, QColor(text))
+        app.setPalette(palette)
+        screen.hide()
+        QApplication.sendEvent(screen, QEvent(QEvent.Type.ApplicationPaletteChange))
+        screen.show()
+        qtbot.waitExposed(screen)
+        qtbot.wait(10)
+        return screen.card_secure_wallet.styleSheet()
+
+    try:
+        light_stylesheet = apply_palette("#ffffff", "#111111")
+        dark_stylesheet = apply_palette("#111111", "#f5f5f5")
+    finally:
+        app.setPalette(original_palette)
+        screen.hide()
+        QApplication.sendEvent(screen, QEvent(QEvent.Type.ApplicationPaletteChange))
+
+    assert light_stylesheet != dark_stylesheet
+    assert to_color_name(screen.card_secure_wallet.cta_panel.background_color) == to_color_name(
+        get_neutral_surface_colors().panel_background
+    )
+
+
+def test_mainnet_hot_wallet_card_keeps_help_link_clickable(qtbot: QtBot, monkeypatch) -> None:
+    screen = NewWalletWelcomeScreen(network=bdk.Network.BITCOIN, signals=Signals())
+    qtbot.addWidget(screen)
+    screen.show()
+    qtbot.waitExposed(screen)
+
+    hot_wallet_clicked = Mock()
+    message_mock = Mock()
+    open_mock = Mock()
+    screen.signal_onclick_hot_wallet.connect(hot_wallet_clicked)
+    monkeypatch.setattr("bitcoin_safe.gui.qt.new_wallet_welcome_screen.Message", message_mock)
+    monkeypatch.setattr("bitcoin_safe.gui.qt.icon_label.webopen", open_mock)
+
+    assert screen.hot_wallet_help_label.isVisible()
+    assert screen.hot_wallet_help_label.textLabel.text() == "No signer available?"
+    assert screen.card_hot_wallet.graphicsEffect() is not None
+    assert screen.card_hot_wallet.header_title.cursor().shape() == Qt.CursorShape.ArrowCursor
+
+    qtbot.mouseClick(screen.card_hot_wallet.header_title, Qt.MouseButton.LeftButton)
+    hot_wallet_clicked.assert_not_called()
+    message_mock.assert_called_once()
+    assert "Hot wallets are disabled on Bitcoin Mainnet." in message_mock.call_args.args[0]
+    assert message_mock.call_args.kwargs["type"].name == "Warning"
+
+    qtbot.mouseClick(screen.hot_wallet_help_label.textLabel, Qt.MouseButton.LeftButton)
+    open_mock.assert_called_once_with(METROVAULT_SIGNER_URL)

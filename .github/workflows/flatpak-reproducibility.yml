@@ -39,12 +39,12 @@ jobs:
 
       - name: Run Flatpak reproducibility check
         run: |
-          bash tools/build-linux/flatpak/check_reproducibility.sh
+          bash tools/build_linux/flathub_flatpak/check_reproducibility.sh
 
       - name: Upload Flatpak reproducibility report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: flatpak-repro-check
-          path: tools/build-linux/flatpak/build/repro-check/**
+          path: tools/build_linux/flathub_flatpak/build/repro-check/**
           if-no-files-found: warn

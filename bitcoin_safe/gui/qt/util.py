@@ -38,17 +38,12 @@ from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from functools import partial
-from typing import (
-    Any,
-    Literal,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Literal, cast
 from urllib.parse import urlparse
 
 import bdkpython as bdk
 import PIL.Image as PilImage
 from bitcoin_qr_tools.data import ConverterAddress
-from bitcoin_safe_lib.caching import register_cache
 from bitcoin_safe_lib.gui.qt.icons import SvgTools
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import adjust_brightness, is_dark_mode
@@ -56,6 +51,7 @@ from bitcoin_safe_lib.util import hash_string
 from PyQt6.QtCore import (
     QByteArray,
     QCoreApplication,
+    QEvent,
     QRectF,
     QSize,
     Qt,
@@ -99,7 +95,6 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.execute_config import ENABLE_TIMERS
-from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pythonbdk_types import TransactionDetails
@@ -107,12 +102,106 @@ from bitcoin_safe.util import resource_path
 
 logger = logging.getLogger(__name__)
 
+if TYPE_CHECKING:
+    from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
+
 
 @dataclass
 class TabInfo:
     widget: QWidget
     text: str
     icon: QIcon
+
+
+_THEME_STATE_PROPERTY = "_bitcoin_safe_theme_state"
+_THEME_PALETTE_ROLES: tuple[QPalette.ColorRole, ...] = (
+    QPalette.ColorRole.Window,
+    QPalette.ColorRole.WindowText,
+    QPalette.ColorRole.Base,
+    QPalette.ColorRole.AlternateBase,
+    QPalette.ColorRole.Text,
+    QPalette.ColorRole.Button,
+    QPalette.ColorRole.ButtonText,
+    QPalette.ColorRole.Highlight,
+    QPalette.ColorRole.HighlightedText,
+    QPalette.ColorRole.Link,
+    QPalette.ColorRole.Mid,
+    QPalette.ColorRole.Dark,
+)
+
+
+def _style_identity(target: QApplication | QWidget) -> tuple[str, str]:
+    style = target.style()
+    if style is None:
+        return ("", "")
+
+    meta_object = style.metaObject()
+    return (style.objectName(), meta_object.className() if meta_object else "")
+
+
+def current_theme_state(target: QApplication | QWidget) -> tuple[object, ...]:
+    palette = target.palette()
+    return _style_identity(target) + tuple(palette.color(role).rgba() for role in _THEME_PALETTE_ROLES)
+
+
+def remember_theme_state(
+    target: QApplication | QWidget,
+    state_source: QApplication | QWidget | None = None,
+) -> tuple[object, ...]:
+    theme_state = current_theme_state(state_source or target)
+    target.setProperty(_THEME_STATE_PROPERTY, theme_state)
+    return theme_state
+
+
+def consume_theme_state(
+    target: QApplication | QWidget,
+    state_source: QApplication | QWidget | None = None,
+) -> bool:
+    theme_state = current_theme_state(state_source or target)
+    if target.property(_THEME_STATE_PROPERTY) == theme_state:
+        return False
+    target.setProperty(_THEME_STATE_PROPERTY, theme_state)
+    return True
+
+
+def should_process_theme_change(
+    target: QWidget,
+    event: QEvent | None,
+    include_style_change: bool = False,
+    include_enabled_change: bool = False,
+    state_source: QApplication | QWidget | None = None,
+) -> bool:
+    """Return whether ``target`` should refresh for this theme-related event."""
+    if not is_theme_change_event(
+        event,
+        include_style_change=include_style_change,
+        include_enabled_change=include_enabled_change,
+    ):
+        return False
+
+    if event is not None and event.type() == QEvent.Type.EnabledChange:
+        return True
+
+    if state_source is None:
+        state_source = target
+    if event is not None and event.type() == QEvent.Type.ApplicationPaletteChange and state_source is target:
+        app = QApplication.instance()
+        if isinstance(app, QApplication):
+            state_source = app
+
+    return consume_theme_state(target, state_source=state_source)
+
+
+def propagate_theme_change_to_descendants(root: QWidget) -> None:
+    """Forward an application palette change to descendant widgets.
+
+    Some composite widgets override an intermediate palette or background, which can
+    prevent Qt from delivering palette-change events deep enough for child
+    ``changeEvent`` hooks to run. Forwarding a standard application palette change
+    keeps the refresh logic in the widgets themselves.
+    """
+    for widget in root.findChildren(QWidget):
+        QApplication.sendEvent(widget, QEvent(QEvent.Type.ApplicationPaletteChange))
 
 
 if platform.system() == "Windows":
@@ -200,6 +289,23 @@ def get_generated_hardware_signer_path(signer_basename: str) -> str:
 svg_tools_generated_hardware_signer = SvgTools(
     get_icon_path=get_generated_hardware_signer_path, theme_file=get_icon_path("theme.csv")
 )
+
+
+def is_theme_change_event(
+    event: QEvent | None,
+    include_style_change: bool = False,
+    include_enabled_change: bool = False,
+) -> bool:
+    """Return whether a Qt event should trigger theme-dependent UI refresh."""
+    if not event:
+        return False
+
+    event_type = event.type()
+    if event_type in {QEvent.Type.ApplicationPaletteChange, QEvent.Type.PaletteChange}:
+        return True
+    if include_style_change and event_type == QEvent.Type.StyleChange:
+        return True
+    return include_enabled_change and event_type == QEvent.Type.EnabledChange
 
 
 def block_explorer_URL(
@@ -440,7 +546,7 @@ def add_centered_icons(
 def add_to_buttonbox(
     buttonBox: QDialogButtonBox,
     text: str,
-    icon_name: str | QIcon | None = None,
+    icon_name: str | None = None,
     on_clicked=None,
     role=QDialogButtonBox.ButtonRole.ActionRole,
     button=None,
@@ -448,9 +554,7 @@ def add_to_buttonbox(
     # Create a custom QPushButton with an icon
     """Add to buttonbox."""
     button = button if button else QPushButton(text)
-    if isinstance(icon_name, QIcon):
-        button.setIcon(icon_name)
-    elif icon_name:
+    if icon_name:
         button.setIcon(svg_tools.get_QIcon(icon_name))
 
     # Add the button to the QDialogButtonBox
@@ -893,7 +997,6 @@ class ColorSchemeItem:
         """Initialize instance."""
         self.colors = (fg_color, bg_color)
 
-    @register_cache(always_keep=True)
     def _get_color(self, background):
         """Get color."""
         return self.colors[(int(background) + int(ColorScheme.dark_scheme)) % 2]
@@ -929,17 +1032,10 @@ class ColorScheme:
     OrangeBitcoin = ColorSchemeItem("#f7931a", "#f7931a")
 
     @staticmethod
-    def has_dark_background(widget: QWidget):
-        """Has dark background."""
-        background_color = widget.palette().color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Window)
-        rgb = background_color.getRgb()[0:3]
-        brightness = sum(c for c in rgb if c)
-        return brightness < (255 * 3 / 2)
-
-    @staticmethod
     def update_from_widget(widget, force_dark=False):
         """Update from widget."""
-        ColorScheme.dark_scheme = bool(force_dark or ColorScheme.has_dark_background(widget))
+        del widget
+        ColorScheme.dark_scheme = bool(force_dark or is_dark_mode())
 
 
 def screenshot_path(basename: str):
@@ -1266,14 +1362,24 @@ def set_translucent(widget: QWidget):
     )
 
 
-def set_margins(layout: QLayout, margins: Mapping[Qt.Edge, int], reset_other_margins=False) -> None:
-    """Set one or more margins on a QLayout, each to its own value.
+def set_margins(
+    layout: QLayout,
+    margins: Mapping[Qt.Edge, int] | None = None,
+    reset_other_margins: bool = False,
+    default_margin_multipliers: Mapping[Qt.Edge, float] | None = None,
+) -> None:
+    """Set one or more margins on a QLayout.
 
     :param layout: the layout whose contents-margins you want to adjust
-    :param margins: a map from Qt.Edge.{LeftEdge,TopEdge,RightEdge,BottomEdge} to the new margin (in pixels)
-        for that edge
+    :param margins: map from Qt.Edge to explicit margin values in pixels
+    :param reset_other_margins: if True, start from style default margins instead of current margins
+    :param default_margin_multipliers: map from Qt.Edge to a multiplier of that edge's style default margin
     """
-    if reset_other_margins:
+
+    margins = margins or {}
+    default_margin_multipliers = default_margin_multipliers or {}
+
+    def get_default_margins() -> tuple[int, int, int, int]:
         app = QApplication.instance()
 
         if app is None:
@@ -1283,17 +1389,39 @@ def set_margins(layout: QLayout, margins: Mapping[Qt.Edge, int], reset_other_mar
 
         style = qapp.style()
         if not style:
-            return
+            return 0, 0, 0, 0
 
-        left, top, right, bottom = (
+        return (
             style.pixelMetric(QStyle.PixelMetric.PM_LayoutLeftMargin),
             style.pixelMetric(QStyle.PixelMetric.PM_LayoutTopMargin),
             style.pixelMetric(QStyle.PixelMetric.PM_LayoutRightMargin),
             style.pixelMetric(QStyle.PixelMetric.PM_LayoutBottomMargin),
         )
+
+    default_left, default_top, default_right, default_bottom = get_default_margins()
+
+    if reset_other_margins:
+        left, top, right, bottom = (
+            default_left,
+            default_top,
+            default_right,
+            default_bottom,
+        )
     else:
         cm = layout.contentsMargins()
         left, top, right, bottom = cm.left(), cm.top(), cm.right(), cm.bottom()
+
+    for edge, multiplier in default_margin_multipliers.items():
+        if edge == Qt.Edge.LeftEdge:
+            left = round(default_left * multiplier)
+        elif edge == Qt.Edge.TopEdge:
+            top = round(default_top * multiplier)
+        elif edge == Qt.Edge.RightEdge:
+            right = round(default_right * multiplier)
+        elif edge == Qt.Edge.BottomEdge:
+            bottom = round(default_bottom * multiplier)
+        else:
+            raise ValueError(f"Unsupported edge: {edge!r}")
 
     for edge, val in margins.items():
         if edge == Qt.Edge.LeftEdge:
@@ -1403,7 +1531,7 @@ def to_color_name(color: str | QColor | QPalette.ColorRole) -> str:
     if isinstance(color, QPalette.ColorRole):
         return QApplication.palette().color(color).name()
     if isinstance(color, QColor):
-        return color.name(QColor.NameFormat.HexArgb)
+        return f"#{color.alpha():02x}{color.red():02x}{color.green():02x}{color.blue():02x}"
     return color
 
 

@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import logging
 from abc import abstractmethod
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
@@ -92,7 +93,7 @@ class PluginClient(QWidget, BaseSaveableClass):
         )
         return d
 
-    def __init__(self, enabled: bool, icon: QIcon, parent: QWidget | None = None) -> None:
+    def __init__(self, enabled: bool, icon: QIcon | Path | str, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(parent)
         self.server: PluginServerView | None = None
@@ -160,7 +161,7 @@ class PluginClient(QWidget, BaseSaveableClass):
         title: str,
         description: str,
         provider: str,
-        icon: QIcon,
+        icon: QIcon | Path | str,
     ) -> None:
         self.title = title
         self.description = description

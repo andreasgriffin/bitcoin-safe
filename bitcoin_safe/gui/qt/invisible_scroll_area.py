@@ -29,7 +29,10 @@
 
 from __future__ import annotations
 
+from PyQt6.QtCore import QEvent
 from PyQt6.QtWidgets import QScrollArea, QWidget
+
+from .util import should_process_theme_change
 
 
 class InvisibleScrollArea(QScrollArea):
@@ -47,3 +50,9 @@ class InvisibleScrollArea(QScrollArea):
         )
 
         self.setWidget(self.content_widget)
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            if viewport := self.viewport():
+                viewport.update()

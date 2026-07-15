@@ -73,7 +73,7 @@ from bitcoin_safe_lib.storage import BaseSaveableClass
 from bitcoin_safe_lib.util import fast_version, time_logger
 from bitcoin_safe_lib.util_os import webopen
 from PyQt6.QtCore import QMimeData, QModelIndex, QPoint, Qt, pyqtSignal
-from PyQt6.QtGui import QBrush, QColor, QFont, QStandardItem
+from PyQt6.QtGui import QBrush, QColor, QFont, QIcon, QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QFileDialog, QWidget
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
@@ -955,7 +955,7 @@ class HistListWithToolbar(TreeViewWithToolbar):
 
         self.sync_button = SpinningButton(
             signal_stop_spinning=self.signal_disable_spinning_button,
-            enabled_icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
+            enabled_icon=QIcon(),
             parent=self,
             timeout=60 * 60,
             text="",
@@ -979,6 +979,7 @@ class HistListWithToolbar(TreeViewWithToolbar):
         self.hist_list.signals.language_switch.connect(self.updateUi)
         for wallet in self.hist_list.wallets:
             self.hist_list.wallet_functions.wallet_signals[wallet.id].updated.connect(self.update_with_filter)
+        self.updateUi()
 
     def _on_sync_button_clicked(self):
         """On sync button clicked."""
@@ -997,6 +998,9 @@ class HistListWithToolbar(TreeViewWithToolbar):
     def updateUi(self) -> None:
         """UpdateUi."""
         super().updateUi()
+        self.sync_button.enabled_icon = svg_tools.get_QIcon("bi--arrow-clockwise.svg")
+        if not self.sync_button._spinning:
+            self.sync_button.setIcon(self.sync_button.enabled_icon)
         if self.balance_label:
             balance_total = Satoshis(self.hist_list.balance, self.config.network)
             self.balance_label.setText(

@@ -50,7 +50,6 @@ from bitcoin_safe.gui.qt.ui_tx.form_container import GridFormLayout
 from bitcoin_safe.gui.qt.ui_tx.spinbox import FeerateSpinBox
 from bitcoin_safe.gui.qt.ui_tx.totals_box import TotalsBox
 from bitcoin_safe.gui.qt.ui_tx.util import get_cpfp_label, get_rbf_fee_label
-from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.html_utils import html_f, link
 from bitcoin_safe.psbt_util import FeeInfo
 from bitcoin_safe.pythonbdk_types import TransactionDetails
@@ -61,7 +60,6 @@ from ....config import FEE_RATIO_HIGH_WARNING, NO_FEE_WARNING_BELOW, UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
 from ..icon_label import IconLabel
 from ..util import (
-    adjust_bg_color_for_darkmode,
     block_explorer_URL,
     open_website,
     set_margins,
@@ -84,8 +82,8 @@ class FeeRateWarningBar(NotificationBar):
             has_close_button=False,
             parent=parent,
         )
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(svg_tools.get_QIcon("warning.svg"))
+        self.set_background_base_color(QColor("#FFDF00"))
+        self.set_icon("warning.svg")
         self.network = network
 
         self.optionalButton.setVisible(False)
@@ -133,8 +131,8 @@ class FeeWarningBar(NotificationBar):
         )
         self.network = network
         self.btc_symbol = btc_symbol
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(svg_tools.get_QIcon("warning.svg"))
+        self.set_background_base_color(QColor("#FFDF00"))
+        self.set_icon("warning.svg")
 
         self.optionalButton.setVisible(False)
 

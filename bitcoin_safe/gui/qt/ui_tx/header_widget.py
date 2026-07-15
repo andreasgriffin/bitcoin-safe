@@ -32,11 +32,11 @@ from __future__ import annotations
 import logging
 import platform
 
-from PyQt6.QtCore import QSize
+from PyQt6.QtCore import QEvent, QSize
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.ui_tx.height_synced_widget import HeightSyncedWidget
-from bitcoin_safe.gui.qt.util import HLine, SvgTools, set_no_margins, svg_tools
+from bitcoin_safe.gui.qt.util import HLine, SvgTools, set_no_margins, should_process_theme_change, svg_tools
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +62,7 @@ class HeaderWidget(HeightSyncedWidget):
         self.label_title = QLabel()
         self.icon = QLabel()
         self.icon_name = ""
+        self.svg_tools_custom: SvgTools | None = None
         self.icon.setFixedSize(self._ICON_SIZE)
         self.h_laylout.addWidget(self.icon)
         self.h_laylout.addWidget(self.label_title)
@@ -72,5 +73,11 @@ class HeaderWidget(HeightSyncedWidget):
     def set_icon(self, icon_name: str, svg_tools_custom: SvgTools | None = None) -> None:
         """Set icon."""
         self.icon_name = icon_name
+        self.svg_tools_custom = svg_tools_custom
         icon = (svg_tools_custom if svg_tools_custom else svg_tools).get_QIcon(icon_name)
         self.icon.setPixmap(icon.pixmap(self._ICON_SIZE, self.devicePixelRatioF()))
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0, include_style_change=True):
+            self.set_icon(self.icon_name, svg_tools_custom=self.svg_tools_custom)

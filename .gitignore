@@ -206,6 +206,7 @@ bitcoin_safe.dist-info
 *.xcf
 
 screenshots*/
+.codex-artifacts/
 .DS_Store
 
 profile.html
@@ -216,7 +217,7 @@ tests/output
 
 # build results
 
-tools/build-linux/appimage/build
+tools/build_linux/appimage/build
 tools/secp256k1
 tools/zbar
 bitcoin_safe

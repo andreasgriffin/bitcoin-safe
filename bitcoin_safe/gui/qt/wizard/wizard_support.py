@@ -29,13 +29,14 @@
 
 from __future__ import annotations
 
+import weakref
 from abc import abstractmethod
 from collections.abc import Callable
 from typing import TYPE_CHECKING, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
-from PyQt6.QtCore import QObject
+from PyQt6.QtCore import QEvent, QObject
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QHBoxLayout, QPushButton, QWidget
 
@@ -45,7 +46,7 @@ from bitcoin_safe.i18n import translate
 from ....pdfrecovery import TEXT_24_WORDS
 from ..qt_wallet import QTWallet, QtWalletBase
 from ..step_progress_bar import StepProgressContainer, TutorialWidget
-from ..util import svg_tools
+from ..util import should_process_theme_change, svg_tools
 
 if TYPE_CHECKING:
     from .wizard import TutorialStep, Wizard
@@ -112,6 +113,7 @@ class BaseTab(QObject):
         self.show_previous_step_button = show_previous_step_button
 
         self.loop_in_thread = loop_in_thread
+        self._is_closed = False
         self.signal_tracker = SignalTracker()
         self.buttonbox = WizardNavigationBar(
             go_to_next_index=self.refs.go_to_next_index,
@@ -133,6 +135,11 @@ class BaseTab(QObject):
     def button_previous(self) -> QPushButton:
         """Button previous."""
         return self.buttonbox.button_previous
+
+    @property
+    def is_closed(self) -> bool:
+        """Return whether this tab is already in teardown."""
+        return self._is_closed
 
     @abstractmethod
     def create(self) -> TutorialWidget:
@@ -213,6 +220,24 @@ class BaseTab(QObject):
 
     def close(self) -> None:
         """Close."""
+        if self._is_closed:
+            return
+        self._is_closed = True
         self.signal_tracker.disconnect_all()
         self.setParent(None)
-        del self.refs
+
+
+class ThemeAwareStepWidget(QWidget):
+    def __init__(self, tab: BaseTab, parent: QWidget | None = None) -> None:
+        """Initialize instance."""
+        super().__init__(parent)
+        self._tab_ref: weakref.ReferenceType[BaseTab] = weakref.ref(tab)
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh the owning wizard step when the app palette changes."""
+        super().changeEvent(a0)
+        if not should_process_theme_change(self, a0):
+            return
+        if tab := self._tab_ref():
+            if not tab.is_closed:
+                tab.updateUi()

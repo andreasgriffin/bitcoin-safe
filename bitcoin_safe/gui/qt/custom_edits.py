@@ -38,9 +38,11 @@ from typing import Generic, Protocol, TypeVar, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import QRect, QSize, QStringListModel, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QRect, QSize, QStringListModel, Qt, pyqtSignal
 from PyQt6.QtGui import QFocusEvent, QKeyEvent, QPainter, QPaintEvent, QPalette
 from PyQt6.QtWidgets import QApplication, QCompleter, QLineEdit, QTextEdit, QWidget
+
+from .util import should_process_theme_change
 
 logger = logging.getLogger(__name__)
 ENABLE_COMPLETERS = True
@@ -259,6 +261,11 @@ class AnalyzerLineEdit(QLineEdit):
             self.displayText(),
         )
 
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self.update()
+
 
 class FlexibleHeightTextedit(QTextEdit):
     def sizeHint(self) -> QSize:
@@ -318,6 +325,11 @@ class AnalyzerTextEdit(FlexibleHeightTextedit):
 
     def setText(self, a0: str | None) -> None:  # type: ignore
         self.setPlainText(a0 or "")
+
+    def changeEvent(self, e: QEvent | None) -> None:
+        super().changeEvent(e)
+        if should_process_theme_change(self, e):
+            self.update()
 
 
 class QCompleterLineEdit(AnalyzerLineEdit):

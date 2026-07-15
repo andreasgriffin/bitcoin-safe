@@ -41,7 +41,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, MultipleStrateg
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import serialized_to_hex
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QShowEvent
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
@@ -119,11 +119,11 @@ from ..util import (
     Message,
     MessageType,
     add_to_buttonbox,
-    adjust_bg_color_for_darkmode,
     caught_exception_message,
     clear_layout,
     set_margins,
     set_no_margins,
+    should_process_theme_change,
     sort_id_to_icon,
 )
 from ..utxo_list import UtxoListWithToolbar
@@ -146,8 +146,7 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
             has_close_button=True,
             parent=parent,
         )
-        color = adjust_bg_color_for_darkmode(QColor("lightblue"))
-        self.set_background_color(color)
+        self.set_background_base_color(QColor("lightblue"))
 
         self.optionalButton.setVisible(False)
 
@@ -370,28 +369,28 @@ class UITx_Viewer(UITx_Base):
         self.button_edit_tx = add_to_buttonbox(
             self.buttonBox,
             "",
-            button_info(ButtonInfoType.edit).icon,
+            button_info(ButtonInfoType.edit).icon_name,
             on_clicked=partial(self.edit, None),
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
         self.button_rbf = add_to_buttonbox(
             self.buttonBox,
             "",
-            button_info(ButtonInfoType.rbf).icon,
+            button_info(ButtonInfoType.rbf).icon_name,
             on_clicked=self.rbf,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
         self.button_cpfp_tx = add_to_buttonbox(
             self.buttonBox,
             "",
-            button_info(ButtonInfoType.cpfp).icon,
+            button_info(ButtonInfoType.cpfp).icon_name,
             on_clicked=self.cpfp,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
         self.button_back = add_to_buttonbox(
             self.buttonBox,
             "",
-            icon_name=svg_tools.get_QIcon("bi--arrow-left-short.svg"),
+            icon_name="bi--arrow-left-short.svg",
             on_clicked=self.navigate_tab_history_backward,
             role=QDialogButtonBox.ButtonRole.ResetRole,
         )
@@ -577,6 +576,43 @@ class UITx_Viewer(UITx_Base):
         """Refresh txid text and txid-related actions."""
         self.txid_label.set_txid(self.txid())
 
+    def _refresh_action_button_icons(self) -> None:
+        """Rebuild palette-aware icons for tx viewer action buttons."""
+        button_icons: list[tuple[QPushButton, str]] = [
+            (self.button_edit_tx, button_info(ButtonInfoType.edit).icon_name),
+            (self.button_cpfp_tx, button_info(ButtonInfoType.cpfp).icon_name),
+            (self.button_rbf, button_info(ButtonInfoType.rbf).icon_name),
+            (self.button_back, "bi--arrow-left-short.svg"),
+            (self.button_save_local_tx, "offline_tx.svg"),
+            (self.button_send, "bi--send.svg"),
+        ]
+        for button, icon_name in button_icons:
+            button.setIcon(svg_tools.get_QIcon(icon_name))
+
+    def _refresh_theme_icons(self) -> None:
+        """Refresh icons that depend on the current palette."""
+        required_attributes = (
+            "button_edit_tx",
+            "button_cpfp_tx",
+            "button_rbf",
+            "button_back",
+            "button_save_local_tx",
+            "button_send",
+            "export_data_simple",
+            "header_button_group",
+        )
+        if not all(hasattr(self, attribute) for attribute in required_attributes):
+            return
+        self._refresh_action_button_icons()
+        self.fill_button_group()
+        self.export_data_simple.refresh_theme_icons()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh theme-colored icons when the application palette changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0, include_style_change=True, include_enabled_change=True):
+            self._refresh_theme_icons()
+
     def updateUi(self) -> None:
         """UpdateUi."""
         super().updateUi()
@@ -607,6 +643,7 @@ class UITx_Viewer(UITx_Base):
         self._update_txid_controls()
         self.export_data_simple.updateUi()
         self.update_all_totals()
+        self._refresh_action_button_icons()
 
     def save_local_tx(self):
         """Save local tx."""

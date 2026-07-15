@@ -71,7 +71,6 @@ from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.notification_bar_cbf import get_p2p_tooltip_text
 from bitcoin_safe.gui.qt.util import (
     Message,
-    adjust_bg_color_for_darkmode,
     ensure_scheme,
     get_host_and_port,
     remove_scheme,
@@ -412,8 +411,8 @@ class NetworkSettingsUI(QWidget):
 
         self._layout.addWidget(self.groupbox_proxy)
         self.proxy_warning_label = NotificationBar("")
-        self.proxy_warning_label.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.proxy_warning_label.set_icon(svg_tools.get_QIcon("warning.svg"))
+        self.proxy_warning_label.set_background_base_color(QColor("#FFDF00"))
+        self.proxy_warning_label.set_icon("warning.svg")
         self._layout.addWidget(self.proxy_warning_label)
 
         # Create buttons and layout

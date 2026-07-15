@@ -10,9 +10,6 @@
 # Or for a Windows x86_64 (64-bit) target, run:
 # $ GCC_TRIPLET_HOST="x86_64-w64-mingw32" BUILD_TYPE="wine" ./contrib/make_zbar.sh
 
-ZBAR_VERSION="bb05ec54eec57f8397cb13fb9161372a281a1219"
-# ^ tag 0.23.93
-
 set -e
 
 . $(dirname "$0")/build_tools_util.sh || (echo "Could not source build_tools_util.sh" && exit 1)
@@ -20,14 +17,19 @@ set -e
 here="$(dirname "$(realpath "$0" 2> /dev/null || grealpath "$0")")"
 CONTRIB="$here"
 PROJECT_ROOT="$CONTRIB/.."
+NATIVE_DEPENDENCIES_FILE="$CONTRIB/native_git_dependencies.sh"
+
+. "$NATIVE_DEPENDENCIES_FILE"
+
+ZBAR_VERSION="$ZBAR_COMMIT"
 
 pkgname="zbar"
-info "Building $pkgname..."
+info "Building $pkgname at ${ZBAR_TAG} (${ZBAR_VERSION})..."
 
 (
     cd "$CONTRIB"
     if [ ! -d zbar ]; then
-        git clone https://github.com/mchehab/zbar.git
+        git clone "$ZBAR_URL"
     fi
     cd zbar
     if ! $(git cat-file -e ${ZBAR_VERSION}) ; then

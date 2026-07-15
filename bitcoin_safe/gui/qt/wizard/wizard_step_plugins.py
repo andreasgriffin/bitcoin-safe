@@ -133,6 +133,8 @@ class PluginListStep(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         self.label_title.setText(self.tr("Explore plugins"))
         self.label_main.setText(

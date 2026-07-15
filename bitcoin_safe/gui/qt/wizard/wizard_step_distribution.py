@@ -65,7 +65,7 @@ from ..util import (
     svg_tools_hardware_signer,
     to_color_name,
 )
-from .wizard_support import BaseTab, WizardTabInfo
+from .wizard_support import BaseTab, ThemeAwareStepWidget, WizardTabInfo
 
 
 class RegisterMultisig(BaseTab):
@@ -143,6 +143,8 @@ class RegisterMultisig(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         self.label_import.setText(self.tr("Register the multisig wallet on each signing device."))
 
@@ -197,7 +199,7 @@ class DistributeSeeds(BaseTab):
 
     def create(self) -> TutorialWidget:
         """Create."""
-        widget = QWidget()
+        widget = ThemeAwareStepWidget(self)
         widget_layout = QVBoxLayout(widget)
         widget_layout.setContentsMargins(0, 0, 0, 0)
         widget_layout.setSpacing(18)
@@ -687,6 +689,14 @@ class DistributeSeeds(BaseTab):
         accent_text_color = palette.color(QPalette.ColorRole.HighlightedText).name()
         link_color = palette.color(QPalette.ColorRole.Link).name()
 
+        for widget in (
+            self.left_panel,
+            self.print_section,
+            self.seed_words_section,
+            self.right_panel,
+            self.distribution_table,
+        ):
+            widget.refresh_style()
         self.distribution_table.setStyleSheet(
             self.distribution_table.styleSheet()
             + f"\nQLabel a {{ color: {link_color}; text-decoration: none; }}"
@@ -706,6 +716,8 @@ class DistributeSeeds(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         m, n = self.refs.qtwalletbase.get_mn_tuple()
         self.label_title.setText(self.tr("Congratulations, your wallet is ready. Now protect it!"))

@@ -223,7 +223,7 @@ function win_path() {
 
     here="$(dirname "$(readlink -e "$0")")"
     test -n "$here" -a -d "$here" || exit
-    # here = /opt/wine64/drive_c/bitcoin_safe/tools/build-wine 
+    # here = /opt/wine64/drive_c/bitcoin_safe/tools/build_wine 
     CONTRIB="$here/.."
     PROJECT_ROOT="$CONTRIB/.."
 

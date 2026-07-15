@@ -8,6 +8,8 @@
 * tag the main commit with the version
 * Build for all platforms
 * Sign all binaries
+* Write `release-notes/<version>.md`
+* Run `python .update_version.py` to refresh the checked-in packaging and Flathub files
 * `python tools/release.py`  (as draft)
 * Create release notes for github, nostr, substr, X
 
@@ -20,6 +22,11 @@
 * Publish release on github
 * `bash fetch_release.sh` in website repo
 * Publish release notes
+
+## Publish on Flathub
+* Run vscode "Flathub Build&Run" with the release tag
+* Create a PR on https://github.com/flathub/org.bitcoin_safe.BitcoinSafe  and test the test build
+* Merge the PR  --> check update on https://flathub.org/en/apps/org.bitcoin_safe.BitcoinSafe 
 
 
 ## Maybe

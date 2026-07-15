@@ -35,11 +35,11 @@ from functools import partial
 from typing import cast
 
 import bdkpython as bdk
-from bitcoin_qr_tools.data import Data, DecodingException
+from bitcoin_qr_tools.data import Data, DecodingException, WrongNetwork
 from bitcoin_qr_tools.gui.bitcoin_video_widget import BitcoinVideoWidget
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
-from PyQt6.QtCore import QObject, QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QResizeEvent, QTextCharFormat
 from PyQt6.QtWidgets import (
     QApplication,
@@ -61,18 +61,39 @@ from bitcoin_safe.gui.qt.custom_edits import (
     AnalyzerState,
     AnalyzerTextEdit,
 )
-from bitcoin_safe.gui.qt.util import Message, MessageType, clear_layout, do_copy, get_icon_path, svg_tools
+from bitcoin_safe.gui.qt.util import (
+    Message,
+    MessageType,
+    clear_layout,
+    do_copy,
+    get_icon_path,
+    should_process_theme_change,
+    svg_tools,
+)
 from bitcoin_safe.i18n import translate
 
 logger = logging.getLogger(__name__)
 
 
 class SquareButton(QToolButton):
-    def __init__(self, qicon: QIcon, parent) -> None:
+    def __init__(self, qicon: QIcon | str, parent) -> None:
         """Initialize instance."""
         super().__init__(parent)
+        self._icon_name: str | None = None
+        self._icon: QIcon | None = None
         self.setIcon(qicon)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
+
+    def setIcon(self, icon: QIcon | str) -> None:
+        self._icon_name = icon if isinstance(icon, str) else None
+        self._icon = icon if isinstance(icon, QIcon) else None
+        effective_icon = svg_tools.get_QIcon(self._icon_name) if self._icon_name else self._icon
+        super().setIcon(effective_icon if effective_icon else QIcon())
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if self._icon_name and should_process_theme_change(self, a0):
+            self.setIcon(self._icon_name)
 
 
 class ButtonsField(QWidget):
@@ -272,7 +293,7 @@ class ButtonEdit(QWidget):
 
     def add_button(self, icon_path: str | None, button_callback: Callable, tooltip: str = "") -> SquareButton:
         """Add button."""
-        button = SquareButton(svg_tools.get_QIcon(icon_path), parent=self)  # Create the button with the icon
+        button = SquareButton(icon_path if icon_path else QIcon(), parent=self)
         if tooltip:
             button.setToolTip(tooltip)
         button.clicked.connect(button_callback)  # Connect the button's clicked signal to the callback
@@ -342,9 +363,11 @@ class ButtonEdit(QWidget):
 
         def _exception_callback(e: Exception) -> None:
             """Exception callback."""
-            if isinstance(e, DecodingException):
+            if isinstance(e, (DecodingException, WrongNetwork)):
                 if question_dialog(
-                    self.tr("Could not recognize the input. Do you want to scan again?"),
+                    self.tr(
+                        "Could not recognize the input. Do you want to scan again?\n\nThe error was: {error}"
+                    ).format(error=str(e)),
                     true_button=self.tr("Scan again"),
                 ):
                     self.input_qr_from_camera(

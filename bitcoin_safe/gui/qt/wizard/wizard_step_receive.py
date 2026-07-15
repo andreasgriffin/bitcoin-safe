@@ -292,6 +292,8 @@ class ReceiveTest(BaseTab):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        if self.is_closed:
+            return
         super().updateUi()
         test_amount = Satoshis(self.refs.max_test_fund, self.refs.qtwalletbase.config.network).str_with_unit(
             btc_symbol=self.refs.qtwalletbase.config.bitcoin_symbol.value

@@ -42,7 +42,6 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode, SidebarTree
-from bitcoin_safe.gui.qt.util import svg_tools
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +75,7 @@ class LoadingWalletTab(QWidget):
         """Enter context manager."""
         self.tabs.root.addChildNode(
             SidebarNode(
-                icon=svg_tools.get_QIcon("status_waiting.svg"),
+                icon="status_waiting.svg",
                 title=self.name,
                 data=self,
                 widget=self,

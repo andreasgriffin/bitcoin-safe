@@ -75,6 +75,11 @@ class CbfSync:
         self.proxy_info = proxy_info
         self.cbf_connections = cbf_connections
         self.is_new_wallet = is_new_wallet
+        self._connected_peer_hosts: list[str] = []
+
+    def connected_peer_hosts(self) -> list[str]:
+        """Return the latest known connected CBF peer hosts."""
+        return list(self._connected_peer_hosts)
 
     def _handle_log_info(self, info: bdk.Info):
         """Handle log info."""
@@ -180,6 +185,27 @@ class CbfSync:
         self._handle_update(update_info)
         return update_info
 
+    async def peer_info(self) -> list[str]:
+        """Return the currently connected compact block filter peer hosts."""
+        client = self.client
+        if not client:
+            logger.debug("Client not available; cannot fetch peer info.")
+            return self.connected_peer_hosts()
+        if not client.is_running():
+            logger.debug("Client not running")
+            return self.connected_peer_hosts()
+
+        try:
+            peer_hosts = [str(ip_address) for ip_address in await client.peer_info()]
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            logger.debug(f"Failed to fetch peer info: {exc}")
+            return self.connected_peer_hosts()
+
+        self._connected_peer_hosts = peer_hosts
+        return self.connected_peer_hosts()
+
     def build_node(
         self,
     ):
@@ -203,7 +229,8 @@ class CbfSync:
                     network=self.wallet.network(),
                 )
                 scan_type = bdk.ScanType.RECOVERY(
-                    used_script_index=derivation_index, checkpoint=recovery_point
+                    used_script_index=derivation_index,
+                    checkpoint=recovery_point,
                 )
             else:
                 scan_type = bdk.ScanType.SYNC()

@@ -269,12 +269,11 @@ class KeyStoreUIs(QWidget):
                     parent=self,
                 )
             )
-        if len(set(xpubs)) < len(keystore_uis):
+        duplicate_xpub_signers = self._first_duplicate_signer_indexes(xpubs)
+        if duplicate_xpub_signers:
             return_messages.append(
                 Message(
-                    self.tr(
-                        "You imported the same xpub multiple times!!! Please use a different signing device."
-                    ),
+                    self._duplicate_xpub_error_message(duplicate_xpub_signers),
                     no_show=True,
                     type=MessageType.Error,
                     parent=self,
@@ -328,6 +327,33 @@ class KeyStoreUIs(QWidget):
 
         return return_messages
 
+    def _first_duplicate_signer_indexes(self, values: list[str]) -> list[int]:
+        duplicate_indexes_by_value: dict[str, list[int]] = {}
+        for index, value in enumerate(values):
+            normalized = value.strip()
+            if not normalized:
+                continue
+            duplicate_indexes_by_value.setdefault(normalized, []).append(index)
+
+        for duplicate_indexes in duplicate_indexes_by_value.values():
+            if len(duplicate_indexes) > 1:
+                return duplicate_indexes
+        return []
+
+    def _duplicate_xpub_error_message(self, signer_indexes: list[int]) -> str:
+        return self.tr(
+            "Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer."
+        ).format(signers=", ".join(str(index + 1) for index in signer_indexes))
+
+    def _update_duplicate_xpub_messages(self) -> None:
+        duplicate_indexes = self._first_duplicate_signer_indexes(
+            [keystore_ui.edit_xpub.text() for keystore_ui in self._keystore_uis]
+        )
+        duplicate_message = self._duplicate_xpub_error_message(duplicate_indexes) if duplicate_indexes else ""
+
+        for index, keystore_ui in enumerate(self._keystore_uis):
+            keystore_ui.set_duplicate_xpub_message(duplicate_message if index in duplicate_indexes else "")
+
     def has_blocking_messages(self, keystore_uis: list[KeyStoreUI] | None = None) -> bool:
         """Return whether the selected keystore cards still have blocking validation errors."""
         selected_keystore_uis = (
@@ -351,6 +377,7 @@ class KeyStoreUIs(QWidget):
         except Exception as exc:
             logger.debug(f"{self.__class__.__name__}: {exc}")
             logger.warning("ui_keystore_ui_change: Invalid input")
+        self._update_duplicate_xpub_messages()
         self.signal_ui_changed.emit()
 
     def set_protowallet_from_keystore_ui(self) -> None:
@@ -399,6 +426,7 @@ class KeyStoreUIs(QWidget):
                 continue
             keystore_ui.set_ui_from_keystore(keystore)
             keystore_ui.format_all_fields()
+        self._update_duplicate_xpub_messages()
         assert len(self.protowallet.keystores) == self.count()
 
     def get_keystore_uis_with_unexpected_origin(self) -> list[KeyStoreUI]:

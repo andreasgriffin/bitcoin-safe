@@ -45,12 +45,13 @@ from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.dialogs import AutoScanMode
 from bitcoin_usb.seed_tools import derive
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import QObject, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import QEvent, QObject, Qt, pyqtSignal
+from PyQt6.QtGui import QIcon, QPalette, QPixmap
 from PyQt6.QtWidgets import (
     QComboBox,
     QGridLayout,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QLineEdit,
     QPushButton,
@@ -62,7 +63,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING
 from bitcoin_safe.gui.qt.analyzers import (
     FingerprintAnalyzer,
     KeyOriginAnalyzer,
@@ -97,7 +98,15 @@ from ...keystore import KeyStore, KeyStoreImporterTypes
 from ...signals import SignalsMin
 from .block_change_signals import BlockChangesSignals
 from .dialog_import import ImportDialog
-from .util import Message, MessageType, set_margins
+from .util import (
+    ColorScheme,
+    Message,
+    MessageType,
+    get_neutral_surface_colors,
+    is_theme_change_event,
+    set_margins,
+    to_color_name,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -135,6 +144,8 @@ class KeyStoreUI(CardBase):
         show_register_button: bool = True,
     ) -> None:
         """Initialize instance."""
+        self._theme_assets_ready = False
+        self._theme_refresh_in_progress = False
         super().__init__(parent=parent, expansion_mode=CardExpansionMode.EXPANDABLE)
         self.signals_min = signals_min
         self._fallback_hardware_signer_label = hardware_signer_label
@@ -148,22 +159,19 @@ class KeyStoreUI(CardBase):
         self._device_type_editing = False
         self._selected_hardware_signer: HardwareSigner | None = None
         self._device_help_widget: QWidget | None = None
+        self._duplicate_xpub_message = ""
         self.signal_tracker = SignalTracker()
         self._state = KeyStoreUiState.Add
-        self._status_pixmaps = {
-            AnalyzerState.Valid: svg_tools.get_pixmap("checkmark.svg", size=(22, 22)),
-            AnalyzerState.Warning: svg_tools.get_pixmap("warning.svg", size=(22, 22)),
-            AnalyzerState.Invalid: svg_tools.get_pixmap("error.svg", size=(22, 22)),
-        }
+        self._status_pixmaps = self._build_status_pixmaps()
 
         self.usb_gui = USBGui(
             self.network,
             initalization_label=self.hardware_signer_label,
             loop_in_thread=loop_in_thread,
-            window_icon=svg_tools.get_QIcon(LOGO_NAME),
         )
 
         self._build_widgets()
+        self._theme_assets_ready = True
         self._connect_signals()
         self.updateUi()
 
@@ -192,6 +200,40 @@ class KeyStoreUI(CardBase):
             if self.selected_hardware_signer is None
             else self.hardware_signer_label
         )
+
+    def _build_status_pixmaps(self) -> dict[AnalyzerState, QPixmap]:
+        return {
+            AnalyzerState.Valid: svg_tools.get_pixmap("checkmark.svg", size=(22, 22)),
+            AnalyzerState.Warning: svg_tools.get_pixmap("warning.svg", size=(22, 22)),
+            AnalyzerState.Invalid: svg_tools.get_pixmap("error.svg", size=(22, 22)),
+        }
+
+    def _refresh_theme_assets(self) -> None:
+        if not self._theme_assets_ready:
+            return
+        self._status_pixmaps = self._build_status_pixmaps()
+        self.button_device_instructions.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
+        self.button_menu.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
+        self.button_connect_qr.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename))
+        self.button_connect_usb.enabled_icon = svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename)
+        if not self.button_connect_usb.timer.isActive():
+            self.button_connect_usb.setIcon(self.button_connect_usb.enabled_icon)
+        self.button_connect_bluetooth.enabled_icon = svg_tools.get_QIcon("bi--bluetooth.svg")
+        if not self.button_connect_bluetooth.timer.isActive():
+            self.button_connect_bluetooth.setIcon(self.button_connect_bluetooth.enabled_icon)
+        self.button_connect_import.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.file.icon_filename))
+
+    def _refresh_card_style(self) -> None:
+        if not self._theme_assets_ready:
+            return
+        surface_colors = get_neutral_surface_colors()
+        self.background_color = surface_colors.panel_background
+        self.refresh_style()
+        subtitle_palette = self.header_subtitle.palette()
+        subtitle_palette.setColor(self.header_subtitle.foregroundRole(), surface_colors.muted_text)
+        self.header_subtitle.setPalette(subtitle_palette)
+        self.hline.setStyleSheet(f"color: {to_color_name(QPalette.ColorRole.Mid)}")
+        self._update_header_icon()
 
     def _build_widgets(self) -> None:
         self.card_frame = self
@@ -231,7 +273,6 @@ class KeyStoreUI(CardBase):
         self.header_right_layout.addWidget(self.header_actions_widget)
 
         self.button_device_instructions = QPushButton(self.header_widget)
-        self.button_device_instructions.setIcon(svg_tools.get_QIcon("bi--question-circle.svg"))
         self.header_actions_layout.addWidget(self.button_device_instructions)
 
         self.button_register = QPushButton(self.header_widget)
@@ -240,11 +281,13 @@ class KeyStoreUI(CardBase):
         self.button_menu = QToolButton(self.header_widget)
         self.button_menu.setAutoRaise(True)
         self.button_menu.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
-        self.button_menu.setIcon(svg_tools.get_QIcon("bi--gear.svg"))
         self.button_menu.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
         self.menu_button_menu = Menu(self.button_menu)
         self.button_menu.setMenu(self.menu_button_menu)
         self.action_device_instructions = self.menu_button_menu.add_action(slot=self.show_device_instructions)
+        self.action_set_account_number = self.menu_button_menu.add_action(
+            slot=self.show_set_account_number_dialog
+        )
         self.action_reregister = self.menu_button_menu.add_action(slot=self._request_show_register_multisig)
         self.action_change_device_type = self.menu_button_menu.add_action(slot=self.start_device_type_change)
         self.header_actions_layout.addWidget(self.button_menu)
@@ -279,13 +322,12 @@ class KeyStoreUI(CardBase):
         self.connect_layout.addStretch()
 
         self.button_connect_qr = QPushButton(self.left_widget)
-        self.button_connect_qr.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.qr.icon_filename))
         self.connect_layout.addWidget(self.button_connect_qr)
 
         self.button_connect_usb = SpinningButton(
             text="",
             signal_stop_spinning=self.usb_gui.signal_end_hwi_blocker,
-            enabled_icon=svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename),
+            enabled_icon=QIcon(),
             timeout=60,
             parent=self.left_widget,
         )
@@ -294,14 +336,13 @@ class KeyStoreUI(CardBase):
         self.button_connect_bluetooth = SpinningButton(
             text="",
             signal_stop_spinning=self.usb_gui.signal_end_hwi_blocker,
-            enabled_icon=svg_tools.get_QIcon("bi--bluetooth.svg"),
+            enabled_icon=QIcon(),
             timeout=60,
             parent=self.left_widget,
         )
         self.connect_layout.addWidget(self.button_connect_bluetooth)
 
         self.button_connect_import = QPushButton(self.left_widget)
-        self.button_connect_import.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.file.icon_filename))
         self.connect_layout.addWidget(self.button_connect_import)
 
         self.label_fingerprint = IconLabel(parent=self.left_widget)
@@ -313,6 +354,15 @@ class KeyStoreUI(CardBase):
         self.edit_fingerprint.add_copy_button()
         self.signal_tracker.connect(self.edit_fingerprint.signal_data, self._on_handle_input)
         self.edit_fingerprint.input_field.setAnalyzer(FingerprintAnalyzer(parent=self))
+
+        self.label_account_number = IconLabel(parent=self.left_widget)
+        self.edit_account_number = ButtonEdit(
+            input_field=AnalyzerLineEdit(),
+            signal_update=self.signals_min.language_switch,
+            close_all_video_widgets=self.signals_min.close_all_video_widgets,
+            parent=self.left_widget,
+        )
+        self.edit_account_number.setReadOnly(True)
 
         self.label_key_origin = IconLabel(parent=self.left_widget)
         self.edit_key_origin_input = QCompleterLineEdit(self.network)
@@ -362,12 +412,16 @@ class KeyStoreUI(CardBase):
         self.details_layout.setColumnStretch(2, 1)
         self.details_layout.addWidget(self.label_fingerprint, 0, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
         self.details_layout.addWidget(self.edit_fingerprint, 0, 2)
-        self.details_layout.addWidget(self.label_key_origin, 1, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
-        self.details_layout.addWidget(self.edit_key_origin, 1, 2)
-        self.details_layout.addWidget(self.label_xpub, 2, 0, alignment=Qt.AlignmentFlag.AlignTop)
-        self.details_layout.addWidget(self.edit_xpub, 2, 2)
-        self.details_layout.addWidget(self.label_seed, 3, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
-        self.details_layout.addWidget(self.edit_seed, 3, 2)
+        self.details_layout.addWidget(
+            self.label_account_number, 1, 0, alignment=Qt.AlignmentFlag.AlignVCenter
+        )
+        self.details_layout.addWidget(self.edit_account_number, 1, 2)
+        self.details_layout.addWidget(self.label_key_origin, 2, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
+        self.details_layout.addWidget(self.edit_key_origin, 2, 2)
+        self.details_layout.addWidget(self.label_xpub, 3, 0, alignment=Qt.AlignmentFlag.AlignTop)
+        self.details_layout.addWidget(self.edit_xpub, 3, 2)
+        self.details_layout.addWidget(self.label_seed, 4, 0, alignment=Qt.AlignmentFlag.AlignVCenter)
+        self.details_layout.addWidget(self.edit_seed, 4, 2)
         self.left_layout.addWidget(self.details_widget, alignment=Qt.AlignmentFlag.AlignTop)
 
         self.right_widget = QWidget(self.content_splitter)
@@ -570,14 +624,26 @@ class KeyStoreUI(CardBase):
             self.edit_xpub.input_field,
         ]
 
+    def _duplicate_xpub_analysis(self) -> AnalyzerMessage | None:
+        if not self._duplicate_xpub_message:
+            return None
+        return AnalyzerMessage(self._duplicate_xpub_message, AnalyzerState.Invalid)
+
+    def _effective_xpub_analysis(self) -> AnalyzerMessage:
+        duplicate_analysis = self._duplicate_xpub_analysis()
+        if duplicate_analysis:
+            return duplicate_analysis
+        return self.edit_xpub.input_field.analyze_text(self.edit_xpub.text())
+
     def get_analysis_list(self, min_state: AnalyzerState = AnalyzerState.Valid) -> list[AnalyzerMessage]:
         """Return analyzer messages for the visible signer detail fields."""
         analysis_list: list[AnalyzerMessage] = []
         for field in self._analysis_fields():
-            analyzer = field.analyzer()
-            if not analyzer:
-                continue
-            analysis = analyzer.analyze(field.text())
+            analysis = (
+                self._effective_xpub_analysis()
+                if field is self.edit_xpub.input_field
+                else field.analyze_text(field.text())
+            )
             if analysis.state >= min_state:
                 analysis_list.append(analysis)
         return analysis_list
@@ -635,8 +701,9 @@ class KeyStoreUI(CardBase):
         )
         self.button_device_instructions.setVisible(visible and self.state != KeyStoreUiState.ReadOnly)
         self.action_device_instructions.setVisible(visible)
-        if self.state in (KeyStoreUiState.Empty, KeyStoreUiState.Filled):
-            self.connect_help_label.setVisible(visible)
+        self.connect_help_label.setVisible(
+            self.is_expanded and visible and self.state in (KeyStoreUiState.Empty, KeyStoreUiState.Filled)
+        )
 
     def _update_connect_buttons(self, connect_visible: bool = True) -> None:
         hardware_signer = self.selected_hardware_signer or HardwareSigners.generic
@@ -697,12 +764,64 @@ class KeyStoreUI(CardBase):
             return False
         return True
 
+    def _current_account_number(self) -> int | None:
+        """Return the account index encoded in the current or default key origin."""
+        return SimplePubKeyProvider.get_account_index(self.get_key_origin())
+
+    def _details_have_content(self) -> bool:
+        """Whether any signer detail field already contains meaningful data."""
+        return any(
+            (
+                self.edit_fingerprint.text().strip(),
+                self.edit_key_origin.text().strip(),
+                self.edit_xpub.text().strip(),
+                self.edit_seed.text().strip(),
+            )
+        )
+
+    def show_set_account_number_dialog(self) -> None:
+        """Prompt for a signer account number and update the current key origin."""
+        if self.read_only_mode or self.selected_hardware_signer is None:
+            return
+
+        address_type = self.get_address_type()
+        current_account_number = self._current_account_number()
+        if current_account_number is None:
+            current_account_number = 0
+
+        account_number, accepted = QInputDialog.getInt(
+            self,
+            self.tr("Set account number"),
+            self.tr("Account number"),
+            current_account_number,
+            0,
+            2**31 - 1,
+            1,
+        )
+        if not accepted:
+            return
+
+        new_key_origin = address_type.key_origin(self.network, account_number=account_number)
+        if new_key_origin == self.key_origin:
+            return
+
+        self.key_origin = new_key_origin
+        self.edit_xpub.setText("")
+
+        self.counter_register_button_clicked = 0
+        self.format_all_fields()
+        self.signal_ui_changed.emit()
+        self.updateUi()
+
     def _apply_state(self) -> None:
         self._state = self._determine_state()
         is_add_state = self.state == KeyStoreUiState.Add
         show_device_selection = is_add_state or self._device_type_editing
         show_content = self.selected_hardware_signer is not None
-        has_details = self.state in (KeyStoreUiState.Filled, KeyStoreUiState.ReadOnly)
+        has_details = (
+            self.state in (KeyStoreUiState.Filled, KeyStoreUiState.ReadOnly) or self._details_have_content()
+        )
+        show_account_number = has_details and (self._current_account_number() not in [None, 0])
         show_seed_input = self._show_seed_input()
         connect_visible = self.state in (KeyStoreUiState.Empty, KeyStoreUiState.Filled)
         show_expanded_content = self.is_expanded and show_content
@@ -715,6 +834,12 @@ class KeyStoreUI(CardBase):
         self.header_actions_layout.setEnabled(not is_add_state)
         self.button_menu.setVisible(
             not is_add_state and not self._device_type_editing and self.selected_hardware_signer is not None
+        )
+        self.action_set_account_number.setVisible(
+            not self.read_only_mode and self.selected_hardware_signer is not None
+        )
+        self.action_set_account_number.setEnabled(
+            not self.read_only_mode and self.selected_hardware_signer is not None
         )
         self.button_device_instructions.setVisible(
             not self._device_type_editing and self.button_device_instructions.isVisible()
@@ -732,11 +857,12 @@ class KeyStoreUI(CardBase):
         self.set_body_content_visible(show_content)
         self.left_widget.setVisible(show_expanded_content)
         self.right_widget.setVisible(show_expanded_content)
-        self.connect_help_label.setVisible(show_expanded_content and connect_visible)
 
         for widget in (
             self.label_fingerprint,
             self.edit_fingerprint,
+            self.label_account_number,
+            self.edit_account_number,
             self.label_key_origin,
             self.edit_key_origin,
             self.label_xpub,
@@ -746,6 +872,8 @@ class KeyStoreUI(CardBase):
         ):
             widget.setVisible(has_details)
 
+        self.label_account_number.setVisible(show_account_number)
+        self.edit_account_number.setVisible(show_account_number)
         self.label_seed.setVisible(show_seed_input)
         self.edit_seed.setVisible(show_seed_input)
 
@@ -885,7 +1013,7 @@ class KeyStoreUI(CardBase):
         expected_key_origin = self.get_expected_key_origin()
         key_origin_value = self.key_origin
         key_origin_analysis = self.edit_key_origin_input.analyze_text(key_origin_value)
-        xpub_analysis = self.edit_xpub.input_field.analyze_text(self.edit_xpub.text())
+        xpub_analysis = self._effective_xpub_analysis()
 
         key_origin_state: AnalyzerState | None = None
         key_origin_tooltip = ""
@@ -930,6 +1058,12 @@ class KeyStoreUI(CardBase):
         """Get expected key origin."""
         return self.get_address_type().key_origin(self.network)
 
+    def set_duplicate_xpub_message(self, message: str) -> None:
+        if self._duplicate_xpub_message == message:
+            return
+        self._duplicate_xpub_message = message
+        self.format_all_fields()
+
     def get_key_origin(self) -> str:
         """Get key origin."""
         key_origin = self.edit_key_origin.text().strip()
@@ -944,7 +1078,25 @@ class KeyStoreUI(CardBase):
             Message(analyzer_message.msg, type=MessageType.Error, parent=self)
             return
         if analyzer_message.state == AnalyzerState.Warning and not question_dialog(
-            self.tr("{msg}\nDo you want to proceed anyway?").format(msg=analyzer_message.msg),
+            self.tr("{msg}").format(msg=analyzer_message.msg),
+            true_button=self.tr("Ignore warning and proceed"),
+            false_button=self.tr("Abort and try later"),
+            default_is_true_button=False,
+        ):
+            return
+
+        if (
+            (old := self.key_origin)
+            and old != (new := signer_info.key_origin)
+            and (
+                (old_account_number := SimplePubKeyProvider.get_account_index(old))
+                != (new_account_number := SimplePubKeyProvider.get_account_index(new))
+            )
+            and not question_dialog(
+                self.tr(
+                    "The account changed from {current_account_number} to {new_account_number}. Proceed?"
+                ).format(current_account_number=old_account_number, new_account_number=new_account_number)
+            )
         ):
             return
 
@@ -1033,8 +1185,11 @@ class KeyStoreUI(CardBase):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        ColorScheme.update_from_widget(self)
+        self._refresh_card_style()
+        self._refresh_theme_assets()
         self.label_description.setText(self.tr("Personal notes:"))
-        self.connect_help_label.setText(self.tr("Connect"))
+        self.connect_help_label.setText(self.tr("Device instructions"))
         self.connect_help_label.set_icon_as_help(
             tooltip=self.tr("Import signer data with QR, USB, Bluetooth, or text/file import.")
         )
@@ -1047,6 +1202,16 @@ class KeyStoreUI(CardBase):
             )
         )
         self.edit_fingerprint.input_field.display_name = self.label_fingerprint.textLabel.text()
+
+        self.label_account_number.setText(self.tr("Account number"))
+        self.label_account_number.set_icon_as_help(
+            tooltip=self.tr(
+                "The account number is encoded in the derivation path and selects the signer xPub."
+            )
+        )
+        account_number = self._current_account_number()
+        self.edit_account_number.setText("" if account_number in [None, 0] else str(account_number))
+        self.edit_account_number.input_field.display_name = self.label_account_number.textLabel.text()
 
         self.label_key_origin.setText(self.tr("Derivation path"))
         self.label_key_origin.set_icon_as_help(
@@ -1084,6 +1249,7 @@ class KeyStoreUI(CardBase):
         self.button_device_instructions.setText(self.tr("Device instructions"))
         self.action_device_instructions.setText(self.tr("Device instructions"))
         self.button_register.setText(self.tr("Register"))
+        self.action_set_account_number.setText(self.tr("Set account number..."))
         self.action_reregister.setText(self.tr("Reregister multisig"))
         self.action_change_device_type.setText(self.tr("Change device type"))
         self.button_connect_qr.setText(self.tr("QR Code"))
@@ -1095,9 +1261,28 @@ class KeyStoreUI(CardBase):
         self._update_header_subtitle()
         self._apply_state()
 
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if self._theme_assets_ready and is_theme_change_event(a0):
+            self._refresh_theme_dependent_ui()
+
+    def eventFilter(self, a0: QObject | None, a1: QEvent | None) -> bool:
+        return super().eventFilter(a0, a1)
+
+    def _refresh_theme_dependent_ui(self) -> None:
+        if not self._theme_assets_ready or self._theme_refresh_in_progress:
+            return
+
+        self._theme_refresh_in_progress = True
+        try:
+            self.updateUi()
+            self.format_all_fields()
+        finally:
+            self._theme_refresh_in_progress = False
+
     def _on_hwi_click(self, autoscan_mode: AutoScanMode) -> None:
         """On hwi click."""
-        key_origin = self.get_address_type().key_origin(self.network)
+        key_origin = self.get_key_origin()
         self.usb_gui.set_autoscan_mode(autoscan_mode)
         try:
             result = self.usb_gui.get_fingerprint_and_xpub(key_origin=key_origin)

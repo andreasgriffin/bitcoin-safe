@@ -60,7 +60,6 @@ from bitcoin_safe.gui.qt.util import (
     Message,
     MessageType,
     set_no_margins,
-    svg_tools,
 )
 from bitcoin_safe.plugin_framework.builtin_plugins import (
     BUILTIN_PLUGIN_BUNDLES,
@@ -160,7 +159,7 @@ class PluginManagerWidget(QWidget):
         self.node = SidebarNode[object](
             data=self,
             widget=self,
-            icon=svg_tools.get_QIcon("bi--gear.svg"),
+            icon="bi--gear.svg",
             title="",
         )
         self.updateUi()
@@ -790,6 +789,7 @@ class PluginManager(BaseSaveableClass):
         for entry in entries:
             item = SourceCatalogItem(entry=entry, parent=self.parent)
             item.signal_install_requested.connect(self.install_source_plugin)
+            item.signal_delete_requested.connect(self.delete_installed_source_plugin_by_bundle_id)
             self.source_catalog_items.append(item)
 
     def get_instance(self, cls: type[T], clients: list[PluginClient] | None = None) -> T | None:
@@ -993,8 +993,29 @@ class PluginManager(BaseSaveableClass):
             client.updateUi()
         self.widget.updateUi()
 
+    def _serialized_existing_client_payloads(self, existing_clients: list[PluginClient]) -> list[str]:
+        return self._merge_serialized_client_payloads(
+            [self._serialize_client_payload(client) for client in existing_clients]
+        )
+
+    def _retain_unrestored_existing_client_payloads(
+        self,
+        serialized_existing_client_payloads: list[str],
+    ) -> None:
+        restored_plugin_ids = {client.plugin_id for client in self.clients}
+        unresolved_payloads: list[str] = []
+        for payload in serialized_existing_client_payloads:
+            identity = self._payload_identity(payload)
+            if identity is not None and identity in restored_plugin_ids:
+                continue
+            unresolved_payloads.append(payload)
+        self.serialized_client_dumps = self._merge_serialized_client_payloads(
+            [*self.serialized_client_dumps, *unresolved_payloads]
+        )
+
     def _restore_or_create_clients(self, descriptor: bdk.Descriptor) -> None:
         existing_clients = self.clients.copy()
+        serialized_existing_client_payloads = self._serialized_existing_client_payloads(existing_clients)
         self.clients.clear()
         candidate_classes = {
             cls
@@ -1020,6 +1041,7 @@ class PluginManager(BaseSaveableClass):
                 self._register_client(restored_pending_client)
             elif discovered_client := discovered_clients_by_class.get(cls):
                 self._register_client(discovered_client)
+        self._retain_unrestored_existing_client_payloads(serialized_existing_client_payloads)
 
     def create_and_connect_clients(
         self,
@@ -1422,14 +1444,12 @@ class PluginManager(BaseSaveableClass):
         except ExternalPluginError as exc:
             Message(str(exc), type=MessageType.Error, parent=self.parent or self.widget)
 
+    def delete_installed_source_plugin_by_bundle_id(self, bundle_id: str) -> None:
+        entry = self.available_source_plugins_by_bundle_id.get(bundle_id)
+        plugin_name = entry.display_name if entry else bundle_id
+        self._delete_installed_source_plugin(bundle_id=bundle_id, plugin_name=plugin_name)
+
     def delete_installed_source_plugin(self, client: PluginClient) -> None:
-        if client.enabled:
-            Message(
-                self.widget.tr("Disable the plugin before deleting it."),
-                type=MessageType.Error,
-                parent=self.parent or self.widget,
-            )
-            return
         if client.plugin_bundle_id is None:
             Message(
                 self.widget.tr("This plugin cannot be deleted."),
@@ -1437,23 +1457,31 @@ class PluginManager(BaseSaveableClass):
                 parent=self.parent or self.widget,
             )
             return
+        self._delete_installed_source_plugin(bundle_id=client.plugin_bundle_id, plugin_name=client.title)
+
+    def _delete_installed_source_plugin(self, bundle_id: str, plugin_name: str) -> None:
+        removed_clients = [
+            existing_client
+            for existing_client in self.clients
+            if existing_client.plugin_source == PluginClientSource.EXTERNAL
+            and existing_client.plugin_bundle_id == bundle_id
+        ]
         if not question_dialog(
-            text=self.widget.tr("Delete installed plugin {plugin}?").format(plugin=client.title),
+            text=self.widget.tr("Delete installed plugin {plugin}?").format(plugin=plugin_name),
             title=self.widget.tr("Delete Installed Plugin"),
             true_button=self.widget.tr("Delete"),
             false_button=self.widget.tr("Cancel"),
         ):
             return
 
+        reenable_clients: list[PluginClient] = []
         try:
-            bundle_id = client.plugin_bundle_id
+            for removed_client in removed_clients:
+                if not removed_client.enabled:
+                    continue
+                removed_client.set_enabled(False)
+                reenable_clients.append(removed_client)
             self.external_registry.remove_installed_plugin(bundle_id)
-            removed_clients = [
-                existing_client
-                for existing_client in self.clients
-                if existing_client.plugin_source == PluginClientSource.EXTERNAL
-                and existing_client.plugin_bundle_id == bundle_id
-            ]
             self.serialized_client_dumps = self._merge_serialized_client_payloads(
                 [
                     *self.serialized_client_dumps,
@@ -1469,8 +1497,15 @@ class PluginManager(BaseSaveableClass):
             self._reconnect_client_signals()
             runtime_changed = self._refresh_external_registry_state()
             self._refresh_after_registry_change(runtime_changed)
-            logger.info("Deleted plugin %s.", client.title)
+            logger.info("Deleted plugin %s.", plugin_name)
         except ExternalPluginError as exc:
+            for removed_client in reenable_clients:
+                try:
+                    removed_client.set_enabled(True)
+                except Exception:
+                    logger.exception(
+                        "Could not restore plugin %s after failed deletion.", removed_client.plugin_id
+                    )
             Message(str(exc), type=MessageType.Error, parent=self.parent or self.widget)
 
     def clone(self, class_kwargs: dict | None = None):

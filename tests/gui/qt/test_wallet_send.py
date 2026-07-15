@@ -106,8 +106,10 @@ def _assert_card_matches_hardware_signer(card: TxSigningDeviceCard, hardware_sig
     )
     actual_pixmap = card.header_icon.pixmap()
     assert actual_pixmap is not None
-    expected_icon = svg_tools_hardware_signer.get_QIcon(hardware_signer.icon_name)
-    expected_pixmap = expected_icon.pixmap(actual_pixmap.size(), card.devicePixelRatioF())
+    expected_pixmap = svg_tools_hardware_signer.get_pixmap(
+        hardware_signer.icon_name,
+        size=(actual_pixmap.width(), actual_pixmap.height()),
+    )
     assert actual_pixmap.toImage() == expected_pixmap.toImage(), (
         f"expected icon {hardware_signer.icon_name}, got {card.device.hardware_signer.icon_name}"
     )

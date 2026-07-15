@@ -45,6 +45,7 @@ from typing import Any
 import requests
 
 from bitcoin_safe.execute_config import ENABLE_THREADING, ENABLE_TIMERS, IS_PRODUCTION
+from tools.release_notes import required_release_notes
 
 logger = logging.getLogger(__name__)
 
@@ -52,39 +53,6 @@ logger = logging.getLogger(__name__)
 assert IS_PRODUCTION
 assert ENABLE_THREADING
 assert ENABLE_TIMERS
-
-
-def get_default_description(latest_tag: str):
-    """Get default description."""
-    return f"""
-### New Features
-
-- 
-
-### Improvements
-
-- 
-
-### Check out 
-
-- www.bitcoin-safe.org
-- 🌍 Community forum: [substr](https://substr.network/s/bitcoin-safe)
-- Follow on [nostr](https://yakihonne.com/profile/nprofile1qqsyz7tjgwuarktk88qvlnkzue3ja52c3e64s7pcdwj52egphdfll0cq9934g) or [X](https://x.com/BitcoinSafeOrg)
-
-####  Verify signature
-
-Import my [public key](https://keys.openpgp.org/vks/v1/by-fingerprint/2759AA7148568ECCB03B76301D82124B440F612D) and [verify](https://bitcoin-safe.org/en/download/#verify-signature) the signature.
-
-"""
-
-
-# the following is taken out from the release notes, since the pip package still requires installing system libraries
-# #### Install and run on Mac, Linux, or Windows
-# using the [python package ](https://pypi.org/project/bitcoin-safe/)
-# ```bash
-# python3 -m pip install bitcoin-safe
-# python3 -m bitcoin_safe
-# ```
 
 
 def run_command(command, cwd=None):
@@ -335,7 +303,7 @@ def main() -> None:
         return
 
     release_name = get_input_with_default("Enter the release name", f"{__version__}")
-    body = get_default_description(latest_tag=__version__)
+    body = required_release_notes(Path(__file__).resolve().parents[1], __version__)
     draft = get_input_with_default("Is this a draft release?", "y").lower() == "y"
     prerelease = get_input_with_default("Is this a prerelease?", "n").lower() == "y"
     token: str | None = None

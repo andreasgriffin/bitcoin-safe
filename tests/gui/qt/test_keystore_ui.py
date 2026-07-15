@@ -35,8 +35,11 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import AddressType, AddressTypes
 from bitcoin_usb.dialogs import AutoScanMode
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
+from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUI, KeyStoreUiState
 from bitcoin_safe.gui.qt.util import ColorScheme, svg_tools_hardware_signer
 from bitcoin_safe.hardware_signers import HardwareSigners
@@ -76,6 +79,14 @@ def _select_signer(widget: KeyStoreUI, signer_id: str) -> None:
     widget.confirm_device_type_selection()
 
 
+def _set_account_number(widget: KeyStoreUI, monkeypatch, account_number: int) -> None:
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.keystore_ui.QInputDialog.getInt",
+        lambda *args, **kwargs: (account_number, True),
+    )
+    widget.action_set_account_number.trigger()
+
+
 def _make_descriptor_strings(
     address_type: AddressType, network: bdk.Network = bdk.Network.REGTEST
 ) -> tuple[SignerInfo, str, str]:
@@ -104,7 +115,7 @@ def test_keystore_ui_add_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> No
     actual_pixmap = widget.header_icon.pixmap()
     assert actual_pixmap is not None
     expected_icon = svg_tools_hardware_signer.get_QIcon(HardwareSigners.generic.icon_name)
-    expected_pixmap = expected_icon.pixmap(actual_pixmap.size(), widget.devicePixelRatioF())
+    expected_pixmap = expected_icon.pixmap(34, 34)
     assert actual_pixmap.toImage() == expected_pixmap.toImage()
     assert widget.sizePolicy().verticalPolicy() == widget.sizePolicy().Policy.Fixed
     assert widget.combo_brand.isVisible()
@@ -122,7 +133,7 @@ def test_keystore_ui_empty_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> 
     assert widget.left_widget.isVisible()
     assert widget.right_widget.isVisible()
     assert widget.connect_help_label.isVisible()
-    assert widget.connect_help_label.textLabel.text() == "Connect"
+    assert widget.connect_help_label.textLabel.text() == "Device instructions"
     assert widget.button_connect_qr.isVisible()
     assert not widget.edit_fingerprint.isVisible()
     assert widget.edit_seed.isVisible()
@@ -355,6 +366,7 @@ def test_keystore_ui_read_only_state(qtbot: QtBot, loop_in_thread: LoopInThread)
     assert not widget.connect_help_label.isVisible()
     assert not widget.button_device_instructions.isVisible()
     assert widget.action_device_instructions.isVisible()
+    assert not widget.action_set_account_number.isVisible()
     assert widget.button_register.isVisible()
     assert widget.edit_fingerprint.input_field.isReadOnly()
     widget.counter_register_button_clicked = 1
@@ -376,6 +388,40 @@ def test_keystore_ui_read_only_state_can_hide_register_button(
 
     assert widget.state == KeyStoreUiState.ReadOnly
     assert not widget.button_register.isVisible()
+
+
+def test_keystore_ui_refreshes_detail_warning_colors_on_palette_change(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+
+    def apply_palette(window: str, text: str) -> tuple[str, str]:
+        palette = QPalette(original_palette)
+        palette.setColor(QPalette.ColorRole.Window, QColor(window))
+        palette.setColor(QPalette.ColorRole.WindowText, QColor(text))
+        palette.setColor(QPalette.ColorRole.Base, QColor(window))
+        palette.setColor(QPalette.ColorRole.Text, QColor(text))
+        palette.setColor(QPalette.ColorRole.Button, QColor(window))
+        palette.setColor(QPalette.ColorRole.ButtonText, QColor(text))
+        app.setPalette(palette)
+        qtbot.wait(10)
+        widget.edit_xpub.format_edit(AnalyzerState.Warning)
+        return widget.edit_xpub.input_field.styleSheet(), widget.background_color.name()
+
+    try:
+        light_stylesheet, light_background = apply_palette("#ffffff", "#101010")
+        dark_stylesheet, dark_background = apply_palette("#111111", "#f5f5f5")
+    finally:
+        app.setPalette(original_palette)
+        qtbot.wait(10)
+
+    assert "#ffd49a" in light_stylesheet
+    assert "#8a4b00" in dark_stylesheet
+    assert light_stylesheet != dark_stylesheet
+    assert light_background != dark_background
 
 
 def test_register_multisig_emit_request_signal(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
@@ -430,6 +476,7 @@ def test_keystore_ui_transport_buttons_set_matching_autoscan_mode(
     autoscan_modes: list[AutoScanMode] = []
     key_origins: list[str] = []
     _select_signer(widget, HardwareSigners.jade.id)
+    _set_account_number(widget, monkeypatch, 1)
 
     monkeypatch.setattr(widget.usb_gui, "set_autoscan_mode", lambda mode: autoscan_modes.append(mode))
     monkeypatch.setattr(
@@ -443,8 +490,8 @@ def test_keystore_ui_transport_buttons_set_matching_autoscan_mode(
 
     assert autoscan_modes == [AutoScanMode.USB, AutoScanMode.BLUETOOTH]
     assert key_origins == [
-        AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST),
-        AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST),
+        "m/48h/1h/1h/2h",
+        "m/48h/1h/1h/2h",
     ]
 
 
@@ -466,6 +513,42 @@ def test_keystore_ui_unexpected_key_origin_uses_warning_styling(
     warning_color = ColorScheme.WARNING.as_color(background=True).name()
     assert warning_color in widget.edit_key_origin.input_field.styleSheet()
     assert warning_color in widget.edit_xpub.input_field.styleSheet()
+
+
+def test_set_account_number_updates_key_origin_and_clears_xpub(
+    qtbot: QtBot, loop_in_thread: LoopInThread, monkeypatch
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.jade.id)
+    keystore = create_test_seed_keystores(
+        signers=1,
+        key_origins=[AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)],
+        network=bdk.Network.REGTEST,
+    )[0]
+    widget.set_using_signer_info(SignerInfo(keystore.fingerprint, keystore.key_origin, keystore.xpub))
+    widget.counter_register_button_clicked = 1
+
+    _set_account_number(widget, monkeypatch, 1)
+
+    assert widget.key_origin == "m/48h/1h/1h/2h"
+    assert widget.edit_xpub.text() == ""
+    assert widget.counter_register_button_clicked == 0
+    assert widget.label_account_number.isVisible()
+    assert widget.edit_account_number.isVisible()
+    assert widget.edit_account_number.text() == "1"
+
+
+def test_account_number_row_hidden_for_default_account(
+    qtbot: QtBot, loop_in_thread: LoopInThread, monkeypatch
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.jade.id)
+
+    _set_account_number(widget, monkeypatch, 0)
+
+    assert widget.key_origin == AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)
+    assert not widget.label_account_number.isVisible()
+    assert not widget.edit_account_number.isVisible()
 
 
 def test_collapsed_keystore_ui_expands_on_header_click(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:

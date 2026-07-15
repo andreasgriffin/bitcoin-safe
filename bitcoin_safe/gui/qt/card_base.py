@@ -31,12 +31,14 @@ from __future__ import annotations
 
 import enum
 from collections.abc import Callable
+from pathlib import Path
 from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QEvent, QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QMouseEvent, QPalette, QPixmap
 from PyQt6.QtWidgets import (
+    QApplication,
     QFrame,
     QHBoxLayout,
     QLabel,
@@ -49,7 +51,14 @@ from bitcoin_safe.gui.qt.icon_label import ClickableLabel
 from bitcoin_safe.gui.qt.invisible_scroll_area import InvisibleScrollArea
 
 from .styled_card_frame import BaseCardFrame
-from .util import get_neutral_surface_colors, set_no_margins, svg_tools, to_color_name
+from .util import (
+    SvgTools,
+    get_neutral_surface_colors,
+    set_no_margins,
+    should_process_theme_change,
+    svg_tools,
+    to_color_name,
+)
 
 
 class CardExpansionMode(enum.Enum):
@@ -73,6 +82,9 @@ class CardBase(BaseCardFrame):
         self._body_content_visible = True
         self._header_clickable = False
         self._header_click_targets: list[QWidget] = []
+        self._icon_source: QIcon | QPixmap | Path | str | None = None
+        self._icon_size: tuple[int, int] | None = None
+        self._icon_svg_tools: SvgTools | None = None
 
         self.root_layout = QVBoxLayout(self)
 
@@ -110,10 +122,6 @@ class CardBase(BaseCardFrame):
 
         self.header_subtitle = QLabel(self.header_text_widget)
         self.header_subtitle.setWordWrap(True)
-        subtitle_palette = self.header_subtitle.palette()
-        surface_colors = get_neutral_surface_colors()
-        subtitle_palette.setColor(self.header_subtitle.foregroundRole(), surface_colors.muted_text)
-        self.header_subtitle.setPalette(subtitle_palette)
         self.header_text_layout.addWidget(self.header_subtitle)
 
         self.header_right_widget = QWidget(self.header_widget)
@@ -144,7 +152,7 @@ class CardBase(BaseCardFrame):
         self._refresh_body_visibility()
         self._update_header_cursor()
 
-        self.refresh_style()
+        self._refresh_theme_dependent_ui()
 
     @property
     def is_expanded(self) -> bool:
@@ -198,9 +206,13 @@ class CardBase(BaseCardFrame):
 
     def set_icon(
         self,
-        icon: QIcon | QPixmap | str | None,
+        icon: QIcon | QPixmap | Path | str | None,
         size: tuple[int, int] | None = None,
+        svg_tools_custom: SvgTools | None = None,
     ) -> None:
+        self._icon_source = icon
+        self._icon_size = size
+        self._icon_svg_tools = svg_tools_custom
         if icon is None:
             self.header_icon.clear()
             return
@@ -293,9 +305,37 @@ class CardBase(BaseCardFrame):
         for widget in self._header_click_targets:
             widget.setCursor(cursor_shape)
 
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh theme-dependent card colors and SVG icons."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self._on_theme_change()
+
+    def _on_theme_change(self) -> None:
+        self._refresh_theme_dependent_ui()
+
+    def _refresh_theme_dependent_ui(self) -> None:
+        surface_colors = get_neutral_surface_colors()
+        self.refresh_style()
+        self.hline.setStyleSheet(f"color: {to_color_name(QPalette.ColorRole.Mid)}")
+
+        title_palette = self.header_title.palette()
+        title_palette.setColor(
+            self.header_title.foregroundRole(),
+            QApplication.palette().color(QPalette.ColorRole.WindowText),
+        )
+        self.header_title.setPalette(title_palette)
+
+        subtitle_palette = self.header_subtitle.palette()
+        subtitle_palette.setColor(self.header_subtitle.foregroundRole(), surface_colors.muted_text)
+        self.header_subtitle.setPalette(subtitle_palette)
+
+        if self._icon_source is not None:
+            self.set_icon(self._icon_source, self._icon_size, svg_tools_custom=self._icon_svg_tools)
+
     def _coerce_pixmap(
         self,
-        icon: QIcon | QPixmap | str,
+        icon: QIcon | QPixmap | Path | str,
         size: tuple[int, int],
     ) -> QPixmap:
         if isinstance(icon, QPixmap):
@@ -306,7 +346,8 @@ class CardBase(BaseCardFrame):
             )
         if isinstance(icon, QIcon):
             return icon.pixmap(QSize(*size), self.devicePixelRatioF())
-        return svg_tools.get_pixmap(icon, size=size)
+        icon_svg_tools = self._icon_svg_tools if self._icon_svg_tools else svg_tools
+        return icon_svg_tools.get_pixmap(str(icon), size=size)
 
 
 class CardList(QWidget):

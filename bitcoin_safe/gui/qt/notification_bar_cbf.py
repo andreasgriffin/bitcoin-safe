@@ -42,8 +42,6 @@ from bitcoin_safe.network_config import NetworkConfig
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.signals import SignalsMin
 
-from .util import svg_tools
-
 logger = logging.getLogger(__name__)
 
 
@@ -80,7 +78,7 @@ class NotificationBarCBF(NotificationBar):
         self.signals_min = signals_min
         self.optionalButton.setHidden(False)
         # color = adjust_bg_color_for_darkmode(QColor("#7ad19f"))
-        self.set_icon(svg_tools.get_QIcon("node.svg"))
+        self.set_icon("node.svg")
 
         self.learn_more_button = IconLabel(parent=self)
         self._layout.insertWidget(1, self.learn_more_button)

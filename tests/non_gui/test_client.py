@@ -242,6 +242,72 @@ def test_get_min_broadcast_fee_rate_returns_none_on_cbf_timeout(monkeypatch) -> 
     assert client.get_min_broadcast_fee_rate() is None
 
 
+def test_get_connected_cbf_peer_hosts(monkeypatch) -> None:
+    """CBF peer info should be exposed as plain host strings."""
+
+    class FakeCbfSync:
+        def __init__(self) -> None:
+            self.client = object()
+
+        async def peer_info(self) -> list[str]:
+            return ["8.8.8.8", "1.1.1.1"]
+
+        def connected_peer_hosts(self) -> list[str]:
+            return []
+
+    monkeypatch.setattr("bitcoin_safe.client.CbfSync", FakeCbfSync)
+
+    loop_in_thread = MagicMock()
+    loop_in_thread.run_background.side_effect = lambda coroutine, key=None: coroutine.close()
+    loop_in_thread.run_foreground.side_effect = lambda coroutine: (
+        _close_wait_for_coroutine(coroutine),
+        ["8.8.8.8", "1.1.1.1"],
+    )[1]
+
+    client = Client(
+        client=FakeCbfSync(),
+        electrum_config=None,
+        proxy_info=None,
+        loop_in_thread=loop_in_thread,
+    )
+
+    assert client.get_connected_cbf_peer_hosts() == ["8.8.8.8", "1.1.1.1"]
+
+
+def test_get_connected_cbf_peer_hosts_returns_cached_hosts_on_timeout(monkeypatch) -> None:
+    """CBF peer info timeout should keep showing the last known peers."""
+
+    class FakeCbfSync:
+        def __init__(self) -> None:
+            self.client = object()
+
+        async def peer_info(self) -> list[str]:
+            return ["8.8.8.8"]
+
+        def connected_peer_hosts(self) -> list[str]:
+            return ["1.1.1.1"]
+
+    monkeypatch.setattr("bitcoin_safe.client.CbfSync", FakeCbfSync)
+
+    loop_in_thread = MagicMock()
+    loop_in_thread.run_background.side_effect = lambda coroutine, key=None: coroutine.close()
+
+    def run_foreground(coroutine):
+        _close_wait_for_coroutine(coroutine)
+        raise asyncio.TimeoutError()
+
+    loop_in_thread.run_foreground.side_effect = run_foreground
+
+    client = Client(
+        client=FakeCbfSync(),
+        electrum_config=None,
+        proxy_info=None,
+        loop_in_thread=loop_in_thread,
+    )
+
+    assert client.get_connected_cbf_peer_hosts() == ["1.1.1.1"]
+
+
 class FakeElectrumClient:
     def __init__(self) -> None:
         self.sync_calls: list[dict[str, object]] = []

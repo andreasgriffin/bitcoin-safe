@@ -47,10 +47,11 @@ import bdkpython as bdk  # noqa: E402
 from PyQt6.QtWidgets import QApplication  # noqa: E402
 
 from bitcoin_safe.compatibility import check_compatibility  # noqa: E402
-from bitcoin_safe.gnome_darkmode import is_gnome_dark_mode, set_dark_palette  # noqa: E402
+from bitcoin_safe.config import UserConfig  # noqa: E402
 from bitcoin_safe.gui.qt.main import MainWindow  # noqa: E402
 from bitcoin_safe.gui.qt.startup_window_probe import StartupWindowProbe  # noqa: E402
 from bitcoin_safe.gui.qt.util import custom_exception_handler  # noqa: E402
+from bitcoin_safe.theme import apply_theme_mode  # noqa: E402
 
 logger = logging.getLogger(__name__)
 NETWORK_ARG_NAMES = tuple(sorted(network.name.lower() for network in bdk.Network))
@@ -130,11 +131,12 @@ def main(args: StartupArgs | None = None) -> None:
 
     check_compatibility()
 
-    if is_gnome_dark_mode():
-        set_dark_palette(app)
+    config = UserConfig.from_file() if UserConfig.exists() else None
+    apply_theme_mode(app, config.theme_mode if config else UserConfig().theme_mode)
 
     window = MainWindow(
         network=startup_args.network,
+        config=config,
         open_files_at_startup=startup_args.open_files_at_startup,
     )
     if startup_args.trace_startup_windows:

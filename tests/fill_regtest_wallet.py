@@ -37,6 +37,7 @@ from random import randint
 import bdkpython as bdk
 import numpy as np
 import requests
+from bitcoin_safe_lib.util import network_kind
 
 
 class ProgressPrint:
@@ -185,8 +186,6 @@ def main():
     parser.add_argument("--always_new_addresses", action="store_true")
     args = parser.parse_args()
 
-    db_config = bdk.DatabaseConfig.MEMORY()
-
     gap = 20
 
     rpc_ip = "127.0.0.1:18443"
@@ -214,12 +213,12 @@ def main():
 
     # Create Wallet
     if args.descriptor:
-        descriptor = bdk.Descriptor(args.descriptor, network)
+        descriptor = bdk.Descriptor(args.descriptor, network_kind=network_kind(network))
         wallet = bdk.Wallet(
             descriptor=descriptor,
             change_descriptor=None,
             network=network,
-            database_config=db_config,
+            persister=bdk.Persister.new_in_memory(),
         )
 
     if args.seed:
@@ -228,20 +227,20 @@ def main():
         if mnemonic:
             print(f"Mnemonic: {mnemonic}")
         descriptor = bdk.Descriptor.new_bip84(
-            secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
-            keychain=bdk.KeychainKind.EXTERNAL,
-            network=network,
+            secret_key=bdk.DescriptorSecretKey(network_kind(network), mnemonic, ""),
+            keychain_kind=bdk.KeychainKind.EXTERNAL,
+            network_kind=network_kind(network),
         )
         change_descriptor = bdk.Descriptor.new_bip84(
-            secret_key=bdk.DescriptorSecretKey(network, mnemonic, ""),
-            keychain=bdk.KeychainKind.INTERNAL,
-            network=network,
+            secret_key=bdk.DescriptorSecretKey(network_kind(network), mnemonic, ""),
+            keychain_kind=bdk.KeychainKind.INTERNAL,
+            network_kind=network_kind(network),
         )
         wallet = bdk.Wallet(
             descriptor=descriptor,
             change_descriptor=change_descriptor,
             network=network,
-            database_config=db_config,
+            persister=bdk.Persister.new_in_memory(),
         )
 
     if not wallet:

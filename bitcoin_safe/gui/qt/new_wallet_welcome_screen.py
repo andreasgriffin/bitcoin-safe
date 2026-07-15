@@ -39,6 +39,7 @@ from PyQt6.QtCore import QEvent, Qt, pyqtSignal
 from PyQt6.QtGui import QHideEvent, QPalette, QShowEvent
 from PyQt6.QtWidgets import (
     QDialog,
+    QGraphicsOpacityEffect,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -52,11 +53,22 @@ from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode, SidebarTree
 from bitcoin_safe.gui.qt.styled_card_frame import BaseBorderCardFrame
-from bitcoin_safe.gui.qt.util import color_with_alpha, get_neutral_surface_colors, svg_tools, to_color_name
+from bitcoin_safe.gui.qt.util import (
+    Message,
+    MessageType,
+    color_with_alpha,
+    get_neutral_surface_colors,
+    is_theme_change_event,
+    should_process_theme_change,
+    svg_tools,
+    to_color_name,
+)
 from bitcoin_safe.hardware_signers import SUPPORTED_HARDWARE_SIGNERS_URL
 from bitcoin_safe.signals import Signals
 
 logger = logging.getLogger(__name__)
+
+METROVAULT_SIGNER_URL = "https://bitcoin-safe.org/en/library/supported-hardware-signers/metrovault/"
 
 
 class _ConfigWithWalletDir(Protocol):
@@ -69,6 +81,7 @@ class _WindowWithConfig(Protocol):
 
 class WelcomeActionCard(CardBase):
     clicked = cast(SignalProtocol[[]], pyqtSignal())
+    _disabled_opacity = 0.55
 
     def __init__(self, icon_name: str, parent: QWidget | None = None) -> None:
         """Initialize instance."""
@@ -93,15 +106,48 @@ class WelcomeActionCard(CardBase):
         self.label_description = self.header_subtitle
         self.label_description.setWordWrap(True)
         self.label_description.setTextFormat(Qt.TextFormat.RichText)
+        self._opacity_effect = QGraphicsOpacityEffect(self)
+        self.setGraphicsEffect(self._opacity_effect)
+        self._available = True
+        self.updateUi()
 
     def set_content(self, title: str, description: str) -> None:
         """Set the card content."""
         self.label_title.setText(f"<b>{title}</b>")
         self.label_description.setText(description)
 
+    def updateUi(self) -> None:
+        """Refresh palette-derived card colors."""
+        self._apply_visual_state()
+        self._refresh_theme_dependent_ui()
+
+    def set_available(self, available: bool) -> None:
+        """Toggle between actionable and greyed-out states without disabling child links."""
+        self._available = available
+        self.set_header_clickable(available)
+        self._apply_visual_state()
+
+    def _is_header_activatable(self) -> bool:
+        """Allow unavailable cards to intercept clicks and explain why they are disabled."""
+        return not self._available or super()._is_header_activatable()
+
+    def _apply_visual_state(self) -> None:
+        self.background_color = get_neutral_surface_colors().panel_background
+        self._opacity_effect.setOpacity(
+            self._disabled_opacity if not self.isEnabled() or not self._available else 1.0
+        )
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh card styling when the theme or enabled state changes."""
+        super().changeEvent(a0)
+        if a0 is not None and (a0.type() == QEvent.Type.EnabledChange or is_theme_change_event(a0)):
+            self._apply_visual_state()
+            self._refresh_theme_dependent_ui()
+
 
 class NetworkChoiceCard(CardBase):
     clicked = cast(SignalProtocol[[]], pyqtSignal())
+    _refreshing_style = False
 
     def __init__(self, icon_name: str, parent: QWidget | None = None) -> None:
         """Initialize instance."""
@@ -194,7 +240,7 @@ class NetworkChoiceCard(CardBase):
             self.register_header_click_target(widget)
             widget.setCursor(Qt.CursorShape.PointingHandCursor)
 
-        self.refresh_style()
+        self.updateUi()
 
     def set_content(
         self,
@@ -220,16 +266,11 @@ class NetworkChoiceCard(CardBase):
         """Refresh card styling when the theme changes."""
         super().changeEvent(a0)
         if (
-            a0
-            and a0.type()
-            in {
-                QEvent.Type.ApplicationPaletteChange,
-                QEvent.Type.EnabledChange,
-                QEvent.Type.PaletteChange,
-            }
-            and not self._refreshing_style
+            not self._refreshing_style
+            and a0 is not None
+            and is_theme_change_event(a0, include_enabled_change=True)
         ):
-            self.refresh_style()
+            self.updateUi()
 
     def _get_style_content(self) -> str:
         surface_colors = get_neutral_surface_colors()
@@ -242,6 +283,16 @@ class NetworkChoiceCard(CardBase):
         if not hasattr(self, "cta_panel") or self._refreshing_style:
             return
         self._refreshing_style = True
+        try:
+            super().refresh_style()
+            self.cta_panel.refresh_style()
+        finally:
+            self._refreshing_style = False
+
+    def updateUi(self) -> None:
+        """Refresh palette-derived card colors and text styling."""
+        if not hasattr(self, "cta_panel") or self._refreshing_style:
+            return
         surface_colors = get_neutral_surface_colors()
         palette = self.palette()
         eyebrow_color = to_color_name(color_with_alpha(palette.color(QPalette.ColorRole.WindowText), 120))
@@ -250,17 +301,11 @@ class NetworkChoiceCard(CardBase):
         self.background_color = surface_colors.content_background
         self.cta_panel.background_color = surface_colors.panel_background
 
-        try:
-            super().refresh_style()
-            self.cta_panel.refresh_style()
-            self.label_eyebrow.setStyleSheet(
-                f"color: {eyebrow_color}; font-weight: 600; letter-spacing: 0.08em;"
-            )
-            self.label_description.setStyleSheet(f"color: {muted_color};")
-            self.label_bullets.setStyleSheet(f"color: {muted_color};")
-            self.label_cta_caption.setStyleSheet(f"color: {cta_caption_color};")
-        finally:
-            self._refreshing_style = False
+        self.refresh_style()
+        self.label_eyebrow.setStyleSheet(f"color: {eyebrow_color}; font-weight: 600; letter-spacing: 0.08em;")
+        self.label_description.setStyleSheet(f"color: {muted_color};")
+        self.label_bullets.setStyleSheet(f"color: {muted_color};")
+        self.label_cta_caption.setStyleSheet(f"color: {cta_caption_color};")
 
 
 class NetworkChoiceWelcomeScreen(QWidget):
@@ -284,6 +329,10 @@ class NetworkChoiceWelcomeScreen(QWidget):
         """Remove me."""
         self.signal_remove_me.emit(self)
 
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        self.updateUi()
+
     def on_click_secure_wallet(self) -> None:
         """Continue on mainnet."""
         self.signal_onclick_secure_wallet.emit()
@@ -301,7 +350,7 @@ class NetworkChoiceWelcomeScreen(QWidget):
             return
         main_tabs.root.addChildNode(
             SidebarNode(
-                icon=svg_tools.get_QIcon("file.svg"),
+                icon="file.svg",
                 title=self.tr("Create new wallet"),
                 data=self,
                 widget=self,
@@ -355,6 +404,8 @@ class NetworkChoiceWelcomeScreen(QWidget):
                 "Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later."
             )
         )
+        self.card_secure_wallet.updateUi()
+        self.card_safe_playground.updateUi()
 
         self.card_secure_wallet.set_content(
             eyebrow=self.tr("Real sound money (BTC)"),
@@ -385,6 +436,12 @@ class NetworkChoiceWelcomeScreen(QWidget):
             cta_title=self.tr("Start Exploring"),
             cta_caption=self.tr("Uses Signet test network"),
         )
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh child cards when the application theme changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self.updateUi()
 
 
 class NewWalletWelcomeScreen(QWidget):
@@ -419,6 +476,7 @@ class NewWalletWelcomeScreen(QWidget):
 
     def showEvent(self, a0: QShowEvent | None) -> None:
         super().showEvent(a0)
+        self.updateUi()
         self.visibilityChanged.emit(True)
 
     def hideEvent(self, a0: QHideEvent | None) -> None:
@@ -440,6 +498,15 @@ class NewWalletWelcomeScreen(QWidget):
 
     def on_click_hot_wallet(self) -> None:
         """Create a hot wallet."""
+        if self.network == bdk.Network.BITCOIN:
+            Message(
+                self.tr(
+                    "Hot wallets are disabled on Bitcoin Mainnet.\nYou can switch to Testnet to test Bitcoin Safe without using real Bitcoin."
+                ),
+                type=MessageType.Warning,
+                parent=self,
+            )
+            return
         self.signal_onclick_hot_wallet.emit()
         self.signal_remove_me.emit(self)
 
@@ -483,7 +550,7 @@ class NewWalletWelcomeScreen(QWidget):
             return
         main_tabs.root.addChildNode(
             SidebarNode(
-                icon=svg_tools.get_QIcon("file.svg"),
+                icon="file.svg",
                 title=self.tr("Create new wallet"),
                 data=self,
                 widget=self,
@@ -515,6 +582,9 @@ class NewWalletWelcomeScreen(QWidget):
             "hardware_signers/generic-hardware-wallet-icon.svg", self.left_column
         )
         self.card_custom_wallet = WelcomeActionCard("material-symbols--signature.svg", self.left_column)
+        self.hot_wallet_help_label = IconLabel(parent=self.card_hot_wallet.header_widget)
+        self.hot_wallet_help_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.card_hot_wallet.header_right_layout.addWidget(self.hot_wallet_help_label)
         self.connect_devices_help_label = IconLabel(parent=self.card_connect_devices.header_widget)
         self.connect_devices_help_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.card_connect_devices.header_right_layout.addWidget(self.connect_devices_help_label)
@@ -545,7 +615,11 @@ class NewWalletWelcomeScreen(QWidget):
         on_testnet = not on_mainnet
 
         self.card_demo_wallet.setVisible(on_testnet)
-        self.card_hot_wallet.setEnabled(on_testnet)
+        self.card_hot_wallet.set_available(on_testnet)
+        self.card_demo_wallet.updateUi()
+        self.card_hot_wallet.updateUi()
+        self.card_connect_devices.updateUi()
+        self.card_custom_wallet.updateUi()
 
         self.card_demo_wallet.set_content(
             title=self.tr("Public Demo wallet"),
@@ -567,6 +641,12 @@ class NewWalletWelcomeScreen(QWidget):
                 )
             ),
         )
+        self.hot_wallet_help_label.setVisible(on_mainnet)
+        self.hot_wallet_help_label.setText(self.tr("No signer available?"))
+        self.hot_wallet_help_label.set_icon_as_help(
+            self.tr("Learn how to turn an Android phone into a dedicated bitcoin signer."),
+            METROVAULT_SIGNER_URL,
+        )
         self.card_connect_devices.set_content(
             title=self.tr("Connect Device(s)"),
             description=self.tr("Guided setup for your self-custody wallet."),
@@ -580,3 +660,9 @@ class NewWalletWelcomeScreen(QWidget):
             title=self.tr("Custom / Recovery"),
             description=self.tr("Restore a wallet from hardware wallet(s) or a descriptor."),
         )
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Refresh child cards when the application theme changes."""
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0):
+            self.updateUi()

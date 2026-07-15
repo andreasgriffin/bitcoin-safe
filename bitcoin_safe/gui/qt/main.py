@@ -59,6 +59,7 @@ from bitcoin_usb.tool_gui import ToolGui
 from cryptography.fernet import InvalidToken
 from PyQt6.QtCore import (
     QCoreApplication,
+    QEvent,
     QLocale,
     QPoint,
     QSettings,
@@ -126,6 +127,7 @@ from bitcoin_safe.p2p.tools import transaction_table
 from bitcoin_safe.pdfrecovery import make_and_open_pdf
 from bitcoin_safe.plugin_framework.external_plugin_registry import ExternalPluginRegistry
 from bitcoin_safe.pyqt6_restart import restart_application
+from bitcoin_safe.theme import apply_theme_mode
 from bitcoin_safe.tx import HiddenTxUiInfos, TxBuilderInfos, TxUiInfos, short_tx_id
 from bitcoin_safe.util import OptExcInfo, filename_clean
 from bitcoin_safe.wallet import ProtoWallet, ToolsTxUiInfo, Wallet
@@ -162,6 +164,8 @@ from .util import (
     center_on_screen,
     delayed_execution,
     do_copy,
+    is_theme_change_event,
+    propagate_theme_change_to_descendants,
 )
 
 logger = logging.getLogger(__name__)
@@ -198,6 +202,9 @@ class MainWindow(UnlockableMainWindow):
             logger.debug("UserConfig will be created new")
         self.config = config if config else UserConfig.from_file()
         self.config.network = network if network else self.config.network
+        app = QApplication.instance()
+        if isinstance(app, QApplication):
+            apply_theme_mode(app, self.config.theme_mode)
         self.external_registry = ExternalPluginRegistry.from_config(self.config)
         self.new_startup_network: bdk.Network | None = None
         self._before_close_was_run = False
@@ -601,6 +608,14 @@ class MainWindow(UnlockableMainWindow):
         logger.debug("done setupUi")
 
         self.refresh_plugin_notification_bars()
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        """Forward application palette changes to descendants that rely on changeEvent hooks."""
+        super().changeEvent(a0)
+        if is_theme_change_event(a0):
+            central_widget = self.centralWidget()
+            if central_widget is not None:
+                propagate_theme_change_to_descendants(central_widget)
 
     def p2p_listening_on_block(self, block_hash: str):
         """P2p listening on block."""
@@ -1392,7 +1407,11 @@ class MainWindow(UnlockableMainWindow):
         if plugins_node := qt_wallet.get_plugins_node():
             plugin_node_icon = plugins_node.icon
             if plugin_node_icon:
-                self.menu_action_open_plugins.setIcon(plugin_node_icon)
+                self.menu_action_open_plugins.setIcon(
+                    svg_tools.get_QIcon(str(plugin_node_icon))
+                    if isinstance(plugin_node_icon, (str, Path))
+                    else plugin_node_icon
+                )
 
         tab_nodes = [node for node in qt_wallet.tabs.child_nodes if node.widget and not node.isHidden()]
 
@@ -1430,7 +1449,7 @@ class MainWindow(UnlockableMainWindow):
             return
 
         widget.set_network_config()
-        widget.set_cbf_peer_count(self.config.network_config.cbf_connections)
+        cbf_peer_hosts: list[str] = []
         widget.clear_wallet_progress()
 
         if self.p2p_listener:
@@ -1448,6 +1467,8 @@ class MainWindow(UnlockableMainWindow):
                 continue
             if qt_wallet.config.network_config.server_type != BlockchainType.CompactBlockFilter:
                 continue
+            wallet_cbf_peer_hosts = client.get_connected_cbf_peer_hosts()
+            cbf_peer_hosts.extend(wallet_cbf_peer_hosts)
             if client.sync_status not in [SyncStatus.syncing, SyncStatus.unknown]:
                 continue
             widget.set_wallet_progress(
@@ -1455,6 +1476,9 @@ class MainWindow(UnlockableMainWindow):
                 wallet_title=qt_wallet.wallet.id,
                 progress_info=client.progress_info,
             )
+
+        widget.set_cbf_peer_hosts(list(dict.fromkeys(cbf_peer_hosts)))
+        widget.set_cbf_peer_count(len(cbf_peer_hosts))
 
     def open_network_map(self) -> None:
         if self.global_network_map_widget:
@@ -1474,7 +1498,7 @@ class MainWindow(UnlockableMainWindow):
         self.global_network_map_node = SidebarNode[object](
             widget=self.global_network_map_widget,
             data=self.global_network_map_widget,
-            icon=svg_tools.get_QIcon("bi--map.svg"),
+            icon="bi--map.svg",
             title=self.tr("Network Map"),
             hidable=True,
             closable=False,
@@ -2491,10 +2515,11 @@ class MainWindow(UnlockableMainWindow):
         self.network_choice_welcome_screen.remove_me()
 
     def _ask_if_full_scan(self) -> bool | None:
-        return question_dialog(
-            text=self.tr("Was this wallet ever used before?"),
-            true_button=self.tr("Yes, full scan for transactions"),
-            false_button=self.tr("No, quick scan"),
+        return not question_dialog(
+            text=self.tr("Is this a new wallet?"),
+            true_button=self.tr("Yes"),
+            false_button=self.tr("No, do a full scan"),
+            default_is_true_button=False,
         )
 
     def create_qtwallet_from_protowallet(
@@ -2607,7 +2632,7 @@ class MainWindow(UnlockableMainWindow):
             loop_in_thread=self.loop_in_thread,
         )
 
-        qt_protowallet.tabs.setIcon(svg_tools.get_QIcon("file.svg"))
+        qt_protowallet.tabs.setIcon("file.svg")
         qt_protowallet.tabs.setTitle(qt_protowallet.protowallet.id)
 
         qt_protowallet.signal_close_wallet.connect(
@@ -2710,7 +2735,7 @@ class MainWindow(UnlockableMainWindow):
         for root in self.tab_wallets.roots:
             if root.data == tab:
                 root.setTitle(tab_text)
-                root.setIcon(svg_tools.get_QIcon(icon_name))
+                root.setIcon(icon_name)
 
                 if (
                     isinstance(tab, QTWallet)
@@ -2745,7 +2770,7 @@ class MainWindow(UnlockableMainWindow):
             # it can save exactly there again
             qt_wallet.file_path = file_path
 
-        qt_wallet.tabs.setIcon(svg_tools.get_QIcon("status_waiting.svg"))
+        qt_wallet.tabs.setIcon("status_waiting.svg")
         qt_wallet.tabs.setTitle(qt_wallet.wallet.id)
 
         with LoadingWalletTab(self.tab_wallets, qt_wallet.wallet.id, focus=True):

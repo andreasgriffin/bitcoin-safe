@@ -40,11 +40,9 @@ from PyQt6.QtWidgets import QSizePolicy, QWidget
 
 from bitcoin_safe.address_comparer import FuzzyMatch
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
-from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.html_utils import html_f
 
 from ...signals import SignalsMin
-from .util import adjust_bg_color_for_darkmode
 
 logger = logging.getLogger(__name__)
 
@@ -60,8 +58,8 @@ class LinkingWarningBar(NotificationBar):
         )
         self.category_dict: dict[str, set[str]] = {}
         self.signals_min = signals_min
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(svg_tools.get_QIcon("warning.svg"))
+        self.set_background_base_color(QColor("#FFDF00"))
+        self.set_icon("warning.svg")
 
         self.optionalButton.setVisible(False)
         self.icon_label.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -117,8 +115,8 @@ class PoisoningWarningBar(NotificationBar):
         )
         self.signals_min = signals_min
         self.poisonous_matches: list[tuple[str, str, FuzzyMatch]] = []
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(svg_tools.get_QIcon("warning.svg"))
+        self.set_background_base_color(QColor("#FFDF00"))
+        self.set_icon("warning.svg")
 
         self.optionalButton.setVisible(False)
         self.icon_label.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -197,8 +195,8 @@ class TooSmallGapLimitWarningBar(NotificationBar):
         self.signals_min = signals_min
         self.new_gap = new_gap
         # self.set_background_color(adjust_bg_color_for_darkmode(QColor("#f5c2c7")))
-        self.set_background_color(adjust_bg_color_for_darkmode(QColor("#FFDF00")))
-        self.set_icon(svg_tools.get_QIcon("warning.svg"))
+        self.set_background_base_color(QColor("#FFDF00"))
+        self.set_icon("warning.svg")
 
         self.optionalButton.setVisible(True)
         self.icon_label.textLabel.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)

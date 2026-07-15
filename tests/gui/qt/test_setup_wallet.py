@@ -33,7 +33,7 @@ import inspect
 import logging
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from PyQt6.QtTest import QTest
@@ -45,6 +45,7 @@ from bitcoin_safe.gui.qt.bitcoin_quick_receive import BitcoinQuickReceive
 from bitcoin_safe.gui.qt.card_base import CardExpansionMode
 from bitcoin_safe.gui.qt.dialogs import PasswordCreation
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
+from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
 from bitcoin_safe.gui.qt.wizard.wizard import (
     DistributeSeeds,
     PluginListStep,
@@ -53,6 +54,8 @@ from bitcoin_safe.gui.qt.wizard.wizard import (
     TutorialStep,
     Wizard,
 )
+from bitcoin_safe.gui.qt.wizard.wizard_support import WizardTabInfo
+from bitcoin_safe.signals import SignalsMin
 from tests.faucet import Faucet
 
 from ...helpers import TestConfig
@@ -190,6 +193,48 @@ def _finish_tutorial(wizard: Wizard, qtbot: QtBot) -> None:
         qtbot.waitUntil(lambda: plugins.button_next.isEnabled(), timeout=5_000)
         plugins.button_next.click()
     qtbot.waitUntil(lambda: not wizard.should_be_visible, timeout=5_000)
+
+
+@pytest.mark.marker_qt_1
+def test_distribute_step_update_ui_after_close_does_not_raise(
+    qtbot: QtBot,
+    test_config: TestConfig,
+    backend: str,
+) -> None:
+    """Closing the distribute step must not break late UI refreshes during teardown."""
+    del test_config
+    del backend
+    container = StepProgressContainer(
+        step_labels=["Distribute"],
+        signals_min=SignalsMin(),
+        loop_in_thread=MagicMock(),
+    )
+    qtbot.addWidget(container)
+
+    fake_qtwalletbase = MagicMock()
+    fake_qtwalletbase.tabs = MagicMock()
+    fake_qtwalletbase.signals = SignalsMin()
+    fake_qtwalletbase.get_mn_tuple.return_value = (1, 1)
+
+    refs = WizardTabInfo(
+        container=container,
+        qtwalletbase=fake_qtwalletbase,
+        go_to_next_index=lambda: None,
+        go_to_previous_index=lambda: None,
+        signal_create_wallet=MagicMock(),
+        max_test_fund=0,
+    )
+    distribute = DistributeSeeds(
+        refs=refs,
+        loop_in_thread=MagicMock(),
+        show_previous_step_button=True,
+    )
+
+    tutorial_widget = distribute.create()
+    qtbot.addWidget(tutorial_widget)
+
+    distribute.close()
+    distribute.updateUi()
 
 
 @pytest.mark.marker_qt_1
