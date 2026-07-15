@@ -38,7 +38,7 @@ from bitcoin_qr_tools.unified_encoder import QrExportType
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtCore import QObject, Qt
 from PyQt6.QtGui import QCloseEvent
-from PyQt6.QtWidgets import QPushButton, QWidget
+from PyQt6.QtWidgets import QLabel, QPushButton, QSizePolicy, QWidget
 
 from bitcoin_safe.gui.qt.export_data import FileToolButton, QrToolButton
 from bitcoin_safe.gui.qt.hardware_signer_interaction_widget import HardwareSignerInteractionWidget
@@ -76,13 +76,22 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
         """Initialize instance."""
         super().__init__(parent=parent)
         self.wallet = wallet
+        self.wallet_name = wallet_name
         self.wallet_functions = wallet_functions
         self.hardware_signer = hardware_signer
         self._help_widget: ScreenshotsRegisterMultisig | None = None
-        self.setWindowTitle(self.tr("Register {wallet_name}").format(wallet_name=wallet_name))
 
         help_button = self.add_help_button()
         help_button.clicked.connect(self._show_help_widget)
+
+        self.registration_info_label = QLabel(self)
+        self.registration_info_label.setWordWrap(True)
+        self.registration_info_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.registration_info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.registration_info_label.setMaximumWidth(560)
+        self._layout.insertWidget(0, self.registration_info_label)
+        self._layout.insertSpacing(1, 12)
+        self._layout.setAlignment(self.registration_info_label, Qt.AlignmentFlag.AlignCenter)
 
         if self.wallet and self.wallet_functions:
             data = Data(
@@ -148,7 +157,25 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
             )
             self.add_button(self.button_export_file)
 
+        if self.wallet_functions:
+            self.wallet_functions.signals.language_switch.connect(self.updateUi)
         self.updateUi()
+
+    def _window_title(self) -> str:
+        """Return the window title for the registration dialog."""
+        if self.hardware_signer:
+            return self.tr("Register '{wallet_name}' to '{device}'").format(
+                wallet_name=self.wallet_name,
+                device=self.hardware_signer.display_name,
+            )
+        return self.tr("Register '{wallet_name}'").format(wallet_name=self.wallet_name)
+
+    def _registration_info_text(self) -> str:
+        """Return the explanatory text shown above the export buttons."""
+        return self.tr(
+            "Register this multisig wallet on every hardware signer you plan to use. "
+            "That way the hardware signer can verify change addresses of transactions."
+        )
 
     def _help_hardware_signers(self) -> list[HardwareSigner] | None:
         """Return the signer to show in help, if one is selected."""
@@ -195,3 +222,9 @@ class RegisterMultisigInteractionWidget(HardwareSignerInteractionWidget):
     def set_minimum_size_as_floating_window(self) -> None:
         """Set minimum size as floating window."""
         self.setMinimumSize(500, 200)
+
+    def updateUi(self) -> None:
+        """Refresh the translated texts shown by the widget."""
+        super().updateUi()
+        self.setWindowTitle(self._window_title())
+        self.registration_info_label.setText(self._registration_info_text())

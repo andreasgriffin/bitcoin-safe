@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>Завершіть оплату у своєму браузері.
-Якщо виникне проблема, будь ласка, не вагайтеся звернутися до нас за адресою: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>Завершіть оплату у своєму браузері.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Не вдалося автоматично відкрити браузер. Будь ласка, спробуйте ще раз.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>Не вдалося автоматично відкрити ваш браузер.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>Створити рахунок</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>Якщо браузер не відкрився, натисніть &lt;a href="{url}"&gt;тут&lt;/a&gt;.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>Якщо виникла проблема, будь ласка, не вагайтеся звернутися до нас за адресою &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -728,8 +736,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>Не вдалося опублікувати власну копію</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>Не вдалося опублікувати власну копію: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>Очікується підтвердження від {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>Очікується через невдалі публікації: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>Очікується: {waiting_for}. Невдалі: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>Не вдалося опублікувати для {recipient}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>Не вдалося опублікувати для {recipient}: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>Опубліковано для всіх отримувачів, і власну копію отримано</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>Ви можете надсилати лише PSBT або транзакції</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>власна копія</translation>
 		</message>
 	</context>
 	<context>
@@ -978,8 +1031,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>Застосувати</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>Дескриптор без змін</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>Відхилити</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1574,23 +1637,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>Створити транзакцію</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>Попередньо заповнити поля транзакції</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Попередній крок</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1778,7 +1824,7 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>Попередній крок</translation>
 		</message>
 		<name>ImportXpubs</name>
@@ -1862,11 +1908,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>Додати нового підписувача</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2006,6 +2047,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>Вибрати модель підписувача</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>Виберіть свій пристрій для підпису</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3531,6 +3577,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>Compact Block Filters буде активовано для підтримуваних мереж. Ця мережа збереже свій поточний сервер.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>Підключіться до вузлів Bitcoin (p2p) і завантажте відповідні блоки з них.</translation>
 		</message>
@@ -4493,8 +4544,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>Зареєструвати {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>Зареєструвати «{wallet_name}»</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>Зареєструвати «{wallet_name}» на «{device}»</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Зареєструйте цей мультипідписний гаманець на кожному апаратному підписувачі, який плануєте використовувати. Так апаратний підписувач зможе перевіряти адреси решти в транзакціях.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4745,6 +4806,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Відскануйте QR-код апаратним підписувачем</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. Виявити підписане повідомлення</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>Не вдалося визначити шлях деривації для наданої адреси.</translation>
 		</message>
@@ -4752,6 +4823,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>Повідомлення надто коротке.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Після того як ви підпишете повідомлення, ваш апаратний підписувач надасть другий QR-код, який можна відсканувати з цього комп’ютера</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Сканувати QR-код</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5233,6 +5314,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Відскануйте QR-код апаратним підписувачем</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. Відсканувати підписаний PSBT</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Згорнути</translation>
 		</message>
@@ -5250,6 +5341,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Тримайте готовим для тесту {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Після того як ви підпишете PSBT, ваш апаратний підписувач надасть другий QR-код, який можна відсканувати з цього комп’ютера</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Сканувати QR-код</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6253,7 +6354,7 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>Попередній крок</translation>
 		</message>
 		<name>Wizard</name>
@@ -6479,7 +6580,7 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>Попередній крок</translation>
 		</message>
 	</context>
@@ -7796,11 +7897,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>Виявлено недійсний підпис</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>Не вдалося імпортувати відкритий ключ: {exc}</translation>
 		</message>
@@ -7846,8 +7942,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Примітка з безпеки: перевірка використовує вбудовану бібліотеку &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Вона не враховує налаштування довіри, відкликання або терміни дії з вашого сховища ключів. Будь ласка, перевіряйте повідомлення високої цінності за допомогою &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Примітка щодо безпеки: перевірка використовує вбудовану бібліотеку &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt;. Вона не враховує налаштування довіри, відкликання або строки дії з вашого сховища ключів. Будь ласка, перевіряйте повідомлення високої цінності за допомогою &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7868,11 +7964,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>відкритий ключ відсутній</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>неправильний тип підпису: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

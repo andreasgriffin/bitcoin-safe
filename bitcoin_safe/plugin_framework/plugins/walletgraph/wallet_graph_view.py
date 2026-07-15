@@ -85,7 +85,7 @@ class WalletGraphView(TransformPanZoomMixin, QGraphicsView):
         self._tx_positions: dict[str, float] = {}
         self._current_wallet: Wallet | None = None
         self._current_details: list[FullTxDetail] = []
-        self.init_pan_zoom()
+        self.init_pan_zoom(touchpad_wheel_zooms=True)
 
     def clear(self) -> None:
         """Clear."""

@@ -65,7 +65,7 @@ def _action_texts(button: FileToolButton) -> list[str]:
 
 def test_export_recipients_csv_writes_expected_rows(tmp_path: Path) -> None:
     recipients = [
-        Recipient(address="bcrt1qa", amount=125_000, label="Alice"),
+        Recipient(address="bcrt1qa", amount=125_000, label="Sync\u2011label"),
         Recipient(address="bcrt1qb", amount=250_000, label=None),
     ]
 
@@ -77,12 +77,16 @@ def test_export_recipients_csv_writes_expected_rows(tmp_path: Path) -> None:
 
     assert path == tmp_path / "recipients.csv"
 
-    with path.open() as file:
+    expected_csv = path.read_text(encoding="utf-8")
+    with pytest.raises(UnicodeEncodeError):
+        expected_csv.encode("cp1252")
+
+    with path.open(encoding="utf-8") as file:
         rows = list(csv.reader(file))
 
     assert rows == [
         get_recipient_csv_header(bdk.Network.REGTEST),
-        ["bcrt1qa", "125000", "Alice"],
+        ["bcrt1qa", "125000", "Sync\u2011label"],
         ["bcrt1qb", "250000", ""],
     ]
 

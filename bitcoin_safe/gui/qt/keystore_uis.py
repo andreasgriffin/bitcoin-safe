@@ -31,13 +31,14 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
+from functools import partial
 from typing import cast
 
 from bitcoin_qr_tools.data import SignerInfo
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.card_base import CardList
@@ -159,6 +160,25 @@ class KeyStoreUIs(QWidget):
     def setCurrentIndex(self, index: int) -> None:
         """Expand one card by index and scroll it into view."""
         self.expand_only(index)
+
+    def first_unselected_index(self) -> int | None:
+        """Return the first signer card without a selected hardware signer."""
+        for index, keystore_ui in enumerate(self._keystore_uis):
+            if keystore_ui.selected_hardware_signer is None:
+                return index
+        return None
+
+    def focus_first_unselected_brand_selector(self) -> bool:
+        """Expand the first unselected signer card and focus its brand combo box."""
+        index = self.first_unselected_index()
+        if index is None:
+            return False
+
+        self.setCurrentIndex(index)
+        QTimer.singleShot(
+            0, partial(self._keystore_uis[index].combo_brand.setFocus, Qt.FocusReason.OtherFocusReason)
+        )
+        return True
 
     def expand_only(self, index: int) -> None:
         """Expand only the selected card and collapse the others."""

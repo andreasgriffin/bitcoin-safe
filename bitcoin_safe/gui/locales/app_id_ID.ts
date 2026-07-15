@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>Selesaikan pembayaran di browser Anda.
-Jika ada masalah, jangan ragu untuk menghubungi kami di: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>Selesaikan pembayaran di browser Anda.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ Jika ada masalah, jangan ragu untuk menghubungi kami di: {email}</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Tidak dapat membuka browser Anda secara otomatis. Silakan coba lagi.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>Tidak dapat membuka browser Anda secara otomatis.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ Jika ada masalah, jangan ragu untuk menghubungi kami di: {email}</translation>
 		<message>
 			<source>Create invoice</source>
 			<translation>Buat faktur</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>Jika browser tidak terbuka, klik &lt;a href="{url}"&gt;di sini&lt;/a&gt;.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>Jika ada masalah, jangan ragu untuk menghubungi kami di &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -728,8 +736,53 @@ memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengub
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>Tidak dapat memublikasikan salinan sendiri</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>Tidak dapat memublikasikan salinan sendiri: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>Menunggu konfirmasi dari {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>Tertunda karena publikasi gagal: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>Tertunda: {waiting_for}. Gagal: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>Publikasi gagal untuk {recipient}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>Publikasi gagal untuk {recipient}: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>Dipublikasikan ke semua penerima dan salinan sendiri diterima</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>Anda hanya bisa mengirim PSBT atau transaksi</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>salinan sendiri</translation>
 		</message>
 	</context>
 	<context>
@@ -978,8 +1031,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>Terapkan</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>Deskriptor tidak berubah</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>Buang</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1573,23 +1636,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>Buat Transaksi</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>Isi otomatis bidang transaksi</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Langkah Sebelumnya</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1777,8 +1823,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Langkah Sebelumnya</translation>
+			<source>Previous step</source>
+			<translation>Langkah sebelumnya</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1861,11 +1907,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>Tambahkan Penanda Tangan Baru</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2005,6 +2046,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>Pilih model penanda tangan</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>Pilih penanda tangan Anda</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3530,6 +3576,11 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>Compact Block Filters akan diaktifkan untuk jaringan yang didukung. Jaringan ini akan tetap menggunakan server saat ini.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>Hubungkan ke node bitcoin (p2p) dan unduh blok yang relevan dari sana.</translation>
 		</message>
@@ -4492,8 +4543,18 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>Daftarkan {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>Daftarkan '{wallet_name}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>Daftarkan '{wallet_name}' ke '{device}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Daftarkan dompet multisig ini pada setiap penanda tangan perangkat keras yang akan Anda gunakan. Dengan begitu, penanda tangan perangkat keras dapat memverifikasi alamat kembalian transaksi.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4744,6 +4805,16 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Pindai kode QR dengan penanda tangan perangkat keras</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. Deteksi pesan yang ditandatangani</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>Tidak dapat menentukan jalur derivasi untuk alamat yang diberikan.</translation>
 		</message>
@@ -4751,6 +4822,16 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		<message>
 			<source>Message too short.</source>
 			<translation>Pesan terlalu pendek.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Setelah Anda menandatangani pesan, penanda tangan perangkat keras Anda akan menyediakan kode QR kedua yang dapat Anda pindai dari komputer ini</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Pindai kode QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5232,6 +5313,16 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Pindai kode QR dengan penanda tangan perangkat keras</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. Pindai PSBT yang ditandatangani</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Ciutkan</translation>
 		</message>
@@ -5249,6 +5340,16 @@ Jika Anda ingin terus menggunakan keduanya, silakan setel ulang kunci sinkronisa
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Siapkan untuk tes {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Setelah Anda menandatangani PSBT, penanda tangan perangkat keras Anda akan menyediakan kode QR kedua yang dapat Anda pindai dari komputer ini</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Pindai kode QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6252,8 +6353,8 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Langkah Sebelumnya</translation>
+			<source>Previous step</source>
+			<translation>Langkah sebelumnya</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6478,8 +6579,8 @@ Negara: {country}</translation>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Langkah Sebelumnya</translation>
+			<source>Previous step</source>
+			<translation>Langkah sebelumnya</translation>
 		</message>
 	</context>
 	<context>
@@ -7795,11 +7896,6 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>Tanda tangan tidak valid terdeteksi</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>Tidak dapat mengimpor kunci publik: {exc}</translation>
 		</message>
@@ -7845,8 +7941,8 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Catatan keamanan: verifikasi menggunakan pustaka bawaan &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Pustaka ini tidak memperhatikan pengaturan kepercayaan, pencabutan, atau waktu kedaluwarsa dari keyring Anda. Harap verifikasi pesan bernilai tinggi dengan &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Catatan keamanan: verifikasi menggunakan pustaka &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; bawaan. Pustaka ini tidak mematuhi pengaturan kepercayaan, pencabutan, atau waktu kedaluwarsa dari keyring Anda. Harap verifikasi pesan bernilai tinggi dengan &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7867,11 +7963,6 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>kunci publik tidak tersedia</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>jenis tanda tangan salah: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

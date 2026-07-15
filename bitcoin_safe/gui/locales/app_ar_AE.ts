@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>أكمل الدفع في متصفحك.
-إذا حدثت مشكلة، فلا تتردد في التواصل معنا على: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>أكمل الدفع في متصفحك.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>تعذر فتح المتصفح تلقائيًا. يرجى المحاولة مرة أخرى.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>تعذر فتح متصفحك تلقائيًا.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>إنشاء فاتورة</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>إذا لم يفتح المتصفح، فانقر &lt;a href="{url}"&gt;هنا&lt;/a&gt;.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>إذا كانت هناك مشكلة، فلا تتردد في التواصل معنا على &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -728,8 +736,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>تعذّر نشر النسخة الذاتية</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>تعذّر نشر النسخة الذاتية: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>في انتظار التأكيد من {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>معلّق بسبب عمليات نشر فاشلة: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>معلّق: {waiting_for}. فشل: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>فشل النشر إلى {recipient}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>فشل النشر إلى {recipient}: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>تم النشر إلى جميع المستلمين وتم استلام النسخة الذاتية</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>يمكنك إرسال PSBTs أو المعاملات فقط</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>النسخة الذاتية</translation>
 		</message>
 	</context>
 	<context>
@@ -978,8 +1031,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>تطبيق</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>الوصف غير متغير</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>تجاهل</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1573,23 +1636,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>إنشاء معاملة</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>املأ حقول المعاملة مسبقًا</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>الخطوة السابقة</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1777,7 +1823,7 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>الخطوة السابقة</translation>
 		</message>
 		<name>ImportXpubs</name>
@@ -1861,11 +1907,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>إضافة موقّع جديد</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2005,6 +2046,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>اختر طراز الموقّع</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>حدد المُوقّع الخاص بك</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3531,6 +3577,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>سيتم تفعيل Compact Block Filters للشبكات المدعومة. ستحتفظ هذه الشبكة بخادمها الحالي.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>اتصل بعُقد البيتكوين (p2p) وقم بتنزيل الكتل ذات الصلة منها.</translation>
 		</message>
@@ -4493,8 +4544,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>تسجيل {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>تسجيل '{wallet_name}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>تسجيل '{wallet_name}' على '{device}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>سجّل محفظة التوقيع المتعدد هذه على كل جهاز توقيع عتادي تخطط لاستخدامه. بهذه الطريقة يمكن لجهاز التوقيع العتادي التحقق من عناوين التغيير في المعاملات.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4745,6 +4806,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. امسح رمز QR باستخدام جهاز التوقيع العتادي</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. اكتشاف الرسالة الموقّعة</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>تعذر تحديد مسار الاشتقاق للعنوان المقدم.</translation>
 		</message>
@@ -4752,6 +4823,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>الرسالة قصيرة جداً.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>بعد توقيعك للرسالة، سيوفر جهاز التوقيع العتادي رمز QR ثانياً يمكنك مسحه من هذا الكمبيوتر</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>مسح رمز الاستجابة السريعة</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5233,6 +5314,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. امسح رمز QR باستخدام جهاز التوقيع العتادي</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. مسح PSBT الموقّع</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>طي</translation>
 		</message>
@@ -5250,6 +5341,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>أبقِه جاهزًا للاختبار {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>بعد توقيعك لـ PSBT، سيوفر جهاز التوقيع العتادي رمز QR ثانياً يمكنك مسحه من هذا الكمبيوتر</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>مسح رمز الاستجابة السريعة</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6252,8 +6353,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>خطوة سابقة</translation>
+			<source>Previous step</source>
+			<translation>الخطوة السابقة</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6478,8 +6579,8 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>خطوة سابقة</translation>
+			<source>Previous step</source>
+			<translation>الخطوة السابقة</translation>
 		</message>
 	</context>
 	<context>
@@ -7793,11 +7894,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>تم اكتشاف توقيع غير صالح</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>تعذر استيراد المفتاح العام: {exc}</translation>
 		</message>
@@ -7843,8 +7939,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>ملاحظة أمنية: تستخدم عملية التحقق مكتبة &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; المدمجة. وهي لا تأخذ في الاعتبار إعدادات الثقة أو الإلغاءات أو تواريخ الانتهاء من حلقة المفاتيح الخاصة بك. يُرجى التحقق من الرسائل ذات القيمة العالية باستخدام &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>ملاحظة أمنية: يستخدم التحقق مكتبة &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; مدمجة. وهي لا تراعي إعدادات الثقة أو عمليات الإبطال أو أوقات انتهاء الصلاحية من حلقة المفاتيح الخاصة بك. يُرجى التحقق من الرسائل عالية القيمة باستخدام &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7865,11 +7961,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>المفتاح العام غير موجود</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>نوع توقيع غير صحيح: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

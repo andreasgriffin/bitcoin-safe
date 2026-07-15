@@ -255,7 +255,7 @@ class HardwareSigners:
     passport = HardwareSigner(
         id="passport",
         brand_name="Foundation",
-        display_name="Passport",
+        display_name="Passport Core",
         qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.default, SignMessageRequestQrExportTypes.text],
         descriptor_export_types=[DescriptorExportTypes.default],
         usb=FeatureLevel.not_capable,

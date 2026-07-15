@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>Dokończ płatność w przeglądarce.
-Jeśli wystąpi problem, skontaktuj się z nami pod adresem: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>Dokończ płatność w przeglądarce.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ Jeśli wystąpi problem, skontaktuj się z nami pod adresem: {email}</translatio
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Nie udało się automatycznie otworzyć przeglądarki. Spróbuj ponownie.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>Nie udało się automatycznie otworzyć przeglądarki.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ Jeśli wystąpi problem, skontaktuj się z nami pod adresem: {email}</translatio
 		<message>
 			<source>Create invoice</source>
 			<translation>Utwórz fakturę</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>Jeśli przeglądarka się nie otworzyła, kliknij &lt;a href="{url}"&gt;tutaj&lt;/a&gt;.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>Jeśli wystąpi problem, skontaktuj się z nami pod adresem &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -728,8 +736,53 @@ mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>Nie udało się opublikować własnej kopii</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>Nie udało się opublikować własnej kopii: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>Oczekiwanie na potwierdzenie od {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>Oczekujące z powodu nieudanych publikacji: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>Oczekujące: {waiting_for}. Nieudane: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>Publikacja dla {recipient} nie powiodła się</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>Publikacja dla {recipient} nie powiodła się: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>Opublikowano do wszystkich odbiorców i otrzymano własną kopię</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>Możesz wysyłać tylko PSBT lub transakcje</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>własna kopia</translation>
 		</message>
 	</context>
 	<context>
@@ -979,8 +1032,18 @@ Zrób kopię zapasową tego deskryptora, aby móc odzyskać środki!</translatio
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>Zastosuj</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>Deskryptor niezmieniony</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>Odrzuć</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1576,23 +1639,6 @@ ponieważ ostateczny rozmiar transakcji jest nieznany.</translation>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>Utwórz transakcję</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>Wypełnij pola transakcji</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Poprzedni krok</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1780,7 +1826,7 @@ ponieważ ostateczny rozmiar transakcji jest nieznany.</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>Poprzedni krok</translation>
 		</message>
 		<name>ImportXpubs</name>
@@ -1864,11 +1910,6 @@ ponieważ ostateczny rozmiar transakcji jest nieznany.</translation>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>Dodaj nowego podpisującego</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2008,6 +2049,11 @@ ponieważ ostateczny rozmiar transakcji jest nieznany.</translation>
 		<message>
 			<source>Select the signer model</source>
 			<translation>Wybierz model podpisującego</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>Wybierz swojego podpisującego</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3534,6 +3580,11 @@ Użycie większej liczby peerów poprawia pokrycie, ale zużywa więcej przepust
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>Compact Block Filters zostaną aktywowane dla obsługiwanych sieci. Ta sieć zachowa obecny serwer.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>Połącz się z węzłami Bitcoina (p2p) i pobierz z nich odpowiednie bloki.</translation>
 		</message>
@@ -4496,8 +4547,18 @@ Wyjścia pozostają takie same; zmienia się tylko opłata.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>Zarejestruj {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>Zarejestruj „{wallet_name}”</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>Zarejestruj „{wallet_name}” na „{device}”</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Zarejestruj ten portfel multisig na każdym sprzętowym podpisującym, którego planujesz używać. Dzięki temu sprzętowy podpisujący może weryfikować adresy reszty w transakcjach.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4748,6 +4809,16 @@ Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Zeskanuj kod QR sprzętowym podpisującym</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. Wykryj podpisaną wiadomość</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>Nie można było określić ścieżki derywacji dla podanego adresu.</translation>
 		</message>
@@ -4755,6 +4826,16 @@ Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 		<message>
 			<source>Message too short.</source>
 			<translation>Wiadomość zbyt krótka.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Po podpisaniu wiadomości Twój sprzętowy podpisujący udostępni drugi kod QR, który możesz zeskanować z tego komputera</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Zeskanuj kod QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5236,6 +5317,16 @@ Jeśli chcesz nadal korzystać z obu, zresetuj teraz klucz synchronizacji Chat &
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Zeskanuj kod QR sprzętowym podpisującym</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. Zeskanuj podpisany PSBT</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Zwiń</translation>
 		</message>
@@ -5253,6 +5344,16 @@ Jeśli chcesz nadal korzystać z obu, zresetuj teraz klucz synchronizacji Chat &
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Przygotuj do testu {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Po podpisaniu PSBT Twój sprzętowy podpisujący udostępni drugi kod QR, który możesz zeskanować z tego komputera</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Zeskanuj kod QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6260,7 +6361,7 @@ Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>Poprzedni krok</translation>
 		</message>
 		<name>Wizard</name>
@@ -6486,7 +6587,7 @@ Kraj: {country}</translation>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>Poprzedni krok</translation>
 		</message>
 	</context>
@@ -7804,11 +7905,6 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>Wykryto nieprawidłowy podpis</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>Nie można zaimportować klucza publicznego: {exc}</translation>
 		</message>
@@ -7854,8 +7950,8 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Uwaga dotycząca bezpieczeństwa: weryfikacja używa wbudowanej biblioteki &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. Nie uwzględnia ona ustawień zaufania, unieważnień ani terminów ważności z Twojego breloka kluczy. Wiadomości o wysokiej wartości weryfikuj za pomocą &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Uwaga dotycząca bezpieczeństwa: weryfikacja używa wbudowanej biblioteki &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt;. Nie uwzględnia ona ustawień zaufania, unieważnień ani terminów wygaśnięcia z Twojego zbioru kluczy. Zweryfikuj wiadomości o wysokiej wartości za pomocą &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7876,11 +7972,6 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>klucz publiczny nieobecny</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>nieprawidłowy typ podpisu: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

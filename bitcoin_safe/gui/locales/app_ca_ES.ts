@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>Completa el pagament al navegador.
-Si hi ha cap problema, no dubtis a contactar amb nosaltres a: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>Completeu el pagament al vostre navegador.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ Si hi ha cap problema, no dubtis a contactar amb nosaltres a: {email}</translati
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>No s’ha pogut obrir el navegador automàticament. Torneu-ho a provar.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>No s’ha pogut obrir el navegador automàticament.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ Si hi ha cap problema, no dubtis a contactar amb nosaltres a: {email}</translati
 		<message>
 			<source>Create invoice</source>
 			<translation>Crear factura</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>Si el navegador no s’ha obert, feu clic &lt;a href="{url}"&gt;aquí&lt;/a&gt;.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>Si hi ha cap problema, no dubteu a contactar-nos a &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -728,8 +736,53 @@ ja tenen transaccions que enllacen amb altres adreces. Segur que vols canviar-ne
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>No s’ha pogut publicar l’autocòpia</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>No s’ha pogut publicar l’autocòpia: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>Confirmació pendent de {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>Pendent a causa de publicacions fallides: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>Pendent: {waiting_for}. Fallides: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>Ha fallat la publicació per a {recipient}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>Ha fallat la publicació per a {recipient}: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>Publicat a tots els destinataris i autocòpia rebuda</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>Només pots enviar PSBT o transaccions</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>autocòpia</translation>
 		</message>
 	</context>
 	<context>
@@ -978,8 +1031,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>Aplica</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>Descriptor sense canvis</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>Descarta</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1574,23 +1637,6 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>Crea transacció</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>Prefereix camps de transacció</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Pas anterior</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1778,7 +1824,7 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>Pas anterior</translation>
 		</message>
 		<name>ImportXpubs</name>
@@ -1862,11 +1908,6 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>Afegeix nou signador</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2006,6 +2047,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Select the signer model</source>
 			<translation>Selecciona el model del signant</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>Seleccioneu el vostre signador</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3531,6 +3577,11 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>Els Compact Block Filters s’activaran per a les xarxes compatibles. Aquesta xarxa mantindrà el servidor actual.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>Connecta’t als nodes de Bitcoin (p2p) i descarrega els blocs rellevants d’aquests.</translation>
 		</message>
@@ -4493,8 +4544,18 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>Registra {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>Registra «{wallet_name}»</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>Registra «{wallet_name}» a «{device}»</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Registra aquesta cartera multisig a cada signador de maquinari que tinguis previst utilitzar. Així, el signador de maquinari podrà verificar les adreces de canvi de les transaccions.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4745,6 +4806,16 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Escaneja el codi QR amb el signador de maquinari</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. Detecta el missatge signat</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>No s’ha pogut determinar el camí de derivació per a l’adreça proporcionada.</translation>
 		</message>
@@ -4752,6 +4823,16 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		<message>
 			<source>Message too short.</source>
 			<translation>Missatge massa curt.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Un cop hagis signat el missatge, el teu signador de maquinari proporcionarà un segon codi QR que podràs escanejar des d’aquest ordinador</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Escaneja codi QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5233,6 +5314,16 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. Escaneja el codi QR amb el signador de maquinari</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. Escaneja el PSBT signat</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Replega</translation>
 		</message>
@@ -5250,6 +5341,16 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Mantén-lo a punt per a la prova {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Un cop hagis signat el PSBT, el teu signador de maquinari proporcionarà un segon codi QR que podràs escanejar des d’aquest ordinador</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>Escaneja codi QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6253,7 +6354,7 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>Pas anterior</translation>
 		</message>
 		<name>Wizard</name>
@@ -6479,7 +6580,7 @@ País: {country}</translation>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>Pas anterior</translation>
 		</message>
 	</context>
@@ -7796,11 +7897,6 @@ Fes clic aquí per saber-ne més.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>S’ha detectat una signatura incorrecta</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>No s’ha pogut importar la clau pública: {exc}</translation>
 		</message>
@@ -7846,8 +7942,8 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Nota de seguretat: la verificació utilitza la biblioteca integrada &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt;. No té en compte la configuració de confiança, les revocacions ni les dates de caducitat del vostre clauer de claus. Verifiqueu els missatges d’alt valor amb &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Nota de seguretat: la verificació utilitza una biblioteca &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; integrada. No respecta la configuració de confiança, les revocacions ni les dates de caducitat del vostre anell de claus. Verifiqueu els missatges d’alt valor amb &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7868,11 +7964,6 @@ Fes clic aquí per saber-ne més.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>clau pública no present</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>tipus de signatura incorrecte: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

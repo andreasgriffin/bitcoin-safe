@@ -345,9 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>သင့် browser တွင် ငွေပေးချေမှုကို ပြီးဆုံးအောင်လုပ်ပါ။ ပြဿနာရှိပါက ကျွန်ုပ်တို့ကို ဤနေရာသို့ ဆက်သွယ်ရန် မလ தயанပါနှင့်: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>သင့်ဘရောက်ဇာတွင် ငွေပေးချေမှုကို ပြီးစီးအောင်လုပ်ပါ။</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>ဘရောက်ဇာကို အလိုအလျောက် ဖွင့်၍မရပါ။ ထပ်မံကြိုးစားပါ။</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>သင့်ဘရောက်ဇာကို အလိုအလျောက် ဖွင့်၍မရပါ။</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -368,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>အင်ဗွိုက်စ် ဖန်တီးပါ</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>ဘရောက်ဇာ မဖွင့်ပါက &lt;a href="{url}"&gt;ဤနေရာ&lt;/a&gt; ကို နှိပ်ပါ။</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>ပြဿနာရှိပါက &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; သို့ ကျွန်ုပ်တို့ကို ဆက်သွယ်ရန် မတွန့်ဆုတ်ပါနှင့်။</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -726,8 +735,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>ကိုယ်ပိုင်မိတ္တူကို ထုတ်ဝေ၍မရပါ</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>ကိုယ်ပိုင်မိတ္တူကို ထုတ်ဝေ၍မရပါ: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for} ထံမှ အတည်ပြုချက်ကို စောင့်ဆိုင်းနေသည်</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>ထုတ်ဝေမှုများ မအောင်မြင်သောကြောင့် ဆိုင်းငံ့ထားသည်: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>ဆိုင်းငံ့ထားသည်: {waiting_for}။ မအောင်မြင်: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient} အတွက် ထုတ်ဝေမှု မအောင်မြင်ပါ</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient} အတွက် ထုတ်ဝေမှု မအောင်မြင်ပါ: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>လက်ခံသူအားလုံးထံ ထုတ်ဝေပြီး ကိုယ်ပိုင်မိတ္တူကို လက်ခံရရှိပြီးပါပြီ</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>PSBTs သို့မဟုတ်ငွေလွှဲများကိုသာပို့နိုင်သည်</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>ကိုယ်ပိုင်မိတ္တူ</translation>
 		</message>
 	</context>
 	<context>
@@ -976,8 +1030,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>အသုံးပြုမည်</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>အသစ်ရောက်ရှိသော descriptor ဖြစ်သည်</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>စွန့်ပစ်မည်</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1571,23 +1635,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>ငွေလွှဲဖွင့်ပါ</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>ငွေလွှဲကွင်းလယ်များကိုကြိုတင်ဖြည့်ပါ</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>ယခင်အဆင့်</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1775,7 +1822,7 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>ImportXpubs</name>
@@ -1859,11 +1906,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>လက်မှတ်ရေးထိုးသူ အသစ် ထည့်ရန်</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2003,6 +2045,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>လက်မှတ်ထိုးသူ မော်ဒယ် ရွေးပါ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>သင့်လက်မှတ်ထိုးသူကို ရွေးချယ်ပါ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3516,6 +3563,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>ပံ့ပိုးထားသော ကွန်ရက်များအတွက် Compact Block Filters ကို ဖွင့်မည်ဖြစ်သည်။ ဤကွန်ရက်သည် လက်ရှိဆာဗာကို ဆက်လက်အသုံးပြုမည်ဖြစ်သည်။</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>Bitcoin node များ (p2p) နှင့် ချိတ်ဆက်ပြီး သက်ဆိုင်ရာ block များကို ဒေါင်းလုဒ်လုပ်ပါ။</translation>
 		</message>
@@ -4474,8 +4526,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} ကို စာရင်းသွင်းပါ</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>'{wallet_name}' ကို မှတ်ပုံတင်ပါ</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>'{wallet_name}' ကို '{device}' တွင် မှတ်ပုံတင်ပါ</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>သင်အသုံးပြုရန် ရည်ရွယ်ထားသော hardware signer တိုင်းတွင် ဤ multisig ပိုက်ဆံအိတ်ကို မှတ်ပုံတင်ပါ။ ထိုသို့ပြုလုပ်ခြင်းဖြင့် hardware signer သည် လွှဲပြောင်းမှုများ၏ change address များကို အတည်ပြုနိုင်ပါသည်။</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4725,6 +4787,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. hardware signer ဖြင့် QR ကုဒ်ကို စကန်ဖတ်ပါ</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. လက်မှတ်ထိုးထားသော မက်ဆေ့ချ်ကို ရှာဖွေပါ</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>ပေးထားသော လိပ်စာအတွက် မျိုးဆက်လမ်းကြောင်းကို မသတ်မှတ်နိုင်ပါ။</translation>
 		</message>
@@ -4732,6 +4804,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>စာကြောင့်ရှုပ်ထွေးနေသည်။</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>မက်ဆေ့ချ်ကို လက်မှတ်ထိုးပြီးပါက သင့် hardware signer သည် ဤကွန်ပျူတာမှ စကန်ဖတ်နိုင်သော ဒုတိယ QR ကုဒ်ကို ပေးပါမည်</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR ကုဒ်စကင်နာ</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5212,6 +5294,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. hardware signer ဖြင့် QR ကုဒ်ကို စကန်ဖတ်ပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. လက်မှတ်ထိုးထားသော PSBT ကို စကန်ဖတ်ပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>ခေါက်သိမ်းမည်</translation>
 		</message>
@@ -5229,6 +5321,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>စမ်းသပ်မှု {number} အတွက် အဆင်သင့်ထားပါ</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>PSBT ကို လက်မှတ်ထိုးပြီးပါက သင့် hardware signer သည် ဤကွန်ပျူတာမှ စကန်ဖတ်နိုင်သော ဒုတိယ QR ကုဒ်ကို ပေးပါမည်</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR ကုဒ်စကင်နာ</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6229,7 +6331,7 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>ယခင်အဆင့်</translation>
 		</message>
 		<name>Wizard</name>
@@ -6455,7 +6557,7 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>ယခင်အဆင့်</translation>
 		</message>
 	</context>
@@ -7768,11 +7870,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>မမှန်ကန်သော လက်မှတ်ကို တွေ့ရှိပါသည်</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>အများပြည်သူ့သော့ကို ထည့်သွင်းမရပါ: {exc}</translation>
 		</message>
@@ -7818,8 +7915,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>လုံခြုံရေးမှတ်စု: အတည်ပြုခြင်းသည် အတွင်းပါရှိသော &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; စာကြည့်တိုက်ကို အသုံးပြုပါသည်။ သင့် keyring မှ ယုံကြည်မှုဆိုင်ရာ ဆက်တင်များ၊ ပြန်လည်ရုပ်သိမ်းမှုများ သို့မဟုတ် သက်တမ်းကုန်ဆုံးချိန်များကို မလေးစားပါ။ တန်ဖိုးမြင့် မက်ဆေ့ချ်များကို &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; ဖြင့် စစ်ဆေးပါ။</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>လုံခြုံရေးမှတ်ချက်: အတည်ပြုခြင်းသည် ထည့်သွင်းပါဝင်ပြီးသား &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; လိုင်ဘရယ်ရီကို အသုံးပြုသည်။ ၎င်းသည် သင့် keyring ထဲမှ ယုံကြည်မှု ဆက်တင်များ၊ ပြန်လည်ရုပ်သိမ်းမှုများ သို့မဟုတ် သက်တမ်းကုန်ဆုံးချိန်များကို မလိုက်နာပါ။ တန်ဖိုးမြင့် မက်ဆေ့ချ်များကို &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; ဖြင့် အတည်ပြုပါ။</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7840,11 +7937,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>အများပြည်သူ့သော့ မရှိပါ</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>လက်မှတ် အမျိုးအစား မမှန်ပါ: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

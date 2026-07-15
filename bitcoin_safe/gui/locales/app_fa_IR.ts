@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>پرداخت را در مرورگر خود کامل کنید.
-اگر مشکلی وجود داشت، لطفاً در تماس با ما از طریق این نشانی تردید نکنید: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>پرداخت را در مرورگر خود تکمیل کنید.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>مرورگر شما به‌صورت خودکار باز نشد. لطفاً دوباره تلاش کنید.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>مرورگر شما به‌صورت خودکار باز نشد.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>ایجاد فاکتور</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>اگر مرورگر باز نشد، روی &lt;a href="{url}"&gt;اینجا&lt;/a&gt; کلیک کنید.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>اگر مشکلی وجود دارد، لطفاً بدون تردید از طریق &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; با ما تماس بگیرید.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -728,8 +736,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>امکان انتشار نسخهٔ خود وجود نداشت</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>امکان انتشار نسخهٔ خود وجود نداشت: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>در انتظار تأیید از طرف {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>در انتظار به دلیل انتشارهای ناموفق: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>در انتظار: {waiting_for}. ناموفق: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>انتشار برای {recipient} ناموفق بود</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>انتشار برای {recipient} ناموفق بود: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>برای همهٔ گیرندگان منتشر شد و نسخهٔ خود دریافت شد</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>شما فقط می‌توانید PSBT یا تراکنش ارسال کنید</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>نسخهٔ خود</translation>
 		</message>
 	</context>
 	<context>
@@ -978,8 +1031,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>اعمال</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>توصیف‌گر بدون تغییر</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>صرف‌نظر</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1573,23 +1636,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>ساخت تراکنش</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>پیش‌پر کردن فیلدهای تراکنش</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>مرحله قبل</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1777,8 +1823,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>مرحله قبل</translation>
+			<source>Previous step</source>
+			<translation>مرحله قبلی</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1861,11 +1907,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>افزودن امضاکننده جدید</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2005,6 +2046,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>انتخاب مدل امضاکننده</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>امضاکننده خود را انتخاب کنید</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3529,6 +3575,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>Compact Block Filters برای شبکه‌های پشتیبانی‌شده فعال خواهد شد. این شبکه سرور فعلی خود را حفظ خواهد کرد.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>به نودهای بیت‌کوین (p2p) متصل شوید و بلوک‌های مرتبط را از آن‌ها دانلود کنید.</translation>
 		</message>
@@ -4491,8 +4542,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>ثبت {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>ثبت '{wallet_name}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>ثبت '{wallet_name}' در '{device}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>این کیف پول چندامضایی را روی هر امضاکننده سخت‌افزاری که قصد استفاده از آن را دارید ثبت کنید. به این ترتیب امضاکننده سخت‌افزاری می‌تواند آدرس‌های باقی‌مانده تراکنش‌ها را تأیید کند.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4743,6 +4804,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. کد QR را با امضاکننده سخت‌افزاری اسکن کنید</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. پیام امضاشده را شناسایی کنید</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>مسیر اشتقاق برای آدرس ارائه‌شده قابل تعیین نیست.</translation>
 		</message>
@@ -4750,6 +4821,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>پیام خیلی کوتاه است.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>پس از امضای پیام، امضاکننده سخت‌افزاری شما یک کد QR دوم ارائه می‌دهد که می‌توانید آن را از این رایانه اسکن کنید</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>اسکن کد QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5231,6 +5312,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. کد QR را با امضاکننده سخت‌افزاری اسکن کنید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. PSBT امضاشده را اسکن کنید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>جمع کردن</translation>
 		</message>
@@ -5248,6 +5339,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>برای آزمایش {number} آماده نگه دارید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>پس از امضای PSBT، امضاکننده سخت‌افزاری شما یک کد QR دوم ارائه می‌دهد که می‌توانید آن را از این رایانه اسکن کنید</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>اسکن کد QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6250,8 +6351,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>مرحلهٔ قبل</translation>
+			<source>Previous step</source>
+			<translation>مرحله قبلی</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6476,8 +6577,8 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>مرحلهٔ قبل</translation>
+			<source>Previous step</source>
+			<translation>مرحله قبلی</translation>
 		</message>
 	</context>
 	<context>
@@ -7793,11 +7894,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>امضای نامعتبر شناسایی شد</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>امکان وارد کردن کلید عمومی وجود ندارد: {exc}</translation>
 		</message>
@@ -7843,8 +7939,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>یادداشت امنیتی: فرایند تأیید از کتابخانهٔ داخلی &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; استفاده می‌کند. این فرایند تنظیمات اعتماد، ابطال‌ها یا زمان‌های انقضا را از حلقهٔ کلید شما در نظر نمی‌گیرد. لطفاً پیام‌های با ارزش بالا را با &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; تأیید کنید.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>نکته امنیتی: راستی‌آزمایی از یک کتابخانه داخلی &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; استفاده می‌کند. این کتابخانه تنظیمات اعتماد، لغوها یا زمان‌های انقضا را از keyring شما رعایت نمی‌کند. لطفاً پیام‌های با ارزش بالا را با &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; راستی‌آزمایی کنید.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7865,11 +7961,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>کلید عمومی موجود نیست</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>نوع امضای نادرست: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

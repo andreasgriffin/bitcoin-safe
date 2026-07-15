@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <component type="desktop-application">
   <id>org.bitcoin_safe.BitcoinSafe</id>
   <metadata_license>CC0-1.0</metadata_license>
@@ -14,12 +14,579 @@
     <p>It supports USB, QR, and SD-card hardware wallet workflows, guided setup, PDF backups, transaction visualization, and synchronized labels across devices.</p>
   </description>
   <url type="homepage">https://www.bitcoin-safe.org</url>
-  <content_rating type="oars-1.1"/>
+  <content_rating type="oars-1.1" />
   <categories>
     <category>Utility</category>
     <category>Finance</category>
   </categories>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://bitcoin-safe.org/screenshots/screenshots%2001.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://bitcoin-safe.org/screenshots/screenshots%2002.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://bitcoin-safe.org/screenshots/screenshots%2003.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://bitcoin-safe.org/screenshots/screenshots%2004.png</image>
+    </screenshot>
+  </screenshots>
   <releases>
-    <release version="2.0.0rc2" date="2026-06-06"/>
-  </releases>  
+    <release version="2.0.1" date="2026-07-01" />
+    <release version="2.0.0" date="2026-06-29">
+      <description>
+        <p>Highlights</p>
+        <p>Compact Block Filters are now the default network option, with a migration notification for existing users. PR #559, PR #626 Big thanks to @rustaceanrob</p>
+        <ul>
+          <li>Compact Block Filters by default</li>
+        </ul>
+        <p>The wallet setup flow has been rebuilt for a clearer and more polished onboarding experience together with @design-rrr . PR #627</p>
+        <ul>
+          <li>Redesigned Wallet Setup Wizard</li>
+        </ul>
+        <p>The signing UI focusses now on devices to achieve the cleanest UI for the different connection types QR, USB, Bluetooth, File, and Share via Chat&amp;Sync together with @design-rrr PR #639</p>
+        <ul>
+          <li>Redesigned Transaction Signing</li>
+        </ul>
+        <p>Support for MK5 and Trezor Safe 7 PR #596, PR #598</p>
+        <ul>
+          <li>Updated device support</li>
+        </ul>
+        <ul>
+          <li>30% faster animated QR codes for quicker scanning</li>
+        </ul>
+        <ul>
+          <li>Chat messages now have a send status icon</li>
+        </ul>
+        <ul>
+          <li>Added 🇮🇳 Tamil language and more translation improvements</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.8.1" date="2026-04-05">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>Increase loading speed of transactions with &gt;200 outputs</li>
+          <li>Change FeerateSpinBox increment to 0.1 Sats/vB https://github.com/andreasgriffin/bitcoin-safe/pull/589</li>
+          <li>Use up to date min relay fee to warn user about a too low fee rate https://github.com/andreasgriffin/bitcoin-safe/pull/590</li>
+          <li>Fix revealed address resync loop https://github.com/andreasgriffin/bitcoin-safe/pull/591</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.8.0" date="2026-04-01">
+      <description>
+        <p>New Features</p>
+        <ul>
+          <li>Added zooming for the balance chart https://github.com/andreasgriffin/bitcoin-safe/pull/492</li>
+          <li>Added support for custom nLocktime https://github.com/andreasgriffin/bitcoin-safe/pull/481</li>
+          <li>Seamless update functionality on windows and easier updates on MacOS and Linux https://github.com/andreasgriffin/bitcoin-safe/pull/513</li>
+          <li>Bluetooth support for jade https://github.com/andreasgriffin/bitcoin-safe/pull/517</li>
+          <li>App lock mode https://github.com/andreasgriffin/bitcoin-safe/pull/519</li>
+        </ul>
+        <p>Improvements</p>
+        <ul>
+          <li>Notifications history now available from the tray icon https://github.com/andreasgriffin/bitcoin-safe/pull/493</li>
+          <li>bug fixes and small UI improvements</li>
+        </ul>
+        <p>Contributions</p>
+        <ul>
+          <li>@bsn21m made their first contribution in https://github.com/andreasgriffin/bitcoin-safe/pull/538</li>
+          <li>Thanks to the bdk team and @rustaceanrob</li>
+          <li>Huge thanks to @design-rrr for design and UX support</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.7.1" date="2026-02-03">
+      <description>
+        <p>New Features</p>
+        <ul>
+          <li>Choice between BTC and ₿ in the UI</li>
+          <li>UTXO based coin selection is supplemented by address based coin selection directly from the address list</li>
+          <li>Fully configurable P2P listening connections for instant transaction notifications</li>
+        </ul>
+        <p>Improvements</p>
+        <ul>
+          <li>Better explanations for RBF/CPFP transactions</li>
+          <li>Better notifications for sync errors</li>
+          <li>Bug fixes, Translation fixes</li>
+        </ul>
+        <p>Thanks to @design-rrr for relentless design support!</p>
+      </description>
+    </release>
+    <release version="1.7.0" date="2026-01-18">
+      <description>
+        <p>New Features</p>
+        <ul>
+          <li>New Multi-Tool: Sign and verify messages</li>
+          <li>Back button in Tx screens for easier navigation</li>
+          <li>Donations are now possible via BTCPay</li>
+        </ul>
+        <p>&lt;img width="522" height="360" alt="sign-mes" src="https://github.com/user-attachments/assets/9e7d2add-0752-4da4-a8e4-9eed4674cfaa" /&gt;</p>
+        <p>Improvements</p>
+        <ul>
+          <li>Copy multiple addresses directly from the context menu in the addresses tab</li>
+          <li>CI/CD: Compact Block filter syncing is automatically tested additional to electrum server backend</li>
+          <li>Switching network settings easier due to 1-click restarts</li>
+          <li>countless improvements and bug fixes</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.6.1" date="2025-12-04">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>Improved menu structure. Thanks to @design-rrr for the redesign</li>
+          <li>Allow below 1 sat/vByte on mainnet</li>
+          <li>Transactions and PSBTs can now be exported as PDF</li>
+          <li>Bug fixes. Thanks to @design-rrr for finding one</li>
+        </ul>
+      </description>
+    </release>
+    <release version="1.6.0" date="2025-11-23">
+      <description>
+        <p>New Features</p>
+        <ul>
+          <li>🧩 Compact Block Filters — optional lightweight mode for faster, more private syncing without any central server. Awesome work from @rustaceanrob on the CBF client.</li>
+          <li>🌐 Offline Wallet Functionality — full wallet state is now persisted locally, so your wallet remains fully usable even without an internet connection.</li>
+          <li>📈 Wallet Chart Plugin — visualize your wallet’s history and export all transaction and UTXO data as GraphML.</li>
+        </ul>
+        <p>Improvements</p>
+        <ul>
+          <li>⚡ Performance Boosts — everything’s faster!</li>
+          <li>🪟🐧 Perfect Reproducibility — fully reproducible builds for both Windows and Linux.</li>
+        </ul>
+        <p>Thanks to @design-rrr for relentless design support!</p>
+      </description>
+    </release>
+    <release version="1.5.0" date="2025-09-01">
+      <description>
+        <p>💡 Wallet Design Enhancements Biggest UX upgrade yet — faster, cleaner, smarter. Fantastic work by @design-rrr</p>
+        <ul>
+          <li>Sidebar navigation</li>
+          <li>Send, PSBT, and transaction views</li>
+          <li>Category management</li>
+          <li>Mempool display</li>
+        </ul>
+        <p>💱 Bitcoin ↔ Fiat Conversion Live conversion support for all fiat currencies throughout the app.</p>
+        <p>⚡ Instant Transaction Notifications Stay up to date with real-time alerts for Bitcoin transactions as they’re relayed across the P2P network.</p>
+        <ul>
+          <li>Opt-in for existing users</li>
+          <li>Opt-out by default for new users</li>
+          <li>Fully configurable in Network Settings</li>
+        </ul>
+        <p>🔓 Faster Wallet Unlocking When multiple wallets share the same encryption password, you’ll only need to enter it once.</p>
+        <p>⌨️ More Shortcuts, More Clarity</p>
+        <ul>
+          <li>Expanded keyboard shortcut support</li>
+          <li>Additional tooltips and clearer error messages</li>
+          <li>Plus many small bug fixes and UX tweaks</li>
+        </ul>
+        <p>![](https://i.postimg.cc/T1MLhj80/anim.gif)</p>
+      </description>
+    </release>
+    <release version="1.4.0" date="2025-06-27">
+      <description>
+        <p>New Features</p>
+        <ul>
+          <li>Ability to save non-broadcasted transactions in the wallet https://github.com/andreasgriffin/bitcoin-safe/pull/163</li>
+          <li>This also enables partial offline usage, since all transactions are restored on startup</li>
+          <li>Scan addresses ahead to detect own (but yet unrevealed) addresses https://github.com/andreasgriffin/bitcoin-safe/pull/169</li>
+          <li>New languages: 🇮🇷 Persian (Farsi) - فارسی , 🇵🇱 Polish - Polski, 🇪🇸 Catalan - Català</li>
+          <li>thanks to Ziya_Sadr and his video walkthrough</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.3.3" date="2025-05-29">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>fixes for UI issue that opened multiple address windows</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.3.2" date="2025-05-26">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>fix for ssl certificate issue, that prevented full blockchain synchronization</li>
+          <li>fixes for various UI issues</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.3.1" date="2025-05-20">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>multiple UI bug fixes</li>
+          <li>added pyright as secondary static type checking</li>
+          <li>enforces pre-commit via workflow</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.3.0" date="2025-05-12">
+      <description>
+        <p>New Features</p>
+        <ul>
+          <li>🎨 Awesome redesign by @design-rrr of Chart 📊, Quick Receive ⚡, Icons ❤, and Mempool Preview 🟩</li>
+          <li>📈 Interactive chart (clicking jumps to transaction and selected transactions are highlighted)</li>
+          <li>⚡ Receive faster (CPFP)</li>
+          <li>🛡️ BDK 1.2 (upgraded from 0.32)</li>
+          <li>🌐 Testnet4 support</li>
+          <li>🧪 Preconfigured Testnet demo wallets</li>
+        </ul>
+        <p>Improvements</p>
+        <ul>
+          <li>🧩 Cluster unconfirmed transactions so that parents/children are next to each other 🔗</li>
+          <li>⚙️ Customizable columns for all tables (optional view: Txid 🆔, Address index 🏷️, and more)</li>
+          <li>🐞 Bug fixes and other improvements across the board 🛠️✨</li>
+        </ul>
+        <p>!chart features</p>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.2.3" date="2025-04-17">
+      <description>
+        <p>New Features</p>
+        <ul>
+          <li>✨ Expanded QR SignMessage Compatibility: SignMessage now supports all QR-UR-compatible hardware signers, including SpecterDIY, KeyStone, Passport, and Jade (additional to previous supported Coldcard Q)</li>
+          <li>📥 Wallet Import via QR: Added the ability to import wallet-export-files via QR code, ensuring compatibility with Keystone’s latest firmware (2.0.6).</li>
+        </ul>
+        <p>Improvements</p>
+        <ul>
+          <li>Descriptor UI: Improved clarity in the descriptor interface for importing formats, making the import process more intuitive</li>
+          <li>Added import formats: Allow import of descriptors without derivation path (Sparrow format)</li>
+          <li>Multisig Wallet Export: Multisig wallet exports now revert to the legacy (Coldcard) format, even for Q, ensuring the wallet name is included.</li>
+          <li>Quick Receive Scrollbar (Mac): Resolved scrollbar display issues in the Quick Receive view on macOS.</li>
+          <li>fixed install issue with the deb file</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.2.2" date="2025-04-10">
+      <description>
+        <p>New Features</p>
+        <p>!Screenshot_20250409_204058_crop</p>
+        <p>!Screenshot_20250409_205414</p>
+        <ul>
+          <li>Added Address poisoning detection and warning</li>
+          <li>Nostr sync&amp;chat alias now also appears in share menu of the TX/PSBT</li>
+        </ul>
+        <p>Improvements</p>
+        <ul>
+          <li>Chat&amp;Sync fix duplicate message bug</li>
+          <li>better error handling, if USB connection is interrupted</li>
+          <li>fixed 🇫🇷 french translation</li>
+          <li>fixed fee rate display (fee amount unaffected)</li>
+          <li>deb file: Clean install directory to ensure clean (un)install</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.2.1" date="2025-03-30">
+      <description>
+        <p>New Features</p>
+        <p>👥 You can now assign names to participants in Sync&amp;Chat</p>
+        <p>Improvements</p>
+        <p>🛠️ Fixed MacOS .dmg files – working again 📷 Improved camera defaults – better recognition for bright hardware signer screens 🧅 Fixed onion address handling when using a Tor proxy</p>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.2.0" date="2025-03-25">
+      <description>
+        <p>New Features</p>
+        <p>!a2</p>
+        <p>!a1</p>
+        <ul>
+          <li>⚡ Insanely performant QR scanning in Linux, Mac, Windows</li>
+          <li>🌺 Beautyfied PSBT signing UI</li>
+          <li>📲 Added message signing via USB and QR (Coldcard Q rocks )</li>
+          <li>🌐 Added 🇹🇭 Thai, additional to 🇺🇸 🇨🇳 🇪🇸 🇯🇵 🇷🇺 🇵🇹 🇮🇳 🇮🇹 🇫🇷 🇩🇪 🇲🇲 🇰🇷</li>
+          <li>🌓Linux Gnome dark-mode</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.1.0" date="2025-03-03">
+      <description>
+        <p>New Features</p>
+        <ul>
+          <li>Support for Jade Plus</li>
+          <li>deb build</li>
+          <li>xpub import from USB signers for different accounts</li>
+        </ul>
+        <p>Improvements</p>
+        <ul>
+          <li>Fixed bug that could prevent usage of Jade on testnet</li>
+          <li>fixed csv date export bug</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.0.7" date="2025-02-16">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>Added languages: 🇲🇲 Burmese - မြန်မာ, 🇰🇷 Korean - 한국어</li>
+          <li>Bug fixes</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+      </description>
+    </release>
+    <release version="1.0.6" date="2025-02-05">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>Fixes for UI bugs and CSV Drag&amp;Drop in lists</li>
+          <li>bitbox02: Added initial device setup option "restore from seed" without needing vendor software</li>
+          <li>Jade: Bugfix for unlocking a newly initialized device</li>
+          <li>Stricter tests for clean wallet shutdowns</li>
+          <li>UI bugfix introduced in version 1.0.5</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+        <p>Install and run on Mac, Linux, or Windows</p>
+        <p>using the python package</p>
+      </description>
+    </release>
+    <release version="1.0.5" date="2025-02-03">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>Fixes for UI bugs and CSV Drag&amp;Drop in lists</li>
+          <li>bitbox02: Added initial device setup option "restore from seed" without needing vendor software</li>
+          <li>Jade: Bugfix for unlocking a newly initialized device</li>
+          <li>Stricter tests for clean wallet shutdowns</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+        <p>Install and run on Mac, Linux, or Windows</p>
+        <p>using the python package</p>
+      </description>
+    </release>
+    <release version="1.0.4" date="2025-01-25">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>Fixed connection issues in Sync&amp;Chat</li>
+          <li>Added Tor support through proxy</li>
+          <li>UI: Dark-mode improvements and matching icons</li>
+          <li>UI: added additional way to set address category through context menu</li>
+        </ul>
+        <p>Fixes</p>
+        <ul>
+          <li>Bug fixed, that occurred in 1.0.3</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+        <p>Install and run on Mac, Linux, or Windows</p>
+        <p>using the python package</p>
+      </description>
+    </release>
+    <release version="1.0.3" date="2025-01-25">
+      <description>
+        <p>Improvements</p>
+        <ul>
+          <li>Fixed connection issues in Sync&amp;Chat</li>
+          <li>Added Tor support through proxy</li>
+          <li>UI: Dark-mode improvements and matching icons</li>
+          <li>UI: added additional way to set address category through context menu</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+        <p>Install and run on Mac, Linux, or Windows</p>
+        <p>using the python package</p>
+      </description>
+    </release>
+    <release version="1.0.1" date="2025-01-17">
+      <description>
+        <p>Improvements and Fixes</p>
+        <ul>
+          <li>Fixes missing USB (HWI) support in Windows and Mac builds</li>
+          <li>Dark mode support</li>
+          <li>Added delete coin category (via right click context menu) additionally to the "drag to delete button" method</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+          <li>Overview by nobsbitcoin: https://www.nobsbitcoin.com/bitcoin-safe-v1-0/</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+        <p>Install and run on Mac, Linux, or Windows</p>
+        <p>using the python package</p>
+      </description>
+    </release>
+    <release version="1.0.0" date="2025-01-15">
+      <description>
+        <p>New Features</p>
+        <ul>
+          <li>Full support for all major hardware signers Coldcard, Q, Bitbox02, Blockstream Jade, Trezor, Foundation Passport, Keystone, Ledger, Specter DIY including hardware signer instructions</li>
+          <li>Balance Statement: PDF export of your current address balances to PDF (preview)</li>
+          <li>USB Tools: interact with your USB hardware signer (PSBT sign, sign message, display address, ...)</li>
+          <li>QR Scanner: Scan and decode any Bitcoin QR code; full support for BBQr and UR</li>
+          <li>Packaged binaries now for all platforms: Windows, MacOSX, and Linux</li>
+        </ul>
+        <p>Improved Features</p>
+        <ul>
+          <li>&lt;img src="https://bitcoin-safe.org/images/flows.svg" width="40"&gt; Transaction diagram -- The graphical wallet explorer: Navigate trough transactions by clicking on inputs and outputs (preview)</li>
+          <li>Sync &amp; Chat: Label Synchronization, backup, and Multi-party Multisig Collaboration can now be enabled in the last wallet setup wizard step (you can choose your own relay) (preview, preview)</li>
+          <li>PSBT Creation: Beautiful fee selection, by clicking on mempool blocks (preview)</li>
+        </ul>
+        <p>🔋Batteries included🔋</p>
+        <p>Lots of existing features were not mentioned above, so please check out:</p>
+        <ul>
+          <li>Why choose Bitcoin Safe?</li>
+          <li>www.bitcoin-safe.org</li>
+          <li>Readme and Comprehensive Feature List</li>
+          <li>Follow me on nostr</li>
+        </ul>
+        <p>Verify signature</p>
+        <p>Import my public key and verify the signature with:</p>
+        <p>Install and run on Mac, Linux, or Windows</p>
+        <p>using the python package</p>
+      </description>
+    </release>
+  </releases>
 </component>

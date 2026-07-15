@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>Ödemeyi tarayıcınızda tamamlayın.
-Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>Ödemeyi tarayıcınızda tamamlayın.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>Tarayıcınız otomatik olarak açılamadı. Lütfen tekrar deneyin.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>Tarayıcınız otomatik olarak açılamadı.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ Bir sorun olursa lütfen bizimle şu adresten iletişime geçmekten çekinmeyin:
 		<message>
 			<source>Create invoice</source>
 			<translation>Fatura oluştur</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>Tarayıcı açılmadıysa, &lt;a href="{url}"&gt;buraya&lt;/a&gt; tıklayın.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>Bir sorun varsa, lütfen &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; adresinden bizimle iletişime geçmekten çekinmeyin.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -728,8 +736,53 @@ adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onları
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>Kendi kopya yayımlanamadı</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>Kendi kopya yayımlanamadı: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for} tarafından onay bekleniyor</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>Başarısız yayımlamalar nedeniyle beklemede: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>Beklemede: {waiting_for}. Başarısız: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient} için yayımlama başarısız oldu</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient} için yayımlama başarısız oldu: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>Tüm alıcılara yayımlandı ve kendi kopya alındı</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>Sadece PSBT veya işlemler gönderebilirsiniz</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>kendi kopya</translation>
 		</message>
 	</context>
 	<context>
@@ -978,8 +1031,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>Uygula</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>Tanımlayıcı değişmedi</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>Vazgeç</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1574,23 +1637,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>İşlem Oluştur</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>İşlem alanlarını doldur</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>Önceki Adım</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1778,8 +1824,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Önceki Adım</translation>
+			<source>Previous step</source>
+			<translation>Önceki adım</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1862,11 +1908,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>Yeni İmzalayıcı Ekle</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2006,6 +2047,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>İmzacı modelini seç</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>İmzalayıcınızı seçin</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3531,6 +3577,11 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>Kompakt Blok Filtreleri desteklenen ağlar için etkinleştirilecek. Bu ağ mevcut sunucusunu koruyacak.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>Bitcoin düğümlerine (p2p) bağlanın ve ilgili blokları onlardan indirin.</translation>
 		</message>
@@ -4493,8 +4544,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} kaydet</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>'{wallet_name}' cüzdanını kaydet</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>'{wallet_name}' cüzdanını '{device}' cihazına kaydet</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>Bu çok imzalı cüzdanı kullanmayı planladığınız her donanım imzalayıcıya kaydedin. Böylece donanım imzalayıcı, işlemlerin para üstü adreslerini doğrulayabilir.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4745,6 +4806,16 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. QR kodunu donanım imzalayıcıyla tarayın</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. İmzalı mesajı algıla</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>Sağlanan adres için türetme yolu belirlenemedi.</translation>
 		</message>
@@ -4752,6 +4823,16 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		<message>
 			<source>Message too short.</source>
 			<translation>Mesaj çok kısa.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>Mesajı imzaladıktan sonra, donanım imzalayıcınız bu bilgisayardan tarayabileceğiniz ikinci bir QR kodu sağlayacaktır</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR kodu tara</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5233,6 +5314,16 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. QR kodunu donanım imzalayıcıyla tarayın</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. İmzalı PSBT'yi tara</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>Daralt</translation>
 		</message>
@@ -5250,6 +5341,16 @@ Her ikisini de kullanmaya devam etmek istiyorsanız, lütfen şimdi Sohbet ve Se
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>Test {number} için hazır tutun</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>PSBT'yi imzaladıktan sonra, donanım imzalayıcınız bu bilgisayardan tarayabileceğiniz ikinci bir QR kodu sağlayacaktır</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR kodu tara</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6253,8 +6354,8 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Önceki Adım</translation>
+			<source>Previous step</source>
+			<translation>Önceki adım</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6479,8 +6580,8 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>Önceki Adım</translation>
+			<source>Previous step</source>
+			<translation>Önceki adım</translation>
 		</message>
 	</context>
 	<context>
@@ -7796,11 +7897,6 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>Kötü imza tespit edildi</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>Genel anahtar içe aktarılamadı: {exc}</translation>
 		</message>
@@ -7846,8 +7942,8 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>Güvenlik notu: doğrulama, yerleşik &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; kütüphanesini kullanır. Anahtarlığınızdan gelen güven ayarlarını, iptalleri veya son kullanma tarihlerini dikkate almaz. Lütfen yüksek değerli mesajları &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; ile doğrulayın.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>Güvenlik notu: Doğrulama, yerleşik &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; kitaplığını kullanır. Anahtar halkanızdaki güven ayarlarını, iptalleri veya son kullanma sürelerini dikkate almaz. Lütfen yüksek değerli mesajları &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; ile doğrulayın.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7868,11 +7964,6 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<message>
 			<source>public key not present</source>
 			<translation>genel anahtar mevcut değil</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>yanlış imza türü: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

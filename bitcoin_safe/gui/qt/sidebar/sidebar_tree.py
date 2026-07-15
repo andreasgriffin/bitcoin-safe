@@ -485,11 +485,11 @@ class SidebarNode(QFrame, Generic[TT]):
             )
             return False
         if self.stack.indexOf(self.widget) == -1:
-            logger.warning(
-                "SidebarNode %s.select(): widget for node %s is no longer in the SidebarTree stack",
-                self.title,
-                self.objectName(),
-            )
+            # logger.warning(
+            #     "SidebarNode %s.select(): widget for node %s is no longer in the SidebarTree stack",
+            #     self.title,
+            #     self.objectName(),
+            # )
             return False
 
         self._root()._uncheck_all_recursively()

@@ -33,7 +33,7 @@ from dataclasses import dataclass
 from functools import partial
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from PyQt6.QtCore import QLocale, Qt
+from PyQt6.QtCore import QLocale, Qt, QTimer
 from PyQt6.QtGui import QPalette
 from PyQt6.QtWidgets import (
     QCheckBox,
@@ -91,6 +91,7 @@ class RegisterMultisig(BaseTab):
         self.label_import = QLabel()
         widget_layout.addWidget(self.label_import)
         self.custom_yes_button = QPushButton("", self.buttonbox)
+        self.custom_yes_button.setDefault(True)
         self.custom_yes_button.clicked.connect(self.refs.go_to_next_index)
         self.buttonbox.add_action_button(self.custom_yes_button)
 
@@ -147,6 +148,9 @@ class RegisterMultisig(BaseTab):
 
         self.apply_next_button_style(self.custom_yes_button)
         self.custom_yes_button.setEnabled(self.has_registered_all_signers())
+        if self.has_registered_all_signers():
+            self.custom_yes_button.setFocus()
+
         for keystore_ui in self.keystore_uis.getAllTabData().values():
             keystore_ui.updateUi()
         self.custom_yes_button.setVisible(True)
@@ -255,7 +259,7 @@ class DistributeSeeds(BaseTab):
         print_layout.addWidget(self.label_print_section)
 
         self.sheet_previews_scroll_area = InvisibleScrollArea(self.print_section)
-        self.sheet_previews_scroll_area.setWidgetResizable(False)
+        self.sheet_previews_scroll_area.setWidgetResizable(True)
         self.sheet_previews_scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.sheet_previews_scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.sheet_previews_scroll_area.setAlignment(Qt.AlignmentFlag.AlignHCenter)
@@ -266,6 +270,7 @@ class DistributeSeeds(BaseTab):
         print_layout.addWidget(self.sheet_previews_scroll_area)
 
         self.button_print_backup_sheets = QPushButton(widget)
+        self.button_print_backup_sheets.setDefault(True)
         self.button_print_backup_sheets.setIcon(svg_tools.get_QIcon("print.svg"))
         self.button_print_backup_sheets.clicked.connect(self._on_print_backup_sheets)
         print_layout.addWidget(self.button_print_backup_sheets)
@@ -439,9 +444,8 @@ class DistributeSeeds(BaseTab):
             size_hint_height=118,
             parent=card,
         )
-        preview.setMinimumHeight(112)
         preview.setMaximumHeight(130)
-        layout.addWidget(preview, alignment=Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(preview, 1, Qt.AlignmentFlag.AlignHCenter)
 
         if not self._is_single_sig():
             checkbox = QCheckBox(card)
@@ -464,7 +468,7 @@ class DistributeSeeds(BaseTab):
         scrollbar = self.sheet_previews_scroll_area.horizontalScrollBar()
         scrollbar_height = scrollbar.sizeHint().height() if scrollbar else 0
         content_height = self.sheet_previews_scroll_area.content_widget.sizeHint().height()
-        self.sheet_previews_scroll_area.setFixedHeight(content_height + scrollbar_height)
+        self.sheet_previews_scroll_area.setMaximumHeight(content_height + scrollbar_height)
 
     def _selected_sheet_indexes(self) -> list[int]:
         if self._is_single_sig():
@@ -660,6 +664,10 @@ class DistributeSeeds(BaseTab):
         )
         self.backup_sheets_printed = True
         self._refresh_action_buttons()
+        QTimer.singleShot(0, partial(self.button_print_backup_sheets.setDefault, False))
+        QTimer.singleShot(
+            0, partial(self.checkbox_seed_words_attached.setFocus, Qt.FocusReason.OtherFocusReason)
+        )
 
     def _on_seed_words_attached_toggled(self, checked: bool) -> None:
         self.seed_words_attached_confirmed = checked

@@ -68,9 +68,9 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import BtcPayInvoiceDetails, UserConfig
-from bitcoin_safe.constants import CONTACT_EMAIL, LOGO_NAME
+from bitcoin_safe.constants import LOGO_NAME, SUPPORT_EMAIL
 from bitcoin_safe.gui.qt.util import svg_tools
-from bitcoin_safe.logging_handlers import mail_contact
+from bitcoin_safe.logging_handlers import mail_help_contact
 from bitcoin_safe.network_utils import ProxyInfo, post_form_async
 from bitcoin_safe.util import SATOSHIS_PER_BTC, OptExcInfo
 from bitcoin_safe.util_os import webopen
@@ -245,7 +245,7 @@ class BTCPayWebButton(QPushButton):
                 self._status_with_invoice_link(
                     message,
                     invoice_details.url,
-                    support_email=CONTACT_EMAIL,
+                    support_email=SUPPORT_EMAIL,
                 )
             )
         else:
@@ -704,7 +704,7 @@ class DonateDialog(QWidget):
         layout.addWidget(contact_label)
 
         self.contact_button = QPushButton(self.tr("Email us"))
-        self.contact_button.clicked.connect(mail_contact)
+        self.contact_button.clicked.connect(mail_help_contact)
         layout.addWidget(self.contact_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
     def _on_payment_complete(self, invoice_details: BtcPayInvoiceDetails) -> None:

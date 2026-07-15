@@ -395,6 +395,7 @@ class WalletSetupOptions(BaseTab):
 
         self.button_next.clicked.disconnect()
         self.button_next.clicked.connect(self._on_continue)
+        self.button_next.setDefault(True)
 
         self._create_template_options()
         self._set_ui_from_protowallet()

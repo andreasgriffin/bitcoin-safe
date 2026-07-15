@@ -345,9 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>ブラウザで支払いを完了してください。問題がある場合は、遠慮なくこちらまでお問い合わせください: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>ブラウザで支払いを完了してください。</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>ブラウザを自動的に開くことができませんでした。もう一度お試しください。</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>ブラウザを自動的に開けませんでした。</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -368,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>請求書を作成</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>ブラウザが開かなかった場合は、&lt;a href="{url}"&gt;こちら&lt;/a&gt;をクリックしてください。</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>問題がある場合は、&lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; までお気軽にお問い合わせください。</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -726,8 +735,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>自己コピーを公開できませんでした</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>自己コピーを公開できませんでした: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for} からの確認待ち</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>公開の失敗により保留中: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>保留中: {waiting_for}。失敗: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient} への公開に失敗しました</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient} への公開に失敗しました: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>すべての受信者に公開され、自己コピーを受信しました</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>PSBTまたはトランザクションのみ送信可能です</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>自己コピー</translation>
 		</message>
 	</context>
 	<context>
@@ -976,8 +1030,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>適用</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>ディスクリプターは変更されませんでした</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>破棄</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1570,23 +1634,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>トランザクションを作成</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>トランザクションフィールドを事前に入力する</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>前のステップ</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1774,7 +1821,7 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>前のステップ</translation>
 		</message>
 		<name>ImportXpubs</name>
@@ -1858,11 +1905,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>新しい署名者を追加</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2002,6 +2044,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>署名者のモデルを選択</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>署名者を選択</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3516,6 +3563,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>サポートされているネットワークでは Compact Block Filters が有効になります。このネットワークは現在のサーバーを維持します。</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>Bitcoin ノード (p2p) に接続して、関連するブロックをダウンロードします。</translation>
 		</message>
@@ -4475,8 +4527,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} を登録する</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>「{wallet_name}」を登録</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>「{wallet_name}」を「{device}」に登録</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>使用する予定のすべてのハードウェア署名機に、このマルチシグウォレットを登録してください。そうすることで、ハードウェア署名機はトランザクションのおつりアドレスを検証できます。</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4726,6 +4788,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. ハードウェア署名機でQRコードをスキャン</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. 署名済みメッセージを検出</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>提供されたアドレスの派生パスを特定できませんでした。</translation>
 		</message>
@@ -4733,6 +4805,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>メッセージが短すぎます。</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>メッセージに署名すると、ハードウェア署名機はこのコンピューターからスキャンできる2つ目のQRコードを提供します</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QRコードをスキャン</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5213,6 +5295,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. ハードウェア署名機でQRコードをスキャン</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. 署名済みPSBTをスキャン</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>折りたたむ</translation>
 		</message>
@@ -5230,6 +5322,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>テスト {number} のために準備しておく</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>PSBTに署名すると、ハードウェア署名機はこのコンピューターからスキャンできる2つ目のQRコードを提供します</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QRコードをスキャン</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6229,7 +6331,7 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>前のステップ</translation>
 		</message>
 		<name>Wizard</name>
@@ -6455,7 +6557,7 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>前のステップ</translation>
 		</message>
 	</context>
@@ -7767,11 +7869,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>不正な署名が検出されました</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>公開鍵をインポートできませんでした: {exc}</translation>
 		</message>
@@ -7817,8 +7914,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>セキュリティに関する注意: 検証には組み込みの &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; ライブラリを使用します。キーリングの信頼設定、失効、または有効期限は考慮されません。高価値のメッセージは &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; で検証してください。</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>セキュリティに関する注意: 検証には組み込みの &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; ライブラリが使用されます。このライブラリは、キーリングの信頼設定、失効、または有効期限を考慮しません。重要度の高いメッセージは &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; で検証してください。</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7839,11 +7936,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>公開鍵が存在しません</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>誤った署名タイプ: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

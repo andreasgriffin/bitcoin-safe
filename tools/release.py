@@ -73,11 +73,7 @@ def get_default_description(latest_tag: str):
 
 ####  Verify signature
 
-Import my [public key](https://keys.openpgp.org/vks/v1/by-fingerprint/2759AA7148568ECCB03B76301D82124B440F612D) and verify the signature with:
-```bash
-gpg --import 2759AA7148568ECCB03B76301D82124B440F612D.asc
-gpg --verify Bitcoin-Safe-{latest_tag}-x86_64.AppImage.asc
-```
+Import my [public key](https://keys.openpgp.org/vks/v1/by-fingerprint/2759AA7148568ECCB03B76301D82124B440F612D) and [verify](https://bitcoin-safe.org/en/download/#verify-signature) the signature.
 
 """
 

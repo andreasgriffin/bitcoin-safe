@@ -38,7 +38,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
 
 from bitcoin_safe.config import BtcPayInvoiceDetails, UserConfig
-from bitcoin_safe.constants import CONTACT_EMAIL
+from bitcoin_safe.constants import SUPPORT_EMAIL
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.btcpay_web_button import (
     BTCPayWebButton,
@@ -101,7 +101,7 @@ def test_invoice_open_success_with_callback_server_updates_status(qtbot, loop_in
 
     assert button._callback_server_state.invoice_url == "https://example.com/invoice"
     assert messages[-1].startswith("Complete the payment in your browser.")
-    assert f'<a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a>' in messages[-1]
+    assert f'<a href="mailto:{SUPPORT_EMAIL}">{SUPPORT_EMAIL}</a>' in messages[-1]
     assert '<a href="https://example.com/invoice">here</a>' in messages[-1]
 
 

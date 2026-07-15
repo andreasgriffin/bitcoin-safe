@@ -36,14 +36,13 @@ import shutil
 import sys
 import tempfile
 import zipfile
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import ModuleType
 from typing import Any, cast
-from urllib.parse import unquote, urljoin, urlparse
+from urllib.parse import ParseResult, unquote, urljoin, urlparse
 
-import pgpy
 import tomllib  # pyright: ignore[reportMissingImports]
 from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from packaging.specifiers import InvalidSpecifier, SpecifierSet
@@ -85,6 +84,149 @@ from bitcoin_safe.plugin_framework.plugin_source_models import (
 from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer, SimpleGPGKey
 
 logger = logging.getLogger(__name__)
+
+
+def _normalize_fingerprint(value: object) -> str:
+    return str(value).replace(" ", "").upper()
+
+
+@dataclass(frozen=True)
+class _RemotePluginSourceUrl:
+    manifest_url: str
+    archive_repo_url: str
+
+    def archive_url(self, release_ref: str) -> str:
+        """Return the archive download URL for a release ref.
+
+        Example: ``https://github.com/org/repo`` + ``main`` ->
+        ``https://github.com/org/repo/archive/main.zip``.
+        """
+        return f"{self.archive_repo_url}/archive/{release_ref}.zip"
+
+    @classmethod
+    def from_manifest_url(cls, manifest_url: str) -> _RemotePluginSourceUrl | None:
+        """Parse a remote manifest URL into normalized manifest and archive repo URLs.
+
+        Examples:
+        - ``https://dummy.example/org/repo/raw/branch/main/source.toml``
+        - ``https://github.com/org/repo/blob/main/source.toml``
+        - ``https://raw.githubusercontent.com/org/repo/main/source.toml``
+        """
+        parsed = urlparse(manifest_url)
+        if parsed.scheme not in ("http", "https"):
+            return None
+
+        path_parts = [part for part in parsed.path.split("/") if part]
+        if len(path_parts) < 4:
+            return None
+
+        if parsed.netloc == "raw.githubusercontent.com":
+            if len(path_parts) < 4 or path_parts[-1] != SOURCE_MANIFEST_FILENAME:
+                return None
+            owner, repo = path_parts[0], path_parts[1]
+            return cls(
+                manifest_url=cls._build_url(parsed, parsed.path.rstrip("/")),
+                archive_repo_url=cls._build_url(parsed, f"/{owner}/{repo}", netloc="github.com"),
+            )
+
+        repo_path = cls._repo_path_from_web_manifest_parts(path_parts)
+        if repo_path is None or path_parts[-1] != SOURCE_MANIFEST_FILENAME:
+            return None
+
+        normalized_manifest_path = cls._normalized_web_manifest_path(path_parts)
+        return cls(
+            manifest_url=cls._build_url(parsed, normalized_manifest_path),
+            archive_repo_url=cls._build_url(parsed, repo_path),
+        )
+
+    @classmethod
+    def from_repo_url(cls, repo_url: str) -> _RemotePluginSourceUrl | None:
+        """Build normalized source URLs from a remote repository URL.
+
+        Examples:
+        - ``https://dummy.example/org/repo`` ->
+          ``https://dummy.example/org/repo/raw/branch/main/source.toml``
+        - ``https://github.com/org/repo.git`` ->
+          ``https://github.com/org/repo/raw/main/source.toml``
+        """
+        parsed = urlparse(repo_url)
+        if parsed.scheme not in ("http", "https"):
+            return None
+
+        repo_path = parsed.path.rstrip("/")
+        if repo_path.endswith(".git"):
+            repo_path = repo_path[:-4]
+        path_parts = [part for part in repo_path.split("/") if part]
+        if len(path_parts) != 2:
+            return None
+        if path_parts[-1] == SOURCE_MANIFEST_FILENAME:
+            return None
+
+        if parsed.netloc == "github.com":
+            manifest_path = f"{repo_path}/raw/main/{SOURCE_MANIFEST_FILENAME}"
+        else:
+            manifest_path = f"{repo_path}/raw/branch/main/{SOURCE_MANIFEST_FILENAME}"
+
+        return cls(
+            manifest_url=cls._build_url(parsed, manifest_path),
+            archive_repo_url=cls._build_url(parsed, repo_path),
+        )
+
+    @staticmethod
+    def _normalized_web_manifest_path(path_parts: list[str]) -> str:
+        """Normalize web manifest paths, rewriting GitHub ``blob`` paths to ``raw``.
+
+        Example: ``["org", "repo", "blob", "main", "source.toml"]`` ->
+        ``/org/repo/raw/main/source.toml``.
+        """
+        if len(path_parts) >= 5 and path_parts[2] == "blob":
+            return "/" + "/".join([path_parts[0], path_parts[1], "raw", *path_parts[3:]])
+        return "/" + "/".join(path_parts)
+
+    @staticmethod
+    def _repo_path_from_web_manifest_parts(path_parts: list[str]) -> str | None:
+        """Extract ``/owner/repo`` from a web manifest path.
+
+        Examples:
+        - ``["org", "repo", "raw", "main", "source.toml"]`` -> ``/org/repo``
+        - ``["org", "repo", "blob", "main", "source.toml"]`` -> ``/org/repo``
+        """
+        if len(path_parts) >= 5 and path_parts[2] in {"raw", "blob"}:
+            return f"/{path_parts[0]}/{path_parts[1]}"
+        return None
+
+    @staticmethod
+    def _build_url(parsed: ParseResult, path: str, netloc: str | None = None) -> str:
+        """Rebuild a URL with a new path and optional host override.
+
+        Example: parsed ``https://raw.githubusercontent.com/org/repo/main/source.toml``
+        with path ``/org/repo`` and netloc ``github.com`` ->
+        ``https://github.com/org/repo``.
+        """
+        return parsed._replace(
+            netloc=netloc or parsed.netloc,
+            path=path,
+            params="",
+            query="",
+            fragment="",
+        ).geturl()
+
+
+def suggested_plugin_source_display_name(source_url: str) -> str | None:
+    """Return a short source label derived from a plugin manifest or repo URL."""
+    remote_source_url = _RemotePluginSourceUrl.from_manifest_url(source_url)
+    if remote_source_url is None:
+        remote_source_url = _RemotePluginSourceUrl.from_repo_url(source_url)
+    if remote_source_url is None:
+        return None
+
+    parsed = urlparse(remote_source_url.archive_repo_url)
+    repo_name = Path(parsed.path.rstrip("/")).name
+    if not repo_name:
+        return None
+
+    provider = "GitHub" if parsed.netloc == "github.com" else "Gitea"
+    return f"{provider} {repo_name}"
 
 
 class ExternalPluginRegistry(BaseSaveableClass):
@@ -595,26 +737,19 @@ class ExternalPluginRegistry(BaseSaveableClass):
             proxy_info=self._requests_proxy_info(),
         )
 
+        # Start with an empty verifier so no previously trusted/imported keys can match here.
         verifyer = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+        # Import exactly the pinned source cert; only this cert and its valid subkeys are allowed.
         imported_key = verifyer.import_public_key_block(pinned_source_public_key)
-        try:
-            signature = pgpy.PGPSignature.from_blob(signature_bytes)
-            detached_signer_fingerprint = (
-                str(signature.signer_fingerprint).replace(" ", "").upper()
-                if isinstance(signature, pgpy.PGPSignature)
-                else None
-            )
-        except Exception:
-            detached_signer_fingerprint = None
-        expected_fingerprint = str(imported_key.fingerprint).replace(" ", "").upper()
-        if detached_signer_fingerprint and detached_signer_fingerprint != expected_fingerprint:
-            raise ExternalPluginError("Source manifest signer does not match the pinned key.")
+        expected_fingerprint = _normalize_fingerprint(imported_key.fingerprint)
         with tempfile.TemporaryDirectory(prefix="bitcoin-safe-source-manifest-") as temp_dir_str:
             temp_dir = Path(temp_dir_str)
             manifest_path = temp_dir / SOURCE_MANIFEST_FILENAME
             signature_path = temp_dir / f"{SOURCE_MANIFEST_FILENAME}{SOURCE_SIGNATURE_SUFFIX}"
             manifest_path.write_bytes(manifest_bytes)
             signature_path.write_bytes(signature_bytes)
+            # Verification can only succeed if the signature chains back to that imported cert.
+            # Any other key, even one trusted elsewhere, is absent from this verifier and will fail.
             verified, signer_fingerprint = verifyer.verify_detached_signature_with_fingerprint(
                 manifest_path, signature_path
             )
@@ -822,36 +957,10 @@ class ExternalPluginRegistry(BaseSaveableClass):
                 "Remote plugin archive URL can only be derived from http(s) manifest URLs."
             )
 
-        path_parts = [part for part in parsed.path.split("/") if part]
-        if parsed.netloc == "raw.githubusercontent.com":
-            if len(path_parts) != 4 or path_parts[-1] != SOURCE_MANIFEST_FILENAME:
-                raise ExternalPluginError(
-                    f"Could not derive archive URL from plugin source URL {manifest_url}."
-                )
-            owner, repo = path_parts[0], path_parts[1]
-            archive_path = f"/{owner}/{repo}/archive/{release_ref}.zip"
-            return parsed._replace(
-                netloc="github.com",
-                path=archive_path,
-                params="",
-                query="",
-                fragment="",
-            ).geturl()
-
-        if len(path_parts) < 5:
+        remote_source_url = _RemotePluginSourceUrl.from_manifest_url(manifest_url)
+        if remote_source_url is None:
             raise ExternalPluginError(f"Could not derive archive URL from plugin source URL {manifest_url}.")
-        try:
-            raw_index = path_parts.index("raw")
-        except ValueError as exc:
-            raise ExternalPluginError(
-                f"Could not derive archive URL from plugin source URL {manifest_url}."
-            ) from exc
-        if raw_index < 2 or raw_index + 3 >= len(path_parts):
-            raise ExternalPluginError(f"Could not derive archive URL from plugin source URL {manifest_url}.")
-
-        repo_path = "/".join(path_parts[:raw_index])
-        archive_path = f"/{repo_path}/archive/{release_ref}.zip"
-        return parsed._replace(path=archive_path, params="", query="", fragment="").geturl()
+        return remote_source_url.archive_url(release_ref)
 
     def _validate_plugin_metadata(
         self,
@@ -970,16 +1079,15 @@ class ExternalPluginRegistry(BaseSaveableClass):
     def _normalize_manifest_url(manifest_url: str) -> str:
         parsed = urlparse(manifest_url)
         if parsed.scheme in ("http", "https"):
+            remote_source_url = _RemotePluginSourceUrl.from_manifest_url(manifest_url)
+            if remote_source_url is not None:
+                return remote_source_url.manifest_url
+
+            remote_repo_url = _RemotePluginSourceUrl.from_repo_url(manifest_url)
+            if remote_repo_url is not None:
+                return remote_repo_url.manifest_url
+
             normalized_path = parsed.path.rstrip("/")
-            if normalized_path.endswith(SOURCE_MANIFEST_FILENAME):
-                # Example:
-                # - keep https://raw.githubusercontent.com/org/repo/main/source.toml
-                # - do not rewrite it to a repo-root URL here
-                # The install step knows how to derive the archive URL from this form.
-                return parsed._replace(path=normalized_path).geturl()
-            if normalized_path.endswith(".git"):
-                normalized_path = normalized_path[:-4]
-            normalized_path = f"{normalized_path}/raw/branch/main/{SOURCE_MANIFEST_FILENAME}"
             return parsed._replace(path=normalized_path, params="", query="", fragment="").geturl()
         if parsed.scheme == "file":
             manifest_path = Path(unquote(parsed.path))

@@ -135,6 +135,7 @@ from bitcoin_safe.wallet import TxStatus
 
 from ...config import UserConfig
 from ...i18n import translate
+from .color_corrected_treeview import ColorCorrectedTreeView
 from .util import do_copy, set_no_margins
 
 logger = logging.getLogger(__name__)
@@ -365,7 +366,7 @@ class MySortModel(QSortFilterProxyModel):
                 prefix=f"{self.drag_key} ",
             )
 
-        with os.fdopen(file_descriptor, "w") as file:
+        with os.fdopen(file_descriptor, "w", encoding="utf-8") as file:
             file.write(csv_string)
 
         logger.debug(f"CSV Table saved to {file_path}")
@@ -557,7 +558,7 @@ class DropRule(NamedTuple):
     handler: Callable[[QTreeView, QDropEvent, QModelIndex], None]
 
 
-class MyTreeView(QTreeView, BaseSaveableClass, Generic[T]):
+class MyTreeView(ColorCorrectedTreeView, BaseSaveableClass, Generic[T]):
     signal_selection_changed = cast(SignalProtocol[[]], pyqtSignal())
     signal_update = cast(SignalProtocol[[]], pyqtSignal())
     signal_finished_update = cast(SignalProtocol[[]], pyqtSignal())

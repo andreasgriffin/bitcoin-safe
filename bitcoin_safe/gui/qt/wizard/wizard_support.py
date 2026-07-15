@@ -122,6 +122,7 @@ class BaseTab(QObject):
         self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.refs.qtwalletbase.signals.language_switch), self.updateUi
         )
+        self.button_next.setDefault(True)
 
     @property
     def button_next(self) -> QPushButton:

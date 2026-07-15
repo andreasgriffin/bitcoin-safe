@@ -42,7 +42,7 @@ from functools import partial
 from json import JSONDecodeError
 from pathlib import Path
 from types import FrameType
-from typing import Literal, cast
+from typing import cast
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
@@ -116,7 +116,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wizard.wizard import ImportXpubs, TutorialStep, WalletSetupOptions, Wizard
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
-from bitcoin_safe.logging_handlers import mail_contact, mail_feedback
+from bitcoin_safe.logging_handlers import mail_feedback, mail_help_contact
 from bitcoin_safe.logging_setup import get_log_file
 from bitcoin_safe.network_config import P2pListenerType, Peers
 from bitcoin_safe.network_utils import ProxyInfo
@@ -181,7 +181,7 @@ class MainWindow(UnlockableMainWindow):
 
     def __init__(
         self,
-        network: Literal["bitcoin", "regtest", "signet", "testnet"] | None = None,
+        network: bdk.Network | None = None,
         config: UserConfig | None = None,
         open_files_at_startup: list[str] | None = None,
         **kwargs,
@@ -197,7 +197,7 @@ class MainWindow(UnlockableMainWindow):
         else:
             logger.debug("UserConfig will be created new")
         self.config = config if config else UserConfig.from_file()
-        self.config.network = bdk.Network[network.upper()] if network else self.config.network
+        self.config.network = network if network else self.config.network
         self.external_registry = ExternalPluginRegistry.from_config(self.config)
         self.new_startup_network: bdk.Network | None = None
         self._before_close_was_run = False
@@ -1127,9 +1127,9 @@ class MainWindow(UnlockableMainWindow):
         )
 
         self.menu_contact = self.menu_help.add_menu("")
-        self.action_contact_email = self.menu_contact.add_action(
+        self.action_help_contact_email = self.menu_contact.add_action(
             "",
-            mail_contact,
+            mail_help_contact,
         )
         self.action_contact_via_nostr = self.menu_contact.add_action(
             "",
@@ -1317,7 +1317,7 @@ class MainWindow(UnlockableMainWindow):
         self.menu_feedback.setTitle(self.tr("&Feedback"))
         self.menu_contact.setTitle(self.tr("&Contact"))
         self.action_community.setText(self.tr("&Community forum"))
-        self.action_contact_email.setText(self.tr("&Send Email"))
+        self.action_help_contact_email.setText(self.tr("&Send Email"))
         self.action_contact_via_nostr.setText(self.tr("&Nostr DM"))
         self.action_contact_via_X.setText(self.tr("&X/Twitter DM"))
         self.action_open_issue_github.setText(self.tr("&Open issue in github"))

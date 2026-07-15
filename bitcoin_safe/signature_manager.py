@@ -37,15 +37,17 @@ import platform
 import re
 import shutil
 import subprocess
+from collections import Counter
 from collections.abc import Iterable
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from functools import partial
 from pathlib import Path
-from typing import Any
+from typing import Any, Protocol
 
-import pgpy  # Python-native OpenPGP library
+import pysequoia
 import requests
-from pgpy.constants import HashAlgorithm
+from pysequoia.packet import Packet, PacketPile, Tag
 
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.util import default_timeout
@@ -72,6 +74,11 @@ class PGPMissingSignature(Exception):
 
 class PGPDownloadError(Exception):
     pass
+
+
+class VerifiedSignature(Protocol):
+    certificate: str
+    signing_key: str | None
 
 
 @dataclass
@@ -242,122 +249,148 @@ class GitHubAssetDownloader:
 
 
 class SignatureVerifyer:
-    """PGP verification helper built on top of `pgpy`.
+    """PGP verification helper built on top of `PySequoia`.
 
-    Disclaimer: pgpy is a pure-Python OpenPGP implementation and has notable limitations
-    compared to gpg/gnupg:
-      * It does not consult the system keyring/trust models; callers must supply keys.
-      * It does not implement newer OpenPGP v5/AEAD packets and some less common algorithms.
-      * Operations are not constant-time and no smartcard/agent support exists.
-      * Large keys and signatures can be slower to parse/verify than native gpg.
+    Disclaimer: PySequoia performs cryptographic verification directly and
+    does not consult the system keyring/trust model; callers must supply keys.
     Keep these constraints in mind when relying on these verification helpers.
     """
 
     def __init__(self, list_of_known_keys: list[SimpleGPGKey] | None, proxies: dict | None) -> None:
         """Initialize instance."""
         self.list_of_known_keys = list_of_known_keys if list_of_known_keys else []
-        self.public_keys: dict[str, pgpy.PGPKey] = {}
+        self.public_keys: dict[str, pysequoia.Cert] = {}
         self.proxies = proxies
         self.import_known_keys()
 
     @staticmethod
-    def _sig_errors(signature: pgpy.PGPSignature) -> list[str]:
-        """Return error string if signature is weak/expired/unsupported, else None."""
-        if not isinstance(signature, pgpy.PGPSignature):
-            return [translate("pgp", "{t} not a PGPSignature").format(t=type(signature))]
+    def _normalize_fingerprint(value: object) -> str:
+        return str(value).replace(" ", "").upper()
 
-        if not str(signature.signer_fingerprint):
+    @staticmethod
+    def _hash_algorithm_name(signature: pysequoia.Sig | Packet) -> str | None:
+        value = str(signature.hash_algorithm).strip()
+        if not value:
+            return None
+        prefix = "HashAlgorithm."
+        return value.removeprefix(prefix) if value.startswith(prefix) else value
+
+    @staticmethod
+    def _is_expired(expires_at: datetime | None) -> bool:
+        return expires_at is not None and expires_at <= datetime.now(timezone.utc)
+
+    @classmethod
+    def _signature_expiration(cls, signature: pysequoia.Sig | Packet) -> datetime | None:
+        if isinstance(signature, pysequoia.Sig):
+            return signature.expiration
+
+        # Inline/clear-signed messages expose signature timing through packet metadata.
+        if signature.signature_expiration_time is not None:
+            return signature.signature_expiration_time
+        if signature.signature_created is None or signature.signature_validity_period is None:
+            return None
+
+        return signature.signature_created + signature.signature_validity_period
+
+    @classmethod
+    def _sig_errors(cls, signature: pysequoia.Sig | Packet) -> list[str]:
+        """Return error string if signature is weak/expired/unsupported, else None."""
+        if not isinstance(signature, (pysequoia.Sig, Packet)):
+            return [translate("pgp", "{t} not a PGPSignature").format(t=type(signature))]  # type: ignore
+
+        fingerprint = cls._normalize_fingerprint(signature.issuer_fingerprint)
+        if not fingerprint or fingerprint == "NONE":
             return [translate("pgp", "No fingerprint in signature {s}").format(s=signature)]
 
-        hash_algo = signature.hash_algorithm
-        if not isinstance(hash_algo, HashAlgorithm):
+        hash_algorithm_name = cls._hash_algorithm_name(signature)
+        if hash_algorithm_name is None:
             return [translate("pgp", "Unsupported PGP hash algorithm.")]
-        if not hash_algo.is_collision_resistant:
+        if hash_algorithm_name in {"MD5", "SHA1", "RipeMD"}:
             return [translate("pgp", "Weak PGP hash algorithm.")]
-        if signature.is_expired:
+        if cls._is_expired(cls._signature_expiration(signature)):
             return [translate("pgp", "Signature is expired.")]
         return []
 
     @staticmethod
-    def _key_errors(key: pgpy.PGPKey) -> list[str]:
+    def _key_errors(key: pysequoia.Cert) -> list[str]:
         """Return error string if key is revoked/expired, else None."""
-        if any(key.revocation_signatures):
+        if key.is_revoked:
             return [translate("pgp", "Public key is revoked.")]
-        if key.is_expired:
+        if SignatureVerifyer._is_expired(key.expiration):
             return [translate("pgp", "Public key is expired.")]
         return []
 
-    def import_public_key_file(self, path: Path) -> pgpy.PGPKey:
+    def import_public_key_file(self, path: Path) -> pysequoia.Cert:
         """Import public key file."""
-        with open(str(path)) as file:
-            return self.import_public_key_block(file.read())
+        return self.import_public_key_block(path.read_text(encoding="utf-8"))
 
-    def import_public_key_block(self, public_key_block: str) -> pgpy.PGPKey:
+    def import_public_key_block(self, public_key_block: str) -> pysequoia.Cert:
         """Import a public key block and return its fingerprint.
 
         :param public_key_block: The public key block in ASCII armor format.
         :return: The fingerprint of the imported public key.
         """
 
-        result = pgpy.PGPKey.from_blob(public_key_block)
-        public_key = None
-        if isinstance(result, pgpy.PGPKey):
-            public_key = result
-        elif isinstance(result, tuple):
-            public_key, _ = result
+        public_key = pysequoia.Cert.from_bytes(public_key_block.encode("utf-8"))
+        fingerprint = self._normalize_fingerprint(public_key.fingerprint)
+        self.public_keys[fingerprint] = public_key
+        print(f"Public key imported with fingerprint: {fingerprint}")
+        return public_key
 
-        if isinstance(public_key, pgpy.PGPKey):
-            fingerprint = str(public_key.fingerprint)
-            self.public_keys[fingerprint] = public_key
-            print(f"Public key imported with fingerprint: {public_key.fingerprint}")
-            return public_key
+    @staticmethod
+    def _message_bytes(payload: str | bytes) -> bytes:
+        if isinstance(payload, bytes):
+            return payload
+        return payload.encode("utf-8")
 
-        raise Exception(f"Could not process result f{result}")
+    @staticmethod
+    def _extract_signed_message_signatures(message_bytes: bytes) -> list[Packet]:
+        packet_pile = PacketPile.from_bytes(message_bytes)
+        signatures: list[Packet] = []
+        for packet in packet_pile:
+            # Signed messages may carry more than one signature packet.
+            if packet.tag == Tag.Signature:
+                signatures.append(packet)
+        if signatures:
+            return signatures
+        raise PGPMissingSignature("Signed message contains no signatures.")
 
-    def parse_signed_pgp_message(self, signed_message: str) -> tuple[pgpy.PGPMessage, pgpy.PGPSignature]:
+    def parse_signed_pgp_message(self, signed_message: str | bytes) -> tuple[bytes, list[Packet]]:
         """
-        Parse an armored PGP signed message and return the PGPMessage and the first PGPSignature.
+        Parse a signed OpenPGP payload and return its bytes and signature metadata.
 
         Raises:
             ValueError: if the input is empty or the message is not signed
-            pgpy.errors.PGPError (or generic Exception): if parsing fails
+            generic Exception: if parsing fails
         """
-        if not signed_message or not signed_message.strip():
+        message_bytes = self._message_bytes(signed_message)
+        if not message_bytes.strip():
             raise PGPDecodingError("No signed message provided.")
 
         try:
-            pgp_message = pgpy.PGPMessage.from_blob(signed_message)
+            # Packet parsing is the source of truth for clear-signed, inline-signed, or raw bytes input.
+            signatures = self._extract_signed_message_signatures(message_bytes)
+        except PGPMissingSignature:
+            raise
         except Exception as exc:
             logger.error("Could not parse signed PGP message", exc_info=True)
             raise PGPDecodingError(f"Could not parse signed PGP message: {exc}") from exc
 
-        if not isinstance(pgp_message, pgpy.PGPMessage):
-            # Very defensive, but makes intent explicit
-            raise PGPDecodingError("Parsed object is not a PGPMessage.")
+        for signature in signatures:
+            if sig_error := self._sig_errors(signature):
+                raise PGPDecodingError(",".join(sig_error))
 
-        if not pgp_message.is_signed:
-            raise PGPMissingSignature("Message is not signed.")
+        return message_bytes, signatures
 
-        if not pgp_message.signatures:
-            raise PGPMissingSignature("Signed message contains no signatures.")
-
-        first_signature = pgp_message.signatures[0]
-        assert isinstance(first_signature, pgpy.PGPSignature)
-
-        if sig_error := self._sig_errors(first_signature):
-            raise PGPDecodingError(",".join(sig_error))
-
-        return pgp_message, first_signature
-
-    def download_public_key_from_signed_message(self, signed_message: str) -> tuple[str, str | None]:
+    def download_public_key_from_signed_message(self, signed_message: str | bytes) -> tuple[str, str | None]:
         """Download a public key from a keyserver based on the signed message signature.
 
         Returns (public_key_block, error, fingerprint).
         """
-        pgp_message, signature = self.parse_signed_pgp_message(signed_message)
-        fingerprint = str(signature.signer_fingerprint).replace(" ", "").upper()
+        _message_bytes, signatures = self.parse_signed_pgp_message(signed_message)
+        fingerprint = self._normalize_fingerprint(signatures[0].issuer_fingerprint)
 
-        if not fingerprint:
+        if not fingerprint or fingerprint == "NONE":
             raise PGPDownloadError("Could not extract fingerprint from signed message.")
         if len(fingerprint) != 40:
             raise PGPDownloadError("Signed message does not contain a full fingerprint.")
@@ -385,7 +418,7 @@ class SignatureVerifyer:
             logger.error(f"Downloaded key could not be imported: {exc}")
             raise PGPDownloadError(f"Downloaded key could not be imported: {exc}") from exc
 
-        return key_block, str(key.fingerprint)
+        return key_block, self._normalize_fingerprint(key.fingerprint)
 
     def import_known_keys(self) -> None:
         """Import known keys."""
@@ -452,9 +485,10 @@ class SignatureVerifyer:
                 return False
 
         key = self.get_key(binary_filename)
-        public_key = self.import_public_key_block(expected_public_key.key)
-        if not public_key:
-            logger.error("Expected public key not found.")
+        try:
+            public_key = self.import_public_key_block(expected_public_key.key)
+        except Exception:
+            logger.error(f"Import of {expected_public_key.key=} failed.")
             return False
 
         binary_file_to_check = binary_filename
@@ -472,64 +506,108 @@ class SignatureVerifyer:
 
         return verification_result
 
-    def _verify_pgp_message(
+    @staticmethod
+    def _store_for_public_keys(public_keys: Iterable[pysequoia.Cert]):
+        known_keys = list(public_keys)
+
+        def store(_identifiers: list[str]) -> list[pysequoia.Cert]:
+            # Sequoia can only verify against certs returned here; all other keys are ignored.
+            # If the caller passes one pinned cert, only that cert and its subkeys can succeed.
+            return list(known_keys)
+
+        return store
+
+    def _resolve_verified_signer_keys(
         self,
-        message: pgpy.PGPMessage,
-        public_keys: Iterable[pgpy.PGPKey],
-        additional_signatures: list[pgpy.PGPSignature] | None = None,
-    ) -> tuple[list[pgpy.PGPKey], str | None]:
-        """Verifies that the pgp message is signed, and all signatures are secure.
-
-        Only supports primary keys (not subkeys)
-
-        Returns the signer fingerprints"""
-        signer_keys: list[pgpy.PGPKey] = []
-        public_keys_dict = {str(key.fingerprint): key for key in public_keys}
-        for signature in message.signatures + (additional_signatures or []):
-            if not isinstance(signature, pgpy.PGPSignature):
-                return [], translate("pgp", "wrong signature type: {signature}").format(signature)
-
-            if sig_error := self._sig_errors(signature):
-                return [], ",".join(sig_error)
-
-            public_key = public_keys_dict.get(str(signature.signer_fingerprint))
+        valid_sigs: list[VerifiedSignature],
+        public_keys: Iterable[pysequoia.Cert],
+    ) -> tuple[list[pysequoia.Cert], str | None]:
+        signer_keys: list[pysequoia.Cert] = []
+        public_keys_by_fingerprint = {
+            self._normalize_fingerprint(key.fingerprint): key for key in public_keys
+        }
+        for valid_sig in valid_sigs:
+            # valid_sigs points to the signing certificate, even when a subkey made the signature.
+            signer_fingerprint = self._normalize_fingerprint(valid_sig.certificate)
+            public_key = public_keys_by_fingerprint.get(signer_fingerprint)
             if not public_key:
                 return [], translate("pgp", "public key not present")
 
             if key_error := self._key_errors(public_key):
                 return [], ",".join(key_error)
 
-            # Verify the signature
-            verify_result = public_key.verify(message.message, signature)
-            if not verify_result:
-                return [], translate("pgp", "Failed verification")
-            good_signatures = list(verify_result.good_signatures)
-            bad_signatures = list(verify_result.bad_signatures)
-            if bad_signatures:
-                return [], translate("pgp", "Bad signature detected")
-            if not good_signatures:
-                return [], translate("pgp", "No good signatures")
-
             signer_keys.append(public_key)
+
+        if not signer_keys:
+            return [], translate("pgp", "No good signatures")
+        return signer_keys, None
+
+    def _verify_signed_message_with_public_keys(
+        self,
+        signed_message: str | bytes,
+        public_keys: Iterable[pysequoia.Cert],
+    ) -> tuple[list[pysequoia.Cert], str | None]:
+        message_bytes, signatures = self.parse_signed_pgp_message(signed_message)
+        for signature in signatures:
+            if sig_error := self._sig_errors(signature):
+                return [], ",".join(sig_error)
+
+        known_keys = list(public_keys)
+        if not known_keys:
+            return [], translate("pgp", "public key not present")
+
+        try:
+            # Verify the full signed payload against the supplied certificate store.
+            verification = pysequoia.verify(
+                bytes=message_bytes,
+                store=self._store_for_public_keys(known_keys),
+            )
+        except RuntimeError as exc:
+            logger.debug("%s signed message verification failed: %s", self.__class__.__name__, exc)
+            return [], translate("pgp", "Failed verification")
+
+        valid_sigs = list(verification.valid_sigs)
+        signer_keys, error = self._resolve_verified_signer_keys(valid_sigs, known_keys)
+        if error:
+            return [], error
+
+        # Treat the message as valid only if every parsed signature packet was verified.
+        valid_signing_keys = Counter(
+            self._normalize_fingerprint(valid_sig.signing_key)
+            for valid_sig in valid_sigs
+            if valid_sig.signing_key is not None
+        )
+        for signature in signatures:
+            issuer_fingerprint = self._normalize_fingerprint(signature.issuer_fingerprint)
+            if valid_signing_keys[issuer_fingerprint] <= 0:
+                return [], translate("pgp", "Failed verification")
+            valid_signing_keys[issuer_fingerprint] -= 1
+
+        if sum(valid_signing_keys.values()) != 0:
+            return [], translate("pgp", "Failed verification")
+
         return signer_keys, None
 
     def _verify_file(
-        self, public_keys: Iterable[pgpy.PGPKey], binary_file: Path | str, signature_file: Path | str
+        self, public_keys: Iterable[pysequoia.Cert], binary_file: Path | str, signature_file: Path | str
     ) -> bool:
         """Verify file."""
         try:
-            with open(str(signature_file), "rb") as sig_file:
-                signature = pgpy.PGPSignature.from_blob(sig_file.read())
-                if not isinstance(signature, pgpy.PGPSignature):
-                    return False
+            signature = pysequoia.Sig.from_file(str(signature_file))
+            if sig_error := self._sig_errors(signature):
+                logger.error(",".join(sig_error))
+                return False
 
-            with open(str(binary_file), "rb") as bin_file:
-                message_data = bin_file.read()
-
-            pgpmessage = pgpy.PGPMessage.new(message_data, file=True)
-
-            signer_keys, error = self._verify_pgp_message(
-                pgpmessage, public_keys, additional_signatures=[signature]
+            known_keys = list(public_keys)
+            # Detached signatures verify the file bytes plus the separate signature object.
+            verification = pysequoia.verify(
+                file=str(binary_file),
+                signature=signature,
+                store=self._store_for_public_keys(known_keys),
+            )
+            signer_keys, _error = self._resolve_verified_signer_keys(
+                list(verification.valid_sigs),
+                known_keys,
             )
             return bool(signer_keys)
 
@@ -565,24 +643,26 @@ class SignatureVerifyer:
             return False, None
 
         try:
-            with open(str(signature_file), "rb") as sig_file:
-                signature = pgpy.PGPSignature.from_blob(sig_file.read())
-                if not isinstance(signature, pgpy.PGPSignature):
-                    return False, None
+            signature = pysequoia.Sig.from_file(str(signature_file))
+            if sig_error := self._sig_errors(signature):
+                logger.error(",".join(sig_error))
+                return False, None
 
-            with open(str(binary_file), "rb") as bin_file:
-                message_data = bin_file.read()
-
-            pgpmessage = pgpy.PGPMessage.new(message_data, file=True)
-            signer_keys, _error = self._verify_pgp_message(
-                pgpmessage,
-                self.public_keys.values(),
-                additional_signatures=[signature],
+            known_keys = list(self.public_keys.values())
+            verification = pysequoia.verify(
+                file=str(binary_file),
+                signature=signature,
+                store=self._store_for_public_keys(known_keys),
+            )
+            signer_keys, _error = self._resolve_verified_signer_keys(
+                list(verification.valid_sigs),
+                known_keys,
             )
             if not signer_keys:
                 return False, None
 
-            signer_fingerprint = str(signer_keys[0].fingerprint).replace(" ", "").upper()
+            # Return the verified certificate fingerprint, not the raw signing subkey fingerprint.
+            signer_fingerprint = self._normalize_fingerprint(signer_keys[0].fingerprint)
             return True, signer_fingerprint
         except Exception as exc:
             logger.debug("%s detached signature fingerprint lookup failed: %s", self.__class__.__name__, exc)
@@ -590,49 +670,49 @@ class SignatureVerifyer:
             return False, None
 
     def verify_signed_message_block(
-        self, signed_message: str, public_key_block: str | None = None
-    ) -> tuple[list[pgpy.PGPKey], str | None]:
+        self, signed_message: str | bytes, public_key_block: str | None = None
+    ) -> tuple[list[pysequoia.Cert], str | None]:
         """Verify an ASCII-armored PGP signed message.
 
         Fetches the public key based on the fingerprint if necessary.
 
         Returns a tuple of (verified, error, first signer_fingerprint).
         """
-        if not signed_message.strip():
+        if not self._message_bytes(signed_message).strip():
             return [], translate("pgp", "No signed message provided.")
 
         try:
-            pgp_message = pgpy.PGPMessage.from_blob(signed_message)
-            assert isinstance(pgp_message, pgpy.PGPMessage)
+            self.parse_signed_pgp_message(signed_message)
+        except PGPMissingSignature:
+            return [], translate("pgp", "Message does not contain a signature.")
         except Exception as exc:
             logger.error(f"Could not parse signed message: {exc}")
             return [], translate("pgp", "Could not parse signed message: {exc}").format(exc=exc)
-        if not pgp_message.is_signed:
-            return [], translate("pgp", "Message does not contain a signature.")
 
         keys = list(self.public_keys.values())
 
         if public_key_block and public_key_block.strip():
             try:
-                key = self.import_public_key_block(public_key_block)
-                keys.append(key)
+                self.import_public_key_block(public_key_block)
+                keys = list(self.public_keys.values())
             except Exception as exc:
                 logger.error(f"Could not import public key: {exc}")
                 return [], translate("pgp", "Could not import public key: {exc}").format(exc=exc)
         else:
-            # try with the internal keys before download
-            _signer_keys, _error = self._verify_pgp_message(pgp_message, keys)
+            # First try any already-loaded keys before hitting the keyserver.
+            _signer_keys, _error = self._verify_signed_message_with_public_keys(signed_message, keys)
             if _signer_keys:
                 return _signer_keys, _error
 
             try:
-                downloaded_key, fingerprint = self.download_public_key_from_signed_message(signed_message)
-                key = self.import_public_key_block(downloaded_key)
-                keys.append(key)
+                downloaded_key, _fingerprint = self.download_public_key_from_signed_message(signed_message)
+                # Import the downloaded cert so the actual verification step can reuse it.
+                self.import_public_key_block(downloaded_key)
+                keys = list(self.public_keys.values())
             except Exception as e:
                 return [], str(e)
 
-        return self._verify_pgp_message(pgp_message, keys)
+        return self._verify_signed_message_with_public_keys(signed_message, keys)
 
     @staticmethod
     def _get_asset_url(assets: list[Asset], ending: str) -> str | None:
@@ -722,22 +802,6 @@ class SignatureVerifyer:
                     proxies=self.proxies,
                 )
         return sig_filename
-
-    def get_key_meta_info(self, key: SimpleGPGKey) -> dict:
-        """Retrieve meta-information about a key given its fingerprint.
-
-        :param key: The GPGKey object containing the key data.
-        :return: A dictionary containing the key's meta-information.
-        """
-        public_key = self.import_public_key_block(key.key)
-
-        key_info = {
-            "fingerprint": public_key.fingerprint,
-            "userids": [uid.name for uid in public_key.userids],
-            "created": public_key.created,
-            "algorithm": public_key.key_algorithm.name,
-        }
-        return key_info
 
 
 class GPGSignatureVerifyer:

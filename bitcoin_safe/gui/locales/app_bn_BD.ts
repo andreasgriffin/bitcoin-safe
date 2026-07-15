@@ -345,9 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>আপনার ব্রাউজারে পেমেন্ট সম্পন্ন করুন। কোনো সমস্যা হলে, অনুগ্রহ করে আমাদের সাথে যোগাযোগ করতে দ্বিধা করবেন না: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>আপনার ব্রাউজারে পেমেন্ট সম্পূর্ণ করুন।</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>আপনার browser স্বয়ংক্রিয়ভাবে খোলা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>আপনার ব্রাউজার স্বয়ংক্রিয়ভাবে খোলা যায়নি।</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -368,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>ইনভয়েস তৈরি করুন</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>যদি ব্রাউজার না খোলে, &lt;a href="{url}"&gt;এখানে&lt;/a&gt; ক্লিক করুন।</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>কোনো সমস্যা হলে, অনুগ্রহ করে &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; ঠিকানায় আমাদের সাথে যোগাযোগ করতে দ্বিধা করবেন না।</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -726,8 +735,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>নিজস্ব অনুলিপি প্রকাশ করা যায়নি</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>নিজস্ব অনুলিপি প্রকাশ করা যায়নি: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for} থেকে নিশ্চিতকরণ অপেক্ষমাণ</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>প্রকাশনা ব্যর্থ হওয়ার কারণে অপেক্ষমাণ: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>অপেক্ষমাণ: {waiting_for}. ব্যর্থ: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient}-এর জন্য প্রকাশনা ব্যর্থ হয়েছে</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient}-এর জন্য প্রকাশনা ব্যর্থ হয়েছে: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>সব প্রাপকের কাছে প্রকাশ করা হয়েছে এবং নিজস্ব অনুলিপি পাওয়া গেছে</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>আপনি শুধুমাত্র PSBT বা লেনদেন পাঠাতে পারেন</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>নিজস্ব অনুলিপি</translation>
 		</message>
 	</context>
 	<context>
@@ -976,8 +1030,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>প্রয়োগ করুন</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>ডেসক্রিপ্টর অপরিবর্তিত</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>বাতিল করুন</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1574,23 +1638,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>লেনদেন তৈরি করুন</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>লেনদেন ক্ষেত্র পূর্বে পূরণ করুন</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>পূর্ববর্তী ধাপ</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1778,8 +1825,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>পূর্ববর্তী ধাপ</translation>
+			<source>Previous step</source>
+			<translation>আগের ধাপ</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1862,11 +1909,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>নতুন সাইনার যোগ করুন</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2006,6 +2048,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>সাইনার মডেল নির্বাচন করুন</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>আপনার স্বাক্ষরকারী নির্বাচন করুন</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3520,6 +3567,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>সমর্থিত নেটওয়ার্কের জন্য Compact Block Filters সক্রিয় করা হবে। এই নেটওয়ার্কটি তার বর্তমান সার্ভার বজায় রাখবে।</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>Bitcoin নোডে (p2p) সংযোগ করুন এবং সেখান থেকে প্রাসঙ্গিক ব্লক ডাউনলোড করুন।</translation>
 		</message>
@@ -4478,8 +4530,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} নিবন্ধন করুন</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>'{wallet_name}' নিবন্ধন করুন</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>'{wallet_name}' কে '{device}'-এ নিবন্ধন করুন</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>আপনি যে প্রতিটি হার্ডওয়্যার সাইনার ব্যবহার করার পরিকল্পনা করছেন, সেখানে এই মাল্টিসিগ ওয়ালেটটি নিবন্ধন করুন। এতে হার্ডওয়্যার সাইনার লেনদেনের চেঞ্জ ঠিকানা যাচাই করতে পারবে।</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4729,6 +4791,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. হার্ডওয়্যার সাইনার দিয়ে QR কোড স্ক্যান করুন</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. স্বাক্ষরিত বার্তা শনাক্ত করুন</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>প্রদত্ত ঠিকানার জন্য derivation path নির্ধারণ করা যায়নি।</translation>
 		</message>
@@ -4736,6 +4808,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>বার্তাটি খুব ছোট।</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>আপনি বার্তাটি স্বাক্ষর করার পরে, আপনার হার্ডওয়্যার সাইনার একটি দ্বিতীয় QR কোড দেবে যা আপনি এই কম্পিউটার থেকে স্ক্যান করতে পারবেন</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR কোড স্ক্যান করুন</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5216,6 +5298,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. হার্ডওয়্যার সাইনার দিয়ে QR কোড স্ক্যান করুন</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. স্বাক্ষরিত PSBT স্ক্যান করুন</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>সংকুচিত করুন</translation>
 		</message>
@@ -5233,6 +5325,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>পরীক্ষা {number}-এর জন্য প্রস্তুত রাখুন</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>আপনি PSBT স্বাক্ষর করার পরে, আপনার হার্ডওয়্যার সাইনার একটি দ্বিতীয় QR কোড দেবে যা আপনি এই কম্পিউটার থেকে স্ক্যান করতে পারবেন</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR কোড স্ক্যান করুন</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6235,8 +6337,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>পূর্ববর্তী ধাপ</translation>
+			<source>Previous step</source>
+			<translation>আগের ধাপ</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -6461,8 +6563,8 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
-			<translation>পূর্ববর্তী ধাপ</translation>
+			<source>Previous step</source>
+			<translation>আগের ধাপ</translation>
 		</message>
 	</context>
 	<context>
@@ -7773,11 +7875,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>খারাপ signature শনাক্ত হয়েছে</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>public key ইম্পোর্ট করা যায়নি: {exc}</translation>
 		</message>
@@ -7823,8 +7920,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>নিরাপত্তা নোট: যাচাইয়ের জন্য built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library ব্যবহার করা হয়। এটি আপনার keyring-এর trust setting, revocation, বা expiration time মানে না। উচ্চ-মূল্যের message-এর ক্ষেত্রে অনুগ্রহ করে &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; দিয়ে যাচাই করুন।</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>নিরাপত্তা নোট: যাচাইকরণ একটি বিল্ট-ইন &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; লাইব্রেরি ব্যবহার করে। এটি আপনার কীরিং থেকে বিশ্বাসের সেটিংস, প্রত্যাহার বা মেয়াদোত্তীর্ণ হওয়ার সময় মানে না। অনুগ্রহ করে উচ্চ-মূল্যের বার্তাগুলি &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt; দিয়ে যাচাই করুন।</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7845,11 +7942,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>public key উপস্থিত নেই</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>ভুল signature type: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

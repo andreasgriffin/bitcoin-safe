@@ -1,7 +1,4 @@
-import argparse
-import sys
-
-# all import must be absolute, because this is the entry script for pyinstaller
+# Bitcoin Safe
 # Bitcoin Safe
 # Copyright (C) 2023-2026 Andreas Griffin
 #
@@ -29,6 +26,14 @@ import sys
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
+
+import argparse
+import logging
+import sys
+from collections.abc import Sequence
+from dataclasses import dataclass
+
+# all import must be absolute, because this is the entry script for pyinstaller
 from bitcoin_safe.logging_setup import setup_logging
 
 setup_logging()
@@ -38,7 +43,7 @@ from bitcoin_safe.dynamic_lib_load import ensure_pyzbar_works, set_os_env_ssl_ce
 set_os_env_ssl_certs()
 ensure_pyzbar_works()
 
-
+import bdkpython as bdk  # noqa: E402
 from PyQt6.QtWidgets import QApplication  # noqa: E402
 
 from bitcoin_safe.compatibility import check_compatibility  # noqa: E402
@@ -47,11 +52,23 @@ from bitcoin_safe.gui.qt.main import MainWindow  # noqa: E402
 from bitcoin_safe.gui.qt.startup_window_probe import StartupWindowProbe  # noqa: E402
 from bitcoin_safe.gui.qt.util import custom_exception_handler  # noqa: E402
 
+logger = logging.getLogger(__name__)
+NETWORK_ARG_NAMES = tuple(sorted(network.name.lower() for network in bdk.Network))
+NETWORK_ARGS = {network_name: bdk.Network[network_name.upper()] for network_name in NETWORK_ARG_NAMES}
 
-def parse_args() -> argparse.Namespace:
-    """Parse args."""
-    parser = argparse.ArgumentParser(description="Bitcoin Safe")
-    parser.add_argument("--network", help="Choose the network: bitcoin, regtest, testnet, signet ")
+
+@dataclass
+class StartupArgs:
+    network: bdk.Network | None
+    profile: bool
+    trace_startup_windows: bool
+    open_files_at_startup: list[str]
+
+
+def create_parser() -> argparse.ArgumentParser:
+    """Create the startup parser."""
+    parser = argparse.ArgumentParser(description="Bitcoin Safe", allow_abbrev=False)
+    parser.add_argument("--network", help=f"Choose the network: {', '.join(NETWORK_ARG_NAMES)}")
     parser.add_argument(
         "--profile", action="store_true", help="Enable profiling. VIsualize with snakeviz .prof_stats"
     )
@@ -67,13 +84,43 @@ def parse_args() -> argparse.Namespace:
         nargs="*",
         help="File to process, can be of type tx, psbt, wallet files.",
     )
+    return parser
 
-    return parser.parse_args()
+
+def sanitize_network_arg(network: str | None) -> bdk.Network | None:
+    """Validate the CLI network value."""
+    if network is None:
+        return None
+    if normalized_network := NETWORK_ARGS.get(network.lower()):
+        return normalized_network
+
+    logger.warning(
+        "Ignoring invalid --network value %r. Accepted values: %s",
+        network,
+        ", ".join(NETWORK_ARG_NAMES),
+    )
+    return None
 
 
-def main() -> None:
+def parse_args(argv: Sequence[str] | None = None) -> StartupArgs:
+    """Parse and sanitize startup args."""
+    parser = create_parser()
+    namespace, unknown_args = parser.parse_known_args(argv)
+
+    if unknown_args:
+        logger.warning("Ignoring unknown startup arguments: %s", unknown_args)
+
+    return StartupArgs(
+        network=sanitize_network_arg(namespace.network),
+        profile=namespace.profile,
+        trace_startup_windows=namespace.trace_startup_windows,
+        open_files_at_startup=list(namespace.open_files_at_startup),
+    )
+
+
+def main(args: StartupArgs | None = None) -> None:
     """Main."""
-    args = parse_args()
+    startup_args = args if args is not None else parse_args()
 
     sys.excepthook = custom_exception_handler
     app = QApplication(sys.argv)
@@ -86,8 +133,11 @@ def main() -> None:
     if is_gnome_dark_mode():
         set_dark_palette(app)
 
-    window = MainWindow(**vars(args))
-    if args.trace_startup_windows:
+    window = MainWindow(
+        network=startup_args.network,
+        open_files_at_startup=startup_args.open_files_at_startup,
+    )
+    if startup_args.trace_startup_windows:
         app._startup_window_probe = StartupWindowProbe(app=app, expected_main_window=window)  # type: ignore
     window.show()
     app.exec()
@@ -97,15 +147,15 @@ def main() -> None:
 # open in https://www.speedscope.app/
 
 if __name__ == "__main__":
-    args = parse_args()
+    startup_args = parse_args()
 
-    if args.profile:
+    if startup_args.profile:
         import cProfile
         import os
         from pstats import Stats
 
         with cProfile.Profile() as pr:
-            main()
+            main(startup_args)
 
         # run in bash "snakeviz .prof_stats &"  to visualize the stats
         with open("profiling_stats.txt", "w") as stream:
@@ -116,4 +166,4 @@ if __name__ == "__main__":
             os.system("snakeviz .prof_stats & ")
             # os.system("pyprof2calltree -i .prof_stats -k & ")
     else:
-        main()
+        main(startup_args)

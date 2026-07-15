@@ -46,28 +46,22 @@ modules:
         tag: hidapi-0.15.0
 
   - name: zbar
-    buildsystem: simple
-    build-commands:
-      - autoreconf -vfi
-      - >-
-        ./configure
-        --prefix=/app
-        --enable-pthread=no
-        --enable-doc=no
-        --with-python=no
-        --with-gtk=no
-        --with-qt=no
-        --with-java=no
-        --with-imagemagick=no
-        --with-dbus=no
-        --with-x=no
-        --enable-video=no
-        --with-jpeg=no
-        --enable-codes=qrcode
-        --disable-static
-        --enable-shared
-      - make -j${FLATPAK_BUILDER_N_JOBS}
-      - make install
+    buildsystem: autotools
+    config-opts:
+      - --enable-pthread=no
+      - --enable-doc=no
+      - --with-python=no
+      - --with-gtk=no
+      - --with-qt=no
+      - --with-java=no
+      - --with-imagemagick=no
+      - --with-dbus=no
+      - --with-x=no
+      - --enable-video=no
+      - --with-jpeg=no
+      - --enable-codes=qrcode
+      - --disable-static
+      - --enable-shared
     cleanup:
       - /bin
       - /include
@@ -78,6 +72,10 @@ modules:
       - type: git
         url: https://github.com/mchehab/zbar.git
         tag: 0.23.93
+      - type: script
+        dest-filename: autogen.sh
+        commands:
+          - exec autoreconf -vfi
 
   - name: bitcoin-safe
     buildsystem: simple
@@ -285,7 +283,7 @@ modules:
             rewrite_python_entrypoint_shebang "/app/bin/${executable_name}"
         done
         install -Dm755 tools/build-linux/flatpak/run-bitcoin-safe.sh /app/bin/run-bitcoin-safe.sh
-        install -Dm644 tools/resources/icon.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
+        install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.svg /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
         install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoin_safe.BitcoinSafe.png
         install -Dm644 tools/build-linux/flatpak/org.bitcoin_safe.BitcoinSafe.metainfo.xml /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
         sed \

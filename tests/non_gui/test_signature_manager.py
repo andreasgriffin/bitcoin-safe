@@ -33,9 +33,15 @@ import logging
 import tempfile
 from pathlib import Path
 
+import pysequoia
 import pytest
 
-from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer
+from bitcoin_safe.signature_manager import (
+    KnownGPGKeys,
+    PGPDecodingError,
+    PGPMissingSignature,
+    SignatureVerifyer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +98,27 @@ def _mock_sparrow_manifest_download(monkeypatch: pytest.MonkeyPatch) -> list[str
     return requested_urls
 
 
+def _make_signed_message(mode: pysequoia.SignatureMode) -> tuple[pysequoia.Cert, str]:
+    mode_name = "clear" if mode == pysequoia.SignatureMode.CLEAR else "inline"
+    cert = pysequoia.Cert.generate(user_id=f"{mode_name}@example.com")
+    signed_message = pysequoia.sign(
+        cert.secrets.signer(),
+        f"hello from {mode_name} mode".encode(),
+        mode=mode,
+    ).decode("utf-8")
+    return cert, signed_message
+
+
+def _tamper_armored_message(signed_message: str) -> str:
+    lines = signed_message.splitlines()
+    for index, line in enumerate(lines):
+        if line and not line.startswith("-----") and not line.startswith("Hash:"):
+            replacement = "A" if line[0] != "A" else "B"
+            lines[index] = replacement + line[1:]
+            return "\n".join(lines) + ("\n" if signed_message.endswith("\n") else "")
+    raise AssertionError("Could not find a line to tamper with.")
+
+
 def test_download_manifest_and_verify(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test download manifest and verify."""
     requested_urls = _mock_sparrow_manifest_download(monkeypatch)
@@ -122,6 +149,26 @@ def test_download_manifest_and_verify(monkeypatch: pytest.MonkeyPatch) -> None:
             binary_file=manifest_file,
             signature_file=sig_filename,
         )
+
+
+def test_verify_detached_signature_with_fingerprint(monkeypatch: pytest.MonkeyPatch) -> None:
+    requested_urls = _mock_sparrow_manifest_download(monkeypatch)
+    manager = SignatureVerifyer(list_of_known_keys=KnownGPGKeys.all(), proxies=None)
+
+    with tempfile.TemporaryDirectory() as tempdir:
+        sig_filename = manager.get_signature_from_web(Path(tempdir) / "Sparrow-1.8.4-x86_64.dmg")
+        assert sig_filename
+
+        manifest_file = Path(tempdir) / "sparrow-1.8.4-manifest.txt"
+        assert "https://api.github.com/repos/sparrowwallet/sparrow/releases/tags/1.8.4" in requested_urls
+
+        verified, fingerprint = manager.verify_detached_signature_with_fingerprint(
+            manifest_file,
+            sig_filename,
+        )
+
+        assert verified
+        assert fingerprint == "D4D0D3202FC06849A257B38DE94618334C674B40"
 
 
 def test_download_manifest_and_verify_wrong_signature(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -230,7 +277,11 @@ kEM8Jtcf183QgWT6hgT3oFoYRqj64Boh6Zn5s4HAR1Bph665rPk=
     # Verify that the canary signature matches the expected fingerprint.
     signer_keys, error = manager.verify_signed_message_block(signed_message, downloaded_key)
     assert signer_keys, error
-    assert str(signer_keys[0].fingerprint) == fingerprint == "8198A18530A522A09561243989C4A25E69A5DE7F"
+    assert (
+        manager._normalize_fingerprint(signer_keys[0].fingerprint)
+        == fingerprint
+        == "8198A18530A522A09561243989C4A25E69A5DE7F"
+    )
 
     # Modifying the message should invalidate the signature.
     changed_message = signed_message
@@ -238,3 +289,180 @@ kEM8Jtcf183QgWT6hgT3oFoYRqj64Boh6Zn5s4HAR1Bph665rPk=
 
     signer_keys, error = manager.verify_signed_message_block(changed_message, downloaded_key)
     assert not signer_keys
+
+
+@pytest.mark.parametrize(
+    "mode",
+    [
+        pysequoia.SignatureMode.CLEAR,
+        pysequoia.SignatureMode.INLINE,
+    ],
+)
+def test_parse_signed_pgp_message_accepts_bytes_variants(mode: pysequoia.SignatureMode) -> None:
+    """Test steps:
+    - Generate a signed message in the parametrized mode.
+    - Pass the payload as raw bytes.
+    - Parse it through the signed-message parser.
+    - Assert the original bytes and a signature packet are returned.
+    """
+    _cert, signed_message = _make_signed_message(mode)
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+
+    message_bytes, signatures = manager.parse_signed_pgp_message(signed_message.encode("utf-8"))
+
+    assert message_bytes == signed_message.encode("utf-8")
+    assert signatures
+    assert manager._normalize_fingerprint(signatures[0].issuer_fingerprint)
+
+
+def test_parse_signed_pgp_message_rejects_unsigned_encrypted_payload() -> None:
+    """Test steps:
+    - Generate an encrypted payload without adding a signature.
+    - Parse it through the signed-message parser.
+    - Assert parsing fails with a missing-signature error.
+    """
+    cert = pysequoia.Cert.generate(user_id="encrypted@example.com")
+    encrypted_payload = pysequoia.encrypt(b"hello", recipients=[cert])
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+
+    with pytest.raises(PGPMissingSignature, match="Signed message contains no signatures"):
+        manager.parse_signed_pgp_message(encrypted_payload)
+
+
+def test_parse_signed_pgp_message_rejects_invalid_payload() -> None:
+    """Test steps:
+    - Build a payload that is not valid OpenPGP data.
+    - Parse it through the signed-message parser.
+    - Assert parsing fails with a decoding error.
+    """
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+
+    with pytest.raises(PGPDecodingError, match="Could not parse signed PGP message"):
+        manager.parse_signed_pgp_message(b"not a pgp payload")
+
+
+def test_verify_signed_message_block_rejects_partially_verified_signature_groups(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test steps:
+    - Build a valid signed message and parse its real signature packet.
+    - Pretend the message contains that packet twice.
+    - Pretend the verifier only validated one signature.
+    - Assert the full message verification is rejected.
+    """
+
+    class _VerifiedSignature:
+        def __init__(self, certificate: str, signing_key: str) -> None:
+            self.certificate = certificate
+            self.signing_key = signing_key
+
+    class _VerificationResult:
+        def __init__(self, valid_sigs: list[_VerifiedSignature]) -> None:
+            self.valid_sigs = valid_sigs
+
+    cert, signed_message = _make_signed_message(pysequoia.SignatureMode.INLINE)
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+    message_bytes, signatures = manager.parse_signed_pgp_message(signed_message)
+    assert len(signatures) == 1
+    signature = signatures[0]
+
+    monkeypatch.setattr(
+        manager,
+        "parse_signed_pgp_message",
+        lambda _signed_message: (message_bytes, [signature, signature]),
+    )
+    monkeypatch.setattr(
+        "bitcoin_safe.signature_manager.pysequoia.verify",
+        lambda **_kwargs: _VerificationResult(
+            [
+                _VerifiedSignature(
+                    certificate=str(cert.fingerprint),
+                    signing_key=str(signature.issuer_fingerprint),
+                )
+            ]
+        ),
+    )
+
+    signer_keys, error = manager.verify_signed_message_block(signed_message, str(cert))
+
+    assert not signer_keys
+    assert error == "Failed verification"
+
+
+@pytest.mark.parametrize(
+    "mode",
+    [
+        pysequoia.SignatureMode.CLEAR,
+        pysequoia.SignatureMode.INLINE,
+    ],
+)
+def test_verify_signed_message_block_accepts_signed_message_variants(
+    mode: pysequoia.SignatureMode,
+) -> None:
+    """Test steps:
+    - Generate a fresh certificate.
+    - Sign a message in the parametrized mode.
+    - Verify with the matching public certificate.
+    - Assert verification succeeds and resolves the primary fingerprint.
+    """
+    cert, signed_message = _make_signed_message(mode)
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+
+    signer_keys, error = manager.verify_signed_message_block(signed_message, str(cert))
+
+    assert signer_keys, error
+    assert manager._normalize_fingerprint(signer_keys[0].fingerprint) == manager._normalize_fingerprint(
+        cert.fingerprint
+    )
+
+
+@pytest.mark.parametrize(
+    "mode",
+    [
+        pysequoia.SignatureMode.CLEAR,
+        pysequoia.SignatureMode.INLINE,
+    ],
+)
+def test_verify_signed_message_block_rejects_modified_signed_message_variants(
+    mode: pysequoia.SignatureMode,
+) -> None:
+    """Test steps:
+    - Sign a valid message in the parametrized mode.
+    - Modify one non-armor content line.
+    - Verify with the original public certificate.
+    - Assert verification fails and returns an error.
+    """
+    cert, signed_message = _make_signed_message(mode)
+    tampered_message = _tamper_armored_message(signed_message)
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+
+    signer_keys, error = manager.verify_signed_message_block(tampered_message, str(cert))
+
+    assert not signer_keys
+    assert error
+
+
+@pytest.mark.parametrize(
+    "mode",
+    [
+        pysequoia.SignatureMode.CLEAR,
+        pysequoia.SignatureMode.INLINE,
+    ],
+)
+def test_verify_signed_message_block_rejects_wrong_public_key_for_signed_message_variants(
+    mode: pysequoia.SignatureMode,
+) -> None:
+    """Test steps:
+    - Sign a message with one generated certificate.
+    - Create a different public certificate.
+    - Verify the signed text with the wrong certificate.
+    - Assert verification fails because the signer does not match.
+    """
+    _signing_cert, signed_message = _make_signed_message(mode)
+    wrong_cert = pysequoia.Cert.generate(user_id="wrong@example.com")
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+
+    signer_keys, error = manager.verify_signed_message_block(signed_message, str(wrong_cert))
+
+    assert not signer_keys
+    assert error

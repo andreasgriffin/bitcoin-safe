@@ -32,6 +32,7 @@ from __future__ import annotations
 import enum
 import logging
 from collections.abc import Callable
+from functools import partial
 from typing import cast
 
 import bdkpython as bdk
@@ -165,7 +166,6 @@ class KeyStoreUI(CardBase):
         self._build_widgets()
         self._connect_signals()
         self.updateUi()
-        self._apply_state()
 
     def set_hardware_signer_label(self, value: str) -> None:
         """Update the derived signer label used by the UI and USB workflows."""
@@ -184,6 +184,14 @@ class KeyStoreUI(CardBase):
             self.set_hardware_signer_label(hardware_signer.display_name)
             return
         self.set_hardware_signer_label(self._fallback_hardware_signer_label)
+
+    def _header_title_text(self) -> str:
+        """Return the current header title for the signer card."""
+        return (
+            self.tr("Select your signer")
+            if self.selected_hardware_signer is None
+            else self.hardware_signer_label
+        )
 
     def _build_widgets(self) -> None:
         self.card_frame = self
@@ -212,6 +220,7 @@ class KeyStoreUI(CardBase):
         self.combo_model = QComboBox(self.header_widget)
         self.button_confirm_signer = QPushButton(self.header_widget)
         self.button_confirm_signer.setEnabled(False)
+        self.button_confirm_signer.setDefault(True)
         self.add_controls_layout.addWidget(self.combo_brand)
         self.add_controls_layout.addWidget(self.combo_model)
         self.add_controls_layout.addWidget(self.button_confirm_signer)
@@ -403,13 +412,13 @@ class KeyStoreUI(CardBase):
             cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self.format_all_fields
         )
         self.signal_tracker.connect(
-            cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged), self._apply_state
+            cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged), self.updateUi
         )
         self.signal_tracker.connect(
-            cast(SignalProtocol[[]], self.edit_fingerprint.input_field.textChanged), self._apply_state
+            cast(SignalProtocol[[]], self.edit_fingerprint.input_field.textChanged), self.updateUi
         )
         self.signal_tracker.connect(
-            cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self._apply_state
+            cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self.updateUi
         )
         self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.textEdit_description.textChanged), self._update_header_subtitle
@@ -487,6 +496,8 @@ class KeyStoreUI(CardBase):
         self.combo_model.blockSignals(False)
         self._update_confirm_button()
         self._update_device_type_help()
+        if brand_name:
+            self.button_confirm_signer.setFocus(Qt.FocusReason.OtherFocusReason)
 
     def _update_confirm_button(self) -> None:
         self.button_confirm_signer.setEnabled(self.combo_model.currentData() is not None)
@@ -549,7 +560,7 @@ class KeyStoreUI(CardBase):
         self._device_type_editing = True
         self.counter_register_button_clicked = 0
         self._set_combo_selection(self.selected_hardware_signer)
-        self._apply_state()
+        self.updateUi()
 
     def _analysis_fields(self) -> list[AnalyzerLineEdit | AnalyzerTextEdit]:
         """Return the fields contributing to signer validation state."""
@@ -580,6 +591,7 @@ class KeyStoreUI(CardBase):
         hardware_signer = HardwareSigners.from_id(self.combo_model.currentData())
         if not hardware_signer:
             return
+        self.button_confirm_signer.setDefault(False)
         self.select_hardware_signer(hardware_signer)
 
     def select_hardware_signer(self, hardware_signer: HardwareSigner) -> None:
@@ -589,17 +601,15 @@ class KeyStoreUI(CardBase):
         self.counter_register_button_clicked = 0
         self.set_selected_hardware_signer(hardware_signer)
         self.signal_ui_changed.emit()
-        self._apply_state()
+        self.updateUi()
 
     def _update_header_icon(self) -> None:
-        if self.state == KeyStoreUiState.Add:
-            self.header_icon.clear()
-            self.header_icon.setStyleSheet("font-size: 28px; font-weight: 600;")
-            self.header_icon.setText("+")
-            return
-
         self.header_icon.setStyleSheet("")
-        hardware_signer = self.selected_hardware_signer or HardwareSigners.generic
+        hardware_signer = (
+            HardwareSigners.generic
+            if self.state == KeyStoreUiState.Add
+            else self.selected_hardware_signer or HardwareSigners.generic
+        )
         pixmap = svg_tools_hardware_signer.get_QIcon(hardware_signer.icon_name).pixmap(34, 34)
         self.header_icon.setPixmap(pixmap)
         self.header_icon.setText("")
@@ -669,14 +679,14 @@ class KeyStoreUI(CardBase):
         if self.is_expanded:
             return
         super().expand()
-        self._apply_state()
+        self.updateUi()
 
     def collapse(self) -> None:
         """Show only the signer card header."""
         if not self.is_expanded:
             return
         super().collapse()
-        self._apply_state()
+        self.updateUi()
 
     def _update_header_clickability(self) -> None:
         self._update_header_cursor()
@@ -746,9 +756,6 @@ class KeyStoreUI(CardBase):
         for button in self.edit_seed.button_container.buttons:
             button.setVisible(not read_only_fields and show_seed_input)
 
-        self.header_title.setText(
-            self.tr("Add New Signer") if self.state == KeyStoreUiState.Add else self.hardware_signer_label
-        )
         self._update_header_icon()
         self._update_connect_buttons(connect_visible=connect_visible)
         self._update_help_visibility()
@@ -790,29 +797,33 @@ class KeyStoreUI(CardBase):
             return
         if self._device_help_widget:
             self._device_help_widget.close()
-        self._device_help_widget = ScreenshotsExportXpub(hardware_signers=[hardware_signer], parent=None)
-        self._device_help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
+        device_help_widget = ScreenshotsExportXpub(hardware_signers=[hardware_signer], parent=None)
+        device_help_widget.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
         self.signal_tracker.connect(
-            cast(SignalProtocol[[QObject | None]], self._device_help_widget.destroyed),
-            self._clear_device_help_widget,
+            cast(SignalProtocol[[QObject | None]], device_help_widget.destroyed),
+            partial(self._clear_device_help_widget, device_help_widget),
         )
-        self._device_help_widget.setWindowTitle(
+        device_help_widget.setWindowTitle(
             self.tr("{device} instructions").format(device=hardware_signer.display_name)
         )
-        self._device_help_widget.setWindowFlag(Qt.WindowType.Window, True)
-        self._device_help_widget.show()
-        self._device_help_widget.raise_()
-        self._device_help_widget.activateWindow()
+        device_help_widget.setWindowFlag(Qt.WindowType.Window, True)
+        self._device_help_widget = device_help_widget
+        device_help_widget.show()
+        device_help_widget.raise_()
+        device_help_widget.activateWindow()
 
-    def _clear_device_help_widget(self, destroyed_widget: QObject | None = None) -> None:
+    def _clear_device_help_widget(
+        self, device_help_widget: QWidget, destroyed_widget: QObject | None = None
+    ) -> None:
         """Clear the cached device instructions window after it closes."""
         _ = destroyed_widget
-        self._device_help_widget = None
+        if self._device_help_widget is device_help_widget:
+            self._device_help_widget = None
 
     def _request_show_register_multisig(self) -> None:
         """Request the multisig registration dialog from the owner."""
         self.counter_register_button_clicked += 1
-        self._apply_state()
+        self.updateUi()
         self.request_show_register_multisig.emit(self.selected_hardware_signer)
 
     def on_edit_seed_changed(self, text: str) -> None:
@@ -940,7 +951,7 @@ class KeyStoreUI(CardBase):
         self.edit_xpub.setText(signer_info.xpub)
         self.key_origin = signer_info.key_origin
         self.edit_fingerprint.setText(signer_info.fingerprint)
-        self._apply_state()
+        self.updateUi()
 
     def _get_signer_info_from_descriptor(self, data: Data) -> SignerInfo | None:
         """Decode descriptor-like data into signer info when possible."""
@@ -1057,9 +1068,7 @@ class KeyStoreUI(CardBase):
         )
         self.edit_seed.input_field.display_name = self.label_seed.textLabel.text()
 
-        self.header_title.setText(
-            self.tr("Add New Signer") if self.state == KeyStoreUiState.Add else self.hardware_signer_label
-        )
+        self.header_title.setText(self._header_title_text())
         self.textEdit_description.setPlaceholderText(
             self.tr("Write here notes relative to this signer, memos, etc...")
         )
@@ -1175,7 +1184,7 @@ class KeyStoreUI(CardBase):
                 self.edit_seed.setText(mnemonic)
 
         self._device_type_editing = False
-        self._apply_state()
+        self.updateUi()
 
     def close(self) -> bool:
         """Close."""

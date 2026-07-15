@@ -38,7 +38,7 @@ from PyQt6.QtCore import Qt
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUI, KeyStoreUiState
-from bitcoin_safe.gui.qt.util import ColorScheme
+from bitcoin_safe.gui.qt.util import ColorScheme, svg_tools_hardware_signer
 from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.wallet import ProtoWallet
@@ -101,7 +101,11 @@ def test_keystore_ui_add_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> No
     widget = _make_widget(qtbot, loop_in_thread)
 
     assert widget.state == KeyStoreUiState.Add
-    assert widget.header_icon.text() == "+"
+    actual_pixmap = widget.header_icon.pixmap()
+    assert actual_pixmap is not None
+    expected_icon = svg_tools_hardware_signer.get_QIcon(HardwareSigners.generic.icon_name)
+    expected_pixmap = expected_icon.pixmap(actual_pixmap.size(), widget.devicePixelRatioF())
+    assert actual_pixmap.toImage() == expected_pixmap.toImage()
     assert widget.sizePolicy().verticalPolicy() == widget.sizePolicy().Policy.Fixed
     assert widget.combo_brand.isVisible()
     assert widget.combo_model.isVisible()
@@ -133,6 +137,15 @@ def test_selecting_device_type_updates_header_label_before_xpub(
     _select_signer(widget, HardwareSigners.krux_diy.id)
 
     assert widget.hardware_signer_label == HardwareSigners.krux_diy.display_name
+    assert widget.header_title.text() == HardwareSigners.krux_diy.display_name
+
+
+def test_update_ui_keeps_selected_signer_name_in_header(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+    widget.updateUi()
+
     assert widget.header_title.text() == HardwareSigners.krux_diy.display_name
 
 
@@ -303,6 +316,29 @@ def test_device_instructions_open_in_top_level_window(qtbot: QtBot, loop_in_thre
     assert widget._device_help_widget is not None
     assert widget._device_help_widget.parentWidget() is None
     assert widget._device_help_widget.isWindow()
+
+
+def test_device_instruction_cleanup_ignores_previous_window(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+
+    widget.show_device_instructions()
+    first_window = widget._device_help_widget
+
+    widget.show_device_instructions()
+    second_window = widget._device_help_widget
+
+    assert first_window is not None
+    assert second_window is not None
+    assert second_window is not first_window
+
+    widget._clear_device_help_widget(first_window)
+    assert widget._device_help_widget is second_window
+
+    widget._clear_device_help_widget(second_window)
+    assert widget._device_help_widget is None
 
 
 def test_keystore_ui_read_only_state(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:

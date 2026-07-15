@@ -345,10 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>브라우저에서 결제를 완료하세요.
-문제가 있으면 주저하지 말고 다음 주소로 문의해 주세요: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>브라우저에서 결제를 완료하세요.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -357,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>브라우저를 자동으로 열 수 없습니다. 다시 시도해 주세요.</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>브라우저를 자동으로 열 수 없습니다.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -369,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>청구서 생성</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>브라우저가 열리지 않았다면 &lt;a href="{url}"&gt;여기&lt;/a&gt;를 클릭하세요.</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>문제가 있는 경우 &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;로 언제든지 문의해 주세요.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -726,8 +734,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>자체 사본을 게시할 수 없음</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>자체 사본을 게시할 수 없음: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>{waiting_for}의 확인 대기 중</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>게시 실패로 인해 대기 중: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>대기 중: {waiting_for}. 실패: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>{recipient}에 게시 실패</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>{recipient}에 게시 실패: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>모든 수신자에게 게시되었고 자체 사본이 수신됨</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>PSBT 또는 트랜잭션만 보낼 수 있습니다</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>자체 사본</translation>
 		</message>
 	</context>
 	<context>
@@ -976,8 +1029,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>적용</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>디스크립터 변경 없음</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>버리기</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1571,23 +1634,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>트랜잭션 생성</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>트랜잭션 필드 미리 채우기</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>이전 단계</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1775,7 +1821,7 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>이전 단계</translation>
 		</message>
 		<name>ImportXpubs</name>
@@ -1859,11 +1905,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>새 서명자 추가</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2003,6 +2044,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>서명자 모델 선택</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>서명자를 선택하세요</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3527,6 +3573,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>지원되는 네트워크에 대해 Compact Block Filters가 활성화됩니다. 이 네트워크는 현재 서버를 유지합니다.</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>비트코인 노드(p2p)에 연결하고 관련 블록을 다운로드하세요.</translation>
 		</message>
@@ -4488,8 +4539,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>{wallet_name} 등록하기</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>'{wallet_name}' 등록</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>'{wallet_name}'을(를) '{device}'에 등록</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>사용할 모든 하드웨어 서명기에 이 다중 서명 지갑을 등록하세요. 이렇게 하면 하드웨어 서명기가 거래의 거스름 주소를 확인할 수 있습니다.</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4740,6 +4801,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. 하드웨어 서명기로 QR 코드 스캔</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. 서명된 메시지 감지</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>제공된 주소에 대한 파생 경로를 확인할 수 없습니다.</translation>
 		</message>
@@ -4747,6 +4818,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>메시지가 너무 짧습니다.</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>메시지에 서명하면 하드웨어 서명기가 이 컴퓨터에서 스캔할 수 있는 두 번째 QR 코드를 제공합니다</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR 코드 스캔</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5228,6 +5309,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. 하드웨어 서명기로 QR 코드 스캔</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. 서명된 PSBT 스캔</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>접기</translation>
 		</message>
@@ -5245,6 +5336,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>테스트 {number}을 위해 준비해 두세요</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>PSBT에 서명하면 하드웨어 서명기가 이 컴퓨터에서 스캔할 수 있는 두 번째 QR 코드를 제공합니다</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>QR 코드 스캔</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6247,7 +6348,7 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>이전 단계</translation>
 		</message>
 		<name>Wizard</name>
@@ -6473,7 +6574,7 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>이전 단계</translation>
 		</message>
 	</context>
@@ -7788,11 +7889,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>잘못된 서명이 감지되었습니다</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>공개 키를 가져올 수 없습니다: {exc}</translation>
 		</message>
@@ -7838,8 +7934,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>보안 참고 사항: 검증은 내장된 &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; 라이브러리를 사용합니다. 키링의 신뢰 설정, 폐기 정보 또는 만료 시간은 고려하지 않습니다. 고액 가치의 메시지는 &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;로 확인해 주세요.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>보안 참고: 검증에는 내장 &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; 라이브러리가 사용됩니다. 이 라이브러리는 키링의 신뢰 설정, 철회 또는 만료 시간을 적용하지 않습니다. 중요한 메시지는 &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;로 확인하세요.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7860,11 +7956,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>공개 키가 존재하지 않습니다</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>잘못된 서명 유형: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>

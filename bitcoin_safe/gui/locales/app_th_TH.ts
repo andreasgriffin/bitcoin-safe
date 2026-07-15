@@ -345,9 +345,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Complete the payment in your browser.
-If there is an issue, please dont hesitate to contact us at: {email}</source>
-			<translation>ดำเนินการชำระเงินให้เสร็จในเบราว์เซอร์ของคุณ หากมีปัญหา โปรดอย่าลังเลที่จะติดต่อเราที่: {email}</translation>
+			<source>Complete the payment in your browser.</source>
+			<translation>ชำระเงินให้เสร็จสมบูรณ์ในเบราว์เซอร์ของคุณ</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -356,8 +355,8 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Could not open your browser automatically. Please try again.</source>
-			<translation>ไม่สามารถเปิดเบราว์เซอร์ของคุณโดยอัตโนมัติได้ กรุณาลองอีกครั้ง</translation>
+			<source>Could not open your browser automatically.</source>
+			<translation>ไม่สามารถเปิดเบราว์เซอร์ของคุณโดยอัตโนมัติได้</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -368,6 +367,16 @@ If there is an issue, please dont hesitate to contact us at: {email}</source>
 		<message>
 			<source>Create invoice</source>
 			<translation>สร้างใบแจ้งหนี้</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
+			<translation>หากเบราว์เซอร์ไม่เปิดขึ้น ให้คลิก &lt;a href="{url}"&gt;ที่นี่&lt;/a&gt;</translation>
+		</message>
+		<name>BTCPayWebButton</name>
+		<message>
+			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
+			<translation>หากมีปัญหา โปรดอย่าลังเลที่จะติดต่อเราที่ &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -726,8 +735,53 @@ have transactions linking to other addresses already. Are you sure you want to c
 	<context>
 		<name>Chat</name>
 		<message>
+			<source>Could not publish self-copy</source>
+			<translation>ไม่สามารถเผยแพร่สำเนาของตนเองได้</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Could not publish self-copy: {error}</source>
+			<translation>ไม่สามารถเผยแพร่สำเนาของตนเองได้: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending confirmation from {waiting_for}</source>
+			<translation>รอการยืนยันจาก {waiting_for}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending due to failed publishes: {failures}</source>
+			<translation>ค้างอยู่เนื่องจากการเผยแพร่ล้มเหลว: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Pending: {waiting_for}. Failed: {failures}</source>
+			<translation>ค้างอยู่: {waiting_for} ล้มเหลว: {failures}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}</source>
+			<translation>การเผยแพร่สำหรับ {recipient} ล้มเหลว</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Publish failed for {recipient}: {error}</source>
+			<translation>การเผยแพร่สำหรับ {recipient} ล้มเหลว: {error}</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>Published to all recipients and self-copy received</source>
+			<translation>เผยแพร่ไปยังผู้รับทั้งหมดแล้ว และได้รับสำเนาของตนเองแล้ว</translation>
+		</message>
+		<name>Chat</name>
+		<message>
 			<source>You can only send only PSBTs or transactions</source>
 			<translation>คุณสามารถส่งได้เฉพาะ PSBTs หรือธุรกรรมเท่านั้น</translation>
+		</message>
+		<name>Chat</name>
+		<message>
+			<source>self-copy</source>
+			<translation>สำเนาของตนเอง</translation>
 		</message>
 	</context>
 	<context>
@@ -976,8 +1030,18 @@ Please back up this descriptor to be able to recover the funds!</source>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
+			<source>Apply</source>
+			<translation>ใช้</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
 			<source>Descriptor unchanged</source>
 			<translation>ตัวบ่งชี้ไม่มีการเปลี่ยนแปลง</translation>
+		</message>
+		<name>DescriptorUI</name>
+		<message>
+			<source>Discard</source>
+			<translation>ละทิ้ง</translation>
 		</message>
 		<name>DescriptorUI</name>
 		<message>
@@ -1571,23 +1635,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Create Transaction</source>
-			<translation>สร้างธุรกรรม</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Prefill transaction fields</source>
-			<translation>กรอกข้อมูลธุรกรรมล่วงหน้า</translation>
-		</message>
-		<name>FloatingButtonBar</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>ขั้นตอนก่อนหน้า</translation>
-		</message>
-	</context>
-	<context>
 		<name>HardwareSignerInteractionWidget</name>
 		<message>
 			<source>Export File</source>
@@ -1775,7 +1822,7 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>ขั้นตอนก่อนหน้า</translation>
 		</message>
 		<name>ImportXpubs</name>
@@ -1859,11 +1906,6 @@ since the final size of the transaction is unknown.</source>
 		</message>
 	</context>
 	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Add New Signer</source>
-			<translation>เพิ่มผู้ลงนามใหม่</translation>
-		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -2003,6 +2045,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Select the signer model</source>
 			<translation>เลือกรุ่นของผู้ลงนาม</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Select your signer</source>
+			<translation>เลือกผู้ลงนามของคุณ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3517,6 +3564,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
+			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+			<translation>Compact Block Filters จะถูกเปิดใช้งานสำหรับเครือข่ายที่รองรับ เครือข่ายนี้จะยังคงใช้เซิร์ฟเวอร์ปัจจุบัน</translation>
+		</message>
+		<name>NotificationBarCBF</name>
+		<message>
 			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
 			<translation>เชื่อมต่อกับโหนดบิตคอยน์ (p2p) และดาวน์โหลดบล็อกที่เกี่ยวข้องจากพวกมัน.</translation>
 		</message>
@@ -4475,8 +4527,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
-			<source>Register {wallet_name}</source>
-			<translation>ลงทะเบียน {wallet_name}</translation>
+			<source>Register '{wallet_name}'</source>
+			<translation>ลงทะเบียน '{wallet_name}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register '{wallet_name}' to '{device}'</source>
+			<translation>ลงทะเบียน '{wallet_name}' กับ '{device}'</translation>
+		</message>
+		<name>RegisterMultisigInteractionWidget</name>
+		<message>
+			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+			<translation>ลงทะเบียนกระเป๋าเงิน multisig นี้บนอุปกรณ์ลงนามฮาร์ดแวร์ทุกเครื่องที่คุณวางแผนจะใช้ วิธีนี้จะช่วยให้อุปกรณ์ลงนามฮาร์ดแวร์ตรวจสอบที่อยู่เงินทอนของธุรกรรมได้</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4726,6 +4788,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignMessageBase</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. สแกนรหัส QR ด้วยอุปกรณ์ลงนามฮาร์ดแวร์</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>2. Detect signed message</source>
+			<translation>2. ตรวจพบข้อความที่ลงนามแล้ว</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
 			<translation>ไม่สามารถระบุเส้นทางการอนุพันธ์สำหรับที่อยู่ที่ระบุได้</translation>
 		</message>
@@ -4733,6 +4805,16 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Message too short.</source>
 			<translation>ข้อความสั้นเกินไป</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>เมื่อคุณลงนามข้อความแล้ว อุปกรณ์ลงนามฮาร์ดแวร์ของคุณจะให้รหัส QR ที่สองซึ่งคุณสามารถสแกนจากคอมพิวเตอร์เครื่องนี้ได้</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>สแกนรหัส QR</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5213,6 +5295,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>TxSigningDeviceCard</name>
 		<message>
+			<source>1. Scan QR code with hardware signer</source>
+			<translation>1. สแกนรหัส QR ด้วยอุปกรณ์ลงนามฮาร์ดแวร์</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>2. Scan signed PSBT</source>
+			<translation>2. สแกน PSBT ที่ลงนามแล้ว</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
 			<source>Collapse</source>
 			<translation>ยุบ</translation>
 		</message>
@@ -5230,6 +5322,16 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<message>
 			<source>Keep ready for test {number}</source>
 			<translation>เตรียมให้พร้อมสำหรับการทดสอบ {number}</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+			<translation>เมื่อคุณลงนาม PSBT แล้ว อุปกรณ์ลงนามฮาร์ดแวร์ของคุณจะให้รหัส QR ที่สองซึ่งคุณสามารถสแกนจากคอมพิวเตอร์เครื่องนี้ได้</translation>
+		</message>
+		<name>TxSigningDeviceCard</name>
+		<message>
+			<source>Scan QR code</source>
+			<translation>สแกนรหัส QR</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -6230,7 +6332,7 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>Wizard</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>ขั้นตอนก่อนหน้า</translation>
 		</message>
 		<name>Wizard</name>
@@ -6456,7 +6558,7 @@ Country: {country}</source>
 		</message>
 		<name>basetab</name>
 		<message>
-			<source>Previous Step</source>
+			<source>Previous step</source>
 			<translation>ขั้นตอนก่อนหน้า</translation>
 		</message>
 	</context>
@@ -7769,11 +7871,6 @@ Click here to learn more.</source>
 	<context>
 		<name>pgp</name>
 		<message>
-			<source>Bad signature detected</source>
-			<translation>ตรวจพบลายเซ็นไม่ถูกต้อง</translation>
-		</message>
-		<name>pgp</name>
-		<message>
 			<source>Could not import public key: {exc}</source>
 			<translation>ไม่สามารถนำเข้ากุญแจสาธารณะได้: {exc}</translation>
 		</message>
@@ -7819,8 +7916,8 @@ Click here to learn more.</source>
 		</message>
 		<name>pgp</name>
 		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>หมายเหตุด้านความปลอดภัย: การตรวจสอบใช้ไลบรารี &lt;a href="https://github.com/SecurityInnovation/PGPy"&gt;pgpy&lt;/a&gt; ที่มีมาในตัว ซึ่งจะไม่คำนึงถึงการตั้งค่าความเชื่อถือ การเพิกถอน หรือเวลาหมดอายุจากพวงกุญแจของคุณ โปรดตรวจสอบข้อความที่มีมูลค่าสูงด้วย &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
+			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
+			<translation>หมายเหตุด้านความปลอดภัย: การตรวจสอบใช้ไลบรารี &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; ที่มีมาในตัว ไลบรารีนี้จะไม่ยึดตามการตั้งค่าความเชื่อถือ การเพิกถอน หรือเวลาหมดอายุจากพวงกุญแจของคุณ โปรดตรวจสอบข้อความที่มีมูลค่าสูงด้วย &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
 		</message>
 		<name>pgp</name>
 		<message>
@@ -7841,11 +7938,6 @@ Click here to learn more.</source>
 		<message>
 			<source>public key not present</source>
 			<translation>ไม่พบกุญแจสาธารณะ</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>wrong signature type: {signature}</source>
-			<translation>ประเภทลายเซ็นไม่ถูกต้อง: {signature}</translation>
 		</message>
 		<name>pgp</name>
 		<message>
