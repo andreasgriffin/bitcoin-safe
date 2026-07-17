@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2024-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ from bitcoin_safe.plugin_framework.plugin_diagnostics import (
     format_external_plugin_diagnostics_as_text,
 )
 
-from .constants import BUG_REPORT_EMAIL, FEEDBACK_EMAIL, SUPPORT_EMAIL
+from .constants import APP_NAME, BUG_REPORT_EMAIL, FEEDBACK_EMAIL, SUPPORT_EMAIL
 from .simple_mailer import compose_email
 
 
@@ -72,13 +72,13 @@ def get_system_info_as_text() -> str:
     body += f"OS: {platform.platform()}\n"
     body += f"Distribution: {distro_name} {distro_version}\n"
     body += f"Python Version: {sys.version}\n"
-    body += f"Bitcoin Safe Version: {__version__}\n\n"
+    body += f"{APP_NAME} Version: {__version__}\n\n"
     return body
 
 
 def text_error_report(error_report: str, file_path: Path | None = None) -> str:
     """Text error report."""
-    subject = f"Error report - Bitcoin Safe Version: {__version__}"
+    subject = f"Error report - {APP_NAME} Version: {__version__}"
     body = ""
     if file_path:
         body += f"You can see the full logfile at: {file_path}\n\n"
@@ -97,7 +97,7 @@ def text_error_report(error_report: str, file_path: Path | None = None) -> str:
 
 def mail_error_repot(error_report: str) -> None:
     """Mail error repot."""
-    subject = f"Error report - Bitcoin Safe Version: {__version__}"
+    subject = f"Error report - {APP_NAME} Version: {__version__}"
     body = f"""Error:
             {error_report}
             """.replace("    ", "")
@@ -109,7 +109,7 @@ def mail_error_repot(error_report: str) -> None:
 
 def mail_feedback() -> None:
     """Mail feedback."""
-    subject = f"Feedback - Bitcoin Safe Version: {__version__}"
+    subject = f"Feedback - {APP_NAME} Version: {__version__}"
     body = ""
 
     body += get_system_info_as_text()

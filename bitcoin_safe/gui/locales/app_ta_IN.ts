@@ -18,11 +18,6 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
-			<source>Bitcoin-Safe</source>
-			<translation>பிட்காயின்-பாதுகாப்பானது</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
 			<source>FOSS - Free &amp; Open Source Software</source>
 			<translation>FOSS - இலவச &amp; திறந்த மூல மென்பொருள்</translation>
 		</message>
@@ -415,8 +410,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>விலைப்பட்டியல் கோருகிறது... ஒரு உலாவி திறக்கும் மற்றும் பிட்காயின் Safe உள்நாட்டில் அழைப்பைக் கேட்கும்.</translation>
+			<source>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</source>
+			<translation>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -581,8 +576,10 @@
 	<context>
 		<name>ButtonEdit</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>உள்ளீட்டை அடையாளம் காண முடியவில்லை. மீண்டும் வருடு செய்ய வேண்டுமா?</translation>
+			<source>Could not recognize the input. Do you want to scan again?
+
+The error was: {error}</source>
+			<translation>உள்ளீட்டை அடையாளம் காண முடியவில்லை. மீண்டும் ஸ்கேன் செய்ய விரும்புகிறீர்களா? பிழை: {error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -1353,18 +1350,13 @@ Default 20</source>
 	<context>
 		<name>DonateDialog</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>பிட்காயின் சேஃப் சமூக நிதியுதவி. உங்கள் உதவி மேம்பாட்டை சுயாதீனமாக வைத்திருக்கிறது, புதிய அம்சங்களை அனுப்ப உதவுகிறது மற்றும் பாதுகாப்பு மதிப்புரைகளை மேம்படுத்துகிறது. பெரிய ஆதரவாளர்கள் எங்கள் &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;ஆதரவாளர்கள் பக்கத்தில்&lt;/a&gt; இடம்பெறலாம்.</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
 			<source>Donation</source>
 			<translation>தானம்</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
-			<translation>நன்கொடை செய் பெற்றது. பிட்காயின் Safe ஐ ஆதரித்ததற்கு மிக்க நன்றி!</translation>
+			<source>Donation successful. Thank you so much for supporting {app_name}!</source>
+			<translation>Donation successful. Thank you so much for supporting {app_name}!</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
@@ -1373,18 +1365,23 @@ Default 20</source>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>பிட்காயின் Safe இலவச மற்றும் திறந்த மூல மென்பொருளாக வளர உதவுங்கள்.</translation>
+			<source>Help {app_name} grow as Free and Open Source Software.</source>
+			<translation>Help {app_name} grow as Free and Open Source Software.</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>பிட்காயின் பாதுகாப்பான உதவி</translation>
+			<source>Support {app_name}</source>
+			<translation>Support {app_name}</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
 			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
 			<translation>ஒரு பெரிய பங்களிப்பு அல்லது கூட்டாண்மை பற்றி விவாதிக்க வேண்டுமா? எங்களைத் தொடர்புகொள்ள கீழே உள்ள தொடர்பு பொத்தானைப் பயன்படுத்தவும்.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</translation>
 		</message>
 	</context>
 	<context>
@@ -1395,8 +1392,8 @@ Default 20</source>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
-			<source>Thanks for Bitcoin Safe!</source>
-			<translation>பிட்காயின் Safeக்கு நன்றி!</translation>
+			<source>Thanks for {app_name}!</source>
+			<translation>Thanks for {app_name}!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1482,8 +1479,8 @@ Default 20</source>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>முழு (பிட்காயின் பாதுகாப்பானது)</translation>
+			<source>Full ({app_name})</source>
+			<translation>Full ({app_name})</translation>
 		</message>
 	</context>
 	<context>
@@ -1802,8 +1799,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>முழு (பிட்காயின் பாதுகாப்பானது)</translation>
+			<source>Full ({app_name})</source>
+			<translation>Full ({app_name})</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1819,8 +1816,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Import hardware signer information into Bitcoin Safe</source>
-			<translation>வன்பொருள் கையொப்பமிடுபவர் தகவலை பிட்காயின் Safe இல் இறக்குமதி செய்யவும்</translation>
+			<source>Import hardware signer information into {app_name}</source>
+			<translation>வன்பொருள் கையொப்பமிடுபவர் தகவலை {app_name} இல் இறக்குமதி செய்யவும்</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1866,6 +1863,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
+			<source>Dark</source>
+			<translation>கருமை</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
 			<source>Enter app lock password:</source>
 			<translation>பயன்பாட்டு பூட்டு கடவுச்சொல்லை உள்ளிடவும்:</translation>
 		</message>
@@ -1873,6 +1875,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Invalid password</source>
 			<translation>தவறான கடவுச்சொல்</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Light</source>
+			<translation>வெளிச்சம்</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
@@ -1888,6 +1895,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set</source>
 			<translation>கணம்</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>System</source>
+			<translation>அமைப்பு</translation>
 		</message>
 	</context>
 	<context>
@@ -1908,11 +1920,41 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
-			<source>Unexpected xpub origin</source>
-			<translation>எதிர்பாராத xpub தோற்றம்</translation>
+			<source>The provided xpub origin {given} does not match the expectation {expected}</source>
+			<translation>வழங்கப்பட்ட xpub தோற்றம் {given}, எதிர்பார்க்கப்பட்ட {expected} உடன் பொருந்தவில்லை</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>This looks like a {provided_kind}. Expected: {expected_kind}.</source>
+			<translation>இது ஒரு {provided_kind} போல் தெரிகிறது. எதிர்பார்க்கப்பட்டது: {expected_kind}.</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>multi-sig</source>
+			<translation>பல கையொப்பம்</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>single-sig</source>
+			<translation>ஒற்றைக் கையொப்பம்</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>{given} looks like {provided_type}, but this wallet expects {expected_type}.</source>
+			<translation>{given} என்பது {provided_type} போல் தெரிகிறது, ஆனால் இந்த வாலெட் {expected_type} என்பதை எதிர்பார்க்கிறது.</translation>
 		</message>
 	</context>
 	<context>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Abort and try later</source>
+			<translation>ரத்துசெய்து பின்னர் மீண்டும் முயலவும்</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Account number</source>
+			<translation>கணக்கு எண்</translation>
+		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -1922,11 +1964,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Change device type</source>
 			<translation>சாதன வகையை மாற்றவும்</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Connect</source>
-			<translation>இணை</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1942,6 +1979,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Fingerprint</source>
 			<translation>கைரேகை</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Ignore warning and proceed</source>
+			<translation>எச்சரிக்கையைப் புறக்கணித்து தொடரவும்</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2060,6 +2102,16 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Set account number</source>
+			<translation>கணக்கு எண்ணை அமைக்கவும்</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Set account number...</source>
+			<translation>கணக்கு எண்ணை அமைக்கவும்...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>தேர்ந்தெடுக்கப்பட்ட முகவரி வகை {type} க்கான நிலையானது {expected_key_origin} ஆகும். உறுதியாக தெரியவில்லை என்றால் திருத்தவும்.</translation>
 		</message>
@@ -2071,6 +2123,16 @@ to keep track of different seeds and signing devices.</source>
 			<translation>8 இலக்க கைரேகை விதையை அடையாளம் காட்டுகிறது.
 நீங்கள் அதை வன்பொருள் கையொப்பமிடுவதில் எழுதலாம் 
 வெவ்வேறு விதைகள் மற்றும் கையொப்பமிடும் சாதனங்களைக் கண்காணிக்க.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
+			<translation>கணக்கு {current_account_number} இலிருந்து {new_account_number} ஆக மாற்றப்பட்டுள்ளது. தொடரவா?</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
+			<translation>கணக்கு எண் டெரிவேஷன் பாதையில் குறியாக்கப்பட்டு, கையொப்பமிடுபவரின் xPub-ஐத் தேர்ந்தெடுக்கிறது.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2128,10 +2190,8 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{msg}
-Do you want to proceed anyway?</source>
-			<translation>{msg}
-எப்படியும் தொடர விரும்புகிறீர்களா?</translation>
+			<source>{msg}</source>
+			<translation>{msg}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2157,13 +2217,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>ஒரே கைரேகையை பலமுறை இறக்குமதி செய்துள்ளீர்கள்!!! வேறு கையொப்பமிடும் சாதனத்தைப் பயன்படுத்தவும்.</translation>
+			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
+			<translation>கையொப்பமிடுபவர் இடங்கள் {signers} ஒரே xpub-ஐக் கொண்டுள்ளன. பொதுவாக, ஒரே கையொப்பமிடுபவர் ஏற்றுமதி இருமுறை இறக்குமதி செய்யப்பட்டதையே இது குறிக்கிறது. ஒவ்வொரு கையொப்பமிடுபவருக்கும் வேறொரு சாதனம் அல்லது கணக்கை இறக்குமதி செய்யவும்.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>ஒரே xpubஐ பலமுறை இறக்குமதி செய்துள்ளீர்கள்!!! வேறு கையொப்பமிடும் சாதனத்தைப் பயன்படுத்தவும்.</translation>
+			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+			<translation>ஒரே கைரேகையை பலமுறை இறக்குமதி செய்துள்ளீர்கள்!!! வேறு கையொப்பமிடும் சாதனத்தைப் பயன்படுத்தவும்.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2600,9 +2660,14 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
-You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
-			<translation>பிட்காயின் Mainnet இல் சூடான பணப்பைகள் முடக்கப்பட்டுள்ளன.
-உண்மையான பிட்காயின் ஐப் பயன்படுத்தாமல் பிட்காயின் Safe ஐ சோதிக்க நீங்கள் Testnetக்கு மாறலாம்.</translation>
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test {app_name} without using real Bitcoin.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Is this a new wallet?</source>
+			<translation>இது ஒரு புதிய வாலெட்டா?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2656,8 +2721,8 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>No, quick scan</source>
-			<translation>இல்லை, விரைவான வருடு</translation>
+			<source>No, do a full scan</source>
+			<translation>இல்லை, முழு ஸ்கேன் செய்யவும்</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2900,11 +2965,6 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Was this wallet ever used before?</source>
-			<translation>இந்தப் பணப்பை இதற்கு முன் பயன்படுத்தப்பட்டதா?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Wrong password</source>
 			<translation>தவறான கடவுச்சொல்</translation>
 		</message>
@@ -2915,8 +2975,8 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Yes, full scan for transactions</source>
-			<translation>ஆம், பரிவர்த்தனைகளுக்கான முழு வருடு</translation>
+			<source>Yes</source>
+			<translation>ஆம்</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3173,11 +3233,6 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>பிட்காயின் Safe பதிவிறக்கங்கள் தனியுரிமைக்காக பல முனைகளிலிருந்து சுருக்கங்களைத் தடுக்கின்றன. இந்த ஆரம்ப ஒத்திசைவுக்குப் பிறகு, புதுப்பிப்புகள் வேகமாக இருக்கும்.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>சிறிய பிளாக் வடிப்பான்கள் (BIP157/BIP158) உங்கள் முகவரிகளைத் தனிப்பட்ட முறையில் வைத்திருக்கும் போது தொடர்புடைய பரிவர்த்தனைகளைக் கண்டறிய வாலட்களை அனுமதிக்கும்.</translation>
 		</message>
@@ -3281,6 +3336,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Your wallet syncs through the configured Esplora server.</source>
 			<translation>கட்டமைக்கப்பட்ட Esplora சர்வர் மூலம் உங்கள் வாலட் ஒத்திசைக்கப்படுகிறது.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
 		</message>
 	</context>
 	<context>
@@ -3509,6 +3569,23 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Hot Single Signature Wallet</source>
 			<translation>சூடான ஒற்றை சிக்னேச்சர் வாலட்</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test {app_name} without using real Bitcoin.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
+			<translation>Android தொலைபேசியை ஒரு பிரத்யேக bitcoin கையொப்ப சாதனமாக மாற்றுவது எப்படி என்பதை அறிக.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>No signer available?</source>
+			<translation>கையொப்பமிடுபவர் யாரும் கிடைக்கவில்லையா?</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3824,11 +3901,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Delete installed plugin {plugin}?</source>
 			<translation>நிறுவப்பட்ட செருகுநிரலை {plugin} நீக்கவா?</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Disable the plugin before deleting it.</source>
-			<translation>அதை நீக்கும் முன் செருகுநிரலை முடக்கவும்.</translation>
 		</message>
 		<name>PluginManager</name>
 		<message>
@@ -4987,6 +5059,13 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SourceCatalogItemWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>செருகுநிரலை நீக்கு</translation>
+		</message>
+	</context>
+	<context>
 		<name>SourceManagementDialog</name>
 		<message>
 			<source>Add Plugin Source...</source>
@@ -5181,6 +5260,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>ToolGui</name>
+		<message>
+			<source>Account index: </source>
+			<translation>கணக்கு குறியீடு: </translation>
+		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
@@ -5595,8 +5679,8 @@ txid:அவுட்பாயிண்ட்</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
-			<translation>இடதுபுறத்தில் உள்ள பட்டியலிலிருந்து ஒன்று அல்லது அதற்கு மேற்பட்ட UTXOகளைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் பரிவர்த்தனைக்கான சிறந்த நாணயங்களை Bitcoin-Safe தேர்வு செய்ய மேலே உள்ள "குறிப்பிட்ட UTXOகளைத் தேர்ந்தெடு" என்பதைத் தேர்வுசெய்யவும்.</translation>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
+			<translation>இடதுபுறத்தில் உள்ள பட்டியலிலிருந்து ஒன்று அல்லது அதற்கு மேற்பட்ட UTXOகளைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் பரிவர்த்தனைக்கான சிறந்த நாணயங்களை {app_name} தேர்வு செய்ய மேலே உள்ள "குறிப்பிட்ட UTXOகளைத் தேர்ந்தெடு" என்பதைத் தேர்வுசெய்யவும்.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5872,8 +5956,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Installer started. Closing Bitcoin Safe...</source>
-			<translation>நிறுவி தொடங்கப்பட்டது. பிட்காயின் சேஃப் மூடுகிறது...</translation>
+			<source>Installer started. Closing {app_name}...</source>
+			<translation>Installer started. Closing {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5912,8 +5996,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Update applied. Restarting Bitcoin Safe...</source>
-			<translation>புதுப்பிப்பு பயன்படுத்தப்பட்டது. பிட்காயின் பாதுகாப்பாக மறுதொடக்கம்...</translation>
+			<source>Update applied. Restarting {app_name}...</source>
+			<translation>Update applied. Restarting {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>

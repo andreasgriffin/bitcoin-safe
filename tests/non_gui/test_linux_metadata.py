@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ from tools.release_notes import (
 
 from bitcoin_safe import __version__
 from bitcoin_safe.app_metadata import APP_METADATA, resolve_metainfo_release_date
+from bitcoin_safe.constants import APP_NAME, WINDOWS_INSTALL_IDENTITY
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DESKTOP_ENTRY_PATH = Path("tools/build_linux/flathub_flatpak/org.bitcoin_safe.BitcoinSafe.desktop")
@@ -68,6 +69,22 @@ def test_desktop_entry_matches_generated_metadata() -> None:
 def test_windows_nsi_metadata_matches_generated_metadata() -> None:
     windows_nsi_metadata = (PROJECT_ROOT / WINDOWS_NSI_METADATA_PATH).read_text(encoding="utf-8")
     assert windows_nsi_metadata == APP_METADATA.render_windows_nsi_defines()
+
+
+def test_application_name_and_windows_install_identity_are_separate() -> None:
+    assert APP_METADATA.application_name == APP_NAME == "Bitcoin-Safe"
+    assert APP_METADATA.windows_install_identity == WINDOWS_INSTALL_IDENTITY == "Bitcoin Safe"
+
+    windows_nsi_metadata = APP_METADATA.render_windows_nsi_defines()
+    assert '!define PRODUCT_NAME "Bitcoin-Safe"' in windows_nsi_metadata
+    assert '!define PRODUCT_INSTALL_IDENTITY "Bitcoin Safe"' in windows_nsi_metadata
+    assert 'Uninstall\\${PRODUCT_INSTALL_IDENTITY}"' in windows_nsi_metadata
+
+    windows_installer = (PROJECT_ROOT / "tools/build_wine/bitcoin_safe.nsi").read_text(encoding="utf-8")
+    assert 'InstallDir "$PROGRAMFILES64\\${PRODUCT_INSTALL_IDENTITY}"' in windows_installer
+    assert 'InstallDirRegKey HKCU "Software\\${PRODUCT_INSTALL_IDENTITY}" ""' in windows_installer
+    assert 'CreateShortCut "$DESKTOP\\${PRODUCT_NAME}.lnk"' in windows_installer
+    assert 'Delete "$DESKTOP\\${PRODUCT_INSTALL_IDENTITY}.lnk"' in windows_installer
 
 
 def test_checked_in_metainfo_matches_generated_shared_metadata() -> None:
@@ -109,15 +126,15 @@ def test_flathub_populate_script_owns_checked_in_metainfo_generation() -> None:
 def test_windows_version_info_is_generated_from_shared_metadata() -> None:
     version_info = APP_METADATA.render_windows_version_info(
         original_filename="bitcoin_safe-portable.exe",
-        file_description="Bitcoin Safe Portable",
+        file_description="Bitcoin-Safe Portable",
         product_version="2.0.0rc2",
     )
 
     assert "filevers=(2, 0, 0, 2)" in version_info
     assert "StringStruct(u'CompanyName', u'Andreas Griffin')" in version_info
-    assert "StringStruct(u'FileDescription', u'Bitcoin Safe Portable')" in version_info
+    assert "StringStruct(u'FileDescription', u'Bitcoin-Safe Portable')" in version_info
     assert "StringStruct(u'OriginalFilename', u'bitcoin_safe-portable.exe')" in version_info
-    assert "StringStruct(u'ProductName', u'Bitcoin Safe')" in version_info
+    assert "StringStruct(u'ProductName', u'Bitcoin-Safe')" in version_info
     assert "StringStruct(u'ProductVersion', u'2.0.0rc2')" in version_info
 
 

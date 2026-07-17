@@ -18,11 +18,6 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
-			<source>Bitcoin-Safe</source>
-			<translation>Bitcoin-Safe</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
 			<source>FOSS - Free &amp; Open Source Software</source>
 			<translation>FOSS - Programari Lliure i de Codi Obert</translation>
 		</message>
@@ -415,8 +410,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>Sol·licitant factura... S’obrirà un navegador i Bitcoin Safe escoltarà la crida de retorn localment.</translation>
+			<source>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</source>
+			<translation>Sol·licitant factura... S’obrirà un navegador i {app_name} escoltarà la crida de retorn localment.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -581,8 +576,10 @@
 	<context>
 		<name>ButtonEdit</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>No s'ha pogut reconèixer l'entrada. Vols tornar a escanejar?</translation>
+			<source>Could not recognize the input. Do you want to scan again?
+
+The error was: {error}</source>
+			<translation>No s'ha pogut reconèixer l'entrada. Voleu tornar a escanejar? L'error ha estat: {error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -1348,18 +1345,13 @@ Default 20</source>
 	<context>
 		<name>DonateDialog</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe és finançat per la comunitat. El vostre suport manté el desenvolupament independent, ens permet publicar noves funcions i millora les revisions de seguretat. Els principals col·laboradors poden aparèixer a la nostra &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;pàgina de col·laboradors&lt;/a&gt;.</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
 			<source>Donation</source>
 			<translation>Donació</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
-			<translation>Donació completada amb èxit. Moltes gràcies per donar suport a Bitcoin Safe!</translation>
+			<source>Donation successful. Thank you so much for supporting {app_name}!</source>
+			<translation>Donació completada amb èxit. Moltes gràcies per donar suport a {app_name}!</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
@@ -1368,18 +1360,23 @@ Default 20</source>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Ajudeu Bitcoin Safe a créixer com a Programari Lliure i de Codi Obert.</translation>
+			<source>Help {app_name} grow as Free and Open Source Software.</source>
+			<translation>Ajudeu {app_name} a créixer com a Programari Lliure i de Codi Obert.</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Donar suport a Bitcoin Safe</translation>
+			<source>Support {app_name}</source>
+			<translation>Donar suport a {app_name}</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
 			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
 			<translation>Voleu parlar d’una contribució més gran o d’una associació? Utilitzeu el botó de contacte de sota.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>{app_name} és finançat per la comunitat. El vostre suport manté el desenvolupament independent, ens permet publicar noves funcions i millora les revisions de seguretat. Els principals col·laboradors poden aparèixer a la nostra &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;pàgina de col·laboradors&lt;/a&gt;.</translation>
 		</message>
 	</context>
 	<context>
@@ -1390,8 +1387,8 @@ Default 20</source>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
-			<source>Thanks for Bitcoin Safe!</source>
-			<translation>Missatge (opcional)</translation>
+			<source>Thanks for {app_name}!</source>
+			<translation>Thanks for {app_name}!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1477,15 +1474,15 @@ Default 20</source>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>Sencer (Bitcoin Safe)</translation>
+			<source>Full ({app_name})</source>
+			<translation>Sencer ({app_name})</translation>
 		</message>
 	</context>
 	<context>
 		<name>ExternalPaidPluginWidget</name>
 		<message>
 			<source>Delete Plugin</source>
-			<translation>Gràcies per Bitcoin Safe!</translation>
+			<translation>Suprimeix el connector</translation>
 		</message>
 	</context>
 	<context>
@@ -1797,8 +1794,8 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>Sencer (Bitcoin Safe)</translation>
+			<source>Full ({app_name})</source>
+			<translation>Sencer ({app_name})</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1814,8 +1811,8 @@ ja que la mida final de la transacció és desconeguda.</translation>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Import hardware signer information into Bitcoin Safe</source>
-			<translation>Importar la informació del signador de maquinari a Bitcoin Safe</translation>
+			<source>Import hardware signer information into {app_name}</source>
+			<translation>Importar la informació del signador de maquinari a {app_name}</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1861,6 +1858,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
+			<source>Dark</source>
+			<translation>Fosc</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
 			<source>Enter app lock password:</source>
 			<translation>Introduïu la contrasenya de bloqueig de l’aplicació:</translation>
 		</message>
@@ -1868,6 +1870,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Invalid password</source>
 			<translation>Contrasenya no vàlida</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Light</source>
+			<translation>Clar</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
@@ -1883,6 +1890,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Set</source>
 			<translation>Establir</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>System</source>
+			<translation>Sistema</translation>
 		</message>
 	</context>
 	<context>
@@ -1903,11 +1915,41 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
-			<source>Unexpected xpub origin</source>
-			<translation>Origen d'xpub inesperat</translation>
+			<source>The provided xpub origin {given} does not match the expectation {expected}</source>
+			<translation>L'origen xpub proporcionat {given} no coincideix amb l'esperat {expected}</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>This looks like a {provided_kind}. Expected: {expected_kind}.</source>
+			<translation>Això sembla un {provided_kind}. S'esperava: {expected_kind}.</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>multi-sig</source>
+			<translation>multisignatura</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>single-sig</source>
+			<translation>signatura única</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>{given} looks like {provided_type}, but this wallet expects {expected_type}.</source>
+			<translation>{given} sembla {provided_type}, però aquesta cartera espera {expected_type}.</translation>
 		</message>
 	</context>
 	<context>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Abort and try later</source>
+			<translation>Cancel·la i torna-ho a provar més tard</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Account number</source>
+			<translation>Número de compte</translation>
+		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -1917,11 +1959,6 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Change device type</source>
 			<translation>Canvia el tipus de dispositiu</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Connect</source>
-			<translation>Connecta</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1937,6 +1974,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Fingerprint</source>
 			<translation>Empremta digital</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Ignore warning and proceed</source>
+			<translation>Ignora l'avís i continua</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2055,6 +2097,16 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Set account number</source>
+			<translation>Defineix el número de compte</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Set account number...</source>
+			<translation>Defineix el número de compte...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>L'estàndard per al tipus d'adreça seleccionat {type} és {expected_key_origin}.  Corregeix-ho si no estàs segur.</translation>
 		</message>
@@ -2065,6 +2117,16 @@ You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
 			<translation>L’empremta de 8 dígits identifica la seed.
 La pots escriure al signador de maquinari per fer el seguiment de diferents seeds i dispositius de signatura.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
+			<translation>El compte ha canviat de {current_account_number} a {new_account_number}. Voleu continuar?</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
+			<translation>El número de compte està codificat al camí de derivació i selecciona l'xPub del signant.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2121,10 +2183,8 @@ Per a una cartera de signatura única, dona control total sobre els fons.</trans
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{msg}
-Do you want to proceed anyway?</source>
-			<translation>{msg}
-Vols continuar igualment?</translation>
+			<source>{msg}</source>
+			<translation>{msg}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2150,13 +2210,13 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>Has importat la mateixa empremta digital diverses vegades!!! Utilitza un dispositiu de signatura diferent.</translation>
+			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
+			<translation>Les ranures de signants {signers} contenen la mateixa xpub. Normalment, això vol dir que s'ha importat dues vegades la mateixa exportació del signant. Importeu un dispositiu o compte diferent per a cada signant.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>Has importat el mateix xpub diverses vegades!!! Utilitza un dispositiu de signatura diferent.</translation>
+			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+			<translation>Has importat la mateixa empremta digital diverses vegades!!! Utilitza un dispositiu de signatura diferent.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2593,9 +2653,14 @@ Vols continuar igualment?</translation>
 		<name>MainWindow</name>
 		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
-You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Els moneders calents estan desactivats a Bitcoin Mainnet.
-Pots canviar a Testnet per provar Bitcoin Safe sense utilitzar Bitcoin real.</translation>
+Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Is this a new wallet?</source>
+			<translation>És una cartera nova?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2649,8 +2714,8 @@ Pots canviar a Testnet per provar Bitcoin Safe sense utilitzar Bitcoin real.</tr
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>No, quick scan</source>
-			<translation>No, escaneig ràpid</translation>
+			<source>No, do a full scan</source>
+			<translation>No, fes un escaneig complet</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2893,11 +2958,6 @@ Vols amagar-la a la safata?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Was this wallet ever used before?</source>
-			<translation>Aquest moneder s’ha utilitzat abans?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Wrong password</source>
 			<translation>Contrasenya incorrecta</translation>
 		</message>
@@ -2908,8 +2968,8 @@ Vols amagar-la a la safata?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Yes, full scan for transactions</source>
-			<translation>Sí, escaneig complet de transaccions</translation>
+			<source>Yes</source>
+			<translation>Sí</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3166,11 +3226,6 @@ per tant normalment està aproximadament {minutes} minuts darrere de la punta.</
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>Suprimeix el connector</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) permeten que les carteres descobreixin transaccions rellevants mantenint les vostres adreces privades.</translation>
 		</message>
@@ -3204,7 +3259,7 @@ Ubicació no disponible.</translation>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe descarrega resums de blocs de múltiples nodes per privadesa. Després d’aquesta sincronització inicial, les actualitzacions seran ràpides. Si tens el teu propi servidor Electrum o no vols esperar, connecta’t a un servidor Electrum públic a la configuració de xarxa.</translation>
+			<translation>Si teniu el vostre propi servidor Electrum o no voleu esperar, connecteu-vos a un servidor Electrum públic des de la configuració de xarxa.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3272,6 +3327,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Your wallet syncs through the configured Esplora server.</source>
 			<translation>El vostre moneder se sincronitza a través del servidor Esplora configurat.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
 		</message>
 	</context>
 	<context>
@@ -3496,6 +3556,23 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		<message>
 			<source>Hot Single Signature Wallet</source>
 			<translation>Moneder calent de signatura única</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>Els moneders calents estan desactivats a Bitcoin Mainnet.
+Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
+			<translation>Apreneu a convertir un telèfon Android en un dispositiu dedicat per signar transaccions de bitcoin.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>No signer available?</source>
+			<translation>No hi ha cap signant disponible?</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3811,11 +3888,6 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		<message>
 			<source>Delete installed plugin {plugin}?</source>
 			<translation>Vols suprimir el connector instal·lat {plugin}?</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Disable the plugin before deleting it.</source>
-			<translation>Desactiva el connector abans de suprimir-lo.</translation>
 		</message>
 		<name>PluginManager</name>
 		<message>
@@ -4968,6 +5040,13 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		</message>
 	</context>
 	<context>
+		<name>SourceCatalogItemWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>Suprimeix el connector</translation>
+		</message>
+	</context>
+	<context>
 		<name>SourceManagementDialog</name>
 		<message>
 			<source>Add Plugin Source...</source>
@@ -5162,6 +5241,11 @@ Si voleu continuar utilitzant tots dos, restabliu ara la clau de sincronització
 		</message>
 	</context>
 	<context>
+		<name>ToolGui</name>
+		<message>
+			<source>Account index: </source>
+			<translation>Índex del compte: </translation>
+		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
@@ -5572,8 +5656,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
-			<translation>Selecciona un o més UTXO de la llista de l’esquerra, o desmarca “Seleccionar UTXO específics” a sobre per deixar que Bitcoin‑Safe esculli les millors monedes per a la teva transacció.</translation>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
+			<translation>Selecciona un o més UTXO de la llista de l’esquerra, o desmarca “Seleccionar UTXO específics” a sobre per deixar que {app_name} esculli les millors monedes per a la teva transacció.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5849,8 +5933,8 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Installer started. Closing Bitcoin Safe...</source>
-			<translation>Instal·lador iniciat. Tancant Bitcoin Safe...</translation>
+			<source>Installer started. Closing {app_name}...</source>
+			<translation>Instal·lador iniciat. Tancant {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5889,8 +5973,8 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Update applied. Restarting Bitcoin Safe...</source>
-			<translation>Actualització aplicada. Reiniciant Bitcoin Safe...</translation>
+			<source>Update applied. Restarting {app_name}...</source>
+			<translation>Actualització aplicada. Reiniciant {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>

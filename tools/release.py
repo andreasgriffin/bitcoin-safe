@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2024-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ from typing import Any
 
 import requests
 
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.execute_config import ENABLE_THREADING, ENABLE_TIMERS, IS_PRODUCTION
 from tools.release_notes import required_release_notes
 
@@ -260,7 +261,7 @@ def get_input_with_default(prompt: str, default: str = "") -> str:
 
 def parse_args() -> argparse.Namespace:
     """Parse args."""
-    parser = argparse.ArgumentParser(description="Release Bitcoin Safe")
+    parser = argparse.ArgumentParser(description=f"Release {APP_NAME}")
     parser.add_argument("--skip_test", action="store_true")
     parser.add_argument("--allow_branch", action="store_true")
 

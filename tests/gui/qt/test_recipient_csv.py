@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -166,7 +166,7 @@ def test_viewer_hides_recipients_csv_toolbutton_and_moves_export_into_file_menu(
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+        assert main_window.windowTitle() == "Bitcoin-Safe - REGTEST"
 
         qt_wallet = setup_single_sig_wallet(
             main_window=main_window,

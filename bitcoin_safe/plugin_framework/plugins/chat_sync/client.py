@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2025-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -51,6 +51,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QAction, QColor
 from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget
 
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.descriptor_export_tools import shorten_filename
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import (
@@ -171,7 +172,7 @@ class SyncClient(PluginClient):
                 text=translate("SyncClient", "protocol"),
             ),
         )
-        cls.provider = "Bitcoin Safe (via Nostr)"
+        cls.provider = f"{APP_NAME} (via Nostr)"
 
     @classmethod
     def cls_kwargs(  # type: ignore

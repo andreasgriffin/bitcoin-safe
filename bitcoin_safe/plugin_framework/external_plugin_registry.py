@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -50,6 +50,7 @@ from packaging.version import InvalidVersion, Version
 
 from bitcoin_safe import __version__
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.network_utils import ProxyInfo, fetch_bytes
 from bitcoin_safe.plugin_framework.external_plugin_registry_dataclasses import (
     SOURCE_MANIFEST_FILENAME,
@@ -979,7 +980,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
             )
         if not self._is_plugin_compatible(plugin.app_version_specifier):
             raise ExternalPluginError(
-                f"Plugin {plugin.bundle_id} is not compatible with this Bitcoin Safe version."
+                f"Plugin {plugin.bundle_id} is not compatible with this {APP_NAME} version."
             )
 
     @staticmethod
@@ -1004,7 +1005,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
             version = Version(raw_version.strip())
         except InvalidVersion as exc:
             raise ExternalPluginError(
-                f"Invalid Bitcoin Safe version requirement {app_version_specifier!r}."
+                f"Invalid {APP_NAME} version requirement {app_version_specifier!r}."
             ) from exc
 
         release = version.release
@@ -1022,7 +1023,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
             version = Version(raw_version.strip())
         except InvalidVersion as exc:
             raise ExternalPluginError(
-                f"Invalid Bitcoin Safe version requirement {app_version_specifier!r}."
+                f"Invalid {APP_NAME} version requirement {app_version_specifier!r}."
             ) from exc
 
         release = version.release
@@ -1046,7 +1047,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
             clauses.append(clause)
 
         if not clauses:
-            raise ExternalPluginError(f"Invalid Bitcoin Safe version requirement {app_version_specifier!r}.")
+            raise ExternalPluginError(f"Invalid {APP_NAME} version requirement {app_version_specifier!r}.")
         return ",".join(clauses)
 
     @classmethod
@@ -1056,7 +1057,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
             app_version = Version(__version__)
         except (InvalidSpecifier, InvalidVersion) as exc:
             raise ExternalPluginError(
-                f"Invalid Bitcoin Safe version requirement {app_version_specifier!r}."
+                f"Invalid {APP_NAME} version requirement {app_version_specifier!r}."
             ) from exc
         return specifier_set.contains(app_version, prereleases=True)
 

@@ -1,4 +1,4 @@
-Bitcoin Safe
+Bitcoin-Safe
 Copyright (C) $create_year$year_delimiter$edit_year $author_name
 
 This program is free software: you can redistribute it and/or modify

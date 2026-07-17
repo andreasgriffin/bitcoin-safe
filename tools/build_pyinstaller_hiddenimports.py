@@ -1,5 +1,5 @@
 # Current official remote plugins import these modules from the packaged app.
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify

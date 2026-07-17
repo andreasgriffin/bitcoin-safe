@@ -296,7 +296,7 @@ jobs:
       - name: Verify application startup
         run: |
           LOG_PATH="$HOME/.config/bitcoin_safe/bitcoin_safe.log"
-          echo "Waiting for Bitcoin Safe log at $LOG_PATH"
+          echo "Waiting for Bitcoin-Safe log at $LOG_PATH"
           for i in $(seq 1 30); do
             if [ -f "$LOG_PATH" ]; then
               break
@@ -326,7 +326,7 @@ jobs:
           fi
           PROCESS_COUNT=$(ps aux | grep -i 'bitcoin' | grep -i 'safe' | grep -v grep | wc -l)
           if [ "$PROCESS_COUNT" -eq 0 ]; then
-            echo "Bitcoin Safe process does not appear to be running"
+            echo "Bitcoin-Safe process does not appear to be running"
             ps aux
             exit 1
           fi
@@ -341,7 +341,7 @@ jobs:
           if [ -f app_launch.pid ]; then
             kill "$(cat app_launch.pid)" 2>/dev/null || true
           fi
-          pkill -f 'Bitcoin Safe' || true
+          pkill -f 'Bitcoin-Safe' || true
           pkill -f 'bitcoin_safe' || true
 
       - name: Stop background services

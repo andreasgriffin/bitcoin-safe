@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ from PyQt6.QtCore import QRectF, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor, QIcon, QPainter, QPixmap
 from PyQt6.QtWidgets import QApplication, QSystemTrayIcon, QWidget
 
-from bitcoin_safe.constants import LOGO_NAME
+from bitcoin_safe.constants import APP_NAME, LOGO_NAME
 from bitcoin_safe.gui.qt.unlockable_main_window import UnlockableMainWindow
 from bitcoin_safe.gui.qt.util import Message, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
@@ -62,7 +62,7 @@ class TrayController(QSystemTrayIcon):
         self._tray_icon_default = tray_icon_default
         self._tray_icon_notification = self._build_tray_notification_icon()
 
-        self.setToolTip("Bitcoin Safe")
+        self.setToolTip(APP_NAME)
 
         self._menu = Menu(parent)
         self._action_toggle_visibility = self._menu.add_action(slot=self.toggle_window_visibility)
@@ -224,7 +224,7 @@ class TrayController(QSystemTrayIcon):
         )
 
     def _format_tray_notification_label(self, message: Message) -> str:
-        title = message.title or "Bitcoin Safe"
+        title = message.title or APP_NAME
         body = message.msg
         timestamp_str = message.created_at.strftime("%H:%M:%S")
         title_str = title.replace("\n", " ").strip()
@@ -245,7 +245,7 @@ class TrayController(QSystemTrayIcon):
     def _show_notification(self, message: Message) -> None:
         icon, _ = message.get_icon_and_title()
         tray_icon = Message.system_tray_icon(icon)
-        title = (message.title or "Bitcoin Safe").strip()
+        title = (message.title or APP_NAME).strip()
         content = message.msg.strip()
         if message.msecs:
             self.showMessage(title, content, tray_icon, message.msecs)

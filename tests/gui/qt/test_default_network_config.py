@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2024-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ def test_default_network_config_works(
     with main_window_context(test_config=test_config_main_chain) as main_window:
         # Wait until the main window is shown before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe"
+        assert main_window.windowTitle() == "Bitcoin-Safe"
 
         shutter.save(main_window)
 

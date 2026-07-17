@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -64,6 +64,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.client import ProgressInfo
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.geoip_rough import RoughGeoIpDatabase
 from bitcoin_safe.network_config import Peer
 from bitcoin_safe.network_utils import (
@@ -757,8 +758,9 @@ class NetworkMapWidget(QWidget):
             self.title_label.setText(self.tr("Scanning Bitcoin blockchain"))
             self.subtitle_label.setText(
                 self.tr(
-                    "Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast."
-                )
+                    "{app_name} downloads block summaries from multiple nodes for privacy. "
+                    "After this initial sync, updates will be fast."
+                ).format(app_name=APP_NAME)
             )
             self.privacy_help_label.set_icon_as_help(
                 tooltip=self.tr(

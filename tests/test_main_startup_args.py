@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ import bdkpython as bdk
 from _pytest.logging import LogCaptureFixture
 
 import bitcoin_safe.__main__ as app_main
+from bitcoin_safe.constants import APP_NAME
 
 
 def test_parse_args_keeps_valid_network() -> None:
@@ -102,3 +103,5 @@ def test_main_uses_sanitized_network() -> None:
     )
     window.show.assert_called_once()
     app.exec.assert_called_once()
+    app.setOrganizationName.assert_called_once_with(APP_NAME)
+    app.setApplicationName.assert_called_once_with(APP_NAME)

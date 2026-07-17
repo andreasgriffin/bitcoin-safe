@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2024-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ METROVAULT_REPOSITORY_URL = "https://github.com/gorunjinian/MetroVault"
 
 
 def _signer_info_url(path: str | None = None) -> str:
-    """Build the Bitcoin Safe knowledge URL for a supported hardware signer."""
+    """Build the application knowledge URL for a supported hardware signer."""
     if not path:
         return SUPPORTED_HARDWARE_SIGNERS_URL
     return f"{SUPPORTED_HARDWARE_SIGNERS_URL}{path.strip('/')}/"

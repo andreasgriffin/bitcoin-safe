@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2024-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ import appdirs
 from PyQt6.QtCore import QtMsgType, qInstallMessageHandler
 
 from bitcoin_safe import __version__
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.logging_handlers import (
     MailHandler,
     OpenLogHandler,
@@ -128,7 +129,7 @@ def setup_logging() -> None:
 
     _LOGGING_CONFIGURED = True
 
-    logger.info("========================= Starting Bitcoin Safe ========================")
+    logger.info("========================= Starting %s ========================", APP_NAME)
     logger.info(f"Version: {__version__}")
     logger.info(f"Python version: {sys.version}. On platform: {describe_os_version()}")
     # logger.info(f"Logging to file: {str(logger.handlers[-1].filename)}")

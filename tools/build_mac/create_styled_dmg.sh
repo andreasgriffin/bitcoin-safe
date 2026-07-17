@@ -9,7 +9,7 @@ fi
 
 APP_BUNDLE_PATH="${1:?Usage: $0 <app-bundle-path> <output-dmg-path> [volume-name] [background-image-path]}"
 OUTPUT_DMG_PATH="${2:?Usage: $0 <app-bundle-path> <output-dmg-path> [volume-name] [background-image-path]}"
-VOLUME_NAME="${3:-Bitcoin Safe}"
+VOLUME_NAME="${3:-Bitcoin-Safe}"
 BACKGROUND_IMAGE_PATH="${4:-$(dirname "$0")/../resources/dmg-background.png}"
 WINDOW_LEFT=140
 WINDOW_TOP=120

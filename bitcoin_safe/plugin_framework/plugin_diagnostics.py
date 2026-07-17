@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -138,7 +138,7 @@ def format_external_plugin_diagnostics_as_text(config_dir: Path | None = None) -
 
 
 def _default_config_dir() -> Path:
-    """Return the default Bitcoin Safe user config directory."""
+    """Return the default application user config directory."""
     return Path(appdirs.user_config_dir("bitcoin_safe"))
 
 

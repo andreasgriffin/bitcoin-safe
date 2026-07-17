@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2023-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -80,6 +80,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.category_info import CategoryInfo
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.category_manager.category_manager import AddressDragInfo
@@ -163,7 +164,7 @@ class ImportLabelMenu(Menu):
     def updateUi(self) -> None:
         """UpdateUi."""
         self.setTitle(self.tr("Import labels and categories"))
-        self.action_import.setText(self.tr("Full (Bitcoin Safe)"))
+        self.action_import.setText(self.tr("Full ({app_name})").format(app_name=APP_NAME))
         self.action_bip329_import.setText(self.tr("Exchange format (BIP329)"))
         self.action_electrum_import.setText(self.tr("Electrum Wallet"))
         self.action_nostr_import.setText(self.tr("Restore labels from cloud using an existing sync key"))
@@ -186,7 +187,7 @@ class ExportLabelMenu(Menu):
     def updateUi(self) -> None:
         """UpdateUi."""
         self.setTitle(self.tr("Export labels and categories"))
-        self.action_export_full.setText(self.tr("Full (Bitcoin Safe)"))
+        self.action_export_full.setText(self.tr("Full ({app_name})").format(app_name=APP_NAME))
         self.action_bip329.setText(self.tr("Exchange format (BIP329)"))
 
 

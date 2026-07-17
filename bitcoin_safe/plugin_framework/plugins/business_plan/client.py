@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -37,6 +37,7 @@ from PyQt6.QtCore import pyqtSignal
 
 from bitcoin_safe.btcpay_config import BTCPAY_SUBSCRIPTION_CONFIG
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.fx import FX
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.paid_plugin_client import PaidPluginClient
@@ -56,7 +57,7 @@ class BusinessPlanItem(PaidPluginClient):
         "Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. "
         "Start the free trial first, then manage or refresh the subscription here.",
     )
-    provider = "Bitcoin Safe"
+    provider = APP_NAME
     subscription_product_id = "business-plan"
 
     signal_request_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
@@ -71,7 +72,7 @@ class BusinessPlanItem(PaidPluginClient):
             "Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. "
             "Start the free trial first, then manage or refresh the subscription here.",
         )
-        cls.provider = "Bitcoin Safe"
+        cls.provider = APP_NAME
 
     @staticmethod
     def cls_kwargs(  # type: ignore

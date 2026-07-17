@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -32,11 +32,12 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from bitcoin_safe.constants import APP_NAME
 from tools.build_linux.flathub_flatpak import repo_builder, tracked_repo_files
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Populate the Bitcoin Safe Flathub manifest repo.")
+    parser = argparse.ArgumentParser(description=f"Populate the {APP_NAME} Flathub manifest repo.")
     parser.add_argument(
         "--source-repo-url",
         help=(

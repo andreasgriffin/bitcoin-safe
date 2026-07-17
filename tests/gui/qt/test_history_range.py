@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ def test_history_range_coupling(
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+        assert main_window.windowTitle() == "Bitcoin-Safe - REGTEST"
 
         shutter.save(main_window)
 

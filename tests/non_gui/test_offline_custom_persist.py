@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2025-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify

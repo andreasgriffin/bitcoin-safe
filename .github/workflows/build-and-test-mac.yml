@@ -203,13 +203,13 @@ jobs:
           done
 
           # Verify the app is running.
-          echo "Checking if Bitcoin Safe is running..." | tee -a test_dmg.log
-          PROCESS_COUNT=$(ps aux | grep -v grep | grep "Bitcoin Safe" | wc -l)
+          echo "Checking if Bitcoin-Safe is running..." | tee -a test_dmg.log
+          PROCESS_COUNT=$(ps aux | grep -v grep | grep "Bitcoin-Safe" | wc -l)
           if [ "$PROCESS_COUNT" -eq 0 ]; then
-            echo "Error: Bitcoin Safe is not running!" | tee -a test_dmg.log
+            echo "Error: Bitcoin-Safe is not running!" | tee -a test_dmg.log
             exit 1
           else
-            echo "Bitcoin Safe is running." | tee -a test_dmg.log
+            echo "Bitcoin-Safe is running." | tee -a test_dmg.log
           fi
  
           # Optionally, you can run further tests against the application.

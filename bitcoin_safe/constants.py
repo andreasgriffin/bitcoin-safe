@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2023-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -30,6 +30,11 @@
 from __future__ import annotations
 
 from typing import Literal
+
+APP_NAME = "Bitcoin-Safe"
+# Keep the historical Windows installation identity so upgrades replace existing
+# installations instead of creating a second installation.
+WINDOWS_INSTALL_IDENTITY = "Bitcoin Safe"
 
 # change the min relay fee rate to 0.1, once core >=v30 is adopted by most (including electrum servers)
 MIN_RELAY_FEE = 1.0

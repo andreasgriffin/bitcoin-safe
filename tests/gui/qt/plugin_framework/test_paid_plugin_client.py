@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -157,7 +157,7 @@ class DemoPaidPluginClient(PaidPluginClient):
         "Example plugin based on PaidPluginClient. "
         "Use this to verify subscription-gated activation and plugin-manager actions."
     )
-    provider = "Bitcoin Safe"
+    provider = "Bitcoin-Safe"
     subscription_product_id = "demo-plugin"
 
     @classmethod
