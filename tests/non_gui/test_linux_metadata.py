@@ -212,6 +212,9 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     assert "APPLICATIONS_ICON_X=506" in create_styled_dmg
     assert "APPLICATIONS_ICON_Y=170" in create_styled_dmg
     assert "DMG_RETRY_ATTEMPTS=30" in create_styled_dmg
+    assert "DMG_RETRY_DELAY_SECONDS=20" in create_styled_dmg
+    assert "local delay=$((failed_attempts * DMG_RETRY_DELAY_SECONDS))" in create_styled_dmg
+    assert 'wait_before_dmg_retry "${attempts}"' in create_styled_dmg
     assert "set icon size of view_options to ${ICON_SIZE}" in create_styled_dmg
     assert "set text size of view_options to ${ICON_TEXT_SIZE}" in create_styled_dmg
     assert (

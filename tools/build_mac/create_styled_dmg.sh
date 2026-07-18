@@ -32,6 +32,16 @@ APP_NAME="$(basename "${APP_BUNDLE_PATH}")"
 DEVICE_NAME=""
 BACKGROUND_COPY_PATH="${STAGING_DIR}/.background/dmg-background.png"
 DMG_RETRY_ATTEMPTS=30
+DMG_RETRY_DELAY_SECONDS=20
+
+wait_before_dmg_retry() {
+    local failed_attempts="${1}"
+    local delay=$((failed_attempts * DMG_RETRY_DELAY_SECONDS))
+    local next_attempt=$((failed_attempts + 1))
+
+    echo "Retrying DMG operation in ${delay} seconds (attempt ${next_attempt} of ${DMG_RETRY_ATTEMPTS})."
+    sleep "${delay}"
+}
 
 wait_for_dmg_release() {
     local attempts=0
@@ -60,7 +70,7 @@ detach_dmg() {
 }
 
 create_plain_dmg() {
-    local attempts=0
+    local attempts=1
 
     mkdir -p "$(dirname "${OUTPUT_DMG_PATH}")"
     rm -f "${OUTPUT_DMG_PATH}"
@@ -70,17 +80,17 @@ create_plain_dmg() {
         -srcfolder "${STAGING_DIR}" \
         "${OUTPUT_DMG_PATH}" \
         >/dev/null; do
-        if [ "${attempts}" -eq "${DMG_RETRY_ATTEMPTS}" ]; then
+        if [ "${attempts}" -ge "${DMG_RETRY_ATTEMPTS}" ]; then
             echo "Could not create .DMG"
             return 1
         fi
+        wait_before_dmg_retry "${attempts}"
         attempts=$((attempts + 1))
-        sleep 1
     done
 }
 
 convert_compressed_dmg() {
-    local attempts=0
+    local attempts=1
 
     mkdir -p "$(dirname "${OUTPUT_DMG_PATH}")"
     rm -f "${OUTPUT_DMG_PATH}"
@@ -90,13 +100,13 @@ convert_compressed_dmg() {
         -imagekey zlib-level=9 \
         -o "${OUTPUT_DMG_PATH}" \
         >/dev/null; do
-        if [ "${attempts}" -eq "${DMG_RETRY_ATTEMPTS}" ]; then
+        if [ "${attempts}" -ge "${DMG_RETRY_ATTEMPTS}" ]; then
             echo "Could not convert staged DMG."
             return 1
         fi
-        attempts=$((attempts + 1))
         rm -f "${OUTPUT_DMG_PATH}"
-        sleep 1
+        wait_before_dmg_retry "${attempts}"
+        attempts=$((attempts + 1))
     done
 }
 
