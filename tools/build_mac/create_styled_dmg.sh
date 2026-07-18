@@ -36,7 +36,7 @@ DMG_RETRY_DELAY_SECONDS=2
 
 wait_before_dmg_retry() {
     local failed_attempts="${1}"
-    local delay=DMG_RETRY_DELAY_SECONDS
+    local delay=$((DMG_RETRY_DELAY_SECONDS))
     local next_attempt=$((failed_attempts + 1))
 
     echo "Retrying DMG operation in ${delay} seconds (attempt ${next_attempt} of ${DMG_RETRY_ATTEMPTS})."
