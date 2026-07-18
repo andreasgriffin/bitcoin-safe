@@ -31,12 +31,12 @@ MOUNT_DIR="${TEMP_ROOT}/mount"
 APP_NAME="$(basename "${APP_BUNDLE_PATH}")"
 DEVICE_NAME=""
 BACKGROUND_COPY_PATH="${STAGING_DIR}/.background/dmg-background.png"
-DMG_RETRY_ATTEMPTS=30
-DMG_RETRY_DELAY_SECONDS=20
+DMG_RETRY_ATTEMPTS=600
+DMG_RETRY_DELAY_SECONDS=10
 
 wait_before_dmg_retry() {
     local failed_attempts="${1}"
-    local delay=$((failed_attempts * DMG_RETRY_DELAY_SECONDS))
+    local delay=$((failed_attempts))
     local next_attempt=$((failed_attempts + 1))
 
     echo "Retrying DMG operation in ${delay} seconds (attempt ${next_attempt} of ${DMG_RETRY_ATTEMPTS})."
