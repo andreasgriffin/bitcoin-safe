@@ -32,11 +32,11 @@ APP_NAME="$(basename "${APP_BUNDLE_PATH}")"
 DEVICE_NAME=""
 BACKGROUND_COPY_PATH="${STAGING_DIR}/.background/dmg-background.png"
 DMG_RETRY_ATTEMPTS=600
-DMG_RETRY_DELAY_SECONDS=10
+DMG_RETRY_DELAY_SECONDS=2
 
 wait_before_dmg_retry() {
     local failed_attempts="${1}"
-    local delay=$((failed_attempts))
+    local delay=DMG_RETRY_DELAY_SECONDS
     local next_attempt=$((failed_attempts + 1))
 
     echo "Retrying DMG operation in ${delay} seconds (attempt ${next_attempt} of ${DMG_RETRY_ATTEMPTS})."
