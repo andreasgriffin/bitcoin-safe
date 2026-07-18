@@ -61,7 +61,8 @@
           <li>Added MetroVault support</li>
           <li>Upgrade Bitcoin Dev Kit (BDK) to 3.0</li>
           <li>Show the connected Bitcoin nodes for compact block filter fetching on the map</li>
-          <li>Re-store custom account xpub fetching for USB signers</li>
+          <li>Reenable custom account xpub fetching for USB signers</li>
+          <li>Rebrand to Bitcoin-Safe</li>
           <li>Bug fixes</li>
         </ul>
       </description>
