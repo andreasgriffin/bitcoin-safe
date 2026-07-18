@@ -34,7 +34,8 @@ DEVICE_NAME=""
 BACKGROUND_COPY_PATH="${STAGING_DIR}/.background/dmg-background.png"
 DMG_RETRY_ATTEMPTS=5
 DMG_RETRY_DELAY_SECONDS=10
-DMG_RELEASE_ATTEMPTS=30
+DMG_DETACH_GRACE_ATTEMPTS=5
+DMG_HELPER_RELEASE_ATTEMPTS=10
 
 wait_before_dmg_retry() {
     local failed_attempts="${1}"
@@ -62,18 +63,67 @@ print_dmg_diagnostics() {
     lsof "${RW_DMG_PATH}" || true
 }
 
+staged_dmg_process_ids() {
+    local image_info
+
+    image_info="$(hdiutil info)" || return 1
+    awk -v image_path="${RW_DMG_PATH}" '
+        /^=+$/ { matches_image = 0 }
+        $1 == "image-path" && $2 == ":" {
+            current_image_path = $0
+            sub(/^[^:]*:[[:space:]]*/, "", current_image_path)
+            matches_image = (current_image_path == image_path)
+        }
+        matches_image && $1 == "process" && $2 == "ID" && $3 == ":" { print $4 }
+    ' <<<"${image_info}"
+}
+
+terminate_staged_dmg_helpers() {
+    local signal="${1}"
+    local process_id
+    local process_name
+    local terminated=false
+
+    for process_id in $(staged_dmg_process_ids); do
+        process_name="$(ps -p "${process_id}" -o comm= 2>/dev/null || true)"
+        if [[ "${process_name}" != *diskimage* ]]; then
+            echo "Refusing to signal unexpected process ${process_id}: ${process_name:-unknown}" >&2
+            continue
+        fi
+        echo "Sending SIG${signal} to staged DMG helper ${process_id} (${process_name})."
+        kill -s "${signal}" "${process_id}" || true
+        terminated=true
+    done
+
+    [ "${terminated}" = true ]
+}
+
 wait_for_dmg_release() {
+    local max_attempts="${1}"
     local attempts=0
 
     while { [ -d "${MOUNT_DIR}" ] && mount | grep -Fq "on ${MOUNT_DIR} "; } || staged_dmg_is_attached; do
-        if [ "${attempts}" -ge "${DMG_RELEASE_ATTEMPTS}" ]; then
-            echo "Timed out waiting for staged DMG to detach completely."
-            print_dmg_diagnostics
-            return 1
-        fi
+        [ "${attempts}" -ge "${max_attempts}" ] && return 1
         attempts=$((attempts + 1))
         sleep 1
     done
+}
+
+release_staged_dmg() {
+    wait_for_dmg_release "${DMG_DETACH_GRACE_ATTEMPTS}" && return
+
+    echo "The staged DMG helper did not exit after detach; terminating its helper process."
+    terminate_staged_dmg_helpers TERM || true
+    wait_for_dmg_release "${DMG_HELPER_RELEASE_ATTEMPTS}" && return
+
+    echo "The staged DMG helper ignored SIGTERM; forcing its termination."
+    terminate_staged_dmg_helpers KILL || true
+    if ! wait_for_dmg_release "${DMG_HELPER_RELEASE_ATTEMPTS}"; then
+        echo "Timed out waiting for staged DMG to detach completely."
+        print_dmg_diagnostics
+        return 1
+    fi
+    return 0
 }
 
 detach_dmg() {
@@ -82,7 +132,7 @@ detach_dmg() {
             echo "Normal detach failed for ${DEVICE_NAME}; trying a forced detach."
             hdiutil detach "${DEVICE_NAME}" -force -quiet || true
         fi
-        wait_for_dmg_release || return 1
+        release_staged_dmg || return 1
         DEVICE_NAME=""
         return
     fi
@@ -91,7 +141,7 @@ detach_dmg() {
             echo "Normal detach failed for ${MOUNT_DIR}; trying a forced detach."
             hdiutil detach "${MOUNT_DIR}" -force -quiet || true
         fi
-        wait_for_dmg_release
+        release_staged_dmg
     fi
 }
 

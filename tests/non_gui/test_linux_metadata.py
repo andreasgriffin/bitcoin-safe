@@ -214,7 +214,8 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     assert 'TEMP_ROOT="$(cd "${TEMP_ROOT}" && pwd -P)"' in create_styled_dmg
     assert "DMG_RETRY_ATTEMPTS=5" in create_styled_dmg
     assert "DMG_RETRY_DELAY_SECONDS=10" in create_styled_dmg
-    assert "DMG_RELEASE_ATTEMPTS=30" in create_styled_dmg
+    assert "DMG_DETACH_GRACE_ATTEMPTS=5" in create_styled_dmg
+    assert "DMG_HELPER_RELEASE_ATTEMPTS=10" in create_styled_dmg
     assert "local delay=$((DMG_RETRY_DELAY_SECONDS * (2 ** (failed_attempts - 1))))" in create_styled_dmg
     assert 'wait_before_dmg_retry "${attempts}"' in create_styled_dmg
     assert "set icon size of view_options to ${ICON_SIZE}" in create_styled_dmg
@@ -234,6 +235,11 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     assert 'grep -Fq "${RW_DMG_PATH}" <<<"${image_info}"' in create_styled_dmg
     assert "sed -E 's/s[0-9]+$//'" in create_styled_dmg
     assert 'hdiutil detach "${DEVICE_NAME}" -quiet' in create_styled_dmg
+    assert "staged_dmg_process_ids" in create_styled_dmg
+    assert 'matches_image && $1 == "process" && $2 == "ID"' in create_styled_dmg
+    assert '[[ "${process_name}" != *diskimage* ]]' in create_styled_dmg
+    assert "terminate_staged_dmg_helpers TERM" in create_styled_dmg
+    assert "terminate_staged_dmg_helpers KILL" in create_styled_dmg
     assert "print_dmg_diagnostics" in create_styled_dmg
     assert 'lsof "${RW_DMG_PATH}"' in create_styled_dmg
     assert 'echo "Timed out waiting for staged DMG to detach completely."' in create_styled_dmg
