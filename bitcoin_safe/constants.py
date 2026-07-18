@@ -32,6 +32,10 @@ from __future__ import annotations
 from typing import Literal
 
 APP_NAME = "Bitcoin-Safe"
+# Keep the historical app bundle filename so Finder replaces existing installs
+# when users drag the rebranded application into the Applications folder.
+MACOS_BUNDLE_NAME = "Bitcoin Safe.app"
+MACOS_BUNDLE_IDENTIFIER = "org.bitcoin-safe.BitcoinSafe"
 # Keep the historical Windows installation identity so upgrades replace existing
 # installations instead of creating a second installation.
 WINDOWS_INSTALL_IDENTITY = "Bitcoin Safe"

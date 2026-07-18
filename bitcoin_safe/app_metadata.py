@@ -39,7 +39,13 @@ from pathlib import Path
 from xml.sax.saxutils import escape
 
 from bitcoin_safe import __version__
-from bitcoin_safe.constants import APP_NAME, CONTACT_EMAIL, WINDOWS_INSTALL_IDENTITY
+from bitcoin_safe.constants import (
+    APP_NAME,
+    CONTACT_EMAIL,
+    MACOS_BUNDLE_IDENTIFIER,
+    MACOS_BUNDLE_NAME,
+    WINDOWS_INSTALL_IDENTITY,
+)
 
 RELEASE_ENTRY_PATTERN = re.compile(r'(<release\b[^>]*\bversion=")([^"]+)(".*?\bdate=")([^"]+)(".*?/>)')
 MANAGED_METAINFO_TAGS = frozenset(
@@ -91,6 +97,8 @@ class ApplicationMetadata:
     flatpak_app_id: str
     copyright_year_range: str
     macos_camera_usage_description: str
+    macos_bundle_name: str
+    macos_bundle_identifier: str
     macos_executable_name: str
     source_repository: str
     brand_color_light: str
@@ -116,10 +124,6 @@ class ApplicationMetadata:
     @property
     def copyright_notice(self) -> str:
         return f"{self.copyright_year_range} {self.developer_name}"
-
-    @property
-    def macos_bundle_name(self) -> str:
-        return f"{self.application_name}.app"
 
     @property
     def macos_dmg_volume_name(self) -> str:
@@ -447,6 +451,8 @@ APP_METADATA = ApplicationMetadata(
     flatpak_app_id="org.bitcoin_safe.BitcoinSafe",
     copyright_year_range="2023-2026",
     macos_camera_usage_description=f"{APP_NAME} would like to access the camera to scan QR codes",
+    macos_bundle_name=MACOS_BUNDLE_NAME,
+    macos_bundle_identifier=MACOS_BUNDLE_IDENTIFIER,
     macos_executable_name="run_Bitcoin_Safe",
     source_repository="https://github.com/andreasgriffin/bitcoin-safe",
     brand_color_light="#f7931a",

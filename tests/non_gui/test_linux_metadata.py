@@ -44,7 +44,12 @@ from tools.release_notes import (
 
 from bitcoin_safe import __version__
 from bitcoin_safe.app_metadata import APP_METADATA, resolve_metainfo_release_date
-from bitcoin_safe.constants import APP_NAME, WINDOWS_INSTALL_IDENTITY
+from bitcoin_safe.constants import (
+    APP_NAME,
+    MACOS_BUNDLE_IDENTIFIER,
+    MACOS_BUNDLE_NAME,
+    WINDOWS_INSTALL_IDENTITY,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DESKTOP_ENTRY_PATH = Path("tools/build_linux/flathub_flatpak/org.bitcoin_safe.BitcoinSafe.desktop")
@@ -160,6 +165,21 @@ def test_macos_packaging_includes_license_file() -> None:
     assert "create_styled_dmg.sh" in make_osx
     assert "LICENSE.txt" not in make_osx
     assert "LICENSE.txt" not in package_sh
+
+
+def test_macos_bundle_keeps_install_identity_and_uses_rebranded_display_name() -> None:
+    osx_spec = (PROJECT_ROOT / "tools" / "build_mac" / "osx.spec").read_text(encoding="utf-8")
+    sign_osx = (PROJECT_ROOT / "tools" / "build_mac" / "sign_osx.sh").read_text(encoding="utf-8")
+
+    assert APP_METADATA.application_name == APP_NAME
+    assert APP_METADATA.macos_bundle_name == MACOS_BUNDLE_NAME == "Bitcoin Safe.app"
+    assert APP_METADATA.macos_bundle_identifier == MACOS_BUNDLE_IDENTIFIER == "org.bitcoin-safe.BitcoinSafe"
+    assert "name=PACKAGE_NAME" in osx_spec
+    assert "bundle_identifier=APP_METADATA.macos_bundle_identifier" in osx_spec
+    assert "'CFBundleDisplayName': APP_METADATA.application_name" in osx_spec
+    assert 'PACKAGE_NAME="$(bitcoin_safe_macos_bundle_name "$PROJECT_ROOT")"' in sign_osx
+    assert 'DoCodeSignMaybe "app bundle" "dist/${PACKAGE_NAME}"' in sign_osx
+    assert '"dist/$PACKAGE_NAME"' in sign_osx
 
 
 def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
