@@ -211,9 +211,11 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     assert "APP_ICON_Y=170" in create_styled_dmg
     assert "APPLICATIONS_ICON_X=506" in create_styled_dmg
     assert "APPLICATIONS_ICON_Y=170" in create_styled_dmg
-    assert "DMG_RETRY_ATTEMPTS=30" in create_styled_dmg
-    assert "DMG_RETRY_DELAY_SECONDS=20" in create_styled_dmg
-    assert "local delay=$((failed_attempts * DMG_RETRY_DELAY_SECONDS))" in create_styled_dmg
+    assert 'TEMP_ROOT="$(cd "${TEMP_ROOT}" && pwd -P)"' in create_styled_dmg
+    assert "DMG_RETRY_ATTEMPTS=5" in create_styled_dmg
+    assert "DMG_RETRY_DELAY_SECONDS=10" in create_styled_dmg
+    assert "DMG_RELEASE_ATTEMPTS=30" in create_styled_dmg
+    assert "local delay=$((DMG_RETRY_DELAY_SECONDS * (2 ** (failed_attempts - 1))))" in create_styled_dmg
     assert 'wait_before_dmg_retry "${attempts}"' in create_styled_dmg
     assert "set icon size of view_options to ${ICON_SIZE}" in create_styled_dmg
     assert "set text size of view_options to ${ICON_TEXT_SIZE}" in create_styled_dmg
@@ -227,7 +229,14 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     )
     assert "open folder dmg_folder" in create_styled_dmg
     assert "wait_for_dmg_release" in create_styled_dmg
-    assert 'echo "Timed out waiting for DMG to detach."' in create_styled_dmg
+    assert "staged_dmg_is_attached" in create_styled_dmg
+    assert 'image_info="$(hdiutil info)"' in create_styled_dmg
+    assert 'grep -Fq "${RW_DMG_PATH}" <<<"${image_info}"' in create_styled_dmg
+    assert "sed -E 's/s[0-9]+$//'" in create_styled_dmg
+    assert 'hdiutil detach "${DEVICE_NAME}" -quiet' in create_styled_dmg
+    assert "print_dmg_diagnostics" in create_styled_dmg
+    assert 'lsof "${RW_DMG_PATH}"' in create_styled_dmg
+    assert 'echo "Timed out waiting for staged DMG to detach completely."' in create_styled_dmg
     assert "create_plain_dmg" in create_styled_dmg
     assert "convert_compressed_dmg" in create_styled_dmg
     assert 'echo "Could not convert staged DMG."' in create_styled_dmg

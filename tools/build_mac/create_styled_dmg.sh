@@ -25,30 +25,50 @@ APPLICATIONS_ICON_X=506
 APPLICATIONS_ICON_Y=170
 
 TEMP_ROOT="$(mktemp -d "/tmp/bitcoin_safe_dmg.XXXXXX")"
+TEMP_ROOT="$(cd "${TEMP_ROOT}" && pwd -P)"
 STAGING_DIR="${TEMP_ROOT}/staging"
 RW_DMG_PATH="${TEMP_ROOT}/staged.dmg"
 MOUNT_DIR="${TEMP_ROOT}/mount"
 APP_NAME="$(basename "${APP_BUNDLE_PATH}")"
 DEVICE_NAME=""
 BACKGROUND_COPY_PATH="${STAGING_DIR}/.background/dmg-background.png"
-DMG_RETRY_ATTEMPTS=600
-DMG_RETRY_DELAY_SECONDS=2
+DMG_RETRY_ATTEMPTS=5
+DMG_RETRY_DELAY_SECONDS=10
+DMG_RELEASE_ATTEMPTS=30
 
 wait_before_dmg_retry() {
     local failed_attempts="${1}"
-    local delay=$((DMG_RETRY_DELAY_SECONDS))
+    local delay=$((DMG_RETRY_DELAY_SECONDS * (2 ** (failed_attempts - 1))))
     local next_attempt=$((failed_attempts + 1))
 
     echo "Retrying DMG operation in ${delay} seconds (attempt ${next_attempt} of ${DMG_RETRY_ATTEMPTS})."
     sleep "${delay}"
 }
 
+staged_dmg_is_attached() {
+    local image_info
+
+    if ! image_info="$(hdiutil info)"; then
+        echo "Could not query attached disk images; treating the staged DMG as attached." >&2
+        return 0
+    fi
+    grep -Fq "${RW_DMG_PATH}" <<<"${image_info}"
+}
+
+print_dmg_diagnostics() {
+    echo "Disk image diagnostics:"
+    hdiutil info || true
+    df -h "${TEMP_ROOT}" "$(dirname "${OUTPUT_DMG_PATH}")" || true
+    lsof "${RW_DMG_PATH}" || true
+}
+
 wait_for_dmg_release() {
     local attempts=0
 
-    while [ -d "${MOUNT_DIR}" ] && mount | grep -Fq "on ${MOUNT_DIR} "; do
-        if [ "${attempts}" -eq "${DMG_RETRY_ATTEMPTS}" ]; then
-            echo "Timed out waiting for DMG to detach."
+    while { [ -d "${MOUNT_DIR}" ] && mount | grep -Fq "on ${MOUNT_DIR} "; } || staged_dmg_is_attached; do
+        if [ "${attempts}" -ge "${DMG_RELEASE_ATTEMPTS}" ]; then
+            echo "Timed out waiting for staged DMG to detach completely."
+            print_dmg_diagnostics
             return 1
         fi
         attempts=$((attempts + 1))
@@ -58,13 +78,19 @@ wait_for_dmg_release() {
 
 detach_dmg() {
     if [ -n "${DEVICE_NAME}" ]; then
-        hdiutil detach "${DEVICE_NAME}" -quiet || hdiutil detach "${DEVICE_NAME}" -force -quiet || true
+        if ! hdiutil detach "${DEVICE_NAME}" -quiet; then
+            echo "Normal detach failed for ${DEVICE_NAME}; trying a forced detach."
+            hdiutil detach "${DEVICE_NAME}" -force -quiet || true
+        fi
+        wait_for_dmg_release || return 1
         DEVICE_NAME=""
-        wait_for_dmg_release
         return
     fi
     if [ -d "${MOUNT_DIR}" ] && mount | grep -Fq "on ${MOUNT_DIR} "; then
-        hdiutil detach "${MOUNT_DIR}" -quiet || hdiutil detach "${MOUNT_DIR}" -force -quiet || true
+        if ! hdiutil detach "${MOUNT_DIR}" -quiet; then
+            echo "Normal detach failed for ${MOUNT_DIR}; trying a forced detach."
+            hdiutil detach "${MOUNT_DIR}" -force -quiet || true
+        fi
         wait_for_dmg_release
     fi
 }
@@ -82,6 +108,7 @@ create_plain_dmg() {
         >/dev/null; do
         if [ "${attempts}" -ge "${DMG_RETRY_ATTEMPTS}" ]; then
             echo "Could not create .DMG"
+            print_dmg_diagnostics
             return 1
         fi
         wait_before_dmg_retry "${attempts}"
@@ -102,6 +129,7 @@ convert_compressed_dmg() {
         >/dev/null; do
         if [ "${attempts}" -ge "${DMG_RETRY_ATTEMPTS}" ]; then
             echo "Could not convert staged DMG."
+            print_dmg_diagnostics
             return 1
         fi
         rm -f "${OUTPUT_DMG_PATH}"
@@ -111,7 +139,7 @@ convert_compressed_dmg() {
 }
 
 cleanup() {
-    detach_dmg
+    detach_dmg || true
     rm -rf "${TEMP_ROOT}" || true
 }
 trap cleanup EXIT
@@ -133,13 +161,15 @@ hdiutil create \
     >/dev/null
 
 mkdir -p "${MOUNT_DIR}"
-DEVICE_NAME="$(
-    hdiutil attach "${RW_DMG_PATH}" -readwrite -noverify -noautoopen -mountpoint "${MOUNT_DIR}" \
-        | awk '/Apple_HFS/ {print $1; exit}'
+ATTACH_OUTPUT="$(
+    hdiutil attach "${RW_DMG_PATH}" -readwrite -noverify -noautoopen -mountpoint "${MOUNT_DIR}"
 )"
+VOLUME_DEVICE="$(printf '%s\n' "${ATTACH_OUTPUT}" | awk '/Apple_HFS/ {print $1; exit}')"
+DEVICE_NAME="$(printf '%s\n' "${VOLUME_DEVICE}" | sed -E 's/s[0-9]+$//')"
 
-if [ -z "${DEVICE_NAME}" ]; then
+if [ -z "${VOLUME_DEVICE}" ] || [ -z "${DEVICE_NAME}" ]; then
     echo "Failed to mount temporary DMG."
+    printf '%s\n' "${ATTACH_OUTPUT}"
     exit 1
 fi
 
