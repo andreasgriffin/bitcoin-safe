@@ -3266,7 +3266,7 @@ Localização indisponível.</translation>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Se tiver o seu próprio servidor Electrum ou não quiser esperar, ligue-se a um servidor Electrum público nas definições de rede. </translation>
+			<translation>Se tiver o seu próprio servidor Electrum ou não quiser esperar, ligue-se a um servidor Electrum público nas definições de rede.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
