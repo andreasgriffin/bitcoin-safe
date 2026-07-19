@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2025-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ def test_signature_import_of_psbt_without_utxos(
     with main_window_context(test_config=test_config) as main_window:
         # Wait for the main window to render before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+        assert main_window.windowTitle() == "Bitcoin-Safe - REGTEST"
 
         shutter.save(main_window)
 

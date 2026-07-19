@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2025-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe import __version__
 from bitcoin_safe.bitcoin_quotes import BitcoinQuote, get_random_quote
-from bitcoin_safe.constants import LOGO_NAME
+from bitcoin_safe.constants import APP_NAME, LOGO_NAME
 from bitcoin_safe.gui.qt.util import get_icon_path, svg_tools
 from bitcoin_safe.html_utils import link
 from bitcoin_safe.util_os import webopen
@@ -77,9 +77,9 @@ class LicenseDialog(QDialog):
         # Adding QLabel
         label = QLabel(
             """                       
-<p><b>Bitcoin-Safe</b></p>                       
+<p><b>{app_name}</b></p>
 
-<p>Bitcoin-Safe: A desktop software for managing your cold storage wallets.<br>
+<p>{app_name}: A desktop software for managing your cold storage wallets.<br>
 Copyright (C) 2024  Andreas Griffin</p>
 
 <p>This program is free software: you can redistribute it and/or modify<br>
@@ -153,7 +153,10 @@ Contains country geometry data from Natural Earth.<br>
 License: Public Domain<br>
 https://www.naturalearthdata.com/about/terms-of-use/</p>
                     
-                       """.format(link=link("https://www.gnu.org/licenses/gpl-3.0.html")),
+                       """.format(
+                app_name=APP_NAME,
+                link=link("https://www.gnu.org/licenses/gpl-3.0.html"),
+            ),
             self,
         )
         label.setOpenExternalLinks(True)  # Allows opening links
@@ -272,7 +275,7 @@ class AboutTab(QWidget):
         logo_label.setFixedSize(96, 96)
         logo_label.setScaledContents(True)
 
-        title_label = QLabel(self.tr("Bitcoin-Safe"), parent=self)
+        title_label = QLabel(APP_NAME, parent=self)
         title_font = QFont()
         title_font.setPointSize(20)
         title_font.setBold(True)

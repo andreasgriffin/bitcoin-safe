@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ def _run_multisig_wizard_test(
     with main_window_context(test_config=test_config) as main_window:
         logger.debug(f"(app, main_window) = {main_window}")
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+        assert main_window.windowTitle() == "Bitcoin-Safe - REGTEST"
 
         shutter.save(main_window)
 

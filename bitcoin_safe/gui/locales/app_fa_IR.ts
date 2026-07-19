@@ -18,11 +18,6 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
-			<source>Bitcoin-Safe</source>
-			<translation>Bitcoin-Safe</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
 			<source>FOSS - Free &amp; Open Source Software</source>
 			<translation>FOSS - نرم‌افزار آزاد و متن‌باز</translation>
 		</message>
@@ -415,8 +410,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>در حال درخواست فاکتور... یک مرورگر باز خواهد شد و Bitcoin Safe به‌صورت محلی منتظر بازگشت تماس خواهد بود.</translation>
+			<source>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</source>
+			<translation>در حال درخواست فاکتور... یک مرورگر باز خواهد شد و {app_name} به‌صورت محلی منتظر بازگشت تماس خواهد بود.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -581,8 +576,10 @@
 	<context>
 		<name>ButtonEdit</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>ورودی شناسایی نشد. آیا می‌خواهید دوباره اسکن کنید؟</translation>
+			<source>Could not recognize the input. Do you want to scan again?
+
+The error was: {error}</source>
+			<translation>ورودی شناسایی نشد. آیا می‌خواهید دوباره اسکن کنید؟ خطا این بود: {error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -1348,18 +1345,13 @@ Default 20</source>
 	<context>
 		<name>DonateDialog</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe با حمایت جامعه تأمین مالی می‌شود. حمایت شما باعث می‌شود توسعه مستقل بماند، امکان ارائه قابلیت‌های جدید را فراهم کند و بررسی‌های امنیتی را بهبود دهد. حامیان بزرگ‌تر می‌توانند در &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحه حامیان&lt;/a&gt; ما نمایش داده شوند.</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
 			<source>Donation</source>
 			<translation>اهداء</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
-			<translation>اهداء با موفقیت انجام شد. از حمایت شما از Bitcoin Safe بسیار سپاسگزاریم!</translation>
+			<source>Donation successful. Thank you so much for supporting {app_name}!</source>
+			<translation>اهداء با موفقیت انجام شد. از حمایت شما از {app_name} بسیار سپاسگزاریم!</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
@@ -1368,18 +1360,23 @@ Default 20</source>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>به رشد Bitcoin Safe به‌عنوان نرم‌افزار آزاد و متن‌باز کمک کنید.</translation>
+			<source>Help {app_name} grow as Free and Open Source Software.</source>
+			<translation>به رشد {app_name} به‌عنوان نرم‌افزار آزاد و متن‌باز کمک کنید.</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>حمایت از Bitcoin Safe</translation>
+			<source>Support {app_name}</source>
+			<translation>حمایت از {app_name}</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
 			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
 			<translation>می‌خواهید درباره کمک مالی بزرگ‌تر یا همکاری صحبت کنید؟ از دکمه تماس زیر استفاده کنید.</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>{app_name} با حمایت جامعه تأمین مالی می‌شود. حمایت شما باعث می‌شود توسعه مستقل بماند، امکان ارائه قابلیت‌های جدید را فراهم کند و بررسی‌های امنیتی را بهبود دهد. حامیان بزرگ‌تر می‌توانند در &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحه حامیان&lt;/a&gt; ما نمایش داده شوند.</translation>
 		</message>
 	</context>
 	<context>
@@ -1390,8 +1387,8 @@ Default 20</source>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
-			<source>Thanks for Bitcoin Safe!</source>
-			<translation>پیام (اختیاری)</translation>
+			<source>Thanks for {app_name}!</source>
+			<translation>Thanks for {app_name}!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1477,15 +1474,15 @@ Default 20</source>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>کامل (Bitcoin Safe)</translation>
+			<source>Full ({app_name})</source>
+			<translation>کامل ({app_name})</translation>
 		</message>
 	</context>
 	<context>
 		<name>ExternalPaidPluginWidget</name>
 		<message>
 			<source>Delete Plugin</source>
-			<translation>از Bitcoin Safe متشکریم!</translation>
+			<translation>حذف افزونه</translation>
 		</message>
 	</context>
 	<context>
@@ -1796,8 +1793,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>کامل (Bitcoin Safe)</translation>
+			<source>Full ({app_name})</source>
+			<translation>کامل ({app_name})</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1813,8 +1810,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Import hardware signer information into Bitcoin Safe</source>
-			<translation>وارد کردن اطلاعات امضاکننده سخت‌افزاری به Bitcoin Safe</translation>
+			<source>Import hardware signer information into {app_name}</source>
+			<translation>وارد کردن اطلاعات امضاکننده سخت‌افزاری به {app_name}</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1860,6 +1857,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
+			<source>Dark</source>
+			<translation>تیره</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
 			<source>Enter app lock password:</source>
 			<translation>رمز عبور قفل برنامه را وارد کنید:</translation>
 		</message>
@@ -1867,6 +1869,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Invalid password</source>
 			<translation>رمز عبور نامعتبر</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Light</source>
+			<translation>روشن</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
@@ -1882,6 +1889,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set</source>
 			<translation>تنظیم</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>System</source>
+			<translation>سیستم</translation>
 		</message>
 	</context>
 	<context>
@@ -1902,11 +1914,41 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
-			<source>Unexpected xpub origin</source>
-			<translation>منبع xpub پیش‌بینی نشده</translation>
+			<source>The provided xpub origin {given} does not match the expectation {expected}</source>
+			<translation>مبدأ xpub ارائه‌شده {given} با مقدار مورد انتظار {expected} مطابقت ندارد</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>This looks like a {provided_kind}. Expected: {expected_kind}.</source>
+			<translation>به نظر می‌رسد این یک {provided_kind} است. مورد انتظار: {expected_kind}.</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>multi-sig</source>
+			<translation>چندامضایی</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>single-sig</source>
+			<translation>تک‌امضایی</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>{given} looks like {provided_type}, but this wallet expects {expected_type}.</source>
+			<translation>{given} شبیه {provided_type} است، اما این کیف پول انتظار {expected_type} را دارد.</translation>
 		</message>
 	</context>
 	<context>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Abort and try later</source>
+			<translation>لغو و تلاش مجدد در فرصتی دیگر</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Account number</source>
+			<translation>شماره حساب</translation>
+		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -1916,11 +1958,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Change device type</source>
 			<translation>تغییر نوع دستگاه</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Connect</source>
-			<translation>اتصال</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1936,6 +1973,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Fingerprint</source>
 			<translation>اثرانگشت</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Ignore warning and proceed</source>
+			<translation>نادیده گرفتن هشدار و ادامه</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2054,6 +2096,16 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Set account number</source>
+			<translation>تنظیم شماره حساب</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Set account number...</source>
+			<translation>تنظیم شماره حساب...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>استاندارد برای نوع آدرس انتخاب‌شده {type} برابر {expected_key_origin} است. اگر مطمئن نیستید لطفاً اصلاح کنید.</translation>
 		</message>
@@ -2064,6 +2116,16 @@ You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
 			<translation>اثر انگشت ۸ رقمی، seed را شناسایی می‌کند.
 می‌توانید آن را روی امضاکننده سخت‌افزاری بنویسید تا seeds و دستگاه‌های امضای مختلف را پیگیری کنید.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
+			<translation>حساب از {current_account_number} به {new_account_number} تغییر کرد. ادامه می‌دهید؟</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
+			<translation>شماره حساب در مسیر مشتق‌سازی کدگذاری شده است و xPub امضاکننده را انتخاب می‌کند.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2120,10 +2182,8 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{msg}
-Do you want to proceed anyway?</source>
-			<translation>{msg}
-آیا می‌خواهید به هر حال ادامه دهید؟</translation>
+			<source>{msg}</source>
+			<translation>{msg}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2149,13 +2209,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>شما یک اثرانگشت را چندین بار وارد کردید!!! لطفاً از دستگاه امضاکننده متفاوتی استفاده کنید.</translation>
+			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
+			<translation>جایگاه‌های امضاکنندگان {signers} دارای xpub یکسان هستند. این معمولاً به این معناست که خروجی یک امضاکننده دو بار وارد شده است. لطفاً برای هر امضاکننده یک دستگاه یا حساب متفاوت وارد کنید.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>شما یک xpub را چندین بار وارد کردید!!! لطفاً از دستگاه امضاکننده متفاوتی استفاده کنید.</translation>
+			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+			<translation>شما یک اثرانگشت را چندین بار وارد کردید!!! لطفاً از دستگاه امضاکننده متفاوتی استفاده کنید.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2592,9 +2652,14 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
-You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>کیف‌پول‌های داغ در Bitcoin Mainnet غیرفعال هستند.
-می‌توانید برای آزمایش Bitcoin Safe بدون استفاده از Bitcoin واقعی، به Testnet تغییر دهید.</translation>
+می‌توانید برای آزمایش {app_name} بدون استفاده از Bitcoin واقعی، به Testnet تغییر دهید.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Is this a new wallet?</source>
+			<translation>آیا این یک کیف پول جدید است؟</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2648,8 +2713,8 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>No, quick scan</source>
-			<translation>خیر، اسکن سریع</translation>
+			<source>No, do a full scan</source>
+			<translation>خیر، اسکن کامل انجام شود</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2892,11 +2957,6 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Was this wallet ever used before?</source>
-			<translation>آیا این کیف‌پول تا به‌حال استفاده شده است؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Wrong password</source>
 			<translation>رمز عبور اشتباه</translation>
 		</message>
@@ -2907,8 +2967,8 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Yes, full scan for transactions</source>
-			<translation>بله، اسکن کامل تراکنش‌ها</translation>
+			<source>Yes</source>
+			<translation>بله</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3164,11 +3224,6 @@ median-time-past مهر زمانی میانه 11 بلاک اخیر است، بن
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>حذف افزونه</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) به کیف‌پول‌ها اجازه می‌دهد تراکنش‌های مرتبط را پیدا کنند در حالی که آدرس‌های شما خصوصی باقی می‌مانند.</translation>
 		</message>
@@ -3202,7 +3257,7 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe برای حفظ حریم خصوصی خلاصه‌های بلاک را از چندین نود دانلود می‌کند. پس از این همگام‌سازی اولیه، به‌روزرسانی‌ها سریع خواهند بود. اگر سرور Electrum خود را دارید یا نمی‌خواهید منتظر بمانید، در تنظیمات شبکه به یک سرور عمومی Electrum متصل شوید.</translation>
+			<translation>اگر سرور Electrum خودتان را دارید یا نمی‌خواهید منتظر بمانید، در تنظیمات شبکه به یک سرور عمومی Electrum متصل شوید.</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3270,6 +3325,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Your wallet syncs through the configured Esplora server.</source>
 			<translation>کیف پول شما از طریق سرور Esplora پیکربندی‌شده همگام می‌شود.</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
 		</message>
 	</context>
 	<context>
@@ -3494,6 +3554,23 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Hot Single Signature Wallet</source>
 			<translation>کیف پول داغ تک‌امضایی</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>کیف‌پول‌های داغ در Bitcoin Mainnet غیرفعال هستند.
+می‌توانید برای آزمایش {app_name} بدون استفاده از Bitcoin واقعی، به Testnet تغییر دهید.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
+			<translation>بیاموزید چگونه یک تلفن Android را به دستگاه اختصاصی امضای bitcoin تبدیل کنید.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>No signer available?</source>
+			<translation>هیچ امضاکننده‌ای در دسترس نیست؟</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3809,11 +3886,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Delete installed plugin {plugin}?</source>
 			<translation>افزونه نصب‌شده {plugin} حذف شود؟</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Disable the plugin before deleting it.</source>
-			<translation>پیش از حذف، افزونه را غیرفعال کنید.</translation>
 		</message>
 		<name>PluginManager</name>
 		<message>
@@ -4966,6 +5038,13 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SourceCatalogItemWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>حذف افزونه</translation>
+		</message>
+	</context>
+	<context>
 		<name>SourceManagementDialog</name>
 		<message>
 			<source>Add Plugin Source...</source>
@@ -5160,6 +5239,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>ToolGui</name>
+		<message>
+			<source>Account index: </source>
+			<translation>شاخص حساب: </translation>
+		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
@@ -5569,8 +5653,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
-			<translation>یک یا چند UTXO را از فهرست سمت چپ انتخاب کنید، یا تیک «انتخاب UTXOهای خاص» در بالا را بردارید تا Bitcoin‑Safe بهترین سکه‌ها را برای تراکنش‌تان انتخاب کند.</translation>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
+			<translation>یک یا چند UTXO را از فهرست سمت چپ انتخاب کنید، یا تیک «انتخاب UTXOهای خاص» در بالا را بردارید تا {app_name} بهترین سکه‌ها را برای تراکنش‌تان انتخاب کند.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5846,8 +5930,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Installer started. Closing Bitcoin Safe...</source>
-			<translation>نصب‌کننده شروع شد. در حال بستن Bitcoin Safe...</translation>
+			<source>Installer started. Closing {app_name}...</source>
+			<translation>نصب‌کننده شروع شد. در حال بستن {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5886,8 +5970,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Update applied. Restarting Bitcoin Safe...</source>
-			<translation>به‌روزرسانی اعمال شد. در حال راه‌اندازی مجدد Bitcoin Safe...</translation>
+			<source>Update applied. Restarting {app_name}...</source>
+			<translation>به‌روزرسانی اعمال شد. در حال راه‌اندازی مجدد {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>

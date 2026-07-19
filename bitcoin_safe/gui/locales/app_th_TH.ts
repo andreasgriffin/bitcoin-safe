@@ -18,11 +18,6 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
-			<source>Bitcoin-Safe</source>
-			<translation>Bitcoin-Safe</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
 			<source>FOSS - Free &amp; Open Source Software</source>
 			<translation>FOSS - ซอฟต์แวร์เสรีและโอเพ่นซอร์ส</translation>
 		</message>
@@ -415,8 +410,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>กำลังขอใบแจ้งหนี้... เบราว์เซอร์จะเปิดขึ้นและ Bitcoin Safe จะรับฟังการเรียกกลับในเครื่อง</translation>
+			<source>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</source>
+			<translation>กำลังขอใบแจ้งหนี้... เบราว์เซอร์จะเปิดขึ้นและ {app_name} จะรับฟังการเรียกกลับในเครื่อง</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -581,8 +576,10 @@
 	<context>
 		<name>ButtonEdit</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>ไม่สามารถจดจำอินพุตได้ ต้องการสแกนอีกครั้งไหม?</translation>
+			<source>Could not recognize the input. Do you want to scan again?
+
+The error was: {error}</source>
+			<translation>ไม่สามารถจดจำข้อมูลที่ป้อนได้ คุณต้องการสแกนอีกครั้งหรือไม่? ข้อผิดพลาดคือ: {error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -1347,18 +1344,13 @@ Default 20</source>
 	<context>
 		<name>DonateDialog</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe ได้รับทุนสนับสนุนจากชุมชน การสนับสนุนของคุณช่วยให้การพัฒนายังคงเป็นอิสระ ทำให้เราสามารถปล่อยฟีเจอร์ใหม่ ๆ และช่วยปรับปรุงการตรวจสอบความปลอดภัย ผู้สนับสนุนรายใหญ่สามารถปรากฏบน &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;หน้าผู้สนับสนุน&lt;/a&gt; ของเราได้</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
 			<source>Donation</source>
 			<translation>การบริจาค</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
-			<translation>การบริจาคสำเร็จ ขอบคุณมากที่สนับสนุน Bitcoin Safe!</translation>
+			<source>Donation successful. Thank you so much for supporting {app_name}!</source>
+			<translation>การบริจาคสำเร็จ ขอบคุณมากที่สนับสนุน {app_name}!</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
@@ -1367,18 +1359,23 @@ Default 20</source>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>ช่วยให้ Bitcoin Safe เติบโตในฐานะซอฟต์แวร์เสรีและโอเพนซอร์ส</translation>
+			<source>Help {app_name} grow as Free and Open Source Software.</source>
+			<translation>ช่วยให้ {app_name} เติบโตในฐานะซอฟต์แวร์เสรีและโอเพนซอร์ส</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>สนับสนุน Bitcoin Safe</translation>
+			<source>Support {app_name}</source>
+			<translation>สนับสนุน {app_name}</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
 			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
 			<translation>ต้องการพูดคุยเกี่ยวกับการสนับสนุนจำนวนมากขึ้นหรือความร่วมมือหรือไม่? ใช้ปุ่มติดต่อด้านล่างเพื่อติดต่อเรา</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>{app_name} ได้รับทุนสนับสนุนจากชุมชน การสนับสนุนของคุณช่วยให้การพัฒนายังคงเป็นอิสระ ทำให้เราสามารถปล่อยฟีเจอร์ใหม่ ๆ และช่วยปรับปรุงการตรวจสอบความปลอดภัย ผู้สนับสนุนรายใหญ่สามารถปรากฏบน &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;หน้าผู้สนับสนุน&lt;/a&gt; ของเราได้</translation>
 		</message>
 	</context>
 	<context>
@@ -1389,8 +1386,8 @@ Default 20</source>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
-			<source>Thanks for Bitcoin Safe!</source>
-			<translation>ข้อความ (ไม่บังคับ)</translation>
+			<source>Thanks for {app_name}!</source>
+			<translation>Thanks for {app_name}!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1476,15 +1473,15 @@ Default 20</source>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>เต็ม (Bitcoin Safe)</translation>
+			<source>Full ({app_name})</source>
+			<translation>เต็ม ({app_name})</translation>
 		</message>
 	</context>
 	<context>
 		<name>ExternalPaidPluginWidget</name>
 		<message>
 			<source>Delete Plugin</source>
-			<translation>ขอบคุณสำหรับ Bitcoin Safe!</translation>
+			<translation>ลบปลั๊กอิน</translation>
 		</message>
 	</context>
 	<context>
@@ -1795,8 +1792,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>เต็ม (Bitcoin Safe)</translation>
+			<source>Full ({app_name})</source>
+			<translation>เต็ม ({app_name})</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1812,8 +1809,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Import hardware signer information into Bitcoin Safe</source>
-			<translation>นำเข้าข้อมูลเครื่องลงนามฮาร์ดแวร์เข้าสู่ Bitcoin Safe</translation>
+			<source>Import hardware signer information into {app_name}</source>
+			<translation>นำเข้าข้อมูลเครื่องลงนามฮาร์ดแวร์เข้าสู่ {app_name}</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1859,6 +1856,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
+			<source>Dark</source>
+			<translation>มืด</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
 			<source>Enter app lock password:</source>
 			<translation>ป้อนรหัสผ่านล็อกแอป:</translation>
 		</message>
@@ -1866,6 +1868,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Invalid password</source>
 			<translation>รหัสผ่านไม่ถูกต้อง</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Light</source>
+			<translation>สว่าง</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
@@ -1881,6 +1888,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set</source>
 			<translation>ตั้งค่า</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>System</source>
+			<translation>ระบบ</translation>
 		</message>
 	</context>
 	<context>
@@ -1901,11 +1913,41 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
-			<source>Unexpected xpub origin</source>
-			<translation>ที่มาของ xpub ไม่คาดคิด</translation>
+			<source>The provided xpub origin {given} does not match the expectation {expected}</source>
+			<translation>ต้นทาง xpub ที่ระบุ {given} ไม่ตรงกับค่าที่คาดไว้ {expected}</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>This looks like a {provided_kind}. Expected: {expected_kind}.</source>
+			<translation>ข้อมูลนี้ดูเหมือนเป็น {provided_kind} ค่าที่คาดไว้: {expected_kind}</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>multi-sig</source>
+			<translation>หลายลายเซ็น</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>single-sig</source>
+			<translation>ลายเซ็นเดียว</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>{given} looks like {provided_type}, but this wallet expects {expected_type}.</source>
+			<translation>{given} ดูเหมือนเป็น {provided_type} แต่กระเป๋าเงินนี้คาดว่าจะเป็น {expected_type}</translation>
 		</message>
 	</context>
 	<context>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Abort and try later</source>
+			<translation>ยกเลิกและลองใหม่ภายหลัง</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Account number</source>
+			<translation>หมายเลขบัญชี</translation>
+		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -1915,11 +1957,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Change device type</source>
 			<translation>เปลี่ยนประเภทอุปกรณ์</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Connect</source>
-			<translation>เชื่อมต่อ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1935,6 +1972,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Fingerprint</source>
 			<translation>ลายนิ้วมือ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Ignore warning and proceed</source>
+			<translation>ไม่สนใจคำเตือนและดำเนินการต่อ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2053,6 +2095,16 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Set account number</source>
+			<translation>ตั้งค่าหมายเลขบัญชี</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Set account number...</source>
+			<translation>ตั้งค่าหมายเลขบัญชี...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>มาตรฐานสำหรับประเภทที่อยู่ที่เลือก {type} คือ {expected_key_origin} กรุณาแก้ไขหากคุณไม่แน่ใจ</translation>
 		</message>
@@ -2062,6 +2114,16 @@ since the final size of the transaction is unknown.</source>
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
 			<translation>ลายนิ้วมือ 8 หลักใช้ระบุ seed คุณสามารถเขียนลงบนเครื่องลงนามฮาร์ดแวร์เพื่อช่วยติดตาม seed และอุปกรณ์ลงนามที่แตกต่างกัน</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
+			<translation>บัญชีเปลี่ยนจาก {current_account_number} เป็น {new_account_number} ดำเนินการต่อหรือไม่?</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
+			<translation>หมายเลขบัญชีถูกเข้ารหัสไว้ในเส้นทางการอนุมานและใช้เลือก xPub ของผู้ลงนาม</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2117,11 +2179,8 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{msg}
-Do you want to proceed anyway?</source>
-			<translation>{msg}
-
-คุณต้องการดำเนินการต่อหรือไม่?</translation>
+			<source>{msg}</source>
+			<translation>{msg}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2147,13 +2206,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>คุณนำเข้าลายนิ้วมือเดียวกันหลายครั้ง!!! กรุณาใช้อุปกรณ์ลงนามที่ต่างกัน</translation>
+			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
+			<translation>ช่องผู้ลงนาม {signers} มี xpub เดียวกัน โดยทั่วไปหมายความว่ามีการนำเข้าข้อมูลส่งออกของผู้ลงนามคนเดียวกันสองครั้ง โปรดนำเข้าอุปกรณ์หรือบัญชีที่แตกต่างกันสำหรับผู้ลงนามแต่ละราย</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>คุณนำเข้า xpub เดียวกันหลายครั้ง!!! กรุณาใช้อุปกรณ์ลงนามที่ต่างกัน</translation>
+			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+			<translation>คุณนำเข้าลายนิ้วมือเดียวกันหลายครั้ง!!! กรุณาใช้อุปกรณ์ลงนามที่ต่างกัน</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2590,8 +2649,13 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
-You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
-			<translation>วอลเล็ตแบบ Hot wallet ถูกปิดใช้งานบน Bitcoin Mainnet คุณสามารถสลับไปยัง Testnet เพื่อทดสอบ Bitcoin Safe โดยไม่ต้องใช้ Bitcoin จริง</translation>
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>วอลเล็ตแบบ Hot wallet ถูกปิดใช้งานบน Bitcoin Mainnet คุณสามารถสลับไปยัง Testnet เพื่อทดสอบ {app_name} โดยไม่ต้องใช้ Bitcoin จริง</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Is this a new wallet?</source>
+			<translation>นี่เป็นกระเป๋าเงินใหม่หรือไม่?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2645,8 +2709,8 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>No, quick scan</source>
-			<translation>ไม่, สแกนอย่างรวดเร็ว</translation>
+			<source>No, do a full scan</source>
+			<translation>ไม่ ให้ทำการสแกนทั้งหมด</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2887,11 +2951,6 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Was this wallet ever used before?</source>
-			<translation>กระเป๋าเงินนี้เคยถูกใช้มาก่อนหรือไม่?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Wrong password</source>
 			<translation>รหัสผ่านไม่ถูกต้อง</translation>
 		</message>
@@ -2902,8 +2961,8 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Yes, full scan for transactions</source>
-			<translation>ใช่, สแกนธุรกรรมทั้งหมด</translation>
+			<source>Yes</source>
+			<translation>ใช่</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3157,11 +3216,6 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>ลบปลั๊กอิน</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) ช่วยให้วอลเล็ตค้นพบธุรกรรมที่เกี่ยวข้องในขณะที่ยังคงรักษาความเป็นส่วนตัวของที่อยู่ของคุณ</translation>
 		</message>
@@ -3195,7 +3249,7 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe ดาวน์โหลดสรุปบล็อกจากหลายโหนดเพื่อความเป็นส่วนตัว หลังจากการซิงค์เริ่มต้นนี้ การอัปเดตจะรวดเร็ว หากคุณมีเซิร์ฟเวอร์ Electrum ของคุณเองหรือไม่ต้องการรอ ให้เชื่อมต่อกับเซิร์ฟเวอร์ Electrum สาธารณะในการตั้งค่าเครือข่าย</translation>
+			<translation>หากคุณมีเซิร์ฟเวอร์ Electrum ของคุณเองหรือไม่ต้องการรอ ให้เชื่อมต่อกับเซิร์ฟเวอร์ Electrum สาธารณะในการตั้งค่าเครือข่าย</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3263,6 +3317,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Your wallet syncs through the configured Esplora server.</source>
 			<translation>กระเป๋าเงินของคุณซิงค์ผ่านเซิร์ฟเวอร์ Esplora ที่กำหนดค่าไว้</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
 		</message>
 	</context>
 	<context>
@@ -3483,6 +3542,22 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Hot Single Signature Wallet</source>
 			<translation>กระเป๋าเงินร้อนแบบลายเซ็นเดียว</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>วอลเล็ตแบบ Hot wallet ถูกปิดใช้งานบน Bitcoin Mainnet คุณสามารถสลับไปยัง Testnet เพื่อทดสอบ {app_name} โดยไม่ต้องใช้ Bitcoin จริง</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
+			<translation>เรียนรู้วิธีเปลี่ยนโทรศัพท์ Android ให้เป็นอุปกรณ์ลงนาม bitcoin โดยเฉพาะ</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>No signer available?</source>
+			<translation>ไม่มีผู้ลงนามที่พร้อมใช้งานหรือ?</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3798,11 +3873,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Delete installed plugin {plugin}?</source>
 			<translation>ลบปลั๊กอินที่ติดตั้งแล้ว {plugin}?</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Disable the plugin before deleting it.</source>
-			<translation>ปิดใช้งานปลั๊กอินก่อนลบ</translation>
 		</message>
 		<name>PluginManager</name>
 		<message>
@@ -4950,6 +5020,13 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SourceCatalogItemWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>ลบปลั๊กอิน</translation>
+		</message>
+	</context>
+	<context>
 		<name>SourceManagementDialog</name>
 		<message>
 			<source>Add Plugin Source...</source>
@@ -5143,6 +5220,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>ToolGui</name>
+		<message>
+			<source>Account index: </source>
+			<translation>ดัชนีบัญชี: </translation>
+		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
@@ -5552,8 +5634,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
-			<translation>เลือก UTXO หนึ่งรายการหรือมากกว่านั้นจากรายการด้านซ้าย หรือยกเลิก “เลือก UTXO เฉพาะ” ด้านบนเพื่อให้ Bitcoin‑Safe เลือกเหรียญที่ดีที่สุดสำหรับธุรกรรมของคุณ</translation>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
+			<translation>เลือก UTXO หนึ่งรายการหรือมากกว่านั้นจากรายการด้านซ้าย หรือยกเลิก “เลือก UTXO เฉพาะ” ด้านบนเพื่อให้ {app_name} เลือกเหรียญที่ดีที่สุดสำหรับธุรกรรมของคุณ</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5827,8 +5909,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Installer started. Closing Bitcoin Safe...</source>
-			<translation>ตัวติดตั้งเริ่มทำงาน กำลังปิด Bitcoin Safe...</translation>
+			<source>Installer started. Closing {app_name}...</source>
+			<translation>ตัวติดตั้งเริ่มทำงาน กำลังปิด {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5867,8 +5949,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Update applied. Restarting Bitcoin Safe...</source>
-			<translation>ติดตั้งอัปเดตแล้ว กำลังรีสตาร์ท Bitcoin Safe...</translation>
+			<source>Update applied. Restarting {app_name}...</source>
+			<translation>ติดตั้งอัปเดตแล้ว กำลังรีสตาร์ท {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>

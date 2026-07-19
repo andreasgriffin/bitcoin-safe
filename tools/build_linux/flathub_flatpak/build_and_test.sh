@@ -386,7 +386,7 @@ write_metadata_probe_files() {
 
     cat > "${METADATA_PROBE_BIN_DIR}/run-bitcoin-safe.sh" <<'EOF'
 #!/bin/sh
-printf 'Bitcoin Safe metadata probe\n'
+printf 'Bitcoin-Safe metadata probe\n'
 EOF
     chmod 755 "${METADATA_PROBE_BIN_DIR}/run-bitcoin-safe.sh"
 

@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2024-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -46,6 +46,7 @@ from packaging.version import InvalidVersion
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QWidget
 
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.gui.qt.downloader import Downloader, DownloadWorker
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.util import svg_tools
@@ -305,12 +306,16 @@ class UpdateNotificationBar(NotificationBar):
             return
 
         if replace_result.action == UpdateApplierAction.restart:
-            self.icon_label.setText(self.tr("Update applied. Restarting Bitcoin Safe..."))
+            self.icon_label.setText(
+                self.tr("Update applied. Restarting {app_name}...").format(app_name=APP_NAME)
+            )
             self.signal_restart_requested.emit(replace_result.launch_command or [])
             return
 
         if replace_result.action == UpdateApplierAction.close:
-            self.icon_label.setText(self.tr("Installer started. Closing Bitcoin Safe..."))
+            self.icon_label.setText(
+                self.tr("Installer started. Closing {app_name}...").format(app_name=APP_NAME)
+            )
             self.signal_close_requested.emit()
             return
 

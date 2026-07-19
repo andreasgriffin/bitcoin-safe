@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2025-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -49,6 +49,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.gui.qt.packaged_tx_like import PackagedTxLike, UiElements
 from bitcoin_safe.gui.qt.util import ColorScheme, Message, MessageType
 from bitcoin_safe.i18n import translate
@@ -74,7 +75,7 @@ class WalletGraphClient(PluginClient):
         PluginPermission.WALLET,
         PluginPermission.WALLET_SIGNALS,
     }
-    provider = "Bitcoin Safe"
+    provider = APP_NAME
 
     @classmethod
     def set_base_infos(cls):

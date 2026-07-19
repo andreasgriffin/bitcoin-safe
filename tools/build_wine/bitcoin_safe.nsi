@@ -24,10 +24,10 @@
   OutFile "dist/bitcoin_safe-setup.exe"
 
   ;Default installation folder
-  InstallDir "$PROGRAMFILES64\${PRODUCT_NAME}"
+  InstallDir "$PROGRAMFILES64\${PRODUCT_INSTALL_IDENTITY}"
 
   ;Get installation folder from registry if available
-  InstallDirRegKey HKCU "Software\${PRODUCT_NAME}" ""
+  InstallDirRegKey HKCU "Software\${PRODUCT_INSTALL_IDENTITY}" ""
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
@@ -133,7 +133,7 @@ retry:
     Goto retry
   ${EndIf}
 
-  MessageBox mb_iconstop "Bitcoin Safe is still running from:$\r$\n$INSTDIR$\r$\n$\r$\nClose Bitcoin Safe and run the installer again."
+  MessageBox mb_iconstop "Bitcoin-Safe is still running from:$\r$\n$INSTDIR$\r$\n$\r$\nClose Bitcoin-Safe and run the installer again."
   Quit
 FunctionEnd
 
@@ -155,7 +155,9 @@ Section
   ;Uninstall previous version files
   SetOutPath $INSTDIR
   RMDir /r "$INSTDIR\*.*"
+  Delete "$DESKTOP\${PRODUCT_INSTALL_IDENTITY}.lnk"
   Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
+  RMDir /r "$SMPROGRAMS\${PRODUCT_INSTALL_IDENTITY}"
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\*.*"
 
   ;Files to pack into the installer
@@ -163,7 +165,7 @@ Section
   File "..\..\tools\resources\icon.ico"
 
   ;Store installation folder
-  WriteRegStr HKCU "Software\${PRODUCT_NAME}" "" $INSTDIR
+  WriteRegStr HKCU "Software\${PRODUCT_INSTALL_IDENTITY}" "" $INSTDIR
 
   ;Create uninstaller
   DetailPrint "Creating uninstaller..."
@@ -181,7 +183,7 @@ Section
   CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME} Testnet.lnk" "$INSTDIR\bitcoin_safe-${PRODUCT_VERSION}.exe" "--testnet" "$INSTDIR\bitcoin_safe-${PRODUCT_VERSION}.exe" 0
 
 
-  ;Links bitcoin: URIs to Bitcoin Safe
+  ;Links bitcoin: URIs to Bitcoin-Safe
   WriteRegStr HKCU "Software\Classes\bitcoin" "" "URL:bitcoin Protocol"
   WriteRegStr HKCU "Software\Classes\bitcoin" "URL Protocol" ""
   WriteRegStr HKCU "Software\Classes\bitcoin" "DefaultIcon" "$\"$INSTDIR\icon.ico, 0$\""
@@ -217,6 +219,6 @@ Section "Uninstall"
   RMDir  "$SMPROGRAMS\${PRODUCT_NAME}"
 
   DeleteRegKey HKCU "Software\Classes\bitcoin"
-  DeleteRegKey HKCU "Software\${PRODUCT_NAME}"
+  DeleteRegKey HKCU "Software\${PRODUCT_INSTALL_IDENTITY}"
   DeleteRegKey HKCU "${PRODUCT_UNINST_KEY}"
 SectionEnd

@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -44,6 +44,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from bitcoin_safe.constants import APP_NAME
 
 DBIP_CITY_LITE_PAGE_URL = "https://db-ip.com/db/download/ip-to-city-lite"
 NATURAL_EARTH_COUNTRIES_URL = (
@@ -375,7 +377,7 @@ def parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         description=(
             "Download open-license IP data and generate a compact rough GeoIP database for "
-            "IP -> lat/lon mapping in Bitcoin Safe."
+            f"IP -> lat/lon mapping in {APP_NAME}."
         )
     )
     p.add_argument(

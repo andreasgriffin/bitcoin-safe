@@ -183,6 +183,17 @@ jobs:
           fi
           echo "Found app at: $APP_PATH" | tee -a test_dmg.log
 
+          # This job intentionally downloads only the built artifact, so keep these release
+          # identity expectations self-contained instead of requiring a Poetry environment.
+          EXPECTED_BUNDLE_NAME="Bitcoin Safe.app"
+          EXPECTED_DISPLAY_NAME="Bitcoin-Safe"
+          EXPECTED_BUNDLE_ID="org.bitcoin-safe.BitcoinSafe"
+          test "$(basename "$APP_PATH")" = "$EXPECTED_BUNDLE_NAME"
+          test "$(plutil -extract CFBundleDisplayName raw "$APP_PATH/Contents/Info.plist")" = \
+            "$EXPECTED_DISPLAY_NAME"
+          test "$(plutil -extract CFBundleIdentifier raw "$APP_PATH/Contents/Info.plist")" = \
+            "$EXPECTED_BUNDLE_ID"
+
           # Launch the app.
           LOG_DIR="$HOME/Library/Application Support/bitcoin_safe"
 
@@ -203,13 +214,12 @@ jobs:
           done
 
           # Verify the app is running.
-          echo "Checking if Bitcoin Safe is running..." | tee -a test_dmg.log
-          PROCESS_COUNT=$(ps aux | grep -v grep | grep "Bitcoin Safe" | wc -l)
-          if [ "$PROCESS_COUNT" -eq 0 ]; then
-            echo "Error: Bitcoin Safe is not running!" | tee -a test_dmg.log
+          echo "Checking if the application executable is running..." | tee -a test_dmg.log
+          if ! pgrep -f "run_Bitcoin_Safe" >/dev/null; then
+            echo "Error: application executable is not running!" | tee -a test_dmg.log
             exit 1
           else
-            echo "Bitcoin Safe is running." | tee -a test_dmg.log
+            echo "Application executable is running." | tee -a test_dmg.log
           fi
  
           # Optionally, you can run further tests against the application.

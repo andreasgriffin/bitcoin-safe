@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -334,7 +334,7 @@ def test_can_apply_windows_portable_is_false_for_protected_windows_directory(
     current_exe.write_text("current")
     portable_exe = tmp_path / "Bitcoin-Safe-1.8.0-portable.exe"
     portable_exe.write_text("portable")
-    protected_directory = Path("C:/Program Files/Bitcoin Safe")
+    protected_directory = Path("C:/Program Files/Bitcoin-Safe")
     applier = UpdateApplier(system="Windows", current_binary=current_exe)
 
     monkeypatch.setattr(applier, "_get_windows_target_directory", lambda _artifact: protected_directory)

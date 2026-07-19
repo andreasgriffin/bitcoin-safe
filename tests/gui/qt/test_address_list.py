@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -102,7 +102,7 @@ def test_address_list_label_filter_and_utxo_selection(
     with main_window_context(test_config=test_config) as main_window:
         # Wait for the window to be shown and confirm we are on regtest.
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+        assert main_window.windowTitle() == "Bitcoin-Safe - REGTEST"
 
         shutter.save(main_window)
 
@@ -223,7 +223,7 @@ def test_address_list_filters_with_funding_and_quick_receive(
     with main_window_context(test_config=test_config) as main_window:
         # Wait for UI to be ready and ensure we are on regtest.
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+        assert main_window.windowTitle() == "Bitcoin-Safe - REGTEST"
 
         shutter.save(main_window)
 

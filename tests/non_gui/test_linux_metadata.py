@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -44,6 +44,12 @@ from tools.release_notes import (
 
 from bitcoin_safe import __version__
 from bitcoin_safe.app_metadata import APP_METADATA, resolve_metainfo_release_date
+from bitcoin_safe.constants import (
+    APP_NAME,
+    MACOS_BUNDLE_IDENTIFIER,
+    MACOS_BUNDLE_NAME,
+    WINDOWS_INSTALL_IDENTITY,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DESKTOP_ENTRY_PATH = Path("tools/build_linux/flathub_flatpak/org.bitcoin_safe.BitcoinSafe.desktop")
@@ -68,6 +74,22 @@ def test_desktop_entry_matches_generated_metadata() -> None:
 def test_windows_nsi_metadata_matches_generated_metadata() -> None:
     windows_nsi_metadata = (PROJECT_ROOT / WINDOWS_NSI_METADATA_PATH).read_text(encoding="utf-8")
     assert windows_nsi_metadata == APP_METADATA.render_windows_nsi_defines()
+
+
+def test_application_name_and_windows_install_identity_are_separate() -> None:
+    assert APP_METADATA.application_name == APP_NAME == "Bitcoin-Safe"
+    assert APP_METADATA.windows_install_identity == WINDOWS_INSTALL_IDENTITY == "Bitcoin Safe"
+
+    windows_nsi_metadata = APP_METADATA.render_windows_nsi_defines()
+    assert '!define PRODUCT_NAME "Bitcoin-Safe"' in windows_nsi_metadata
+    assert '!define PRODUCT_INSTALL_IDENTITY "Bitcoin Safe"' in windows_nsi_metadata
+    assert 'Uninstall\\${PRODUCT_INSTALL_IDENTITY}"' in windows_nsi_metadata
+
+    windows_installer = (PROJECT_ROOT / "tools/build_wine/bitcoin_safe.nsi").read_text(encoding="utf-8")
+    assert 'InstallDir "$PROGRAMFILES64\\${PRODUCT_INSTALL_IDENTITY}"' in windows_installer
+    assert 'InstallDirRegKey HKCU "Software\\${PRODUCT_INSTALL_IDENTITY}" ""' in windows_installer
+    assert 'CreateShortCut "$DESKTOP\\${PRODUCT_NAME}.lnk"' in windows_installer
+    assert 'Delete "$DESKTOP\\${PRODUCT_INSTALL_IDENTITY}.lnk"' in windows_installer
 
 
 def test_checked_in_metainfo_matches_generated_shared_metadata() -> None:
@@ -109,15 +131,15 @@ def test_flathub_populate_script_owns_checked_in_metainfo_generation() -> None:
 def test_windows_version_info_is_generated_from_shared_metadata() -> None:
     version_info = APP_METADATA.render_windows_version_info(
         original_filename="bitcoin_safe-portable.exe",
-        file_description="Bitcoin Safe Portable",
+        file_description="Bitcoin-Safe Portable",
         product_version="2.0.0rc2",
     )
 
     assert "filevers=(2, 0, 0, 2)" in version_info
     assert "StringStruct(u'CompanyName', u'Andreas Griffin')" in version_info
-    assert "StringStruct(u'FileDescription', u'Bitcoin Safe Portable')" in version_info
+    assert "StringStruct(u'FileDescription', u'Bitcoin-Safe Portable')" in version_info
     assert "StringStruct(u'OriginalFilename', u'bitcoin_safe-portable.exe')" in version_info
-    assert "StringStruct(u'ProductName', u'Bitcoin Safe')" in version_info
+    assert "StringStruct(u'ProductName', u'Bitcoin-Safe')" in version_info
     assert "StringStruct(u'ProductVersion', u'2.0.0rc2')" in version_info
 
 
@@ -143,6 +165,28 @@ def test_macos_packaging_includes_license_file() -> None:
     assert "create_styled_dmg.sh" in make_osx
     assert "LICENSE.txt" not in make_osx
     assert "LICENSE.txt" not in package_sh
+
+
+def test_macos_bundle_keeps_install_identity_and_uses_rebranded_display_name() -> None:
+    osx_spec = (PROJECT_ROOT / "tools" / "build_mac" / "osx.spec").read_text(encoding="utf-8")
+    sign_osx = (PROJECT_ROOT / "tools" / "build_mac" / "sign_osx.sh").read_text(encoding="utf-8")
+    mac_workflow = (PROJECT_ROOT / ".github" / "workflows" / "build-and-test-mac.yml").read_text(
+        encoding="utf-8"
+    )
+
+    assert APP_METADATA.application_name == APP_NAME
+    assert APP_METADATA.macos_bundle_name == MACOS_BUNDLE_NAME == "Bitcoin Safe.app"
+    assert APP_METADATA.macos_bundle_identifier == MACOS_BUNDLE_IDENTIFIER == "org.bitcoin-safe.BitcoinSafe"
+    assert "name=PACKAGE_NAME" in osx_spec
+    assert "bundle_identifier=APP_METADATA.macos_bundle_identifier" in osx_spec
+    assert "'CFBundleDisplayName': APP_METADATA.application_name" in osx_spec
+    assert 'PACKAGE_NAME="$(bitcoin_safe_macos_bundle_name "$PROJECT_ROOT")"' in sign_osx
+    assert 'DoCodeSignMaybe "app bundle" "dist/${PACKAGE_NAME}"' in sign_osx
+    assert '"dist/$PACKAGE_NAME"' in sign_osx
+    assert "from bitcoin_safe.app_metadata import APP_METADATA" not in mac_workflow
+    assert f'EXPECTED_BUNDLE_NAME="{MACOS_BUNDLE_NAME}"' in mac_workflow
+    assert f'EXPECTED_DISPLAY_NAME="{APP_NAME}"' in mac_workflow
+    assert f'EXPECTED_BUNDLE_ID="{MACOS_BUNDLE_IDENTIFIER}"' in mac_workflow
 
 
 def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
@@ -174,7 +218,13 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     assert "APP_ICON_Y=170" in create_styled_dmg
     assert "APPLICATIONS_ICON_X=506" in create_styled_dmg
     assert "APPLICATIONS_ICON_Y=170" in create_styled_dmg
-    assert "DMG_RETRY_ATTEMPTS=30" in create_styled_dmg
+    assert 'TEMP_ROOT="$(cd "${TEMP_ROOT}" && pwd -P)"' in create_styled_dmg
+    assert "DMG_RETRY_ATTEMPTS=5" in create_styled_dmg
+    assert "DMG_RETRY_DELAY_SECONDS=10" in create_styled_dmg
+    assert "DMG_DETACH_GRACE_ATTEMPTS=5" in create_styled_dmg
+    assert "DMG_HELPER_RELEASE_ATTEMPTS=10" in create_styled_dmg
+    assert "local delay=$((DMG_RETRY_DELAY_SECONDS * (2 ** (failed_attempts - 1))))" in create_styled_dmg
+    assert 'wait_before_dmg_retry "${attempts}"' in create_styled_dmg
     assert "set icon size of view_options to ${ICON_SIZE}" in create_styled_dmg
     assert "set text size of view_options to ${ICON_TEXT_SIZE}" in create_styled_dmg
     assert (
@@ -187,7 +237,19 @@ def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:
     )
     assert "open folder dmg_folder" in create_styled_dmg
     assert "wait_for_dmg_release" in create_styled_dmg
-    assert 'echo "Timed out waiting for DMG to detach."' in create_styled_dmg
+    assert "staged_dmg_is_attached" in create_styled_dmg
+    assert 'image_info="$(hdiutil info)"' in create_styled_dmg
+    assert 'grep -Fq "${RW_DMG_PATH}" <<<"${image_info}"' in create_styled_dmg
+    assert "sed -E 's/s[0-9]+$//'" in create_styled_dmg
+    assert 'hdiutil detach "${DEVICE_NAME}" -quiet' in create_styled_dmg
+    assert "staged_dmg_process_ids" in create_styled_dmg
+    assert 'matches_image && $1 == "process" && $2 == "ID"' in create_styled_dmg
+    assert '[[ "${process_name}" != *diskimage* ]]' in create_styled_dmg
+    assert "terminate_staged_dmg_helpers TERM" in create_styled_dmg
+    assert "terminate_staged_dmg_helpers KILL" in create_styled_dmg
+    assert "print_dmg_diagnostics" in create_styled_dmg
+    assert 'lsof "${RW_DMG_PATH}"' in create_styled_dmg
+    assert 'echo "Timed out waiting for staged DMG to detach completely."' in create_styled_dmg
     assert "create_plain_dmg" in create_styled_dmg
     assert "convert_compressed_dmg" in create_styled_dmg
     assert 'echo "Could not convert staged DMG."' in create_styled_dmg

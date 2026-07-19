@@ -1,5 +1,5 @@
-# Bitcoin Safe
-# Bitcoin Safe
+# Bitcoin-Safe
+# Bitcoin-Safe
 # Copyright (C) 2023-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ from PyQt6.QtWidgets import QApplication  # noqa: E402
 
 from bitcoin_safe.compatibility import check_compatibility  # noqa: E402
 from bitcoin_safe.config import UserConfig  # noqa: E402
+from bitcoin_safe.constants import APP_NAME  # noqa: E402
 from bitcoin_safe.gui.qt.main import MainWindow  # noqa: E402
 from bitcoin_safe.gui.qt.startup_window_probe import StartupWindowProbe  # noqa: E402
 from bitcoin_safe.gui.qt.util import custom_exception_handler  # noqa: E402
@@ -68,7 +69,7 @@ class StartupArgs:
 
 def create_parser() -> argparse.ArgumentParser:
     """Create the startup parser."""
-    parser = argparse.ArgumentParser(description="Bitcoin Safe", allow_abbrev=False)
+    parser = argparse.ArgumentParser(description=APP_NAME, allow_abbrev=False)
     parser.add_argument("--network", help=f"Choose the network: {', '.join(NETWORK_ARG_NAMES)}")
     parser.add_argument(
         "--profile", action="store_true", help="Enable profiling. VIsualize with snakeviz .prof_stats"
@@ -126,8 +127,8 @@ def main(args: StartupArgs | None = None) -> None:
     sys.excepthook = custom_exception_handler
     app = QApplication(sys.argv)
 
-    app.setOrganizationName("Bitcoin Safe")
-    app.setApplicationName("Bitcoin Safe")
+    app.setOrganizationName(APP_NAME)
+    app.setApplicationName(APP_NAME)
 
     check_compatibility()
 

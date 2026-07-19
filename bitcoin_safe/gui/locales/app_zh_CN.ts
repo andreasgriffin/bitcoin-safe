@@ -18,11 +18,6 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
-			<source>Bitcoin-Safe</source>
-			<translation>Bitcoin-Safe</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
 			<source>FOSS - Free &amp; Open Source Software</source>
 			<translation>FOSS - 自由且开源的软件</translation>
 		</message>
@@ -415,8 +410,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>正在请求发票…… 浏览器将打开，Bitcoin Safe 将在本地监听回调。</translation>
+			<source>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</source>
+			<translation>正在请求发票…… 浏览器将打开，{app_name} 将在本地监听回调。</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -581,8 +576,10 @@
 	<context>
 		<name>ButtonEdit</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>无法识别输入内容。您要重新扫描吗？</translation>
+			<source>Could not recognize the input. Do you want to scan again?
+
+The error was: {error}</source>
+			<translation>无法识别输入内容。是否要重新扫描？错误为：{error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -1353,18 +1350,13 @@ Default 20</source>
 	<context>
 		<name>DonateDialog</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe 是由社区资助的。您的支持让我们能够保持开发的独立性，不断推出新的功能，并增强安全审查的能力。大型支持者可以在我们的 &lt;a href='https://bitcoin-safe.org/zh/donate/'&gt;支持者名单&lt;/a&gt;中突出展示。</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
 			<source>Donation</source>
 			<translation>打赏</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
-			<translation>打赏成功。非常感谢您对 Bitcoin Safe 的支持！</translation>
+			<source>Donation successful. Thank you so much for supporting {app_name}!</source>
+			<translation>打赏成功。非常感谢您对 {app_name} 的支持！</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
@@ -1373,18 +1365,23 @@ Default 20</source>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>帮助 Bitcoin Safe 作为自由且开源的软件不断发展。</translation>
+			<source>Help {app_name} grow as Free and Open Source Software.</source>
+			<translation>帮助 {app_name} 作为自由且开源的软件不断发展。</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>支持 Bitcoin Safe</translation>
+			<source>Support {app_name}</source>
+			<translation>支持 {app_name}</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
 			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
 			<translation>想要探讨更大金额的打赏或合作？请点击下方联系按钮与我们取得联系。</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>{app_name} 是由社区资助的。您的支持让我们能够保持开发的独立性，不断推出新的功能，并增强安全审查的能力。大型支持者可以在我们的 &lt;a href='https://bitcoin-safe.org/zh/donate/'&gt;支持者名单&lt;/a&gt;中突出展示。</translation>
 		</message>
 	</context>
 	<context>
@@ -1395,8 +1392,8 @@ Default 20</source>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
-			<source>Thanks for Bitcoin Safe!</source>
-			<translation>消息（可选）</translation>
+			<source>Thanks for {app_name}!</source>
+			<translation>Thanks for {app_name}!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1482,15 +1479,15 @@ Default 20</source>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>完整（Bitcoin Safe）</translation>
+			<source>Full ({app_name})</source>
+			<translation>完整（{app_name}）</translation>
 		</message>
 	</context>
 	<context>
 		<name>ExternalPaidPluginWidget</name>
 		<message>
 			<source>Delete Plugin</source>
-			<translation>感谢使用 Bitcoin Safe！</translation>
+			<translation>删除插件</translation>
 		</message>
 	</context>
 	<context>
@@ -1802,8 +1799,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>完整（Bitcoin Safe）</translation>
+			<source>Full ({app_name})</source>
+			<translation>完整（{app_name}）</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1819,8 +1816,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Import hardware signer information into Bitcoin Safe</source>
-			<translation>将硬件签名器信息导入 Bitcoin Safe</translation>
+			<source>Import hardware signer information into {app_name}</source>
+			<translation>将硬件签名器信息导入 {app_name}</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1866,6 +1863,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
+			<source>Dark</source>
+			<translation>深色</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
 			<source>Enter app lock password:</source>
 			<translation>输入应用锁密码：</translation>
 		</message>
@@ -1873,6 +1875,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Invalid password</source>
 			<translation>密码无效</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Light</source>
+			<translation>浅色</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
@@ -1888,6 +1895,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set</source>
 			<translation>设置</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>System</source>
+			<translation>系统</translation>
 		</message>
 	</context>
 	<context>
@@ -1908,11 +1920,41 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
-			<source>Unexpected xpub origin</source>
-			<translation>意外的 xpub 源</translation>
+			<source>The provided xpub origin {given} does not match the expectation {expected}</source>
+			<translation>提供的 xpub 来源 {given} 与预期值 {expected} 不匹配</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>This looks like a {provided_kind}. Expected: {expected_kind}.</source>
+			<translation>这看起来像是 {provided_kind}。预期类型：{expected_kind}。</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>multi-sig</source>
+			<translation>多重签名</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>single-sig</source>
+			<translation>单签名</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>{given} looks like {provided_type}, but this wallet expects {expected_type}.</source>
+			<translation>{given} 看起来像 {provided_type}，但此钱包要求 {expected_type}。</translation>
 		</message>
 	</context>
 	<context>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Abort and try later</source>
+			<translation>中止并稍后重试</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Account number</source>
+			<translation>账户编号</translation>
+		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -1922,11 +1964,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Change device type</source>
 			<translation>更改设备类型</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Connect</source>
-			<translation>连接</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1942,6 +1979,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Fingerprint</source>
 			<translation>指纹</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Ignore warning and proceed</source>
+			<translation>忽略警告并继续</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2060,6 +2102,16 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Set account number</source>
+			<translation>设置账户编号</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Set account number...</source>
+			<translation>设置账户编号...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>所选地址类型 {type} 的标准为 {expected_key_origin}。若不确定，请予以修正。</translation>
 		</message>
@@ -2071,6 +2123,16 @@ to keep track of different seeds and signing devices.</source>
 			<translation>8 位数的指纹用于标识该助记词。
 您可以将其写入硬件签名器，
 以便跟踪不同的助记词和签名器。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
+			<translation>账户已从 {current_account_number} 更改为 {new_account_number}。是否继续？</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
+			<translation>账户编号编码在派生路径中，并用于选择签名者的 xPub。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2127,10 +2189,8 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{msg}
-Do you want to proceed anyway?</source>
-			<translation>{msg}
-您确定要继续操作吗？</translation>
+			<source>{msg}</source>
+			<translation>{msg}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2156,13 +2216,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>您已多次导入相同的指纹！！！请使用另一台签名器。</translation>
+			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
+			<translation>签名者槽位 {signers} 包含相同的 xpub。这通常意味着同一个签名者导出文件被导入了两次。请为每个签名者导入不同的设备或账户。</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>您已多次导入相同的 xpub！！！请使用另一台签名器。</translation>
+			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+			<translation>您已多次导入相同的指纹！！！请使用另一台签名器。</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2599,9 +2659,14 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
-You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>热钱包在比特币主网上已禁用。 
-您可以切换到测试网，以便在不使用真实比特币的情况下测试 Bitcoin Safe。</translation>
+您可以切换到测试网，以便在不使用真实比特币的情况下测试 {app_name}。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Is this a new wallet?</source>
+			<translation>这是一个新钱包吗？</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2655,8 +2720,8 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>No, quick scan</source>
-			<translation>不，快速扫描</translation>
+			<source>No, do a full scan</source>
+			<translation>否，执行完整扫描</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2899,11 +2964,6 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Was this wallet ever used before?</source>
-			<translation>这个钱包之前用过吗？</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Wrong password</source>
 			<translation>密码错误</translation>
 		</message>
@@ -2914,8 +2974,8 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Yes, full scan for transactions</source>
-			<translation>是的，对交易进行完整扫描</translation>
+			<source>Yes</source>
+			<translation>是</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3169,11 +3229,6 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>删除插件</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) 允许钱包在保持地址隐私的同时发现相关交易。</translation>
 		</message>
@@ -3207,7 +3262,7 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe 会从多个节点下载区块摘要以保护隐私。初始同步完成后，更新会很快。如果您有自己的 Electrum 服务器，或者不想等待，请在网络设置中连接到公共 Electrum 服务器。</translation>
+			<translation>如果您有自己的 Electrum 服务器或不想等待，请在网络设置中连接到公共 Electrum 服务器。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3275,6 +3330,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Your wallet syncs through the configured Esplora server.</source>
 			<translation>你的钱包通过配置的 Esplora 服务器同步。</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
 		</message>
 	</context>
 	<context>
@@ -3500,6 +3560,23 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Hot Single Signature Wallet</source>
 			<translation>热单签名钱包</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>热钱包在比特币主网上已禁用。 
+您可以切换到测试网，以便在不使用真实比特币的情况下测试 {app_name}。</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
+			<translation>了解如何将 Android 手机变成专用的 bitcoin 签名设备。</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>No signer available?</source>
+			<translation>没有可用的签名者？</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3815,11 +3892,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Delete installed plugin {plugin}?</source>
 			<translation>删除已安装插件 {plugin}？</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Disable the plugin before deleting it.</source>
-			<translation>删除前请先停用该插件。</translation>
 		</message>
 		<name>PluginManager</name>
 		<message>
@@ -4974,6 +5046,13 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SourceCatalogItemWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>删除插件</translation>
+		</message>
+	</context>
+	<context>
 		<name>SourceManagementDialog</name>
 		<message>
 			<source>Add Plugin Source...</source>
@@ -5168,6 +5247,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>ToolGui</name>
+		<message>
+			<source>Account index: </source>
+			<translation>账户索引： </translation>
+		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
@@ -5582,8 +5666,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
-			<translation>从左侧列表中选择一个或多个 UTXO，或取消勾选上方的“选择特定 UTXO”选项，让 Bitcoin‑Safe 为您的交易挑选最佳的比特币。</translation>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
+			<translation>从左侧列表中选择一个或多个 UTXO，或取消勾选上方的“选择特定 UTXO”选项，让 {app_name} 为您的交易挑选最佳的比特币。</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5858,8 +5942,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Installer started. Closing Bitcoin Safe...</source>
-			<translation>安装程序已启动。正在关闭 Bitcoin Safe...</translation>
+			<source>Installer started. Closing {app_name}...</source>
+			<translation>安装程序已启动。正在关闭 {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5898,8 +5982,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Update applied. Restarting Bitcoin Safe...</source>
-			<translation>更新已应用。正在重新启动 Bitcoin Safe...</translation>
+			<source>Update applied. Restarting {app_name}...</source>
+			<translation>更新已应用。正在重新启动 {app_name}...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>

@@ -3,7 +3,7 @@
   <id>org.bitcoin_safe.BitcoinSafe</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-only</project_license>
-  <name>Bitcoin Safe</name>
+  <name>Bitcoin-Safe</name>
   <summary>Manage your cold storage wallets</summary>
   <developer id="org.bitcoin_safe">
     <name>Andreas Griffin</name>
@@ -61,7 +61,8 @@
           <li>Added MetroVault support</li>
           <li>Upgrade Bitcoin Dev Kit (BDK) to 3.0</li>
           <li>Show the connected Bitcoin nodes for compact block filter fetching on the map</li>
-          <li>Re-store custom account xpub fetching for USB signers</li>
+          <li>Reenable custom account xpub fetching for USB signers</li>
+          <li>Rebrand to Bitcoin-Safe</li>
           <li>Bug fixes</li>
         </ul>
       </description>
@@ -236,7 +237,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -254,7 +255,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -273,7 +274,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -293,7 +294,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -323,7 +324,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -350,7 +351,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -379,7 +380,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -397,7 +398,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -421,7 +422,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -446,7 +447,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -465,7 +466,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -487,7 +488,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -510,7 +511,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -537,7 +538,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -560,7 +561,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -582,7 +583,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>
@@ -613,7 +614,7 @@
         <p>🔋Batteries included🔋</p>
         <p>Lots of existing features were not mentioned above, so please check out:</p>
         <ul>
-          <li>Why choose Bitcoin Safe?</li>
+          <li>Why choose Bitcoin-Safe?</li>
           <li>www.bitcoin-safe.org</li>
           <li>Readme and Comprehensive Feature List</li>
           <li>Follow me on nostr</li>

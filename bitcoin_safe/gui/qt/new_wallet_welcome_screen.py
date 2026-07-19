@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2023-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -48,6 +48,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode
 from bitcoin_safe.gui.qt.dialogs import WalletIdDialog
 from bitcoin_safe.gui.qt.icon_label import IconLabel
@@ -501,8 +502,9 @@ class NewWalletWelcomeScreen(QWidget):
         if self.network == bdk.Network.BITCOIN:
             Message(
                 self.tr(
-                    "Hot wallets are disabled on Bitcoin Mainnet.\nYou can switch to Testnet to test Bitcoin Safe without using real Bitcoin."
-                ),
+                    "Hot wallets are disabled on Bitcoin Mainnet.\n"
+                    "You can switch to Testnet to test {app_name} without using real Bitcoin."
+                ).format(app_name=APP_NAME),
                 type=MessageType.Warning,
                 parent=self,
             )
