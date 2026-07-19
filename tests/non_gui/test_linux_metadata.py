@@ -170,6 +170,9 @@ def test_macos_packaging_includes_license_file() -> None:
 def test_macos_bundle_keeps_install_identity_and_uses_rebranded_display_name() -> None:
     osx_spec = (PROJECT_ROOT / "tools" / "build_mac" / "osx.spec").read_text(encoding="utf-8")
     sign_osx = (PROJECT_ROOT / "tools" / "build_mac" / "sign_osx.sh").read_text(encoding="utf-8")
+    mac_workflow = (PROJECT_ROOT / ".github" / "workflows" / "build-and-test-mac.yml").read_text(
+        encoding="utf-8"
+    )
 
     assert APP_METADATA.application_name == APP_NAME
     assert APP_METADATA.macos_bundle_name == MACOS_BUNDLE_NAME == "Bitcoin Safe.app"
@@ -180,6 +183,10 @@ def test_macos_bundle_keeps_install_identity_and_uses_rebranded_display_name() -
     assert 'PACKAGE_NAME="$(bitcoin_safe_macos_bundle_name "$PROJECT_ROOT")"' in sign_osx
     assert 'DoCodeSignMaybe "app bundle" "dist/${PACKAGE_NAME}"' in sign_osx
     assert '"dist/$PACKAGE_NAME"' in sign_osx
+    assert "from bitcoin_safe.app_metadata import APP_METADATA" not in mac_workflow
+    assert f'EXPECTED_BUNDLE_NAME="{MACOS_BUNDLE_NAME}"' in mac_workflow
+    assert f'EXPECTED_DISPLAY_NAME="{APP_NAME}"' in mac_workflow
+    assert f'EXPECTED_BUNDLE_ID="{MACOS_BUNDLE_IDENTIFIER}"' in mac_workflow
 
 
 def test_macos_packaging_uses_styled_dmg_with_plain_fallback() -> None:

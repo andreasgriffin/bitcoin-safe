@@ -183,12 +183,11 @@ jobs:
           fi
           echo "Found app at: $APP_PATH" | tee -a test_dmg.log
 
-          EXPECTED_BUNDLE_NAME=$(poetry run python -c \
-            'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.macos_bundle_name)')
-          EXPECTED_DISPLAY_NAME=$(poetry run python -c \
-            'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.application_name)')
-          EXPECTED_BUNDLE_ID=$(poetry run python -c \
-            'from bitcoin_safe.app_metadata import APP_METADATA; print(APP_METADATA.macos_bundle_identifier)')
+          # This job intentionally downloads only the built artifact, so keep these release
+          # identity expectations self-contained instead of requiring a Poetry environment.
+          EXPECTED_BUNDLE_NAME="Bitcoin Safe.app"
+          EXPECTED_DISPLAY_NAME="Bitcoin-Safe"
+          EXPECTED_BUNDLE_ID="org.bitcoin-safe.BitcoinSafe"
           test "$(basename "$APP_PATH")" = "$EXPECTED_BUNDLE_NAME"
           test "$(plutil -extract CFBundleDisplayName raw "$APP_PATH/Contents/Info.plist")" = \
             "$EXPECTED_DISPLAY_NAME"
