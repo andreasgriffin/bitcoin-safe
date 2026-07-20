@@ -1377,33 +1377,50 @@ class PluginManager(BaseSaveableClass):
         if self.loop_in_thread is None:
             return
 
-        was_enabled = client.enabled
-        if was_enabled:
+        external_clients = [
+            existing_client for existing_client in self.clients if existing_client.is_external_plugin()
+        ]
+        updated_client_was_enabled = client.enabled
+        if updated_client_was_enabled:
             client.set_enabled(False)
 
         def on_success(_result: InstalledSourcePluginMetadata) -> None:
-            replacement_payload_dict = client.dump()
-            replacement_payload = self._serialize_client_dump_dict(replacement_payload_dict)
+            enabled_clients = [
+                existing_client for existing_client in external_clients if existing_client.enabled
+            ]
+            if updated_client_was_enabled:
+                enabled_clients.append(client)
+            for enabled_client in enabled_clients:
+                if enabled_client.enabled:
+                    enabled_client.set_enabled(False)
+            replacement_payloads = [
+                self._serialize_client_payload(existing_client) for existing_client in external_clients
+            ]
             runtime_changed = self._refresh_external_registry_state()
             if runtime_changed:
                 self.serialized_client_dumps = self._merge_serialized_client_payloads(
-                    [*self.serialized_client_dumps, replacement_payload]
+                    [*self.serialized_client_dumps, *replacement_payloads]
                 )
             self._refresh_after_registry_change(runtime_changed)
             if runtime_changed:
-                replacement_client = self._client_for_plugin_id(client.plugin_id)
-                if replacement_client is None:
-                    logger.warning("Could not restore updated plugin %s after refresh.", client.plugin_id)
-                else:
-                    replacement_client.set_enabled(was_enabled)
+                for enabled_client in enabled_clients:
+                    replacement_client = self._client_for_plugin_id(enabled_client.plugin_id)
+                    if replacement_client is None:
+                        logger.warning(
+                            "Could not restore updated plugin %s after refresh.",
+                            enabled_client.plugin_id,
+                        )
+                        continue
+                    replacement_client.set_enabled(True)
             else:
-                client.set_enabled(was_enabled)
+                for enabled_client in enabled_clients:
+                    enabled_client.set_enabled(True)
             self._refresh_plugin_list_only()
             logger.info("Updated plugin %s to version %s.", entry.display_name, entry.version)
 
         def on_error(error_info: ExcInfo | Exception | None) -> None:
-            if was_enabled:
-                client.set_enabled(was_enabled)
+            if updated_client_was_enabled:
+                client.set_enabled(True)
             self._show_async_registry_error(error_info)
 
         async def do() -> InstalledSourcePluginMetadata:
