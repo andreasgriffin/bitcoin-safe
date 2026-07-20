@@ -8239,6 +8239,16 @@ Clicca qui per saperne di più.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>Chiudi</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>Completa la configurazione dell’abbonamento</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>Continua</translation>
 		</message>
@@ -8289,6 +8299,11 @@ Clicca qui per saperne di più.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>URL di gestione</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>URL di gestione salvato.</translation>
 		</message>
@@ -8304,6 +8319,21 @@ Clicca qui per saperne di più.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>Incolla l’URL di gestione</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>Contatta &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; per ottenere l’URL di gestione, quindi incollalo nel campo sottostante.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>Inserisci un URL di gestione HTTP(S) valido.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>Inserisci un indirizzo e-mail valido.</translation>
 		</message>
@@ -8311,6 +8341,11 @@ Clicca qui per saperne di più.</translation>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>Aggiorna stato abbonamento</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>ID abbonamento</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8344,8 +8379,28 @@ Clicca qui per saperne di più.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>L’URL di gestione appartiene a un ID abbonamento diverso e non è stato salvato.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>La pagina di gestione non espone alcun ID abbonamento. L’URL di gestione non è stato salvato.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>Non è stato possibile recuperare automaticamente l’URL di gestione dell’abbonamento.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>Questo plugin è attualmente inattivo. Estendi l’abbonamento prima di abilitarlo di nuovo.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>Usa l’URL di gestione</translation>
 		</message>
 		<name>subscription</name>
 		<message>

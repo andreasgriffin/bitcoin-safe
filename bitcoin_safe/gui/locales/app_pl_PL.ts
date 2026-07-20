@@ -8244,6 +8244,16 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>Zamknij</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>Dokończ konfigurację subskrypcji</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>Kontynuuj</translation>
 		</message>
@@ -8294,6 +8304,11 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>Adres URL zarządzania</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>Adres URL zarządzania zapisany.</translation>
 		</message>
@@ -8309,6 +8324,21 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>Wklej adres URL zarządzania</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>Skontaktuj się z &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;, aby uzyskać adres URL zarządzania, a następnie wklej go w poniższym polu.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>Wprowadź prawidłowy adres URL zarządzania HTTP(S).</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>Wpisz prawidłowy adres e-mail.</translation>
 		</message>
@@ -8316,6 +8346,11 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>Odśwież status subskrypcji</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>Identyfikator subskrypcji</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8349,8 +8384,28 @@ Kliknij tutaj, aby dowiedzieć się więcej.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>Adres URL zarządzania należy do innego identyfikatora subskrypcji i nie został zapisany.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>Strona zarządzania nie udostępnia identyfikatora subskrypcji. Adres URL zarządzania nie został zapisany.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>Nie udało się automatycznie pobrać adresu URL zarządzania subskrypcją.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>Ta wtyczka jest obecnie nieaktywna. Przed ponownym włączeniem przedłuż subskrypcję.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>Użyj adresu URL zarządzania</translation>
 		</message>
 		<name>subscription</name>
 		<message>

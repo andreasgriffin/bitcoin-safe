@@ -8213,6 +8213,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>বন্ধ করুন</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>সাবস্ক্রিপশন সেটআপ সম্পূর্ণ করুন</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>চালিয়ে যান</translation>
 		</message>
@@ -8263,6 +8273,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>ব্যবস্থাপনা URL</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>ব্যবস্থাপনা URL সংরক্ষিত হয়েছে।</translation>
 		</message>
@@ -8278,6 +8293,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>ব্যবস্থাপনা URL পেস্ট করুন</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>ব্যবস্থাপনা URL পেতে অনুগ্রহ করে &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;-এর সঙ্গে যোগাযোগ করুন, তারপর নিচের ঘরে সেটি পেস্ট করুন।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>অনুগ্রহ করে একটি বৈধ HTTP(S) ব্যবস্থাপনা URL লিখুন।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>অনুগ্রহ করে একটি বৈধ ইমেল ঠিকানা লিখুন।</translation>
 		</message>
@@ -8285,6 +8315,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>সাবস্ক্রিপশন অবস্থা রিফ্রেশ করুন</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>সাবস্ক্রিপশন ID</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8318,8 +8353,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>ব্যবস্থাপনা URL-টি একটি ভিন্ন সাবস্ক্রিপশন ID-এর অন্তর্ভুক্ত এবং সংরক্ষণ করা হয়নি।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>ব্যবস্থাপনা পৃষ্ঠায় কোনো সাবস্ক্রিপশন ID দেখানো হয় না। ব্যবস্থাপনা URL সংরক্ষণ করা হয়নি।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>সাবস্ক্রিপশন ব্যবস্থাপনা URL স্বয়ংক্রিয়ভাবে আনা যায়নি।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>এই প্লাগইনটি বর্তমানে নিষ্ক্রিয়। আবার সক্রিয় করার আগে সাবস্ক্রিপশন বাড়ান।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>ব্যবস্থাপনা URL ব্যবহার করুন</translation>
 		</message>
 		<name>subscription</name>
 		<message>

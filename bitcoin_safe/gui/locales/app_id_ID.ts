@@ -8235,6 +8235,16 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>Tutup</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>Selesaikan penyiapan langganan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>Lanjutkan</translation>
 		</message>
@@ -8285,6 +8295,11 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>URL pengelolaan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>URL pengelolaan disimpan.</translation>
 		</message>
@@ -8300,6 +8315,21 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>Tempel URL pengelolaan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>Silakan hubungi &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; untuk mendapatkan URL pengelolaan, lalu tempelkan di kolom di bawah ini.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>Silakan masukkan URL pengelolaan HTTP(S) yang valid.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>Harap masukkan alamat email yang valid.</translation>
 		</message>
@@ -8307,6 +8337,11 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>Segarkan status Langganan</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>ID langganan</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8340,8 +8375,28 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>URL pengelolaan terkait dengan ID langganan yang berbeda dan tidak disimpan.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>Halaman pengelolaan tidak menampilkan ID langganan. URL pengelolaan tidak disimpan.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>URL pengelolaan langganan tidak dapat diambil secara otomatis.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>Plugin ini saat ini tidak aktif. Perpanjang langganan sebelum mengaktifkannya lagi.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>Gunakan URL pengelolaan</translation>
 		</message>
 		<name>subscription</name>
 		<message>
