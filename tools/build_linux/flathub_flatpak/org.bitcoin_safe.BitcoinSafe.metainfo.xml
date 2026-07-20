@@ -53,6 +53,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.1.1" date="2026-07-20">
+      <description>
+        <ul>
+          <li>UI Bug fixes</li>
+          <li>Debian Reproducibility improvement</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.1.0" date="2026-07-19">
       <description>
         <p>Highlights</p>

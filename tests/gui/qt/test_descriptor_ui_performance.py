@@ -35,9 +35,11 @@ import bdkpython as bdk
 import pytest
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import AddressTypes
+from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
+from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.descriptor_ui import DescriptorUI
 from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUI
 from bitcoin_safe.signals import Signals, WalletFunctions
@@ -233,6 +235,10 @@ def test_descriptor_ui_can_reduce_to_singlesig_with_incomplete_signers(
 ) -> None:
     descriptor_ui, loop_in_thread, wallet = _build_descriptor_ui(qtbot=qtbot, test_config=test_config)
     try:
+        top_level_editors_before = {
+            id(widget) for widget in QApplication.topLevelWidgets() if isinstance(widget, ButtonEdit)
+        }
+
         descriptor_ui.spin_req.setValue(1)
         descriptor_ui.spin_signers.setValue(1)
 
@@ -240,6 +246,10 @@ def test_descriptor_ui_can_reduce_to_singlesig_with_incomplete_signers(
         assert descriptor_ui.spin_signers.value() == 1
         assert descriptor_ui.keystore_uis.count() == 1
         assert descriptor_ui.protowallet.is_multisig() is False
+        top_level_editors_after = {
+            id(widget) for widget in QApplication.topLevelWidgets() if isinstance(widget, ButtonEdit)
+        }
+        assert top_level_editors_after == top_level_editors_before
     finally:
         descriptor_ui.close()
         if wallet:
