@@ -1373,6 +1373,7 @@ class KeyStoreUI(CardBase):
 
     def close(self) -> bool:
         """Close."""
+        self._theme_assets_ready = False
         device_help_widget = self._device_help_widget
         self._device_help_widget = None
         self.signal_tracker.disconnect_all()

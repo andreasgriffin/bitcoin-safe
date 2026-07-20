@@ -232,6 +232,7 @@ def test_descriptor_ui_can_reduce_to_singlesig_with_incomplete_signers(
     test_config: TestConfig,
 ) -> None:
     descriptor_ui, loop_in_thread, wallet = _build_descriptor_ui(qtbot=qtbot, test_config=test_config)
+    removed_signers = list(descriptor_ui.keystore_uis.getAllTabData().values())[1:]
     try:
         descriptor_ui.spin_req.setValue(1)
         descriptor_ui.spin_signers.setValue(1)
@@ -240,7 +241,11 @@ def test_descriptor_ui_can_reduce_to_singlesig_with_incomplete_signers(
         assert descriptor_ui.spin_signers.value() == 1
         assert descriptor_ui.keystore_uis.count() == 1
         assert descriptor_ui.protowallet.is_multisig() is False
+        assert all(signer.edit_seed.isHidden() for signer in removed_signers)
+        assert all(not signer.edit_seed.isVisible() for signer in removed_signers)
     finally:
+        for signer in removed_signers:
+            signer.setParent(descriptor_ui)
         descriptor_ui.close()
         if wallet:
             wallet.close()
