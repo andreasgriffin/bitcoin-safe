@@ -8235,6 +8235,16 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>Đóng</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>Hoàn tất thiết lập gói đăng ký</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>Tiếp tục</translation>
 		</message>
@@ -8285,6 +8295,11 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>URL quản lý</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>URL quản lý đã được lưu.</translation>
 		</message>
@@ -8300,6 +8315,21 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>Dán URL quản lý</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>Vui lòng liên hệ &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; để nhận URL quản lý, sau đó dán URL đó vào trường bên dưới.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>Vui lòng nhập URL quản lý HTTP(S) hợp lệ.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>Vui lòng nhập địa chỉ email hợp lệ.</translation>
 		</message>
@@ -8307,6 +8337,11 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>Làm mới trạng thái Đăng ký</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>ID gói đăng ký</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8340,8 +8375,28 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>URL quản lý thuộc về một ID gói đăng ký khác và chưa được lưu.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>Trang quản lý không cung cấp ID gói đăng ký. URL quản lý chưa được lưu.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>Không thể tự động truy xuất URL quản lý gói đăng ký.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>Plugin này hiện không hoạt động. Gia hạn đăng ký trước khi bật lại.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>Sử dụng URL quản lý</translation>
 		</message>
 		<name>subscription</name>
 		<message>

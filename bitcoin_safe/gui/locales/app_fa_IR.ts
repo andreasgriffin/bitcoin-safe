@@ -8233,6 +8233,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>بستن</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>تکمیل راه‌اندازی اشتراک</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>ادامه</translation>
 		</message>
@@ -8283,6 +8293,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>نشانی اینترنتی مدیریت</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>URL مدیریت ذخیره شد.</translation>
 		</message>
@@ -8298,6 +8313,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>نشانی اینترنتی مدیریت را جای‌گذاری کنید</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>برای دریافت نشانی اینترنتی مدیریت، لطفاً با &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; تماس بگیرید و سپس آن را در کادر زیر جای‌گذاری کنید.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>لطفاً یک نشانی اینترنتی معتبر HTTP(S) برای مدیریت وارد کنید.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>لطفاً یک نشانی ایمیل معتبر وارد کنید.</translation>
 		</message>
@@ -8305,6 +8335,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>تازه‌سازی وضعیت اشتراک</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>شناسه اشتراک</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8338,8 +8373,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>نشانی اینترنتی مدیریت متعلق به شناسه اشتراک دیگری است و ذخیره نشد.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>صفحه مدیریت هیچ شناسه اشتراکی ارائه نمی‌دهد. نشانی اینترنتی مدیریت ذخیره نشد.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>نشانی اینترنتی مدیریت اشتراک به‌طور خودکار قابل دریافت نبود.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>این افزونه در حال حاضر غیرفعال است. پیش از فعال‌سازی دوباره، اشتراک را تمدید کنید.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>استفاده از نشانی اینترنتی مدیریت</translation>
 		</message>
 		<name>subscription</name>
 		<message>

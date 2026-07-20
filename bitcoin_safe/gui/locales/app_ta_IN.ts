@@ -8266,6 +8266,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>மூடு</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>சந்தா அமைப்பை முடிக்கவும்</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>தொடரவும்</translation>
 		</message>
@@ -8316,6 +8326,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>நிர்வாக URL</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>மேலாண்மை முகவரி சேமிக்கப்பட்டது.</translation>
 		</message>
@@ -8331,6 +8346,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>நிர்வாக URL-ஐ ஒட்டவும்</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>நிர்வாக URL-ஐப் பெற &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; என்பதைத் தொடர்புகொண்டு, பின்னர் அதை கீழே உள்ள புலத்தில் ஒட்டவும்.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>சரியான HTTP(S) நிர்வாக URL-ஐ உள்ளிடவும்.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும்.</translation>
 		</message>
@@ -8338,6 +8368,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>சந்தா நிலையைப் புதுப்பிக்கவும்</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>சந்தா ID</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8371,8 +8406,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>நிர்வாக URL வேறொரு சந்தா ID-க்கு உரியது, எனவே அது சேமிக்கப்படவில்லை.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>நிர்வாகப் பக்கம் சந்தா ID-ஐக் காட்டவில்லை. நிர்வாக URL சேமிக்கப்படவில்லை.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>சந்தா நிர்வாக URL-ஐத் தானாகப் பெற முடியவில்லை.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>இந்த செருகுநிரல் தற்போது செயலற்ற நிலையில் உள்ளது. மீண்டும் இயக்கும் முன் சந்தாவை நீட்டிக்கவும்.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>நிர்வாக URL-ஐப் பயன்படுத்தவும்</translation>
 		</message>
 		<name>subscription</name>
 		<message>

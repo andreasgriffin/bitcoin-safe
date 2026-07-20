@@ -8208,6 +8208,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>ပိတ်ပါ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>စာရင်းသွင်းမှု စနစ်ထည့်သွင်းခြင်းကို အပြီးသတ်ပါ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>ဆက်လုပ်ပါ</translation>
 		</message>
@@ -8258,6 +8268,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>စီမံခန့်ခွဲမှု URL</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>စီမံခန့်ခွဲမှု URL သိမ်းပြီးပါပြီ။</translation>
 		</message>
@@ -8273,6 +8288,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>စီမံခန့်ခွဲမှု URL ကို ကူးထည့်ပါ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>စီမံခန့်ခွဲမှု URL ရယူရန် &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; သို့ ဆက်သွယ်ပြီးနောက် အောက်ပါအကွက်တွင် ကူးထည့်ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>မှန်ကန်သော HTTP(S) စီမံခန့်ခွဲမှု URL ကို ထည့်သွင်းပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>ကျေးဇူးပြု၍ မှန်ကန်သော အီးမေးလ်လိပ်စာ ထည့်ပါ။</translation>
 		</message>
@@ -8280,6 +8310,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>စာရင်းသွင်းမှု အခြေအနေကို refresh လုပ်ပါ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>စာရင်းသွင်းမှု ID</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8313,8 +8348,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>စီမံခန့်ခွဲမှု URL သည် အခြားစာရင်းသွင်းမှု ID တစ်ခုနှင့် သက်ဆိုင်သောကြောင့် မသိမ်းဆည်းခဲ့ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>စီမံခန့်ခွဲမှုစာမျက်နှာတွင် စာရင်းသွင်းမှု ID ကို မဖော်ပြထားပါ။ စီမံခန့်ခွဲမှု URL ကို မသိမ်းဆည်းခဲ့ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>စာရင်းသွင်းမှု စီမံခန့်ခွဲမှု URL ကို အလိုအလျောက် ရယူ၍မရပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>ဤ plugin သည် လက်ရှိတွင် မသက်ဝင်ပါ။ ထပ်မံဖွင့်မည်ဆိုပါက စာရင်းသွင်းမှုကို အရင်တိုးချဲ့ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>စီမံခန့်ခွဲမှု URL ကို အသုံးပြုပါ</translation>
 		</message>
 		<name>subscription</name>
 		<message>

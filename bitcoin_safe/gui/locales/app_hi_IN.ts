@@ -8212,6 +8212,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>बंद करें</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>सदस्यता सेटअप पूरा करें</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>जारी रखें</translation>
 		</message>
@@ -8262,6 +8272,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>प्रबंधन URL</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>प्रबंधन URL सहेजा गया।</translation>
 		</message>
@@ -8277,6 +8292,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>प्रबंधन URL पेस्ट करें</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>प्रबंधन URL प्राप्त करने के लिए कृपया &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; से संपर्क करें, फिर उसे नीचे दिए गए फ़ील्ड में पेस्ट करें।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>कृपया एक मान्य HTTP(S) प्रबंधन URL दर्ज करें।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>कृपया एक मान्य ईमेल पता दर्ज करें।</translation>
 		</message>
@@ -8284,6 +8314,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>सदस्यता स्थिति रिफ्रेश करें</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>सदस्यता ID</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8317,8 +8352,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>प्रबंधन URL किसी अन्य सदस्यता ID से संबंधित है और सहेजा नहीं गया।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>प्रबंधन पृष्ठ किसी सदस्यता ID को प्रदर्शित नहीं करता। प्रबंधन URL सहेजा नहीं गया।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>सदस्यता प्रबंधन URL स्वचालित रूप से प्राप्त नहीं किया जा सका।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>यह प्लगइन वर्तमान में निष्क्रिय है। इसे फिर से सक्षम करने से पहले सदस्यता बढ़ाएँ।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>प्रबंधन URL का उपयोग करें</translation>
 		</message>
 		<name>subscription</name>
 		<message>

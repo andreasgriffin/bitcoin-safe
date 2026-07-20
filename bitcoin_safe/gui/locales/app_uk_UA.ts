@@ -8236,6 +8236,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>Закрити</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>Завершити налаштування підписки</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>Продовжити</translation>
 		</message>
@@ -8286,6 +8296,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>URL-адреса керування</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>URL керування збережено.</translation>
 		</message>
@@ -8301,6 +8316,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>Вставте URL-адресу керування</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>Щоб отримати URL-адресу керування, зверніться до &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;, а потім вставте її в поле нижче.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>Введіть дійсну URL-адресу керування HTTP(S).</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>Введіть дійсну адресу електронної пошти.</translation>
 		</message>
@@ -8308,6 +8338,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>Оновити статус підписки</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>Ідентифікатор підписки</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8341,8 +8376,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>URL-адреса керування належить іншому ідентифікатору підписки й не була збережена.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>На сторінці керування не вказано ідентифікатор підписки. URL-адресу керування не було збережено.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>Не вдалося автоматично отримати URL-адресу керування підпискою.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>Цей плагін наразі неактивний. Подовжте підписку, перш ніж увімкнути його знову.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>Використовувати URL-адресу керування</translation>
 		</message>
 		<name>subscription</name>
 		<message>

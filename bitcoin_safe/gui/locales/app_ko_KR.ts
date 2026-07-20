@@ -8228,6 +8228,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>닫기</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>구독 설정 완료</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>계속</translation>
 		</message>
@@ -8278,6 +8288,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>관리 URL</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>관리 URL이 저장되었습니다.</translation>
 		</message>
@@ -8293,6 +8308,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>관리 URL 붙여넣기</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>관리 URL을 받으려면 &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;로 문의한 다음 아래 입력란에 붙여넣으세요.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>유효한 HTTP(S) 관리 URL을 입력하세요.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>유효한 이메일 주소를 입력하세요.</translation>
 		</message>
@@ -8300,6 +8330,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>구독 상태 새로 고침</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>구독 ID</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8333,8 +8368,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>관리 URL이 다른 구독 ID에 속해 있어 저장되지 않았습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>관리 페이지에 구독 ID가 표시되지 않습니다. 관리 URL이 저장되지 않았습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>구독 관리 URL을 자동으로 가져올 수 없습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>이 플러그인은 현재 비활성 상태입니다. 다시 활성화하기 전에 구독을 연장하세요.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>관리 URL 사용</translation>
 		</message>
 		<name>subscription</name>
 		<message>

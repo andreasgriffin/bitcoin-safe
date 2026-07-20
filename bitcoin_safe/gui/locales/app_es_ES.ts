@@ -85,12 +85,12 @@
 		<name>AddPluginSourceDialog</name>
 		<message>
 			<source>Add Plugin Source</source>
-			<translation>Añadir fuente de plugin</translation>
+			<translation>Añadir origen del complemento</translation>
 		</message>
 		<name>AddPluginSourceDialog</name>
 		<message>
 			<source>Bearer token</source>
-			<translation>Token Bearer</translation>
+			<translation>Vale Portador</translation>
 		</message>
 		<name>AddPluginSourceDialog</name>
 		<message>
@@ -331,7 +331,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>Se recibió una devolución de llamada del navegador después de que la factura expirara. Inténtelo de nuevo.</translation>
+			<translation>Se recibió una devolución de llamada del navegador tras que la factura venza. Inténtelo de nuevo.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -579,7 +579,9 @@
 			<source>Could not recognize the input. Do you want to scan again?
 
 The error was: {error}</source>
-			<translation>No se ha podido reconocer la entrada. ¿Quieres volver a escanear? El error fue: {error}</translation>
+			<translation>No se ha podido reconocer la entrada. ¿Quieres volver a escanear?
+
+El error fue: {error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -8259,6 +8261,16 @@ Haz clic aquí para saber más.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>Cerrar</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>Completar la configuración de la suscripción</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>Continuar</translation>
 		</message>
@@ -8309,6 +8321,11 @@ Haz clic aquí para saber más.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>URL de gestión</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>URL de gestión guardada.</translation>
 		</message>
@@ -8324,6 +8341,21 @@ Haz clic aquí para saber más.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>Pegar URL de gestión</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>Ponte en contacto con &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; para obtener la URL de gestión y, a continuación, pégala en el campo de abajo.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>Introduce una URL de gestión HTTP(S) válida.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>Introduzca una dirección de correo electrónico válida.</translation>
 		</message>
@@ -8331,6 +8363,11 @@ Haz clic aquí para saber más.</translation>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>Actualizar estado de la suscripción</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>ID de suscripción</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8364,8 +8401,28 @@ Haz clic aquí para saber más.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>La URL de gestión pertenece a un ID de suscripción diferente y no se ha guardado.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>La página de gestión no muestra ningún ID de suscripción. La URL de gestión no se ha guardado.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>No se ha podido obtener automáticamente la URL de gestión de la suscripción.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>Este plugin está actualmente inactivo. Amplíe la suscripción antes de volver a habilitarlo.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>Usar URL de gestión</translation>
 		</message>
 		<name>subscription</name>
 		<message>
