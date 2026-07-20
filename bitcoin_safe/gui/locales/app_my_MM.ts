@@ -18,11 +18,6 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
-			<source>Bitcoin-Safe</source>
-			<translation>Bitcoin-Safe</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
 			<source>FOSS - Free &amp; Open Source Software</source>
 			<translation>FOSS - အခမဲ့နှင့် ဖွင့်လှစ်ရင်းမြစ် ဆော့ဖ်ဝဲ</translation>
 		</message>
@@ -415,8 +410,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>အင်ဗွိုက်စ် တောင်းဆိုနေပါသည်... ဘရောက်ဇာတစ်ခု ဖွင့်လှစ်မည်ဖြစ်ပြီး Bitcoin Safe သည် ဒေသတွင်း ခေါ်ဆိုမှု ပြန်လည်ကို နားထောင်ပါမည်။</translation>
+			<source>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</source>
+			<translation>အင်ဗွိုက်စ် တောင်းဆိုနေပါသည်... ဘရောက်ဇာတစ်ခု ဖွင့်လှစ်မည်ဖြစ်ပြီး {app_name} သည် ဒေသတွင်း ခေါ်ဆိုမှု ပြန်လည်ကို နားထောင်ပါမည်။</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -581,8 +576,10 @@
 	<context>
 		<name>ButtonEdit</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>ထည့်သွင်းချက်ကို စိစစ်မနိုင်ပါ။ နောက်တစ်ကြိမ် စကင်လုပ်မလား?</translation>
+			<source>Could not recognize the input. Do you want to scan again?
+
+The error was: {error}</source>
+			<translation>ထည့်သွင်းမှုကို မမှတ်မိနိုင်ပါ။ ထပ်မံစကင်ဖတ်လိုပါသလား။ အမှားမှာ: {error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -1347,38 +1344,38 @@ Default 20</source>
 	<context>
 		<name>DonateDialog</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>On-chain လှူဒါန်းရန်</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
 			<source>Donation</source>
 			<translation>လှူဒါန်းခြင်း</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
-			<translation>လှူဒါန်းမှု အောင်မြင်ပါသည်။ Bitcoin Safe ကို ပံ့ပိုးပေးသည့်အတွက် အထူးကျေးဇူးတင်ပါသည်။</translation>
+			<source>Donation successful. Thank you so much for supporting {app_name}!</source>
+			<translation>လှူဒါန်းမှု အောင်မြင်ပါသည်။ {app_name} ကို ပံ့ပိုးပေးသည့်အတွက် အထူးကျေးဇူးတင်ပါသည်။</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
 			<source>Email us</source>
-			<translation>Bitcoin Safe ကို မူလတန်းအခမဲ့ နှင့် ပြင်ဆင်ဖွင့်လှစ်သည့် ဆော့ဖ်ဝဲအဖြစ် တိုးတက်စေရန် ကူညီပါ။</translation>
+			<translation>ပလပ်အင်ကို ဖျက်ပါ</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>ပုံနှိပ်ရန်</translation>
+			<source>Help {app_name} grow as Free and Open Source Software.</source>
+			<translation>Help {app_name} grow as Free and Open Source Software.</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>ပိုမိုကြီးမားသော လှူဒါန်းမှု သို့မဟုတ် မိတ်ဖက်ဖြစ်ခြင်းကို ဆွေးနွေးလိုပါသလား? အောက်သို့ ရှိသော ဆက်သွယ်မှုခလုတ်ကို သုံးပြီး ကျွန်ုပ်တို့ကို ဆက်သွယ်ပါ။</translation>
+			<source>Support {app_name}</source>
+			<translation>Support {app_name}</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
 			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
 			<translation>Bitcoin ဈေးနှုန်း လက်ရှိ မရနိုင်ပါ။</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</translation>
 		</message>
 	</context>
 	<context>
@@ -1389,8 +1386,8 @@ Default 20</source>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
-			<source>Thanks for Bitcoin Safe!</source>
-			<translation>စာတို (ရွေးချယ်နိုင်သည်)</translation>
+			<source>Thanks for {app_name}!</source>
+			<translation>Thanks for {app_name}!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1476,15 +1473,15 @@ Default 20</source>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>လုံးဝ (Bitcoin Safe)</translation>
+			<source>Full ({app_name})</source>
+			<translation>လုံးဝ ({app_name})</translation>
 		</message>
 	</context>
 	<context>
 		<name>ExternalPaidPluginWidget</name>
 		<message>
 			<source>Delete Plugin</source>
-			<translation>Bitcoin Safe အတွက် ကျေးဇူးတင်ပါသည်!</translation>
+			<translation>သင့်တွင် ကိုယ်ပိုင် Electrum ဆာဗာရှိပါက သို့မဟုတ် မစောင့်လိုပါက ကွန်ရက်ဆက်တင်များတွင် အများသုံး Electrum ဆာဗာတစ်ခုနှင့် ချိတ်ဆက်ပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -1795,8 +1792,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>လုံးဝ (Bitcoin Safe)</translation>
+			<source>Full ({app_name})</source>
+			<translation>လုံးဝ ({app_name})</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1812,8 +1809,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Import hardware signer information into Bitcoin Safe</source>
-			<translation>hardware signer အချက်အလက်ကို Bitcoin Safe ထဲသို့ တင်သွင်းပါ</translation>
+			<source>Import hardware signer information into {app_name}</source>
+			<translation>hardware signer အချက်အလက်ကို {app_name} ထဲသို့ တင်သွင်းပါ</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1859,6 +1856,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
+			<source>Dark</source>
+			<translation>အမှောင်</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
 			<source>Enter app lock password:</source>
 			<translation>App lock စကားဝှက်ကို ထည့်ပါ:</translation>
 		</message>
@@ -1866,6 +1868,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Invalid password</source>
 			<translation>မမှန်ကန်သော စကားဝှက်</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Light</source>
+			<translation>အလင်း</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
@@ -1881,6 +1888,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set</source>
 			<translation>သတ်မှတ်မည်</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>System</source>
+			<translation>စနစ်</translation>
 		</message>
 	</context>
 	<context>
@@ -1901,11 +1913,41 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
-			<source>Unexpected xpub origin</source>
-			<translation>မမျှော်လင့်သော xpub ရင်းမြစ်</translation>
+			<source>The provided xpub origin {given} does not match the expectation {expected}</source>
+			<translation>ပေးထားသော xpub မူလရင်းမြစ် {given} သည် မျှော်မှန်းထားသော {expected} နှင့် မကိုက်ညီပါ</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>This looks like a {provided_kind}. Expected: {expected_kind}.</source>
+			<translation>၎င်းသည် {provided_kind} ကဲ့သို့ ဖြစ်နေပါသည်။ မျှော်မှန်းထားသည်မှာ: {expected_kind}။</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>multi-sig</source>
+			<translation>လက်မှတ်မျိုးစုံ</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>single-sig</source>
+			<translation>လက်မှတ်တစ်ခုတည်း</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>{given} looks like {provided_type}, but this wallet expects {expected_type}.</source>
+			<translation>{given} သည် {provided_type} ကဲ့သို့ ဖြစ်နေသော်လည်း ဤဝေါလက်သည် {expected_type} ကို မျှော်လင့်ထားပါသည်။</translation>
 		</message>
 	</context>
 	<context>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Abort and try later</source>
+			<translation>ပယ်ဖျက်ပြီး နောက်မှ ထပ်မံကြိုးစားပါ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Account number</source>
+			<translation>အကောင့်နံပါတ်</translation>
+		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -1915,11 +1957,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Change device type</source>
 			<translation>ကိရိယာအမျိုးအစား ပြောင်းရန်</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Connect</source>
-			<translation>ချိတ်ဆက်ရန်</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1935,6 +1972,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Fingerprint</source>
 			<translation>လက်ဗွေရာ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Ignore warning and proceed</source>
+			<translation>သတိပေးချက်ကို လျစ်လျူရှုပြီး ဆက်လက်လုပ်ဆောင်ပါ</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2053,6 +2095,16 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Set account number</source>
+			<translation>အကောင့်နံပါတ် သတ်မှတ်ပါ</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Set account number...</source>
+			<translation>အကောင့်နံပါတ် သတ်မှတ်ပါ...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>ရွေးချယ်ထားသောလိပ်စာအမျိုးအစား {type} အတွက်စံနှုန်းမှာ {expected_key_origin} ဖြစ်သည်။ သေချာမရှိပါကပြင်ဆင်ပါ။</translation>
 		</message>
@@ -2062,6 +2114,16 @@ since the final size of the transaction is unknown.</source>
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
 			<translation>ဂဏန်း ၈ လုံး fingerprint သည် seed ကို သတ်မှတ်ဖော်ထုတ်ပေးသည်။ seed များနှင့် signing device များကို ခြေရာခံရန် ၎င်းကို hardware signer ပေါ်တွင် ရေးနိုင်သည်။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
+			<translation>အကောင့်သည် {current_account_number} မှ {new_account_number} သို့ ပြောင်းလဲသွားပါသည်။ ဆက်လက်လုပ်ဆောင်မလား?</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
+			<translation>အကောင့်နံပါတ်ကို derivation path ထဲတွင် ကုဒ်သွင်းထားပြီး လက်မှတ်ရေးထိုးသူ၏ xPub ကို ရွေးချယ်ပေးပါသည်။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2117,10 +2179,8 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{msg}
-Do you want to proceed anyway?</source>
-			<translation>{msg}
-ခေါင်းပါပဲဆက်လုပ်မလား။</translation>
+			<source>{msg}</source>
+			<translation>{msg}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2146,13 +2206,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>သင့်သည်လက်ဗွေရာကိုကြိမ်နှုန်းများစွာတင်သွင်းထားသည်!!! ကွဲပြားသောလက်မှတ်သားကိရိယာကိုသုံးပါ။</translation>
+			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
+			<translation>လက်မှတ်ရေးထိုးသူနေရာများ {signers} တွင် တူညီသော xpub ပါဝင်နေပါသည်။ ပုံမှန်အားဖြင့် တူညီသော လက်မှတ်ရေးထိုးသူ export ကို နှစ်ကြိမ် import လုပ်ထားခြင်းကို ဆိုလိုပါသည်။ လက်မှတ်ရေးထိုးသူတစ်ဦးစီအတွက် မတူညီသော စက် သို့မဟုတ် အကောင့်ကို import လုပ်ပါ။</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>သင့်သည် xpub ကိုကြိမ်နှုန်းများစွာတင်သွင်းထားသည်!!! ကွဲပြားသောလက်မှတ်သားကိရိယာကိုသုံးပါ။</translation>
+			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+			<translation>သင့်သည်လက်ဗွေရာကိုကြိမ်နှုန်းများစွာတင်သွင်းထားသည်!!! ကွဲပြားသောလက်မှတ်သားကိရိယာကိုသုံးပါ။</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2469,7 +2529,7 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>&amp;X/Twitter DM</source>
-			<translation>Bitcoin Safe ကို ಸಮುದಾಯမှ ငွေပေးကြေးမြေပေးထောက်ပံ့ထားသည်။ သင့်ထောက်ပံ့မှုက ဖwicklungကို လွတ်လပ်စွာ ဆောင်ရွက်နိုင်စေပြီး လက္ခဏာအသစ်များ ထုတ်လုပ်နိုင်ခြင်းနှင့် လုံခြုံရေးပြန်လည်စစ်ဆေးမှုများကို မြှင့်တင်ပေးသည်။ အထောက်အပံ့အများဆုံးပေးသူများကို ကျွန်ုပ်တို့၏ &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;အထောက်အပံ့ပေးသူများ စာမျက်နှာ&lt;/a&gt;တွင် ဖော်ပြနိုင်သည်။</translation>
+			<translation>ပလပ်အင်ကို ဖျက်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2589,8 +2649,13 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
-You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
-			<translation>Bitcoin Mainnet တွင် hot wallet များကို ပိတ်ထားသည်။ Bitcoin အစစ်ကို မသုံးဘဲ Bitcoin Safe ကို စမ်းသပ်ရန် Testnet သို့ ပြောင်းနိုင်သည်။</translation>
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet တွင် hot wallet များကို ပိတ်ထားသည်။ Bitcoin အစစ်ကို မသုံးဘဲ {app_name} ကို စမ်းသပ်ရန် Testnet သို့ ပြောင်းနိုင်သည်။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Is this a new wallet?</source>
+			<translation>ဤဝေါလက်သည် အသစ်ဖြစ်ပါသလား?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2644,8 +2709,8 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>No, quick scan</source>
-			<translation>မဟုတ်ပါ၊ လျင်မြန်သောစစ်ဆေးမှု</translation>
+			<source>No, do a full scan</source>
+			<translation>မဟုတ်ပါ၊ အပြည့်အစုံ စကင်ဖတ်ပါ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2886,11 +2951,6 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Was this wallet ever used before?</source>
-			<translation>ဤပိုက်ဆံအိတ်ကို ယခင်က အသုံးပြုခဲ့ဖူးပါသလား?</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Wrong password</source>
 			<translation>စကားဝှက်မှားနေသည်</translation>
 		</message>
@@ -2901,8 +2961,8 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Yes, full scan for transactions</source>
-			<translation>ဟုတ်ကဲ့၊ ငွေရှင်းလုပ်ဆောင်မှုအတွက် ပြည့်စုံစစ်ဆေးပါ</translation>
+			<source>Yes</source>
+			<translation>ဟုတ်သည်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3156,11 +3216,6 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>ပလပ်အင် ဖျက်ရန်</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) သည် wallet များအား သင့်လိပ်စာများ၏ ကိုယ်ရေးလုံခြုံမှုကို ထိန်းသိမ်းထားစဉ် ဆက်စပ်သော transaction များကို ရှာဖွေခွင့်ပြုသည်။</translation>
 		</message>
@@ -3194,7 +3249,7 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safe သည် ကိုယ်ရေးလုံခြုံမှုအတွက် node များစွာမှ block အကျဉ်းချုပ်များကို ဒေါင်းလုဒ်လုပ်သည်။ ဤကနဦး sync ပြီးနောက် update များသည် မြန်ဆန်မည်။ သင့်တွင် ကိုယ်ပိုင် Electrum ဆာဗာရှိပါက သို့မဟုတ် မစောင့်လိုပါက network settings တွင် public Electrum server တစ်ခုနှင့် ချိတ်ဆက်ပါ။</translation>
+			<translation>သင့်တွင် ကိုယ်ပိုင် Electrum ဆာဗာရှိပါက သို့မဟုတ် မစောင့်လိုပါက ကွန်ရက်ဆက်တင်များတွင် အများသုံး Electrum ဆာဗာတစ်ခုနှင့် ချိတ်ဆက်ပါ။</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3262,6 +3317,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Your wallet syncs through the configured Esplora server.</source>
 			<translation>သင့်ပိုက်ဆံအိတ်သည် ပြင်ဆင်ထားသော Esplora ဆာဗာမှတစ်ဆင့် sync လုပ်သည်။</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
 		</message>
 	</context>
 	<context>
@@ -3482,6 +3542,22 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Hot Single Signature Wallet</source>
 			<translation>Hot Single Signature Wallet</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet တွင် hot wallet များကို ပိတ်ထားသည်။ Bitcoin အစစ်ကို မသုံးဘဲ {app_name} ကို စမ်းသပ်ရန် Testnet သို့ ပြောင်းနိုင်သည်။</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
+			<translation>Android ဖုန်းတစ်လုံးကို သီးသန့် bitcoin လက်မှတ်ရေးထိုးကိရိယာအဖြစ် ပြောင်းလဲနည်းကို လေ့လာပါ။</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>No signer available?</source>
+			<translation>အသုံးပြုနိုင်သော လက်မှတ်ရေးထိုးသူ မရှိဘူးလား?</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3797,11 +3873,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Delete installed plugin {plugin}?</source>
 			<translation>ထည့်သွင်းထားသော plugin {plugin} ကို ဖျက်မလား?</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Disable the plugin before deleting it.</source>
-			<translation>ဖျက်မည့်မတိုင်မီ plugin ကို ပိတ်ပါ။</translation>
 		</message>
 		<name>PluginManager</name>
 		<message>
@@ -4949,6 +5020,13 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SourceCatalogItemWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>ပလပ်အင် ဖျက်ရန်</translation>
+		</message>
+	</context>
+	<context>
 		<name>SourceManagementDialog</name>
 		<message>
 			<source>Add Plugin Source...</source>
@@ -5142,6 +5220,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>ToolGui</name>
+		<message>
+			<source>Account index: </source>
+			<translation>အကောင့်အညွှန်း: </translation>
+		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
@@ -5551,8 +5634,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
-			<translation>ဘယ်ဘက်ရှိစာရင်းမှ UTXO တစ်ခု သို့မဟုတ် တစ်ထပ်ထပ်ရွေးပါ၊ သို့မဟုတ် “အထူးသဖြင့် UTXO များကို ရွေးပါ” ကို အထက်တွင် ဖယ်ရှားပြီး Bitcoin-Safe သို့ သင့်လုပ်ငန်းအတွက် အကောင်းဆုံး ကွက်တမ်းများကို ရွေးခွင့်ပြုပါ။</translation>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
+			<translation>ဘယ်ဘက်ရှိစာရင်းမှ UTXO တစ်ခု သို့မဟုတ် တစ်ထပ်ထပ်ရွေးပါ၊ သို့မဟုတ် “အထူးသဖြင့် UTXO များကို ရွေးပါ” ကို အထက်တွင် ဖယ်ရှားပြီး {app_name} သို့ သင့်လုပ်ငန်းအတွက် အကောင်းဆုံး ကွက်တမ်းများကို ရွေးခွင့်ပြုပါ။</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5826,8 +5909,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Installer started. Closing Bitcoin Safe...</source>
-			<translation>Installer စတင်ခဲ့သည်။ Bitcoin Safe ကို ပိတ်နေသည်...</translation>
+			<source>Installer started. Closing {app_name}...</source>
+			<translation>Installer စတင်ခဲ့သည်။ {app_name} ကို ပိတ်နေသည်...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5866,8 +5949,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Update applied. Restarting Bitcoin Safe...</source>
-			<translation>အပ်ဒိတ် လုပ်ဆောင်ပြီးပါပြီ။ Bitcoin Safe ကို ပြန်လည်စတင်နေသည်...</translation>
+			<source>Update applied. Restarting {app_name}...</source>
+			<translation>အပ်ဒိတ် လုပ်ဆောင်ပြီးပါပြီ။ {app_name} ကို ပြန်လည်စတင်နေသည်...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>

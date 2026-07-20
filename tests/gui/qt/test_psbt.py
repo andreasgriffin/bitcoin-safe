@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2025-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ def test_psbt_warning_poision_mainnet(
     with main_window_context(test_config=test_config_main_chain) as main_window:
         # Wait for the main window to render before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe"
+        assert main_window.windowTitle() == "Bitcoin-Safe"
 
         shutter.save(main_window)
 
@@ -153,7 +153,7 @@ def test_psbt_warning_poision(
     with main_window_context(test_config=test_config) as main_window:
         # Wait for the main window to render before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+        assert main_window.windowTitle() == "Bitcoin-Safe - REGTEST"
 
         shutter.save(main_window)
 
@@ -207,7 +207,7 @@ def test_psbt_mixed_inputs_finalized_and_nothing_signed_signing_steps(
     shutter.create_symlink(test_config=test_config)
     with main_window_context(test_config=test_config) as main_window:
         QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
-        assert main_window.windowTitle() == "Bitcoin Safe - REGTEST"
+        assert main_window.windowTitle() == "Bitcoin-Safe - REGTEST"
 
         main_window.open_tx_like_in_tab(mixed_inputs_finalized_and_nothing_signed_psbt)
 

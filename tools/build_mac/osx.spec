@@ -178,7 +178,7 @@ app = BUNDLE(
     version=VERSION,
     name=PACKAGE_NAME,
     icon=ICONS_FILE,
-    bundle_identifier=None,
+    bundle_identifier=APP_METADATA.macos_bundle_identifier,
     info_plist={
         'CFBundleDisplayName': APP_METADATA.application_name,
         'NSHighResolutionCapable': 'True',

@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -40,6 +40,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
 from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget
 
@@ -162,7 +163,9 @@ class ImportXpubs(BaseTab):
         if self.is_closed:
             return
         super().updateUi()
-        self.label_import.setText(self.tr("Import hardware signer information into Bitcoin Safe"))
+        self.label_import.setText(
+            self.tr("Import hardware signer information into {app_name}").format(app_name=APP_NAME)
+        )
         self.button_create_wallet.setText(
             self.tr("Skip step") if self.refs.qt_wallet else self.tr("Next step")
         )

@@ -13,6 +13,7 @@ PROJECT_ROOT="$CONTRIB/.."
 CACHEDIR="$CONTRIB_OSX/.cache"
 CODESIGN_CERT="andreas"
 PACKAGE="$(bitcoin_safe_application_name "$PROJECT_ROOT")"
+PACKAGE_NAME="$(bitcoin_safe_macos_bundle_name "$PROJECT_ROOT")"
 DMG_BACKGROUND_PATH="$PROJECT_ROOT/tools/resources/dmg-background.png"
 
 cd "$PROJECT_ROOT"
@@ -63,13 +64,13 @@ function DoCodeSignMaybe { # ARGS: infoName fileOrDirName
 VERSION=$(git describe --tags --dirty --always --abbrev=20)
 list_dirty_files
 
-DoCodeSignMaybe "app bundle" "dist/${PACKAGE}.app"
+DoCodeSignMaybe "app bundle" "dist/${PACKAGE_NAME}"
 
 # Removed notarization since we are using a self-signed certificate and do not have Apple Developer credentials.
 # if [ ! -z "$CODESIGN_CERT" ]; then
 #     if [ ! -z "$APPLE_ID_USER" ]; then
 #         info "Notarizing .app with Apple's central server..."
-#         "${CONTRIB_OSX}/notarize_app.sh" "dist/${PACKAGE}.app" || fail "Could not notarize binary."
+#         "${CONTRIB_OSX}/notarize_app.sh" "dist/${PACKAGE_NAME}" || fail "Could not notarize binary."
 #     else
 #         warn "AppleID details not set! Skipping Apple notarization."
 #     fi
@@ -77,7 +78,7 @@ DoCodeSignMaybe "app bundle" "dist/${PACKAGE}.app"
 
 info "Creating .DMG"
 "$CONTRIB_OSX/create_styled_dmg.sh" \
-    "dist/$PACKAGE.app" \
+    "dist/$PACKAGE_NAME" \
     "dist/bitcoin_safe-$VERSION.dmg" \
     "$PACKAGE" \
     "$DMG_BACKGROUND_PATH" || fail "Could not create .DMG"

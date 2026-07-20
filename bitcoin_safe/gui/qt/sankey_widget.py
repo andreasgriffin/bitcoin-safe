@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2024-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -60,6 +60,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.gui.qt.util import ColorScheme, svg_tools
 
 logger = logging.getLogger(__name__)
@@ -464,8 +465,8 @@ class SankeyWidget(QWidget):
         generator.setSize(QSize(width, height))
         generator.setViewBox(QRect(0, 0, width, height))
 
-        generator.setTitle("SVG Export by Bitcoin Safe")
-        generator.setDescription("SVG Export by Bitcoin Safe")
+        generator.setTitle(f"SVG Export by {APP_NAME}")
+        generator.setDescription(f"SVG Export by {APP_NAME}")
 
         self.draw_content(QPainter(generator), workaround_for_svg=True)
 

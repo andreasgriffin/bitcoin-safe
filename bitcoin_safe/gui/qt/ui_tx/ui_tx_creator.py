@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2025-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from bitcoin_safe.constants import MIN_RELAY_FEE
+from bitcoin_safe.constants import APP_NAME, MIN_RELAY_FEE
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
@@ -719,8 +719,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 self.tr(
                     "Select one or more UTXOs from the list on the left, "
                     'or uncheck "Select specific UTXOs" above to let '
-                    "Bitcoin-Safe pick the best coins for your transaction."
-                ),
+                    "{app_name} pick the best coins for your transaction."
+                ).format(app_name=APP_NAME),
                 type=MessageType.Warning,
                 parent=self,
             )

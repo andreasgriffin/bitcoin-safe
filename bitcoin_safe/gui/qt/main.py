@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2024-2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.client import Client
 from bitcoin_safe.client_helpers import SyncStatus
-from bitcoin_safe.constants import LOGO_NAME
+from bitcoin_safe.constants import APP_NAME, LOGO_NAME
 from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
 from bitcoin_safe.gui.qt.about_tab import UpdateStatus
 from bitcoin_safe.gui.qt.btcpay_web_button import DonateDialog
@@ -466,7 +466,7 @@ class MainWindow(UnlockableMainWindow):
 
     def set_title(self) -> None:
         """Set title."""
-        title = "Bitcoin Safe"
+        title = APP_NAME
         if self.config.network != bdk.Network.BITCOIN and not DEMO_MODE:
             title += f" - {self.config.network.name}"
         if self.app_is_locked:
@@ -2422,8 +2422,9 @@ class MainWindow(UnlockableMainWindow):
         if self.config.network == bdk.Network.BITCOIN:
             Message(
                 self.tr(
-                    "Hot wallets are disabled on Bitcoin Mainnet.\nYou can switch to Testnet to test Bitcoin Safe without using real Bitcoin."
-                ),
+                    "Hot wallets are disabled on Bitcoin Mainnet.\n"
+                    "You can switch to Testnet to test {app_name} without using real Bitcoin."
+                ).format(app_name=APP_NAME),
                 type=MessageType.Warning,
                 parent=self,
             )

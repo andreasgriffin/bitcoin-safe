@@ -63,7 +63,7 @@ smoke_test_bundle() {
     fi
 
     test -f "${log_file}" || fail "Expected Flatpak log file ${log_file} was not created."
-    grep -q 'Starting Bitcoin Safe' "${log_file}" || fail "Startup banner missing from Flatpak log."
+    grep -q 'Starting Bitcoin-Safe' "${log_file}" || fail "Startup banner missing from Flatpak log."
     grep -q 'pyzbar could be loaded successfully' "${log_file}" \
         || fail "pyzbar did not load successfully inside Flatpak."
 

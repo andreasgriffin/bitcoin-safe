@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ class DetailsPanel(QWidget):
 
 def test_format_widget_includes_parent_chain(qapp: QApplication) -> None:
     root = RootWindow()
-    root.setWindowTitle("Bitcoin Safe")
+    root.setWindowTitle("Bitcoin-Safe")
 
     panel = DetailsPanel(root)
     panel.setObjectName("details_panel")
@@ -53,7 +53,7 @@ def test_format_widget_includes_parent_chain(qapp: QApplication) -> None:
     button.setObjectName("donate_button")
 
     assert StartupWindowProbe._format_widget(button) == (
-        "RootWindow['Bitcoin Safe'] > "
+        "RootWindow['Bitcoin-Safe'] > "
         "DetailsPanel['#details_panel'] > "
         "QPushButton['#donate_button' | 'Donate']"
     )

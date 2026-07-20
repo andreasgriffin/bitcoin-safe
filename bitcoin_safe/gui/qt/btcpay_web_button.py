@@ -1,5 +1,5 @@
 #
-# Bitcoin Safe
+# Bitcoin-Safe
 # Copyright (C) 2026 Andreas Griffin
 #
 # This program is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.config import BtcPayInvoiceDetails, UserConfig
-from bitcoin_safe.constants import LOGO_NAME, SUPPORT_EMAIL
+from bitcoin_safe.constants import APP_NAME, LOGO_NAME, SUPPORT_EMAIL
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.logging_handlers import mail_help_contact
 from bitcoin_safe.network_utils import ProxyInfo, post_form_async
@@ -146,8 +146,8 @@ class BTCPayWebButton(QPushButton):
         if redirect_url_override:
             self.signal_update_status.emit(
                 self.tr(
-                    "Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally."
-                )
+                    "Requesting invoice... A browser will open and {app_name} will listen for the callback locally."
+                ).format(app_name=APP_NAME)
             )
         else:
             self.signal_update_status.emit(
@@ -336,7 +336,10 @@ class BTCPayWebButton(QPushButton):
                 self.send_header("Content-Type", "text/html")
                 self.end_headers()
                 self.wfile.write(
-                    b"<!doctype html><html><body><h3>Thanks!</h3><p>You can return to Bitcoin Safe.</p></body></html>"
+                    (
+                        "<!doctype html><html><body><h3>Thanks!</h3>"
+                        f"<p>You can return to {APP_NAME}.</p></body></html>"
+                    ).encode()
                 )
                 parent._request_stop_callback_server()
 
@@ -628,7 +631,7 @@ class DonationInvoiceWidget(QWidget):
         self.fiat_unit.setText(currency_symbol)
         self.fiat_label.setText(self.tr("Value"))
         self.message_label.setText(self.tr("Message (optional)"))
-        self.message_input.setPlaceholderText(self.tr("Thanks for Bitcoin Safe!"))
+        self.message_input.setPlaceholderText(self.tr("Thanks for {app_name}!").format(app_name=APP_NAME))
         self.payment_button.updateUi()
 
 
@@ -648,7 +651,7 @@ class DonateDialog(QWidget):
 
         self._on_about_to_close = on_about_to_close
 
-        self.setWindowTitle(self.tr("Support Bitcoin Safe"))
+        self.setWindowTitle(self.tr("Support {app_name}").format(app_name=APP_NAME))
         self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         self.setMinimumWidth(420)
         self.setMinimumHeight(620)
@@ -661,7 +664,9 @@ class DonateDialog(QWidget):
         logo_label.setPixmap(svg_tools.get_QIcon(LOGO_NAME).pixmap(QSize(96, 96), self.devicePixelRatioF()))
         layout.addWidget(logo_label)
 
-        title_label = QLabel(self.tr("Help Bitcoin Safe grow as Free and Open Source Software."))
+        title_label = QLabel(
+            self.tr("Help {app_name} grow as Free and Open Source Software.").format(app_name=APP_NAME)
+        )
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setWordWrap(True)
         title_label.setStyleSheet("font-weight: 600; font-size: 14pt;")
@@ -669,10 +674,10 @@ class DonateDialog(QWidget):
 
         description = QLabel(
             self.tr(
-                "Bitcoin Safe is community funded. Your support keeps development independent, "
+                "{app_name} is community funded. Your support keeps development independent, "
                 "lets us ship new features, and improves security reviews. Larger supporters "
                 "can be featured on our <a href='https://bitcoin-safe.org/en/donate/'>supporters page</a>."
-            )
+            ).format(app_name=APP_NAME)
         )
         description.setAlignment(Qt.AlignmentFlag.AlignCenter)
         description.setWordWrap(True)
@@ -710,7 +715,9 @@ class DonateDialog(QWidget):
     def _on_payment_complete(self, invoice_details: BtcPayInvoiceDetails) -> None:
         if not invoice_details.paid:
             return
-        message = self.tr("Donation successful. Thank you so much for supporting Bitcoin Safe!")
+        message = self.tr("Donation successful. Thank you so much for supporting {app_name}!").format(
+            app_name=APP_NAME
+        )
         QMessageBox.information(self, self.tr("Donation"), message)
 
     def closeEvent(self, a0: QCloseEvent | None):

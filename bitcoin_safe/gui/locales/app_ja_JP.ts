@@ -18,11 +18,6 @@
 		</message>
 		<name>AboutTab</name>
 		<message>
-			<source>Bitcoin-Safe</source>
-			<translation>Bitcoin-Safe</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
 			<source>FOSS - Free &amp; Open Source Software</source>
 			<translation>FOSS - 自由でオープンソースのソフトウェア</translation>
 		</message>
@@ -415,8 +410,8 @@
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
-			<source>Requesting invoice... A browser will open and Bitcoin Safe will listen for the callback locally.</source>
-			<translation>請求書を要求しています... ブラウザが開き、Bitcoin Safe がローカルでコールバックを待ち受けます。</translation>
+			<source>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</source>
+			<translation>請求書を要求しています... ブラウザが開き、{app_name} がローカルでコールバックを待ち受けます。</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -581,8 +576,10 @@
 	<context>
 		<name>ButtonEdit</name>
 		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>入力を認識できませんでした。もう一度スキャンしますか？</translation>
+			<source>Could not recognize the input. Do you want to scan again?
+
+The error was: {error}</source>
+			<translation>入力を認識できませんでした。もう一度スキャンしますか？エラー: {error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -1347,18 +1344,13 @@ Default 20</source>
 	<context>
 		<name>DonateDialog</name>
 		<message>
-			<source>Bitcoin Safe is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>Bitcoin Safe はコミュニティによって資金提供されています。皆さまの支援は開発の独立性を保ち、新機能の提供を可能にし、セキュリティレビューを向上させます。大口サポーターは&lt;a href='https://bitcoin-safe.org/en/donate/'&gt;サポーターページ&lt;/a&gt;に掲載されます。</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
 			<source>Donation</source>
 			<translation>寄付</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Donation successful. Thank you so much for supporting Bitcoin Safe!</source>
-			<translation>寄付が成功しました。Bitcoin Safe をご支援いただき誠にありがとうございます！</translation>
+			<source>Donation successful. Thank you so much for supporting {app_name}!</source>
+			<translation>寄付が成功しました。{app_name} をご支援いただき誠にありがとうございます！</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
@@ -1367,18 +1359,23 @@ Default 20</source>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Help Bitcoin Safe grow as Free and Open Source Software.</source>
-			<translation>Bitcoin Safe が自由でオープンソースのソフトウェアとして成長するのを助けてください。</translation>
+			<source>Help {app_name} grow as Free and Open Source Software.</source>
+			<translation>{app_name} が自由でオープンソースのソフトウェアとして成長するのを助けてください。</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
-			<source>Support Bitcoin Safe</source>
-			<translation>Bitcoin Safe を支援する</translation>
+			<source>Support {app_name}</source>
+			<translation>{app_name} を支援する</translation>
 		</message>
 		<name>DonateDialog</name>
 		<message>
 			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
 			<translation>より大きな支援や提携について相談したい場合は、下の連絡ボタンからご連絡ください。</translation>
+		</message>
+		<name>DonateDialog</name>
+		<message>
+			<source>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
+			<translation>{app_name} はコミュニティによって資金提供されています。皆さまの支援は開発の独立性を保ち、新機能の提供を可能にし、セキュリティレビューを向上させます。大口サポーターは&lt;a href='https://bitcoin-safe.org/en/donate/'&gt;サポーターページ&lt;/a&gt;に掲載されます。</translation>
 		</message>
 	</context>
 	<context>
@@ -1389,8 +1386,8 @@ Default 20</source>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
-			<source>Thanks for Bitcoin Safe!</source>
-			<translation>メッセージ（任意）</translation>
+			<source>Thanks for {app_name}!</source>
+			<translation>Thanks for {app_name}!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1476,15 +1473,15 @@ Default 20</source>
 		</message>
 		<name>ExportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>完全（Bitcoin Safe）</translation>
+			<source>Full ({app_name})</source>
+			<translation>完全（{app_name}）</translation>
 		</message>
 	</context>
 	<context>
 		<name>ExternalPaidPluginWidget</name>
 		<message>
 			<source>Delete Plugin</source>
-			<translation>Bitcoin Safeをご利用いただきありがとうございます！</translation>
+			<translation>プラグインを削除</translation>
 		</message>
 	</context>
 	<context>
@@ -1794,8 +1791,8 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
-			<source>Full (Bitcoin Safe)</source>
-			<translation>完全（Bitcoin Safe）</translation>
+			<source>Full ({app_name})</source>
+			<translation>完全（{app_name}）</translation>
 		</message>
 		<name>ImportLabelMenu</name>
 		<message>
@@ -1811,8 +1808,8 @@ since the final size of the transaction is unknown.</source>
 	<context>
 		<name>ImportXpubs</name>
 		<message>
-			<source>Import hardware signer information into Bitcoin Safe</source>
-			<translation>ハードウェア署名デバイス情報を Bitcoin Safe にインポート</translation>
+			<source>Import hardware signer information into {app_name}</source>
+			<translation>ハードウェア署名デバイス情報を {app_name} にインポート</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1858,6 +1855,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
+			<source>Dark</source>
+			<translation>ダーク</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
 			<source>Enter app lock password:</source>
 			<translation>アプリロックパスワードを入力:</translation>
 		</message>
@@ -1865,6 +1867,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Invalid password</source>
 			<translation>無効なパスワード</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>Light</source>
+			<translation>ライト</translation>
 		</message>
 		<name>InterfaceSettingsUi</name>
 		<message>
@@ -1880,6 +1887,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set</source>
 			<translation>設定</translation>
+		</message>
+		<name>InterfaceSettingsUi</name>
+		<message>
+			<source>System</source>
+			<translation>システム</translation>
 		</message>
 	</context>
 	<context>
@@ -1900,11 +1912,41 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
-			<source>Unexpected xpub origin</source>
-			<translation>予期しない xpub の元情報</translation>
+			<source>The provided xpub origin {given} does not match the expectation {expected}</source>
+			<translation>指定された xpub の生成元 {given} は、想定される {expected} と一致しません</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>This looks like a {provided_kind}. Expected: {expected_kind}.</source>
+			<translation>これは {provided_kind} のようです。想定される種類: {expected_kind}。</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>multi-sig</source>
+			<translation>マルチシグ</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>single-sig</source>
+			<translation>シングルシグ</translation>
+		</message>
+		<name>KeyOriginAnalyzer</name>
+		<message>
+			<source>{given} looks like {provided_type}, but this wallet expects {expected_type}.</source>
+			<translation>{given} は {provided_type} のようですが、このウォレットでは {expected_type} が必要です。</translation>
 		</message>
 	</context>
 	<context>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Abort and try later</source>
+			<translation>中止して後でもう一度試す</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Account number</source>
+			<translation>アカウント番号</translation>
+		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Bluetooth</source>
@@ -1914,11 +1956,6 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Change device type</source>
 			<translation>デバイスタイプを変更</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Connect</source>
-			<translation>接続</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -1934,6 +1971,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Fingerprint</source>
 			<translation>xPub起源</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Ignore warning and proceed</source>
+			<translation>警告を無視して続行</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2052,6 +2094,16 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Set account number</source>
+			<translation>アカウント番号を設定</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Set account number...</source>
+			<translation>アカウント番号を設定...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
 			<translation>選択されたアドレスタイプ{type}の標準は{expected_key_origin}です。確信がない場合は修正してください。</translation>
 		</message>
@@ -2061,6 +2113,16 @@ since the final size of the transaction is unknown.</source>
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
 			<translation>8桁のフィンガープリントは seed を識別します。異なる seed や署名デバイスを追跡するために、ハードウェア署名デバイスに書いておくことができます。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
+			<translation>アカウントが {current_account_number} から {new_account_number} に変更されました。続行しますか？</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
+			<translation>アカウント番号は導出パスにエンコードされ、署名者の xPub を選択します。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2116,10 +2178,8 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
-			<source>{msg}
-Do you want to proceed anyway?</source>
-			<translation>{msg}
-それでも進みますか？</translation>
+			<source>{msg}</source>
+			<translation>{msg}</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2145,13 +2205,13 @@ Do you want to proceed anyway?</source>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>同じ指紋を何度もインポートしました!!! 異なる署名デバイスを使用してください。</translation>
+			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
+			<translation>署名者スロット {signers} に同じ xpub が含まれています。通常、これは同じ署名者のエクスポートデータが二重にインポートされたことを意味します。署名者ごとに異なるデバイスまたはアカウントをインポートしてください。</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
-			<source>You imported the same xpub multiple times!!! Please use a different signing device.</source>
-			<translation>同じxpubを何度もインポートしました!!! 異なる署名デバイスを使用してください。</translation>
+			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+			<translation>同じ指紋を何度もインポートしました!!! 異なる署名デバイスを使用してください。</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2588,8 +2648,13 @@ Do you want to proceed anyway?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
-You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</source>
-			<translation>Bitcoin Mainnet ではホットウォレットが無効になっています。実際の Bitcoin を使用せずに Bitcoin Safe をテストするには、Testnet に切り替えることができます。</translation>
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet ではホットウォレットが無効になっています。実際の Bitcoin を使用せずに {app_name} をテストするには、Testnet に切り替えることができます。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Is this a new wallet?</source>
+			<translation>これは新しいウォレットですか？</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2643,8 +2708,8 @@ You can switch to Testnet to test Bitcoin Safe without using real Bitcoin.</sour
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>No, quick scan</source>
-			<translation>いいえ、クイックスキャン</translation>
+			<source>No, do a full scan</source>
+			<translation>いいえ、完全スキャンを実行する</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2885,11 +2950,6 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Was this wallet ever used before?</source>
-			<translation>このウォレットはこれまでに使用されたことがありますか？</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
 			<source>Wrong password</source>
 			<translation>間違ったパスワード</translation>
 		</message>
@@ -2900,8 +2960,8 @@ Do you want to hide to tray instead?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Yes, full scan for transactions</source>
-			<translation>はい、取引のフルスキャン</translation>
+			<source>Yes</source>
+			<translation>はい</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3155,11 +3215,6 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
-			<source>Bitcoin Safe downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>プラグインを削除</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
 			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
 			<translation>Compact Block Filters (BIP157/BIP158) により、ウォレットはアドレスのプライバシーを保ちながら関連する取引を発見できます。</translation>
 		</message>
@@ -3193,7 +3248,7 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>Bitcoin Safeはプライバシー保護のため、複数のノードからブロック概要をダウンロードします。この初期同期の後、更新は高速になります。独自のElectrumサーバーをお持ちの場合、または待ちたくない場合は、ネットワーク設定で公開Electrumサーバーに接続してください。</translation>
+			<translation>独自の Electrum サーバーをお持ちの場合、または待ちたくない場合は、ネットワーク設定で公開 Electrum サーバーに接続してください。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3261,6 +3316,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Your wallet syncs through the configured Esplora server.</source>
 			<translation>ウォレットは設定済みの Esplora サーバーを通じて同期します。</translation>
+		</message>
+		<name>NetworkMapWidget</name>
+		<message>
+			<source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+			<translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
 		</message>
 	</context>
 	<context>
@@ -3482,6 +3542,22 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Hot Single Signature Wallet</source>
 			<translation>ホット単一署名ウォレット</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Hot wallets are disabled on Bitcoin Mainnet.
+You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
+			<translation>Bitcoin Mainnet ではホットウォレットが無効になっています。実際の Bitcoin を使用せずに {app_name} をテストするには、Testnet に切り替えることができます。</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
+			<translation>Android スマートフォンを bitcoin 専用署名デバイスにする方法をご覧ください。</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>No signer available?</source>
+			<translation>利用可能な署名者がいませんか？</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3797,11 +3873,6 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>Delete installed plugin {plugin}?</source>
 			<translation>インストール済みプラグイン {plugin} を削除しますか？</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Disable the plugin before deleting it.</source>
-			<translation>削除する前にプラグインを無効化してください。</translation>
 		</message>
 		<name>PluginManager</name>
 		<message>
@@ -4950,6 +5021,13 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SourceCatalogItemWidget</name>
+		<message>
+			<source>Delete Plugin</source>
+			<translation>プラグインを削除</translation>
+		</message>
+	</context>
+	<context>
 		<name>SourceManagementDialog</name>
 		<message>
 			<source>Add Plugin Source...</source>
@@ -5143,6 +5221,11 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		</message>
 	</context>
 	<context>
+		<name>ToolGui</name>
+		<message>
+			<source>Account index: </source>
+			<translation>アカウントインデックス: </translation>
+		</message>
 		<name>ToolGui</name>
 		<message>
 			<source>Address index</source>
@@ -5551,8 +5634,8 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let Bitcoin-Safe pick the best coins for your transaction.</source>
-			<translation>左のリストから1つまたは複数のUTXOを選択するか、上部の「特定のUTXOを選択」のチェックをオフにして、Bitcoin‑Safe に最適なコインを選ばせてください。</translation>
+			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
+			<translation>左のリストから1つまたは複数のUTXOを選択するか、上部の「特定のUTXOを選択」のチェックをオフにして、{app_name} に最適なコインを選ばせてください。</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5826,8 +5909,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Installer started. Closing Bitcoin Safe...</source>
-			<translation>インストーラーを開始しました。Bitcoin Safeを終了しています...</translation>
+			<source>Installer started. Closing {app_name}...</source>
+			<translation>インストーラーを開始しました。{app_name}を終了しています...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -5866,8 +5949,8 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
-			<source>Update applied. Restarting Bitcoin Safe...</source>
-			<translation>アップデートを適用しました。Bitcoin Safeを再起動しています...</translation>
+			<source>Update applied. Restarting {app_name}...</source>
+			<translation>アップデートを適用しました。{app_name}を再起動しています...</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
