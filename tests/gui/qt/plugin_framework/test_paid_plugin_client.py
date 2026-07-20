@@ -39,6 +39,7 @@ from typing import Any
 import bdkpython as bdk
 import pytest
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from btcpay_tools.btcpay_subscription_nostr.core import derive_subscriber_email
 from btcpay_tools.btcpay_subscription_nostr.pos_item_lookup import BtcpayPosItemData
 from btcpay_tools.btcpay_subscription_nostr.service import (
     SubscriptionManagementPhase,
@@ -46,11 +47,22 @@ from btcpay_tools.btcpay_subscription_nostr.service import (
     SubscriptionManagementStatusCode,
 )
 from btcpay_tools.config import BTCPayConfig, PlanDuration
-from PyQt6.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtCore import QTimer
+from PyQt6.QtWidgets import (
+    QApplication,
+    QDialog,
+    QDialogButtonBox,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.btcpay_config import BTCPAY_SUBSCRIPTION_CONFIG as PROD_BTCPAY_SUBSCRIPTION_CONFIG
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.constants import SUPPORT_EMAIL
 from bitcoin_safe.execute_config import IS_PRODUCTION
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.util import svg_tools
@@ -1247,6 +1259,102 @@ def _run_subscription_tasks_synchronously(
 
 
 @pytest.mark.marker_qt_1
+def test_management_url_fallback_dialog_shows_subscription_id(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    management_url = "https://testnet.demo.btcpayserver.org/subscriber-portal/token"
+    subscription_id = "descriptor-hash@subscriptions.bitcoin-safe.org"
+    subscription_manager = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        subscription_product_key="demo-plugin",
+        btcpay_config=BTCPAY_SUBSCRIPTION_CONFIG,
+        subscription_duration=PlanDuration.MONTH,
+        subscriber_email=subscription_id,
+    )
+
+    def enter_management_url() -> None:
+        dialog = qapp.activeModalWidget()
+        assert isinstance(dialog, QDialog)
+        dialog_text = " ".join(label.text() for label in dialog.findChildren(QLabel))
+        assert "could not be fetched automatically" in dialog_text
+        assert SUPPORT_EMAIL in dialog_text
+        assert subscription_id in dialog_text
+        support_label = next(
+            label for label in dialog.findChildren(QLabel) if f"mailto:{SUPPORT_EMAIL}" in label.text()
+        )
+        assert support_label.openExternalLinks()
+
+        management_url_input = dialog.findChild(QLineEdit)
+        assert management_url_input is not None
+        management_url_input.setText(management_url)
+
+        button_box = dialog.findChild(QDialogButtonBox)
+        assert button_box is not None
+        ok_button = button_box.button(QDialogButtonBox.StandardButton.Ok)
+        assert ok_button is not None
+        ok_button.click()
+
+    QTimer.singleShot(0, enter_management_url)
+
+    assert subscription_manager.prompt_management_url_dialog() == management_url
+
+    subscription_manager.close()
+
+
+@pytest.mark.marker_qt_1
+def test_candidate_management_url_is_rejected_for_different_subscription_id(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    subscription_manager = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        subscription_product_key="demo-plugin",
+        btcpay_config=BTCPAY_SUBSCRIPTION_CONFIG,
+        subscription_duration=PlanDuration.MONTH,
+        subscriber_email="expected@v0.bitcoin-safe.org",
+    )
+
+    async def get_management_status(
+        self,
+        management_url: str,
+        proxy_dict: dict[str, str] | None = None,
+    ) -> SubscriptionManagementStatus:
+        return SubscriptionManagementStatus(
+            status=SubscriptionManagementStatusCode.ACTIVE,
+            phase=SubscriptionManagementPhase.NORMAL,
+            is_active=True,
+            is_suspended=False,
+            subscriber_email="someone-else@v0.bitcoin-safe.org",
+        )
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.subscription_manager.SubscriptionManagementClient.get_management_status",
+        get_management_status,
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (subscription_manager,))
+
+    subscription_manager._refresh_subscription_status(
+        disable_if_inactive=True,
+        notify_on_error=False,
+        candidate_management_url="https://testnet.demo.btcpayserver.org/subscriber-portal/token",
+    )
+
+    assert subscription_manager.management_url is None
+    assert subscription_manager.stored_subscription_status.status is None
+    assert subscription_manager.stored_subscription_status.last_status_error is not None
+    assert (
+        "belongs to a different subscription ID"
+        in subscription_manager.stored_subscription_status.last_status_error
+    )
+
+    subscription_manager.close()
+
+
+@pytest.mark.marker_qt_1
 def test_demo_paid_plugin_starts_trial_on_first_enable(
     qapp: QApplication,
     qtbot: QtBot,
@@ -1283,6 +1391,7 @@ def test_demo_paid_plugin_starts_trial_on_first_enable(
             phase=SubscriptionManagementPhase.TRIAL,
             is_active=True,
             is_suspended=False,
+            subscriber_email=derive_subscriber_email("descriptor-hash"),
         )
 
     monkeypatch.setattr(
@@ -1357,6 +1466,7 @@ def test_demo_paid_plugin_disables_when_trial_purchase_refresh_is_inactive(
             phase=SubscriptionManagementPhase.NORMAL,
             is_active=False,
             is_suspended=False,
+            subscriber_email=derive_subscriber_email("descriptor-hash"),
         )
 
     monkeypatch.setattr(
