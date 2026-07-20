@@ -616,6 +616,11 @@ class Wizard(WizardBase):
         number = ceil(n / m)
         return list(TutorialStep.send_test_steps()[:number])
 
+    def get_send_test_step_label(self, test_number: int) -> str:
+        """Return the progress-bar label for a send test."""
+        step = self.get_send_tests_steps()[test_number]
+        return self.step_container.step_bar.labels[self.index_of_step(step)]
+
     def get_send_test_labels(self, mn_tuple: tuple[int, int] | None = None) -> list[str]:
         """Get send test labels."""
         m, n = mn_tuple if mn_tuple is not None else self.qtwalletbase.get_mn_tuple()
