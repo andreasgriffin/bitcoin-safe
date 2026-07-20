@@ -2785,9 +2785,6 @@ class MainWindow(UnlockableMainWindow):
 
         self.tab_wallets.root.addChildNode(qt_wallet.tabs, focus=focus)
 
-        if qt_wallet.tutorial_index is not None:
-            qt_wallet.wizard.set_current_index(qt_wallet.tutorial_index)
-
         if qt_wallet.wizard.should_be_visible:
             qt_wallet.wizard.set_visibilities()
             qt_wallet.wizard.node.select()
