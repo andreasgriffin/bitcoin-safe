@@ -241,8 +241,8 @@ def test_descriptor_ui_can_reduce_to_singlesig_with_incomplete_signers(
         assert descriptor_ui.spin_signers.value() == 1
         assert descriptor_ui.keystore_uis.count() == 1
         assert descriptor_ui.protowallet.is_multisig() is False
-        assert all(not signer.edit_seed.isWindow() for signer in removed_signers)
-        assert all(signer.isAncestorOf(signer.edit_seed) for signer in removed_signers)
+        assert all(signer.edit_seed.isHidden() for signer in removed_signers)
+        assert all(not signer.edit_seed.isVisible() for signer in removed_signers)
     finally:
         for signer in removed_signers:
             signer.setParent(descriptor_ui)
