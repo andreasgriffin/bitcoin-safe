@@ -34,7 +34,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
-from tools.appimage_to_deb_converter import Appimage2debConverter
+from tools.appimage_to_deb_converter import DEB_SOURCE_DATE_EPOCH, Appimage2debConverter
 from tools.release_notes import (
     iter_release_notes,
     load_release_notes,
@@ -420,6 +420,16 @@ def test_deb_converter_writes_shared_desktop_and_metainfo(tmp_path: Path) -> Non
     assert debian_copyright_path.read_text(encoding="utf-8") == APP_METADATA.render_debian_copyright(
         package_name="bitcoin-safe"
     )
+
+
+def test_deb_converter_uses_canonical_timestamp(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    appimage_path = tmp_path / "bitcoin-safe.AppImage"
+    appimage_path.write_text("stub", encoding="utf-8")
+    monkeypatch.setenv("SOURCE_DATE_EPOCH", "2000000000")
+
+    converter = Appimage2debConverter(appimage=appimage_path, package_name="bitcoin-safe")
+
+    assert converter._normalized_env()["SOURCE_DATE_EPOCH"] == str(DEB_SOURCE_DATE_EPOCH)
 
 
 def test_release_notes_helpers_resolve_versioned_markdown_files(tmp_path: Path) -> None:
