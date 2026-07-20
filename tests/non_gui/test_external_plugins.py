@@ -2738,7 +2738,7 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
         manager.close()
 
 
-def test_plugin_manager_update_restores_paid_plugin_subscription_state(
+def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:
     del qapp
@@ -2761,43 +2761,49 @@ def test_plugin_manager_update_restores_paid_plugin_subscription_state(
     loop_in_thread = _ImmediateLoopInThread()
     fx = _DummyFX()
     selected_plan = TEST_BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
-    current_client = _PaidStateTrackingPluginClient(
-        config=config,
-        fx=fx,
-        loop_in_thread=loop_in_thread,
-        additional_access_providers=None,
-        enabled=False,
-        subscription_managers={
-            selected_plan.plan_id: SubscriptionManager(
-                config=config,
-                loop_in_thread=loop_in_thread,
-                subscription_product_key="demo-plugin",
-                btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
-                subscription_duration=selected_plan.duration,
-                management_url="https://example.com/manage",
-                stored_subscription_status=_stored_subscription_status(
-                    SubscriptionManagementStatus(
-                        status=SubscriptionManagementStatusCode.TRIAL,
-                        phase=SubscriptionManagementPhase.TRIAL,
-                        is_active=True,
-                        is_suspended=False,
-                    )
-                ),
-            )
-        },
-        selected_subscription_key=selected_plan.plan_id,
-    )
-    current_client.set_plugin_identity(
-        plugin_source=PluginClientSource.EXTERNAL,
-        plugin_bundle_id="test-plugin",
-    )
+
+    def _paid_client(bundle_id: str, management_url: str) -> _PaidStateTrackingPluginClient:
+        paid_client = _PaidStateTrackingPluginClient(
+            config=config,
+            fx=fx,
+            loop_in_thread=loop_in_thread,
+            additional_access_providers=None,
+            enabled=False,
+            subscription_managers={
+                selected_plan.plan_id: SubscriptionManager(
+                    config=config,
+                    loop_in_thread=loop_in_thread,
+                    subscription_product_key="demo-plugin",
+                    btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
+                    subscription_duration=selected_plan.duration,
+                    management_url=management_url,
+                    stored_subscription_status=_stored_subscription_status(
+                        SubscriptionManagementStatus(
+                            status=SubscriptionManagementStatusCode.TRIAL,
+                            phase=SubscriptionManagementPhase.TRIAL,
+                            is_active=True,
+                            is_suspended=False,
+                        )
+                    ),
+                )
+            },
+            selected_subscription_key=selected_plan.plan_id,
+        )
+        paid_client.set_plugin_identity(
+            plugin_source=PluginClientSource.EXTERNAL,
+            plugin_bundle_id=bundle_id,
+        )
+        return paid_client
+
+    current_client = _paid_client("test-plugin", "https://example.com/manage-test")
+    other_client = _paid_client("other-plugin", "https://example.com/manage-other")
     manager = PluginManager(
         wallet_functions=WalletFunctions(Signals()),
         config=config,
         fx=fx,
         loop_in_thread=loop_in_thread,
         external_registry=ExternalPluginRegistry.from_config(config),
-        clients=[current_client],
+        clients=[current_client, other_client],
         parent=None,
     )
     entry = ExternalPluginCatalogEntry(
@@ -2816,7 +2822,6 @@ def test_plugin_manager_update_restores_paid_plugin_subscription_state(
         update_available=True,
         installed_version="1.0.0",
     )
-
     try:
 
         async def _install_plugin(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
@@ -2832,36 +2837,59 @@ def test_plugin_manager_update_restores_paid_plugin_subscription_state(
 
         def _refresh_after_registry_change(runtime_changed: bool) -> None:
             assert runtime_changed is True
-            assert len(manager.serialized_client_dumps) == 1
-            restored = PluginManager._restore_client_from_payload(
-                manager.serialized_client_dumps[0],
-                class_kwargs={
-                    _PaidStateTrackingPluginClient.__name__: _PaidStateTrackingPluginClient.cls_kwargs(
-                        config=config,
-                        fx=fx,
-                        loop_in_thread=loop_in_thread,
-                        additional_access_providers=None,
-                    ),
-                    SubscriptionManager.__name__: SubscriptionManager.cls_kwargs(
-                        config=config,
-                        loop_in_thread=loop_in_thread,
-                        btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
-                    ),
-                },
-            )
-            assert isinstance(restored, _PaidStateTrackingPluginClient)
-            manager.clients = [restored]
+            assert len(manager.serialized_client_dumps) == 2
+            class_kwargs = {
+                _PaidStateTrackingPluginClient.__name__: _PaidStateTrackingPluginClient.cls_kwargs(
+                    config=config,
+                    fx=fx,
+                    loop_in_thread=loop_in_thread,
+                    additional_access_providers=None,
+                ),
+                SubscriptionManager.__name__: SubscriptionManager.cls_kwargs(
+                    config=config,
+                    loop_in_thread=loop_in_thread,
+                    btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
+                ),
+            }
+
+            def _restore_client(payload: str) -> _PaidStateTrackingPluginClient:
+                restored_client = PluginManager._restore_client_from_payload(
+                    payload,
+                    class_kwargs=class_kwargs,
+                )
+                payload_dict = PluginManager._parse_client_payload(payload)
+                assert isinstance(restored_client, _PaidStateTrackingPluginClient)
+                assert payload_dict is not None
+                bundle_id = payload_dict.get("plugin_bundle_id")
+                assert isinstance(bundle_id, str)
+                restored_client.set_plugin_identity(
+                    plugin_source=PluginClientSource.EXTERNAL,
+                    plugin_bundle_id=bundle_id,
+                )
+                return restored_client
+
+            manager.clients = [_restore_client(payload) for payload in manager.serialized_client_dumps]
 
         monkeypatch.setattr(manager, "_refresh_after_registry_change", _refresh_after_registry_change)
 
         manager.update_installed_source_plugin(current_client, entry)
 
-        replacement_client = manager.clients[0]
+        replacement_client = manager._client_for_plugin_id(current_client.plugin_id)
         assert isinstance(replacement_client, _PaidStateTrackingPluginClient)
-        assert replacement_client.subscription_manager.management_url == "https://example.com/manage"
+        assert replacement_client.subscription_manager.management_url == "https://example.com/manage-test"
         assert replacement_client.subscription_manager.stored_subscription_status.status is not None
         assert (
             replacement_client.subscription_manager.stored_subscription_status.status.status
+            == SubscriptionManagementStatusCode.TRIAL
+        )
+        other_replacement_client = manager._client_for_plugin_id(other_client.plugin_id)
+        assert isinstance(other_replacement_client, _PaidStateTrackingPluginClient)
+        assert (
+            other_replacement_client.subscription_manager.management_url == "https://example.com/manage-other"
+        )
+        assert other_replacement_client.subscription_manager.stored_subscription_status.status is not None
+        assert (
+            other_replacement_client.subscription_manager.stored_subscription_status.status.status
             == SubscriptionManagementStatusCode.TRIAL
         )
     finally:
