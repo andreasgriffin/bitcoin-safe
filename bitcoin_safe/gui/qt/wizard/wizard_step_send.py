@@ -129,13 +129,22 @@ class SendTest(BaseTab):
                 return
 
         txos = self.refs.qt_wallet.wallet.get_all_txos_dict(include_not_mine=False).values()
-        spend_txos = [txo for txo in txos if txo.is_spent_by_txid]
-        if spend_txos and len(spend_txos) >= self.test_number + 1:
+        outgoing_txids = {txo.is_spent_by_txid for txo in txos if txo.is_spent_by_txid}
+        if len(outgoing_txids) >= self.test_number + 1:
+            wizard = self.wizard_parent()
+            send_test_name = (
+                wizard.get_send_test_step_label(self.test_number)
+                if wizard
+                else self._card_title(self.test_number)
+            )
             if question_dialog(
                 text=self.tr(
-                    "You made {n} outgoing transactions already. Would you like to skip this spend test?"
-                ).format(n=len(spend_txos)),
-                title=self.tr("Skip spend test?"),
+                    "You made {n} outgoing transactions already. Would you like to skip {send_test_name}?"
+                ).format(
+                    n=len(outgoing_txids),
+                    send_test_name=send_test_name,
+                ),
+                title=self.tr("Skip {send_test_name}?").format(send_test_name=send_test_name),
                 true_button=QMessageBox.StandardButton.Yes,
                 false_button=QMessageBox.StandardButton.No,
             ):

@@ -744,8 +744,8 @@ class SidebarNode(QFrame, Generic[TT]):
                 return found
         return None
 
-    def _is_reachable_in_sidebar(self) -> bool:
-        """Whether this node's row is reachable in the sidebar structure."""
+    def _can_be_revealed_in_sidebar(self) -> bool:
+        """Whether selecting this node can make its row visible."""
         if self.isHidden() or self.hide_header:
             return False
 
@@ -753,7 +753,20 @@ class SidebarNode(QFrame, Generic[TT]):
         while node is not None:
             if node.isHidden():
                 return False
-            if node.child_nodes and (not node.collapsible or not node.expanded):
+            if node.child_nodes and not node.collapsible:
+                return False
+            node = node.parent_node
+
+        return True
+
+    def _is_reachable_in_sidebar(self) -> bool:
+        """Whether this node's row is reachable in the sidebar structure."""
+        if not self._can_be_revealed_in_sidebar():
+            return False
+
+        node = self.parent_node
+        while node is not None:
+            if node.child_nodes and not node.expanded:
                 return False
             node = node.parent_node
 
@@ -1280,6 +1293,14 @@ class SidebarTree(QWidget, Generic[TT]):
                     # Already removed
                     return
             node.select_neighbor(idx=idx)
+
+        current_node = self.currentNode()
+        if (
+            current_node
+            and not current_node.header_row.is_selected()
+            and current_node._can_be_revealed_in_sidebar()
+        ):
+            current_node.select()
 
         self.nodeUnSelected.emit(node)
 

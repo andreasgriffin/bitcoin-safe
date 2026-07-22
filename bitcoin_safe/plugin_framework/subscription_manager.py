@@ -36,6 +36,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from email.utils import parseaddr
 from typing import Any, Protocol, cast, runtime_checkable
+from urllib.parse import urlsplit
 
 import bdkpython as bdk
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
@@ -52,7 +53,7 @@ from btcpay_tools.btcpay_subscription_nostr.service import (
     SubscriptionPurchaseClient,
 )
 from btcpay_tools.config import BTCPayConfig, PlanDuration, SubscriptionProduct
-from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QLineEdit, QVBoxLayout, QWidget
 
 from bitcoin_safe.btcpay_config import BTCPAY_SUBSCRIPTION_CONFIG
@@ -110,6 +111,7 @@ class StoredSubscriptionStatus(SaveAllClass):
             "payment_due": self.status.payment_due,
             "upgrade_required": self.status.upgrade_required,
             "auto_renew": self.status.auto_renew,
+            "subscriber_email": self.status.subscriber_email,
         }
 
     @staticmethod
@@ -125,6 +127,7 @@ class StoredSubscriptionStatus(SaveAllClass):
             payment_due=status_data["payment_due"],
             upgrade_required=status_data["upgrade_required"],
             auto_renew=status_data["auto_renew"],
+            subscriber_email=status_data.get("subscriber_email"),
         )
 
 
@@ -318,6 +321,8 @@ class SubscriptionManager(QObject, BaseSaveableClass):
     def has_direct_subscription_access(self) -> bool:
         if not self.management_url or not self.stored_subscription_status.status:
             return False
+        if not self._subscription_email_matches(self.stored_subscription_status.status):
+            return False
         if self.stored_subscription_status.status.is_suspended:
             return False
         if self.stored_subscription_status.status.status in {
@@ -446,6 +451,102 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             email_input.selectAll()
         return None
 
+    def prompt_management_url_dialog(self) -> str | None:
+        if not self.subscriber_email:
+            return None
+
+        dialog = QDialog(self._parent)
+        dialog.setWindowTitle(translate("subscription", "Complete subscription setup"))
+        dialog.setModal(True)
+        dialog.setMinimumWidth(560)
+        dialog.setMaximumWidth(700)
+
+        layout = QVBoxLayout(dialog)
+        layout.setSpacing(8)
+
+        title_label = QLabel(
+            translate(
+                "subscription",
+                "The subscription management URL could not be fetched automatically.",
+            ),
+            dialog,
+        )
+        title_font = title_label.font()
+        title_font.setBold(True)
+        title_label.setFont(title_font)
+        title_label.setWordWrap(True)
+        layout.addWidget(title_label)
+
+        help_label = QLabel(
+            translate(
+                "subscription",
+                'Please contact <a href="mailto:{email}">{email}</a> to get the management URL, '
+                "then paste it in the field below.",
+            ).format(email=SUPPORT_EMAIL),
+            dialog,
+        )
+        help_label.setTextFormat(Qt.TextFormat.RichText)
+        help_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
+        help_label.setOpenExternalLinks(True)
+        help_label.setWordWrap(True)
+        layout.addWidget(help_label)
+
+        layout.addSpacing(4)
+
+        subscription_id_title = QLabel(translate("subscription", "Subscription ID"), dialog)
+        subscription_id_font = subscription_id_title.font()
+        subscription_id_font.setBold(True)
+        subscription_id_title.setFont(subscription_id_font)
+        layout.addWidget(subscription_id_title)
+
+        subscription_id_label = QLabel(self.subscriber_email, dialog)
+        subscription_id_label.setTextInteractionFlags(
+            subscription_id_label.textInteractionFlags() | Qt.TextInteractionFlag.TextSelectableByMouse
+        )
+        subscription_id_label.setWordWrap(True)
+        layout.addWidget(subscription_id_label)
+
+        layout.addSpacing(4)
+
+        management_url_label = QLabel(translate("subscription", "Management URL"), dialog)
+        management_url_font = management_url_label.font()
+        management_url_font.setBold(True)
+        management_url_label.setFont(management_url_font)
+        layout.addWidget(management_url_label)
+
+        management_url_input = QLineEdit(dialog)
+        management_url_input.setPlaceholderText(translate("subscription", "Paste management URL"))
+        management_url_input.setClearButtonEnabled(True)
+        layout.addWidget(management_url_input)
+
+        button_box = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel,
+            parent=dialog,
+        )
+        ok_button = button_box.button(QDialogButtonBox.StandardButton.Ok)
+        assert ok_button is not None
+        ok_button.setText(translate("subscription", "Use management URL"))
+        cancel_button = button_box.button(QDialogButtonBox.StandardButton.Cancel)
+        assert cancel_button is not None
+        cancel_button.setText(translate("subscription", "Close"))
+        layout.addWidget(button_box)
+
+        button_box.accepted.connect(dialog.accept)
+        button_box.rejected.connect(dialog.reject)
+
+        while dialog.exec():
+            management_url = management_url_input.text().strip()
+            if self._is_valid_management_url(management_url):
+                return management_url
+            Message(
+                translate("subscription", "Please enter a valid HTTP(S) management URL."),
+                parent=dialog,
+                type=MessageType.Warning,
+            )
+            management_url_input.setFocus()
+            management_url_input.selectAll()
+        return None
+
     def close(self) -> None:
         self.signal_tracker.disconnect_all()
         if self._owns_loop_in_thread:
@@ -513,6 +614,8 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             self._handle_trial_purchase_success(session)
 
         def on_error(error_info: ExcInfo | None) -> None:
+            if error_info:
+                logger.warning("Free trial activation failed", exc_info=error_info)
             self._handle_trial_purchase_error(self._trial_purchase_error_text(error_info))
 
         self.loop_in_thread.run_task(
@@ -532,15 +635,31 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             return
 
         self.management_payload = session.management_payload
-        self.management_url = session.management_payload.management_url
-        self.signal_state_changed.emit()
-        self._refresh_subscription_status(disable_if_inactive=True, notify_on_error=True)
+        self._refresh_subscription_status(
+            disable_if_inactive=True,
+            notify_on_error=True,
+            candidate_management_url=session.management_payload.management_url,
+        )
 
     def _handle_trial_purchase_error(self, error_text: str) -> None:
         self.stored_subscription_status.last_status_error = error_text
         self._activation_in_progress = False
         self.signal_state_changed.emit()
-        Message(error_text, parent=self._parent, type=MessageType.Warning)
+        if not self.subscriber_email:
+            Message(error_text, parent=self._parent, type=MessageType.Warning)
+            return
+
+        management_url = self.prompt_management_url_dialog()
+        if not management_url:
+            return
+
+        self.stored_subscription_status.last_status_error = None
+        self.signal_state_changed.emit()
+        self._refresh_subscription_status(
+            disable_if_inactive=True,
+            notify_on_error=True,
+            candidate_management_url=management_url,
+        )
 
     @classmethod
     def _trial_purchase_error_text(cls, error_info: ExcInfo | BaseException | None) -> str:
@@ -549,9 +668,6 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             return cls._trial_purchase_retry_error_text(
                 translate("subscription", "The free trial activation timed out.")
             )
-
-        if error:
-            return str(error)
 
         return cls._trial_purchase_retry_error_text(
             translate("subscription", "The free trial activation failed.")
@@ -579,11 +695,18 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             or "timeout" in type(error).__name__.lower()
         )
 
-    def _refresh_subscription_status(self, disable_if_inactive: bool, notify_on_error: bool) -> None:
-        if self._has_additional_access() or not self.management_url:
+    def _refresh_subscription_status(
+        self,
+        disable_if_inactive: bool,
+        notify_on_error: bool,
+        candidate_management_url: str | None = None,
+    ) -> None:
+        if self._has_additional_access():
             return
 
-        management_url = self.management_url
+        management_url = candidate_management_url or self.management_url
+        if not management_url:
+            return
         proxy_dict = self.proxy_dict()
         management_client = SubscriptionManagementClient(
             proxy_dict=proxy_dict,
@@ -603,6 +726,15 @@ class SubscriptionManager(QObject, BaseSaveableClass):
                     notify_on_error=notify_on_error,
                 )
                 return
+            if identity_error := self._management_status_identity_error(subscription_management_status):
+                self._handle_subscription_refresh_error(
+                    identity_error,
+                    notify_on_error=notify_on_error,
+                )
+                return
+            if candidate_management_url:
+                self.management_url = candidate_management_url
+                self.signal_state_changed.emit()
             self._apply_management_status(
                 subscription_management_status, disable_if_inactive=disable_if_inactive
             )
@@ -672,6 +804,41 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             return False
         local_part, _, domain = email.rpartition("@")
         return bool(local_part and domain and "." in domain and " " not in email)
+
+    def _is_valid_management_url(self, management_url: str) -> bool:
+        try:
+            parsed_url = urlsplit(management_url)
+            subscription_pos_url = urlsplit(self.subscription_pos_base_url)
+            return (
+                parsed_url.scheme in {"http", "https"}
+                and parsed_url.scheme == subscription_pos_url.scheme
+                and parsed_url.hostname == subscription_pos_url.hostname
+                and parsed_url.port == subscription_pos_url.port
+                and parsed_url.username is None
+                and parsed_url.password is None
+            )
+        except ValueError:
+            return False
+
+    def _management_status_identity_error(self, status: SubscriptionManagementStatus) -> str | None:
+        if self._subscription_email_matches(status):
+            return None
+        if status.subscriber_email is None:
+            return translate(
+                "subscription",
+                "The management page does not expose a subscription ID. The management URL was not saved.",
+            )
+        return translate(
+            "subscription",
+            "The management URL belongs to a different subscription ID and was not saved.",
+        )
+
+    def _subscription_email_matches(self, status: SubscriptionManagementStatus) -> bool:
+        if self.subscriber_email is None:
+            return True
+        if status.subscriber_email is None:
+            return False
+        return status.subscriber_email.casefold() == self.subscriber_email.casefold()
 
     def _proxy_info(self) -> ProxyInfo | None:
         proxy_url = self.config.network_config.proxy_url

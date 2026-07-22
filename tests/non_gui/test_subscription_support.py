@@ -32,6 +32,7 @@ from __future__ import annotations
 import json
 
 import bdkpython as bdk
+import pytest
 from btcpay_tools.btcpay_subscription_nostr.service import (
     SubscriptionManagementPhase,
     SubscriptionManagementStatus,
@@ -99,6 +100,7 @@ def test_subscription_support_roundtrip_persists_status_payload(
                 phase=SubscriptionManagementPhase.TRIAL,
                 is_active=True,
                 is_suspended=False,
+                subscriber_email="subscriber@example.com",
             ),
             checked_at_ts=123.0,
             last_status_error=None,
@@ -119,6 +121,7 @@ def test_subscription_support_roundtrip_persists_status_payload(
     assert restored.management_url == "https://example.com/manage"
     assert restored.stored_subscription_status.status is not None
     assert restored.stored_subscription_status.status.status == SubscriptionManagementStatusCode.TRIAL
+    assert restored.stored_subscription_status.status.subscriber_email == "subscriber@example.com"
     assert restored.stored_subscription_status.checked_at_ts == 123.0
 
     restored.close()
@@ -167,6 +170,153 @@ def test_trial_purchase_timeout_error_text_asks_to_retry_and_contact_support() -
     assert "free trial activation timed out" in error_text
     assert "retry later" in error_text
     assert SUPPORT_EMAIL in error_text
+
+
+def test_trial_purchase_error_text_hides_network_details() -> None:
+    network_error = RuntimeError("HTTPSConnectionPool(host=secret): Max retries exceeded")
+
+    error_text = SubscriptionManager._trial_purchase_error_text(network_error)
+
+    assert "HTTPSConnectionPool" not in error_text
+    assert "free trial activation failed" in error_text
+    assert SUPPORT_EMAIL in error_text
+
+
+@pytest.mark.parametrize(
+    ("management_url", "is_valid"),
+    [
+        ("https://testnet.demo.btcpayserver.org/subscriber-portal/token", True),
+        ("https://example.com/subscriptions/manage/token", False),
+        ("http://testnet.demo.btcpayserver.org/subscriber-portal/token", False),
+        ("ftp://example.com/manage", False),
+        ("https:///manage", False),
+        ("not a URL", False),
+        ("http://[", False),
+    ],
+)
+def test_management_url_validation(
+    test_config_main_chain: UserConfig,
+    management_url: str,
+    is_valid: bool,
+) -> None:
+    support = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        subscription_product_key="demo-plugin",
+        btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
+        subscription_duration=PlanDuration.MONTH,
+    )
+
+    assert support._is_valid_management_url(management_url) is is_valid
+
+    support.close()
+
+
+def test_subscription_status_hides_subscription_email(
+    test_config_main_chain: UserConfig,
+) -> None:
+    subscriber_email = "descriptor-hash@subscriptions.bitcoin-safe.org"
+    support = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        subscription_product_key="demo-plugin",
+        btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
+        subscription_duration=PlanDuration.MONTH,
+        subscriber_email=subscriber_email,
+    )
+
+    assert subscriber_email not in support.subscription_status_text()
+
+    support.close()
+
+
+def test_trial_purchase_error_accepts_manual_management_url(
+    test_config_main_chain: UserConfig,
+) -> None:
+    management_url = "https://testnet.demo.btcpayserver.org/subscriber-portal/token"
+
+    class ManualUrlSubscriptionManager(SubscriptionManager):
+        def __init__(self) -> None:
+            super().__init__(
+                config=test_config_main_chain,
+                loop_in_thread=None,
+                subscription_product_key="demo-plugin",
+                btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
+                subscription_duration=PlanDuration.MONTH,
+                subscriber_email="descriptor-hash@subscriptions.bitcoin-safe.org",
+            )
+            self.refresh_requested = False
+            self.candidate_management_url: str | None = None
+
+        def prompt_management_url_dialog(self) -> str | None:
+            return management_url
+
+        def _refresh_subscription_status(
+            self,
+            disable_if_inactive: bool,
+            notify_on_error: bool,
+            candidate_management_url: str | None = None,
+        ) -> None:
+            self.refresh_requested = disable_if_inactive and notify_on_error
+            self.candidate_management_url = candidate_management_url
+
+    support = ManualUrlSubscriptionManager()
+
+    support._handle_trial_purchase_error("Nostr timed out")
+
+    assert support.management_url is None
+    assert support.stored_subscription_status.last_status_error is None
+    assert support.refresh_requested
+    assert support.candidate_management_url == management_url
+
+    support.close()
+
+
+@pytest.mark.parametrize(
+    ("management_email", "expected_error"),
+    [
+        ("descriptor-hash@subscriptions.bitcoin-safe.org", None),
+        (
+            "other-hash@subscriptions.bitcoin-safe.org",
+            "belongs to a different subscription ID",
+        ),
+        (None, "does not expose a subscription ID"),
+    ],
+)
+def test_management_status_must_match_subscription_email(
+    test_config_main_chain: UserConfig,
+    management_email: str | None,
+    expected_error: str | None,
+) -> None:
+    support = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        subscription_product_key="demo-plugin",
+        btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
+        subscription_duration=PlanDuration.MONTH,
+        subscriber_email="descriptor-hash@subscriptions.bitcoin-safe.org",
+    )
+    status = SubscriptionManagementStatus(
+        status=SubscriptionManagementStatusCode.ACTIVE,
+        phase=SubscriptionManagementPhase.NORMAL,
+        is_active=True,
+        is_suspended=False,
+        subscriber_email=management_email,
+    )
+
+    error = support._management_status_identity_error(status)
+    support.management_url = "https://testnet.demo.btcpayserver.org/subscriber-portal/token"
+    support.stored_subscription_status.status = status
+
+    if expected_error is None:
+        assert error is None
+        assert support.has_direct_subscription_access()
+    else:
+        assert error is not None
+        assert expected_error in error
+        assert not support.has_direct_subscription_access()
+
+    support.close()
 
 
 def test_error_from_exc_info_returns_original_exception() -> None:

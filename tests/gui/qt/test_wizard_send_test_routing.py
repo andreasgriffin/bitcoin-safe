@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from types import SimpleNamespace
 from unittest.mock import Mock
 
@@ -39,6 +40,7 @@ from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtWidgets import QDialogButtonBox, QPushButton, QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.card_base import CardExpansionMode, CardList
+from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.send_test_schedule import (
     build_send_test_fingerprint_groups,
     build_send_test_signer_groups,
@@ -514,6 +516,189 @@ def test_send_test_callback_prefers_existing_tutorial_tx_over_skip_prompt(
 
     wizard.on_send_test_step_activated.assert_called_once_with(0)
     question_mock.assert_not_called()
+
+
+def test_add_qt_wallet_does_not_restore_tutorial_step_twice(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    wizard = SimpleNamespace(
+        should_be_visible=True,
+        set_current_index=Mock(),
+        set_visibilities=Mock(),
+        node=SimpleNamespace(select=Mock()),
+    )
+    monkeypatch.setattr("bitcoin_safe.gui.qt.main.Wizard", Mock(return_value=wizard))
+    monkeypatch.setattr("bitcoin_safe.gui.qt.main.LoadingWalletTab", Mock(return_value=nullcontext()))
+
+    wallet_id = "wallet"
+    wallet_signal = SimpleNamespace(connect=Mock())
+    qt_wallet = SimpleNamespace(
+        wallet=SimpleNamespace(id=wallet_id),
+        tutorial_index=4,
+        tabs=SimpleNamespace(setIcon=Mock(), setTitle=Mock()),
+        wallet_signals=SimpleNamespace(updated=SimpleNamespace(emit=Mock())),
+        signal_request_open_network_settings=wallet_signal,
+        signal_progress_info=wallet_signal,
+        signal_refresh_sync_status=wallet_signal,
+    )
+    main_window = SimpleNamespace(
+        qt_wallets={},
+        tr=lambda text: text,
+        tab_wallets=SimpleNamespace(root=SimpleNamespace(addChildNode=Mock())),
+        _remove_create_screens=Mock(),
+        language_chooser=SimpleNamespace(add_signal_language_switch=Mock()),
+        signals=SimpleNamespace(language_switch=wallet_signal),
+        wallet_functions=SimpleNamespace(
+            wallet_signals={wallet_id: SimpleNamespace(show_address=wallet_signal)}
+        ),
+        signal_tracker=SimpleNamespace(connect=Mock()),
+        show_address=Mock(),
+        open_network_settings=Mock(),
+        refresh_global_network_map=Mock(),
+        p2p_listening_update_lists=Mock(),
+        update_all_history_initial_sync_widgets=Mock(),
+        refresh_plugin_notification_bars=Mock(),
+    )
+
+    result = MainWindow.add_qt_wallet(main_window, qt_wallet, focus=False)
+
+    assert result is qt_wallet
+    wizard.set_current_index.assert_not_called()
+    wizard.set_visibilities.assert_called_once_with()
+
+
+def test_send_test_callback_counts_distinct_outgoing_transactions(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    question_mock = Mock(return_value=True)
+    monkeypatch.setattr("bitcoin_safe.gui.qt.wizard.wizard_step_send.question_dialog", question_mock)
+
+    wizard = SimpleNamespace(
+        get_send_test_txid=Mock(return_value=None),
+        on_send_test_step_activated=Mock(),
+        get_send_test_step_label=Mock(return_value="Self-Send test 2"),
+    )
+    qt_wallet = SimpleNamespace(
+        wallet=SimpleNamespace(
+            client=None,
+            get_all_txos_dict=Mock(
+                return_value={
+                    "first": SimpleNamespace(is_spent_by_txid="outgoing-tx"),
+                    "second": SimpleNamespace(is_spent_by_txid="outgoing-tx"),
+                }
+            ),
+        )
+    )
+    go_to_next_index = Mock()
+    send_test = SimpleNamespace(
+        refs=SimpleNamespace(qt_wallet=qt_wallet, go_to_next_index=go_to_next_index),
+        test_number=1,
+        set_visibilities=Mock(),
+        wizard_parent=lambda: wizard,
+        tr=lambda text: text,
+    )
+
+    SendTest._callback(send_test)
+
+    question_mock.assert_not_called()
+    go_to_next_index.assert_not_called()
+    wizard.on_send_test_step_activated.assert_called_once_with(1)
+
+
+def test_second_send_test_can_be_skipped_after_two_outgoing_transactions(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    question_mock = Mock(return_value=True)
+    monkeypatch.setattr("bitcoin_safe.gui.qt.wizard.wizard_step_send.question_dialog", question_mock)
+
+    wizard = SimpleNamespace(
+        get_send_test_txid=Mock(return_value=None),
+        on_send_test_step_activated=Mock(),
+        get_send_test_step_label=Mock(return_value="Self-Send test 2"),
+    )
+    qt_wallet = SimpleNamespace(
+        wallet=SimpleNamespace(
+            client=None,
+            get_all_txos_dict=Mock(
+                return_value={
+                    "first": SimpleNamespace(is_spent_by_txid="outgoing-tx-1"),
+                    "second": SimpleNamespace(is_spent_by_txid="outgoing-tx-2"),
+                }
+            ),
+        )
+    )
+    go_to_next_index = Mock()
+    send_test = SimpleNamespace(
+        refs=SimpleNamespace(qt_wallet=qt_wallet, go_to_next_index=go_to_next_index),
+        test_number=1,
+        set_visibilities=Mock(),
+        wizard_parent=lambda: wizard,
+        tr=lambda text: text,
+    )
+
+    SendTest._callback(send_test)
+
+    question_mock.assert_called_once()
+    assert question_mock.call_args.kwargs["text"] == (
+        "You made 2 outgoing transactions already. Would you like to skip Self-Send test 2?"
+    )
+    assert question_mock.call_args.kwargs["title"] == "Skip Self-Send test 2?"
+    go_to_next_index.assert_called_once_with()
+    wizard.on_send_test_step_activated.assert_not_called()
+
+
+def test_single_send_test_skip_prompt_uses_unnumbered_progress_label(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    question_mock = Mock(return_value=True)
+    monkeypatch.setattr("bitcoin_safe.gui.qt.wizard.wizard_step_send.question_dialog", question_mock)
+
+    wizard = SimpleNamespace(
+        get_send_test_txid=Mock(return_value=None),
+        on_send_test_step_activated=Mock(),
+        get_send_test_step_label=Mock(return_value="Self-Send test"),
+    )
+    qt_wallet = SimpleNamespace(
+        wallet=SimpleNamespace(
+            client=None,
+            get_all_txos_dict=Mock(
+                return_value={
+                    "first": SimpleNamespace(is_spent_by_txid="outgoing-tx-1"),
+                    "second": SimpleNamespace(is_spent_by_txid="outgoing-tx-2"),
+                }
+            ),
+        )
+    )
+    send_test = SimpleNamespace(
+        refs=SimpleNamespace(qt_wallet=qt_wallet, go_to_next_index=Mock()),
+        test_number=0,
+        set_visibilities=Mock(),
+        wizard_parent=lambda: wizard,
+        tr=lambda text: text,
+    )
+
+    SendTest._callback(send_test)
+
+    assert question_mock.call_args.kwargs["text"] == (
+        "You made 2 outgoing transactions already. Would you like to skip Self-Send test?"
+    )
+    assert question_mock.call_args.kwargs["title"] == "Skip Self-Send test?"
+
+
+@pytest.mark.parametrize(
+    ("mn_tuple", "expected_send_tests"),
+    [
+        ((1, 1), 1),
+        ((2, 3), 2),
+        ((1, 5), 5),
+    ],
+)
+def test_send_test_count_covers_all_multisig_signers(
+    mn_tuple: tuple[int, int], expected_send_tests: int
+) -> None:
+    wizard = SimpleNamespace(qtwalletbase=SimpleNamespace(get_mn_tuple=lambda: mn_tuple))
+
+    assert len(Wizard.get_send_tests_steps(wizard)) == expected_send_tests
 
 
 def test_configure_creator_for_embedded_send_test_swaps_reset_for_previous() -> None:

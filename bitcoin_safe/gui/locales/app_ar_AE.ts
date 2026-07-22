@@ -8233,6 +8233,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>إغلاق</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>إكمال إعداد الاشتراك</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>متابعة</translation>
 		</message>
@@ -8283,6 +8293,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>عنوان URL للإدارة</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>تم حفظ عنوان URL للإدارة.</translation>
 		</message>
@@ -8298,6 +8313,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>الصق عنوان URL للإدارة</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>يرجى التواصل مع &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; للحصول على عنوان URL للإدارة، ثم الصقه في الحقل أدناه.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>يرجى إدخال عنوان URL صالح للإدارة باستخدام HTTP(S).</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>يرجى إدخال عنوان بريد إلكتروني صالح.</translation>
 		</message>
@@ -8305,6 +8335,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>تحديث حالة الاشتراك</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>معرّف الاشتراك</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8338,8 +8373,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>ينتمي عنوان URL للإدارة إلى معرّف اشتراك مختلف ولم يتم حفظه.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>لا تعرض صفحة الإدارة معرّف اشتراك. لم يتم حفظ عنوان URL للإدارة.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>تعذّر جلب عنوان URL لإدارة الاشتراك تلقائياً.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>هذا المكون الإضافي غير نشط حاليًا. مدّد الاشتراك قبل تمكينه مرة أخرى.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>استخدام عنوان URL للإدارة</translation>
 		</message>
 		<name>subscription</name>
 		<message>

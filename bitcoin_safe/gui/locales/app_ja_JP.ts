@@ -8207,6 +8207,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>閉じる</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>サブスクリプションの設定を完了</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>続行</translation>
 		</message>
@@ -8257,6 +8267,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>管理URL</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>管理URLが保存されました。</translation>
 		</message>
@@ -8272,6 +8287,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>管理URLを貼り付け</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>管理URLを取得するには、&lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; に連絡し、下の入力欄に貼り付けてください。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>有効なHTTP(S)管理URLを入力してください。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>有効なメールアドレスを入力してください。</translation>
 		</message>
@@ -8279,6 +8309,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>サブスクリプション状態を更新</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>サブスクリプションID</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8312,8 +8347,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>管理URLは別のサブスクリプションIDに属しているため、保存されませんでした。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>管理ページにサブスクリプションIDが表示されていません。管理URLは保存されませんでした。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>サブスクリプション管理URLを自動的に取得できませんでした。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>このプラグインは現在無効です。再度有効にする前にサブスクリプションを延長してください。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>管理URLを使用</translation>
 		</message>
 		<name>subscription</name>
 		<message>

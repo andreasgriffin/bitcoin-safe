@@ -209,6 +209,7 @@ class KeyStoreUIs(QWidget):
         keystore_ui = self._keystore_uis.pop(index)
         self.card_list.remove_card(keystore_ui)
         keystore_ui.close()
+        keystore_ui.setHidden(True)
         keystore_ui.setParent(None)
         if self._current_index >= self.count():
             self._current_index = max(0, self.count() - 1)

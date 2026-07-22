@@ -516,6 +516,7 @@ class ButtonEdit(QWidget):
             self._temp_bitcoin_video_widget.close()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
+        self.setHidden(True)
         self.setParent(None)
         return super().close()
 

@@ -32,6 +32,10 @@ import tempfile
 from collections.abc import Iterable
 from pathlib import Path
 
+# Debian package hashes must depend only on converter inputs, not on an ambient
+# value commonly injected by reproducible-build environments.
+DEB_SOURCE_DATE_EPOCH = 1_530_212_462
+
 
 class Appimage2debConverter:
     def __init__(
@@ -78,33 +82,19 @@ class Appimage2debConverter:
         self.appstream_component_id = appstream_component_id
         self.appstream_metainfo_content = appstream_metainfo_content
         self.debian_copyright_content = debian_copyright_content
-        self._source_date_epoch = self._resolve_source_date_epoch()
-
-    @staticmethod
-    def _resolve_source_date_epoch() -> int:
-        """Return a deterministic timestamp for normalizing file metadata."""
-
-        epoch = os.environ.get("SOURCE_DATE_EPOCH")
-        if epoch:
-            try:
-                return int(epoch)
-            except ValueError:
-                pass
-        # Fallback value shared with other build scripts for archive releases.
-        return 1530212462
 
     def _normalized_env(self) -> dict[str, str]:
         """Normalized env."""
         env = os.environ.copy()
         env.setdefault("TZ", "UTC")
-        env["SOURCE_DATE_EPOCH"] = str(self._source_date_epoch)
+        env["SOURCE_DATE_EPOCH"] = str(DEB_SOURCE_DATE_EPOCH)
         return env
 
     def _touch_all(self, paths: Iterable[Path]) -> None:
         """Touch all."""
         for path in paths:
             try:
-                os.utime(path, ns=(self._source_date_epoch * 1_000_000_000,) * 2, follow_symlinks=False)
+                os.utime(path, ns=(DEB_SOURCE_DATE_EPOCH * 1_000_000_000,) * 2, follow_symlinks=False)
             except (FileNotFoundError, PermissionError, NotImplementedError):
                 # If the filesystem refuses to update a particular entry we still
                 # want the rest of the tree to be normalized.
@@ -131,7 +121,7 @@ class Appimage2debConverter:
             "-exec",
             "touch",
             "-h",
-            f"--date=@{self._source_date_epoch}",
+            f"--date=@{DEB_SOURCE_DATE_EPOCH}",
             "{}",
             "+",
         ]

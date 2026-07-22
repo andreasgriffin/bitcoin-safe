@@ -8238,6 +8238,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>Закрыть</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>Завершить настройку подписки</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>Продолжить</translation>
 		</message>
@@ -8288,6 +8298,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>URL-адрес управления</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>URL управления сохранен.</translation>
 		</message>
@@ -8303,6 +8318,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>Вставьте URL-адрес управления</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>Чтобы получить URL-адрес управления, свяжитесь с &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;, а затем вставьте его в поле ниже.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>Введите действительный URL-адрес управления HTTP(S).</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>Введите действительный адрес электронной почты.</translation>
 		</message>
@@ -8310,6 +8340,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>Обновить статус подписки</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>Идентификатор подписки</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8343,8 +8378,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>URL-адрес управления относится к другому идентификатору подписки и не был сохранён.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>На странице управления не указан идентификатор подписки. URL-адрес управления не был сохранён.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>Не удалось автоматически получить URL-адрес управления подпиской.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>Этот плагин сейчас неактивен. Продлите подписку, прежде чем включать его снова.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>Использовать URL-адрес управления</translation>
 		</message>
 		<name>subscription</name>
 		<message>

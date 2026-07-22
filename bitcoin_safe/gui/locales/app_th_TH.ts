@@ -8208,6 +8208,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Close</source>
+			<translation>ปิด</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Complete subscription setup</source>
+			<translation>ตั้งค่าการสมัครสมาชิกให้เสร็จสมบูรณ์</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Continue</source>
 			<translation>ดำเนินการต่อ</translation>
 		</message>
@@ -8258,6 +8268,11 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Management URL</source>
+			<translation>URL การจัดการ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Management URL saved.</source>
 			<translation>บันทึก URL การจัดการแล้ว</translation>
 		</message>
@@ -8273,6 +8288,21 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Paste management URL</source>
+			<translation>วาง URL การจัดการ</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+			<translation>โปรดติดต่อ &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; เพื่อขอ URL การจัดการ จากนั้นวางลงในช่องด้านล่าง</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Please enter a valid HTTP(S) management URL.</source>
+			<translation>โปรดป้อน URL การจัดการแบบ HTTP(S) ที่ถูกต้อง</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Please enter a valid email address.</source>
 			<translation>โปรดป้อนที่อยู่อีเมลที่ถูกต้อง</translation>
 		</message>
@@ -8280,6 +8310,11 @@ Click here to learn more.</source>
 		<message>
 			<source>Refresh Subscription status</source>
 			<translation>รีเฟรชสถานะการสมัครสมาชิก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription ID</source>
+			<translation>รหัสการสมัครสมาชิก</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8313,8 +8348,28 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>The management URL belongs to a different subscription ID and was not saved.</source>
+			<translation>URL การจัดการเป็นของรหัสการสมัครสมาชิกอื่นและไม่ได้รับการบันทึก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
+			<translation>หน้าการจัดการไม่แสดงรหัสการสมัครสมาชิก URL การจัดการจึงไม่ได้รับการบันทึก</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>The subscription management URL could not be fetched automatically.</source>
+			<translation>ไม่สามารถดึง URL การจัดการการสมัครสมาชิกโดยอัตโนมัติได้</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
 			<translation>ปลั๊กอินนี้ไม่ได้ใช้งานอยู่ในขณะนี้ ต่ออายุการสมัครสมาชิกก่อนเปิดใช้งานอีกครั้ง</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Use management URL</source>
+			<translation>ใช้ URL การจัดการ</translation>
 		</message>
 		<name>subscription</name>
 		<message>
