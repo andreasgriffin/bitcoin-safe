@@ -8271,7 +8271,7 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		<name>subscription</name>
 		<message>
 			<source>Complete subscription setup</source>
-			<translation>Abonnement-Einrichtung abschließen</translation>
+			<translation>Einrichtung des Abonnements abschließen</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8351,7 +8351,7 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		<name>subscription</name>
 		<message>
 			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
-			<translation>Bitte kontaktieren Sie &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;, um die Verwaltungs-URL zu erhalten, und fügen Sie sie anschließend in das Feld unten ein.</translation>
+			<translation>Bitte wenden Sie sich an &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;, um die Verwaltungs-URL zu erhalten, und fügen Sie sie anschließend in das Feld unten ein.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
