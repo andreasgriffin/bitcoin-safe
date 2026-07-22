@@ -1102,7 +1102,7 @@ Standardwert 20</translation>
 2. Click Scan
 3. Unlock the device
 4. Select the device</source>
-			<translation>1. Verbinden Sie Ihren Hardware-Signer
+			<translation>1. Verbinden Sie Ihren Hardware-Signierer
 2. Klicken Sie auf Scannen
 3. Entsperren Sie das Gerät
 4. Wählen Sie das Gerät aus</translation>
@@ -1518,7 +1518,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>FeeGroup</name>
 		<message>
 			<source>in ~{n}. Block</source>
-			<translation>im ~{n}. Block</translation>
+			<translation>in ungefähr {n} Blöcken</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1817,7 +1817,7 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Import hardware signer information into {app_name}</source>
-			<translation>Hardware-Signer-Informationen in {app_name} importieren</translation>
+			<translation>Hardware-Signierer-Informationen in {app_name} importieren</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -2126,12 +2126,12 @@ Sie können ihn auf dem Hardware-Signierer notieren, um verschiedene Seeds und S
 		<name>KeyStoreUI</name>
 		<message>
 			<source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
-			<translation>Das Konto wurde von {current_account_number} zu {new_account_number} geändert. Fortfahren?</translation>
+			<translation>Das Konto wurde von {current_account_number} auf {new_account_number} geändert. Fortfahren?</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
-			<translation>Die Kontonummer ist im Ableitungspfad codiert und wählt den xPub des Signers aus.</translation>
+			<translation>Die Kontonummer ist im Ableitungspfad codiert und wählt den xPub des Signierers aus.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2217,7 +2217,7 @@ Bei einer Single-Signature-Wallet gibt er die volle Kontrolle über die Gelder.<
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
-			<translation>Die Signiererplätze {signers} enthalten dieselbe xpub. Dies bedeutet normalerweise, dass derselbe Signiererexport zweimal importiert wurde. Bitte importieren Sie für jeden Signierer ein anderes Gerät oder Konto.</translation>
+			<translation>Die Signiererplätze {signers} enthalten denselben xPub. Dies bedeutet normalerweise, dass derselbe Signiererexport zweimal importiert wurde. Bitte importieren Sie für jeden Signierer ein anderes Gerät oder Konto.</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -3579,7 +3579,7 @@ Sie können zu Testnet wechseln, um {app_name} zu testen, ohne echte Bitcoin zu 
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
-			<translation>Erfahren Sie, wie Sie ein Android-Telefon in ein dediziertes bitcoin-Signiergerät verwandeln.</translation>
+			<translation>Erfahren Sie, wie Sie ein Android-Telefon in ein dediziertes Bitcoin-Signiergerät verwandeln.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -8271,7 +8271,7 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		<name>subscription</name>
 		<message>
 			<source>Complete subscription setup</source>
-			<translation>Abonnement-Einrichtung abschließen</translation>
+			<translation>Einrichtung des Abonnements abschließen</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8351,7 +8351,7 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		<name>subscription</name>
 		<message>
 			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
-			<translation>Bitte kontaktieren Sie &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;, um die Verwaltungs-URL zu erhalten, und fügen Sie sie anschließend in das Feld unten ein.</translation>
+			<translation>Bitte wenden Sie sich an &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;, um die Verwaltungs-URL zu erhalten, und fügen Sie sie anschließend in das Feld unten ein.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
