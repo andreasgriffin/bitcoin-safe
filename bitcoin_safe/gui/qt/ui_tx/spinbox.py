@@ -98,12 +98,9 @@ class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
                     background: transparent;
                 }}
             """
-        else:
-            # restore default look
-            return f"""
-                #{self.objectName()} {{ 
-                }} 
-            """
+        # Removing the local stylesheet lets Qt restore the native editable
+        # appearance, including styles inherited from the active theme.
+        return ""
 
     def setReadOnly(self, r: bool):
         # first, tell the base class about it
