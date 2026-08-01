@@ -75,6 +75,22 @@ def test_file_toolbutton_refreshes_button_and_menu_icons_on_palette_change(qtbot
     assert _icon_color(file_action.icon()) == QColor("red")
 
 
+def test_file_toolbutton_owns_save_dialog(qtbot: QtBot, monkeypatch) -> None:
+    button = FileToolButton(
+        data=Data(p2wsh_psbt_0_1of1.extract_tx(), DataType.Tx, bdk.Network.REGTEST),
+        network=bdk.Network.REGTEST,
+    )
+    qtbot.addWidget(button)
+    parents: list[FileToolButton] = []
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.export_data.save_file_dialog",
+        lambda **kwargs: parents.append(kwargs["parent"]),
+    )
+
+    assert button.export_to_file() is None
+    assert parents == [button]
+
+
 def test_qr_toolbutton_refreshes_icon_on_palette_change(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:
     button = QrToolButton(
         data=Data(p2wsh_psbt_0_1of1.extract_tx(), DataType.Tx, bdk.Network.REGTEST),

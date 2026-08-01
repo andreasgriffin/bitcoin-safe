@@ -293,6 +293,7 @@ class FileToolButton(QToolButton):
             ],
             default_suffix=default_suffix,
             default_filename=default_filename,
+            parent=self,
         )
         if not filename:
             return None
