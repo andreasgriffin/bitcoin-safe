@@ -112,9 +112,9 @@ cachecontrol[filecache]==0.14.4 \
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry
-certifi==2026.6.17 \
-    --hash=sha256:024c88eeec92ca068db80f02b8b07c9cef7b9fe261d1d535abfd5abd6f6af432 \
-    --hash=sha256:2227dcbaafe0d2f59279d1762ddddc37783ed4354594f194ffc31d20f41fc3db
+certifi==2026.7.22 \
+    --hash=sha256:62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775 \
+    --hash=sha256:741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   httpcore
@@ -438,15 +438,15 @@ dulwich==1.2.12 \
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry
-fastjsonschema==2.21.2 \
-    --hash=sha256:1c797122d0a86c5cace2e54bf4e819c36223b552017172f32c5c024a6b77e463 \
-    --hash=sha256:b1eb43748041c880796cd077f1a07c3d94e93ae84bba5ed36800a33554ae05de
+fastjsonschema==2.22.1 \
+    --hash=sha256:0b83d1ce8d7845b959dcb20e1a5c3c8883b6541d9c52ab02cce5166b75ec805f \
+    --hash=sha256:cf377ff5c9a6f4f3125fb35f75a2c5767bd824ffbcf62c209a93cd48d1453999
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry
-filelock==3.31.1 \
-    --hash=sha256:9e0c4e88ebe90833c1beafd3a547ccbc0bf7f491cd3858c3ec7aed63efe02163 \
-    --hash=sha256:9ea33146c780161bf67cb20c7cb26b651566820d65ad8dfdd79422602a2dcfc0
+filelock==3.32.2 \
+    --hash=sha256:87dd94cf281e586d135fa51132b8e3d9a598b316e90377a288663c9321036c82 \
+    --hash=sha256:c33351e1f49cae33414acbc6d56784e6ecee82514ec90795da1161fc4836b5b8
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   cachecontrol
@@ -607,9 +607,9 @@ packaging==26.2 \
     #   findpython
     #   poetry
     #   wheel
-pbs-installer[download,install]==2026.7.18 \
-    --hash=sha256:e3093353d371ce3ae620e927beb47558589f3a88eb332f6d7ef394f9b543fa66 \
-    --hash=sha256:fefa193fa55bfe1a09aedbb8fc24ba2fc05252985f3e90ffbf89175e9490aa9a
+pbs-installer[download,install]==2026.7.28 \
+    --hash=sha256:0c1c141807fee0dc3de6fde5fc4f59676df8709f3a33904bde6cf6c41d5d76c7 \
+    --hash=sha256:fe75ba9442a559ad989ace5b985f8c7e5f8f438ce791f04a35f5ed3854f8e8ee
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry
@@ -619,14 +619,13 @@ pkginfo==1.12.1.2 \
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry
-platformdirs==4.10.1 \
-    --hash=sha256:0e4eff26be2d75293977f7cddc153fd9b8eaa7fb0c7b64ffe4076cb443117443 \
-    --hash=sha256:ceab4084426fe6319ce18e86deada8ab1b7487c7aee7040c55e277c9ae793695
+platformdirs==4.11.0 \
+    --hash=sha256:0555d18370482847566ffabcaa53ad7c6c1c29f195989ae1ed634a05f76ea1e0 \
+    --hash=sha256:360ccded2b7fce0af0ff80cc8f5942a1c5d99b0e856033acb030bfc634709e74
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   findpython
     #   poetry
-    #   python-discovery
     #   virtualenv
 poetry==2.4.1 \
     --hash=sha256:189399b80347ecf908244b2564a7b1d92b648fa1fe2a204888f94a472fec0cac \
@@ -653,9 +652,9 @@ pyproject-hooks==1.2.0 \
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   build
     #   poetry
-python-discovery==1.4.4 \
-    --hash=sha256:5cad33982d412c1f3ffb8f9ca4ea292c9680bca3942451d30b69c37fce53a4a3 \
-    --hash=sha256:abebe9120b43453b68c908acfb1e72a19d1a959ed2cb620ad38fc57d08056dbe
+python-discovery==1.5.1 \
+    --hash=sha256:ac07f44cade589d954e9d6a1e1468539fdddd2cf676beb51da73e0f156b7c932 \
+    --hash=sha256:e2ea8b884cd1701f386eda8cf327b87743f1dc21b7f784470799537d95635384
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   virtualenv
@@ -797,9 +796,9 @@ urllib3==2.7.0 \
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   dulwich
     #   requests
-virtualenv==21.6.1 \
-    --hash=sha256:15f978b7cd329f24855ff4a0c4b4899cc7678589f49adbdcbbb4d3232e641128 \
-    --hash=sha256:afe991df855715a2b2f60edfcc0107ef95a79fdfd8cb4cdaa71603d1c12e463b
+virtualenv==21.7.1 \
+    --hash=sha256:6394973f990536e34c05157179146c020284c42fe01da1dfeb0ba16c345280d9 \
+    --hash=sha256:d0dbfaa5483487baea28d7210ef8d24c9d1bd0f10f449eeb215568825a9b334e
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry

@@ -73,6 +73,7 @@ objgraph = ">=3.6.2"
 prettytable = ">=3.16.0"
 py-spy = ">=0.4.1"
 pip-tools = "^7.5.2"  # for tools/deterministic-build/compile.sh
+pip = "<26.2"  # pip-tools 7.6.0 imports an internal API removed in pip 26.2
 
 
 
