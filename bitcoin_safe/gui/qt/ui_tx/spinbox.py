@@ -72,9 +72,19 @@ class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
 
     def _apply_theme_style(self) -> None:
         """Apply the stylesheet for the current read-only mode."""
-        style_sheet = self.get_style_sheet(self.isReadOnly())
-        if self.styleSheet() != style_sheet:
-            self.setStyleSheet(style_sheet)
+        self._set_style_sheet(self.get_style_sheet(self.isReadOnly()))
+
+    def _set_style_sheet(self, style_sheet: str) -> None:
+        """Apply a local style and clear palette overrides when removing it."""
+        current_style_sheet = self.styleSheet()
+        if current_style_sheet == style_sheet:
+            return
+
+        self.setStyleSheet(style_sheet)
+        if current_style_sheet and not style_sheet:
+            self.setPalette(QtGui.QPalette())
+            if lineedit := self.lineEdit():
+                lineedit.setPalette(QtGui.QPalette())
 
     def get_style_sheet(self, ro: bool) -> str:
         """Get style sheet."""
@@ -146,9 +156,9 @@ class AnalyzerSpinBox(LabelStyleReadOnlQDoubleSpinBox):
     def format_as_error(self, value: bool) -> None:
         """Format as error."""
         if value:
-            self.setStyleSheet(f"#{self.objectName()} {{ background-color: #ff6c54; }}")
+            self._set_style_sheet(f"#{self.objectName()} {{ background-color: #ff6c54; }}")
         else:
-            self.setStyleSheet(self.get_style_sheet(self.isReadOnly()))
+            self._set_style_sheet(self.get_style_sheet(self.isReadOnly()))
 
     def format_and_apply_validator(self) -> None:
         """Format and apply validator."""

@@ -71,14 +71,23 @@ def test_btc_spinbox_restores_editable_style_after_send_max(qtbot: QtBot) -> Non
         btc_symbol=BitcoinSymbol.ISO.value,
     )
     qtbot.addWidget(widget)
+    widget.show()
+    qtbot.waitUntil(widget.isVisible)
+    line_edit = widget.lineEdit()
+    spin_box_background = widget.palette().color(widget.backgroundRole())
+    line_edit_background = line_edit.palette().color(line_edit.backgroundRole())
 
     widget.set_max(True, True)
+    qtbot.wait(0)
     assert "background: transparent;" in widget.styleSheet()
 
     widget.set_max(False, False)
+    qtbot.wait(0)
 
     assert widget.styleSheet() == ""
+    assert widget.palette().color(widget.backgroundRole()) == spin_box_background
+    assert line_edit.palette().color(line_edit.backgroundRole()) == line_edit_background
     assert widget.hasFrame()
     assert widget.buttonSymbols() == QAbstractSpinBox.ButtonSymbols.UpDownArrows
     assert widget.focusPolicy() == Qt.FocusPolicy.StrongFocus
-    assert not widget.lineEdit().isReadOnly()
+    assert not line_edit.isReadOnly()
