@@ -1112,10 +1112,14 @@ def qicon_to_pil(qicon: QIcon, size=200) -> PilImage.Image:
 
 
 def save_file_dialog(
-    name_filters=None, default_suffix=None, default_filename=None, window_title="Save File"
+    name_filters=None,
+    default_suffix=None,
+    default_filename=None,
+    window_title="Save File",
+    parent: QWidget | None = None,
 ) -> str | None:
     """Save file dialog."""
-    file_dialog = QFileDialog()
+    file_dialog = QFileDialog(parent)
     file_dialog.setWindowTitle(window_title)
     if default_suffix:
         file_dialog.setDefaultSuffix(default_suffix)
