@@ -143,11 +143,11 @@ def test_history_range_coupling(
 
         date_picker = qt_wallet.history_list_with_toolbar.date_range_picker
 
-        qtbot.waitUntil(lambda: history_list._date_range is not None, timeout=5_000)
         qtbot.waitUntil(
             lambda: date_picker.preset_combo.currentData() == DateRangePreset.ALL_TIME,
             timeout=5_000,
         )
+        assert history_list._date_range is None
         qtbot.waitUntil(lambda: date_picker.start_edit.isHidden(), timeout=5_000)
         qtbot.waitUntil(lambda: date_picker.end_edit.isHidden(), timeout=5_000)
         qtbot.waitUntil(lambda: date_picker.to_label.isHidden(), timeout=5_000)
@@ -185,10 +185,15 @@ def test_history_range_coupling(
             start_ts, end_ts = sorted((requested_start_ts, requested_end_ts))
             return float(int(start_ts)), float(int(end_ts))
 
-        full_start = qt_wallet.wallet_balance_chart.datetime_axis.min().toSecsSinceEpoch()
         full_end = qt_wallet.wallet_balance_chart.datetime_axis.max().toSecsSinceEpoch()
-        full_expected_hidden = expected_hidden_rows(full_start, full_end)
-        qtbot.waitUntil(lambda: hidden_rows() == full_expected_hidden, timeout=5_000)
+        qtbot.waitUntil(lambda: hidden_rows() == set(), timeout=5_000)
+
+        moving_timestamp_item = model.item(2, history_list.Columns.NLOCKTIME_TIME)
+        assert moving_timestamp_item
+        moving_timestamp_item.setData(float(full_end + 1), MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        history_list.refresh_filters()
+        assert history_list._date_range is None
+        qtbot.waitUntil(lambda: hidden_rows() == set(), timeout=5_000)
         assert date_picker.reset_button.isHidden()
         assert not date_picker.reset_button.icon().isNull()
         shutter.save(main_window)
@@ -324,6 +329,7 @@ def test_history_range_coupling(
 
         date_picker.set_preset(DateRangePreset.ALL_TIME)
         qtbot.waitUntil(lambda: date_picker.reset_button.isHidden(), timeout=5_000)
+        assert history_list._date_range is None
         qtbot.waitUntil(lambda: hidden_rows() == set(), timeout=5_000)
         shutter.save(main_window)
 
@@ -345,5 +351,6 @@ def test_history_range_coupling(
         qtbot.waitUntil(
             lambda: date_picker.preset_combo.currentData() == DateRangePreset.ALL_TIME, timeout=5_000
         )
+        assert history_list._date_range is None
         qtbot.waitUntil(lambda: hidden_rows() == set(), timeout=5_000)
         shutter.save(main_window)

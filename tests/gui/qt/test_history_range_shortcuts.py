@@ -72,9 +72,13 @@ class DummyWalletBalanceChart(QObject):
 class DummyHistList:
     def __init__(self) -> None:
         self.set_date_range_calls = 0
+        self.clear_date_range_calls = 0
 
     def set_date_range(self, _start: datetime.datetime, _end: datetime.datetime) -> None:
         self.set_date_range_calls += 1
+
+    def clear_date_range(self) -> None:
+        self.clear_date_range_calls += 1
 
 
 def test_history_range_reset_shortcut_alt_zero(qtbot: QtBot) -> None:
@@ -91,7 +95,7 @@ def test_history_range_reset_shortcut_alt_zero(qtbot: QtBot) -> None:
     controller._reset_shortcut.activated.emit()
 
     assert wallet_balance_chart.reset_zoom_calls == 1
-    assert history_list.set_date_range_calls >= 1
+    assert history_list.clear_date_range_calls >= 1
 
 
 def test_history_range_plain_r_no_longer_resets(qtbot: QtBot) -> None:
