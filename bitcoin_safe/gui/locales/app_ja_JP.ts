@@ -4731,8 +4731,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>支出テストをスキップ？</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>{send_test_name}をスキップしますか？</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4741,8 +4741,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>すでに{n}件の送金トランザクションを行っています。この支出テストをスキップしますか？</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>すでに{n}件の送金取引を行っています。{send_test_name}をスキップしますか？</translation>
 		</message>
 	</context>
 	<context>

@@ -4745,8 +4745,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>송금 테스트를 건너뛰겠습니까?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>{send_test_name}을(를) 건너뛸까요?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4755,8 +4755,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>이미 {n}건의 외부 트랜잭션을 했습니다. 이 테스트 전송을 건너뛰시겠습니까?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>이미 {n}건의 송금 거래를 완료했습니다. {send_test_name}을(를) 건너뛰시겠습니까?</translation>
 		</message>
 	</context>
 	<context>

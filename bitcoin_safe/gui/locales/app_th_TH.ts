@@ -4730,8 +4730,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>ข้ามการทดสอบการใช้จ่าย?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>ข้าม {send_test_name} หรือไม่?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4740,8 +4740,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>คุณได้ทำธุรกรรมออกไปแล้ว {n} ครั้ง คุณต้องการข้ามการทดสอบการใช้จ่ายนี้หรือไม่?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>คุณได้ทำธุรกรรมขาออกไปแล้ว {n} รายการ คุณต้องการข้าม {send_test_name} หรือไม่?</translation>
 		</message>
 	</context>
 	<context>

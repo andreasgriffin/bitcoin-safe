@@ -4753,8 +4753,8 @@ Se commetti un errore qui, i tuoi soldi sono persi!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Salta il test di spesa?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>Saltare {send_test_name}?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4763,8 +4763,8 @@ Se commetti un errore qui, i tuoi soldi sono persi!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>Hai già fatto {n} transazioni in uscita. Vuoi saltare questo test di spesa?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>Hai già effettuato {n} transazioni in uscita. Vuoi saltare {send_test_name}?</translation>
 		</message>
 	</context>
 	<context>

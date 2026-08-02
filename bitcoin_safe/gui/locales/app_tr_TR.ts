@@ -4750,8 +4750,8 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Gönderim testi atla?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>{send_test_name} atlansın mı?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4760,8 +4760,8 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>Zaten {n} çıkış işlemi yaptınız. Bu gönderim testini atlamak ister misiniz?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>Zaten {n} giden işlem yaptınız. {send_test_name} atlansın mı?</translation>
 		</message>
 	</context>
 	<context>

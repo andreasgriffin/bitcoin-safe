@@ -4733,8 +4733,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>खर्च परीक्षण छोड़ें?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>{send_test_name} को छोड़ें?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4743,8 +4743,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>आपने पहले ही {n} बाहरी लेन-देन किए हैं। क्या आप इस खर्च परीक्षण को छोड़ना चाहेंगे?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>आप पहले ही {n} आउटगोइंग लेनदेन कर चुके हैं। क्या आप {send_test_name} को छोड़ना चाहेंगे?</translation>
 		</message>
 	</context>
 	<context>
