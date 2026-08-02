@@ -72,7 +72,7 @@ from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.persister.serialize_persistence import SerializePersistence
-from bitcoin_safe.psbt_util import FeeInfo, FeeRate
+from bitcoin_safe.psbt_util import FeeInfo, FeeRate, SimpleInput
 from bitcoin_safe.wallet_util import (
     WalletDifference,
     WalletDifferences,
@@ -2052,6 +2052,28 @@ class Wallet(BaseSaveableClass, CacheManager):
         """Return True if the address belongs to this wallet."""
         return address in self.get_addresses()
 
+    def owns_psbt_input(self, simple_input: SimpleInput) -> bool:
+        """Return whether this wallet's descriptor controls a PSBT input."""
+        previous_txout = simple_input.previous_txout()
+        if not previous_txout:
+            return False
+
+        script_pubkey = previous_txout.script_pubkey
+        if self.bdkwallet.is_mine(script_pubkey):
+            return True
+
+        receive_descriptor, change_descriptor = self.multipath_descriptor.to_single_descriptors()
+        descriptors = {
+            bdk.KeychainKind.EXTERNAL: receive_descriptor,
+            bdk.KeychainKind.INTERNAL: change_descriptor,
+        }
+        script_bytes = script_pubkey.to_bytes()
+        return any(
+            (descriptors[keychain].derive_address(index, self.network).script_pubkey().to_bytes())
+            == script_bytes
+            for keychain, index in simple_input.address_derivations()
+        )
+
     @instance_lru_cache()
     def get_address_dict_with_peek(
         self, peek_receive_ahead: int = 1000, peek_change_ahead: int = 1000
@@ -2749,6 +2771,14 @@ class Wallet(BaseSaveableClass, CacheManager):
 def get_wallets(wallet_functions: WalletFunctions) -> list[Wallet]:
     """Return all loaded wallets."""
     return list(wallet_functions.get_wallets().values())
+
+
+def get_wallet_for_psbt_input(simple_input: SimpleInput, wallet_functions: WalletFunctions) -> Wallet | None:
+    """Return the first loaded wallet whose descriptor controls the input."""
+    for wallet in get_wallets(wallet_functions):
+        if wallet.owns_psbt_input(simple_input):
+            return wallet
+    return None
 
 
 def get_wallet(wallet_id: str, wallet_functions: WalletFunctions) -> Wallet | None:

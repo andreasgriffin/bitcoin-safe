@@ -53,6 +53,13 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.1.2" date="2026-08-02">
+      <description>
+        <ul>
+          <li>UI Bug fixes</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.1.1" date="2026-07-20">
       <description>
         <ul>

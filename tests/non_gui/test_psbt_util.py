@@ -298,6 +298,51 @@ def test_tr_psbt() -> None:
     assert len(psbt.outputs) == 2
 
 
+def test_previous_txout_supports_segwit_witness_and_non_witness_utxo() -> None:
+    simple_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
+
+    witness_txout = simple_input.previous_txout()
+    assert witness_txout
+
+    simple_input.witness_utxo = None
+    non_witness_txout = simple_input.previous_txout()
+
+    assert non_witness_txout == witness_txout
+    assert simple_input.address_derivations() == {(bdk.KeychainKind.EXTERNAL, 0)}
+
+
+def test_previous_txout_supports_non_segwit_utxo() -> None:
+    script_pubkey = "76a914" + "11" * 20 + "88ac"
+    simple_input = SimpleInput(
+        txin=tr_psbt_singlesig.extract_tx().input()[0],
+        non_witness_utxo={
+            "output": [
+                {
+                    "value": 100_000,
+                    "script_pubkey": script_pubkey,
+                }
+            ]
+        },
+    )
+
+    previous_txout = simple_input.previous_txout()
+
+    assert previous_txout
+    assert previous_txout.value.to_sat() == 100_000
+    assert previous_txout.spk_hex == script_pubkey
+
+
+def test_previous_txout_returns_none_for_incomplete_utxo_data() -> None:
+    simple_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
+
+    simple_input.witness_utxo = {"script_pubkey": "0014deadbeef"}
+    assert simple_input.previous_txout() is None
+
+    simple_input.witness_utxo = None
+    simple_input.non_witness_utxo = {"output": []}
+    assert simple_input.previous_txout() is None
+
+
 def test_group_inputs_by_signer_set() -> None:
     txins = tr_psbt_singlesig.extract_tx().input()
     txin = txins[0]

@@ -33,15 +33,75 @@ import logging
 
 import pytest
 
-from bitcoin_safe.wallet import Wallet, WalletInputsInconsistentError
+from bitcoin_safe.psbt_util import PubKeyInfo, SimpleInput
+from bitcoin_safe.signals import Signals, WalletFunctions
+from bitcoin_safe.wallet import Wallet, WalletInputsInconsistentError, get_wallet_for_psbt_input
 
 from ..helpers import TestConfig
+from .test_psbt_util import tr_psbt_singlesig
 from .utils import (
     create_multisig_protowallet,
     create_test_seed_keystores,
 )
 
 logger = logging.getLogger(__name__)
+
+
+def test_owns_psbt_input_uses_descriptor_path_beyond_lookahead(
+    test_config: TestConfig, loop_in_thread
+) -> None:
+    protowallet = create_multisig_protowallet(
+        threshold=2,
+        signers=2,
+        key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h"],
+        network=test_config.network,
+    )
+    wallet = Wallet.from_protowallet(
+        protowallet=protowallet,
+        config=test_config,
+        loop_in_thread=loop_in_thread,
+    )
+    receive_descriptor, _change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
+    address_index = wallet.calc_best_lookahead() + 10
+    script_pubkey = receive_descriptor.derive_address(address_index, test_config.network).script_pubkey()
+    simple_input = SimpleInput(
+        txin=tr_psbt_singlesig.extract_tx().input()[0],
+        witness_utxo={"value": 100_000, "script_pubkey": bytes(script_pubkey.to_bytes()).hex()},
+        pubkeys=[PubKeyInfo(fingerprint="", derivation_path=f"m/0/{address_index}")],
+    )
+
+    assert not wallet.bdkwallet.is_mine(script_pubkey)
+    assert wallet.owns_psbt_input(simple_input)
+
+
+def test_get_wallet_for_psbt_input_returns_first_match(test_config: TestConfig, loop_in_thread) -> None:
+    protowallet = create_multisig_protowallet(
+        threshold=2,
+        signers=2,
+        key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h"],
+        network=test_config.network,
+    )
+    first_wallet = Wallet.from_protowallet(
+        protowallet=protowallet,
+        config=test_config,
+        loop_in_thread=loop_in_thread,
+    )
+    second_wallet = Wallet.from_protowallet(
+        protowallet=protowallet,
+        config=test_config,
+        loop_in_thread=loop_in_thread,
+    )
+    receive_descriptor, _change_descriptor = first_wallet.multipath_descriptor.to_single_descriptors()
+    script_pubkey = receive_descriptor.derive_address(0, test_config.network).script_pubkey()
+    simple_input = SimpleInput(
+        txin=tr_psbt_singlesig.extract_tx().input()[0],
+        witness_utxo={"value": 100_000, "script_pubkey": bytes(script_pubkey.to_bytes()).hex()},
+    )
+    wallet_functions = WalletFunctions(Signals())
+    wallet_functions.get_wallets.connect(lambda: first_wallet, slot_name="first")
+    wallet_functions.get_wallets.connect(lambda: second_wallet, slot_name="second")
+
+    assert get_wallet_for_psbt_input(simple_input, wallet_functions) is first_wallet
 
 
 def test_protowallet_import_export_keystores(test_config: TestConfig) -> None:

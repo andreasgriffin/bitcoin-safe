@@ -112,6 +112,7 @@ from ....wallet import (
     TxStatus,
     Wallet,
     get_tx_details,
+    get_wallet_for_psbt_input,
     get_wallets,
 )
 from ..util import (
@@ -957,7 +958,10 @@ class UITx_Viewer(UITx_Base):
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
         """Enrich simple psbt with wallet data."""
         outpoint_dict: dict[str, InputEnrichment] = {}
-        for wallet in get_wallets(self.wallet_functions):
+        for simple_input in simple_psbt.inputs:
+            wallet = get_wallet_for_psbt_input(simple_input, self.wallet_functions)
+            if not wallet:
+                continue
             wallet_pubkeys = [
                 PubKeyInfo(
                     fingerprint=keystore.fingerprint,
@@ -965,12 +969,11 @@ class UITx_Viewer(UITx_Base):
                 )
                 for keystore in wallet.keystores
             ]
-            for outpoint_str in wallet.get_all_txos_dict():
-                outpoint_dict[outpoint_str] = InputEnrichment(
-                    wallet_id=wallet.id,
-                    m_of_n=wallet.get_mn_tuple(),
-                    pubkeys=wallet_pubkeys,
-                )
+            outpoint_dict[str(simple_input.txin.previous_output)] = InputEnrichment(
+                wallet_id=wallet.id,
+                m_of_n=wallet.get_mn_tuple(),
+                pubkeys=wallet_pubkeys,
+            )
 
         return simple_psbt.enrich_with_outpoint_data(outpoint_dict)
 
@@ -1003,10 +1006,16 @@ class UITx_Viewer(UITx_Base):
         completed_steps: list[tuple[str, list[AbstractSignatureImporter]]] = []
         pending_steps: list[tuple[str, list[AbstractSignatureImporter]]] = []
 
-        def get_wallets_with_seed(fingerprints: list[str]) -> list[tuple[Wallet, list[str]]]:
+        def get_wallets_with_seed(
+            fingerprints: list[str], wallet_id: str | None
+        ) -> list[tuple[Wallet, list[str]]]:
             """Get wallets with seed."""
             result: list[tuple[Wallet, list[str]]] = []
+            if not wallet_id:
+                return result
             for wallet in wallets:
+                if wallet.id != wallet_id:
+                    continue
                 matching_fingerprints = self._wallet_signing_fingerprints(wallet, fingerprints)
                 if matching_fingerprints:
                     result.append((wallet, matching_fingerprints))
@@ -1055,7 +1064,9 @@ class UITx_Viewer(UITx_Base):
                     continue
 
                 # check if any wallet has keys for this fingerprint
-                for wallet_with_seed, matching_fingerprints in get_wallets_with_seed(unsigned_fingerprints):
+                for wallet_with_seed, matching_fingerprints in get_wallets_with_seed(
+                    unsigned_fingerprints, input_group.wallet_id
+                ):
                     if DEMO_MODE:
                         break
                     signer_list.append(
