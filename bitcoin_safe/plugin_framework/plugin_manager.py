@@ -1624,6 +1624,7 @@ class PluginManager(BaseSaveableClass):
         return dct
 
     def close(self) -> None:
+        self._client_registered_callbacks.clear()
         self.client_signal_tracker.disconnect_all()
         self.signal_tracker.disconnect_all()
         if self._startup_source_refresh_timer is not None:
