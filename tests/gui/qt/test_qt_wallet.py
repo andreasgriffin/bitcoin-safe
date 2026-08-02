@@ -31,11 +31,17 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+import bdkpython as bdk
 import pytest
 
 import bitcoin_safe.gui.qt.qt_wallet as qt_wallet_module
 from bitcoin_safe.client_helpers import UpdateInfo
-from bitcoin_safe.gui.qt.qt_wallet import QTWallet, SyncStatus
+from bitcoin_safe.gui.qt.qt_wallet import (
+    COLDCARD_SEED_WARNING_CUTOFF_HEIGHT,
+    QTWallet,
+    SyncStatus,
+)
+from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.pythonbdk_types import BlockchainType
 
 
@@ -179,3 +185,68 @@ def test_update_history_initial_sync_widgets_stays_lazy_when_placeholder_not_nee
     )
 
     assert created_widgets == []
+
+
+@pytest.mark.parametrize(
+    ("height", "hardware_signer_id", "is_new_wallet", "network", "expected"),
+    [
+        (
+            COLDCARD_SEED_WARNING_CUTOFF_HEIGHT - 1,
+            HardwareSigners.coldcard.id,
+            False,
+            bdk.Network.BITCOIN,
+            True,
+        ),
+        (
+            COLDCARD_SEED_WARNING_CUTOFF_HEIGHT,
+            HardwareSigners.coldcard.id,
+            False,
+            bdk.Network.BITCOIN,
+            False,
+        ),
+        (
+            COLDCARD_SEED_WARNING_CUTOFF_HEIGHT - 1,
+            HardwareSigners.coldcard_mk5.id,
+            False,
+            bdk.Network.BITCOIN,
+            True,
+        ),
+        (
+            COLDCARD_SEED_WARNING_CUTOFF_HEIGHT - 1,
+            HardwareSigners.q.id,
+            True,
+            bdk.Network.BITCOIN,
+            False,
+        ),
+        (
+            COLDCARD_SEED_WARNING_CUTOFF_HEIGHT - 1,
+            HardwareSigners.bitbox02.id,
+            False,
+            bdk.Network.BITCOIN,
+            False,
+        ),
+        (
+            COLDCARD_SEED_WARNING_CUTOFF_HEIGHT - 1,
+            HardwareSigners.coldcard.id,
+            False,
+            bdk.Network.TESTNET,
+            False,
+        ),
+    ],
+)
+def test_should_show_coldcard_seed_warning(
+    height: int,
+    hardware_signer_id: str,
+    is_new_wallet: bool,
+    network: bdk.Network,
+    expected: bool,
+) -> None:
+    wallet = SimpleNamespace(
+        is_new_wallet=is_new_wallet,
+        network=network,
+        get_height_no_cache=lambda: height,
+        keystores=[SimpleNamespace(hardware_signer_id=hardware_signer_id)],
+    )
+    qt_wallet = SimpleNamespace(wallet=wallet)
+
+    assert QTWallet.should_show_coldcard_seed_warning(qt_wallet) is expected

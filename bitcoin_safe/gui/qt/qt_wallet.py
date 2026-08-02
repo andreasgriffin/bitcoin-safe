@@ -85,6 +85,7 @@ from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
+from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.network_config import ConnectionInfo, Peer
@@ -135,7 +136,7 @@ from .util import (
     set_margins,
 )
 from .wallet_balance_chart import WalletBalanceChart
-from .warning_bars import TooSmallGapLimitWarningBar
+from .warning_bars import ColdcardSeedWarningBar, TooSmallGapLimitWarningBar
 
 logger = logging.getLogger(__name__)
 
@@ -146,6 +147,9 @@ T = TypeVar("T")
 MINIMUM_INTERVAL_SYNC_REGULARLY = (
     5 * 60
 )  # in seconds  .  A high value is OK here because the p2p monitoring will inform of any new txs instantly
+
+# Approximate mainnet height on August 10, 2026. Exact date matching is unnecessary for this one-time notice.
+COLDCARD_SEED_WARNING_CUTOFF_HEIGHT = 962_000
 
 
 def create_tx_viewer(
@@ -1661,6 +1665,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         history_tab_content_layout = QVBoxLayout(self.history_tab_content)
         history_tab_content_layout.setContentsMargins(0, 0, 0, 0)
 
+        self.coldcard_seed_warning_bar = ColdcardSeedWarningBar(
+            signals_min=self.signals,
+            parent=self.history_tab_content,
+        )
+        show_coldcard_warning = self.should_show_coldcard_seed_warning()
+        self.coldcard_seed_warning_bar.setVisible(show_coldcard_warning)
+        history_tab_content_layout.addWidget(self.coldcard_seed_warning_bar)
+
         new_gap = self._suggested_increased_gap()
         self.wallet_corruption_warning_bar = TooSmallGapLimitWarningBar(
             signals_min=self.signals,
@@ -1780,6 +1792,20 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             hist_node,
             wallet_balance_chart,
             history_list_with_toolbar,
+        )
+
+    def should_show_coldcard_seed_warning(self) -> bool:
+        """Return whether this wallet needs the Coldcard seed warning."""
+        coldcard_ids = {
+            HardwareSigners.coldcard.id,
+            HardwareSigners.coldcard_mk5.id,
+            HardwareSigners.q.id,
+        }
+        return (
+            not self.wallet.is_new_wallet
+            and self.wallet.network == bdk.Network.BITCOIN
+            and self.wallet.get_height_no_cache() < COLDCARD_SEED_WARNING_CUTOFF_HEIGHT
+            and any(keystore.hardware_signer_id in coldcard_ids for keystore in self.wallet.keystores)
         )
 
     def on_hist_chart_click(self, tx_details: TransactionDetails):
