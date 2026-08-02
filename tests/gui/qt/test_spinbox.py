@@ -27,10 +27,20 @@
 # SOFTWARE.
 #
 
-from PyQt6.QtCore import QEvent
+from typing import cast
+
+import bdkpython as bdk
+from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from PyQt6.QtCore import QEvent, QObject, Qt, pyqtSignal
+from PyQt6.QtWidgets import QAbstractSpinBox
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.gui.qt.ui_tx.spinbox import AnalyzerSpinBox
+from bitcoin_safe.gui.qt.ui_tx.spinbox import AnalyzerSpinBox, BTCSpinBox
+
+
+class Signals(QObject):
+    language_switch = cast(SignalProtocol[[]], pyqtSignal())
 
 
 def test_analyzer_spinbox_ignores_style_change_event(qtbot: QtBot) -> None:
@@ -51,3 +61,33 @@ def test_analyzer_spinbox_handles_palette_change_event(qtbot: QtBot) -> None:
     widget.changeEvent(QEvent(QEvent.Type.PaletteChange))
 
     assert "background: transparent;" in widget.styleSheet()
+
+
+def test_btc_spinbox_restores_editable_style_after_send_max(qtbot: QtBot) -> None:
+    signals = Signals()
+    widget = BTCSpinBox(
+        network=bdk.Network.REGTEST,
+        signal_language_switch=signals.language_switch,
+        btc_symbol=BitcoinSymbol.ISO.value,
+    )
+    qtbot.addWidget(widget)
+    widget.show()
+    qtbot.waitUntil(widget.isVisible)
+    line_edit = widget.lineEdit()
+    spin_box_background = widget.palette().color(widget.backgroundRole())
+    line_edit_background = line_edit.palette().color(line_edit.backgroundRole())
+
+    widget.set_max(True, True)
+    qtbot.wait(0)
+    assert "background: transparent;" in widget.styleSheet()
+
+    widget.set_max(False, False)
+    qtbot.wait(0)
+
+    assert widget.styleSheet() == ""
+    assert widget.palette().color(widget.backgroundRole()) == spin_box_background
+    assert line_edit.palette().color(line_edit.backgroundRole()) == line_edit_background
+    assert widget.hasFrame()
+    assert widget.buttonSymbols() == QAbstractSpinBox.ButtonSymbols.UpDownArrows
+    assert widget.focusPolicy() == Qt.FocusPolicy.StrongFocus
+    assert not line_edit.isReadOnly()
