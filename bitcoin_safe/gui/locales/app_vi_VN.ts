@@ -4750,8 +4750,8 @@ Nếu bạn sai ở đây, tiền của bạn sẽ mất!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Bỏ qua kiểm tra chi tiêu?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>Bỏ qua {send_test_name}?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4760,8 +4760,8 @@ Nếu bạn sai ở đây, tiền của bạn sẽ mất!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>Bạn đã thực hiện {n} giao dịch gửi đi rồi. Bạn có muốn bỏ qua bài kiểm tra chi tiêu này không?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>Bạn đã thực hiện {n} giao dịch gửi đi. Bạn có muốn bỏ qua {send_test_name} không?</translation>
 		</message>
 	</context>
 	<context>

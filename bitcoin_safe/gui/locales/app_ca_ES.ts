@@ -4750,8 +4750,8 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Ometre la prova de despesa?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>Vols ometre {send_test_name}?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4760,8 +4760,8 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>Ja has fet {n} transaccions sortints. Vols ometre aquesta prova de despesa?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>Ja has fet {n} transaccions sortints. Vols ometre {send_test_name}?</translation>
 		</message>
 	</context>
 	<context>

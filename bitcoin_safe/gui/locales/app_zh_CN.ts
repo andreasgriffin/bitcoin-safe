@@ -341,12 +341,12 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Complete the payment in your browser.</source>
-			<translation>请在浏览器中完成付款。</translation>
+			<translation>请在浏览器中完成支付。</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Could not create invoice. Please try again.</source>
-			<translation>无法创建发票。请再试一次。</translation>
+			<translation>无法创建发票。请重试。</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -579,7 +579,9 @@
 			<source>Could not recognize the input. Do you want to scan again?
 
 The error was: {error}</source>
-			<translation>无法识别输入内容。是否要重新扫描？错误为：{error}</translation>
+			<translation>无法识别输入内容。是否要重新扫描？
+
+错误为：{error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -754,7 +756,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>Chat</name>
 		<message>
 			<source>Pending: {waiting_for}. Failed: {failures}</source>
-			<translation>待处理：{waiting_for}。失败：{failures}</translation>
+			<translation>待处理：{waiting_for}。已失败：{failures}</translation>
 		</message>
 		<name>Chat</name>
 		<message>
@@ -769,7 +771,7 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<name>Chat</name>
 		<message>
 			<source>Published to all recipients and self-copy received</source>
-			<translation>已发布给所有接收者，并已收到自副本</translation>
+			<translation>已发布给所有收款方，并已收到自副本</translation>
 		</message>
 		<name>Chat</name>
 		<message>
@@ -1393,7 +1395,7 @@ Default 20</source>
 		<name>DonationInvoiceWidget</name>
 		<message>
 			<source>Thanks for {app_name}!</source>
-			<translation>Thanks for {app_name}!</translation>
+			<translation>感谢 {app_name}!</translation>
 		</message>
 		<name>DonationInvoiceWidget</name>
 		<message>
@@ -1817,7 +1819,7 @@ since the final size of the transaction is unknown.</source>
 		<name>ImportXpubs</name>
 		<message>
 			<source>Import hardware signer information into {app_name}</source>
-			<translation>将硬件签名器信息导入 {app_name}</translation>
+			<translation>将硬件签名器信息导入到 {app_name}</translation>
 		</message>
 		<name>ImportXpubs</name>
 		<message>
@@ -1936,7 +1938,7 @@ since the final size of the transaction is unknown.</source>
 		<name>KeyOriginAnalyzer</name>
 		<message>
 			<source>single-sig</source>
-			<translation>单签名</translation>
+			<translation>单一签名</translation>
 		</message>
 		<name>KeyOriginAnalyzer</name>
 		<message>
@@ -2003,12 +2005,12 @@ since the final size of the transaction is unknown.</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
-			<translation>了解更多关于&lt;a href="{url}"&gt;支持的签名者&lt;/a&gt;的信息。</translation>
+			<translation>了解有关&lt;a href="{url}"&gt;受支持的签名器&lt;/a&gt;详情。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
-			<translation>了解更多关于 &lt;a href="{url}"&gt;{device}&lt;/a&gt; 的信息。</translation>
+			<translation>了解有关 &lt;a href="{url}"&gt;{device}&lt;/a&gt; 详情。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2098,7 +2100,7 @@ since the final size of the transaction is unknown.</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Select your signer</source>
-			<translation>选择你的签名器</translation>
+			<translation>选择您的签名器</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2132,7 +2134,7 @@ to keep track of different seeds and signing devices.</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
-			<translation>账户编号编码在派生路径中，并用于选择签名者的 xPub。</translation>
+			<translation>账户编号编码在派生路径中，并用于选择签名器的 xPub。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2217,7 +2219,7 @@ For a single signature wallet it gives full control over the funds.</source>
 		<name>KeyStoreUIs</name>
 		<message>
 			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
-			<translation>签名者槽位 {signers} 包含相同的 xpub。这通常意味着同一个签名者导出文件被导入了两次。请为每个签名者导入不同的设备或账户。</translation>
+			<translation>签名器槽位 {signers} 包含相同的 xpub。这通常意味着同一个签名器的导出数据被导入两次。请为每台签名器导入不同的设备或账户。</translation>
 		</message>
 		<name>KeyStoreUIs</name>
 		<message>
@@ -2721,12 +2723,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>MainWindow</name>
 		<message>
 			<source>No, do a full scan</source>
-			<translation>否，执行完整扫描</translation>
+			<translation>不，执行完整扫描</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
 			<source>OK</source>
-			<translation>好的</translation>
+			<translation>确定</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2975,7 +2977,7 @@ Do you want to hide to tray instead?</source>
 		<name>MainWindow</name>
 		<message>
 			<source>Yes</source>
-			<translation>是</translation>
+			<translation>是的</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3241,7 +3243,7 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<message>
 			<source>Configured server: {server}
 Location unavailable.</source>
-			<translation>已配置服务器：{server}
+			<translation>已配置的服务器：{server}
 位置不可用。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
@@ -3283,7 +3285,8 @@ Location unavailable.</source>
 		<message>
 			<source>Recently broadcasted messages are received
 from these peers via the bitcoin network.</source>
-			<translation>最近广播的消息通过比特币网络从这些节点接收。</translation>
+			<translation>最近广播的消息
+是通过比特币网络从这些对等节点接收到的。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3319,22 +3322,22 @@ received from these peers via the bitcoin network.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Why this protects privacy (learn more)</source>
-			<translation>为什么这能保护隐私（了解更多）</translation>
+			<translation>为什么这能保护隐私（了解详情）</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Your wallet syncs through the configured Electrum server.</source>
-			<translation>你的钱包通过配置的 Electrum 服务器同步。</translation>
+			<translation>您的钱包通过已配置的 Electrum 服务器进行同步。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Your wallet syncs through the configured Esplora server.</source>
-			<translation>你的钱包通过配置的 Esplora 服务器同步。</translation>
+			<translation>您的钱包通过已配置的 Esplora 服务器进行同步。</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
+			<translation>{app_name} 会从多个节点下载区块摘要，以保障隐私。首次同步完成后，后续更新将非常迅速。</translation>
 		</message>
 	</context>
 	<context>
@@ -3449,7 +3452,7 @@ Keep it empty to rely on automatic peer discovery.</source>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>P2P monitoring</source>
-			<translation>P2P 监控</translation>
+			<translation>P2P 监视</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3511,7 +3514,10 @@ Keep it empty to rely on automatic peer discovery.</source>
 plugin and during subscription purchase!
 Hostname-based server location and DNS-seed discovery
 are not resolved through the proxy in this version.</source>
-			<translation>代理不适用于 Sync&amp;Chat 插件，也不适用于购买订阅期间！在此版本中，基于主机名的服务器位置和 DNS-seed 发现不会通过代理解析。</translation>
+			<translation>代理设置不适用于 Sync&amp;Chat
+插件，也不适用于订阅购买过程！
+基于主机名的服务器位置和 DNS-seed 发现
+在该版本中不会通过代理进行解析。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3571,12 +3577,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
-			<translation>了解如何将 Android 手机变成专用的 bitcoin 签名设备。</translation>
+			<translation>了解如何将安卓手机变成一台专用的比特币签名器。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>No signer available?</source>
-			<translation>没有可用的签名者？</translation>
+			<translation>没有可用的签名器吗？</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3659,7 +3665,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>NotificationBarCBF</name>
 		<message>
 			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
-			<translation>Compact Block Filters 将为受支持的网络启用。此网络将保留其当前服务器。</translation>
+			<translation>紧凑型块过滤器将为受支持的网络启用。此网络将保留其当前的服务器。</translation>
 		</message>
 		<name>NotificationBarCBF</name>
 		<message>
@@ -4408,7 +4414,11 @@ Outputs stay the same; only the fee changes.</source>
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt; 要知道你是否控制这些资金，你必须测试从钱包中支出。 &lt;br&gt; 因此，在你向钱包发送大量 Bitcoin 之前，从钱包中支出并测试所有签名者是&lt;b&gt;至关重要的&lt;/b&gt;。                        </translation>
+			<translation>&lt;br&gt;&lt;b&gt;为什么？&lt;/b&gt; &lt;br&gt;
+                        要确认是否控制着这些资金，必须测试从该钱包中进行花费。
+                        &lt;br&gt;
+                        因此，在向该钱包转入大额比特币之前，请&lt;b&gt;务必&lt;/b&gt;从该钱包中进行花费，并测试所有签名器。
+                        </translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4433,7 +4443,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>ReceiveTest</name>
 		<message>
 			<source>Receive from faucet</source>
-			<translation>从 faucet 接收</translation>
+			<translation>从水龙头接收</translation>
 		</message>
 		<name>ReceiveTest</name>
 		<message>
@@ -4623,17 +4633,17 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register '{wallet_name}'</source>
-			<translation>注册“{wallet_name}”</translation>
+			<translation>注册 “{wallet_name}”</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register '{wallet_name}' to '{device}'</source>
-			<translation>将“{wallet_name}”注册到“{device}”</translation>
+			<translation>将 “{wallet_name}” 注册到 “{device}”</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
 			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
-			<translation>请在你计划使用的每个硬件签名器上注册此多签钱包。这样，硬件签名器就可以验证交易的找零地址。</translation>
+			<translation>请在您计划使用的每台硬件签名器上注册此多重签名钱包。这样，硬件签名器就能验证交易的找零地址了。</translation>
 		</message>
 		<name>RegisterMultisigInteractionWidget</name>
 		<message>
@@ -4756,8 +4766,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>跳过花费测试？</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>跳过 {send_test_name}？</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4766,8 +4776,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>您已完成 {n} 笔转出交易。您是否要跳过此次花费测试？</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>您已经进行了 {n} 笔转出交易。是否要跳过 {send_test_name}？</translation>
 		</message>
 	</context>
 	<context>
@@ -4890,12 +4900,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignMessageBase</name>
 		<message>
 			<source>2. Detect signed message</source>
-			<translation>2. 检测已签名消息</translation>
+			<translation>2. 检测已签名的消息</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Could not determine the derivation path for the provided address.</source>
-			<translation>无法确定所提供的地址的派生路径。</translation>
+			<translation>无法确定所提供地址的派生路径。</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -4905,7 +4915,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignMessageBase</name>
 		<message>
 			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
-			<translation>签署消息后，你的硬件签名器将提供第二个二维码，你可以从这台电脑扫描该二维码</translation>
+			<translation>一旦您对消息完成签名，您的硬件签名器将提供第二个二维码，您可以使用这台电脑扫描它</translation>
 		</message>
 		<name>SignMessageBase</name>
 		<message>
@@ -5435,7 +5445,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
-			<translation>签署 PSBT 后，你的硬件签名器将提供第二个二维码，你可以从这台电脑扫描该二维码</translation>
+			<translation>签署 PSBT 后，你的硬件签名器将提供第二个二维码，您可以从这台电脑扫描该二维码</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5500,7 +5510,7 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 		<name>TxSigningDeviceCard</name>
 		<message>
 			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation>发送测试 {number} 需要此签名者。暂时不要用它签名。</translation>
+			<translation>发送测试 {number} 需要这台签名器。暂时不要使用它进行签名。</translation>
 		</message>
 		<name>TxSigningDeviceCard</name>
 		<message>
@@ -5983,13 +5993,14 @@ Do you want to broadcast anyway?</source>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Update applied. Restarting {app_name}...</source>
-			<translation>更新已应用。正在重新启动 {app_name}...</translation>
+			<translation>更新已应用。正在重启 {app_name}……</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
 			<source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>更新文件已验证，但未执行自动安装：{reason}</translation>
+			<translation>已验证更新文件，但未执行自动安装：
+{reason}</translation>
 		</message>
 		<name>UpdateNotificationBar</name>
 		<message>
@@ -6410,12 +6421,12 @@ Do you want to broadcast anyway?</source>
 		<name>WalletSyncProgressCard</name>
 		<message>
 			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
-			<translation>已用：{elapsed} | 剩余：{remaining}</translation>
+			<translation>已用时间：{elapsed} | 剩余时间：{remaining}</translation>
 		</message>
 		<name>WalletSyncProgressCard</name>
 		<message>
 			<source>Preparing private sync…</source>
-			<translation>正在准备私密同步…</translation>
+			<translation>正在准备私密同步……</translation>
 		</message>
 		<name>WalletSyncProgressCard</name>
 		<message>
@@ -8332,17 +8343,17 @@ Click here to learn more.</source>
 		<name>subscription</name>
 		<message>
 			<source>Paste management URL</source>
-			<translation>粘贴管理 URL</translation>
+			<translation>粘贴管理网址</translation>
 		</message>
 		<name>subscription</name>
 		<message>
 			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
-			<translation>请联系 &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; 获取管理 URL，然后将其粘贴到下方字段中。</translation>
+			<translation>请联系 &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; 以获取管理网址，然后将其粘贴到下方的输入框中。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
 			<source>Please enter a valid HTTP(S) management URL.</source>
-			<translation>请输入有效的 HTTP(S) 管理 URL。</translation>
+			<translation>请输入有效的 HTTP(S) 管理网址。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8397,12 +8408,12 @@ Click here to learn more.</source>
 		<name>subscription</name>
 		<message>
 			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>管理页面未提供订阅 ID。管理 URL 未保存。</translation>
+			<translation>管理页面未提供订阅 ID。管理网址未被保存。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
 			<source>The subscription management URL could not be fetched automatically.</source>
-			<translation>无法自动获取订阅管理 URL。</translation>
+			<translation>无法自动获取订阅管理网址。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8412,7 +8423,7 @@ Click here to learn more.</source>
 		<name>subscription</name>
 		<message>
 			<source>Use management URL</source>
-			<translation>使用管理 URL</translation>
+			<translation>使用管理网址</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8777,7 +8788,7 @@ Requires the original transaction to signal RBF and your wallet to own a change 
 		<name>util</name>
 		<message>
 			<source>less than a minute</source>
-			<translation>少于一分钟</translation>
+			<translation>少于 1 分钟</translation>
 		</message>
 		<name>util</name>
 		<message>

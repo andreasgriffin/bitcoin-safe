@@ -4769,8 +4769,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>செலவு சோதனையைத் தவிர்க்கவா?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>{send_test_name} ஐத் தவிர்க்கவா?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4779,8 +4779,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>ஏற்கனவே {n} வெளிச்செல்லும் பரிவர்த்தனைகளைச் செய்துள்ளீர்கள். இந்த செலவினச் சோதனையைத் தவிர்க்க விரும்புகிறீர்களா?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>நீங்கள் ஏற்கனவே {n} வெளிச்செல்லும் பரிவர்த்தனைகளைச் செய்துள்ளீர்கள். {send_test_name} ஐத் தவிர்க்க விரும்புகிறீர்களா?</translation>
 		</message>
 	</context>
 	<context>

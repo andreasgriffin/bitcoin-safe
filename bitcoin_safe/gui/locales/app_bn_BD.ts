@@ -4734,8 +4734,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>spend test এড়িয়ে যাবেন?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>{send_test_name} এড়িয়ে যাবেন?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4744,8 +4744,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>আপনি ইতিমধ্যে {n} টি outgoing transaction করেছেন। আপনি কি এই spend test এড়িয়ে যেতে চান?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>আপনি ইতিমধ্যে {n}টি বহির্গামী লেনদেন করেছেন। আপনি কি {send_test_name} এড়িয়ে যেতে চান?</translation>
 		</message>
 	</context>
 	<context>

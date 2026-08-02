@@ -4749,8 +4749,8 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>Skip spend test?</source>
-			<translation>Lewati tes pengeluaran?</translation>
+			<source>Skip {send_test_name}?</source>
+			<translation>Lewati {send_test_name}?</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
@@ -4759,8 +4759,8 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip this spend test?</source>
-			<translation>Anda sudah membuat {n} transaksi keluar. Apakah Anda ingin melewati tes pengeluaran ini?</translation>
+			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+			<translation>Anda sudah melakukan {n} transaksi keluar. Apakah Anda ingin melewati {send_test_name}?</translation>
 		</message>
 	</context>
 	<context>
