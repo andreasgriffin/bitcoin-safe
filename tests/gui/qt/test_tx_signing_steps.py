@@ -63,6 +63,7 @@ from bitcoin_safe.signer import (
 
 from ...non_gui.test_psbt_util import (
     mixed_input_no_signatures_partially_signed,
+    mixed_inputs_finalized_and_nothing_signed_psbt,
     tr_psbt_singlesig,
 )
 from ...non_gui.utils import create_test_seed_keystores
@@ -325,6 +326,57 @@ def test_shared_signer_does_not_add_devices_from_uninvolved_wallet(qtbot: QtBot,
         keystores[1].fingerprint,
     }
     assert all(device.wallet_ids == [involved_wallet.id] for device in widget.signing_devices)
+
+
+def test_inputs_from_two_wallets_include_all_wallet_signers(qtbot: QtBot, loop_in_thread) -> None:
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    first_keystores = create_test_seed_keystores(
+        signers=2,
+        key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h"],
+        network=bdk.Network.REGTEST,
+    )
+    second_keystores = create_test_seed_keystores(
+        signers=2,
+        key_origins=["m/48h/1h/2h/2h", "m/48h/1h/3h/2h"],
+        network=bdk.Network.REGTEST,
+        test_seed_offset=2,
+    )
+    simple_inputs = SimplePSBT.from_psbt(mixed_inputs_finalized_and_nothing_signed_psbt).inputs
+    first_txout = simple_inputs[0].previous_txout()
+    second_txout = simple_inputs[1].previous_txout()
+    assert first_txout
+    assert second_txout
+
+    first_wallet = DummyWallet(
+        id="first",
+        keystores=first_keystores,
+        owned_scripts={first_txout.spk_hex},
+    )
+    second_wallet = DummyWallet(
+        id="second",
+        keystores=second_keystores,
+        owned_scripts={second_txout.spk_hex},
+    )
+    wallet_functions.get_wallets.connect(lambda: first_wallet, slot_name=first_wallet.id)
+    wallet_functions.get_wallets.connect(lambda: second_wallet, slot_name=second_wallet.id)
+
+    widget = TxSigningSteps(
+        signature_importer_dict={"mixed.0": []},
+        psbt=mixed_inputs_finalized_and_nothing_signed_psbt,
+        network=bdk.Network.REGTEST,
+        wallet_functions=wallet_functions,
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+
+    expected_wallet_by_fingerprint = {
+        **{keystore.fingerprint: first_wallet.id for keystore in first_keystores},
+        **{keystore.fingerprint: second_wallet.id for keystore in second_keystores},
+    }
+    assert {device.fingerprint: device.wallet_ids for device in widget.signing_devices} == {
+        fingerprint: [wallet_id] for fingerprint, wallet_id in expected_wallet_by_fingerprint.items()
+    }
 
 
 def _make_qr_device_card(
