@@ -457,7 +457,7 @@ class NetworkConfig(BaseSaveableClass):
         self.manual_peers: Peers = Peers()
         self.p2p_autodiscover_additional_peers: bool = True
         # testnets nodes are less reliable, so we need more connections
-        self.p2p_listener_parallel_connections: int = 2 if self.network == bdk.Network.BITCOIN else 6
+        self.p2p_listener_parallel_connections: int = 4 if self.network == bdk.Network.BITCOIN else 6
         self.discovered_peers: Peers | list[Peer] = discovered_peers if discovered_peers else Peers()
         self.mempool_data: MempoolData = mempool_data if mempool_data else MempoolData()
 
