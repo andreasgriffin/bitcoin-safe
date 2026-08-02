@@ -50,6 +50,7 @@ from bitcoin_safe.gui.qt.wizard.wizard import (
     DistributeSeeds,
     PluginListStep,
     ReceiveTest,
+    RegisterMultisig,
     SendTest,
     TutorialStep,
     Wizard,
@@ -235,6 +236,35 @@ def test_distribute_step_update_ui_after_close_does_not_raise(
 
     distribute.close()
     distribute.updateUi()
+
+
+@pytest.mark.marker_qt_1
+def test_registration_step_descriptions_are_read_only(
+    qtbot: QtBot,
+    test_config: TestConfig,
+    backend: str,
+    wallet_name: str = "test_registration_description",
+) -> None:
+    """The registration step displays signer notes without offering to edit them."""
+    del backend
+    with main_window_context(test_config=test_config) as main_window:
+        QTest.qWaitForWindowExposed(main_window, timeout=10000)  # type: ignore
+        qt_wallet = _create_wallet_with_wizard(
+            main_window=main_window,
+            wallet_name=wallet_name,
+            threshold=2,
+            signers=3,
+            tutorial_index=0,
+        )
+        wizard = qt_wallet.wizard
+        assert isinstance(wizard, Wizard)
+        registration = wizard.tab_generators[TutorialStep.register]
+        assert isinstance(registration, RegisterMultisig)
+
+        assert all(
+            keystore_ui.textEdit_description.isReadOnly()
+            for keystore_ui in registration.keystore_uis.getAllTabData().values()
+        )
 
 
 @pytest.mark.marker_qt_1

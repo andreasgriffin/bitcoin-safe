@@ -458,7 +458,6 @@ class KeyStoreUI(CardBase):
             cast(SignalProtocol[[]], self.edit_key_origin.input_field.textChanged),
             cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged),
             cast(SignalProtocol[[]], self.edit_seed.input_field.textChanged),
-            cast(SignalProtocol[[]], self.textEdit_description.textChanged),
         ):
             self.signal_tracker.connect(signal, self.signal_ui_changed.emit)
 
