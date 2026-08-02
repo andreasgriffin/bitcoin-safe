@@ -103,6 +103,8 @@ class RegisterMultisig(BaseTab):
             read_only_mode=True,
             show_register_button=True,
         )
+        for keystore_ui in self.keystore_uis.getAllTabData().values():
+            keystore_ui.textEdit_description.setReadOnly(True)
         self.keystore_uis.request_show_register_multisig.connect(self._show_register_multisig)
         widget_layout.addWidget(self.keystore_uis)
 

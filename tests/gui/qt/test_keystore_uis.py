@@ -34,6 +34,7 @@ from bitcoin_qr_tools.data import SignerInfo
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import AddressTypes
 from PyQt6.QtCore import Qt
+from PyQt6.QtTest import QSignalSpy
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUiState
@@ -102,6 +103,43 @@ def test_keystore_uis_syncs_back_to_protowallet(qtbot: QtBot, loop_in_thread: Lo
 
     assert protowallet.keystores[0] is not None
     assert protowallet.keystores[0].hardware_signer_id == hardware_signer.id
+
+
+def test_description_edit_avoids_signer_refresh_until_explicit_sync(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    keystore = create_test_seed_keystores(
+        signers=1,
+        key_origins=[AddressTypes.p2wpkh.key_origin(bdk.Network.REGTEST)],
+        network=bdk.Network.REGTEST,
+    )[0]
+    protowallet = ProtoWallet(
+        wallet_id="wallet",
+        threshold=1,
+        network=bdk.Network.REGTEST,
+        keystores=[keystore],
+        address_type=AddressTypes.p2wpkh,
+    )
+    widget = KeyStoreUIs(
+        get_editable_protowallet=lambda: protowallet,
+        get_address_type=lambda: AddressTypes.p2wpkh,
+        signals_min=SignalsMin(),
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+    keystore_ui = next(iter(widget.getAllTabData().values()))
+    ui_change_spy = QSignalSpy(widget.signal_ui_changed)
+    assert not keystore_ui.textEdit_description.isReadOnly()
+
+    keystore_ui.textEdit_description.setPlainText("Signer kept in the office")
+
+    assert len(ui_change_spy) == 0
+    assert keystore.description != "Signer kept in the office"
+    assert "Signer kept in the office" in keystore_ui.header_subtitle.text()
+
+    widget.set_protowallet_from_keystore_ui()
+
+    assert keystore.description == "Signer kept in the office"
 
 
 def test_keystore_uis_expand_only_collapses_other_cards(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
