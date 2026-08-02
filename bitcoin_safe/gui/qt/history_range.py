@@ -275,12 +275,15 @@ class HistoryRangeController(QWidget):
         self.wallet_balance_chart.reset_zoom()
         self.date_range_picker.set_preset(DateRangePreset.ALL_TIME)
         self.date_range_picker.set_range(full_range[0], full_range[1], update_preset=False)
-        self.history_list.set_date_range(full_range[0], full_range[1])
+        self.history_list.clear_date_range()
         self._update_reset_hint()
 
     def _on_picker_range_changed(self, start: datetime.datetime, end: datetime.datetime) -> None:
         self.wallet_balance_chart.set_time_range(start, end)
-        self.history_list.set_date_range(start, end)
+        if self.date_range_picker.preset_combo.currentData() == DateRangePreset.ALL_TIME:
+            self.history_list.clear_date_range()
+        else:
+            self.history_list.set_date_range(start, end)
         self._update_reset_hint()
 
     def _on_chart_range_changed(self, start: datetime.datetime, end: datetime.datetime) -> None:
@@ -294,13 +297,13 @@ class HistoryRangeController(QWidget):
         if not self.wallet_balance_chart.is_zoomed():
             self.date_range_picker.set_preset(DateRangePreset.ALL_TIME)
             self.date_range_picker.set_range(start, end, update_preset=False)
-            self.history_list.set_date_range(start, end)
+            self.history_list.clear_date_range()
         self._update_reset_hint()
 
     def _on_chart_zoom_reset(self, start: datetime.datetime, end: datetime.datetime) -> None:
         self.date_range_picker.set_preset(DateRangePreset.ALL_TIME)
         self.date_range_picker.set_range(start, end, update_preset=False)
-        self.history_list.set_date_range(start, end)
+        self.history_list.clear_date_range()
         self._update_reset_hint()
 
     def _update_reset_hint(self, _zoomed: bool | None = None) -> None:

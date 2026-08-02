@@ -393,6 +393,13 @@ class HistList(MyTreeView[str]):
         self._date_range = date_range
         self.refresh_filters()
 
+    def clear_date_range(self) -> None:
+        """Disable date filtering."""
+        if self._date_range is None:
+            return
+        self._date_range = None
+        self.refresh_filters()
+
     def _compute_base_hidden_rows(self) -> set[int]:
         """Return source rows hidden by the active date range."""
         if not self._date_range:
