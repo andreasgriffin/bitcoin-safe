@@ -407,6 +407,11 @@ def test_plugin_widget_shows_subscription_buttons_when_management_url_known(
     assert not widget.refresh_subscription_button.isHidden()
     assert widget.manage_subscription_button.text() == "Manage"
     assert widget.refresh_subscription_button.text() == "Refresh status"
+    assert widget.management_title_label.textLabel.text() == "Subscription:"
+    assert (
+        widget.management_title_label.toolTip()
+        == "This subscription is valid on any computer with this wallet"
+    )
     assert widget.subscription_section.isHidden()
     assert not widget.management_section.isHidden()
     assert not widget.enable_checkbox.isHidden()

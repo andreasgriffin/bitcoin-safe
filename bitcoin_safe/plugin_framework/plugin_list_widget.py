@@ -591,7 +591,10 @@ class PaidPluginWidget(PluginWidget):
         self.subscription_buttons_container = controls.subscription_buttons_container
         self.subscription_buttons_layout = controls.subscription_buttons_layout
         self._plan_option_keys: list[str] = []
-        self.management_title_label = QLabel("", self.management_section)
+        self.management_title_label = IconLabel(parent=self.management_section)
+        self.management_title_label.set_icon_as_help(
+            tooltip=self.tr("This subscription is valid on any computer with this wallet")
+        )
         self.management_buttons_layout.insertWidget(0, self.management_title_label)
 
     def add_subscription_button(self) -> QPushButton:
