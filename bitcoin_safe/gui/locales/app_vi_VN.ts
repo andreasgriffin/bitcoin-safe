@@ -3753,6 +3753,11 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 			<source>Subscription:</source>
 			<translation>Đăng ký:</translation>
 		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>This subscription is valid on any computer with this wallet</source>
+			<translation>Gói đăng ký này có hiệu lực trên mọi máy tính có ví này</translation>
+		</message>
 	</context>
 	<context>
 		<name>PasswordCreation</name>

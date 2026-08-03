@@ -3748,6 +3748,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Subscription:</source>
 			<translation>구독:</translation>
 		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>This subscription is valid on any computer with this wallet</source>
+			<translation>이 구독은 이 지갑이 있는 모든 컴퓨터에서 유효합니다</translation>
+		</message>
 	</context>
 	<context>
 		<name>PasswordCreation</name>

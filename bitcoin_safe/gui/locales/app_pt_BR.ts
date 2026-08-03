@@ -3752,6 +3752,11 @@ Você pode mudar para a Testnet para testar o {app_name} sem usar Bitcoin real.<
 			<source>Subscription:</source>
 			<translation>Assinatura:</translation>
 		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>This subscription is valid on any computer with this wallet</source>
+			<translation>Esta assinatura é válida em qualquer computador que tenha esta carteira</translation>
+		</message>
 	</context>
 	<context>
 		<name>PasswordCreation</name>

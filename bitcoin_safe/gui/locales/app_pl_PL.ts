@@ -3755,6 +3755,11 @@ Możesz przełączyć się na Testnet, aby przetestować {app_name} bez używani
 			<source>Subscription:</source>
 			<translation>Subskrypcja:</translation>
 		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>This subscription is valid on any computer with this wallet</source>
+			<translation>Ta subskrypcja jest ważna na każdym komputerze z tym portfelem</translation>
+		</message>
 	</context>
 	<context>
 		<name>PasswordCreation</name>
