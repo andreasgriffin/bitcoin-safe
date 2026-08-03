@@ -144,6 +144,19 @@ class SignalFunction(Generic[T]):
             else:
                 logger.debug(f"Tried to disconnect {slot}. But it is not in {values}. Skipping.")
 
+    def rename_slot(self, old_name: str, new_name: str) -> None:
+        """Rename a named slot while preserving its registration."""
+        if old_name == new_name:
+            return
+        with self.lock:
+            slot = self.slots.pop(old_name, None)
+            if slot is None:
+                return
+            if new_name in self.slots:
+                self.slots[old_name] = slot
+                raise ValueError(f"A slot named {new_name} is already registered")
+            self.slots[new_name] = slot
+
     def __call__(self, *args, **kwargs) -> dict[str, T]:
         """Invoke instance as a function."""
         return self.emit(*args, **kwargs)
@@ -303,3 +316,16 @@ class WalletFunctions:
         self.get_wallets: SignalFunction[Wallet] = SignalFunction["Wallet"](name="get_wallets")  # type: ignore
         self.get_qt_wallets: SignalFunction[QTWallet] = SignalFunction["QTWallet"](name="get_qt_wallets")  # type: ignore
         self.wallet_signals: defaultdict[str, WalletSignals] = defaultdict(WalletSignals)
+
+    def rename_wallet(self, old_id: str, new_id: str) -> None:
+        """Move wallet-scoped callbacks and signals to a new wallet id."""
+        if old_id == new_id:
+            return
+        if new_id in self.wallet_signals:
+            raise ValueError(f"Wallet signals for {new_id} already exist")
+
+        wallet_signals = self.wallet_signals.pop(old_id, None)
+        if wallet_signals:
+            self.wallet_signals[new_id] = wallet_signals
+        self.get_wallets.rename_slot(old_id, new_id)
+        self.get_qt_wallets.rename_slot(old_id, new_id)

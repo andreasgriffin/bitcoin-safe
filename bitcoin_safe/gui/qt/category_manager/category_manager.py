@@ -136,6 +136,11 @@ class CategoryManager(QWidget):
         self.button_rename.setText(self.tr("Rename"))
         self.set_visibilities()
 
+    def set_wallet_id(self, wallet_id: str) -> None:
+        """Update the wallet id displayed by the category manager."""
+        self.wallet_id = wallet_id
+        self.updateUi()
+
     def add_category(self):
         """Add category."""
         category = prompt_new_category(self)

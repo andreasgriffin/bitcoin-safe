@@ -426,7 +426,8 @@ def test_wallet_features_multisig(
 
             # From here starts testing features via menu actions.
 
-            wallet_name = qt_wallet.wallet.id + " new"
+            old_wallet_name = qt_wallet.wallet.id
+            wallet_name = old_wallet_name + " new"
 
             def menu_action_rename_wallet() -> None:
                 """Menu action rename wallet."""
@@ -444,6 +445,15 @@ def test_wallet_features_multisig(
                 do_modal_click(main_window.menu_action_rename_wallet, callback, qtbot, cls=WalletIdDialog)
 
             menu_action_rename_wallet()
+
+            address_list = qt_wallet.address_list
+            address_count = address_list._source_model.rowCount()
+            qt_wallet.address_list_with_toolbar.on_create_address()
+            qtbot.waitUntil(lambda: address_list._source_model.rowCount() == address_count + 1)
+            assert wallet_name in qt_wallet.wallet_functions.wallet_signals
+            assert old_wallet_name not in qt_wallet.wallet_functions.wallet_signals
+            assert wallet_name in qt_wallet.wallet_functions.get_wallets()
+            assert old_wallet_name not in qt_wallet.wallet_functions.get_wallets()
 
             def menu_action_change_password() -> None:
                 """Menu action change password."""
