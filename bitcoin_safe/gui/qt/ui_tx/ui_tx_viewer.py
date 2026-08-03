@@ -801,6 +801,8 @@ class UITx_Viewer(UITx_Base):
 
     def reload(self, update_filter: UpdateFilter) -> None:
         """Reload."""
+        self.set_tab_properties(chain_position=self.chain_position)
+
         should_update = False
         if should_update or update_filter.refresh_all:
             should_update = True
@@ -809,7 +811,8 @@ class UITx_Viewer(UITx_Base):
         if (
             should_update
             or update_filter.reason == UpdateFilterReason.ChainHeightAdvanced
-            and self.get_tx_status(chain_position=self.chain_position).do_icon_check_on_chain_height_change()
+            and (tx_status := self.get_tx_status(chain_position=self.chain_position)).is_confirmed()
+            and tx_status.do_icon_check_on_chain_height_change()
         ):
             should_update = True
         if (
@@ -827,7 +830,6 @@ class UITx_Viewer(UITx_Base):
         if not should_update:
             return
 
-        self.set_tab_properties(chain_position=self.chain_position)
         if self.maybe_defer_update():
             return
 

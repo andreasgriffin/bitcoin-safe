@@ -34,7 +34,7 @@ from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 from bitcoin_safe.wallet import TxConfirmationStatus, TxStatus
 
 
-def test_psbt_viewer_ignores_chain_height_only_update() -> None:
+def test_psbt_viewer_only_updates_tab_properties_on_chain_height() -> None:
     psbt_status = TxStatus(
         tx=None,
         chain_position=None,
@@ -50,6 +50,6 @@ def test_psbt_viewer_ignores_chain_height_only_update() -> None:
         UpdateFilter(reason=UpdateFilterReason.ChainHeightAdvanced),
     )
 
-    viewer.set_tab_properties.assert_not_called()
+    viewer.set_tab_properties.assert_called_once_with(chain_position=None)
     viewer.maybe_defer_update.assert_not_called()
     viewer.set_psbt.assert_not_called()

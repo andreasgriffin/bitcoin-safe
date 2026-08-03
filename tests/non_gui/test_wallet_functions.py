@@ -36,7 +36,6 @@ from bitcoin_safe.util import filename_clean
 from bitcoin_safe.wallet import (
     LOCAL_TX_LAST_SEEN,
     ProtoWallet,
-    TxConfirmationStatus,
     TxStatus,
     is_in_mempool,
     is_local,
@@ -85,14 +84,6 @@ def test_txstatus_states():
     assert confirmed_status.is_confirmed()
     assert confirmed_status.confirmations() == 6
     assert confirmed_status.sort_id() == 6
-    assert confirmed_status.do_icon_check_on_chain_height_change()
-
-    confirmed_status_after_icon_range = TxStatus(
-        tx=None,
-        chain_position=confirmed_cp,
-        get_height=lambda: 11,
-    )
-    assert not confirmed_status_after_icon_range.do_icon_check_on_chain_height_change()
 
     # Unconfirmed transaction
     unconfirmed_cp = bdk.ChainPosition.UNCONFIRMED(timestamp=LOCAL_TX_LAST_SEEN + 1)
@@ -105,7 +96,6 @@ def test_txstatus_states():
     assert unconfirmed_status.is_unconfirmed()
     assert unconfirmed_status.confirmations() == 0
     assert unconfirmed_status.can_rbf()
-    assert not unconfirmed_status.do_icon_check_on_chain_height_change()
 
     # Local transaction
     local_cp = bdk.ChainPosition.UNCONFIRMED(timestamp=LOCAL_TX_LAST_SEEN)
@@ -118,15 +108,6 @@ def test_txstatus_states():
     assert local_status.is_local()
     assert local_status.can_do_initial_broadcast()
     assert local_status.can_edit()
-    assert not local_status.do_icon_check_on_chain_height_change()
-
-    psbt_status = TxStatus(
-        tx=None,
-        chain_position=None,
-        get_height=lambda: 0,
-        fallback_confirmation_status=TxConfirmationStatus.PSBT,
-    )
-    assert not psbt_status.do_icon_check_on_chain_height_change()
 
 
 def test_filename_clean():
