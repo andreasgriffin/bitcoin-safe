@@ -27,7 +27,7 @@
 # SOFTWARE.
 #
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from types import SimpleNamespace
 
 import bdkpython as bdk
@@ -63,6 +63,7 @@ from bitcoin_safe.signer import (
 
 from ...non_gui.test_psbt_util import (
     mixed_input_no_signatures_partially_signed,
+    mixed_inputs_finalized_and_nothing_signed_psbt,
     tr_psbt_singlesig,
 )
 from ...non_gui.utils import create_test_seed_keystores
@@ -81,9 +82,18 @@ def test_generic_signer_allows_psbt_qr_type_choice() -> None:
 class DummyWallet:
     id: str
     keystores: list
+    owned_scripts: set[str] = field(default_factory=set)
+    threshold: int = 1
 
     def signer_fallback_name(self, i: int) -> str:
         return f"Signer {i + 1}"
+
+    def owns_psbt_input(self, simple_input: SimpleInput) -> bool:
+        previous_txout = simple_input.previous_txout()
+        return bool(previous_txout and previous_txout.spk_hex in self.owned_scripts)
+
+    def get_mn_tuple(self) -> tuple[int, int]:
+        return self.threshold, len(self.keystores)
 
 
 class DummyDescriptor:
@@ -224,7 +234,9 @@ def test_non_seed_wallet_importer_keeps_hardware_signer_device_identity(qtbot: Q
     keystore = keystores[0]
     keystore.hardware_signer_id = HardwareSigners.jade.id
     keystore.mnemonic = None
-    wallet = DummyWallet(id="multisig", keystores=[keystore])
+    previous_txout = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0].previous_txout()
+    assert previous_txout
+    wallet = DummyWallet(id="multisig", keystores=[keystore], owned_scripts={previous_txout.spk_hex})
     wallet_functions.get_wallets.connect(lambda: wallet)
 
     qr_importer = SignatureImporterQR(
@@ -262,6 +274,109 @@ def test_non_seed_wallet_importer_keeps_hardware_signer_device_identity(qtbot: Q
     card.expand()
 
     assert {button.text() for button in card.body.findChildren(QPushButton)} == {"Show QR Code"}
+
+
+def test_shared_signer_does_not_add_devices_from_uninvolved_wallet(qtbot: QtBot, loop_in_thread) -> None:
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    keystores = create_test_seed_keystores(
+        signers=3,
+        key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h", "m/48h/1h/2h/2h"],
+        network=bdk.Network.REGTEST,
+    )
+    for keystore in keystores:
+        keystore.mnemonic = None
+
+    previous_txout = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0].previous_txout()
+    assert previous_txout
+    involved_wallet = DummyWallet(
+        id="involved",
+        keystores=keystores[:2],
+        owned_scripts={previous_txout.spk_hex},
+    )
+    uninvolved_wallet = DummyWallet(
+        id="uninvolved",
+        keystores=[keystores[0], keystores[2]],
+    )
+    wallet_functions.get_wallets.connect(lambda: involved_wallet, slot_name=involved_wallet.id)
+    wallet_functions.get_wallets.connect(lambda: uninvolved_wallet, slot_name=uninvolved_wallet.id)
+
+    qr_importer = SignatureImporterQR(
+        network=bdk.Network.REGTEST,
+        close_all_video_widgets=signals.close_all_video_widgets,
+        loop_in_thread=loop_in_thread,
+        display_label=involved_wallet.id,
+        signer_identities=[
+            SignerIdentity(id=keystore.fingerprint, fingerprint=keystore.fingerprint)
+            for keystore in involved_wallet.keystores
+        ],
+    )
+
+    widget = TxSigningSteps(
+        signature_importer_dict={"involved.0": [qr_importer]},
+        psbt=tr_psbt_singlesig,
+        network=bdk.Network.REGTEST,
+        wallet_functions=wallet_functions,
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+
+    assert {device.fingerprint for device in widget.signing_devices} == {
+        keystores[0].fingerprint,
+        keystores[1].fingerprint,
+    }
+    assert all(device.wallet_ids == [involved_wallet.id] for device in widget.signing_devices)
+
+
+def test_inputs_from_two_wallets_include_all_wallet_signers(qtbot: QtBot, loop_in_thread) -> None:
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    first_keystores = create_test_seed_keystores(
+        signers=2,
+        key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h"],
+        network=bdk.Network.REGTEST,
+    )
+    second_keystores = create_test_seed_keystores(
+        signers=2,
+        key_origins=["m/48h/1h/2h/2h", "m/48h/1h/3h/2h"],
+        network=bdk.Network.REGTEST,
+        test_seed_offset=2,
+    )
+    simple_inputs = SimplePSBT.from_psbt(mixed_inputs_finalized_and_nothing_signed_psbt).inputs
+    first_txout = simple_inputs[0].previous_txout()
+    second_txout = simple_inputs[1].previous_txout()
+    assert first_txout
+    assert second_txout
+
+    first_wallet = DummyWallet(
+        id="first",
+        keystores=first_keystores,
+        owned_scripts={first_txout.spk_hex},
+    )
+    second_wallet = DummyWallet(
+        id="second",
+        keystores=second_keystores,
+        owned_scripts={second_txout.spk_hex},
+    )
+    wallet_functions.get_wallets.connect(lambda: first_wallet, slot_name=first_wallet.id)
+    wallet_functions.get_wallets.connect(lambda: second_wallet, slot_name=second_wallet.id)
+
+    widget = TxSigningSteps(
+        signature_importer_dict={"mixed.0": []},
+        psbt=mixed_inputs_finalized_and_nothing_signed_psbt,
+        network=bdk.Network.REGTEST,
+        wallet_functions=wallet_functions,
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+
+    expected_wallet_by_fingerprint = {
+        **{keystore.fingerprint: first_wallet.id for keystore in first_keystores},
+        **{keystore.fingerprint: second_wallet.id for keystore in second_keystores},
+    }
+    assert {device.fingerprint: device.wallet_ids for device in widget.signing_devices} == {
+        fingerprint: [wallet_id] for fingerprint, wallet_id in expected_wallet_by_fingerprint.items()
+    }
 
 
 def _make_qr_device_card(
@@ -802,6 +917,7 @@ def test_grouped_wallet_importer_only_uses_wallet_signable_unsigned_fingerprints
                     PubKeyInfo(pubkey="pubkey-2", fingerprint=keystores[1].fingerprint),
                     PubKeyInfo(pubkey="pubkey-3", fingerprint=keystores[2].fingerprint),
                 ],
+                wallet_id=wallet.id,
                 m_of_n=(1, 3),
             )
         ],
@@ -815,7 +931,7 @@ def test_grouped_wallet_importer_only_uses_wallet_signable_unsigned_fingerprints
                 group_id="43666, 42645, 45757",
                 inputs=self.inputs,
                 input_indices=[0],
-                wallet_id=None,
+                wallet_id=wallet.id,
                 m_of_n=(1, 3),
                 signer_identifiers={
                     keystores[0].fingerprint: self.inputs[0].pubkeys[0],
@@ -835,6 +951,93 @@ def test_grouped_wallet_importer_only_uses_wallet_signable_unsigned_fingerprints
 
     assert wallet_importer.display_label == "43666, 42645, 45757"
     assert wallet_importer.signing_fingerprints == [keystores[0].fingerprint]
+
+
+def test_grouped_wallet_importer_uses_input_script_when_wallets_share_seed(
+    monkeypatch, loop_in_thread
+) -> None:
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    keystores = create_test_seed_keystores(
+        signers=3,
+        key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h", "m/48h/1h/2h/2h"],
+        network=bdk.Network.REGTEST,
+    )
+    source_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
+    previous_txout = source_input.previous_txout()
+    assert previous_txout
+    involved_wallet = DummyWallet(
+        id="involved",
+        keystores=keystores[:2],
+        owned_scripts={previous_txout.spk_hex},
+    )
+    involved_wallet.multipath_descriptor = DummyMultipathDescriptor()
+    uninvolved_wallet = DummyWallet(id="uninvolved", keystores=[keystores[0], keystores[2]])
+    uninvolved_wallet.multipath_descriptor = DummyMultipathDescriptor()
+    wallet_functions.get_wallets.connect(lambda: uninvolved_wallet, slot_name=uninvolved_wallet.id)
+    wallet_functions.get_wallets.connect(lambda: involved_wallet, slot_name=involved_wallet.id)
+    monkeypatch.setattr("bitcoin_safe.signer.SoftwareSigner", lambda **kwargs: object())
+
+    simple_psbt = SimplePSBT(
+        txid="grouped",
+        inputs=[
+            SimpleInput(
+                txin=source_input.txin,
+                witness_utxo=source_input.witness_utxo,
+                pubkeys=[
+                    PubKeyInfo(pubkey="pubkey-1", fingerprint=keystores[0].fingerprint),
+                    PubKeyInfo(pubkey="pubkey-2", fingerprint=keystores[1].fingerprint),
+                ],
+            )
+        ],
+    )
+    monkeypatch.setattr(SimplePSBT, "from_psbt", classmethod(lambda cls, psbt: simple_psbt))
+
+    fake_viewer = SimpleNamespace(
+        network=bdk.Network.REGTEST,
+        wallet_functions=wallet_functions,
+        signals=signals,
+        loop_in_thread=loop_in_thread,
+        tr=lambda text: text,
+        import_trusted_psbt=lambda psbt: None,
+        tx_received=lambda tx: None,
+    )
+    fake_viewer._normalize_fingerprint = UITx_Viewer._normalize_fingerprint
+    fake_viewer._normalize_fingerprints = UITx_Viewer._normalize_fingerprints.__get__(
+        fake_viewer, SimpleNamespace
+    )
+    fake_viewer._wallet_signing_fingerprints = UITx_Viewer._wallet_signing_fingerprints.__get__(
+        fake_viewer, SimpleNamespace
+    )
+    fake_viewer.enrich_simple_psbt_with_wallet_data = UITx_Viewer.enrich_simple_psbt_with_wallet_data.__get__(
+        fake_viewer, SimpleNamespace
+    )
+
+    importers = UITx_Viewer.get_combined_signature_importers(fake_viewer, tr_psbt_singlesig)
+    wallet_importer = next(
+        importer
+        for importer in importers[f"{involved_wallet.id}.0"]
+        if isinstance(importer, SignatureImporterWallet)
+    )
+
+    assert wallet_importer.wallet is involved_wallet
+    assert wallet_importer.signing_fingerprints == [
+        keystores[0].fingerprint,
+        keystores[1].fingerprint,
+    ]
+
+    simple_input = simple_psbt.inputs[0]
+    simple_input.witness_utxo = None
+    simple_input.wallet_id = None
+    simple_input.m_of_n = (1, 2)
+
+    importers_without_utxo = UITx_Viewer.get_combined_signature_importers(fake_viewer, tr_psbt_singlesig)
+
+    assert not any(
+        isinstance(importer, SignatureImporterWallet)
+        for signer_list in importers_without_utxo.values()
+        for importer in signer_list
+    )
 
 
 def test_partially_signed_psbt_keeps_stable_steps_and_signed_cards(qtbot: QtBot, loop_in_thread) -> None:

@@ -577,14 +577,64 @@ class SimpleInput:
 
     def get_prev_txouts(self) -> dict[str, TxOut]:
         "Returns {str(outpoint): List[TxOut]}"
-        if not self.non_witness_utxo:
+        previous_txout = self.previous_txout()
+        if not previous_txout:
             return {}
+        return {str(OutPoint.from_bdk(self.txin.previous_output)): previous_txout}
+
+    def previous_txout(self) -> TxOut | None:
+        """Return the output spent by this input from its PSBT UTXO data."""
+        if self.witness_utxo:
+            return self._txout_from_data(self.witness_utxo)
+        if not self.non_witness_utxo:
+            return None
+
         prev_out = OutPoint.from_bdk(self.txin.previous_output)
-        output = self.non_witness_utxo.get("output", [])[prev_out.vout]
-        non_witness_utxo_prev_out = TxOut(
-            value=bdk.Amount.from_sat(output["value"]), script_pubkey=hex_to_script(output["script_pubkey"])
-        )
-        return {str(prev_out): non_witness_utxo_prev_out}
+        outputs = self.non_witness_utxo.get("output")
+        if not isinstance(outputs, list) or prev_out.vout >= len(outputs):
+            logger.warning("PSBT input references missing output %s", prev_out)
+            return None
+        return self._txout_from_data(outputs[prev_out.vout])
+
+    def _txout_from_data(self, output: object) -> TxOut | None:
+        if not isinstance(output, dict):
+            logger.warning("PSBT input %s has invalid UTXO data", self.txin.previous_output)
+            return None
+
+        value = output.get("value")
+        script_pubkey = output.get("script_pubkey")
+        if not isinstance(value, int) or not isinstance(script_pubkey, str):
+            logger.warning("PSBT input %s has incomplete UTXO data", self.txin.previous_output)
+            return None
+
+        try:
+            return TxOut(
+                value=bdk.Amount.from_sat(value),
+                script_pubkey=hex_to_script(script_pubkey),
+            )
+        except (OverflowError, ValueError):
+            logger.warning("PSBT input %s has invalid UTXO data", self.txin.previous_output)
+            return None
+
+    def address_derivations(self) -> set[tuple[bdk.KeychainKind, int]]:
+        """Return standard descriptor keychain/index pairs encoded in the PSBT."""
+        derivations: set[tuple[bdk.KeychainKind, int]] = set()
+        for pubkey in self.pubkeys:
+            if not pubkey.derivation_path:
+                continue
+            components = pubkey.derivation_path.removeprefix("m/").split("/")
+            if len(components) < 2:
+                continue
+            keychain, index = components[-2:]
+            if keychain not in {"0", "1"} or not index.isdecimal():
+                continue
+            derivations.add(
+                (
+                    bdk.KeychainKind.INTERNAL if keychain == "1" else bdk.KeychainKind.EXTERNAL,
+                    int(index),
+                )
+            )
+        return derivations
 
 
 @dataclass

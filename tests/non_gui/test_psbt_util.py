@@ -298,6 +298,116 @@ def test_tr_psbt() -> None:
     assert len(psbt.outputs) == 2
 
 
+def test_previous_txout_supports_segwit_witness_and_non_witness_utxo() -> None:
+    simple_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
+
+    witness_txout = simple_input.previous_txout()
+    assert witness_txout
+
+    simple_input.witness_utxo = None
+    non_witness_txout = simple_input.previous_txout()
+
+    assert non_witness_txout == witness_txout
+    assert simple_input.address_derivations() == {(bdk.KeychainKind.EXTERNAL, 0)}
+
+
+def test_previous_txout_supports_non_segwit_utxo() -> None:
+    script_pubkey = "76a914" + "11" * 20 + "88ac"
+    simple_input = SimpleInput(
+        txin=tr_psbt_singlesig.extract_tx().input()[0],
+        non_witness_utxo={
+            "output": [
+                {
+                    "value": 100_000,
+                    "script_pubkey": script_pubkey,
+                }
+            ]
+        },
+    )
+
+    previous_txout = simple_input.previous_txout()
+
+    assert previous_txout
+    assert previous_txout.value.to_sat() == 100_000
+    assert previous_txout.spk_hex == script_pubkey
+
+
+def test_previous_txout_supports_non_segwit_utxo_p2pkh() -> None:
+    psbt = bdk.Psbt(
+        "cHNidP8BAHcCAAAAAcEbTpasSIaqZeuN6E+1T0TsFk5aB00DBcSqlNRavlqyAAAAAAD9////Am6kZQAAAAAAGXapFOcabkXwQz55UVWCPcxfrHxR8KxfiKxQwwAAAAAAABl2qRSiwOhv7TtbV6W8P6UUL9pPp8xYaIisPwEAAE8BBDWHzwNeGBBSgAAAAEff4n8z9XoCjOs2QLsPc1fi/8ncVnMYUP+Mr2zYBMQ6A/+tjAmSnhl6N3EHCMSGLadE+ZMlByew2AKZAJEeSYdiEGYn8gosAACAAQAAgAAAAIAAAQB3AgAAAAH15yjVqmJZuFcO4wGTYRv1sljC6GVWVh1uCtQMLGsCkQAAAAAA/v///wKgaGYAAAAAABl2qRRCDVrGhywaRTbX4k4mL6lShWJpe4iszYifKQEAAAAZdqkUIFPHov3TI6kO8dm27Eg/I3kUS2eIrAAAAAABAwQBAAAAIgYC6DA5/EuUgNuK/Bhlnoxl+wR9mXurAV6o4//r1k7vCc8YZifyCiwAAIABAACAAAAAgAAAAAAAAAAAACICAwXPLddTsGfSM+QQh2hFZqse7jCGESxK31zTvQEnhHXTGGYn8gosAACAAQAAgAAAAIABAAAAAAAAAAAiAgM+cnvK0nekUF8fq7mLs/l+3GWqRQqfavjzFd5pd/ChLRhmJ/IKLAAAgAEAAIAAAACAAAAAAAEAAAAA"
+    )
+    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+
+    previous_txout = simple_input.previous_txout()
+
+    assert previous_txout
+    assert previous_txout.value.to_sat() == 6711456
+    assert previous_txout.spk_hex == "76a914420d5ac6872c1a4536d7e24e262fa9528562697b88ac"
+
+
+def test_previous_txout_supports_non_segwit_utxo_p2sh_p2wpkh() -> None:
+    psbt = bdk.Psbt(
+        "cHNidP8BAHMCAAAAAWjyrUwtust7IGLKru9Etqqikw1aO4WcWPZZvr/NUKfrAAAAAAD9////AjGvKgAAAAAAF6kUK/n9KYNW+kggnA3gSUzQgIrmZVeHsxUAAAAAAAAXqRTEBDQO5ZmhnvxJWkmvIkMWRNM8y4c/AQAATwEENYfPA/6283CAAAAAY++bkKJ7XF/g5fvYoU4RBTF3GCFRRydFGAV8W+hqH6ACHVvp+2WzcViLbwFBUD5+cC5kB9zv1eD9zgK1ja8AFY0QOLGeODEAAIABAACAAAAAgAABAHMCAAAAAdIAuzf/Nhzf5KWY9FsUazih8KgE6u62ydDZSR+nSpMeAQAAAAD+////AorFKgAAAAAAF6kUuUXp4hpiKUEVWSfltVUxMtyl+ZiHOQiVlAAAAAAXqRShkhHPvDDqmNgQz1uRV/AU70jXF4f1AAAAAQEgisUqAAAAAAAXqRS5ReniGmIpQRVZJ+W1VTEy3KX5mIcBAwQBAAAAAQQWABRD+vw6VFQ123f00H01MXI7MjjByiIGAuo25ZCLMt2PE+46OQQ8oxAb/aZMuFO0CoC11hJhTElnGDixnjgxAACAAQAAgAAAAIAAAAAAAAAAAAABABYAFHo5ESRRxshhdpgUqtgGWAj/1YlfIgICjy2vd7m0YioQjfqbHK+esM9FJc8JsvT05AOq7HUY9dEYOLGeODEAAIABAACAAAAAgAEAAAAAAAAAAAEAFgAUXeSgtt3kKF+sJEDvvE63aaXrW2IiAgOv5eoo5TcRjH2m/SRev1xHvX9N+BBX3MKO0TTIZ97ayRg4sZ44MQAAgAEAAIAAAACAAAAAAAEAAAAA"
+    )
+    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+
+    previous_txout = simple_input.previous_txout()
+
+    assert previous_txout
+    assert previous_txout.value.to_sat() == 2803082
+    assert previous_txout.spk_hex == "a914b945e9e21a622941155927e5b5553132dca5f99887"
+
+
+def test_previous_txout_supports_non_segwit_utxo_p2wpkh() -> None:
+    psbt = bdk.Psbt(
+        "cHNidP8BAHECAAAAAdALg8+HNhwaGnDkQ/ldwQSa4igRtpGQcMue4sEwY/LOAAAAAAD9////AomsdwAAAAAAFgAU3BrOuRK0tuKjOkbypVMjSw+2iSGt1AAAAAAAABYAFHDEQjnbJHB7w2tkpKMGuc0my5qCPwEAAE8BBDWHzwNk81yrgAAAAKg/o0jtNM+jVfsgeXJlW/kbYc8zlwDWqnnpsEVELlx6A0GaLSNJTWePUZRvGdYjdIzmjOU6hP3T+awjsnW1nJVhEDixnjhUAACAAQAAgAAAAIAAAQBxAgAAAAEkUfiwcLocQYlsHS6JOfkJWvUL1dIWf3aTxH/oJfuIRQAAAAAA/v///wLDgXgAAAAAABYAFGVobs7Dn9iW6j9TCRTgI3bRxH+asHaKlAAAAAAWABSH6oGOb/DDOhbEDvif5cYhsL58kz8BAAABAR/DgXgAAAAAABYAFGVobs7Dn9iW6j9TCRTgI3bRxH+aAQMEAQAAACIGAp2Fg07Vjjs5wUuRGr+AHm0zz0MBKxzk9MgmA58N011bGDixnjhUAACAAQAAgAAAAIAAAAAAAAAAAAAiAgPvRpVC/2pba7hfQAZICE9bThD8Nm3ZWbi/mD8wsOtzMxg4sZ44VAAAgAEAAIAAAACAAQAAAAAAAAAAIgIDE6qNOwJulSArcn8uaDf6qfANfRmLNeN2XQtrA++NHLUYOLGeOFQAAIABAACAAAAAgAAAAAABAAAAAA=="
+    )
+    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+
+    previous_txout = simple_input.previous_txout()
+
+    assert previous_txout
+    assert previous_txout.value.to_sat() == 7897539
+    assert previous_txout.spk_hex == "001465686ecec39fd896ea3f530914e02376d1c47f9a"
+
+
+def test_previous_txout_supports_non_segwit_utxo_p2tr() -> None:
+    psbt = bdk.Psbt(
+        "cHNidP8BAIkCAAAAASZB5ReeMm2fh5Ya1RNzHLgAoynp+2d2fIgGC5EHBUssAQAAAAD9////Ar+KZQAAAAAAIlEgXLMntg0lioASWpfRLJJqPNnO0PYKalRCJCusaXFmrTK4DSIAAAAAACJRILuyMA8vqLIzMSEVFUiyPvBGU9Yf+FBdYlhOrQE/O4qpPwEAAE8BBDWHzwPo8QhTgAAAAN/zCExM2f6ov/gghsXbxa67yuf+Ty5u4T9QGzIQrBbpAoIOGVBGbl2hRL1NZb3eK/2YRHt813baBdgPE/MoONCTEDixnjhWAACAAQAAgAAAAIAAAQErEpmHAAAAAAAiUSB0R3JOtdihq3D9o6DIcAMg4nlOvCGxpQtGz3jl5P1A4AEDBAAAAAAhFjN4vAcykkpsar4TLeXytpbrxrqkYWGQB/ylbDvn0FM5GQA4sZ44VgAAgAEAAIAAAACAAAAAAAAAAAABFyAzeLwHMpJKbGq+Ey3l8raW68a6pGFhkAf8pWw759BTOQAhByUPqXp2JmtIwFtnmJZRs9dY3w6ckNgh8fR9/AqmRivXGQA4sZ44VgAAgAEAAIAAAACAAAAAAAEAAAABBSAlD6l6diZrSMBbZ5iWUbPXWN8OnJDYIfH0ffwKpkYr1wAhB8guMXgxKZ7DpXUZfLtTsxuJM+hJeywL86QH8Z51+2elGQA4sZ44VgAAgAEAAIAAAACAAQAAAAAAAAABBSDILjF4MSmew6V1GXy7U7MbiTPoSXssC/OkB/GedftnpQA="
+    )
+    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+
+    previous_txout = simple_input.previous_txout()
+
+    assert previous_txout
+    assert previous_txout.value.to_sat() == 8886546
+    assert previous_txout.spk_hex == "51207447724eb5d8a1ab70fda3a0c8700320e2794ebc21b1a50b46cf78e5e4fd40e0"
+
+
+def test_previous_txout_supports_non_segwit_utxo_p2wsh() -> None:
+    psbt = bdk.Psbt(
+        "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"
+    )
+    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+
+    previous_txout = simple_input.previous_txout()
+
+    assert previous_txout
+    assert previous_txout.value.to_sat() == 4637167
+    assert previous_txout.spk_hex == "0020219107bbb18351bb18c636f50a7293cdb05c909acdd194c753e7290ecf4b54c5"
+
+
+def test_previous_txout_returns_none_for_incomplete_utxo_data() -> None:
+    simple_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
+
+    simple_input.witness_utxo = {"script_pubkey": "0014deadbeef"}
+    assert simple_input.previous_txout() is None
+
+    simple_input.witness_utxo = None
+    simple_input.non_witness_utxo = {"output": []}
+    assert simple_input.previous_txout() is None
+
+
 def test_group_inputs_by_signer_set() -> None:
     txins = tr_psbt_singlesig.extract_tx().input()
     txin = txins[0]

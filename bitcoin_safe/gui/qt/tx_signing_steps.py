@@ -84,7 +84,7 @@ from bitcoin_safe.signer import (
     SignatureImporterUSB,
     SignatureImporterWallet,
 )
-from bitcoin_safe.wallet import Wallet, get_wallets
+from bitcoin_safe.wallet import Wallet, get_wallet_for_psbt_input
 
 logger = logging.getLogger(__name__)
 T_AbstractSignatureImporter = TypeVar("T_AbstractSignatureImporter", bound=AbstractSignatureImporter)
@@ -827,48 +827,16 @@ class TxSigningSteps(StepProgressContainer):
         return self._collect_generic_psbt_devices()
 
     def _involved_wallets(self) -> list[Wallet]:
-        involved_wallets = self._wallets_from_signature_importers()
-        if involved_wallets:
-            return involved_wallets
-
-        inputs = self.psbt.extract_tx().input()
-        for wallet in get_wallets(self.wallet_functions):
-            txos = wallet.get_all_txos_dict()
-            if any(str(txin.previous_output) in txos for txin in inputs) and wallet not in involved_wallets:
-                involved_wallets.append(wallet)
-        return involved_wallets
-
-    def _wallets_from_signature_importers(self) -> list[Wallet]:
-        involved_wallets: list[Wallet] = []
-        signer_fingerprints: set[str] = set()
-        for signature_importers in self.signature_importer_dict.values():
-            for importer in signature_importers:
-                # Example: wallet_id="vault", fingerprint="ABCD1234", hardware_signer=jade.
-                # Seed path: SignatureImporterWallet already points to the wallet. Reason: use it directly.
-                if isinstance(importer, SignatureImporterWallet) and importer.wallet not in involved_wallets:
-                    involved_wallets.append(importer.wallet)
-                # Non-seed path: QR/file importer still carries fingerprint="ABCD1234".
-                # Reason: keep enough data to find the same wallet later.
-                signer_fingerprints.update(
-                    normalized_fingerprint
-                    for signer_identity in importer.signer_identities
-                    if (normalized_fingerprint := self._normalize_fingerprint(signer_identity.fingerprint))
-                )
-
-        if not signer_fingerprints:
-            return involved_wallets
-
-        for wallet in get_wallets(self.wallet_functions):
-            if wallet in involved_wallets:
-                continue
-            # Match wallet.keystore.fingerprint="ABCD1234" back to wallet_id="vault".
-            # Reason: preserve the wallet's jade label/icon for non-seed signing too.
-            if any(
-                self._normalize_fingerprint(keystore.fingerprint) in signer_fingerprints
-                for keystore in wallet.keystores
-            ):
-                involved_wallets.append(wallet)
-        return involved_wallets
+        involved_wallets = {
+            importer.wallet.id: importer.wallet
+            for importers in self.signature_importer_dict.values()
+            for importer in importers
+            if isinstance(importer, SignatureImporterWallet)
+        }
+        for simple_input in SimplePSBT.from_psbt(self.psbt).inputs:
+            if wallet := get_wallet_for_psbt_input(simple_input, self.wallet_functions):
+                involved_wallets.setdefault(wallet.id, wallet)
+        return list(involved_wallets.values())
 
     def _collect_generic_psbt_devices(self) -> dict[str, SigningDevice]:
         devices: dict[str, SigningDevice] = {}
