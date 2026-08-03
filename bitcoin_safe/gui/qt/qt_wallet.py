@@ -1065,8 +1065,18 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             )
             return None
 
+        old_id = self.wallet.id
+        self.wallet_functions.rename_wallet(old_id, new_id)
+
         # in the wallet
         self.wallet.set_wallet_id(new_id)
+        self.wallet_descriptor_ui.protowallet.id = new_id
+        self.wallet_descriptor_ui.set_wallet_ui_from_protowallet()
+        self.address_list.set_wallets([self.wallet])
+        self.history_list.set_wallets([self.wallet])
+        self.category_manager.set_wallet_id(new_id)
+        if self.plugin_manager:
+            self.plugin_manager.set_wallet_id(new_id)
         # tab text
         self.tabs.setTitle(new_id)
 

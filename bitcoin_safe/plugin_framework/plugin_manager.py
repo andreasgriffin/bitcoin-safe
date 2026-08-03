@@ -1080,6 +1080,12 @@ class PluginManager(BaseSaveableClass):
 
         self.widget.set_plugins(self.listable_items)
 
+    def set_wallet_id(self, wallet_id: str) -> None:
+        """Update the wallet id used by connected plugin services."""
+        self._current_wallet_id = wallet_id
+        if self.plugin_server:
+            self.plugin_server.wallet_id = wallet_id
+
     @staticmethod
     def _plugin_id(client: PluginClient) -> str:
         return client.plugin_id
