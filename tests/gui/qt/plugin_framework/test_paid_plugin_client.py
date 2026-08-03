@@ -407,6 +407,11 @@ def test_plugin_widget_shows_subscription_buttons_when_management_url_known(
     assert not widget.refresh_subscription_button.isHidden()
     assert widget.manage_subscription_button.text() == "Manage"
     assert widget.refresh_subscription_button.text() == "Refresh status"
+    assert widget.management_title_label.textLabel.text() == "Subscription:"
+    assert (
+        widget.management_title_label.toolTip()
+        == "This subscription is valid on any computer with this wallet"
+    )
     assert widget.subscription_section.isHidden()
     assert not widget.management_section.isHidden()
     assert not widget.enable_checkbox.isHidden()
@@ -480,12 +485,20 @@ def test_plugin_list_widget_shows_btcpay_price_texts(
             lambda: _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"],
             timeout=5_000,
         )
-        assert widget.business_plan_widget.plan_selector_title_label.text() == "Subscription"
+        assert widget.business_plan_widget.plan_selector_title_label.textLabel.text() == "Subscription"
+        assert (
+            widget.business_plan_widget.plan_selector_title_label.toolTip()
+            == "This subscription is valid on any computer with this wallet"
+        )
 
         assert first_widget.start_trial_button.isVisible()
         assert first_widget.start_trial_button.text() == "Start free trial"
         assert first_widget.enable_checkbox.isHidden()
-        assert first_widget.plan_selector_title_label.text() == "Subscription"
+        assert first_widget.plan_selector_title_label.textLabel.text() == "Subscription"
+        assert (
+            first_widget.plan_selector_title_label.toolTip()
+            == "This subscription is valid on any computer with this wallet"
+        )
         assert _plan_texts(widget.business_plan_widget) == ["10,00 EUR / year"]
         assert _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"]
 
