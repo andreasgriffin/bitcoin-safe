@@ -1802,8 +1802,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             HardwareSigners.q.id,
         }
         return (
-            not self.wallet.is_new_wallet
-            and self.wallet.network == bdk.Network.BITCOIN
+            self.wallet.network == bdk.Network.BITCOIN
             and self.wallet.get_height_no_cache() < COLDCARD_SEED_WARNING_CUTOFF_HEIGHT
             and any(keystore.hardware_signer_id in coldcard_ids for keystore in self.wallet.keystores)
         )
