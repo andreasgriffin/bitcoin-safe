@@ -3751,6 +3751,11 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 			<source>Subscription:</source>
 			<translation>Langganan:</translation>
 		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>This subscription is valid on any computer with this wallet</source>
+			<translation>Langganan ini berlaku di komputer mana pun yang memiliki dompet ini</translation>
+		</message>
 	</context>
 	<context>
 		<name>PasswordCreation</name>

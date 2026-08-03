@@ -3752,6 +3752,11 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 			<source>Subscription:</source>
 			<translation>Abonelik:</translation>
 		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>This subscription is valid on any computer with this wallet</source>
+			<translation>Bu abonelik, bu cüzdanın bulunduğu herhangi bir bilgisayarda geçerlidir</translation>
+		</message>
 	</context>
 	<context>
 		<name>PasswordCreation</name>

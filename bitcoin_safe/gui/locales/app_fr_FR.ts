@@ -3752,6 +3752,11 @@ Vous pouvez passer à Testnet pour tester {app_name} sans utiliser de vrais bitc
 			<source>Subscription:</source>
 			<translation>Abonnement :</translation>
 		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>This subscription is valid on any computer with this wallet</source>
+			<translation>Cet abonnement est valable sur tout ordinateur disposant de ce portefeuille</translation>
+		</message>
 	</context>
 	<context>
 		<name>PasswordCreation</name>

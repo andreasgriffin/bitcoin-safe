@@ -3764,6 +3764,11 @@ Sie können zu Testnet wechseln, um {app_name} zu testen, ohne echte Bitcoin zu 
 			<source>Subscription:</source>
 			<translation>Abonnement:</translation>
 		</message>
+		<name>PaidPluginWidget</name>
+		<message>
+			<source>This subscription is valid on any computer with this wallet</source>
+			<translation>Dieses Abonnement ist auf jedem Computer mit dieser Wallet gültig</translation>
+		</message>
 	</context>
 	<context>
 		<name>PasswordCreation</name>
