@@ -236,7 +236,7 @@ class TxStatus:
 
     def do_icon_check_on_chain_height_change(self) -> bool:
         """Return True if UI icons should refresh on height changes."""
-        return self.confirmations() <= 6
+        return self.is_confirmed() and self.confirmations() <= 6
 
 
 def locked(func) -> Any:
