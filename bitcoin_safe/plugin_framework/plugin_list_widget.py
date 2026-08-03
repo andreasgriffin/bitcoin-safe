@@ -52,6 +52,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode
+from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.util import (
     get_neutral_surface_colors,
     should_process_theme_change,
@@ -512,7 +513,7 @@ class PaidPluginControls:
     subscription_layout: QVBoxLayout
     plan_selector_container: QWidget
     plan_selector_layout: QHBoxLayout
-    plan_selector_title_label: QLabel
+    plan_selector_title_label: IconLabel
     plan_selector_combo: QComboBox
     offer_label: QLabel
     subscription_buttons_container: QWidget
@@ -535,7 +536,10 @@ class PaidPluginWidget(PluginWidget):
         plan_selector_layout.setSpacing(8)
         subscription_layout.addWidget(plan_selector_container)
 
-        plan_selector_title_label = QLabel("", plan_selector_container)
+        plan_selector_title_label = IconLabel(parent=plan_selector_container)
+        plan_selector_title_label.set_icon_as_help(
+            tooltip=self.tr("This subscription is valid on any computer with this wallet")
+        )
         plan_selector_layout.addWidget(plan_selector_title_label)
 
         plan_selector_combo = QComboBox(plan_selector_container)
