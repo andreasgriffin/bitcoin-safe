@@ -70,6 +70,7 @@ from PyQt6.QtCore import (
 from PyQt6.QtGui import (
     QAction,
     QCloseEvent,
+    QColor,
     QKeySequence,
     QPalette,
     QShortcut,
@@ -257,6 +258,7 @@ class MainWindow(UnlockableMainWindow):
         self.signals.get_network.connect(self.get_network)
         self.signals.get_mempool_url.connect(self.get_mempool_url)
         self.signals.get_btc_symbol.connect(self.get_btc_symbol)
+        self.signals.plugin_updates_changed.connect(self.refresh_plugin_update_notification_bar)
 
         self.settings = Settings(
             config=self.config,
@@ -464,6 +466,23 @@ class MainWindow(UnlockableMainWindow):
             except Exception:
                 pass
 
+    def _wallet_with_plugin_updates(self) -> QTWallet | None:
+        for qt_wallet in self.qt_wallets.values():
+            plugin_manager = qt_wallet.plugin_manager
+            if plugin_manager and plugin_manager.has_plugin_updates():
+                return qt_wallet
+        return None
+
+    def refresh_plugin_update_notification_bar(self) -> None:
+        self.plugin_update_notification_bar.setVisible(self._wallet_with_plugin_updates() is not None)
+
+    def show_plugin_updates(self) -> None:
+        qt_wallet = self._wallet_with_plugin_updates()
+        if qt_wallet and qt_wallet.plugin_manager:
+            qt_wallet.plugin_manager.node.select()
+            return
+        self.plugin_update_notification_bar.hide()
+
     def set_title(self) -> None:
         """Set title."""
         title = APP_NAME
@@ -574,6 +593,21 @@ class MainWindow(UnlockableMainWindow):
         self.update_notification_bar.signal_close_requested.connect(self.close)
         self.update_notification_bar.check()
         self.main_notification_bars_layout.addWidget(self.update_notification_bar)
+
+        self.plugin_update_notification_bar = NotificationBar(
+            text=self.tr("Plugin updates are available."),
+            optional_button_text=self.tr("Show Plugin updates"),
+            callback_optional_button=self.show_plugin_updates,
+            has_close_button=True,
+            parent=self.main_notification_bars_container,
+        )
+        self.plugin_update_notification_bar.set_background_base_color(QColor("lightblue"))
+        self.plugin_update_notification_bar.set_icon("bi--gear.svg")
+        self.plugin_update_notification_bar.optionalButton.setIcon(
+            svg_tools.get_QIcon("bi--arrow-clockwise.svg")
+        )
+        self.plugin_update_notification_bar.hide()
+        self.main_notification_bars_layout.addWidget(self.plugin_update_notification_bar)
 
         self._layout.addWidget(self.main_notification_bars_container)
         self._layout.addWidget(self.plugin_notification_bars_container)
@@ -1347,6 +1381,7 @@ class MainWindow(UnlockableMainWindow):
         self.notification_bar_testnet.updateUi()
         self.update_notification_bar.updateUi()
         self.notification_bar_cbf.updateUi()
+        self.plugin_update_notification_bar.updateUi()
 
         self.search_box.updateUi()
 
@@ -2806,6 +2841,7 @@ class MainWindow(UnlockableMainWindow):
 
         self.last_qtwallet = qt_wallet
         self.refresh_plugin_notification_bars()
+        self.refresh_plugin_update_notification_bar()
         return qt_wallet
 
     def toggle_tutorial(self, qt_wallet: QTWallet | None = None) -> None:
@@ -2929,6 +2965,7 @@ class MainWindow(UnlockableMainWindow):
         self.p2p_listening_update_lists(UpdateFilter())
         self.signals.any_wallet_updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletClosed))
         self.refresh_plugin_notification_bars()
+        self.refresh_plugin_update_notification_bar()
 
     def add_recently_open_wallet(self, file_path: str) -> None:
         """Add recently open wallet."""

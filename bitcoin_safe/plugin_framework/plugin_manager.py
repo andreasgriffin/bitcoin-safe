@@ -710,6 +710,9 @@ class PluginManager(BaseSaveableClass):
         ]
         return [*self.listable_clients, *visible_source_catalog_items]
 
+    def has_plugin_updates(self) -> bool:
+        return any(client.has_update_available() for client in self.clients)
+
     @classmethod
     def _filter_valid_external_bundles(
         cls,
@@ -1209,7 +1212,9 @@ class PluginManager(BaseSaveableClass):
             self._sync_external_client_state(client)
         if self._source_management_dialog is not None:
             self._source_management_dialog.reload_sources()
-        return previous_signature != self._external_bundle_state_signature(self.external_bundles)
+        runtime_changed = previous_signature != self._external_bundle_state_signature(self.external_bundles)
+        self.wallet_functions.signals.plugin_updates_changed.emit()
+        return runtime_changed
 
     def _refresh_plugin_list_only(self) -> None:
         self.widget.set_plugins(self.listable_items, rebuild_sidebar=False)
