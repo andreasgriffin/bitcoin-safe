@@ -579,7 +579,9 @@
 			<source>Could not recognize the input. Do you want to scan again?
 
 The error was: {error}</source>
-			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen? Der Fehler war: {error}</translation>
+			<translation>Die Eingabe konnte nicht erkannt werden. Möchten Sie erneut scannen?
+
+Der Fehler war: {error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -2121,7 +2123,8 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
 			<translation>Der 8-stellige Fingerabdruck identifiziert den Seed.
-Sie können ihn auf dem Hardware-Signierer notieren, um verschiedene Seeds und Signiergeräte auseinanderzuhalten.</translation>
+Sie können ihn auf dem Hardware-Signierer notieren,
+um verschiedene Seeds und Signiergeräte auseinanderzuhalten.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
