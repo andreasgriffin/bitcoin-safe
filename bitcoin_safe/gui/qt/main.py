@@ -2800,7 +2800,8 @@ class MainWindow(UnlockableMainWindow):
             "A wallet with id {name} is already open.  "
         ).format(name=qt_wallet.wallet.id)
 
-        qt_wallet.password = password
+        if password is not None:
+            qt_wallet.password = password
         if file_path:
             # very important! it saves the (possibly) new location into the qtwallet, such that
             # it can save exactly there again

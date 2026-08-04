@@ -441,17 +441,29 @@ def save_wallet(
     test_config: UserConfig,
     wallet_name: str,
     save_button: QAbstractButton,
+    password: str | None = None,
+    qtbot: QtBot | None = None,
 ) -> Path:
     """Save wallet."""
     wallet_file = Path(test_config.config_dir) / f"{wallet_name}.wallet"
     with patch.object(
         QFileDialog, "getSaveFileName", return_value=(str(wallet_file), "All Files (*)")
     ) as mock_open:
-        with patch.object(PasswordCreation, "get_password", return_value="") as mock_password:
-            save_button.click()
+        if password is None:
+            with patch.object(PasswordCreation, "get_password", return_value="") as mock_password:
+                save_button.click()
 
-            QApplication.processEvents()
-            mock_password.assert_called_once()
+                QApplication.processEvents()
+                mock_password.assert_called_once()
+        else:
+            assert qtbot is not None
+
+            def enter_password(dialog: PasswordCreation) -> None:
+                dialog.password_input1.setText(password)
+                dialog.password_input2.setText(password)
+                dialog.submit_button.click()
+
+            do_modal_click(save_button, enter_password, qtbot, cls=PasswordCreation)
 
         mock_open.assert_called_once()
     return wallet_file
