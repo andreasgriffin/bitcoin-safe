@@ -1827,8 +1827,9 @@ def test_external_paid_plugin_places_update_button_with_action_controls(
 
         assert widget.update_button.parentWidget() is widget.action_buttons_container
         assert widget.delete_button.parentWidget() is widget.action_buttons_container
-        assert widget.action_buttons_layout.itemAt(0).widget() is widget.update_button
-        assert widget.action_buttons_layout.itemAt(1).widget() is widget.delete_button
+        assert widget.action_buttons_layout.itemAt(0).widget() is widget.open_button
+        assert widget.action_buttons_layout.itemAt(1).widget() is widget.update_button
+        assert widget.action_buttons_layout.itemAt(2).widget() is widget.delete_button
         assert widget.manage_subscription_button.parentWidget() is widget.management_buttons_container
         assert widget.refresh_subscription_button.parentWidget() is widget.management_buttons_container
     finally:

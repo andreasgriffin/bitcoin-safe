@@ -55,7 +55,14 @@ from btcpay_tools.btcpay_subscription_nostr.service import (
 from btcpay_tools.config import BTCPayConfig, PlanDuration
 from packaging.version import Version
 from PyQt6.QtGui import QColor, QIcon, QPixmap
-from PyQt6.QtWidgets import QApplication, QHBoxLayout, QStackedWidget, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
+    QSizePolicy,
+    QStackedWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 from bitcoin_safe import __version__
 from bitcoin_safe.config import UserConfig
@@ -2349,6 +2356,38 @@ def test_plugin_manager_emits_plugin_updates_changed_after_registry_refresh(
         manager.close()
 
 
+def test_plugin_widget_shows_open_button_only_while_enabled(
+    qapp: QApplication, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+    client = _DisplayMetadataPluginClient()
+    opened: list[bool] = []
+
+    def record_open() -> bool:
+        opened.append(True)
+        return True
+
+    monkeypatch.setattr(client.node, "select", record_open)
+    widget = client.create_plugin_widget()
+
+    try:
+        assert not widget.open_button.isHidden()
+        assert widget.open_button.text() == "Open"
+        assert widget.open_button.parentWidget() is widget.action_buttons_container
+
+        widget.open_button.click()
+        assert opened == [True]
+
+        client.set_enabled(False)
+        assert widget.open_button.isHidden()
+
+        client.set_enabled(True)
+        assert not widget.open_button.isHidden()
+    finally:
+        widget.close()
+        client.close()
+
+
 def test_external_plugin_widget_orders_action_buttons_left_to_right(qapp: QApplication) -> None:
     del qapp
     client = _DisplayMetadataPluginClient()
@@ -2373,8 +2412,11 @@ def test_external_plugin_widget_orders_action_buttons_left_to_right(qapp: QAppli
         assert not widget.update_button.isHidden()
         assert widget.delete_button.parentWidget() is widget.action_buttons_container
         assert isinstance(widget.action_buttons_layout, QVBoxLayout)
-        assert widget.action_buttons_layout.itemAt(0).widget() is widget.delete_button
+        assert widget.action_buttons_layout.itemAt(0).widget() is widget.open_button
+        assert widget.action_buttons_layout.itemAt(1).widget() is widget.delete_button
+        assert widget.open_button.isHidden()
         assert not widget.delete_button.isHidden()
+        assert widget.sizePolicy().verticalPolicy() == QSizePolicy.Policy.Fixed
     finally:
         widget.close()
         client.close()
