@@ -837,6 +837,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>بیشتر بدانید</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>هشدار امنیتی فوری: همه مدل‌های دستگاه Coldcard تحت تأثیر یک آسیب‌پذیری در تولید سید قرار گرفته‌اند. ممکن است دارایی‌ها در معرض خطر باشند. همین حالا راهنما را بخوانید و به سیدی که با میان‌افزار اصلاح‌شده تولید شده است مهاجرت کنید.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2793,6 +2806,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>به‌روزرسانی افزونه‌ها در دسترس است.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>چاپ</translation>
 		</message>
@@ -2845,6 +2863,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>ابتدا یک رمز عبور قفل برنامه در تنظیمات -&gt; عمومی تنظیم کنید.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>نمایش به‌روزرسانی افزونه‌ها</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3638,6 +3661,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>بستن نوتیفیکیشن</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>به‌روزرسانی افزونه‌ها در دسترس است.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>نمایش به‌روزرسانی افزونه‌ها</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3985,6 +4018,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>شناسه منبع: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>باز کردن</translation>
 		</message>
 	</context>
 	<context>
@@ -5675,8 +5715,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;مهلت درخواست انتشار به پایان رسید. این اتفاق ممکن است زمانی رخ دهد که کارمزد تراکنش بسیار پایین باشد یا تراکنش قبلاً منتشر شده باشد.&lt;/p&gt;&lt;p&gt;بررسی کنید که آیا منتشر شده است: &lt;a href="{url}"&gt;مشاهده در مرورگر بلاک&lt;/a&gt;. اگر در فهرست نیست، ممکن است لازم باشد پیش از تلاش مجدد کارمزد را افزایش دهید.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>عقب</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>وضعیت انتشار نامشخص است</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5732,6 +5782,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>مهلت درخواست انتشار به پایان رسید. این اتفاق ممکن است زمانی رخ دهد که کارمزد تراکنش بسیار پایین باشد یا تراکنش قبلاً منتشر شده باشد. اگر تراکنش در مرورگر بلاک فهرست نشده است، ممکن است لازم باشد پیش از تلاش مجدد کارمزد را افزایش دهید.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>شناسهٔ تراکنش PSBT امضاشده با شناسه تراکنش اصلی مطابقت ندارد</translation>
 		</message>
@@ -5746,6 +5801,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>تراکنش {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>مشاهده در مرورگر بلاک</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

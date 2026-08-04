@@ -839,6 +839,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>了解更多</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>紧急安全警告：所有 Coldcard 设备型号均受到种子生成漏洞的影响。资金可能面临风险。请立即阅读指南，并迁移到使用已修复固件生成的种子。</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2802,6 +2815,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>有可用的插件更新。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>打印</translation>
 		</message>
@@ -2854,6 +2872,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>请先在 设置 -&gt; 常规 中设置应用锁密码。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>显示插件更新</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3650,6 +3673,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>关闭通知</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>有可用的插件更新。</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>显示插件更新</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3997,6 +4030,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>来源 ID：{source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>打开</translation>
 		</message>
 	</context>
 	<context>
@@ -5698,8 +5738,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;广播请求超时。当交易手续费过低或交易已经广播时，可能会发生这种情况。&lt;/p&gt;&lt;p&gt;检查交易是否已广播：&lt;a href="{url}"&gt;在区块浏览器中查看&lt;/a&gt;。如果未列出该交易，则可能需要先提高手续费再重试。&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>返回</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>广播状态未知</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5755,6 +5805,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>广播请求超时。当交易手续费过低或交易已经广播时，可能会发生这种情况。如果区块浏览器中未列出该交易，则可能需要先提高手续费再重试。</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>已签名的 PSBT 的交易 ID 与原始的交易 ID 不匹配</translation>
 		</message>
@@ -5768,6 +5823,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>交易 {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>在区块浏览器中查看</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

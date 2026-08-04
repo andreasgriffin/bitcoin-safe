@@ -839,6 +839,19 @@ ya tienen transacciones que enlazan con otras direcciones. ¿Seguro que quieres 
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>Más información</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>Advertencia de seguridad urgente: todos los modelos de dispositivos Coldcard se vieron afectados por una vulnerabilidad en la generación de la semilla. Los fondos pueden estar en riesgo. Lee ahora las indicaciones y migra a una semilla generada con un firmware corregido.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2802,6 +2815,11 @@ Puedes cambiar a Testnet para probar {app_name} sin usar Bitcoin real.</translat
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Hay actualizaciones de complementos disponibles.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>Imprimir</translation>
 		</message>
@@ -2854,6 +2872,11 @@ Puedes cambiar a Testnet para probar {app_name} sin usar Bitcoin real.</translat
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>Primero configure una contraseña de bloqueo de la aplicación en Configuración -&gt; General.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Mostrar actualizaciones de complementos</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3654,6 +3677,16 @@ Puedes cambiar a Testnet para probar {app_name} sin usar Bitcoin real.</translat
 			<source>Close notification</source>
 			<translation>Cerrar notificación</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Hay actualizaciones de complementos disponibles.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Mostrar actualizaciones de complementos</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -4001,6 +4034,13 @@ Puedes cambiar a Testnet para probar {app_name} sin usar Bitcoin real.</translat
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>ID de fuente: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>Abrir</translation>
 		</message>
 	</context>
 	<context>
@@ -5697,8 +5737,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;La solicitud de difusión agotó el tiempo de espera. Esto puede ocurrir cuando la comisión de la transacción es demasiado baja o cuando la transacción ya se ha difundido.&lt;/p&gt;&lt;p&gt;Comprueba si se ha difundido: &lt;a href="{url}"&gt;Ver en el explorador de bloques&lt;/a&gt;. Si no aparece, puede que sea necesario aumentar la comisión antes de volver a intentarlo.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>Atrás</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>Estado de difusión desconocido</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5754,6 +5804,11 @@ O puedes difundirla vía {url}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>La solicitud de difusión agotó el tiempo de espera. Esto puede ocurrir cuando la comisión de la transacción es demasiado baja o cuando la transacción ya se ha difundido. Si la transacción no aparece en un explorador de bloques, puede que sea necesario aumentar la comisión antes de volver a intentarlo.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>El Identificador de Transacción del psbt firmado no coincide con el txid original</translation>
 		</message>
@@ -5768,6 +5823,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Transacción {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>Ver en el explorador de bloques</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

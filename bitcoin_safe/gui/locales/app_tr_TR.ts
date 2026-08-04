@@ -837,6 +837,19 @@ adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onları
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>Daha fazla bilgi</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>Acil güvenlik uyarısı: Tüm Coldcard cihaz modelleri, seed oluşturma güvenlik açığından etkilendi. Fonlar risk altında olabilir. Kılavuzu şimdi okuyun ve sabit ürün yazılımıyla oluşturulmuş bir seed'e geçin.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2794,6 +2807,11 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Eklenti güncellemeleri mevcut.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>Yazdır</translation>
 		</message>
@@ -2846,6 +2864,11 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>Önce Ayarlar -&gt; Genel bölümünde bir uygulama kilit parolası ayarlayın.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Eklenti güncellemelerini göster</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3640,6 +3663,16 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 			<source>Close notification</source>
 			<translation>Bildirim kapat</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Eklenti güncellemeleri mevcut.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Eklenti güncellemelerini göster</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3987,6 +4020,13 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>Kaynak Kimliği: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>Aç</translation>
 		</message>
 	</context>
 	<context>
@@ -5678,8 +5718,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;Yayınlama isteği zaman aşımına uğradı. Bu, işlem ücreti çok düşük olduğunda veya işlem zaten yayınlanmış olduğunda meydana gelebilir.&lt;/p&gt;&lt;p&gt;Yayınlanıp yayınlanmadığını kontrol edin: &lt;a href="{url}"&gt;Blok gezgininde görüntüle&lt;/a&gt;. Listelenmiyorsa yeniden denemeden önce ücretin artırılması gerekebilir.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>Geri</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>Yayınlama durumu bilinmiyor</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5735,6 +5785,11 @@ Ya da {url} üzerinden yayınlayabilirsiniz</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>Yayınlama isteği zaman aşımına uğradı. Bu, işlem ücreti çok düşük olduğunda veya işlem zaten yayınlanmış olduğunda meydana gelebilir. İşlem bir blok gezgininde listelenmiyorsa yeniden denemeden önce ücretin artırılması gerekebilir.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>İmzalanan psbt’nin txid’si orijinal txid ile eşleşmiyor</translation>
 		</message>
@@ -5749,6 +5804,11 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>İşlem {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>Blok gezgininde görüntüle</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

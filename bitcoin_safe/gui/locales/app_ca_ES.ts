@@ -837,6 +837,19 @@ ja tenen transaccions que enllacen amb altres adreces. Segur que vols canviar-ne
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>Més informació</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>Avís de seguretat urgent: tots els models de dispositius Coldcard s’han vist afectats per una vulnerabilitat en la generació de la llavor. Els fons poden estar en risc. Llegiu ara les instruccions i migreu a una llavor generada amb un microprogramari corregit.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2794,6 +2807,11 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Hi ha actualitzacions de connectors disponibles.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>Imprimeix</translation>
 		</message>
@@ -2846,6 +2864,11 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>Primer configureu una contrasenya de bloqueig de l’aplicació a Configuració -&gt; General.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Mostra les actualitzacions dels connectors</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3640,6 +3663,16 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 			<source>Close notification</source>
 			<translation>Tanca notificació</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Hi ha actualitzacions de connectors disponibles.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Mostra les actualitzacions dels connectors</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3987,6 +4020,13 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>ID de la font: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>Obre</translation>
 		</message>
 	</context>
 	<context>
@@ -5678,8 +5718,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;La sol·licitud de difusió ha superat el temps d’espera. Això pot passar quan la comissió de la transacció és massa baixa o quan la transacció ja s’ha difós.&lt;/p&gt;&lt;p&gt;Comproveu si s’ha difós: &lt;a href="{url}"&gt;Mostra-ho a l’explorador de blocs&lt;/a&gt;. Si no hi apareix, pot ser necessari augmentar la comissió abans de tornar-ho a provar.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>Enrere</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>Estat de difusió desconegut</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5735,6 +5785,11 @@ O bé la pots emetre via {url}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>La sol·licitud de difusió ha superat el temps d’espera. Això pot passar quan la comissió de la transacció és massa baixa o quan la transacció ja s’ha difós. Si la transacció no apareix en un explorador de blocs, pot ser necessari augmentar la comissió abans de tornar-ho a provar.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>El txid del PSBT signat no coincideix amb el txid original</translation>
 		</message>
@@ -5749,6 +5804,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Transacció {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>Mostra-ho a l’explorador de blocs</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

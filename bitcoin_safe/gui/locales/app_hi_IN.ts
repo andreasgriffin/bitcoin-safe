@@ -836,6 +836,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>और जानें</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>तत्काल सुरक्षा चेतावनी: Coldcard डिवाइस के सभी मॉडल सीड बनाने की एक भेद्यता से प्रभावित हुए थे। धनराशि जोखिम में हो सकती है। अभी मार्गदर्शन पढ़ें और ठीक किए गए फ़र्मवेयर से बनाए गए सीड पर माइग्रेट करें।</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2790,6 +2803,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>प्लगइन अपडेट उपलब्ध हैं।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>प्रिंट</translation>
 		</message>
@@ -2842,6 +2860,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>पहले सेटिंग्स -&gt; सामान्य में ऐप लॉक पासवर्ड सेट करें।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>प्लगइन अपडेट दिखाएँ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3628,6 +3651,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>नोटिफिकेशन बंद करें</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>प्लगइन अपडेट उपलब्ध हैं।</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>प्लगइन अपडेट दिखाएँ</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3975,6 +4008,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>स्रोत ID: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>खोलें</translation>
 		</message>
 	</context>
 	<context>
@@ -5660,8 +5700,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;ब्रॉडकास्ट अनुरोध का समय समाप्त हो गया। ऐसा तब हो सकता है जब ट्रांज़ैक्शन शुल्क बहुत कम हो या ट्रांज़ैक्शन पहले ही ब्रॉडकास्ट किया जा चुका हो।&lt;/p&gt;&lt;p&gt;जाँचें कि इसे ब्रॉडकास्ट किया गया था या नहीं: &lt;a href="{url}"&gt;ब्लॉक एक्सप्लोरर में देखें&lt;/a&gt;। यदि यह सूचीबद्ध नहीं है, तो दोबारा प्रयास करने से पहले शुल्क बढ़ाना पड़ सकता है।&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>वापस</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>ब्रॉडकास्ट स्थिति अज्ञात है</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5716,6 +5766,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>ब्रॉडकास्ट अनुरोध का समय समाप्त हो गया। ऐसा तब हो सकता है जब ट्रांज़ैक्शन शुल्क बहुत कम हो या ट्रांज़ैक्शन पहले ही ब्रॉडकास्ट किया जा चुका हो। यदि ट्रांज़ैक्शन किसी ब्लॉक एक्सप्लोरर में सूचीबद्ध नहीं है, तो दोबारा प्रयास करने से पहले शुल्क बढ़ाना पड़ सकता है।</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>हस्ताक्षरित psbt का txid मूल txid से मेल नहीं खाता</translation>
 		</message>
@@ -5729,6 +5784,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>लेन-देन {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>ब्लॉक एक्सप्लोरर में देखें</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

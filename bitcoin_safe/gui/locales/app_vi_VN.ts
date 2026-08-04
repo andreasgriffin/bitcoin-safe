@@ -837,6 +837,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>Tìm hiểu thêm</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>Cảnh báo bảo mật khẩn cấp: Tất cả các mẫu thiết bị Coldcard đều bị ảnh hưởng bởi một lỗ hổng tạo seed. Tiền có thể gặp rủi ro. Hãy đọc hướng dẫn ngay và chuyển sang seed được tạo bằng firmware đã được sửa lỗi.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2795,6 +2808,11 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Hiện có bản cập nhật plugin.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>In</translation>
 		</message>
@@ -2847,6 +2865,11 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>Trước tiên hãy đặt mật khẩu khóa ứng dụng trong Cài đặt -&gt; Chung.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Hiển thị bản cập nhật plugin</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3641,6 +3664,16 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 			<source>Close notification</source>
 			<translation>Đóng thông báo</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Hiện có bản cập nhật plugin.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Hiển thị bản cập nhật plugin</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3988,6 +4021,13 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>ID nguồn: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>Mở</translation>
 		</message>
 	</context>
 	<context>
@@ -5679,8 +5719,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;Yêu cầu phát giao dịch đã hết thời gian chờ. Điều này có thể xảy ra khi phí giao dịch quá thấp hoặc khi giao dịch đã được phát.&lt;/p&gt;&lt;p&gt;Kiểm tra xem giao dịch đã được phát hay chưa: &lt;a href="{url}"&gt;Xem trong trình khám phá khối&lt;/a&gt;. Nếu giao dịch không được liệt kê, bạn có thể cần tăng phí trước khi thử lại.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>Quay lại</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>Không xác định được trạng thái phát giao dịch</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5736,6 +5786,11 @@ Hoặc bạn có thể phát sóng qua {url}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>Yêu cầu phát giao dịch đã hết thời gian chờ. Điều này có thể xảy ra khi phí giao dịch quá thấp hoặc khi giao dịch đã được phát. Nếu giao dịch không được liệt kê trong trình khám phá khối, bạn có thể cần tăng phí trước khi thử lại.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>txid của psbt đã ký không khớp với txid gốc</translation>
 		</message>
@@ -5750,6 +5805,11 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Giao dịch {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>Xem trong trình khám phá khối</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

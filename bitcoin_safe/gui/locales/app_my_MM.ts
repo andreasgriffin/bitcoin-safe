@@ -836,6 +836,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>ပိုမိုလေ့လာရန်</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>အရေးပေါ် လုံခြုံရေးသတိပေးချက်: Coldcard စက်မော်ဒယ်အားလုံးသည် seed ဖန်တီးမှုဆိုင်ရာ အားနည်းချက်တစ်ခု၏ သက်ရောက်မှုကို ခံခဲ့ရသည်။ ငွေကြေးများ အန္တရာယ်ရှိနိုင်သည်။ လမ်းညွှန်ချက်ကို ယခုဖတ်ရှုပြီး ပြင်ဆင်ထားသော firmware ဖြင့် ဖန်တီးထားသည့် seed သို့ ပြောင်းရွှေ့ပါ။</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2789,6 +2802,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>ပလပ်အင် အပ်ဒိတ်များ ရရှိနိုင်ပါသည်။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>ထွက်ရန်</translation>
 		</message>
@@ -2841,6 +2859,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>Settings -&gt; General တွင် app lock စကားဝှက်ကို အရင်သတ်မှတ်ပါ။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>ပလပ်အင် အပ်ဒိတ်များကို ပြရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3625,6 +3648,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>အသိပေးချက်ကိုပိတ်ပါ</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>ပလပ်အင် အပ်ဒိတ်များ ရရှိနိုင်ပါသည်။</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>ပလပ်အင် အပ်ဒိတ်များကို ပြရန်</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3972,6 +4005,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>အရင်းအမြစ် ID: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>ဖွင့်ရန်</translation>
 		</message>
 	</context>
 	<context>
@@ -5656,8 +5696,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;ထုတ်လွှင့်မှု တောင်းဆိုချက်သည် အချိန်ကုန်သွားသည်။ ငွေလွှဲခ အလွန်နည်းနေချိန် သို့မဟုတ် ငွေလွှဲမှုကို ထုတ်လွှင့်ပြီးသားဖြစ်ချိန်တွင် ဤအခြေအနေ ဖြစ်ပေါ်နိုင်သည်။&lt;/p&gt;&lt;p&gt;ထုတ်လွှင့်ပြီးခြင်း ရှိမရှိ စစ်ဆေးပါ: &lt;a href="{url}"&gt;ဘလောက်ရှာဖွေရေးစနစ်တွင် ကြည့်ရန်&lt;/a&gt;။ စာရင်းတွင် မရှိပါက ထပ်မံကြိုးစားခြင်းမပြုမီ ငွေလွှဲခကို တိုးမြှင့်ရန် လိုအပ်နိုင်သည်။&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>နောက်သို့</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>ထုတ်လွှင့်မှု အခြေအနေကို မသိရှိပါ</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5712,6 +5762,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>ထုတ်လွှင့်မှု တောင်းဆိုချက်သည် အချိန်ကုန်သွားသည်။ ငွေလွှဲခ အလွန်နည်းနေချိန် သို့မဟုတ် ငွေလွှဲမှုကို ထုတ်လွှင့်ပြီးသားဖြစ်ချိန်တွင် ဤအခြေအနေ ဖြစ်ပေါ်နိုင်သည်။ ငွေလွှဲမှုကို ဘလောက်ရှာဖွေရေးစနစ်တွင် မတွေ့ပါက ထပ်မံကြိုးစားခြင်းမပြုမီ ငွေလွှဲခကို တိုးမြှင့်ရန် လိုအပ်နိုင်သည်။</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်</translation>
 		</message>
@@ -5725,6 +5780,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>ငွေလွှဲ {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>ဘလောက်ရှာဖွေရေးစနစ်တွင် ကြည့်ရန်</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
