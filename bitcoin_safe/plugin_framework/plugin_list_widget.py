@@ -292,6 +292,10 @@ class BasePluginWidget(CardBase):
         self.status_label.setText(status_text)
         self.status_label.setVisible(bool(status_text))
 
+    def set_body_content_visible(self, visible: bool) -> None:
+        super().set_body_content_visible(visible)
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+
     def set_enable_toggle(
         self,
         checked: bool,
@@ -433,7 +437,7 @@ class PluginWidget(BasePluginWidget):
         return None
 
     def _create_action_buttons(self) -> None:
-        return None
+        self.open_button = self.add_management_button()
 
     def _on_enabled_changed(self, _enabled: bool) -> None:
         self.updateUi()
@@ -461,7 +465,14 @@ class PluginWidget(BasePluginWidget):
         return status_text
 
     def _update_action_buttons(self) -> None:
-        return None
+        can_select_node = self._can_select_node()
+        self._set_button_action(
+            button=self.open_button,
+            text=self.tr("Open"),
+            callback=self._select_plugin_node,
+            visible=can_select_node,
+            enable=can_select_node,
+        )
 
     def _enable_toggle_visible(self) -> bool:
         return self.plugin.supports_enable_toggle()
@@ -487,10 +498,12 @@ class PluginWidget(BasePluginWidget):
 
 class ExternalPluginWidget(PluginWidget):
     def _create_action_buttons(self) -> None:
+        super()._create_action_buttons()
         self.update_button = self.add_spinning_detail_button()
         self.delete_button = self.add_spinning_management_button()
 
     def _update_action_buttons(self) -> None:
+        super()._update_action_buttons()
         self._set_button_action(
             button=self.update_button,
             text=self.plugin.update_button_text(),
@@ -674,6 +687,7 @@ class PaidPluginWidget(PluginWidget):
         return tuple(options)
 
     def _create_action_buttons(self) -> None:
+        super()._create_action_buttons()
         self.start_trial_button = SpinningButton(
             text="",
             parent=self.subscription_buttons_container,
@@ -694,6 +708,7 @@ class PaidPluginWidget(PluginWidget):
         return self.plugin.supports_enable_toggle() and self.plugin.subscription_allows_access()
 
     def _update_action_buttons(self) -> None:
+        super()._update_action_buttons()
         self.management_title_label.setText(self.tr("Subscription:"))
         displayed_subscription_manager = self.plugin.displayed_subscription_manager
         supports_manage_subscription = displayed_subscription_manager.supports_manage_subscription()
