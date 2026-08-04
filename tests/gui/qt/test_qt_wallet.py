@@ -216,7 +216,7 @@ def test_update_history_initial_sync_widgets_stays_lazy_when_placeholder_not_nee
             HardwareSigners.q.id,
             True,
             bdk.Network.BITCOIN,
-            False,
+            True,
         ),
         (
             COLDCARD_SEED_WARNING_CUTOFF_HEIGHT - 1,
