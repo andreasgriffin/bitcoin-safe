@@ -33,10 +33,12 @@ import gc
 import inspect
 import logging
 from datetime import datetime
+from pathlib import Path
 from unittest.mock import patch
 
 import bdkpython as bdk
 import pytest
+from bitcoin_safe_lib.storage import Storage
 from bitcoin_usb.address_types import AddressTypes
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
@@ -135,6 +137,7 @@ def test_custom_wallet_setup_custom_single_sig(
     wallet_name: str = "test_custom_wallet_setup_custom_single_sig",
 ) -> None:
     """Test custom wallet setup custom single sig."""
+    wallet_password = "test-password"
     frame = inspect.currentframe()
     assert frame
     shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
@@ -237,7 +240,7 @@ def test_custom_wallet_setup_custom_single_sig(
 
         change_to_single_sig()
 
-        def do_save_wallet() -> None:
+        def do_save_wallet() -> Path:
             """Do save wallet."""
             # Fill the seed fields and persist the wallet.
             key = list(qt_protowallet.wallet_descriptor_ui.keystore_uis.getAllTabData().values())[0]
@@ -258,19 +261,38 @@ def test_custom_wallet_setup_custom_single_sig(
 
             shutter.save(main_window)
 
-            save_wallet(
-                test_config=test_config,
-                wallet_name=wallet_name,
-                save_button=get_apply_button(qt_protowallet.wallet_descriptor_ui.button_box),
-            )
+            original_add_qt_wallet = main_window.add_qt_wallet
 
+            def add_qt_wallet_after_early_save(
+                qt_wallet: QTWallet,
+                file_path: str | None = None,
+                password: str | None = None,
+                focus: bool = True,
+            ) -> QTWallet:
+                # Reproduce a persistence callback saving before wallet registration.
+                qt_wallet.save()
+                assert Storage.has_password(qt_wallet.file_path)
+                return original_add_qt_wallet(qt_wallet, file_path, password, focus)
+
+            with patch.object(main_window, "add_qt_wallet", side_effect=add_qt_wallet_after_early_save):
+                wallet_file = save_wallet(
+                    test_config=test_config,
+                    wallet_name=wallet_name,
+                    save_button=get_apply_button(qt_protowallet.wallet_descriptor_ui.button_box),
+                    password=wallet_password,
+                    qtbot=qtbot,
+                )
+
+            assert Storage.has_password(str(wallet_file))
             assert len(main_window.tab_wallets.root.child_nodes) == 1, "there should be only 1 wallet open"
+            return wallet_file
 
-        do_save_wallet()
+        wallet_file = do_save_wallet()
 
         # Get the new QTWallet created after saving.
         qt_wallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
         assert isinstance(qt_wallet, QTWallet)
+        assert qt_wallet.password == wallet_password
 
         def do_all(qt_wallet: QTWallet) -> None:
             # Keep all operations in one scope to avoid lingering references to qt_wallet.
@@ -381,6 +403,7 @@ def test_custom_wallet_setup_custom_single_sig(
             new_wallet: QTWallet = main_window.tab_wallets.root.findNodeByTitle(wallet_name).data
             # After descriptor replace, a different first address should appear.
             assert new_wallet.wallet.get_addresses()[0] == "bcrt1qpmhcdhv2nyajtajpmwt74rqw7g38r6tyvtkctp"
+            assert new_wallet.password == wallet_password
 
             return new_wallet
 
@@ -409,6 +432,8 @@ def test_custom_wallet_setup_custom_single_sig(
             main_window.on_close_all_tx_tabs()
 
             shutter.save(main_window)
+
+        assert Storage.has_password(str(wallet_file))
 
         # Final screenshot after assertions.
         shutter.save(main_window)
