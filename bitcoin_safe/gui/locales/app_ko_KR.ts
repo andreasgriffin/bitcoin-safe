@@ -835,6 +835,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>자세히 알아보기</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>긴급 보안 경고: 모든 Coldcard 기기 모델이 시드 생성 취약점의 영향을 받았습니다. 자금이 위험할 수 있습니다. 지금 안내를 확인하고 수정된 펌웨어로 생성된 시드로 이전하세요.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2791,6 +2804,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>플러그인 업데이트를 사용할 수 있습니다.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>인쇄</translation>
 		</message>
@@ -2843,6 +2861,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>먼저 설정 -&gt; 일반에서 앱 잠금 비밀번호를 설정하세요.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>플러그인 업데이트 표시</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3636,6 +3659,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>알림 닫기</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>플러그인 업데이트를 사용할 수 있습니다.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>플러그인 업데이트 표시</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3983,6 +4016,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>소스 ID: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>열기</translation>
 		</message>
 	</context>
 	<context>
@@ -5672,8 +5712,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;브로드캐스트 요청 시간이 초과되었습니다. 트랜잭션 수수료가 너무 낮거나 트랜잭션이 이미 브로드캐스트된 경우에 발생할 수 있습니다.&lt;/p&gt;&lt;p&gt;브로드캐스트되었는지 확인하세요: &lt;a href="{url}"&gt;블록 탐색기에서 보기&lt;/a&gt;. 표시되지 않는 경우 다시 시도하기 전에 수수료를 높여야 할 수 있습니다.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>뒤로</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>브로드캐스트 상태를 알 수 없음</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5729,6 +5779,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>브로드캐스트 요청 시간이 초과되었습니다. 트랜잭션 수수료가 너무 낮거나 트랜잭션이 이미 브로드캐스트된 경우에 발생할 수 있습니다. 트랜잭션이 블록 탐색기에 표시되지 않는 경우 다시 시도하기 전에 수수료를 높여야 할 수 있습니다.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다</translation>
 		</message>
@@ -5743,6 +5798,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>트랜잭션 {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>블록 탐색기에서 보기</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

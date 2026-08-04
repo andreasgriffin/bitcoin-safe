@@ -837,6 +837,19 @@ memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengub
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>Pelajari lebih lanjut</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>Peringatan keamanan mendesak: Semua model perangkat Coldcard terdampak oleh kerentanan pembuatan seed. Dana mungkin berisiko. Baca panduannya sekarang dan migrasikan ke seed yang dibuat dengan firmware yang telah diperbaiki.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2793,6 +2806,11 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Pembaruan plugin tersedia.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>Cetak</translation>
 		</message>
@@ -2845,6 +2863,11 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>Atur kata sandi kunci aplikasi terlebih dahulu di Pengaturan -&gt; Umum.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Tampilkan pembaruan plugin</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3639,6 +3662,16 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 			<source>Close notification</source>
 			<translation>Tutup notifikasi</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Pembaruan plugin tersedia.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Tampilkan pembaruan plugin</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3986,6 +4019,13 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>ID Sumber: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>Buka</translation>
 		</message>
 	</context>
 	<context>
@@ -5677,8 +5717,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;Permintaan penyiaran kehabisan waktu. Hal ini dapat terjadi ketika biaya transaksi terlalu rendah atau ketika transaksi sudah disiarkan.&lt;/p&gt;&lt;p&gt;Periksa apakah transaksi telah disiarkan: &lt;a href="{url}"&gt;Lihat di penjelajah blok&lt;/a&gt;. Jika tidak tercantum, biaya mungkin perlu dinaikkan sebelum mencoba lagi.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>Kembali</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>Status penyiaran tidak diketahui</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5734,6 +5784,11 @@ Atau Anda bisa menyiarkan melalui {url}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>Permintaan penyiaran kehabisan waktu. Hal ini dapat terjadi ketika biaya transaksi terlalu rendah atau ketika transaksi sudah disiarkan. Jika transaksi tidak tercantum di penjelajah blok, biaya mungkin perlu dinaikkan sebelum mencoba lagi.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>Txid dari psbt yang ditandatangani tidak cocok dengan txid asli</translation>
 		</message>
@@ -5748,6 +5803,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Transaksi {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>Lihat di penjelajah blok</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

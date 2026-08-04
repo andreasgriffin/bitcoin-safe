@@ -839,6 +839,19 @@ haben bereits Transaktionen, die mit anderen Adressen verknüpft sind. Sind Sie 
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>Mehr erfahren</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>Dringende Sicherheitswarnung: Alle Coldcard-Gerätemodelle waren von einer Schwachstelle bei der Seed-Erzeugung betroffen. Guthaben könnten gefährdet sein. Lesen Sie jetzt die Hinweise und wechseln Sie zu einem Seed, der mit korrigierter Firmware erzeugt wurde.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2803,6 +2816,11 @@ Sie können zu Testnet wechseln, um {app_name} zu testen, ohne echte Bitcoin zu 
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Plugin-Updates sind verfügbar.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>Drucken</translation>
 		</message>
@@ -2855,6 +2873,11 @@ Sie können zu Testnet wechseln, um {app_name} zu testen, ohne echte Bitcoin zu 
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>Legen Sie zuerst ein App-Sperrpasswort unter Einstellungen → Allgemein fest.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Plugin-Updates anzeigen</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3655,6 +3678,16 @@ Sie können zu Testnet wechseln, um {app_name} zu testen, ohne echte Bitcoin zu 
 			<source>Close notification</source>
 			<translation>Benachrichtigung schließen</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Plugin-Updates sind verfügbar.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Plugin-Updates anzeigen</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -4002,6 +4035,13 @@ Sie können zu Testnet wechseln, um {app_name} zu testen, ohne echte Bitcoin zu 
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>Quell-ID: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>Öffnen</translation>
 		</message>
 	</context>
 	<context>
@@ -5702,8 +5742,18 @@ txid:outpoint ein</translation>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;Bei der Übertragungsanfrage ist eine Zeitüberschreitung aufgetreten. Dies kann passieren, wenn die Transaktionsgebühr zu niedrig ist oder die Transaktion bereits übertragen wurde.&lt;/p&gt;&lt;p&gt;Prüfen Sie, ob sie übertragen wurde: &lt;a href="{url}"&gt;Im Block-Explorer anzeigen&lt;/a&gt;. Wenn sie dort nicht aufgeführt ist, muss die Gebühr möglicherweise vor einem erneuten Versuch erhöht werden.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>Zurück</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>Übertragungsstatus unbekannt</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5760,6 +5810,11 @@ Oder Sie können die Transaktion über {url} senden.</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>Bei der Übertragungsanfrage ist eine Zeitüberschreitung aufgetreten. Dies kann passieren, wenn die Transaktionsgebühr zu niedrig ist oder die Transaktion bereits übertragen wurde. Wenn die Transaktion nicht in einem Block-Explorer aufgeführt ist, muss die Gebühr möglicherweise vor einem erneuten Versuch erhöht werden.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>Die txid des signierten PSBT stimmt nicht mit der ursprünglichen txid überein</translation>
 		</message>
@@ -5774,6 +5829,11 @@ Möchten Sie trotzdem senden?</translation>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Transaktion {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>Im Block-Explorer anzeigen</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

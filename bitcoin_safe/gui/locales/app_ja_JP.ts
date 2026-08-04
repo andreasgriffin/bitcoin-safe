@@ -836,6 +836,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>詳細</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>緊急セキュリティ警告：すべての Coldcard デバイスモデルが、シード生成の脆弱性の影響を受けました。資金が危険にさらされている可能性があります。今すぐガイダンスを確認し、修正済みファームウェアで生成されたシードに移行してください。</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2788,6 +2801,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>プラグインのアップデートがあります。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>印刷</translation>
 		</message>
@@ -2840,6 +2858,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>まず 設定 -&gt; 一般 でアプリロックパスワードを設定してください。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>プラグインのアップデートを表示</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3625,6 +3648,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>通知を閉じる</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>プラグインのアップデートがあります。</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>プラグインのアップデートを表示</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3972,6 +4005,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>ソース ID: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>開く</translation>
 		</message>
 	</context>
 	<context>
@@ -5656,8 +5696,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;ブロードキャスト要求がタイムアウトしました。トランザクション手数料が低すぎる場合や、トランザクションがすでにブロードキャストされている場合に発生することがあります。&lt;/p&gt;&lt;p&gt;ブロードキャストされたか確認してください：&lt;a href="{url}"&gt;ブロックエクスプローラーで表示&lt;/a&gt;。表示されていない場合は、再試行する前に手数料を引き上げる必要がある可能性があります。&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>戻る</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>ブロードキャスト状態が不明です</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5712,6 +5762,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>ブロードキャスト要求がタイムアウトしました。トランザクション手数料が低すぎる場合や、トランザクションがすでにブロードキャストされている場合に発生することがあります。トランザクションがブロックエクスプローラーに表示されていない場合は、再試行する前に手数料を引き上げる必要がある可能性があります。</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>署名されたpsbtのtxidが元のtxidと一致しません</translation>
 		</message>
@@ -5725,6 +5780,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>トランザクション {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>ブロックエクスプローラーで表示</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

@@ -837,6 +837,19 @@ mają już transakcje powiązane z innymi adresami. Czy na pewno chcesz zmienić
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>Dowiedz się więcej</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>Pilne ostrzeżenie dotyczące bezpieczeństwa: wszystkie modele urządzeń Coldcard zostały dotknięte luką w zabezpieczeniach związaną z generowaniem seeda. Środki mogą być zagrożone. Przeczytaj teraz zalecenia i przejdź na seed wygenerowany przy użyciu poprawionego oprogramowania sprzętowego.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2796,6 +2809,11 @@ Możesz przełączyć się na Testnet, aby przetestować {app_name} bez używani
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Dostępne są aktualizacje wtyczek.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>Drukuj</translation>
 		</message>
@@ -2848,6 +2866,11 @@ Możesz przełączyć się na Testnet, aby przetestować {app_name} bez używani
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>Najpierw ustaw hasło blokady aplikacji w Ustawienia -&gt; Ogólne.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Pokaż aktualizacje wtyczek</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3643,6 +3666,16 @@ Możesz przełączyć się na Testnet, aby przetestować {app_name} bez używani
 			<source>Close notification</source>
 			<translation>Zamknij powiadomienie</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Dostępne są aktualizacje wtyczek.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Pokaż aktualizacje wtyczek</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3990,6 +4023,13 @@ Możesz przełączyć się na Testnet, aby przetestować {app_name} bez używani
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>ID źródła: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>Otwórz</translation>
 		</message>
 	</context>
 	<context>
@@ -5685,8 +5725,18 @@ txid:outpoint</translation>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;Upłynął limit czasu żądania rozgłoszenia. Może się tak zdarzyć, gdy opłata transakcyjna jest zbyt niska lub gdy transakcja została już rozgłoszona.&lt;/p&gt;&lt;p&gt;Sprawdź, czy została rozgłoszona: &lt;a href="{url}"&gt;Wyświetl w eksploratorze bloków&lt;/a&gt;. Jeśli nie znajduje się na liście, przed ponowną próbą może być konieczne zwiększenie opłaty.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>Wstecz</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>Stan rozgłoszenia jest nieznany</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5742,6 +5792,11 @@ Możesz też rozgłosić przez {url}</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>Upłynął limit czasu żądania rozgłoszenia. Może się tak zdarzyć, gdy opłata transakcyjna jest zbyt niska lub gdy transakcja została już rozgłoszona. Jeśli transakcja nie znajduje się w eksploratorze bloków, przed ponowną próbą może być konieczne zwiększenie opłaty.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>Txid podpisanego PSBT nie zgadza się z oryginalnym txid</translation>
 		</message>
@@ -5756,6 +5811,11 @@ Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Transakcja {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>Wyświetl w eksploratorze bloków</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

@@ -836,6 +836,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>เรียนรู้เพิ่มเติม</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>คำเตือนด้านความปลอดภัยเร่งด่วน: อุปกรณ์ Coldcard ทุกรุ่นได้รับผลกระทบจากช่องโหว่ในการสร้างซีด เงินอาจมีความเสี่ยง โปรดอ่านคำแนะนำทันทีและย้ายไปใช้ซีดที่สร้างด้วยเฟิร์มแวร์ที่แก้ไขแล้ว</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2789,6 +2802,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>มีการอัปเดตปลั๊กอิน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>พิมพ์</translation>
 		</message>
@@ -2841,6 +2859,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>ตั้งค่ารหัสผ่านล็อกแอปก่อนใน การตั้งค่า -&gt; ทั่วไป</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>แสดงการอัปเดตปลั๊กอิน</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3625,6 +3648,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>ปิดการแจ้งเตือน</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>มีการอัปเดตปลั๊กอิน</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>แสดงการอัปเดตปลั๊กอิน</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3972,6 +4005,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>รหัสแหล่ง: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>เปิด</translation>
 		</message>
 	</context>
 	<context>
@@ -5656,8 +5696,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;คำขอเผยแพร่ธุรกรรมหมดเวลา กรณีนี้อาจเกิดขึ้นเมื่อค่าธรรมเนียมธุรกรรมต่ำเกินไป หรือเมื่อธุรกรรมได้รับการเผยแพร่ไปแล้ว&lt;/p&gt;&lt;p&gt;ตรวจสอบว่าเผยแพร่แล้วหรือไม่: &lt;a href="{url}"&gt;ดูในตัวสำรวจบล็อก&lt;/a&gt; หากไม่มีรายการธุรกรรม อาจต้องเพิ่มค่าธรรมเนียมก่อนลองอีกครั้ง&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>ย้อนกลับ</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>ไม่ทราบสถานะการเผยแพร่</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5712,6 +5762,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>คำขอเผยแพร่ธุรกรรมหมดเวลา กรณีนี้อาจเกิดขึ้นเมื่อค่าธรรมเนียมธุรกรรมต่ำเกินไป หรือเมื่อธุรกรรมได้รับการเผยแพร่ไปแล้ว หากไม่มีรายการธุรกรรมในตัวสำรวจบล็อก อาจต้องเพิ่มค่าธรรมเนียมก่อนลองอีกครั้ง</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>txid ของ psbt ที่เซ็นแล้วไม่ตรงกับ txid เดิม</translation>
 		</message>
@@ -5725,6 +5780,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>ธุรกรรม {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>ดูในตัวสำรวจบล็อก</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

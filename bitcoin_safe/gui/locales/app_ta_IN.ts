@@ -837,6 +837,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>மேலும் அறிக</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>அவசர பாதுகாப்பு எச்சரிக்கை: அனைத்து Coldcard சாதன மாதிரிகளும் சீட் உருவாக்கும் பாதிப்பால் பாதிக்கப்பட்டுள்ளன. நிதி ஆபத்தில் இருக்கலாம். வழிகாட்டுதலை இப்போது படித்து, சரிசெய்யப்பட்ட ஃபார்ம்வேரைப் பயன்படுத்தி உருவாக்கப்பட்ட சீட்டுக்கு மாற்றவும்.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2801,6 +2814,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>செருகுநிரல் புதுப்பிப்புகள் உள்ளன.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>அச்சிடுக</translation>
 		</message>
@@ -2853,6 +2871,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>அமைப்புகள் -&gt; பொது என்பதில் முதலில் ஆப்ச் பூட்டு கடவுச்சொல்லை அமைக்கவும்.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>செருகுநிரல் புதுப்பிப்புகளைக் காட்டு</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3653,6 +3676,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 			<source>Close notification</source>
 			<translation>அறிவிப்பை மூடு</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>செருகுநிரல் புதுப்பிப்புகள் உள்ளன.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>செருகுநிரல் புதுப்பிப்புகளைக் காட்டு</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -4000,6 +4033,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>மூல ஐடி: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>திற</translation>
 		</message>
 	</context>
 	<context>
@@ -5701,8 +5741,18 @@ txid:அவுட்பாயிண்ட்</translation>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;பரப்பல் கோரிக்கையின் நேரம் முடிந்தது. பரிவர்த்தனைக் கட்டணம் மிகவும் குறைவாக இருக்கும்போதோ அல்லது பரிவர்த்தனை ஏற்கனவே பரப்பப்பட்டிருக்கும்போதோ இது நிகழலாம்.&lt;/p&gt;&lt;p&gt;அது பரப்பப்பட்டதா என்பதைச் சரிபார்க்கவும்: &lt;a href="{url}"&gt;பிளாக் எக்ஸ்ப்ளோரரில் காண்க&lt;/a&gt;. அது பட்டியலிடப்படவில்லை என்றால், மீண்டும் முயற்சிப்பதற்கு முன் கட்டணத்தை அதிகரிக்க வேண்டியிருக்கலாம்.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>பின்</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>பரப்பல் நிலை தெரியவில்லை</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5758,6 +5808,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>பரப்பல் கோரிக்கையின் நேரம் முடிந்தது. பரிவர்த்தனைக் கட்டணம் மிகவும் குறைவாக இருக்கும்போதோ அல்லது பரிவர்த்தனை ஏற்கனவே பரப்பப்பட்டிருக்கும்போதோ இது நிகழலாம். பரிவர்த்தனை பிளாக் எக்ஸ்ப்ளோரரில் பட்டியலிடப்படவில்லை என்றால், மீண்டும் முயற்சிப்பதற்கு முன் கட்டணத்தை அதிகரிக்க வேண்டியிருக்கலாம்.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>கையொப்பமிடப்பட்ட psbt இன் txid அசல் txid உடன் பொருந்தவில்லை</translation>
 		</message>
@@ -5772,6 +5827,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>பரிவர்த்தனை {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>பிளாக் எக்ஸ்ப்ளோரரில் காண்க</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>

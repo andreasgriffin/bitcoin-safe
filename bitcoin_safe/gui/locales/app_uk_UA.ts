@@ -837,6 +837,19 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 	</context>
 	<context>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Learn more</source>
+			<translation>Докладніше</translation>
+		</message>
+		<name>ColdcardSeedWarningBar</name>
+		<message>
+			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
+			<translation>Термінове попередження про безпеку: усі моделі пристроїв Coldcard постраждали від уразливості під час створення сід-фрази. Кошти можуть бути під загрозою. Ознайомтеся з рекомендаціями зараз і перейдіть на сід-фразу, створену за допомогою виправленої прошивки.</translation>
+		</message>
+	</context>
+	<context>
 		<name>ColumnFee</name>
 		<message>
 			<source>Confirmed</source>
@@ -2794,6 +2807,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Доступні оновлення плагінів.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Print</source>
 			<translation>Друк</translation>
 		</message>
@@ -2846,6 +2864,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Set an app lock password first in Settings -&gt; General.</source>
 			<translation>Спочатку встановіть пароль блокування застосунку в Налаштування -&gt; Загальні.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Показати оновлення плагінів</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3640,6 +3663,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>Закрити сповіщення</translation>
 		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Plugin updates are available.</source>
+			<translation>Доступні оновлення плагінів.</translation>
+		</message>
+		<name>NotificationBar</name>
+		<message>
+			<source>Show Plugin updates</source>
+			<translation>Показати оновлення плагінів</translation>
+		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3987,6 +4020,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Source ID: {source_id}</source>
 			<translation>ID джерела: {source_id}</translation>
+		</message>
+	</context>
+	<context>
+		<name>PluginWidget</name>
+		<message>
+			<source>Open</source>
+			<translation>Відкрити</translation>
 		</message>
 	</context>
 	<context>
@@ -5678,8 +5718,18 @@ txid:outpoint</source>
 	<context>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+			<translation>&lt;p&gt;Час очікування запиту на трансляцію минув. Це може статися, якщо комісія транзакції надто низька або якщо транзакцію вже було передано в мережу.&lt;/p&gt;&lt;p&gt;Перевірте, чи було її передано: &lt;a href="{url}"&gt;Переглянути в оглядачі блоків&lt;/a&gt;. Якщо її немає у списку, перед повторною спробою може знадобитися збільшити комісію.&lt;/p&gt;</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>Back</source>
 			<translation>Назад</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Broadcast status unknown</source>
+			<translation>Статус трансляції невідомий</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5735,6 +5785,11 @@ Or you can broadcast via {url}</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
+			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+			<translation>Час очікування запиту на трансляцію минув. Це може статися, якщо комісія транзакції надто низька або якщо транзакцію вже було передано в мережу. Якщо транзакції немає в оглядачі блоків, перед повторною спробою може знадобитися збільшити комісію.</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid</source>
 			<translation>TXID підписаної PSBT не збігається з оригінальним TXID</translation>
 		</message>
@@ -5749,6 +5804,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Транзакція {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>View in block explorer</source>
+			<translation>Переглянути в оглядачі блоків</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
