@@ -341,6 +341,64 @@ def test_parse_signed_pgp_message_rejects_invalid_payload() -> None:
         manager.parse_signed_pgp_message(b"not a pgp payload")
 
 
+def test_extract_unverified_clear_signed_message_plaintext() -> None:
+    """Test steps:
+    - Sign cleartext containing lines that OpenPGP must dash-escape.
+    - Extract the plaintext without importing the signer certificate.
+    - Assert the original content and line endings are restored.
+    """
+    cert = pysequoia.Cert.generate(user_id="cleartext@example.com")
+    plaintext = b"first address\r\n- address starting with a dash\r\nFrom address book\r\n"
+    signed_message = pysequoia.sign(
+        cert.secrets.signer(),
+        plaintext,
+        mode=pysequoia.SignatureMode.CLEAR,
+    )
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+
+    extracted = manager.extract_unverified_signed_message_plaintext(f"\n{signed_message.decode('utf-8')}\n")
+
+    assert extracted == plaintext
+
+
+def test_extract_unverified_inline_signed_message_plaintext() -> None:
+    """Test steps:
+    - Sign binary plaintext as an inline OpenPGP message.
+    - Extract the literal packet without importing the signer certificate.
+    - Assert the payload bytes are unchanged.
+    """
+    cert = pysequoia.Cert.generate(user_id="inline-plaintext@example.com")
+    plaintext = b"inline plaintext\x00with binary data"
+    signed_message = pysequoia.sign(
+        cert.secrets.signer(),
+        plaintext,
+        mode=pysequoia.SignatureMode.INLINE,
+    )
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+
+    extracted = manager.extract_unverified_signed_message_plaintext(signed_message)
+
+    assert extracted == plaintext
+
+
+def test_extract_unverified_detached_signature_rejects_missing_plaintext() -> None:
+    """Test steps:
+    - Create a detached signature, which carries no plaintext packet.
+    - Attempt unverified plaintext extraction.
+    - Assert extraction reports the missing payload.
+    """
+    cert = pysequoia.Cert.generate(user_id="detached@example.com")
+    signature = pysequoia.sign(
+        cert.secrets.signer(),
+        b"detached plaintext",
+        mode=pysequoia.SignatureMode.DETACHED,
+    )
+    manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+
+    with pytest.raises(PGPDecodingError, match="exactly one plaintext payload"):
+        manager.extract_unverified_signed_message_plaintext(signature)
+
+
 def test_verify_signed_message_block_rejects_partially_verified_signature_groups(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

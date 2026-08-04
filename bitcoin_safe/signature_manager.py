@@ -256,6 +256,9 @@ class SignatureVerifyer:
     Keep these constraints in mind when relying on these verification helpers.
     """
 
+    _CLEAR_SIGNED_HEADER = b"-----BEGIN PGP SIGNED MESSAGE-----"
+    _SIGNATURE_HEADER = b"-----BEGIN PGP SIGNATURE-----"
+
     def __init__(self, list_of_known_keys: list[SimpleGPGKey] | None, proxies: dict | None) -> None:
         """Initialize instance."""
         self.list_of_known_keys = list_of_known_keys if list_of_known_keys else []
@@ -381,6 +384,48 @@ class SignatureVerifyer:
                 raise PGPDecodingError(",".join(sig_error))
 
         return message_bytes, signatures
+
+    @classmethod
+    def _extract_clear_signed_plaintext(cls, message_bytes: bytes) -> bytes:
+        header_end = re.search(rb"\r?\n\r?\n", message_bytes)
+        if not header_end:
+            raise PGPDecodingError("Clear-signed message contains no plaintext separator.")
+
+        signature_start = message_bytes.find(cls._SIGNATURE_HEADER, header_end.end())
+        if signature_start < 0:
+            raise PGPMissingSignature("Signed message contains no signatures.")
+
+        dash_escaped = message_bytes[header_end.end() : signature_start]
+        if dash_escaped.endswith(b"\r\n"):
+            dash_escaped = dash_escaped[:-2]
+        elif dash_escaped.endswith(b"\n"):
+            dash_escaped = dash_escaped[:-1]
+        else:
+            raise PGPDecodingError("Cleartext is not separated from its signature.")
+
+        if dash_escaped.startswith(b"- "):
+            dash_escaped = dash_escaped[2:]
+        return dash_escaped.replace(b"\n- ", b"\n")
+
+    def extract_unverified_signed_message_plaintext(self, signed_message: str | bytes) -> bytes:
+        """Extract plaintext from a signed OpenPGP message without verifying its signature.
+
+        This supports clear-signed and inline-signed messages. The returned bytes
+        are untrusted until the caller verifies the complete signed message.
+        """
+        message_bytes, _signatures = self.parse_signed_pgp_message(signed_message)
+        armored_message = message_bytes.lstrip()
+        if armored_message.startswith(self._CLEAR_SIGNED_HEADER):
+            return self._extract_clear_signed_plaintext(armored_message)
+
+        literal_packets = [
+            packet.literal_data
+            for packet in PacketPile.from_bytes(message_bytes)
+            if packet.tag == Tag.Literal and packet.literal_data is not None
+        ]
+        if len(literal_packets) != 1:
+            raise PGPDecodingError("Signed message does not contain exactly one plaintext payload.")
+        return literal_packets[0]
 
     def download_public_key_from_signed_message(self, signed_message: str | bytes) -> tuple[str, str | None]:
         """Download a public key from a keyserver based on the signed message signature.
