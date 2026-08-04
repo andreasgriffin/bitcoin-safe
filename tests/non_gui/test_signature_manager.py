@@ -344,6 +344,7 @@ def test_parse_signed_pgp_message_rejects_invalid_payload() -> None:
 def test_extract_unverified_clear_signed_message_plaintext() -> None:
     """Test steps:
     - Sign cleartext containing lines that OpenPGP must dash-escape.
+    - Surround the armored message with multiple newlines.
     - Extract the plaintext without importing the signer certificate.
     - Assert the original content and line endings are restored.
     """
@@ -356,7 +357,9 @@ def test_extract_unverified_clear_signed_message_plaintext() -> None:
     )
     manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
 
-    extracted = manager.extract_unverified_signed_message_plaintext(f"\n{signed_message.decode('utf-8')}\n")
+    extracted = manager.extract_unverified_signed_message_plaintext(
+        f"\n\n{signed_message.decode('utf-8')}\n\n"
+    )
 
     assert extracted == plaintext
 
@@ -364,6 +367,7 @@ def test_extract_unverified_clear_signed_message_plaintext() -> None:
 def test_extract_unverified_inline_signed_message_plaintext() -> None:
     """Test steps:
     - Sign binary plaintext as an inline OpenPGP message.
+    - Surround the armored message with multiple newlines.
     - Extract the literal packet without importing the signer certificate.
     - Assert the payload bytes are unchanged.
     """
@@ -376,7 +380,7 @@ def test_extract_unverified_inline_signed_message_plaintext() -> None:
     )
     manager = SignatureVerifyer(list_of_known_keys=None, proxies=None)
 
-    extracted = manager.extract_unverified_signed_message_plaintext(signed_message)
+    extracted = manager.extract_unverified_signed_message_plaintext(b"\n\n" + signed_message + b"\n\n")
 
     assert extracted == plaintext
 

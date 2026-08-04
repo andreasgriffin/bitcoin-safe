@@ -414,13 +414,13 @@ class SignatureVerifyer:
         are untrusted until the caller verifies the complete signed message.
         """
         message_bytes, _signatures = self.parse_signed_pgp_message(signed_message)
-        armored_message = message_bytes.lstrip()
+        armored_message = message_bytes.strip()
         if armored_message.startswith(self._CLEAR_SIGNED_HEADER):
             return self._extract_clear_signed_plaintext(armored_message)
 
         literal_packets = [
             packet.literal_data
-            for packet in PacketPile.from_bytes(message_bytes)
+            for packet in PacketPile.from_bytes(armored_message)
             if packet.tag == Tag.Literal and packet.literal_data is not None
         ]
         if len(literal_packets) != 1:
