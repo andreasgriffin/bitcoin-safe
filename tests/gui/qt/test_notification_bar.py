@@ -36,6 +36,7 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.notification_bar_regtest import NotificationBarRegtest
 from bitcoin_safe.gui.qt.util import adjust_brightness
+from bitcoin_safe.gui.qt.warning_bars import ColdcardSeedWarningBar
 from bitcoin_safe.signals import SignalsMin
 
 
@@ -124,3 +125,17 @@ def test_notification_bar_ignores_style_change_event(qtbot: QtBot, monkeypatch) 
     bar.changeEvent(QEvent(QEvent.Type.StyleChange))
 
     assert calls == 0
+
+
+def test_coldcard_seed_warning_opens_learn_more_page(qtbot: QtBot, monkeypatch) -> None:
+    opened_urls: list[str] = []
+    monkeypatch.setattr("bitcoin_safe.gui.qt.warning_bars.webopen", opened_urls.append)
+
+    bar = ColdcardSeedWarningBar(signals_min=SignalsMin())
+    qtbot.addWidget(bar)
+
+    bar.optionalButton.click()
+
+    assert opened_urls == [bar.LEARN_MORE_URL]
+    assert "Urgent security warning" in bar.icon_label.textLabel.text()
+    assert "All Coldcard device models" in bar.icon_label.textLabel.text()
