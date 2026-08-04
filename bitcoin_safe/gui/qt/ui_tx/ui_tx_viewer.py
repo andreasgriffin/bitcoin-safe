@@ -44,7 +44,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 from PyQt6.QtCore import QEvent, Qt, pyqtSignal
-from PyQt6.QtGui import QAction, QColor, QShowEvent
+from PyQt6.QtGui import QAction, QColor, QResizeEvent, QShowEvent
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
@@ -435,6 +435,12 @@ class UITx_Viewer(UITx_Base):
         self.column_fee.fee_group.mempool_buttons.signal_edit_with_fee_icon.connect(
             self._on_edit_with_fee_icon
         )
+
+    def resizeEvent(self, a0: QResizeEvent | None) -> None:
+        """Keep the signer list from dominating the transaction viewer."""
+        super().resizeEvent(a0)
+        if a0:
+            self.tx_singning_steps_container.setMaximumHeight(a0.size().height() // 3)
 
     def _on_lang_switch(self):
         """On lang switch."""
