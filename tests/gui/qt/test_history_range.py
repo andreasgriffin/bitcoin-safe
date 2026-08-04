@@ -185,12 +185,12 @@ def test_history_range_coupling(
             start_ts, end_ts = sorted((requested_start_ts, requested_end_ts))
             return float(int(start_ts)), float(int(end_ts))
 
-        full_end = qt_wallet.wallet_balance_chart.datetime_axis.max().toSecsSinceEpoch()
+        full_start = qt_wallet.wallet_balance_chart.datetime_axis.min().toSecsSinceEpoch()
         qtbot.waitUntil(lambda: hidden_rows() == set(), timeout=5_000)
 
         moving_timestamp_item = model.item(2, history_list.Columns.NLOCKTIME_TIME)
         assert moving_timestamp_item
-        moving_timestamp_item.setData(float(full_end + 1), MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        moving_timestamp_item.setData(float(full_start - 1), MyItemDataRole.ROLE_CLIPBOARD_DATA)
         history_list.refresh_filters()
         assert history_list._date_range is None
         qtbot.waitUntil(lambda: hidden_rows() == set(), timeout=5_000)
