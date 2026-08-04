@@ -281,6 +281,7 @@ class Signals(SignalsMin):
     tab_history_forward = cast(SignalProtocol[[]], pyqtSignal())
 
     chain_data_changed = cast(SignalProtocol[[str]], pyqtSignal(str))  # the string is the reason
+    plugin_updates_changed = cast(SignalProtocol[[]], pyqtSignal())
     notification: SignalProtocol[[Message]] = pyqtSignal(object)  # type: ignore
 
     show_network_settings = cast(SignalProtocol[[]], pyqtSignal())

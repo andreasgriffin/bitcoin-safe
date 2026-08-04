@@ -2286,6 +2286,69 @@ def test_external_plugin_widget_enables_update_button_while_enabled(qapp: QAppli
         client.close()
 
 
+def test_plugin_manager_reports_disabled_plugin_updates(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+
+    def _empty_external_state(cls, context, external_registry):
+        del cls, context, external_registry
+        return {}
+
+    monkeypatch.setattr(PluginManager, "_refresh_external_state", classmethod(_empty_external_state))
+    client = _DisplayMetadataPluginClient()
+    client.set_plugin_identity(
+        plugin_source=PluginClientSource.EXTERNAL,
+        plugin_bundle_id="test-plugin",
+    )
+    manager = PluginManager(
+        **_plugin_manager_init_kwargs(tmp_path, loop_in_thread=None),
+        clients=[client],
+        parent=None,
+    )
+
+    try:
+        client.set_enabled(False)
+        client.set_external_state(update_available=True)
+
+        assert manager.has_plugin_updates()
+    finally:
+        manager.close()
+
+
+def test_plugin_manager_emits_plugin_updates_changed_after_registry_refresh(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+
+    def _empty_external_state(cls, context, external_registry):
+        del cls, context, external_registry
+        return {}
+
+    monkeypatch.setattr(PluginManager, "_refresh_external_state", classmethod(_empty_external_state))
+    signals = Signals()
+    manager_kwargs = _plugin_manager_init_kwargs(tmp_path, loop_in_thread=None)
+    manager_kwargs["wallet_functions"] = WalletFunctions(signals)
+    manager = PluginManager(
+        **manager_kwargs,
+        parent=None,
+    )
+    emissions = 0
+
+    def record_emission() -> None:
+        nonlocal emissions
+        emissions += 1
+
+    signals.plugin_updates_changed.connect(record_emission)
+
+    try:
+        manager._refresh_external_registry_state()
+
+        assert emissions == 1
+    finally:
+        manager.close()
+
+
 def test_external_plugin_widget_orders_action_buttons_left_to_right(qapp: QApplication) -> None:
     del qapp
     client = _DisplayMetadataPluginClient()

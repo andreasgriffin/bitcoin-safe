@@ -162,6 +162,8 @@ class NotificationBar(QWidget):
     def updateUi(self) -> None:
         """UpdateUi."""
         self.closeButton.setAccessibleName(self.tr("Close notification"))
+        self.icon_label.setText(self.tr("Plugin updates are available."))
+        self.optionalButton.setText(self.tr("Show Plugin updates"))
 
     def _refresh_theme_background(self) -> None:
         if self._base_background_color is not None:
