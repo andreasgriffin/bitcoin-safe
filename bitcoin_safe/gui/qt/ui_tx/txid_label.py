@@ -80,7 +80,7 @@ class TxidLabel(QWidget):
 
     def updateUi(self) -> None:
         """Update the txid controls."""
-        tx_url = self._get_tx_url()
+        tx_url = self.get_tx_url()
         self.label_txid_title.setText(self.tr("Txid: "))
         self.label_txid.setText(self._txid)
         self.label_txid.setToolTip(self._txid)
@@ -95,10 +95,10 @@ class TxidLabel(QWidget):
 
     def open_txid_in_block_explorer(self) -> None:
         """Open the current txid in the configured block explorer."""
-        if tx_url := self._get_tx_url():
+        if tx_url := self.get_tx_url():
             webopen(tx_url)
 
-    def _get_tx_url(self) -> str | None:
+    def get_tx_url(self) -> str | None:
         """Return the block explorer URL for the current txid."""
         if not self.config.network_config.mempool_url:
             return None

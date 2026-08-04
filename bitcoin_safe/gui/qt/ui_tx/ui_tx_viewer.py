@@ -29,9 +29,11 @@
 
 from __future__ import annotations
 
+import asyncio
 import enum
 import logging
 from functools import partial
+from html import escape
 from time import time
 from typing import Any, cast
 
@@ -47,6 +49,7 @@ from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
     QLabel,
+    QMessageBox,
     QPushButton,
     QSizePolicy,
     QSplitter,
@@ -894,6 +897,8 @@ class UITx_Viewer(UITx_Base):
                 self.client.broadcast(tx)
                 self.signals.signal_broadcast_tx.emit(tx)
                 return True
+            except (asyncio.TimeoutError, TimeoutError):
+                self._show_broadcast_timeout()
             except Exception as e:
                 caught_exception_message(
                     e,
@@ -914,6 +919,41 @@ class UITx_Viewer(UITx_Base):
             )
 
         return False
+
+    def _show_broadcast_timeout(self) -> None:
+        tx_url = self.txid_label.get_tx_url()
+        if tx_url:
+            message = self.tr(
+                "<p>The broadcast request timed out. This can happen when the transaction fee is "
+                "too low or when the transaction was already broadcast.</p>"
+                '<p>Check whether it was broadcast: <a href="{url}">View in block explorer</a>. '
+                "If it is not listed, the fee may need to be increased before retrying.</p>"
+            ).format(url=escape(tx_url, quote=True))
+        else:
+            message = self.tr(
+                "The broadcast request timed out. This can happen when the transaction fee is too "
+                "low or when the transaction was already broadcast. If the transaction is not "
+                "listed in a block explorer, the fee may need to be increased before retrying."
+            )
+
+        dialog = Message(
+            message,
+            title=self.tr("Broadcast status unknown"),
+            type=MessageType.Warning,
+            parent=self,
+            buttons=QMessageBox.StandardButton.Close,
+            no_show=True,
+        ).create()
+        view_button: QPushButton | None = None
+        if tx_url:
+            view_button = dialog.addButton(
+                self.tr("View in block explorer"), QMessageBox.ButtonRole.AcceptRole
+            )
+            dialog.setDefaultButton(view_button)
+
+        dialog.exec()
+        if view_button and dialog.clickedButton() is view_button:
+            self.txid_label.open_txid_in_block_explorer()
 
     def _set_blockchain(self):
         """Set blockchain."""

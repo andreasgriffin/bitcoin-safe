@@ -29,13 +29,105 @@
 
 from __future__ import annotations
 
+import asyncio
 from types import SimpleNamespace
 
 import pytest
 from bitcoin_qr_tools.data import DataType
+from PyQt6.QtWidgets import QMessageBox
 
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+from bitcoin_safe.gui.qt.util import MessageType
 from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum
+
+
+def test_broadcast_timeout_shows_explanation(monkeypatch) -> None:
+    """A timeout should use the dedicated explanation instead of a raw error."""
+
+    class TimeoutClient:
+        def broadcast(self, _tx: object) -> None:
+            raise asyncio.TimeoutError
+
+    events: list[str] = []
+    emitted_transactions: list[object] = []
+    viewer = SimpleNamespace(
+        client=TimeoutClient(),
+        signals=SimpleNamespace(
+            signal_broadcast_tx=SimpleNamespace(emit=emitted_transactions.append),
+        ),
+        _show_broadcast_timeout=lambda: events.append("timeout_message"),
+        tr=lambda message: message,
+    )
+
+    assert not UITx_Viewer._broadcast(viewer, object())
+    assert not emitted_transactions
+    assert events == ["timeout_message"]
+
+
+def test_broadcast_timeout_dialog_links_and_defaults_to_block_explorer(monkeypatch) -> None:
+    """The timeout dialog should make checking the explorer the primary action."""
+
+    class FakeDialog:
+        def __init__(self) -> None:
+            self.view_button = object()
+            self.added_button: tuple[str, QMessageBox.ButtonRole] | None = None
+            self.default_button: object | None = None
+            self.executed = False
+
+        def addButton(self, text: str, role: QMessageBox.ButtonRole) -> object:
+            self.added_button = (text, role)
+            return self.view_button
+
+        def setDefaultButton(self, button: object) -> None:
+            self.default_button = button
+
+        def exec(self) -> None:
+            self.executed = True
+
+        def clickedButton(self) -> object:
+            return self.view_button
+
+    dialog = FakeDialog()
+    messages: list[dict[str, object]] = []
+
+    class FakeMessage:
+        def __init__(self, message: str, **kwargs: object) -> None:
+            messages.append({"message": message, **kwargs})
+
+        def create(self) -> FakeDialog:
+            return dialog
+
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.Message", FakeMessage)
+
+    opened_urls: list[str] = []
+    tx_url = "https://mempool.example/tx/txid"
+    viewer = SimpleNamespace(
+        txid_label=SimpleNamespace(
+            get_tx_url=lambda: tx_url,
+            open_txid_in_block_explorer=lambda: opened_urls.append(tx_url),
+        ),
+        tr=lambda message: message,
+    )
+
+    UITx_Viewer._show_broadcast_timeout(viewer)
+
+    assert len(messages) == 1
+    message = messages[0]["message"]
+    assert isinstance(message, str)
+    assert "fee is too low" in message
+    assert "already broadcast" in message
+    assert f'href="{tx_url}"' in message
+    assert messages[0]["title"] == "Broadcast status unknown"
+    assert messages[0]["type"] == MessageType.Warning
+    assert messages[0]["buttons"] == QMessageBox.StandardButton.Close
+    assert messages[0]["no_show"] is True
+    assert dialog.added_button == (
+        "View in block explorer",
+        QMessageBox.ButtonRole.AcceptRole,
+    )
+    assert dialog.default_button is dialog.view_button
+    assert dialog.executed
+    assert opened_urls == [tx_url]
 
 
 @pytest.mark.parametrize(
