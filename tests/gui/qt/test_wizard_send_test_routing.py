@@ -558,6 +558,7 @@ def test_add_qt_wallet_does_not_restore_tutorial_step_twice(
         p2p_listening_update_lists=Mock(),
         update_all_history_initial_sync_widgets=Mock(),
         refresh_plugin_notification_bars=Mock(),
+        refresh_plugin_update_notification_bar=Mock(),
     )
 
     result = MainWindow.add_qt_wallet(main_window, qt_wallet, focus=False)
