@@ -486,7 +486,7 @@ segno = "1.6.1"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-qr-tools.git"
 reference = "main"
-resolved_reference = "b73032171827c7543e21ebc76f59c2879f100986"
+resolved_reference = "8c690dca255a1e3939ff1c9cb3c27893e0861570"
 
 [[package]]
 name = "bitcoin-safe-lib"
@@ -1874,13 +1874,13 @@ semver = "^3.0.1"
 typing-extensions = "^4.4"
 
 [package.extras]
-qt = ["pyside2 (>=5.14.0,<6.0.0) ; python_version < \"3.10\""]
+qt = ["pyside2 (>=5.15.2.1,<6.0.0.0) ; python_version < \"3.11\""]
 
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/HWI.git"
 reference = "master"
-resolved_reference = "2797ce34c8b647d51cb652e6a089766d58320f59"
+resolved_reference = "15a3511d64d35274c6cfe0df08b921a2a40588d4"
 
 [[package]]
 name = "identify"
@@ -2705,14 +2705,14 @@ numpy = {version = ">=2", markers = "python_version >= \"3.9\""}
 
 [[package]]
 name = "packaging"
-version = "26.2"
+version = "26.3"
 description = "Core utilities for Python packages"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["main", "build-mac", "build-wine", "dev"]
 files = [
-    {file = "packaging-26.2-py3-none-any.whl", hash = "sha256:5fc45236b9446107ff2415ce77c807cee2862cb6fac22b8a73826d0693b0980e"},
-    {file = "packaging-26.2.tar.gz", hash = "sha256:ff452ff5a3e828ce110190feff1178bb1f2ea2281fa2075aadb987c2fb221661"},
+    {file = "packaging-26.3-py3-none-any.whl", hash = "sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c"},
+    {file = "packaging-26.3.tar.gz", hash = "sha256:94edc256424af38762eb31306eed28beb9f0efc50a8837492c9d6fd6004aed79"},
 ]
 
 [[package]]
