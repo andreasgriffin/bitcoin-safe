@@ -846,7 +846,8 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
 Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
-			<translation>அவசர பாதுகாப்பு எச்சரிக்கை: அனைத்து Coldcard சாதன மாதிரிகளும் சீட் உருவாக்கும் பாதிப்பால் பாதிக்கப்பட்டுள்ளன. நிதி ஆபத்தில் இருக்கலாம். வழிகாட்டுதலை இப்போது படித்து, சரிசெய்யப்பட்ட ஃபார்ம்வேரைப் பயன்படுத்தி உருவாக்கப்பட்ட சீட்டுக்கு மாற்றவும்.</translation>
+			<translation>அவசர பாதுகாப்பு எச்சரிக்கை: அனைத்து Coldcard சாதன மாதிரிகளும் சீட் உருவாக்கும் பாதிப்பால் பாதிக்கப்பட்டுள்ளன.
+நிதி ஆபத்தில் இருக்கலாம். வழிகாட்டுதலை இப்போது படித்து, சரிசெய்யப்பட்ட ஃபார்ம்வேரைப் பயன்படுத்தி உருவாக்கப்பட்ட சீட்டுக்கு மாற்றவும்.</translation>
 		</message>
 	</context>
 	<context>

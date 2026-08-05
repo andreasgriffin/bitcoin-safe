@@ -846,7 +846,8 @@ adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onları
 		<message>
 			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
 Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
-			<translation>Acil güvenlik uyarısı: Tüm Coldcard cihaz modelleri, seed oluşturma güvenlik açığından etkilendi. Fonlar risk altında olabilir. Kılavuzu şimdi okuyun ve sabit ürün yazılımıyla oluşturulmuş bir seed'e geçin.</translation>
+			<translation>Acil güvenlik uyarısı: Tüm Coldcard cihaz modelleri, seed oluşturma güvenlik açığından etkilendi.
+Fonlar risk altında olabilir. Kılavuzu şimdi okuyun ve sabit ürün yazılımıyla oluşturulmuş bir seed'e geçin.</translation>
 		</message>
 	</context>
 	<context>
