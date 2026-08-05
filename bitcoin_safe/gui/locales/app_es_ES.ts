@@ -848,7 +848,8 @@ ya tienen transacciones que enlazan con otras direcciones. ¿Seguro que quieres 
 		<message>
 			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
 Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
-			<translation>Advertencia de seguridad urgente: todos los modelos de dispositivos Coldcard se vieron afectados por una vulnerabilidad en la generación de la semilla. Los fondos pueden estar en riesgo. Lee ahora las indicaciones y migra a una semilla generada con un firmware corregido.</translation>
+			<translation>Advertencia de seguridad urgente: todos los modelos de dispositivos Coldcard se vieron afectados por una vulnerabilidad en la generación de la semilla.
+Los fondos pueden estar en riesgo. Lee ahora las indicaciones y migra a una semilla generada con un firmware corregido.</translation>
 		</message>
 	</context>
 	<context>

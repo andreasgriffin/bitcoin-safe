@@ -844,7 +844,8 @@ have transactions linking to other addresses already. Are you sure you want to c
 		<message>
 			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
 Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
-			<translation>긴급 보안 경고: 모든 Coldcard 기기 모델이 시드 생성 취약점의 영향을 받았습니다. 자금이 위험할 수 있습니다. 지금 안내를 확인하고 수정된 펌웨어로 생성된 시드로 이전하세요.</translation>
+			<translation>긴급 보안 경고: 모든 Coldcard 기기 모델이 시드 생성 취약점의 영향을 받았습니다.
+자금이 위험할 수 있습니다. 지금 안내를 확인하고 수정된 펌웨어로 생성된 시드로 이전하세요.</translation>
 		</message>
 	</context>
 	<context>
