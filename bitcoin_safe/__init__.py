@@ -26,4 +26,4 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-__version__ = "2.1.2"
+__version__ = "2.1.3"
