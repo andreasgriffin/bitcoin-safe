@@ -39,7 +39,7 @@ from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.dialogs import AutoScanMode
-from PyQt6.QtCore import QSize, Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -65,6 +65,7 @@ from bitcoin_safe.gui.qt.step_progress_bar import StepProgressContainer
 from bitcoin_safe.gui.qt.tx_util import get_clients
 from bitcoin_safe.gui.qt.util import (
     clear_layout,
+    delayed_execution,
     get_neutral_surface_colors,
     set_no_margins,
     svg_tools,
@@ -493,7 +494,7 @@ class TxSigningDeviceCard(CardBase):
         if not export_widget:
             return
         export_widget.close()
-        QTimer.singleShot(0, self._sign_from_qr_popup_follow_up)
+        delayed_execution(self._sign_from_qr_popup_follow_up, self, delay=0)
 
     def _sign_from_qr_popup_follow_up(self) -> None:
         qr_importer = self._qr_importer()

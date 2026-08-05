@@ -33,13 +33,13 @@ from functools import partial
 from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import QRectF, Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QIcon, QPainter, QPixmap
 from PyQt6.QtWidgets import QApplication, QSystemTrayIcon, QWidget
 
 from bitcoin_safe.constants import APP_NAME, LOGO_NAME
 from bitcoin_safe.gui.qt.unlockable_main_window import UnlockableMainWindow
-from bitcoin_safe.gui.qt.util import Message, svg_tools
+from bitcoin_safe.gui.qt.util import Message, delayed_execution, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 
 MAX_TRAY_NOTIFICATIONS = 10
@@ -254,9 +254,10 @@ class TrayController(QSystemTrayIcon):
 
     def _show_notifications(self, messages: list[Message]) -> None:
         for index, message in enumerate(messages):
-            QTimer.singleShot(
-                SUPPRESSED_NOTIFICATION_REPLAY_DELAY_MS * index,
+            delayed_execution(
                 partial(self._show_notification, message),
+                self,
+                delay=SUPPRESSED_NOTIFICATION_REPLAY_DELAY_MS * index,
             )
 
     def _queue_suppressed_notification(self, message: Message) -> None:

@@ -49,7 +49,10 @@ class StartupWindowProbe(QObject):
         self._shown_at: dict[int, float] = {}
         self._reported_ids: set[int] = set()
         self._app.installEventFilter(self)
-        QTimer.singleShot(active_ms, self.stop)
+        self._stop_timer = QTimer(self)
+        self._stop_timer.setSingleShot(True)
+        self._stop_timer.timeout.connect(self.stop)
+        self._stop_timer.start(active_ms)
 
     def stop(self) -> None:
         self._app.removeEventFilter(self)

@@ -561,7 +561,7 @@ class MempoolScheduler(QObject):
 
         self.mempool_manager = mempool_manager
 
-        self.timer = QTimer()
+        self.timer = QTimer(self)
         self.timer.timeout.connect(self.set_data_from_mempoolspace)
         if ENABLE_TIMERS:
             self.timer.start(MEMPOOL_SCHEDULE_TIMER)
@@ -620,7 +620,7 @@ class MempoolButtons(VerticalButtonGroup):
 
         self.mempool_scheduler = MempoolScheduler(
             mempool_manager=mempool_manager,
-            parent=parent,
+            parent=self,
         )
         self.decimal_precision = decimal_precision
         self.fee_rate = fee_rate

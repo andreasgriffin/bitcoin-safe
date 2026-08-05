@@ -38,7 +38,7 @@ from bitcoin_qr_tools.data import SignerInfo
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.gui.qt.card_base import CardList
@@ -49,7 +49,7 @@ from bitcoin_safe.wallet import ProtoWallet
 
 from ...descriptors import AddressType
 from .keystore_ui import KeyStoreUI
-from .util import Message, MessageType
+from .util import Message, MessageType, delayed_execution
 
 logger = logging.getLogger(__name__)
 
@@ -175,8 +175,9 @@ class KeyStoreUIs(QWidget):
             return False
 
         self.setCurrentIndex(index)
-        QTimer.singleShot(
-            0, partial(self._keystore_uis[index].combo_brand.setFocus, Qt.FocusReason.OtherFocusReason)
+        combo_brand = self._keystore_uis[index].combo_brand
+        delayed_execution(
+            partial(combo_brand.setFocus, Qt.FocusReason.OtherFocusReason), combo_brand, delay=0
         )
         return True
 

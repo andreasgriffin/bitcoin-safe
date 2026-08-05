@@ -52,6 +52,7 @@ from PyQt6.QtCore import (
     QByteArray,
     QCoreApplication,
     QEvent,
+    QObject,
     QRectF,
     QSize,
     Qt,
@@ -1083,9 +1084,12 @@ def show_tooltip_after_delay(message: str, parent: QWidget | None = None) -> Non
     if not ENABLE_TIMERS:
         return
     # tooltip cannot be displayed immediately when called from a menu; wait 200ms
-    QTimer.singleShot(
-        200, partial(QToolTip.showText, QCursor.pos(), message, parent or QApplication.activeWindow())
-    )
+    tooltip_parent = parent or QApplication.activeWindow()
+    show_tooltip = partial(QToolTip.showText, QCursor.pos(), message, tooltip_parent)
+    if tooltip_parent is None:
+        QTimer.singleShot(200, show_tooltip)
+    else:
+        delayed_execution(show_tooltip, tooltip_parent, delay=200)
 
 
 def qicon_to_pil(qicon: QIcon, size=200) -> PilImage.Image:
@@ -1165,14 +1169,15 @@ def get_host_and_port(url) -> tuple[str | None, int | None]:
     return parsed_url.hostname, parsed_url.port
 
 
-def delayed_execution(f, parent, delay=10):
+def delayed_execution(callback: Callable[[], None], parent: QObject, delay: int = 10) -> None:
     """Delayed execution."""
     if not ENABLE_TIMERS:
-        f()
+        callback()
         return
     timer = QTimer(parent)
-    timer.setSingleShot(True)  # Make sure the timer runs only once
-    timer.timeout.connect(f)  # Connect the timeout signal to the function
+    timer.setSingleShot(True)
+    timer.timeout.connect(callback)
+    timer.timeout.connect(timer.deleteLater)
     timer.start(delay)
 
 

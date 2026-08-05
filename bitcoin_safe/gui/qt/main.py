@@ -64,7 +64,6 @@ from PyQt6.QtCore import (
     QPoint,
     QSettings,
     Qt,
-    QTimer,
     pyqtSignal,
 )
 from PyQt6.QtGui import (
@@ -673,13 +672,13 @@ class MainWindow(UnlockableMainWindow):
             logger.info(
                 f"Trigger syncing because {widget} has frequent flag somewhere and {block_hash} received via the p2p network"
             )
-            QTimer.singleShot(ELECTRUM_SERVER_DELAY_BLOCK, self.sync_all)
+            delayed_execution(self.sync_all, self, delay=ELECTRUM_SERVER_DELAY_BLOCK)
         elif widget := self.any_has_no_txs():
             # the electrum server processing blocks is slower than the bitcoin nodes, such that I have to delay syncing
             logger.info(
                 f"Trigger syncing because {widget} has no txs and {block_hash} received via the p2p network"
             )
-            QTimer.singleShot(ELECTRUM_SERVER_DELAY_BLOCK, self.sync_all)
+            delayed_execution(self.sync_all, self, delay=ELECTRUM_SERVER_DELAY_BLOCK)
         else:
             # trigger no needless syncing
             pass
@@ -733,7 +732,7 @@ class MainWindow(UnlockableMainWindow):
             self.apply_txs_to_wallets([tx], last_seen=int(datetime.now().timestamp()))
         else:
             # the electrum server is slower than the bitcoin nodes, such that I have to delay snycing
-            QTimer.singleShot(ELECTRUM_SERVER_DELAY_MEMPOOL_TX, self.sync_all)
+            delayed_execution(self.sync_all, self, delay=ELECTRUM_SERVER_DELAY_MEMPOOL_TX)
 
     def p2p_listening_update_lists(self, update_filter: UpdateFilter):
         """P2p listening update lists."""
@@ -1637,9 +1636,9 @@ class MainWindow(UnlockableMainWindow):
         # due to fulcrum delay,
         # syncing immediately after broadcast will not see the new tx.
         # So I have to wait until it is taken into the electrum server index
-        QTimer.singleShot(2000, self.sync_all)
+        delayed_execution(self.sync_all, self, delay=2000)
         # # the second sync is a backup, in case the first didnt catch
-        # QTimer.singleShot(6000, self.sync_all)
+        # delayed_execution(self.sync_all, self, delay=6000)
 
     def on_signal_open_history_for_tx(self, transaction: bdk.Transaction) -> None:
         """Open the history tab and select the given transaction when possible."""

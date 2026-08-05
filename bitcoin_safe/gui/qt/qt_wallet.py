@@ -394,9 +394,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self._file_path = file_path
         self._client_bridge_tasks: list[Future[Any]] = []
         self._sync_task: Future[Any] | None = None
-        self.progress_update_timer = QTimer()
-        self.timer_sync_retry = QTimer()
-        self.timer_sync_regularly = QTimer()
+        self.progress_update_timer = QTimer(self)
+        self.timer_sync_retry = QTimer(self)
+        self.timer_sync_regularly = QTimer(self)
         self.notified_tx_ids = set(notified_tx_ids if notified_tx_ids else [])
         self.category_core = CategoryCore(
             wallet=self.wallet,
