@@ -937,7 +937,7 @@ class TransactionSimulator(QMainWindow):
         self.setCentralWidget(self.chart)
 
         # QTimer to simulate incoming transactions
-        self.timer = QTimer()
+        self.timer = QTimer(self)
         self.timer.timeout.connect(self.add_transaction)
         if ENABLE_TIMERS:
             self.timer.start(3000)

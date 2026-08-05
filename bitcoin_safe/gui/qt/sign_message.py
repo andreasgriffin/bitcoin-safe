@@ -39,7 +39,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_usb.usb_gui import USBGui
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QGridLayout,
@@ -65,7 +65,7 @@ from bitcoin_safe.keystore import KeyStoreImporterTypes
 from ...message_signature_verifyer import MessageSignatureVerifyer
 from ...signals import SignalsMin, WalletFunctions
 from .gpg_verify import verify_gpg_signed_message
-from .util import Message, do_copy
+from .util import Message, delayed_execution, do_copy
 
 logger = logging.getLogger(__name__)
 
@@ -182,7 +182,7 @@ class SignMessageBase(QWidget):
     def _open_qr_scanner_from_popup_follow_up(self) -> None:
         export_widget = self.sign_qr_button.export_qr_widget
         export_widget.close()
-        QTimer.singleShot(0, self.dialog_open_qr_scanner)
+        delayed_execution(self.dialog_open_qr_scanner, self, delay=0)
 
     def on_raw_content(self, o: object):
         """On raw content."""

@@ -37,7 +37,7 @@ from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
-from PyQt6.QtCore import QObject, Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
     QDialog,
@@ -53,7 +53,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.sidebar.sidebar_tree import SidebarNode
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import delayed_execution, svg_tools
 from bitcoin_safe.plugin_framework.external_plugin_registry import (
     ExternalPluginCatalogEntry,
     ExternalPluginRegistry,
@@ -317,7 +317,7 @@ class SourceManagementDialog(QDialog):
         button: SpinningButton,
         callback: Callable[[], None],
     ) -> None:
-        QTimer.singleShot(0, partial(self._finish_spinning_action, button, callback))
+        delayed_execution(partial(self._finish_spinning_action, button, callback), button, delay=0)
 
     def _finish_spinning_action(
         self,

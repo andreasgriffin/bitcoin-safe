@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
-from PyQt6.QtCore import QEvent, QSize, Qt, QTimer
+from PyQt6.QtCore import QEvent, QSize, Qt
 from PyQt6.QtGui import QIcon, QPalette
 from PyQt6.QtWidgets import (
     QApplication,
@@ -54,6 +54,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.util import (
+    delayed_execution,
     get_neutral_surface_colors,
     should_process_theme_change,
     svg_tools,
@@ -351,7 +352,7 @@ class BasePluginWidget(CardBase):
         button: SpinningButton,
         callback: Callable[[], None],
     ) -> None:
-        QTimer.singleShot(0, partial(self._finish_spinning_button_action, button, callback))
+        delayed_execution(partial(self._finish_spinning_button_action, button, callback), button, delay=0)
 
     def _finish_spinning_button_action(
         self,

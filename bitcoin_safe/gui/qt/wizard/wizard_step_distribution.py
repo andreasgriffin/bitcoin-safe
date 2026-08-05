@@ -33,7 +33,7 @@ from dataclasses import dataclass
 from functools import partial
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from PyQt6.QtCore import QLocale, Qt, QTimer
+from PyQt6.QtCore import QLocale, Qt
 from PyQt6.QtGui import QPalette
 from PyQt6.QtWidgets import (
     QCheckBox,
@@ -60,6 +60,7 @@ from ..util import (
     Message,
     clear_layout,
     color_with_alpha,
+    delayed_execution,
     get_neutral_surface_colors,
     svg_tools,
     svg_tools_hardware_signer,
@@ -668,9 +669,15 @@ class DistributeSeeds(BaseTab):
         )
         self.backup_sheets_printed = True
         self._refresh_action_buttons()
-        QTimer.singleShot(0, partial(self.button_print_backup_sheets.setDefault, False))
-        QTimer.singleShot(
-            0, partial(self.checkbox_seed_words_attached.setFocus, Qt.FocusReason.OtherFocusReason)
+        delayed_execution(
+            partial(self.button_print_backup_sheets.setDefault, False),
+            self.button_print_backup_sheets,
+            delay=0,
+        )
+        delayed_execution(
+            partial(self.checkbox_seed_words_attached.setFocus, Qt.FocusReason.OtherFocusReason),
+            self.checkbox_seed_words_attached,
+            delay=0,
         )
 
     def _on_seed_words_attached_toggled(self, checked: bool) -> None:
