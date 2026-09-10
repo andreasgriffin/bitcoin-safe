@@ -57,7 +57,8 @@
       <description>
         <ul>
           <li>Upgraded HWI</li>
-          <li>Hardened external plugin loading to execute only signed source or bytecode artifacts.</li>
+          <li>Hardened external plugin Manager and plugin state preservation</li>
+          <li>Faster plugin loading on wallet startup</li>
         </ul>
       </description>
     </release>
