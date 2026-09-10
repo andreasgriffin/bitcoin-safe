@@ -514,7 +514,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.wallet_signals.updated.emit(UpdateFilter(refresh_all=True))
 
     def _on_plugin_state_recovery_required(self, client_class_name: str) -> None:
-        assert self.plugin_manager is not None
+        if not self.plugin_manager:
+            return
+
         backup_path = self.save_backup()
         if not backup_path:
             Message(
