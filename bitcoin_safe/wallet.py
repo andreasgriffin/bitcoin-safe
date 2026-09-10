@@ -2142,6 +2142,8 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def create_bump_fee_psbt(self, txinfos: TxUiInfos) -> TxBuilderInfos:
         """Create an RBF PSBT with an increased fee."""
+        if txinfos.cancellation_intent:
+            raise Exception("Cancellation transactions must use the cancellation builder")
         if txinfos.replace_tx is None:
             raise Exception("Cannot replace tx without txid")
         if txinfos.fee_rate is None:
@@ -2202,8 +2204,91 @@ class Wallet(BaseSaveableClass, CacheManager):
             self.labels.set_tx_label(txid_str, txinfos.tx_label, timestamp="now")
         return builder_infos
 
+    def create_cancel_psbt(self, txinfos: TxUiInfos) -> TxBuilderInfos:
+        """Create a replacement that drains the original inputs back to the wallet."""
+        replace_tx = txinfos.replace_tx
+        if replace_tx is None:
+            raise Exception("Cannot cancel tx without the original transaction")
+        if txinfos.fee_rate is None:
+            raise Exception("Cannot cancel tx without feerate")
+        if len(txinfos.recipients) != 1:
+            raise Exception("Cancellation requires exactly one recipient")
+
+        recipient = txinfos.recipients[0]
+        if (
+            not recipient.checked_max_amount
+            or recipient.amount != 0
+            or not self.is_my_address(recipient.address)
+        ):
+            raise Exception("Cancellation recipient must be one wallet-owned max recipient")
+
+        original_outpoints = [OutPoint.from_bdk(tx_input.previous_output) for tx_input in replace_tx.input()]
+        selected_utxos = [
+            utxo
+            for utxo in txinfos.utxo_dict.values()
+            if OutPoint.from_bdk(utxo.outpoint) in original_outpoints
+        ]
+        selected_outpoints = [OutPoint.from_bdk(utxo.outpoint) for utxo in selected_utxos]
+        if len(selected_outpoints) != len(original_outpoints) or set(selected_outpoints) != set(
+            original_outpoints
+        ):
+            raise Exception("Inconsistent TxUiInfos: cancellation does not have exactly the original inputs")
+
+        cancellation_script = bdk.Address(recipient.address, network=self.network).script_pubkey()
+        tx_builder = (
+            bdk.TxBuilder()
+            .add_global_xpubs()
+            .fee_rate(FeeRate.from_float_sats_vB(txinfos.fee_rate))
+            .manually_selected_only()
+            .set_exact_sequence(0xFFFFFFFD)
+        )
+        if locktime := txinfos.as_locktime():
+            tx_builder = tx_builder.nlocktime(locktime)
+        for outpoint in original_outpoints:
+            tx_builder = tx_builder.add_utxo(outpoint)
+        tx_builder = tx_builder.drain_to(cancellation_script)
+
+        try:
+            psbt = tx_builder.finish(self.bdkwallet)
+        except bdk.CreateTxError.FeeRateTooLow as e:
+            fee = Satoshis(value=int(e.required), network=self.network).str_with_unit(
+                color_formatting=None, btc_symbol=self.config.bitcoin_symbol.value
+            )
+            raise Exception(f"Fee below the allowed minimum fee = {fee}") from e
+
+        tx = psbt.extract_tx()
+        output_scripts = [output.script_pubkey.to_bytes() for output in tx.output()]
+        if output_scripts != [cancellation_script.to_bytes()]:
+            raise Exception("Cancellation PSBT contains an unexpected output")
+        if [OutPoint.from_bdk(tx_input.previous_output) for tx_input in tx.input()] != original_outpoints:
+            raise Exception("Cancellation PSBT does not use exactly the original inputs")
+        if any(tx_input.sequence >= 0xFFFFFFFE for tx_input in tx.input()):
+            raise Exception("Cancellation PSBT does not signal RBF")
+        try:
+            original_fee = self.bdkwallet.calculate_fee(replace_tx).to_sat()
+        except Exception as e:
+            raise Exception("Cannot validate the original transaction fee") from e
+        if psbt.fee() <= original_fee:
+            raise Exception("Cancellation PSBT fee must exceed the original fee")
+
+        self.persist()
+        utxos_for_input = UtxosForInputs(utxos=selected_utxos, spend_all_utxos=True)
+        builder_infos = TxBuilderInfos(
+            recipients=txinfos.recipients,
+            utxos_for_input=utxos_for_input,
+            psbt=psbt,
+            recipient_category=self.determine_recipient_category(selected_utxos),
+            fee_rate=txinfos.fee_rate,
+        )
+        builder_infos.hidden_tx_infos = txinfos.hidden
+        if txinfos.tx_label:
+            self.labels.set_tx_label(str(tx.compute_txid()), txinfos.tx_label, timestamp="now")
+        return builder_infos
+
     def create_psbt(self, txinfos: TxUiInfos) -> TxBuilderInfos:
         """Create a PSBT from the provided builder information."""
+        if txinfos.cancellation_intent:
+            return self.create_cancel_psbt(txinfos=txinfos)
         if txinfos.replace_tx:
             return self.create_bump_fee_psbt(txinfos=txinfos)
 

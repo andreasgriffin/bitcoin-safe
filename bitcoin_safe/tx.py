@@ -75,6 +75,7 @@ class HiddenTxUiInfos(BaseSaveableClass):
     known_classes = {**BaseSaveableClass.known_classes}
 
     replace_tx: bdk.Transaction | None = None
+    cancellation_intent: bool = False
     tx_label: str | None = None
     save_local_on_send: bool | None = None
     post_create_action: PostCreateEnum = PostCreateEnum.open_tab
@@ -86,6 +87,7 @@ class HiddenTxUiInfos(BaseSaveableClass):
         """Dump hidden fields."""
         d = super().dump()
         d["replace_tx"] = serialized_to_hex(self.replace_tx.serialize()) if self.replace_tx else None
+        d["cancellation_intent"] = self.cancellation_intent
         d["tx_label"] = self.tx_label
         d["save_local_on_send"] = self.save_local_on_send
         d["post_create_action"] = self.post_create_action.name
@@ -103,6 +105,7 @@ class HiddenTxUiInfos(BaseSaveableClass):
             dct["replace_tx"] = bdk.Transaction(hex_to_serialized(replace_tx))
 
         dct.setdefault("tx_label", None)
+        dct.setdefault("cancellation_intent", False)
         dct.setdefault("save_local_on_send", None)
         post_create_action = dct.get("post_create_action")
         if isinstance(post_create_action, str):
@@ -204,6 +207,14 @@ class TxUiInfos(BaseSaveableClass):
     @replace_tx.setter
     def replace_tx(self, value: bdk.Transaction | None) -> None:
         self.hidden.replace_tx = value
+
+    @property
+    def cancellation_intent(self) -> bool:
+        return self.hidden.cancellation_intent
+
+    @cancellation_intent.setter
+    def cancellation_intent(self, value: bool) -> None:
+        self.hidden.cancellation_intent = value
 
     @property
     def tx_label(self) -> str | None:

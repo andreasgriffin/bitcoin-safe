@@ -44,6 +44,22 @@ def test_tx_ui_infos_roundtrip_preserves_save_local_on_send() -> None:
     assert restored.hidden.save_local_on_send is True
 
 
+def test_tx_ui_infos_roundtrip_preserves_cancellation_intent() -> None:
+    """Cancellation intent should survive serialization roundtrips."""
+    txinfos = TxUiInfos(hidden=HiddenTxUiInfos(cancellation_intent=True))
+
+    restored = TxUiInfos._from_dumps(txinfos.dumps())
+
+    assert restored.cancellation_intent is True
+
+
+def test_tx_ui_infos_old_data_defaults_cancellation_intent_to_false() -> None:
+    """Persisted transaction data from before cancellation intent remains safe."""
+    txinfos = TxUiInfos._from_dumps(TxUiInfos().dumps())
+
+    assert txinfos.cancellation_intent is False
+
+
 def test_create_bump_fee_psbt_preserves_hidden_tx_infos(monkeypatch) -> None:
     """RBF creation should forward hidden tx metadata to the next viewer step."""
 
@@ -97,3 +113,16 @@ def test_create_bump_fee_psbt_preserves_hidden_tx_infos(monkeypatch) -> None:
 
     assert builder_infos.hidden_tx_infos is hidden
     assert labels == [("new-txid", "draft tx", "now")]
+
+
+def test_create_bump_fee_psbt_rejects_cancellation_intent() -> None:
+    """Cancellation must never reach the output-preserving BDK builder."""
+    txinfos = TxUiInfos(fee_rate=2.0, hidden=HiddenTxUiInfos(cancellation_intent=True))
+    txinfos.replace_tx = object()
+
+    try:
+        Wallet.create_bump_fee_psbt(object(), txinfos)
+    except Exception as error:
+        assert str(error) == "Cancellation transactions must use the cancellation builder"
+    else:
+        raise AssertionError("Cancellation intent was accepted by the bump fee builder")

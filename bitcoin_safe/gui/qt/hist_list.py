@@ -880,6 +880,7 @@ class HistList(MyTreeView[str]):
                 checked_max_amount=True,
             )
         ]
+        txinfos.cancellation_intent = True
 
         self.signals.open_tx_like.emit(txinfos)
 
