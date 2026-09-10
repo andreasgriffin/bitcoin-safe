@@ -31,7 +31,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from bitcoin_safe.plugin_framework.plugin_source_hash import iter_plugin_source_files
+from bitcoin_safe.plugin_framework.plugin_source_hash import (
+    compute_plugin_folder_hash,
+    iter_plugin_source_files,
+)
 
 
 def test_iter_plugin_source_files_ignores_nested_virtualenv_directory(tmp_path: Path) -> None:
@@ -46,3 +49,23 @@ def test_iter_plugin_source_files_ignores_nested_virtualenv_directory(tmp_path: 
     files = iter_plugin_source_files(plugin_dir)
 
     assert files == [included_file]
+
+
+def test_plugin_folder_hash_ignores_pycache_but_includes_explicit_bytecode(tmp_path: Path) -> None:
+    plugin_dir = tmp_path / "demo-plugin"
+    source_file = plugin_dir / "demo_plugin" / "plugin_bundle.py"
+    ignored_cache = plugin_dir / "demo_plugin" / "__pycache__" / "plugin_bundle.pyc"
+    signed_bytecode = plugin_dir / "demo_plugin" / "_bytecode" / "cpython-313" / "demo_plugin" / "client.pyc"
+    source_file.parent.mkdir(parents=True)
+    ignored_cache.parent.mkdir(parents=True)
+    signed_bytecode.parent.mkdir(parents=True)
+    source_file.write_text("VALUE = 'source'\n", encoding="utf-8")
+    ignored_cache.write_bytes(b"ignored")
+    signed_bytecode.write_bytes(b"signed")
+
+    original_hash = compute_plugin_folder_hash(plugin_dir)
+    ignored_cache.write_bytes(b"forged")
+    assert compute_plugin_folder_hash(plugin_dir) == original_hash
+
+    signed_bytecode.write_bytes(b"updated signed payload")
+    assert compute_plugin_folder_hash(plugin_dir) != original_hash

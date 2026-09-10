@@ -30,9 +30,11 @@
 from __future__ import annotations
 
 import asyncio
+import py_compile
 import shutil
 import sys
 import threading
+import zipfile
 from collections.abc import Callable, Coroutine
 from dataclasses import replace
 from datetime import datetime, timezone
@@ -108,6 +110,9 @@ from bitcoin_safe.plugin_framework.plugin_manager import (
     SourceCatalogItem,
 )
 from bitcoin_safe.plugin_framework.plugin_server import PluginPermission
+from bitcoin_safe.plugin_framework.plugin_source_download import (
+    fetch_plugin_source_bytes,
+)
 from bitcoin_safe.plugin_framework.plugin_source_hash import compute_plugin_folder_hash
 from bitcoin_safe.plugin_framework.plugin_source_models import (
     PluginSourceModelError,
@@ -306,11 +311,25 @@ class _CloseTrackingPluginClient(_DisplayMetadataPluginClient):
 class _FailingFromDumpPluginClient(_DisplayMetadataPluginClient):
     should_fail = True
 
+    def __init__(self, state: str = "original") -> None:
+        super().__init__()
+        self.state = state
+
+    def dump(self) -> dict[str, object]:
+        data = super().dump()
+        data["state"] = self.state
+        return data
+
     @classmethod
     def from_dump(cls, dct: dict[str, object], class_kwargs: dict | None = None):
         if cls.should_fail:
             raise RuntimeError("boom")
-        return super().from_dump(dct, class_kwargs=class_kwargs)
+        restored = super().from_dump(dct, class_kwargs=class_kwargs)
+        assert isinstance(restored, cls)
+        state = dct.get("state")
+        if isinstance(state, str):
+            restored.state = state
+        return restored
 
 
 class _GenericBuiltinBundleModule:
@@ -919,8 +938,10 @@ def test_plugin_manager_refresh_external_state_keeps_installed_plugin_when_newer
         ]
     )
 
-    def _fake_fetch_bytes(url: str, headers: dict[str, str], proxy_info: ProxyInfo | None) -> bytes:
-        del headers, proxy_info
+    def _fake_fetch_bytes(
+        url: str, headers: dict[str, str], proxy_info: ProxyInfo | None, max_bytes: int, purpose: str
+    ) -> bytes:
+        del headers, proxy_info, max_bytes, purpose
         if url.endswith(".asc"):
             return b"signature"
         if url.endswith("pyproject.toml"):
@@ -945,7 +966,7 @@ def test_plugin_manager_refresh_external_state_keeps_installed_plugin_when_newer
             return True, "A" * 40
 
     monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.external_plugin_registry.fetch_bytes", _fake_fetch_bytes
+        "bitcoin_safe.plugin_framework.external_plugin_registry.fetch_plugin_source_bytes", _fake_fetch_bytes
     )
     monkeypatch.setattr(
         "bitcoin_safe.plugin_framework.external_plugin_registry.SignatureVerifyer", _FakeVerifier
@@ -1169,6 +1190,70 @@ def test_external_registry_derives_archive_url_from_manifest_url() -> None:
     archive_url = ExternalPluginRegistry._archive_url_from_manifest_url(manifest_url, "main")
 
     assert archive_url == "https://dummyurl.org/andreasgriffin/bitcoin-safe-plugins/archive/main.zip"
+
+
+def test_external_registry_rejects_http_plugin_source_url() -> None:
+    with pytest.raises(ExternalPluginError, match="must use HTTPS"):
+        ExternalPluginRegistry._normalize_manifest_url("http://plugins.example/source.toml")
+
+
+def test_plugin_source_download_rejects_oversized_local_file(tmp_path: Path) -> None:
+    source_file = tmp_path / "source.toml"
+    source_file.write_bytes(b"oversized")
+
+    with pytest.raises(ExternalPluginError, match="Source manifest exceeds"):
+        fetch_plugin_source_bytes(str(source_file), {}, None, len(b"oversized") - 1, "source manifest")
+
+
+def test_plugin_source_download_rejects_oversized_content_length(monkeypatch) -> None:
+    class _Response:
+        headers = {"Content-Length": "2"}
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc_value, traceback) -> None:
+            del exc_type, exc_value, traceback
+
+        def raise_for_status(self) -> None:
+            return None
+
+        def iter_content(self, chunk_size: int):
+            del chunk_size
+            raise AssertionError("response body should not be read")
+
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.plugin_source_download.requests.get",
+        lambda *_args, **_kwargs: _Response(),
+    )
+
+    with pytest.raises(ExternalPluginError, match="Plugin archive exceeds"):
+        fetch_plugin_source_bytes("https://plugins.example/archive.zip", {}, None, 1, "plugin archive")
+
+
+def test_external_registry_rejects_oversized_zip_member(tmp_path: Path, monkeypatch) -> None:
+    archive_path = tmp_path / "plugin.zip"
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr("plugin/data.bin", b"data")
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    monkeypatch.setattr(
+        "bitcoin_safe.plugin_framework.plugin_source_download.MAX_ARCHIVE_MEMBER_UNCOMPRESSED_BYTES", 1
+    )
+
+    with pytest.raises(ExternalPluginError, match="oversized file"):
+        registry._extract_zip_safely(archive_path, tmp_path / "extract")
+
+
+def test_external_registry_rejects_zip_with_too_many_members(tmp_path: Path, monkeypatch) -> None:
+    archive_path = tmp_path / "plugin.zip"
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr("plugin/one.txt", b"one")
+        archive.writestr("plugin/two.txt", b"two")
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_source_download.MAX_ARCHIVE_MEMBERS", 1)
+
+    with pytest.raises(ExternalPluginError, match="file limit"):
+        registry._extract_zip_safely(archive_path, tmp_path / "extract")
 
 
 def test_external_registry_derives_archive_url_from_raw_github_manifest_url() -> None:
@@ -1399,8 +1484,10 @@ def test_external_registry_fetch_and_verify_manifest_uses_proxy_info(tmp_path: P
     )
     captured_proxy_infos: list[ProxyInfo | None] = []
 
-    def _fake_fetch_bytes(url: str, headers: dict[str, str], proxy_info: ProxyInfo | None) -> bytes:
-        del headers
+    def _fake_fetch_bytes(
+        url: str, headers: dict[str, str], proxy_info: ProxyInfo | None, max_bytes: int, purpose: str
+    ) -> bytes:
+        del headers, max_bytes, purpose
         captured_proxy_infos.append(proxy_info)
         if url.endswith(".asc"):
             return b"signature"
@@ -1421,7 +1508,7 @@ def test_external_registry_fetch_and_verify_manifest_uses_proxy_info(tmp_path: P
             return True, "A" * 40
 
     monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.external_plugin_registry.fetch_bytes", _fake_fetch_bytes
+        "bitcoin_safe.plugin_framework.external_plugin_registry.fetch_plugin_source_bytes", _fake_fetch_bytes
     )
     monkeypatch.setattr(
         "bitcoin_safe.plugin_framework.external_plugin_registry.SignatureVerifyer", _FakeVerifier
@@ -1791,7 +1878,7 @@ def test_external_registry_load_module_reloads_changed_plugin_package_modules(tm
     (package_dir / "plugin_bundle.py").write_text(
         "\n".join(
             [
-                "from test_plugin.client import VALUE",
+                "from .client import VALUE",
                 "",
                 "VALUE_FROM_CLIENT = VALUE",
                 "",
@@ -1800,82 +1887,149 @@ def test_external_registry_load_module_reloads_changed_plugin_package_modules(tm
         encoding="utf-8",
     )
 
-    first_module = ExternalPluginRegistry._load_module(
-        "bitcoin_safe_external_plugin_test_plugin_old_hash",
-        package_dir / "plugin_bundle.py",
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    layout = registry._resolve_plugin_artifact_layout(
         plugin_dir,
+        parse_plugin_pyproject(
+            {
+                "tool": {
+                    "poetry": {"name": "test-plugin", "version": "1", "description": "Test"},
+                    "bitcoin_safe": {
+                        "plugin": {
+                            "schema_version": "1",
+                            "display_name": "Test",
+                            "plugin_api_version": "1",
+                            "entrypoint": "test_plugin/plugin_bundle.py",
+                            "bitcoin_safe_version": ">=0",
+                        }
+                    },
+                }
+            },
+            "pyproject.toml",
+        ),
+    )
+    first_module = registry._load_module(
+        "bitcoin_safe_external_plugin_test_plugin_old_hash",
+        "bitcoin_safe_external_plugin_test_plugin_old_hash.test_plugin.plugin_bundle",
+        plugin_dir,
+        layout,
     )
 
     assert first_module.VALUE_FROM_CLIENT == "old"
 
     (package_dir / "client.py").write_text('VALUE = "new value from update"\n', encoding="utf-8")
 
-    second_module = ExternalPluginRegistry._load_module(
+    second_module = registry._load_module(
         "bitcoin_safe_external_plugin_test_plugin_new_hash",
-        package_dir / "plugin_bundle.py",
+        "bitcoin_safe_external_plugin_test_plugin_new_hash.test_plugin.plugin_bundle",
         plugin_dir,
+        layout,
     )
 
     assert second_module.VALUE_FROM_CLIENT == "new value from update"
 
 
-def test_external_registry_load_module_isolates_top_level_import_aliases(tmp_path: Path) -> None:
-    first_plugin_dir = tmp_path / "bundle-one"
-    first_package_dir = first_plugin_dir / "first_plugin"
-    first_package_dir.mkdir(parents=True)
-    (first_package_dir / "__init__.py").write_text("", encoding="utf-8")
-    (first_plugin_dir / "helper.py").write_text('VALUE = "ONE"\n', encoding="utf-8")
-    (first_package_dir / "plugin_bundle.py").write_text(
-        "\n".join(
-            [
-                "import helper",
-                "",
-                "VALUE_FROM_HELPER = helper.VALUE",
-                "",
-            ]
+def test_external_registry_load_module_rejects_absolute_intra_package_import(tmp_path: Path) -> None:
+    plugin_dir = tmp_path / "bundle"
+    package_dir = plugin_dir / "test_plugin"
+    package_dir.mkdir(parents=True)
+    (package_dir / "__init__.py").write_text("", encoding="utf-8")
+    (package_dir / "client.py").write_text('VALUE = "safe"\n', encoding="utf-8")
+    (package_dir / "plugin_bundle.py").write_text("from test_plugin.client import VALUE\n", encoding="utf-8")
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    layout = registry._resolve_plugin_artifact_layout(
+        plugin_dir,
+        parse_plugin_pyproject(
+            {
+                "tool": {
+                    "poetry": {"name": "test-plugin", "version": "1", "description": "Test"},
+                    "bitcoin_safe": {
+                        "plugin": {
+                            "schema_version": "1",
+                            "display_name": "Test",
+                            "plugin_api_version": "1",
+                            "entrypoint": "test_plugin/plugin_bundle.py",
+                            "bitcoin_safe_version": ">=0",
+                        }
+                    },
+                }
+            },
+            "pyproject.toml",
         ),
-        encoding="utf-8",
     )
 
-    second_plugin_dir = tmp_path / "bundle-two"
-    second_package_dir = second_plugin_dir / "second_plugin"
-    second_package_dir.mkdir(parents=True)
-    (second_package_dir / "__init__.py").write_text("", encoding="utf-8")
-    (second_plugin_dir / "helper.py").write_text('VALUE = "TWO"\n', encoding="utf-8")
-    (second_package_dir / "plugin_bundle.py").write_text(
-        "\n".join(
-            [
-                "import helper",
-                "",
-                "VALUE_FROM_HELPER = helper.VALUE",
-                "",
-            ]
-        ),
-        encoding="utf-8",
+    with pytest.raises(ModuleNotFoundError):
+        registry._load_module(
+            "bitcoin_safe_external_plugin_test_hash",
+            "bitcoin_safe_external_plugin_test_hash.test_plugin.plugin_bundle",
+            plugin_dir,
+            layout,
+        )
+
+
+@pytest.mark.parametrize("bytecode_mode", [False, True])
+def test_external_registry_load_module_never_executes_forged_pycache(
+    tmp_path: Path, bytecode_mode: bool
+) -> None:
+    plugin_dir = tmp_path / "bundle"
+    package_dir = plugin_dir / "test_plugin"
+    package_dir.mkdir(parents=True)
+    (package_dir / "__init__.py").write_text("", encoding="utf-8")
+    client_source = package_dir / "client.py"
+    client_source.write_text('VALUE = "signed"\n', encoding="utf-8")
+    entrypoint = package_dir / "plugin_bundle.py"
+    entrypoint.write_text("from .client import VALUE\nVALUE_FROM_CLIENT = VALUE\n", encoding="utf-8")
+    cache_tag = sys.implementation.cache_tag
+    assert cache_tag is not None
+    forged_cache = package_dir / "__pycache__" / f"plugin_bundle.{cache_tag}.pyc"
+    forged_cache.parent.mkdir()
+    forged_source = tmp_path / "forged.py"
+    forged_source.write_text('VALUE_FROM_CLIENT = "forged"\n', encoding="utf-8")
+    py_compile.compile(
+        str(forged_source),
+        cfile=str(forged_cache),
+        doraise=True,
+        invalidation_mode=py_compile.PycInvalidationMode.UNCHECKED_HASH,
     )
 
-    original_sys_path = sys.path[:]
-    try:
-        first_module = ExternalPluginRegistry._load_module(
-            "bitcoin_safe_external_plugin_first_plugin_hash",
-            first_package_dir / "plugin_bundle.py",
-            first_plugin_dir,
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    plugin_spec = parse_plugin_pyproject(
+        {
+            "tool": {
+                "poetry": {"name": "test-plugin", "version": "1", "description": "Test"},
+                "bitcoin_safe": {
+                    "plugin": {
+                        "schema_version": "1",
+                        "display_name": "Test",
+                        "plugin_api_version": "1",
+                        "entrypoint": "test_plugin/plugin_bundle.py",
+                        "bitcoin_safe_version": ">=0",
+                    }
+                },
+            }
+        },
+        "pyproject.toml",
+    )
+    if bytecode_mode:
+        bytecode_root = package_dir / "_bytecode" / cache_tag / "test_plugin"
+        bytecode_root.mkdir(parents=True)
+        py_compile.compile(
+            str(package_dir / "__init__.py"), cfile=str(bytecode_root / "__init__.pyc"), doraise=True
         )
-        second_module = ExternalPluginRegistry._load_module(
-            "bitcoin_safe_external_plugin_second_plugin_hash",
-            second_package_dir / "plugin_bundle.py",
-            second_plugin_dir,
-        )
+        py_compile.compile(str(client_source), cfile=str(bytecode_root / "client.pyc"), doraise=True)
+        client_source.unlink()
+        (package_dir / "__init__.py").unlink()
 
-        assert first_module.VALUE_FROM_HELPER == "ONE"
-        assert second_module.VALUE_FROM_HELPER == "TWO"
-        assert "helper" not in sys.modules
-        assert str(first_plugin_dir.resolve()) not in sys.path
-        assert str(second_plugin_dir.resolve()) not in sys.path
-    finally:
-        sys.path[:] = original_sys_path
-        sys.modules.pop("bitcoin_safe_external_plugin_first_plugin_hash", None)
-        sys.modules.pop("bitcoin_safe_external_plugin_second_plugin_hash", None)
+    layout = registry._resolve_plugin_artifact_layout(plugin_dir, plugin_spec)
+    module = registry._load_module(
+        f"bitcoin_safe_external_plugin_pycache_{bytecode_mode}",
+        f"bitcoin_safe_external_plugin_pycache_{bytecode_mode}.test_plugin.plugin_bundle",
+        plugin_dir,
+        layout,
+    )
+
+    assert module.VALUE_FROM_CLIENT == "signed"
+    assert forged_cache.exists()
 
 
 def test_external_registry_persists_structured_catalog_with_btcpay_config(tmp_path: Path) -> None:
@@ -3355,7 +3509,6 @@ def test_plugin_manager_from_dump_reuses_external_state_from_class_kwargs(
         },
         class_kwargs=class_kwargs,
     )
-
     try:
         assert refresh_calls == 1
     finally:
@@ -3381,7 +3534,6 @@ def test_plugin_manager_dump_writes_serialized_client_dumps_for_legacy_client_st
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
-
     try:
         dumped = manager.dump()
 
@@ -3413,7 +3565,6 @@ def test_plugin_manager_from_dump_keeps_legacy_deserialized_clients(
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
-
     try:
         assert client.close_calls == 0
         assert manager.clients == [client]
@@ -3552,13 +3703,24 @@ def test_plugin_manager_keeps_payload_pending_when_client_from_dump_fails_then_r
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
+    recovery_notifications: list[str] = []
+    manager.widget.signal_plugin_state_recovery_required.connect(recovery_notifications.append)
 
     try:
         assert manager.clients == []
         assert manager.serialized_client_dumps == [payload]
 
-        _FailingFromDumpPluginClient.should_fail = False
+        manager.create_and_connect_clients(
+            descriptor=_test_descriptor(),
+            wallet_id="wallet-id",
+            category_core=SimpleNamespace(),
+        )
 
+        assert manager.clients == []
+        assert manager.serialized_client_dumps == [payload]
+        assert recovery_notifications == [_FailingFromDumpPluginClient.__name__]
+
+        _FailingFromDumpPluginClient.should_fail = False
         manager.create_and_connect_clients(
             descriptor=_test_descriptor(),
             wallet_id="wallet-id",
@@ -3567,6 +3729,146 @@ def test_plugin_manager_keeps_payload_pending_when_client_from_dump_fails_then_r
 
         assert len(manager.clients) == 1
         assert isinstance(manager.clients[0], _FailingFromDumpPluginClient)
+        assert manager.serialized_client_dumps == []
+        assert recovery_notifications == [_FailingFromDumpPluginClient.__name__]
+    finally:
+        _FailingFromDumpPluginClient.should_fail = True
+        manager.close()
+
+
+def test_plugin_manager_does_not_create_fresh_client_when_recovery_is_rejected(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    client = _FailingFromDumpPluginClient()
+    client.set_plugin_identity(plugin_source=PluginClientSource.BUILTIN)
+    payload = _serialized_client_payload(client)
+    client.close()
+
+    _patch_plugin_manager_for_builtin_client(
+        monkeypatch, _FailingFromDumpPluginClient, _FailingBuiltinBundleModule
+    )
+    manager = PluginManager.from_dump(
+        {
+            "__class__": PluginManager.__name__,
+            "VERSION": PluginManager.VERSION,
+            "serialized_client_dumps": [payload],
+            "plugin_permissions": {},
+        },
+        class_kwargs=_plugin_manager_class_kwargs(tmp_path),
+    )
+    recovery_requests: list[str] = []
+    manager.widget.signal_plugin_state_recovery_required.connect(recovery_requests.append)
+    manager.set_plugin_state_recovery_allowed(False)
+
+    try:
+        manager.create_and_connect_clients(
+            descriptor=_test_descriptor(),
+            wallet_id="wallet-id",
+            category_core=SimpleNamespace(),
+        )
+
+        assert manager.clients == []
+        assert manager.serialized_client_dumps == [payload]
+        assert recovery_requests == [_FailingFromDumpPluginClient.__name__]
+    finally:
+        manager.close()
+
+
+def test_plugin_manager_preserves_disabled_plugin_state_through_broken_update_delete_reinstall(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    _FailingFromDumpPluginClient.should_fail = True
+    _patch_plugin_manager_for_builtin_client(
+        monkeypatch, _FailingFromDumpPluginClient, _FailingBuiltinBundleModule
+    )
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_manager.question_dialog", lambda **kwargs: True)
+
+    client = _FailingFromDumpPluginClient(state="important state")
+    client.set_plugin_identity(
+        plugin_source=PluginClientSource.EXTERNAL,
+        plugin_bundle_id="test-plugin",
+    )
+    client.set_enabled(False)
+    payload = _serialized_client_payload(client)
+    loop_in_thread = _ImmediateLoopInThread()
+    manager = PluginManager(
+        clients=[client],
+        parent=None,
+        **_plugin_manager_init_kwargs(tmp_path, loop_in_thread=loop_in_thread),
+    )
+    installed_versions: list[str] = []
+    manager.widget.signal_plugin_state_recovery_required.connect(
+        lambda class_name: manager.set_plugin_state_recovery_allowed(False)
+    )
+    entry = ExternalPluginCatalogEntry(
+        source_id="test-source",
+        source_display_name="Test Source",
+        bundle_id="test-plugin",
+        version="2.0.0",
+        display_name="Test Plugin",
+        description="Test description",
+        provider="Tests",
+        entrypoint="test_plugin/plugin_bundle.py",
+        plugin_api_version="1",
+        app_version_specifier=">=0.0.0",
+        folder_hash="broken-hash",
+        release_ref="broken",
+        update_available=True,
+        installed_version="1.0.0",
+    )
+    try:
+
+        async def install_plugin(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+            del source_id, bundle_id
+            installed_versions.append(entry.version)
+            return _installed_source_plugin_metadata(
+                source_id=entry.source_id,
+                bundle_id=entry.bundle_id,
+                version=entry.version,
+                folder_hash=entry.folder_hash,
+            )
+
+        monkeypatch.setattr(manager.external_registry, "install_plugin", install_plugin)
+        monkeypatch.setattr(manager, "_refresh_after_registry_change", lambda runtime_changed: None)
+        monkeypatch.setattr(manager, "_refresh_external_registry_state", lambda: True)
+        manager.update_installed_source_plugin(client, entry)
+        assert installed_versions == ["2.0.0"]
+        manager.clients = []
+        manager.serialized_client_dumps = [payload]
+
+        # The broken update and subsequent reinstall must not replace the pending payload.
+        assert manager._restore_pending_clients_by_class({_FailingFromDumpPluginClient}) == {}
+        assert manager.serialized_client_dumps == [payload]
+
+        manager.available_source_plugins_by_bundle_id = {entry.bundle_id: entry}
+        monkeypatch.setattr(manager.external_registry, "remove_installed_plugin", lambda bundle_id: None)
+        monkeypatch.setattr(manager, "_refresh_external_registry_state", lambda: False)
+        manager.delete_installed_source_plugin_by_bundle_id(entry.bundle_id)
+        assert manager.serialized_client_dumps == [payload]
+
+        manager.install_source_plugin(entry)
+        assert installed_versions == ["2.0.0", "2.0.0"]
+        assert manager.serialized_client_dumps == [payload]
+
+        # Persist the wallet state, close the manager, and reopen it before recovery.
+        manager_dump = manager.dump()
+        manager.close()
+        manager = PluginManager.from_dump(
+            manager_dump,
+            class_kwargs=_plugin_manager_class_kwargs(tmp_path, loop_in_thread=loop_in_thread),
+        )
+        manager.widget.signal_plugin_state_recovery_required.connect(
+            lambda class_name: manager.set_plugin_state_recovery_allowed(False)
+        )
+        assert manager.serialized_client_dumps == [payload]
+
+        # Once the original implementation can load again, the original state is restored.
+        _FailingFromDumpPluginClient.should_fail = False
+        restored = manager._restore_pending_clients_by_class({_FailingFromDumpPluginClient})
+        restored_client = restored[_FailingFromDumpPluginClient]
+        assert restored_client.state == "important state"
         assert manager.serialized_client_dumps == []
     finally:
         _FailingFromDumpPluginClient.should_fail = True

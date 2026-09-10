@@ -365,6 +365,34 @@ def test_demo_paid_plugin_requires_active_subscription_on_mainnet(
 
 
 @pytest.mark.marker_qt_1
+def test_paid_plugin_load_can_defer_subscription_refresh(
+    qapp: QApplication,
+    test_config: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    del qapp
+    plugin = _make_demo_plugin(
+        config=test_config,
+        fx=FX(config=test_config, loop_in_thread=None, update_rates=False),
+        loop_in_thread=None,
+    )
+    refresh_calls: list[None] = []
+    monkeypatch.setattr(
+        plugin.subscription_manager,
+        "refresh_subscription_status",
+        lambda **kwargs: refresh_calls.append(None),
+    )
+
+    try:
+        plugin.load(refresh_subscription_status=False)
+        assert refresh_calls == []
+        plugin.load()
+        assert refresh_calls == [None]
+    finally:
+        plugin.close()
+
+
+@pytest.mark.marker_qt_1
 def test_demo_paid_plugin_requires_subscription_on_regtest(
     qapp: QApplication,
     test_config: UserConfig,
@@ -492,7 +520,7 @@ def test_plugin_list_widget_shows_btcpay_price_texts(
         )
 
         assert first_widget.start_trial_button.isVisible()
-        assert first_widget.start_trial_button.text() == "Start free trial"
+        assert first_widget.start_trial_button.text() == "Start free trial / Fetch existing subscription"
         assert first_widget.enable_checkbox.isHidden()
         assert first_widget.plan_selector_title_label.textLabel.text() == "Subscription"
         assert (
@@ -1065,7 +1093,7 @@ def test_plugin_widget_plan_selector_updates_price_and_trial_cta(
             lambda: _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"],
             timeout=5_000,
         )
-        assert first_widget.start_trial_button.text() == "Start free trial"
+        assert first_widget.start_trial_button.text() == "Start free trial / Fetch existing subscription"
         assert first_widget.enable_checkbox.isHidden()
         assert _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"]
 
@@ -1650,7 +1678,7 @@ def test_business_plan_item_shows_trial_action_without_toggle(
     widget = PaidPluginWidget(business_plan)
 
     assert widget.enable_checkbox.isHidden()
-    assert widget.start_trial_button.text() == "Start free trial"
+    assert widget.start_trial_button.text() == "Start free trial / Fetch existing subscription"
     assert "No subscription has been activated yet." in widget.status_label.text()
 
     widget.close()
@@ -2028,7 +2056,7 @@ def test_scheduled_payments_shows_subscription_page_without_access(
 
         assert not plugin.subscription_allows_access()
         assert not plugin.enabled
-        assert widget.start_trial_button.text() == "Start free trial"
+        assert widget.start_trial_button.text() == "Start free trial / Fetch existing subscription"
 
         widget.close()
     finally:

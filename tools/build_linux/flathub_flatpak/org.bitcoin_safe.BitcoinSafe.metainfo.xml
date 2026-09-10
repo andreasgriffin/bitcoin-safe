@@ -57,6 +57,7 @@
       <description>
         <ul>
           <li>Upgraded HWI</li>
+          <li>Hardened external plugin loading to execute only signed source or bytecode artifacts.</li>
         </ul>
       </description>
     </release>

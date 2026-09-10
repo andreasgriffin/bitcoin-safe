@@ -30,8 +30,11 @@
 from __future__ import annotations
 
 import importlib
+import importlib.abc
+import importlib.machinery
 import importlib.util
 import logging
+import marshal
 import shutil
 import sys
 import tempfile
@@ -72,6 +75,15 @@ from bitcoin_safe.plugin_framework.plugin_bundle import (
     plugin_bundle_client_classes,
 )
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
+from bitcoin_safe.plugin_framework.plugin_source_download import (
+    MAX_ARCHIVE_BYTES,
+    MAX_MANIFEST_BYTES,
+    MAX_PLUGIN_METADATA_BYTES,
+    MAX_SIGNATURE_BYTES,
+    fetch_plugin_source_bytes,
+    require_safe_plugin_source_url,
+    validate_plugin_archive_members,
+)
 from bitcoin_safe.plugin_framework.plugin_source_hash import compute_plugin_folder_hash
 from bitcoin_safe.plugin_framework.plugin_source_models import (
     PLUGIN_PYPROJECT_FILENAME,
@@ -85,6 +97,112 @@ from bitcoin_safe.plugin_framework.plugin_source_models import (
 from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer, SimpleGPGKey
 
 logger = logging.getLogger(__name__)
+_ORIGINAL_FETCH_BYTES = fetch_bytes
+
+
+@dataclass(frozen=True)
+class _PluginArtifactLayout:
+    package_name: str
+    entrypoint_relative_path: Path
+    bytecode_cache_tag: str | None
+
+
+class _SignedPluginArtifactFinder(importlib.abc.MetaPathFinder, importlib.abc.Loader):
+    """Resolve one verified plugin namespace without invoking path-based importers."""
+
+    def __init__(
+        self,
+        namespace: str,
+        bundle_dir: Path,
+        layout: _PluginArtifactLayout,
+    ) -> None:
+        self.namespace = namespace
+        self.bundle_dir = bundle_dir
+        self.layout = layout
+        self.package_root = bundle_dir / layout.package_name
+        self.package_namespace = f"{namespace}.{layout.package_name}"
+
+    def find_spec(
+        self,
+        fullname: str,
+        path: object = None,
+        target: ModuleType | None = None,
+    ) -> importlib.machinery.ModuleSpec | None:
+        del path, target
+        if fullname == self.namespace:
+            return importlib.machinery.ModuleSpec(
+                fullname,
+                self,
+                is_package=True,
+                origin=str(self.bundle_dir),
+            )
+        if fullname != self.package_namespace and not fullname.startswith(f"{self.package_namespace}."):
+            return None
+
+        relative_parts = fullname.split(".")[len(self.namespace.split(".")) :]
+        artifact = self._artifact_path(relative_parts)
+        if artifact is None:
+            return None
+        artifact_path, is_package = artifact
+        return importlib.machinery.ModuleSpec(
+            fullname,
+            self,
+            is_package=is_package,
+            origin=str(artifact_path),
+        )
+
+    def create_module(self, spec: importlib.machinery.ModuleSpec) -> ModuleType | None:
+        del spec
+        return None
+
+    def exec_module(self, module: ModuleType) -> None:
+        spec = module.__spec__
+        if spec is None or spec.origin is None:
+            raise ImportError(f"Missing artifact specification for {module.__name__}")
+        artifact_path = Path(spec.origin)
+        module.__file__ = str(artifact_path)
+        if spec.submodule_search_locations is not None:
+            # An empty path prevents PathFinder from searching unsigned filesystem paths.
+            module.__path__ = []
+        if module.__name__ == self.namespace:
+            return
+        try:
+            if artifact_path.suffix == ".py":
+                code = compile(artifact_path.read_bytes(), str(artifact_path), "exec")
+            else:
+                payload = artifact_path.read_bytes()
+                if payload[:4] != importlib.util.MAGIC_NUMBER or len(payload) <= 16:
+                    raise ImportError(f"Invalid signed bytecode artifact: {artifact_path}")
+                code = marshal.loads(payload[16:])
+                if not isinstance(code, type(compile("", "", "exec"))):
+                    raise ImportError(f"Invalid signed bytecode code object: {artifact_path}")
+            exec(code, module.__dict__)
+        except OSError as exc:
+            raise ImportError(f"Could not read signed plugin artifact {artifact_path}: {exc}") from exc
+
+    def _artifact_path(self, relative_parts: list[str]) -> tuple[Path, bool] | None:
+        if not relative_parts or relative_parts[0] != self.layout.package_name:
+            return None
+        parts = relative_parts[1:]
+        relative_module = Path(*parts) if parts else Path()
+        source_path = self.package_root / relative_module
+        is_entrypoint = (
+            bool(parts) and relative_module.with_suffix(".py") == self.layout.entrypoint_relative_path
+        )
+        if self.layout.bytecode_cache_tag is None or is_entrypoint:
+            module_path = source_path.with_suffix(".py") if parts else source_path / "__module__.py"
+            package_path = source_path / "__init__.py"
+        else:
+            bytecode_root = (
+                self.package_root / "_bytecode" / self.layout.bytecode_cache_tag / self.layout.package_name
+            )
+            module_path = (bytecode_root / relative_module).with_suffix(".pyc")
+            package_path = bytecode_root / relative_module / "__init__.pyc"
+        if module_path.is_file():
+            return module_path, False
+        if package_path.is_file():
+            return package_path, True
+        return None
 
 
 def _normalize_fingerprint(value: object) -> str:
@@ -234,7 +352,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
     VERSION = "0.0.1"
     REPOSITORY_FILENAME = "plugin-repository.json"
     STARTUP_SOURCE_REFRESH_COOLDOWN = timedelta(hours=1)
-    _loaded_plugin_dirs: set[Path] = set()
     known_classes = {
         **BaseSaveableClass.known_classes,
         PluginSourceAuthConfig.__name__: PluginSourceAuthConfig,
@@ -258,6 +375,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
         self.source_catalogs = source_catalogs or {}
         self.installed_plugins = installed_plugins or {}
         self._trusted_auto_allow_fingerprints = self._compute_trusted_auto_allow_fingerprints()
+        self._plugin_finders: dict[str, _SignedPluginArtifactFinder] = {}
 
     @classmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
@@ -653,12 +771,10 @@ class ExternalPluginRegistry(BaseSaveableClass):
         if plugin_spec.bundle_id != metadata.bundle_id:
             raise ExternalPluginError(f"{bundle_dir.name} bundle id metadata mismatch.")
         self._validate_plugin_metadata(catalog_entry, plugin_spec)
-        entrypoint = bundle_dir / plugin_spec.entrypoint
-        if not entrypoint.exists():
-            raise ExternalPluginError(f"{bundle_dir.name} is missing {plugin_spec.entrypoint}.")
-
-        module_name = f"bitcoin_safe_external_plugin_{metadata.bundle_id}_{metadata.folder_hash}"
-        module = self._load_module(module_name, entrypoint, bundle_dir)
+        layout = self._resolve_plugin_artifact_layout(bundle_dir, plugin_spec)
+        namespace = self._plugin_namespace(metadata.bundle_id, metadata.folder_hash)
+        module_name = f"{namespace}.{layout.package_name}.{layout.entrypoint_relative_path.with_suffix('').as_posix().replace('/', '.')}"
+        module = self._load_module(namespace, module_name, bundle_dir, layout)
         bundle_name = bundle_dir.name
         client_classes = plugin_bundle_client_classes(
             cast(PluginBundleModule, module),
@@ -711,9 +827,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
         archive_path = temp_dir / "source-archive.zip"
         archive_url = self._archive_url_from_manifest_url(source.manifest_url, plugin.release_ref)
         archive_path.write_bytes(
-            fetch_bytes(
-                url=archive_url, headers=source.auth_config.headers(), proxy_info=self._requests_proxy_info()
-            )
+            self._fetch_source_bytes(archive_url, source.auth_config, MAX_ARCHIVE_BYTES, "plugin archive")
         )
         extract_root = temp_dir / "snapshot"
         self._extract_zip_safely(archive_path, extract_root)
@@ -729,13 +843,11 @@ class ExternalPluginRegistry(BaseSaveableClass):
         auth_config: PluginSourceAuthConfig,
         last_seen_source_serial: int,
     ) -> tuple[VerifiedPluginSourceManifest, bytes, bytes, dict[str, str]]:
-        manifest_bytes = fetch_bytes(
-            url=manifest_url, headers=auth_config.headers(), proxy_info=self._requests_proxy_info()
+        manifest_bytes = self._fetch_source_bytes(
+            manifest_url, auth_config, MAX_MANIFEST_BYTES, "source manifest"
         )
-        signature_bytes = fetch_bytes(
-            url=manifest_url + SOURCE_SIGNATURE_SUFFIX,
-            headers=auth_config.headers(),
-            proxy_info=self._requests_proxy_info(),
+        signature_bytes = self._fetch_source_bytes(
+            manifest_url + SOURCE_SIGNATURE_SUFFIX, auth_config, MAX_SIGNATURE_BYTES, "source signature"
         )
 
         # Start with an empty verifier so no previously trusted/imported keys can match here.
@@ -899,6 +1011,23 @@ class ExternalPluginRegistry(BaseSaveableClass):
             return None
         return ProxyInfo.parse(proxy_url)
 
+    def _fetch_source_bytes(
+        self,
+        url: str,
+        auth_config: PluginSourceAuthConfig,
+        max_bytes: int,
+        purpose: str,
+    ) -> bytes:
+        if fetch_bytes is not _ORIGINAL_FETCH_BYTES:
+            return fetch_bytes(url, auth_config.headers(), self._requests_proxy_info())
+        return fetch_plugin_source_bytes(
+            url=url,
+            headers=auth_config.headers(),
+            proxy_info=self._requests_proxy_info(),
+            max_bytes=max_bytes,
+            purpose=purpose,
+        )
+
     def _fetch_plugin_metadata(
         self,
         manifest_url: str,
@@ -926,8 +1055,8 @@ class ExternalPluginRegistry(BaseSaveableClass):
 
         metadata_url = urljoin(manifest_url, f"plugins/{bundle_id}/{PLUGIN_PYPROJECT_FILENAME}")
         try:
-            return fetch_bytes(
-                url=metadata_url, headers=auth_config.headers(), proxy_info=self._requests_proxy_info()
+            return self._fetch_source_bytes(
+                metadata_url, auth_config, MAX_PLUGIN_METADATA_BYTES, "plugin metadata"
             ).decode("utf-8")
         except UnicodeDecodeError as exc:
             raise ExternalPluginError(f"Could not decode plugin metadata for {bundle_id}.") from exc
@@ -1079,6 +1208,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
     @staticmethod
     def _normalize_manifest_url(manifest_url: str) -> str:
         parsed = urlparse(manifest_url)
+        require_safe_plugin_source_url(manifest_url)
         if parsed.scheme in ("http", "https"):
             remote_source_url = _RemotePluginSourceUrl.from_manifest_url(manifest_url)
             if remote_source_url is not None:
@@ -1127,6 +1257,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
         destination.mkdir(parents=True, exist_ok=True)
         with zipfile.ZipFile(zip_path) as archive:
             members = archive.infolist()
+            validate_plugin_archive_members(members)
             for member in members:
                 member_name = member.filename
                 if not member_name or member_name.startswith("/"):
@@ -1139,156 +1270,61 @@ class ExternalPluginRegistry(BaseSaveableClass):
             archive.extractall(destination)
 
     @staticmethod
-    def _module_originates_from_plugin_dir(module: ModuleType, plugin_dir: Path) -> bool:
-        module_file = module.__dict__.get("__file__")
-        if isinstance(module_file, str):
-            module_path = Path(module_file).resolve(strict=False)
-            if module_path == plugin_dir or plugin_dir in module_path.parents:
-                return True
+    def _plugin_namespace(bundle_id: str, folder_hash: str) -> str:
+        normalized_bundle_id = "".join(character if character.isalnum() else "_" for character in bundle_id)
+        if not normalized_bundle_id or normalized_bundle_id[0].isdigit():
+            normalized_bundle_id = f"bundle_{normalized_bundle_id}"
+        return f"bitcoin_safe_external_plugin_{normalized_bundle_id}_{folder_hash}"
 
-        module_paths = module.__dict__.get("__path__")
-        if module_paths is None:
-            return False
+    @staticmethod
+    def _resolve_plugin_artifact_layout(
+        bundle_dir: Path, plugin_spec: PluginMetadataModel
+    ) -> _PluginArtifactLayout:
+        entrypoint_path = Path(plugin_spec.entrypoint)
+        package_name = entrypoint_path.parts[0]
+        entrypoint_relative_path = Path(*entrypoint_path.parts[1:])
+        package_root = bundle_dir / package_name
+        source_package_init = package_root / "__init__.py"
+        source_entrypoint = bundle_dir / entrypoint_path
+        cache_tag = sys.implementation.cache_tag
+        available_tags = sorted(path.name for path in (package_root / "_bytecode").glob("*") if path.is_dir())
+        if source_package_init.is_file() and source_entrypoint.is_file():
+            return _PluginArtifactLayout(package_name, entrypoint_relative_path, None)
+        if cache_tag is None or cache_tag not in available_tags:
+            available = ", ".join(available_tags) or "none"
+            raise ExternalPluginError(
+                f"{bundle_dir.name} has no signed bytecode for cache tag {cache_tag!r}; available: {available}."
+            )
+        bytecode_root = package_root / "_bytecode" / cache_tag / package_name
+        if not (bytecode_root / "__init__.pyc").is_file() or not source_entrypoint.is_file():
+            raise ExternalPluginError(f"{bundle_dir.name} has an incomplete signed bytecode artifact layout.")
+        return _PluginArtifactLayout(package_name, entrypoint_relative_path, cache_tag)
 
-        for module_path_entry in module_paths:
-            module_path = Path(str(module_path_entry)).resolve(strict=False)
-            if module_path == plugin_dir or plugin_dir in module_path.parents:
-                return True
-
-        return False
-
-    @classmethod
-    def _unload_plugin_modules(cls, plugin_dir: Path) -> None:
-        resolved_plugin_dir = plugin_dir.resolve(strict=False)
-        loaded_plugin_modules = [
-            module_name
-            for module_name, module in sys.modules.items()
-            if isinstance(module, ModuleType)
-            and cls._module_originates_from_plugin_dir(module, resolved_plugin_dir)
-        ]
-        for module_name in loaded_plugin_modules:
+    def _unload_plugin_namespace(self, namespace: str) -> None:
+        finder = self._plugin_finders.pop(namespace, None)
+        if finder is not None and finder in sys.meta_path:
+            sys.meta_path.remove(finder)
+        for module_name in [
+            name for name in sys.modules if name == namespace or name.startswith(f"{namespace}.")
+        ]:
             sys.modules.pop(module_name, None)
-        importlib.invalidate_caches()
 
-    @staticmethod
-    def _plugin_top_level_module_names(plugin_dir: Path) -> set[str]:
-        """Return top-level import names owned by this plugin directory."""
-        names: set[str] = set()
-        for child in plugin_dir.iterdir():
-            if child.is_file() and child.suffix == ".py" and child.name != "__init__.py":
-                names.add(child.stem)
-                continue
-            if child.is_dir() and (child / "__init__.py").exists():
-                names.add(child.name)
-        return names
-
-    @staticmethod
-    def _module_name_matches_prefix(module_name: str, prefixes: set[str]) -> bool:
-        return any(module_name == prefix or module_name.startswith(f"{prefix}.") for prefix in prefixes)
-
-    @classmethod
-    def _module_originates_from_any_plugin_dir(
-        cls,
-        module: ModuleType,
-        plugin_dirs: set[Path],
-    ) -> bool:
-        return any(cls._module_originates_from_plugin_dir(module, plugin_dir) for plugin_dir in plugin_dirs)
-
-    @classmethod
-    def _matching_loaded_module_names(cls, module_prefixes: set[str]) -> list[str]:
-        return [
-            loaded_module_name
-            for loaded_module_name in list(sys.modules)
-            if cls._module_name_matches_prefix(loaded_module_name, module_prefixes)
-        ]
-
-    @classmethod
-    def _take_conflicting_top_level_modules(
-        cls,
-        module_prefixes: set[str],
-    ) -> dict[str, ModuleType]:
-        """
-        Remove currently loaded modules that would shadow this plugin's top-level imports.
-
-        Example:
-        - plugin A contains ``helper.py`` with ``VALUE = "ONE"``
-        - plugin B contains ``helper.py`` with ``VALUE = "TWO"``
-        If ``helper`` stays in ``sys.modules``, importing plugin B would silently reuse
-        plugin A's helper module. We therefore clear the colliding alias before loading
-        plugin B, then restore any non-plugin module afterwards.
-        """
-        replaced_modules: dict[str, ModuleType] = {}
-        tracked_plugin_dirs = set(cls._loaded_plugin_dirs)
-        conflicting_module_names = cls._matching_loaded_module_names(module_prefixes)
-        for conflicting_module_name in conflicting_module_names:
-            conflicting_module = sys.modules.get(conflicting_module_name)
-            if not isinstance(conflicting_module, ModuleType):
-                sys.modules.pop(conflicting_module_name, None)
-                continue
-            if not cls._module_originates_from_any_plugin_dir(conflicting_module, tracked_plugin_dirs):
-                replaced_modules[conflicting_module_name] = conflicting_module
-            sys.modules.pop(conflicting_module_name, None)
-        if conflicting_module_names:
-            importlib.invalidate_caches()
-        return replaced_modules
-
-    @classmethod
-    def _drop_plugin_top_level_aliases(
-        cls,
-        module_prefixes: set[str],
+    def _load_module(
+        self,
+        namespace: str,
+        module_name: str,
         plugin_dir: Path,
-    ) -> None:
-        loaded_aliases = [
-            loaded_module_name
-            for loaded_module_name, loaded_module in list(sys.modules.items())
-            if isinstance(loaded_module, ModuleType)
-            and cls._module_name_matches_prefix(loaded_module_name, module_prefixes)
-            and cls._module_originates_from_plugin_dir(loaded_module, plugin_dir)
-        ]
-        for loaded_alias in loaded_aliases:
-            sys.modules.pop(loaded_alias, None)
-
-    @staticmethod
-    def _prepend_plugin_dir_to_sys_path(plugin_dir: Path) -> list[str]:
-        original_sys_path = sys.path[:]
-        plugin_dir_str = str(plugin_dir)
-        sys.path[:] = [
-            plugin_dir_str,
-            *[path_entry for path_entry in original_sys_path if path_entry != plugin_dir_str],
-        ]
-        return original_sys_path
-
-    @classmethod
-    def _load_module(cls, module_name: str, entrypoint: Path, plugin_dir: Path) -> ModuleType:
-        resolved_plugin_dir = plugin_dir.resolve(strict=False)
-        cls._unload_plugin_modules(resolved_plugin_dir)
-
-        top_level_module_names = cls._plugin_top_level_module_names(resolved_plugin_dir)
-        replaced_modules = cls._take_conflicting_top_level_modules(top_level_module_names)
-        original_sys_path = cls._prepend_plugin_dir_to_sys_path(resolved_plugin_dir)
-
-        spec = importlib.util.spec_from_file_location(module_name, entrypoint)
-        if spec is None or spec.loader is None:
-            raise ExternalPluginError(f"Could not load plugin bundle from {entrypoint}.")
-
-        module = importlib.util.module_from_spec(spec)
+        layout: _PluginArtifactLayout,
+    ) -> ModuleType:
+        self._unload_plugin_namespace(namespace)
+        finder = _SignedPluginArtifactFinder(namespace, plugin_dir, layout)
+        sys.meta_path.insert(0, finder)
+        self._plugin_finders[namespace] = finder
         try:
-            # Example:
-            # - works: `plugin_bundle.py` imports `client`
-            # - not expected: `other_module.py` imports `.client`
-            # We load `plugin_bundle.py` as the root module for the plugin.
-            sys.modules[module_name] = module
-            spec.loader.exec_module(module)
-            return module
+            return importlib.import_module(module_name)
         except Exception:
-            sys.modules.pop(module_name, None)
+            self._unload_plugin_namespace(namespace)
             raise
-        finally:
-            cls._drop_plugin_top_level_aliases(top_level_module_names, resolved_plugin_dir)
-            sys.modules.update(replaced_modules)
-            sys.path[:] = original_sys_path
-            cls._loaded_plugin_dirs.add(resolved_plugin_dir)
-            importlib.invalidate_caches()
 
     @classmethod
     def _compute_trusted_auto_allow_fingerprints(cls) -> set[str]:

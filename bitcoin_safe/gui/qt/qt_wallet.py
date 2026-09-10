@@ -448,6 +448,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             )
             self.tabs.addChildNode(self.plugin_manager.node)
             self.plugin_manager.add_client_registered_callback(self._connect_plugin_client_persistence)
+            self.signal_tracker.connect(
+                self.plugin_manager.widget.signal_plugin_state_recovery_required,
+                self._on_plugin_state_recovery_required,
+            )
 
             # register and save details
             self.plugin_manager.create_and_connect_clients(
@@ -508,6 +512,30 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         # since a Wallet can now have txs before syncing
         # we need to treat it like something has changed
         self.wallet_signals.updated.emit(UpdateFilter(refresh_all=True))
+
+    def _on_plugin_state_recovery_required(self, client_class_name: str) -> None:
+        assert self.plugin_manager is not None
+        backup_path = self.save_backup()
+        if not backup_path:
+            Message(
+                self.tr(
+                    "Plugin {plugin} could not be restored. Its old state was not safely backed up, "
+                    "so no fresh state was loaded."
+                ).format(plugin=client_class_name),
+                type=MessageType.Warning,
+                parent=self,
+            )
+            self.plugin_manager.set_plugin_state_recovery_allowed(False)
+            return
+        Message(
+            self.tr(
+                "Plugin {plugin} could not be restored. A fresh state was loaded. "
+                "Your previous wallet state was backed up to {filename}."
+            ).format(plugin=client_class_name, filename=backup_path),
+            type=MessageType.Warning,
+            parent=self,
+        )
+        self.plugin_manager.set_plugin_state_recovery_allowed(True)
 
     def dump(self) -> dict[str, Any]:
         """Dump."""
@@ -1021,14 +1049,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         Returns:
             str: filename
         """
-        file_path = os.path.join(
-            self.config.wallet_dir, "backups", filename_clean(f"{self.wallet.id}-backup-{0}")
-        )
+        backup_dir = os.path.join(self.config.wallet_dir, "backups")
+        os.makedirs(backup_dir, exist_ok=True)
         max_number_backups = 100000
+        file_path = os.path.join(backup_dir, filename_clean(f"{self.wallet.id}-backup-{max_number_backups}"))
         for i in range(max_number_backups):
-            file_path = os.path.join(
-                self.config.wallet_dir, "backups", filename_clean(f"{self.wallet.id}-backup-{i}")
-            )
+            file_path = os.path.join(backup_dir, filename_clean(f"{self.wallet.id}-backup-{i}"))
             if not os.path.exists(file_path):
                 break
 
@@ -1038,10 +1064,14 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                 self.wizard.step_container.current_index() if not self.wizard.isHidden() else None
             )
 
-        self.save_to(
-            wallet_id=Path(file_path).stem,
-            file_path=file_path,
-        )
+        try:
+            self.save_to(
+                wallet_id=Path(file_path).stem,
+                file_path=file_path,
+            )
+        except Exception:
+            logger.exception("Could not save wallet backup to %s", file_path)
+            return ""
         return file_path
 
     def change_wallet_id(self, new_id: str) -> Path | None:

@@ -103,6 +103,7 @@ logger = logging.getLogger(__name__)
 
 class PluginManagerWidget(QWidget):
     signal_sources_requested = cast(SignalProtocol[[]], pyqtSignal())
+    signal_plugin_state_recovery_required = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def __init__(
         self,
@@ -435,11 +436,15 @@ class PluginManager(BaseSaveableClass):
             plugin_permissions if plugin_permissions else {}
         )
         self._client_registered_callbacks: list[Callable[[PluginClient], None]] = []
+        self._plugin_state_recovery_allowed = False
         self._source_management_dialog: SourceManagementDialog | None = None
         self.signal_tracker = SignalTracker()
         self.signal_tracker.connect(self.wallet_functions.signals.language_switch, self._on_language_switch)
         self.client_signal_tracker = SignalTracker()
         self._startup_source_refresh_timer: QTimer | None = None
+        self._failed_restore_class_names: set[str] = set()
+        self._deferred_subscription_refresh_timer: QTimer | None = None
+        self._deferred_subscription_refresh_clients: list[PaidPluginClient] = []
 
         for client in list(self.clients):
             self._register_client(client=client)
@@ -666,6 +671,7 @@ class PluginManager(BaseSaveableClass):
 
             restored_client = self._restore_client_from_payload(payload, class_kwargs=class_kwargs)
             if restored_client is None:
+                self._failed_restore_class_names.add(class_name)
                 remaining_payloads.append(payload)
                 continue
             restored_by_class[candidate_cls] = restored_client
@@ -804,6 +810,14 @@ class PluginManager(BaseSaveableClass):
 
     def add_client_registered_callback(self, callback: Callable[[PluginClient], None]) -> None:
         self._client_registered_callbacks.append(callback)
+
+    def _allow_plugin_state_recovery(self, client_class_name: str) -> bool:
+        self._plugin_state_recovery_allowed = False
+        self.widget.signal_plugin_state_recovery_required.emit(client_class_name)
+        return self._plugin_state_recovery_allowed
+
+    def set_plugin_state_recovery_allowed(self, allowed: bool) -> None:
+        self._plugin_state_recovery_allowed = allowed
 
     @staticmethod
     def _static_runtime_bundles(
@@ -1004,8 +1018,15 @@ class PluginManager(BaseSaveableClass):
     def _retain_unrestored_existing_client_payloads(
         self,
         serialized_existing_client_payloads: list[str],
+        restored_plugin_ids: set[str] | None = None,
     ) -> None:
-        restored_plugin_ids = {client.plugin_id for client in self.clients}
+        if restored_plugin_ids is None:
+            restored_plugin_ids = {client.plugin_id for client in self.clients}
+        pending_payloads = [
+            payload
+            for payload in self.serialized_client_dumps
+            if self._payload_identity(payload) not in restored_plugin_ids
+        ]
         unresolved_payloads: list[str] = []
         for payload in serialized_existing_client_payloads:
             identity = self._payload_identity(payload)
@@ -1013,13 +1034,14 @@ class PluginManager(BaseSaveableClass):
                 continue
             unresolved_payloads.append(payload)
         self.serialized_client_dumps = self._merge_serialized_client_payloads(
-            [*self.serialized_client_dumps, *unresolved_payloads]
+            [*pending_payloads, *unresolved_payloads]
         )
 
     def _restore_or_create_clients(self, descriptor: bdk.Descriptor) -> None:
         existing_clients = self.clients.copy()
         serialized_existing_client_payloads = self._serialized_existing_client_payloads(existing_clients)
         self.clients.clear()
+        self._retain_unrestored_existing_client_payloads(serialized_existing_client_payloads)
         candidate_classes = {
             cls
             for cls in self._all_client_classes()
@@ -1028,6 +1050,13 @@ class PluginManager(BaseSaveableClass):
         }
         restored_pending_clients = self._restore_pending_clients_by_class(candidate_classes)
         candidate_classes -= set(restored_pending_clients)
+        blocked_recovery_classes = {
+            cls
+            for cls in candidate_classes
+            if cls.__name__ in self._failed_restore_class_names
+            and not self._allow_plugin_state_recovery(cls.__name__)
+        }
+        candidate_classes -= blocked_recovery_classes
         discovered_clients_by_class = self._create_discovered_clients_by_class(
             descriptor=descriptor,
             candidate_classes=candidate_classes,
@@ -1079,6 +1108,7 @@ class PluginManager(BaseSaveableClass):
             client.set_server_view(server=scoped_server)
 
             if isinstance(client, PaidPluginClient):
+                client.defer_subscription_refresh(True)
                 client.set_business_plan(business_plan=self.business_plan)
 
         self.widget.set_plugins(self.listable_items)
@@ -1159,7 +1189,26 @@ class PluginManager(BaseSaveableClass):
     def load_all_enabled(self) -> None:
         for client in self.clients:
             if client.enabled:
-                client.load()
+                if isinstance(client, PaidPluginClient):
+                    client.load(refresh_subscription_status=False)
+                    self._deferred_subscription_refresh_clients.append(client)
+                    client.defer_subscription_refresh(False)
+                else:
+                    client.load()
+        if self._deferred_subscription_refresh_clients:
+            self._deferred_subscription_refresh_timer = QTimer(self.widget)
+            self._deferred_subscription_refresh_timer.setSingleShot(True)
+            self._deferred_subscription_refresh_timer.timeout.connect(
+                self._refresh_deferred_subscription_status
+            )
+            self._deferred_subscription_refresh_timer.start(1_000)
+
+    def _refresh_deferred_subscription_status(self) -> None:
+        clients = self._deferred_subscription_refresh_clients
+        self._deferred_subscription_refresh_clients = []
+        for client in clients:
+            if client in self.clients and client.enabled:
+                client.refresh_subscription_status()
 
     def disconnect_all(self) -> None:
         for client in self.clients:
@@ -1635,6 +1684,9 @@ class PluginManager(BaseSaveableClass):
         return dct
 
     def close(self) -> None:
+        if self._deferred_subscription_refresh_timer is not None:
+            self._deferred_subscription_refresh_timer.stop()
+        self._deferred_subscription_refresh_clients.clear()
         self._client_registered_callbacks.clear()
         self.client_signal_tracker.disconnect_all()
         self.signal_tracker.disconnect_all()
