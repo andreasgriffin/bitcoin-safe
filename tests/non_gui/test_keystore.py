@@ -61,6 +61,18 @@ def test_dump(test_config: TestConfig) -> None:
     assert keystore.is_equal(keystore_restored)
 
 
+def test_repr_redacts_mnemonic() -> None:
+    """Ensure diagnostic representations never expose the seed phrase."""
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/41h/1h/0h/2h"], network=bdk.Network.REGTEST
+    )[0]
+
+    representation = repr(keystore)
+
+    assert keystore.mnemonic not in representation
+    assert "<redacted>" in representation
+
+
 def test_is_equal() -> None:
     """Test is equal."""
     network = bdk.Network.REGTEST

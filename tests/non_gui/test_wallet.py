@@ -405,6 +405,7 @@ def test_inconsistent_seed_with_descriptor(test_config: TestConfig) -> None:
         key_origins=["m/84h/1h/0h" for i in range(5)],
         network=test_config.network,
     )[1:]
+    mnemonic = keystores[0].mnemonic
 
     # Mismatched mnemonic should raise consistency errors.
     with pytest.raises(WalletInputsInconsistentError) as exc_info:
@@ -417,6 +418,7 @@ def test_inconsistent_seed_with_descriptor(test_config: TestConfig) -> None:
             loop_in_thread=None,
         )
     assert exc_info.value
+    assert mnemonic not in str(exc_info.value)
 
 
 def test_mixed_keystores_is_consistent(test_config: TestConfig) -> None:
