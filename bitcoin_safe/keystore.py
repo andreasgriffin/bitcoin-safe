@@ -275,7 +275,10 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
 
     def __repr__(self) -> str:
         """Return representation."""
-        return f"{self.__class__.__name__}({self.__dict__})"
+        fields = self.__dict__.copy()
+        if fields.get("mnemonic"):
+            fields["mnemonic"] = "<redacted>"
+        return f"{self.__class__.__name__}({fields})"
 
     def dump(self) -> dict[str, Any]:
         """Dump."""
