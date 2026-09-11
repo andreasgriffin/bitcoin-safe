@@ -249,10 +249,32 @@ class SignatureImporterWallet(AbstractSignatureImporter):
         """Sign."""
         original_psbt = psbt
         original_serialized_tx = tx_of_psbt_to_hex(psbt)
-        for software_signer in self.software_signers:
-            new_psbt = software_signer.sign_psbt(psbt)
-            if new_psbt:
-                psbt = new_psbt
+        try:
+            for software_signer in self.software_signers:
+                new_psbt = software_signer.sign_psbt(psbt)
+                if new_psbt:
+                    psbt = new_psbt
+        except bdk.SignerError.NonStandardSighash as e:
+            caught_exception_message(
+                e,
+                title=self.tr(
+                    "The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT."
+                ),
+                parent=self._message_parent(),
+            )
+            return
+        except bdk.SignerError.MiniscriptPsbt as e:
+            caught_exception_message(
+                e,
+                title=self.tr(
+                    "The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT."
+                ),
+                parent=self._message_parent(),
+            )
+            return
+        except Exception as e:
+            caught_exception_message(e, parent=self._message_parent())
+            return
 
         if not self.txids_match(original_psbt, psbt):
             Message(
