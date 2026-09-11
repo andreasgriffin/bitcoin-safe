@@ -138,6 +138,7 @@ class PaidPluginClient(PluginClient):
         self._connect_subscription_manager_signals()
 
         self._plugin_loaded = False
+        self._defer_subscription_refresh = False
 
         self._plugin_content = QWidget(self)
 
@@ -216,7 +217,7 @@ class PaidPluginClient(PluginClient):
         )
 
     def start_trial_button_text(self) -> str:
-        return self.tr("Start free trial")
+        return self.tr("Start free trial / Fetch existing subscription")
 
     def trigger_start_trial(self) -> None:
         self.signal_request_enabled.emit(True)
@@ -256,12 +257,13 @@ class PaidPluginClient(PluginClient):
         for subscription_manager in self.subscription_managers:
             self.subscription_price_lookup.ensure_prices(subscription_manager)
 
-    def load(self) -> None:
-        for subscription_manager in self.subscription_managers:
-            subscription_manager.refresh_subscription_status(
-                disable_if_inactive=True,
-                notify_on_error=False,
-            )
+    def load(self, refresh_subscription_status: bool = True) -> None:
+        if refresh_subscription_status and not self._defer_subscription_refresh:
+            for subscription_manager in self.subscription_managers:
+                subscription_manager.refresh_subscription_status(
+                    disable_if_inactive=True,
+                    notify_on_error=False,
+                )
 
         if not self.subscription_allows_access():
             self.set_enabled(False)
@@ -273,6 +275,16 @@ class PaidPluginClient(PluginClient):
         self.load_paid_plugin()
         self._plugin_loaded = True
         self._refresh_plugin_ui()
+
+    def defer_subscription_refresh(self, defer: bool) -> None:
+        self._defer_subscription_refresh = defer
+
+    def refresh_subscription_status(self) -> None:
+        for subscription_manager in self.subscription_managers:
+            subscription_manager.refresh_subscription_status(
+                disable_if_inactive=True,
+                notify_on_error=False,
+            )
 
     def unload(self) -> None:
         if not self._plugin_loaded:

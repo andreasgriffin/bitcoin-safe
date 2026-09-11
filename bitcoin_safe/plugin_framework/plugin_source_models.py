@@ -114,7 +114,13 @@ class PluginMetadataModel(_ModelBase):
     @field_validator("entrypoint")
     @classmethod
     def _validate_entrypoint(cls, value: str) -> str:
-        return _validate_relative_posix_path(value)
+        value = _validate_relative_posix_path(value)
+        path = PurePosixPath(value)
+        if path.suffix != ".py" or len(path.parts) < 2:
+            raise ValueError("must be a package-rooted Python file")
+        if not all(part.isidentifier() for part in (*path.parts[:-1], path.stem)):
+            raise ValueError("must contain only valid Python identifiers")
+        return value
 
     @field_validator("schema_version")
     @classmethod
