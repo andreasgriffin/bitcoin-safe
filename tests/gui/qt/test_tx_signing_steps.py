@@ -29,6 +29,7 @@
 
 from dataclasses import dataclass, field
 from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 import bdkpython as bdk
 from bitcoin_qr_tools.data import Data
@@ -67,6 +68,22 @@ from ...non_gui.test_psbt_util import (
     tr_psbt_singlesig,
 )
 from ...non_gui.utils import create_test_seed_keystores
+
+
+def test_wallet_sign_shows_message_for_nonstandard_sighash(qtbot: QtBot) -> None:
+    importer = SignatureImporterWallet.__new__(SignatureImporterWallet)
+    importer.software_signers = [Mock(sign_psbt=Mock(side_effect=bdk.SignerError.NonStandardSighash()))]
+    importer._message_parent = Mock(return_value=None)
+    importer.tr = lambda text: text
+
+    with (
+        patch("bitcoin_safe.signer.tx_of_psbt_to_hex", return_value="tx"),
+        patch("bitcoin_safe.signer.caught_exception_message") as caught_message,
+    ):
+        importer.sign(Mock(), None)
+
+    caught_message.assert_called_once()
+    assert "non-standard sighash" in caught_message.call_args.kwargs["title"]
 
 
 def test_krux_psbt_qr_prefers_bbqr() -> None:
