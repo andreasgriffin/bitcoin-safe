@@ -545,7 +545,7 @@ class DescriptorUI(QWidget):
         """On descriptor change."""
         data = self._input_to_data(s=user_input)
         if not data:
-            logger.debug(f"{user_input} could not be decoded into data")
+            logger.debug("Descriptor input could not be decoded into data")
             return
         corrected_descriptor = self.edit_descriptor._data_to_descriptor(data)
         if not corrected_descriptor:
@@ -567,9 +567,7 @@ class DescriptorUI(QWidget):
             else:
                 self.edit_descriptor.edit.input_field.setText(corrected_descriptor)
                 self.edit_descriptor.edit.reset_formatting()
-                logger.debug(
-                    f"autocorrection {str(user_input)[:10]=} --> {str(corrected_descriptor)[:10]=} denied"
-                )
+                logger.debug("Descriptor autocorrection denied")
                 return
 
         if not is_valid_descriptor(user_input, network=self.protowallet.network):
@@ -582,7 +580,7 @@ class DescriptorUI(QWidget):
             logger.info(self.tr("Descriptor unchanged"))
             return
         else:
-            logger.info(f"Descriptor changed: {str(old_descriptor)[:10]=}  -->  {str(user_input)[:10]=}")
+            logger.info("Descriptor changed")
             if not question_dialog(
                 text=self.tr(
                     "Fill signer information based on the new descriptor?",
@@ -595,7 +593,7 @@ class DescriptorUI(QWidget):
 
         try:
             self.set_protowallet_from_descriptor_str(user_input)
-            logger.info(f"Successfully set protwallet from descriptor {str(user_input)[:10]=}")
+            logger.info("Successfully set protwallet from descriptor")
 
             self.set_wallet_ui_from_protowallet()
             self.keystore_uis.set_keystore_ui_from_protowallet()
@@ -610,15 +608,15 @@ class DescriptorUI(QWidget):
         s = s.strip(" \n")
         try:
             return Data.from_str(s, network=self.protowallet.network)
-        except Exception as e:
-            logger.debug(f"{e}")
+        except Exception:
+            logger.debug("Could not decode descriptor input")
 
         # perhaps the \n are \\n, then try
         if "\\n" in s:
             try:
                 return Data.from_str(s.replace("\\n", "\n"), network=self.protowallet.network)
-            except Exception as e:
-                logger.debug(f"{e}")
+            except Exception:
+                logger.debug("Could not decode descriptor input with escaped newlines")
         return None
 
     def create_button_bar(self) -> QDialogButtonBox:

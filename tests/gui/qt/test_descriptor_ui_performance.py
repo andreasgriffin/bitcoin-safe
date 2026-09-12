@@ -172,6 +172,31 @@ def test_descriptor_ui_initializes_address_type_before_keystore_cards(
 
 
 @pytest.mark.marker_qt_1
+def test_descriptor_input_decode_failure_does_not_log_full_input(
+    qtbot: QtBot,
+    test_config: TestConfig,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    descriptor_ui, loop_in_thread, wallet = _build_descriptor_ui(qtbot=qtbot, test_config=test_config)
+    secret = "tprv9s21ZrQH143K3private-key-that-must-not-be-logged"
+    user_input = f"wsh(pk({secret}/84h/1h/0h/<0;1>/*))"
+
+    try:
+        with caplog.at_level("DEBUG"):
+            descriptor_ui.on_descriptor_change(user_input)
+
+        assert user_input not in caplog.text
+        assert secret not in caplog.text
+        assert "prefix=" not in caplog.text
+        assert "length=" not in caplog.text
+    finally:
+        descriptor_ui.close()
+        if wallet:
+            wallet.close()
+        loop_in_thread.stop()
+
+
+@pytest.mark.marker_qt_1
 def test_descriptor_ui_noop_refreshes_skip_broad_signal_blocking(
     qtbot: QtBot,
     test_config: TestConfig,
