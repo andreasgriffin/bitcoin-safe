@@ -137,6 +137,7 @@ class Appimage2debConverter:
         debian_dir.mkdir(parents=True, exist_ok=True)
         target_dir.parent.mkdir(parents=True, exist_ok=True)
         # Keep staging on the same filesystem so we do not duplicate the full AppImage payload in /tmp.
+        extracted_folder.chmod(0o755)
         extracted_folder.rename(target_dir)
 
     def _create_control_file(self, debian_dir: Path) -> None:
