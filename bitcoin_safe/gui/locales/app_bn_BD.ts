@@ -3739,8 +3739,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial</source>
-			<translation>ফ্রি ট্রায়াল শুরু করুন</translation>
+			<source>Start free trial / Fetch existing subscription</source>
+			<translation/>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4224,6 +4224,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Please choose a wallet name</source>
 			<translation>অনুগ্রহ করে একটি wallet-এর নাম নির্বাচন করুন</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5017,6 +5027,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
+			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
+			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>signed psbt-এর txid মূল txid-এর সাথে মেলে না। বাতিল করা হচ্ছে</translation>
 		</message>
@@ -5803,6 +5823,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Do you want to restore an existing seed onto the device?</source>
 			<translation>আপনি কি ডিভাইসে একটি বিদ্যমান seed পুনরুদ্ধার করতে চান?</translation>
+		</message>
+		<name>USBDevice</name>
+		<message>
+			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

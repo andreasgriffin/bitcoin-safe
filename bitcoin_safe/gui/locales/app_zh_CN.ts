@@ -2013,7 +2013,7 @@ since the final size of the transaction is unknown.</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
-			<translation>通过二维码、USB 数据线、蓝牙或文本/文件导入方式来导入签名者数据。</translation>
+			<translation>通过二维码、USB 数据线、蓝牙或文本/文件导入方式来导入签名器数据。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2033,7 +2033,7 @@ since the final size of the transaction is unknown.</source>
 		<name>KeyStoreUI</name>
 		<message>
 			<source>OK</source>
-			<translation>好的</translation>
+			<translation>确定</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -3203,12 +3203,12 @@ so it is typically about {minutes} minutes behind the tip.</source>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Test coins (tBTC) have no value</source>
-			<translation>测试币（tBTC）不具备任何价值</translation>
+			<translation>测试网代币（tBTC）不具备任何价值</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
 			<source>Test coins, no monetary value</source>
-			<translation>测试币，不具备任何价值</translation>
+			<translation>测试网代币，不具备任何价值</translation>
 		</message>
 		<name>NetworkChoiceWelcomeScreen</name>
 		<message>
@@ -3568,12 +3568,12 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Connect Device(s)</source>
-			<translation>连接设备</translation>
+			<translation>连接签名器</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Create new wallet</source>
-			<translation>创建一个新钱包</translation>
+			<translation>创建新钱包</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3583,7 +3583,7 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Guided setup for your self-custody wallet.</source>
-			<translation>自托管钱包的引导式设置。</translation>
+			<translation>自我托管钱包的引导式设置。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3615,12 +3615,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Play with an existing wallet that has some test coins to explore safely.</source>
-			<translation>使用一个已有且包含一些测试币的钱包，安全地进行探索。</translation>
+			<translation>使用一个已有且含有一些测试网代币的钱包，安全地进行探索。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
 			<source>Public Demo wallet</source>
-			<translation>公共演示钱包</translation>
+			<translation>公开演示钱包</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -3760,8 +3760,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial</source>
-			<translation>开始免费试用</translation>
+			<source>Start free trial / Fetch existing subscription</source>
+			<translation/>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4248,6 +4248,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>QTWallet</name>
 		<message>
+			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
 			<source>Plugins</source>
 			<translation>插件</translation>
 		</message>
@@ -4515,7 +4525,7 @@ Outputs stay the same; only the fee changes.</source>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
 			<source>RECENT WALLETS</source>
-			<translation>最近打开的钱包</translation>
+			<translation>最近打开过的钱包</translation>
 		</message>
 		<name>RecentlyOpenedWalletsGroup</name>
 		<message>
@@ -4987,7 +4997,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterClipboard</name>
 		<message>
 			<source>OK</source>
-			<translation>好的</translation>
+			<translation>确定</translation>
 		</message>
 		<name>SignatureImporterClipboard</name>
 		<message>
@@ -5009,7 +5019,7 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterFile</name>
 		<message>
 			<source>OK</source>
-			<translation>好的</translation>
+			<translation>确定</translation>
 		</message>
 		<name>SignatureImporterFile</name>
 		<message>
@@ -5047,6 +5057,16 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 	</context>
 	<context>
+		<name>SignatureImporterWallet</name>
+		<message>
+			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
+			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
@@ -5841,6 +5861,11 @@ Do you want to broadcast anyway?</source>
 			<source>Do you want to restore an existing seed onto the device?</source>
 			<translation>您是否想将现有的助记词恢复到设备上？</translation>
 		</message>
+		<name>USBDevice</name>
+		<message>
+			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
+			<translation/>
+		</message>
 	</context>
 	<context>
 		<name>USBGui</name>
@@ -6314,12 +6339,12 @@ Do you want to broadcast anyway?</source>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>2-of-3 Multi Signature</source>
-			<translation>2/3 多重签名</translation>
+			<translation>2/3 多重签名钱包</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>3-of-5 Multi Signature</source>
-			<translation>3/5 多重签名</translation>
+			<translation>3/5 多重签名钱包</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
@@ -6364,7 +6389,7 @@ Do you want to broadcast anyway?</source>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
-			<translation>长期冷存储方案（2/3 多重签名）</translation>
+			<translation>长期冷存储方案（2/3 多重签名钱包）</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
@@ -6394,12 +6419,12 @@ Do you want to broadcast anyway?</source>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>Recovery</source>
-			<translation>恢复</translation>
+			<translation>台恢复</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>Required</source>
-			<translation>必选</translation>
+			<translation>台必选</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
@@ -6419,7 +6444,7 @@ Do you want to broadcast anyway?</source>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>Robust wallet for long-term self-custody.</source>
-			<translation>适合长期自托管的坚固钱包。</translation>
+			<translation>适合长期自我托管的稳健钱包。</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
@@ -6429,7 +6454,7 @@ Do you want to broadcast anyway?</source>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>Self-custody with 1 signer and 1 seed backup.</source>
-			<translation>使用 1 个签名者和 1 份 seed 备份进行自托管。</translation>
+			<translation>使用 1 台签名器和 1 份助记词备份来进行自我托管。</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
@@ -6454,7 +6479,7 @@ Do you want to broadcast anyway?</source>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>Super robust storage (3-of-5 Multi Signature)</source>
-			<translation>极其可靠的存储方案（3/5 多重签名）</translation>
+			<translation>极其可靠的存储方案（3/5 多重签名钱包）</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
@@ -6464,7 +6489,7 @@ Do you want to broadcast anyway?</source>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>Total</source>
-			<translation>总计</translation>
+			<translation>台总计</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
@@ -6474,12 +6499,12 @@ Do you want to broadcast anyway?</source>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>signer</source>
-			<translation>签名者</translation>
+			<translation>签名器</translation>
 		</message>
 		<name>WalletSetupOptions</name>
 		<message>
 			<source>signers</source>
-			<translation>签名者</translation>
+			<translation>签名器</translation>
 		</message>
 	</context>
 	<context>
@@ -6548,17 +6573,17 @@ Do you want to broadcast anyway?</source>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send Test</source>
-			<translation>Self-Send 测试</translation>
+			<translation>自我转账测试</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test</source>
-			<translation>Self-Send 测试</translation>
+			<translation>自我转账测试</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
 			<source>Self-Send test {j}</source>
-			<translation>Self-Send 测试 {j}</translation>
+			<translation>自我转账测试 {j}</translation>
 		</message>
 		<name>Wizard</name>
 		<message>
@@ -7831,7 +7856,7 @@ It is best to use your own server, such as {link}.</source>
 		<name>net_conf</name>
 		<message>
 			<source>There is a {faucet} for free test coins.</source>
-			<translation>有一个 {faucet} 可免费获取测试币。</translation>
+			<translation>有一个 {faucet} 水龙头可免费获取测试网代币。</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

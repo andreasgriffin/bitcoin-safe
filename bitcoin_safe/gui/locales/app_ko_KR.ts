@@ -3747,8 +3747,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial</source>
-			<translation>무료 체험 시작</translation>
+			<source>Start free trial / Fetch existing subscription</source>
+			<translation/>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4232,6 +4232,16 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Please choose a wallet name</source>
 			<translation>지갑 이름을 선택해 주세요.</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5029,6 +5039,16 @@ If you make a mistake here, your money is lost!</source>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
+			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
+			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다. 중단</translation>
 		</message>
@@ -5816,6 +5836,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Do you want to restore an existing seed onto the device?</source>
 			<translation>기기에 기존 시드를 복원하시겠습니까?</translation>
+		</message>
+		<name>USBDevice</name>
+		<message>
+			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

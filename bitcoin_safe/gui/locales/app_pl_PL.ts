@@ -168,7 +168,7 @@
 		<name>AddressEdit</name>
 		<message>
 			<source>Enter address here</source>
-			<translation>Wprowadź adres</translation>
+			<translation>Wprowadź adres tutaj</translation>
 		</message>
 	</context>
 	<context>
@@ -297,7 +297,7 @@
 		<name>AddressListWithToolbar</name>
 		<message>
 			<source>Create new address</source>
-			<translation>Utwórz nowy adres</translation>
+			<translation>Stwórz nowy adres</translation>
 		</message>
 		<name>AddressListWithToolbar</name>
 		<message>
@@ -401,7 +401,7 @@
 		<name>BTCPayWebButton</name>
 		<message>
 			<source>Please choose an amount.</source>
-			<translation>Wybierz kwotę.</translation>
+			<translation>Proszę wybrać kwotę.</translation>
 		</message>
 		<name>BTCPayWebButton</name>
 		<message>
@@ -423,7 +423,7 @@
 		<name>BTCSpinBox</name>
 		<message>
 			<source>Max ≈ {amount}</source>
-			<translation>Maks ≈ {amount}</translation>
+			<translation>Maksymalnie ≈ {amount}</translation>
 		</message>
 	</context>
 	<context>
@@ -522,7 +522,7 @@
 		<name>BasePluginWidget</name>
 		<message>
 			<source>Enable</source>
-			<translation>Włącz</translation>
+			<translation>Odblokuj</translation>
 		</message>
 		<name>BasePluginWidget</name>
 		<message>
@@ -546,7 +546,7 @@
 		<name>BitcoinQuickReceive</name>
 		<message>
 			<source>Receive addresses</source>
-			<translation>Adresy do odbioru</translation>
+			<translation>Adresy odbiorcze</translation>
 		</message>
 	</context>
 	<context>
@@ -570,7 +570,7 @@
 		<name>BusinessPlanItem</name>
 		<message>
 			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
-			<translation>Odblokuj wszystkie płatne wtyczki jedną subskrypcją i usuń opłatę za usługę płatności zaplanowanych.</translation>
+			<translation>Odblokuj wszystkie płatne wtyczki jedną subskrypcją i usuń opłatę za usługę płatności zaplanowanych. Najpierw rozpocznij darmowy okres próbny, następnie zarządzaj lub odświeżaj subskrypcje tutaj.</translation>
 		</message>
 	</context>
 	<context>
@@ -579,7 +579,9 @@
 			<source>Could not recognize the input. Do you want to scan again?
 
 The error was: {error}</source>
-			<translation>Nie udało się rozpoznać danych wejściowych. Czy chcesz zeskanować ponownie? Wystąpił błąd: {error}</translation>
+			<translation>Nie udało się rozpoznać danych wejściowych. Czy chcesz zeskanować ponownie?
+
+Wystąpił błąd: {error}</translation>
 		</message>
 		<name>ButtonEdit</name>
 		<message>
@@ -3754,8 +3756,8 @@ Możesz przełączyć się na Testnet, aby przetestować {app_name} bez używani
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial</source>
-			<translation>Rozpocznij bezpłatny okres próbny</translation>
+			<source>Start free trial / Fetch existing subscription</source>
+			<translation/>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4239,6 +4241,16 @@ Możesz przełączyć się na Testnet, aby przetestować {app_name} bez używani
 		<message>
 			<source>Please choose a wallet name</source>
 			<translation>Wybierz nazwę portfela</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5037,6 +5049,16 @@ Jeśli popełnisz tu błąd, stracisz pieniądze!</translation>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
+			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
+			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>Txid podpisanego PSBT nie zgadza się z oryginalnym txid. Przerywanie</translation>
 		</message>
@@ -5829,6 +5851,11 @@ Nadawanie zakończy się niepowodzeniem. Czy mimo to chcesz nadać?</translation
 		<message>
 			<source>Do you want to restore an existing seed onto the device?</source>
 			<translation>Czy chcesz przywrócić istniejący seed na urządzeniu?</translation>
+		</message>
+		<name>USBDevice</name>
+		<message>
+			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
