@@ -10,8 +10,8 @@
         "cbf_uuid": "4c8e120413a0488fbece81044465d026",
         "descriptor_str": "wpkh([9a6a2580/84'/0'/0']xpub6DEzNop46vmxR49zYWFnMwmEfawSNmAMf6dLH5YKDY463twtvw1XD7ihwJRLPRGZJz799VPFzXHpZu6WdhT29WnaeuChS6aZHZPFmqczR5K/<0;1>/*)#77mrjnmt",
         "gap": 20,
-        "id": "trash bacon 7",
-        "initialization_tips": [17, 0],
+        "id": "test_custom_wallet_bacon",
+        "initialization_tips": [30, 5],
         "keystores": [{
             "VERSION": "0.0.5",
             "__class__": "KeyStore",
