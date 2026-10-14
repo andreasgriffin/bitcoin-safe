@@ -304,7 +304,23 @@ jobs:
             sleep 2
           done
           if [ ! -f "$LOG_PATH" ]; then
-            echo "Log file not found at $LOG_PATH"
+            echo "::error::Bitcoin-Safe did not create its startup log"
+
+            echo "=== Application stdout/stderr ==="
+            cat "run-${{ matrix.package }}.log" || true
+
+            echo "=== Application process ==="
+            if [ -f app_launch.pid ]; then
+              PID=$(cat app_launch.pid)
+              ps -fp "$PID" || true
+            fi
+
+            echo "=== Config directory ==="
+            ls -la "$HOME/.config/bitcoin_safe" || true
+
+            echo "=== Executable permissions ==="
+            ls -l /opt/bitcoin-safe/AppRun || true
+
             exit 1
           fi
           for i in $(seq 1 30); do

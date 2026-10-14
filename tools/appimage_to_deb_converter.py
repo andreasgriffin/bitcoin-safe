@@ -129,6 +129,12 @@ class Appimage2debConverter:
 
         return extracted_folder
 
+    def _fix_directory_permissions(self, root: Path) -> None:
+        """Make all application directories accessible to regular users."""
+        for directory in [root, *root.rglob("*")]:
+            if directory.is_dir() and not directory.is_symlink():
+                directory.chmod(0o755)
+
     def _create_deb_structure(self, package_root: Path, extracted_folder: Path) -> None:
         # Create required directories for the Debian package.
         """Create deb structure."""
@@ -138,6 +144,9 @@ class Appimage2debConverter:
         target_dir.parent.mkdir(parents=True, exist_ok=True)
         # Keep staging on the same filesystem so we do not duplicate the full AppImage payload in /tmp.
         extracted_folder.rename(target_dir)
+
+        # Ensure the installed application is accessible to non-root users.
+        self._fix_directory_permissions(target_dir)
 
     def _create_control_file(self, debian_dir: Path) -> None:
         # Build the control file content line by line.
