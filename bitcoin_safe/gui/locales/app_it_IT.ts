@@ -3754,8 +3754,8 @@ Puoi passare a Testnet per provare {app_name} senza usare Bitcoin reali.</transl
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial</source>
-			<translation>Avvia prova gratuita</translation>
+			<source>Start free trial / Fetch existing subscription</source>
+			<translation/>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4239,6 +4239,16 @@ Puoi passare a Testnet per provare {app_name} senza usare Bitcoin reali.</transl
 		<message>
 			<source>Please choose a wallet name</source>
 			<translation>Si prega di scegliere un nome per il portafoglio</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5037,6 +5047,16 @@ Se commetti un errore qui, i tuoi soldi sono persi!</translation>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
+			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
+			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>Il txid del psbt firmato non corrisponde al txid originale. Interruzione</translation>
 		</message>
@@ -5825,6 +5845,11 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		<message>
 			<source>Do you want to restore an existing seed onto the device?</source>
 			<translation>Vuoi ripristinare un seme esistente sul dispositivo?</translation>
+		</message>
+		<name>USBDevice</name>
+		<message>
+			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

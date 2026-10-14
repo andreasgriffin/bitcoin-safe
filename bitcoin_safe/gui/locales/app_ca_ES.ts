@@ -3751,8 +3751,8 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial</source>
-			<translation>Comença la prova gratuïta</translation>
+			<source>Start free trial / Fetch existing subscription</source>
+			<translation/>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4236,6 +4236,16 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		<message>
 			<source>Please choose a wallet name</source>
 			<translation>Tria un nom de cartera</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5034,6 +5044,16 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
+			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
+			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>El txid del PSBT signat no coincideix amb el txid original. S'aborta</translation>
 		</message>
@@ -5822,6 +5842,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Do you want to restore an existing seed onto the device?</source>
 			<translation>Vols restaurar una seed existent al dispositiu?</translation>
+		</message>
+		<name>USBDevice</name>
+		<message>
+			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
+			<translation/>
 		</message>
 	</context>
 	<context>

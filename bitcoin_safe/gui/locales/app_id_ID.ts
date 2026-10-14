@@ -3750,8 +3750,8 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial</source>
-			<translation>Mulai uji coba gratis</translation>
+			<source>Start free trial / Fetch existing subscription</source>
+			<translation/>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4235,6 +4235,16 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		<message>
 			<source>Please choose a wallet name</source>
 			<translation>Harap pilih nama dompet</translation>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
+			<translation/>
+		</message>
+		<name>QTWallet</name>
+		<message>
+			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
+			<translation/>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5033,6 +5043,16 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 	<context>
 		<name>SignatureImporterWallet</name>
 		<message>
+			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
+			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
+			<translation/>
+		</message>
+		<name>SignatureImporterWallet</name>
+		<message>
 			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
 			<translation>Txid dari psbt yang ditandatangani tidak cocok dengan txid asli. Membatalkan</translation>
 		</message>
@@ -5821,6 +5841,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Do you want to restore an existing seed onto the device?</source>
 			<translation>Apakah Anda ingin memulihkan seed yang ada ke perangkat?</translation>
+		</message>
+		<name>USBDevice</name>
+		<message>
+			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
+			<translation/>
 		</message>
 	</context>
 	<context>
