@@ -668,7 +668,7 @@ class P2PClient(QObject):
             await self.disconnect()
             return
 
-        logger.debug(f"-> {cmd} ({len(payload)} bytes)")
+        # logger.debug(f"-> {cmd} ({len(payload)} bytes)")
 
     async def _read_exact(self, n: int) -> bytes:
         """Read *exactly* ``n`` bytes from the peer, timing-out (and disconnecting) if
