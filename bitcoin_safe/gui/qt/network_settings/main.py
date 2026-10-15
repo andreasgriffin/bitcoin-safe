@@ -223,6 +223,7 @@ def test_connection(network_config: NetworkConfig) -> ConnectionTestResult:
         if network_config.peer_selection_mode == PeerSelectionMode.only_configured:
             peer_result = validate_peer_connections(
                 peers=network_config.get_configured_peers(),
+                network=network_config.network,
                 proxy_info=proxy_info,
                 required_connections=network_config.cbf_connections,
             )

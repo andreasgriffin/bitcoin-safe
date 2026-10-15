@@ -66,7 +66,15 @@ def test_peer_connections_tests_all_peers_and_applies_threshold(monkeypatch) -> 
 
     monkeypatch.setattr(P2PClient, "_connect", classmethod(fake_connect))
 
-    result = validate_peer_connections(peers, proxy_info=None, required_connections=2)
+    async def fake_is_peer_on_network(**kwargs):
+        del kwargs
+        return True
+
+    monkeypatch.setattr("bitcoin_safe.p2p.p2p_client.is_peer_on_network", fake_is_peer_on_network)
+
+    result = validate_peer_connections(
+        peers, network=bdk.Network.REGTEST, proxy_info=None, required_connections=2
+    )
 
     assert result.success
     assert result.successful_connections == 2
@@ -85,11 +93,41 @@ def test_peer_connections_passes_proxy_and_fails_below_threshold(monkeypatch) ->
 
     monkeypatch.setattr(P2PClient, "_connect", classmethod(fake_connect))
 
-    result = validate_peer_connections([peer], proxy_info=proxy_info, required_connections=1)
+    async def fake_is_peer_on_network(**kwargs):
+        del kwargs
+        return True
+
+    monkeypatch.setattr("bitcoin_safe.p2p.p2p_client.is_peer_on_network", fake_is_peer_on_network)
+
+    result = validate_peer_connections(
+        [peer], network=bdk.Network.BITCOIN, proxy_info=proxy_info, required_connections=1
+    )
 
     assert not result.success
     assert result.successful_connections == 0
     assert attempted == [proxy_info]
+
+
+def test_peer_connections_rejects_peer_on_wrong_network(monkeypatch) -> None:
+    peer = Peer("127.0.0.1", 18444)
+
+    async def fake_connect(cls, peer, proxy_info, timeout):
+        del cls, peer, proxy_info, timeout
+        return None, _Writer()
+
+    async def fake_is_peer_on_network(**kwargs):
+        del kwargs
+        return False
+
+    monkeypatch.setattr(P2PClient, "_connect", classmethod(fake_connect))
+    monkeypatch.setattr("bitcoin_safe.p2p.p2p_client.is_peer_on_network", fake_is_peer_on_network)
+
+    result = validate_peer_connections(
+        [peer], network=bdk.Network.REGTEST, proxy_info=None, required_connections=1
+    )
+
+    assert not result.success
+    assert result.results[0].error == "Peer is not on the REGTEST network"
 
 
 def test_cbf_connection_test_validates_configured_peers(monkeypatch) -> None:

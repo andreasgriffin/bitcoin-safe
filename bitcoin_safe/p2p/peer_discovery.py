@@ -33,9 +33,7 @@ import asyncio
 import logging
 import random
 import socket
-import struct
 import subprocess
-from contextlib import suppress
 from ipaddress import IPv4Network, ip_address, ip_interface
 from threading import RLock
 from typing import Any
@@ -48,7 +46,7 @@ from bitcoin_safe.network_config import Peers, get_default_port
 from bitcoin_safe.network_utils import ProxyInfo, resolve_host_endpoints_async
 from bitcoin_safe.pythonbdk_types import BlockchainType
 
-from .p2p_client import MAGIC_VALUES, P2PClient, Peer, double_sha256
+from .p2p_client import Peer, check_peer_connection
 
 logger = logging.getLogger(__name__)
 
@@ -233,27 +231,16 @@ class PeerDiscovery:
 
     async def _is_peer_reachable(self, peer: Peer, timeout: float = LOCAL_SCAN_TIMEOUT) -> bool:
         """Check whether a peer speaks the configured Bitcoin network."""
-        writer = None
         try:
-            reader, writer = await P2PClient._connect(peer=peer, proxy_info=None, timeout=timeout)
-            header = await asyncio.wait_for(reader.readexactly(24), timeout=timeout)
-            magic, command, payload_length, checksum = (
-                struct.unpack(">L", header[:4])[0],
-                header[4:16].rstrip(b"\x00"),
-                struct.unpack("<L", header[16:20])[0],
-                header[20:24],
+            await check_peer_connection(
+                peer=peer,
+                network=self.network,
+                proxy_info=None,
+                timeout=timeout,
             )
-            if magic != MAGIC_VALUES[self.network] or command != b"version" or payload_length > 4096:
-                return False
-            payload = await asyncio.wait_for(reader.readexactly(payload_length), timeout=timeout)
-            return checksum == double_sha256(payload)[:4]
+            return True
         except Exception:
             return False
-        finally:
-            if writer is not None:
-                writer.close()
-                with suppress(Exception):
-                    await writer.wait_closed()
 
     async def _resolve_seed_to_peers(self, seed_host: str, required_services: int | None) -> list[Peer]:
         """Resolve a single seed and optionally probe reachability."""
