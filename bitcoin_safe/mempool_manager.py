@@ -34,7 +34,7 @@ import datetime
 import enum
 import logging
 from dataclasses import dataclass
-from math import ceil
+from math import ceil, isfinite
 from typing import Any, Literal, cast
 from urllib.parse import urljoin
 
@@ -44,7 +44,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from bitcoin_safe.constants import MIN_RELAY_FEE
+from bitcoin_safe.constants import MAX_FEE_RATE, MIN_RELAY_FEE
 from bitcoin_safe.network_config import NetworkConfig
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.util import default_timeout
@@ -205,7 +205,12 @@ async def fetch_from_url(
 
 
 def _is_fee_rate(value: Any) -> bool:
-    return isinstance(value, int | float) and not isinstance(value, bool)
+    return (
+        isinstance(value, int | float)
+        and not isinstance(value, bool)
+        and isfinite(value)
+        and 0 <= value <= MAX_FEE_RATE
+    )
 
 
 def _validated_mempool_blocks(data: Any) -> list[dict[str, Any]] | None:
@@ -239,7 +244,9 @@ def _validated_mempool_blocks(data: Any) -> list[dict[str, Any]] | None:
     return validated_blocks
 
 
-def _validated_recommended_fees(data: Any) -> dict[str, float] | None:
+def _validated_recommended_fees(
+    data: Any, mempool_blocks: list[dict[str, Any]] | None
+) -> dict[str, float] | None:
     if not isinstance(data, dict):
         return None
 
@@ -253,6 +260,12 @@ def _validated_recommended_fees(data: Any) -> dict[str, float] | None:
         if not _is_fee_rate(value):
             return None
         recommended[key] = float(value)
+
+    if mempool_blocks is None:
+        return None
+    first_block_max_fee = max(mempool_blocks[0]["feeRange"])
+    if recommended["hourFee"] > first_block_max_fee:
+        return None
 
     return recommended
 
@@ -344,7 +357,7 @@ class MempoolManager(QObject):
     def get_prio_fee_rates(self) -> dict[TxPrio, float]:
         """Get prio fee rates."""
         return {
-            prio: self.data.recommended[key]
+            prio: min(self.data.recommended[key], MAX_FEE_RATE)
             for prio, key in zip(
                 [TxPrio.high, TxPrio.medium, TxPrio.low],
                 ["fastestFee", "halfHourFee", "hourFee"],
@@ -354,7 +367,7 @@ class MempoolManager(QObject):
 
     def get_min_relay_fee_rate(self) -> float:
         """Get min relay fee rate."""
-        return self.data.recommended["minimumFee"]
+        return min(self.data.recommended["minimumFee"], MAX_FEE_RATE)
 
     def max_reasonable_fee_rate(self) -> float:
         "Average fee of the 0 projected block"
@@ -363,7 +376,7 @@ class MempoolManager(QObject):
         # allow for up to 20% more then the average_fee_rate
         slack = 0.2
 
-        return average_fee_rate * (1 + slack)
+        return min(average_fee_rate * (1 + slack), MAX_FEE_RATE)
 
     def close(self):
         """Close."""
@@ -421,7 +434,7 @@ class MempoolManager(QObject):
                 type(mempool_blocks).__name__,
             )
 
-        validated_recommended = _validated_recommended_fees(recommended)
+        validated_recommended = _validated_recommended_fees(recommended, validated_mempool_blocks)
         if validated_recommended is not None:
             self.data.recommended = validated_recommended
         elif recommended is not None:

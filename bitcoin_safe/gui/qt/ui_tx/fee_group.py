@@ -517,6 +517,5 @@ class FeeGroup(QObject):
             fee_range[1],
             value,
             self.spin_fee_rate.value(),
-            max(self.mempool_buttons.mempool_manager.fee_rates_min_max(0)),
         )
         self.spin_fee_rate.setRange(*fee_range)

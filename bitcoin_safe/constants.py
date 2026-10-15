@@ -42,6 +42,8 @@ WINDOWS_INSTALL_IDENTITY = "Bitcoin Safe"
 
 # change the min relay fee rate to 0.1, once core >=v30 is adopted by most (including electrum servers)
 MIN_RELAY_FEE = 1.0
+# Fee rates from a remote mempool service must never exceed this local limit.
+MAX_FEE_RATE = 1000.0
 LOCAL_TX_LAST_SEEN = 0
 INFINITE_SYMBOL_TYPE = Literal["∞"]
 INFINITE_SYMBOL: INFINITE_SYMBOL_TYPE = "∞"

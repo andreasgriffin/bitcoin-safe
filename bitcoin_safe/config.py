@@ -45,6 +45,7 @@ from bitcoin_safe_lib.storage import BaseSaveableClass, Encrypt, SaveAllClass
 from bitcoin_safe_lib.util import fast_version
 from PyQt6.QtCore import QCoreApplication
 
+from bitcoin_safe.constants import MAX_FEE_RATE
 from bitcoin_safe.fx_types import FXProvider
 from bitcoin_safe.gui.qt.unique_deque import UniqueDeque
 from bitcoin_safe.pythonbdk_types import BlockchainType
@@ -110,11 +111,11 @@ class UserConfig(BaseSaveableClass):
     window_properties_config_file = config_dir / (app_name + "_window_properties.conf")
 
     fee_ranges = {
-        bdk.Network.BITCOIN: [0.1, 1000],
-        bdk.Network.REGTEST: [0.0, 1000],
-        bdk.Network.SIGNET: [0.0, 1000],
-        bdk.Network.TESTNET: [0.0, 1000],
-        bdk.Network.TESTNET4: [0.0, 1000],
+        bdk.Network.BITCOIN: [0.1, MAX_FEE_RATE],
+        bdk.Network.REGTEST: [0.0, MAX_FEE_RATE],
+        bdk.Network.SIGNET: [0.0, MAX_FEE_RATE],
+        bdk.Network.TESTNET: [0.0, MAX_FEE_RATE],
+        bdk.Network.TESTNET4: [0.0, MAX_FEE_RATE],
     }
     _app_lock_encryptor = Encrypt()
 
