@@ -193,6 +193,50 @@ def test_mempool_manager_ignores_invalid_fee_range_payload(monkeypatch) -> None:
     assert manager.data.mempool_blocks == original_mempool_blocks
 
 
+def test_mempool_manager_rejects_unreasonable_fee_payload(monkeypatch) -> None:
+    manager = MempoolManager(
+        network_config=NetworkConfig(network=bdk.Network.SIGNET),
+        signals_min=SignalsMin(),
+        loop_in_thread=FakeLoopInThread(),
+    )
+    manager.network_config.mempool_url = "https://mempool.space/signet"
+    original_recommended = dict(manager.data.recommended)
+    original_mempool_blocks = [dict(block) for block in manager.data.mempool_blocks]
+
+    async def fake_fetch(url: str, proxies=None, timeout="default"):
+        del proxies, timeout
+        payloads = {
+            "https://mempool.space/signet/api/v1/fees/mempool-blocks": [
+                {
+                    "blockSize": 975_000,
+                    "blockVSize": 975_000,
+                    "nTx": 1_800,
+                    "totalFees": 1_200_000,
+                    "medianFee": 2_000.0,
+                    "feeRange": [1_500.0, 2_500.0],
+                }
+            ],
+            "https://mempool.space/signet/api/v1/fees/recommended": {
+                "fastestFee": 2_500.0,
+                "halfHourFee": 2_200.0,
+                "hourFee": 2_000.0,
+                "economyFee": 1_800.0,
+                "minimumFee": 1_500.0,
+            },
+            "https://mempool.space/signet/api/mempool": manager.data.mempool_dict,
+        }
+        return payloads[url]
+
+    monkeypatch.setattr("bitcoin_safe.mempool_manager.fetch_from_url", fake_fetch)
+
+    asyncio.run(manager._set_data_from_mempoolspace())
+
+    assert manager.data.recommended == original_recommended
+    assert manager.data.mempool_blocks == original_mempool_blocks
+    assert manager.get_prio_fee_rates()[TxPrio.low] == float(MIN_RELAY_FEE)
+    assert manager.max_reasonable_fee_rate() == MIN_RELAY_FEE * 1.2
+
+
 def test_mempool_manager_accessors_fallback_when_blocks_are_empty() -> None:
     manager = MempoolManager(
         network_config=NetworkConfig(network=bdk.Network.SIGNET),
