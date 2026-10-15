@@ -73,6 +73,9 @@ smoke_test_bundle() {
         cat "${log_file}" >&2 || true
         fail "Detected missing module or shared-library error in Flatpak startup logs."
     fi
+    if ! grep -Eq 'mainwindow showevent' "${log_file}"  ; then
+        fail "mainwindow showevent not in logfile"
+    fi
 }
 
 install_flatpak_prerequisites

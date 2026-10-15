@@ -1302,6 +1302,7 @@ class MainWindow(UnlockableMainWindow):
     def showEvent(self, a0: QShowEvent | None) -> None:
         """ShowEvent."""
         super().showEvent(a0)
+        logger.info("mainwindow showevent")  # do not remove, since it is used for flatpakt startup smoke test
         # self.updateUI()
 
     def updateUI(self) -> None:
