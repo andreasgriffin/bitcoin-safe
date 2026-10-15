@@ -683,7 +683,7 @@ class NetworkSettingsUI(QWidget):
             tooltip=get_p2p_tooltip_text(),
             click_url="https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/",
         )
-        self.p2p_parallel_label.textLabel.setText(self.tr("Number of connections"))
+        self.p2p_parallel_label.textLabel.setText(self.tr("Number of connections:"))
         self.p2p_parallel_label.set_icon_as_help(
             tooltip=self.tr(
                 "This sets how many Bitcoin peers the listener connects to at once.\n"
