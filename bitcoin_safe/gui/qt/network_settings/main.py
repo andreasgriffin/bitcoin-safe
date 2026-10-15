@@ -391,7 +391,7 @@ class NetworkSettingsUI(QWidget):
         self.stackedWidget.addWidget(self.rpcTab)
 
         # mempool
-        self.groupbox_blockexplorer = QGroupBox()
+        self.groupbox_blockexplorer = QGroupBox(self)
         self.groupbox_blockexplorer_layout = QHBoxLayout(self.groupbox_blockexplorer)
         self.mempool_icon_label_help = IconLabel()
         self.mempool_icon_label_help.textLabel.setVisible(False)
@@ -409,7 +409,7 @@ class NetworkSettingsUI(QWidget):
         self._layout.addWidget(self.groupbox_blockexplorer)
 
         # Shared peer configuration
-        self.groupbox_peers = QGroupBox()
+        self.groupbox_peers = QGroupBox(self)
         self.groupbox_peers_layout = QGridLayout(self.groupbox_peers)
 
         self.peer_selection_mode_combo = QComboBox()
@@ -435,7 +435,7 @@ class NetworkSettingsUI(QWidget):
         self._layout.addWidget(self.groupbox_peers)
 
         # p2p listener
-        self.groupbox_p2p = QGroupBox()
+        self.groupbox_p2p = QGroupBox(self)
         self.groupbox_p2p_layout = QGridLayout(self.groupbox_p2p)
         self.groupbox_p2p_layout.setColumnMinimumWidth(2, FORM_LABEL_FIELD_SPACING)
 
@@ -475,7 +475,7 @@ class NetworkSettingsUI(QWidget):
         self.groupbox_p2p_layout.addWidget(self.p2p_listener_refresh_button, 5, 3)
 
         # proxy
-        self.groupbox_proxy = QGroupBox()
+        self.groupbox_proxy = QGroupBox(self)
         self.groupbox_proxy_layout = QHBoxLayout(self.groupbox_proxy)
 
         self.proxy_url_edit = QCompleterLineEdit(
