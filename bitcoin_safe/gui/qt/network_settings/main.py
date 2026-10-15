@@ -484,6 +484,7 @@ class NetworkSettingsUI(QWidget):
         )
         self.proxy_url_edit.textChanged.connect(self.on_proxy_url_changed)
         self.proxy_url_edit_label = IconLabel()
+        self.proxy_url_edit_label.textLabel.setVisible(False)
         self.groupbox_proxy_layout.addWidget(self.proxy_url_edit_label)
         self.groupbox_proxy_layout.addWidget(self.proxy_url_edit)
 
@@ -663,13 +664,13 @@ class NetworkSettingsUI(QWidget):
 
         self.proxy_warning_label.icon_label.setText(
             self.tr(
-                "The proxy does not apply to Sync&Chat\n"
-                "plugin and during subscription purchase!\n"
+                "The proxy does not apply to Sync&Chat plugin\n"
+                "and subscription purchases!\n"
                 "Hostname-based server location and DNS-seed discovery\n"
-                "are not resolved through the proxy in this version."
+                "are not resolved through the proxy."
             )
         )
-        self.proxy_url_edit_label.setText(self.tr("Proxy:"))
+        self.groupbox_proxy.setTitle(self.tr("Proxy"))
         self.proxy_url_edit_label.set_icon_as_help(
             tooltip=self.tr("Click here for an example of a Tor proxy configuration."),
             click_url="https://bitcoin-safe.org/en/knowledge/tor-config/",
