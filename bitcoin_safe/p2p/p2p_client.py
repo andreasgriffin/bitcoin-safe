@@ -32,6 +32,7 @@ from __future__ import annotations
 import asyncio
 import base64
 import collections
+import contextlib
 import enum
 import hashlib
 import ipaddress
@@ -56,6 +57,78 @@ from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.util import default_timeout
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class PeerConnectionResult:
+    """Result of testing one configured peer."""
+
+    peer: Peer
+    connected: bool
+    error: str | None = None
+
+
+@dataclass(frozen=True)
+class PeerConnectionTestResult:
+    """Results of testing all configured peers."""
+
+    results: tuple[PeerConnectionResult, ...]
+    required_connections: int
+
+    @property
+    def successful_connections(self) -> int:
+        """Return the number of successful peer connections."""
+        return sum(result.connected for result in self.results)
+
+    @property
+    def success(self) -> bool:
+        """Return whether the required number of peers connected."""
+        return self.successful_connections >= self.required_connections
+
+    def format_details(self) -> str:
+        """Format per-peer connection results for display."""
+        details = []
+        for result in self.results:
+            status = "Connected" if result.connected else f"Failed: {result.error}"
+            details.append(f"{result.peer}: {status}")
+        return "\n".join(details)
+
+
+async def _test_peer_connection(peer: Peer, proxy_info: ProxyInfo | None) -> PeerConnectionResult:
+    """Test one peer using the same transport path as the P2P client."""
+    writer: StreamWriter | None = None
+    try:
+        _, writer = await P2PClient._connect(
+            peer=peer,
+            proxy_info=proxy_info,
+            timeout=default_timeout(proxy_info),
+        )
+        return PeerConnectionResult(peer=peer, connected=True)
+    except Exception as exc:
+        return PeerConnectionResult(peer=peer, connected=False, error=str(exc) or type(exc).__name__)
+    finally:
+        if writer is not None:
+            writer.close()
+            with contextlib.suppress(Exception):
+                await writer.wait_closed()
+
+
+def validate_peer_connections(
+    peers: Peers | list[Peer], proxy_info: ProxyInfo | None, required_connections: int
+) -> PeerConnectionTestResult:
+    """Test every peer and require a minimum number of successful connections."""
+    if required_connections < 1:
+        raise ValueError("required_connections must be >= 1")
+    results = asyncio.run(_test_all_peer_connections(peers=peers, proxy_info=proxy_info))
+    return PeerConnectionTestResult(results=tuple(results), required_connections=required_connections)
+
+
+async def _test_all_peer_connections(
+    peers: Peers | list[Peer], proxy_info: ProxyInfo | None
+) -> list[PeerConnectionResult]:
+    """Test all peers concurrently without short-circuiting on success."""
+    return list(await asyncio.gather(*(_test_peer_connection(peer, proxy_info) for peer in peers)))
+
 
 ###############################################################################
 # Constants & helpers

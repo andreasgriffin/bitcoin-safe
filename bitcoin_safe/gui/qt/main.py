@@ -119,7 +119,7 @@ from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.logging_handlers import mail_feedback, mail_help_contact
 from bitcoin_safe.logging_setup import get_log_file
-from bitcoin_safe.network_config import P2pListenerType, Peers
+from bitcoin_safe.network_config import P2pListenerType, Peers, PeerSelectionMode
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.p2p.p2p_client import ConnectionInfo
 from bitcoin_safe.p2p.p2p_listener import P2pListener
@@ -264,6 +264,7 @@ class MainWindow(UnlockableMainWindow):
             signals=self.signals,
             fx=self.fx,
             language_chooser=self.language_chooser,
+            loop_in_thread=self.loop_in_thread,
         )
         self.settings.addAction(self.menu_action_settings_ui)
         self.settings.addAction(self.menu_action_settings_network)
@@ -842,22 +843,26 @@ class MainWindow(UnlockableMainWindow):
         self.signal_tracker.disconnect_all()
         if self.config.network_config.p2p_listener_type == P2pListenerType.deactive:
             return
-        manual_peers = self.config.network_config.get_manual_peers()
+        configured_peers = self.config.network_config.get_configured_peers()
         discovered_peers = Peers(self.config.network_config.discovered_peers)
-        for peer in manual_peers:
+        for peer in configured_peers:
             if peer not in discovered_peers:
                 discovered_peers.append(peer)
+        only_configured_peers = (
+            self.config.network_config.peer_selection_mode == PeerSelectionMode.only_configured
+        )
         self.p2p_listener = P2pListener(
             network=self.config.network,
             discovered_peers=discovered_peers,
             loop_in_thread=self.loop_in_thread,
-            autodiscover_additional_peers=self.config.network_config.p2p_autodiscover_additional_peers,
+            autodiscover_additional_peers=not only_configured_peers,
+            allowed_peers=configured_peers if only_configured_peers else None,
             max_parallel_peers=self.config.network_config.p2p_listener_parallel_connections,
         )
         self.p2p_listener.signal_tx.connect(self.p2p_listening_on_tx)
         self.p2p_listener.signal_block.connect(self.p2p_listening_on_block)
         self.p2p_listener.start(
-            preferred_peers=manual_peers if manual_peers else None,
+            preferred_peers=configured_peers if configured_peers else None,
             proxy_info=(
                 ProxyInfo.parse(self.config.network_config.proxy_url)
                 if self.config.network_config.proxy_url

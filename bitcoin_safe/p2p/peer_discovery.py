@@ -32,19 +32,30 @@ from __future__ import annotations
 import asyncio
 import logging
 import random
+import socket
+import struct
+import subprocess
 from contextlib import suppress
-from ipaddress import ip_address
+from ipaddress import IPv4Network, ip_address, ip_interface
 from threading import RLock
 from typing import Any
 
 import bdkpython as bdk
+import psutil
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 
+from bitcoin_safe.network_config import Peers, get_default_port
 from bitcoin_safe.network_utils import ProxyInfo, resolve_host_endpoints_async
+from bitcoin_safe.pythonbdk_types import BlockchainType
 
-from .p2p_client import Peer
+from .p2p_client import MAGIC_VALUES, P2PClient, Peer, double_sha256
 
 logger = logging.getLogger(__name__)
+
+LOCAL_SCAN_MAX_HOSTS = 4096
+LOCAL_SCAN_CONCURRENCY = 128
+LOCAL_SCAN_TIMEOUT = 0.35
+TAILSCALE_NETWORK = IPv4Network("100.64.0.0/10")
 
 
 # Bitcoin P2P service flags (nServices field in version message)
@@ -220,17 +231,29 @@ class PeerDiscovery:
         """Return True when seed entries should be verified by connecting."""
         return seed_host in {"127.0.0.1", "::1", "localhost"}
 
-    async def _is_peer_reachable(self, peer: Peer, timeout: float = 0.35) -> bool:
-        """Check whether a TCP peer can be reached."""
+    async def _is_peer_reachable(self, peer: Peer, timeout: float = LOCAL_SCAN_TIMEOUT) -> bool:
+        """Check whether a peer speaks the configured Bitcoin network."""
+        writer = None
         try:
-            _, writer = await asyncio.wait_for(asyncio.open_connection(peer.host, peer.port), timeout=timeout)
+            reader, writer = await P2PClient._connect(peer=peer, proxy_info=None, timeout=timeout)
+            header = await asyncio.wait_for(reader.readexactly(24), timeout=timeout)
+            magic, command, payload_length, checksum = (
+                struct.unpack(">L", header[:4])[0],
+                header[4:16].rstrip(b"\x00"),
+                struct.unpack("<L", header[16:20])[0],
+                header[20:24],
+            )
+            if magic != MAGIC_VALUES[self.network] or command != b"version" or payload_length > 4096:
+                return False
+            payload = await asyncio.wait_for(reader.readexactly(payload_length), timeout=timeout)
+            return checksum == double_sha256(payload)[:4]
         except Exception:
             return False
-
-        writer.close()
-        with suppress(Exception):
-            await writer.wait_closed()
-        return True
+        finally:
+            if writer is not None:
+                writer.close()
+                with suppress(Exception):
+                    await writer.wait_closed()
 
     async def _resolve_seed_to_peers(self, seed_host: str, required_services: int | None) -> list[Peer]:
         """Resolve a single seed and optionally probe reachability."""
@@ -356,8 +379,119 @@ class PeerDiscovery:
         random.shuffle(peer_list)
         return peer_list[0]
 
+    async def discover_local_peers(
+        self,
+        port: int | None = None,
+        timeout: float = LOCAL_SCAN_TIMEOUT,
+        max_concurrent: int = LOCAL_SCAN_CONCURRENCY,
+    ) -> Peers:
+        """Discover reachable Bitcoin peers on local IPv4 subnets."""
+        scan_port = port or get_default_port(self.network, BlockchainType.CompactBlockFilter)
+        candidates = [
+            Peer(str(host), scan_port) for network in local_ipv4_networks() for host in network.hosts()
+        ]
+        candidates.extend(
+            Peer(str(host), scan_port) for network in local_ipv4_routes() for host in network.hosts()
+        )
+        candidates.extend(Peer(host, scan_port) for host in local_ipv4_neighbors())
+        candidates = list(dict.fromkeys(candidates))
+        semaphore = asyncio.Semaphore(max_concurrent)
+
+        async def probe(peer: Peer) -> Peer | None:
+            async with semaphore:
+                if await self._is_peer_reachable(peer, timeout=timeout):
+                    return peer
+                return None
+
+        results = await asyncio.gather(*(probe(peer) for peer in candidates))
+        return Peers(peer for peer in results if peer is not None)
+
     def stop(self) -> None:
         """Stop the internally managed loop, if we created it."""
 
         if self._owns_loop_in_thread:
             self._loop_in_thread.stop()
+
+
+def local_ipv4_networks() -> tuple[IPv4Network, ...]:
+    """Return bounded, active local IPv4 networks suitable for scanning."""
+    networks: set[IPv4Network] = set()
+    interface_stats = psutil.net_if_stats()
+    for interface_name, addresses in psutil.net_if_addrs().items():
+        stats = interface_stats.get(interface_name)
+        if stats is not None and not stats.isup:
+            continue
+        for address in addresses:
+            if address.family != socket.AF_INET or not address.netmask:
+                continue
+            try:
+                interface = ip_interface(f"{address.address}/{address.netmask}")
+            except ValueError:
+                continue
+            if interface.ip.is_loopback or interface.ip.is_link_local:
+                continue
+            if not isinstance(interface.network, IPv4Network):
+                continue
+            if interface.network.prefixlen < 24:
+                continue
+            if interface.network.num_addresses - 2 > LOCAL_SCAN_MAX_HOSTS:
+                continue
+            networks.add(interface.network)
+    return tuple(sorted(networks, key=str))
+
+
+def local_ipv4_routes() -> tuple[IPv4Network, ...]:
+    """Return bounded private IPv4 routes reported by the operating system."""
+    try:
+        result = subprocess.run(
+            ["ip", "-4", "route", "show"],
+            capture_output=True,
+            check=False,
+            text=True,
+            timeout=1,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return ()
+
+    networks: set[IPv4Network] = set()
+    for line in result.stdout.splitlines():
+        route = line.split(maxsplit=1)[0]
+        if route == "default":
+            continue
+        try:
+            network = IPv4Network(route, strict=False)
+        except ValueError:
+            continue
+        if network.prefixlen < 24 or network.num_addresses - 2 > LOCAL_SCAN_MAX_HOSTS:
+            continue
+        if network.is_private or network.is_link_local or network.overlaps(TAILSCALE_NETWORK):
+            networks.add(network)
+    return tuple(sorted(networks, key=str))
+
+
+def local_ipv4_neighbors() -> tuple[str, ...]:
+    """Return IPv4 addresses currently present in the OS neighbor table."""
+    try:
+        result = subprocess.run(
+            ["ip", "-4", "neigh", "show"],
+            capture_output=True,
+            check=False,
+            text=True,
+            timeout=1,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return ()
+
+    neighbors: set[str] = set()
+    for line in result.stdout.splitlines():
+        fields = line.split()
+        if not fields or fields[-1] in {"FAILED", "INCOMPLETE"}:
+            continue
+        host = fields[0]
+        try:
+            address = ip_address(host)
+        except ValueError:
+            continue
+        if address.version == 4 and not address.is_loopback and not address.is_unspecified:
+            neighbors.add(str(address))
+    return tuple(sorted(neighbors))

@@ -1,4 +1,4 @@
-# dependency-input-sha256: 2204aa96178b1b382fd12d6f9e955d5a81cbb5dbb0fc396bffb7a3dc22f3a99d
+# dependency-input-sha256: bb3e156c6be941d389ec191dfa0aa335a38170095bbf9b827f1c5d176092b7b4
 packaging==26.3 --hash=sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c
 pyproject-hooks==1.3.3 --hash=sha256:5fc53fdac9f7bd63fbcdc868fb5f90b4784d78a53a3d3388cd738b807441a20b
 build==1.6.1 --hash=sha256:ecd351a4be9d35a9eaaba244a7687143c9c7d4aea6ac964e7e7ddab20cbcf4e7

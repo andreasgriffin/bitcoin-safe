@@ -70,6 +70,7 @@ from bitcoin_safe.client import Client
 from bitcoin_safe.client_helpers import UpdateInfo
 from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
+from bitcoin_safe.network_config import PeerSelectionMode
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.persister.serialize_persistence import SerializePersistence
 from bitcoin_safe.psbt_util import FeeInfo, FeeRate, SimpleInput
@@ -1274,7 +1275,10 @@ class Wallet(BaseSaveableClass, CacheManager):
             # )
         elif self.config.network_config.server_type == BlockchainType.CompactBlockFilter:
             client = Client.from_cbf(
-                manual_peers=self.config.network_config.get_manual_peers(),
+                configured_peers=self.config.network_config.get_configured_peers(),
+                only_configured_peers=(
+                    self.config.network_config.peer_selection_mode == PeerSelectionMode.only_configured
+                ),
                 bdkwallet=self.bdkwallet,
                 gap=self.gap,
                 proxy_info=proxy_info,

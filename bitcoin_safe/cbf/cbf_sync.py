@@ -61,6 +61,7 @@ class CbfSync:
         data_dir: Path,
         proxy_info: ProxyInfo | None,
         cbf_connections: int,
+        only_configured_peers: bool = False,
         is_new_wallet=False,
         gap: int = 20,
     ):
@@ -74,6 +75,7 @@ class CbfSync:
         self.data_dir = data_dir
         self.proxy_info = proxy_info
         self.cbf_connections = cbf_connections
+        self.only_configured_peers = only_configured_peers
         self.is_new_wallet = is_new_wallet
         self._connected_peer_hosts: list[str] = []
 
@@ -243,6 +245,8 @@ class CbfSync:
             builder = builder.socks5_proxy(proxy=self.proxy_info.to_bdk())
         if self.peers:
             builder = builder.peers(self.peers)
+        if self.only_configured_peers:
+            builder = builder.only_configured_peers()
         builder = builder.connections(self.cbf_connections)
 
         # timeout, new release
