@@ -33,6 +33,7 @@ import logging
 
 import bdkpython as bdk
 import numpy as np
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from PyQt6.QtWidgets import QApplication
 
 from bitcoin_safe.gui.qt.network_settings.main import NetworkSettingsUI
@@ -55,11 +56,13 @@ if __name__ == "__main__":
                 network_configs = NetworkConfigs.from_file("network_configs.json")
             else:
                 network_configs = NetworkConfigs()
+            self.loop_in_thread = LoopInThread()
 
             self.network_settings_ui = NetworkSettingsUI(
                 network=np.random.choice(np.array(list(bdk.Network)), size=1)[0],
                 network_configs=network_configs,
                 signals=None,
+                loop_in_thread=self.loop_in_thread,
             )
 
             self.setCentralWidget(self.network_settings_ui)

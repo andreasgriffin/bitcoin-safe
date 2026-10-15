@@ -30,17 +30,19 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import dataclass
 from functools import partial
 from typing import cast
 from urllib.parse import urljoin
 
 import bdkpython as bdk
 import requests
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.util import unique_elements
 from bitcoin_safe_lib.util_os import webopen
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor, QKeyEvent, QShowEvent
 from PyQt6.QtWidgets import (
     QCheckBox,
@@ -82,6 +84,7 @@ from bitcoin_safe.network_config import (
     P2pListenerType,
     Peer,
     Peers,
+    PeerSelectionMode,
     get_default_p2p_node_urls,
     get_default_port,
     get_default_rpc_hosts,
@@ -94,6 +97,11 @@ from bitcoin_safe.network_utils import (
     ProxyInfo,
     get_electrum_server_version,
 )
+from bitcoin_safe.p2p.p2p_client import (
+    PeerConnectionResult,
+    validate_peer_connections,
+)
+from bitcoin_safe.p2p.peer_discovery import PeerDiscovery
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.signals import Signals
 from bitcoin_safe.util import default_timeout
@@ -101,6 +109,30 @@ from bitcoin_safe.util import default_timeout
 from ..icon_label import IconLabel
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class ConnectionTestResult:
+    """Result of testing one network data source."""
+
+    success: bool
+    details: str = ""
+    peer_results: tuple[PeerConnectionResult, ...] = ()
+    required_connections: int | None = None
+
+    def format_details(self) -> str:
+        """Return informative details, including individual peer results."""
+        details = [self.details] if self.details else []
+        if self.peer_results:
+            successful = sum(result.connected for result in self.peer_results)
+            required = self.required_connections or 0
+            details.append(f"Connected to {successful}/{len(self.peer_results)} peers; {required} required.")
+            details.extend(
+                f"  {'Connected' if result.connected else 'Failed'}: {result.peer}"
+                + (f" ({result.error})" if result.error else "")
+                for result in self.peer_results
+            )
+        return "\n".join(details)
 
 
 def test_mempool_space_server(url: str, proxies: dict | None) -> bool:
@@ -118,7 +150,16 @@ def test_mempool_space_server(url: str, proxies: dict | None) -> bool:
         return False
 
 
-def test_connection(network_config: NetworkConfig) -> str | None:
+def merge_configured_peers(existing: Peers, discovered: Peers) -> Peers:
+    """Append discovered peers while preserving existing order and uniqueness."""
+    merged = Peers(existing)
+    for peer in discovered:
+        if peer not in merged:
+            merged.append(peer)
+    return merged
+
+
+def test_connection(network_config: NetworkConfig) -> ConnectionTestResult:
     """Test connection."""
     proxy_info = ProxyInfo.parse(network_config.proxy_url) if network_config.proxy_url else None
 
@@ -127,16 +168,17 @@ def test_connection(network_config: NetworkConfig) -> str | None:
             host, port = get_host_and_port(network_config.electrum_url)
             if host is None or port is None:
                 logger.warning("No host or port given")
-                return None
-            return get_electrum_server_version(
+                return ConnectionTestResult(False, "No host or port given")
+            version = get_electrum_server_version(
                 host=host,
                 port=port,
                 use_ssl=network_config.electrum_use_ssl,
                 proxy_info=proxy_info,
             )
+            return ConnectionTestResult(version is not None, str(version) if version else "No response")
         except Exception as e:
             logger.warning(f"Electrum connection test failed: {e}")
-            return None
+            return ConnectionTestResult(False, str(e))
 
     elif network_config.server_type == BlockchainType.Esplora:
         try:
@@ -148,13 +190,13 @@ def test_connection(network_config: NetworkConfig) -> str | None:
                 proxies=proxies,
             )
             if response.status_code == 200:
-                return response.json()
+                return ConnectionTestResult(True, str(response.json()))
             else:
-                return None
+                return ConnectionTestResult(False, f"HTTP status {response.status_code}")
 
         except Exception as e:
             logger.warning(f"Esplora API connection test failed: {e}")
-            return None
+            return ConnectionTestResult(False, str(e))
 
     elif network_config.server_type == BlockchainType.RPC:
         try:
@@ -170,15 +212,27 @@ def test_connection(network_config: NetworkConfig) -> str | None:
                 timeout=default_timeout(proxies),
             )
             if response.status_code == 200 and "result" in response.json():
-                return response.json()
+                return ConnectionTestResult(True, str(response.json()))
             else:
-                return None
+                return ConnectionTestResult(False, f"HTTP status {response.status_code}")
         except Exception as e:
             logger.warning(f"RPC connection test failed: {e}")
-            return None
+            return ConnectionTestResult(False, str(e))
 
     elif network_config.server_type == BlockchainType.CompactBlockFilter:
-        return "CompactBlockFilter"
+        if network_config.peer_selection_mode == PeerSelectionMode.only_configured:
+            peer_result = validate_peer_connections(
+                peers=network_config.get_configured_peers(),
+                network=network_config.network,
+                proxy_info=proxy_info,
+                required_connections=network_config.cbf_connections,
+            )
+            return ConnectionTestResult(
+                success=peer_result.success,
+                peer_results=peer_result.results,
+                required_connections=peer_result.required_connections,
+            )
+        return ConnectionTestResult(True, "CompactBlockFilter")
     raise Exception(f"Invalud {network_config.server_type}")
 
 
@@ -186,19 +240,21 @@ class NetworkSettingsUI(QWidget):
     signal_apply_and_shutdown = cast(SignalProtocol[[bdk.Network]], pyqtSignal(bdk.Network))
     signal_cancel = cast(SignalProtocol[[]], pyqtSignal())
 
-    ignored_missing_in_UI = ["p2p_autodiscover_additional_peers", "mempool_data"]
+    ignored_missing_in_UI = ["mempool_data"]
 
     def __init__(
         self,
         network: bdk.Network,
         network_configs: NetworkConfigs,
         signals: Signals | None,
+        loop_in_thread: LoopInThread,
         parent=None,
     ):
         """Initialize instance."""
         super().__init__(parent)
         self.signals = signals
         self.network_configs = network_configs
+        self.loop_in_thread = loop_in_thread
         self._layout = QVBoxLayout(self)
         # Prevent shrinking below the natural size of contained widgets without hard-coded dimensions
         self._layout.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
@@ -336,8 +392,11 @@ class NetworkSettingsUI(QWidget):
         self.stackedWidget.addWidget(self.rpcTab)
 
         # mempool
-        self.groupbox_blockexplorer = QGroupBox()
+        self.groupbox_blockexplorer = QGroupBox(self)
         self.groupbox_blockexplorer_layout = QHBoxLayout(self.groupbox_blockexplorer)
+        self.mempool_icon_label_help = IconLabel()
+        self.mempool_icon_label_help.textLabel.setVisible(False)
+        self.mempool_icon_label_help.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.edit_mempool_url = QCompleterLineEdit(
             network=network,
             suggestions={network: list(get_mempool_url(network).values()) for network in bdk.Network},
@@ -345,12 +404,39 @@ class NetworkSettingsUI(QWidget):
         self.button_mempool = QPushButton(self)
         self.button_mempool.setIcon(svg_tools.get_QIcon("lucide--external-link.svg"))
         self.button_mempool.clicked.connect(self.on_button_mempool_clicked)
+        self.groupbox_blockexplorer_layout.addWidget(self.mempool_icon_label_help)
         self.groupbox_blockexplorer_layout.addWidget(self.edit_mempool_url)
         self.groupbox_blockexplorer_layout.addWidget(self.button_mempool)
         self._layout.addWidget(self.groupbox_blockexplorer)
 
+        # Shared peer configuration
+        self.groupbox_peers = QGroupBox(self)
+        self.groupbox_peers_layout = QGridLayout(self.groupbox_peers)
+
+        self.peer_selection_mode_combo = QComboBox()
+        self.peer_selection_mode_combo.addItem(self.tr("Preferred peers"), PeerSelectionMode.additional)
+        self.peer_selection_mode_combo.addItem(
+            self.tr("Configured peers only"), PeerSelectionMode.only_configured
+        )
+        self.peer_selection_mode_combo.currentIndexChanged.connect(self.on_peer_selection_mode_changed)
+        self.peer_selection_mode_label = IconLabel()
+        self.peer_selection_mode_label.textLabel.setVisible(False)
+        self.peer_selection_mode_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.peer_configured_peers_button = SquareButton(svg_tools.get_QIcon("pen.svg"), parent=self)
+        self.peer_configured_peers_button.clicked.connect(self.on_edit_configured_peers)
+        self.peer_configured_peers_button.setToolTip(self.tr("Edit configured peers"))
+        self.configured_peers_data: Peers = Peers()
+        self.peer_selection_help = QLabel()
+        self.peer_selection_help.setWordWrap(True)
+        self.groupbox_peers_layout.addWidget(self.peer_selection_mode_label, 0, 0)
+        self.groupbox_peers_layout.addWidget(self.peer_selection_mode_combo, 0, 1, 1, 2)
+        self.groupbox_peers_layout.addWidget(self.peer_configured_peers_button, 0, 3)
+        self.groupbox_peers_layout.addWidget(self.peer_selection_help, 1, 1, 1, 3)
+        self.groupbox_peers_layout.setColumnStretch(1, 1)
+        self._layout.addWidget(self.groupbox_peers)
+
         # p2p listener
-        self.groupbox_p2p = QGroupBox()
+        self.groupbox_p2p = QGroupBox(self)
         self.groupbox_p2p_layout = QGridLayout(self.groupbox_p2p)
         self.groupbox_p2p_layout.setColumnMinimumWidth(2, FORM_LABEL_FIELD_SPACING)
 
@@ -368,11 +454,6 @@ class NetworkSettingsUI(QWidget):
             self.tr("Maximum number of peers to monitor concurrently via the p2p listener.")
         )
 
-        self.p2p_manual_peers_icon_label = IconLabel()
-        self.p2p_manual_peers_icon_label.textLabel.setVisible(True)
-        self.p2p_manual_peers_button = SquareButton(svg_tools.get_QIcon("pen.svg"), parent=self)
-        self.p2p_manual_peers_button.clicked.connect(self.on_edit_manual_peers)
-        self.manual_peers_data: Peers = Peers()
         self.p2p_listener_status_label = QLabel()
 
         self._layout.addWidget(self.groupbox_p2p)
@@ -391,13 +472,11 @@ class NetworkSettingsUI(QWidget):
         self.groupbox_p2p_layout.addWidget(self.p2p_typeComboBox, 1, 1, 1, 3)
         self.groupbox_p2p_layout.addWidget(self.p2p_parallel_label, 2, 1)
         self.groupbox_p2p_layout.addWidget(self.p2p_parallel_spinbox, 2, 3)
-        self.groupbox_p2p_layout.addWidget(self.p2p_manual_peers_icon_label, 3, 1)
-        self.groupbox_p2p_layout.addWidget(self.p2p_manual_peers_button, 3, 3)
         self.groupbox_p2p_layout.addWidget(self.p2p_listener_status_label, 5, 1)
         self.groupbox_p2p_layout.addWidget(self.p2p_listener_refresh_button, 5, 3)
 
         # proxy
-        self.groupbox_proxy = QGroupBox()
+        self.groupbox_proxy = QGroupBox(self)
         self.groupbox_proxy_layout = QHBoxLayout(self.groupbox_proxy)
 
         self.proxy_url_edit = QCompleterLineEdit(
@@ -406,6 +485,7 @@ class NetworkSettingsUI(QWidget):
         )
         self.proxy_url_edit.textChanged.connect(self.on_proxy_url_changed)
         self.proxy_url_edit_label = IconLabel()
+        self.proxy_url_edit_label.textLabel.setVisible(False)
         self.groupbox_proxy_layout.addWidget(self.proxy_url_edit_label)
         self.groupbox_proxy_layout.addWidget(self.proxy_url_edit)
 
@@ -456,24 +536,72 @@ class NetworkSettingsUI(QWidget):
         """On p2p type combobox Changed."""
         mode = self.p2p_typeComboBox.currentData()
         show_controls = mode != P2pListenerType.deactive
-        show_manual = mode == P2pListenerType.automatic
 
         self.p2p_parallel_label.setVisible(show_controls)
         self.p2p_parallel_spinbox.setVisible(show_controls)
-        self.p2p_manual_peers_icon_label.setVisible(show_manual)
-        self.p2p_manual_peers_button.setVisible(show_manual)
 
-    def on_edit_manual_peers(self):
-        """Open dialog to edit manual peers list."""
+    def on_peer_selection_mode_changed(self):
+        """Update peer selection help text."""
+        only_configured = self.peer_selection_mode_combo.currentData() == PeerSelectionMode.only_configured
+        self.peer_selection_help.setText(
+            self.tr(
+                "Only the configured peers are used for Compact Block Filters and P2P monitoring."
+                if only_configured
+                else "Preferred peers are tried first; other peers may be discovered automatically."
+            )
+        )
+
+    def on_edit_configured_peers(self):
+        """Open dialog to edit configured peers list."""
         dialog = QDialog(self)
-        dialog.setWindowTitle(self.tr("Manual peers"))
+        dialog.setWindowTitle(self.tr("Configured peers"))
         layout = QVBoxLayout(dialog)
+
+        discover_button = QPushButton(self.tr("Discover local network peers"), dialog)
+        discover_status = QLabel(dialog)
+        layout.addWidget(discover_button)
+        layout.addWidget(discover_status)
 
         editor = QTextEdit(dialog)
         suggestions = unique_elements(get_default_p2p_node_urls(self.network).values())
         editor.setPlaceholderText("\n".join(suggestions))
-        editor.setPlainText("\n".join(str(peer) for peer in self.manual_peers))
+        editor.setPlainText("\n".join(str(peer) for peer in self.configured_peers))
         layout.addWidget(editor)
+
+        def discover_local_peers() -> None:
+            """Start discovering local peers without blocking the dialog."""
+            discover_button.setEnabled(False)
+            discover_status.setText(self.tr("Scanning local network…"))
+            discovery = PeerDiscovery(network=self.network, loop_in_thread=self.loop_in_thread)
+            future = self.loop_in_thread.run_background(discovery.discover_local_peers())
+            timer = QTimer(dialog)
+            timer.setInterval(100)
+
+            def finish_discovery() -> None:
+                if not future.done():
+                    return
+                timer.stop()
+                discover_button.setEnabled(True)
+                try:
+                    discovered = future.result()
+                except Exception as exc:
+                    discover_status.setText(self.tr("Local peer discovery failed: {error}").format(error=exc))
+                    return
+
+                existing = self._parse_configured_peers(editor.toPlainText())
+                if existing is None:
+                    discover_status.setText(self.tr("Could not update the peer list."))
+                    return
+                combined = merge_configured_peers(existing, discovered)
+                editor.setPlainText("\n".join(str(peer) for peer in combined))
+                discover_status.setText(
+                    self.tr("Found {count} local network peer(s).").format(count=len(discovered))
+                )
+
+            timer.timeout.connect(finish_discovery)
+            timer.start()
+
+        discover_button.clicked.connect(discover_local_peers)
 
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok
@@ -489,9 +617,9 @@ class NetworkSettingsUI(QWidget):
         layout.addWidget(buttons)
 
         if dialog.exec() == QDialog.DialogCode.Accepted:
-            self.manual_peers = self._parse_manual_peers(editor.toPlainText()) or Peers()
+            self.configured_peers = self._parse_configured_peers(editor.toPlainText()) or Peers()
 
-    def _parse_manual_peers(self, text: str) -> Peers | None:
+    def _parse_configured_peers(self, text: str) -> Peers | None:
         """Parse newline separated peers."""
         peers = Peers()
         for line in [line.strip() for line in text.splitlines() if line.strip()]:
@@ -527,18 +655,23 @@ class NetworkSettingsUI(QWidget):
         self.rpc_username_edit_label.setText(self.tr("Username:"))
         self.rpc_password_edit_label.setText(self.tr("Password:"))
 
-        self.groupbox_blockexplorer.setTitle(self.tr("Mempool Instance URL"))
+        self.groupbox_blockexplorer.setTitle(self.tr("Mempool Instance"))
+        self.mempool_icon_label_help.set_icon_as_help(
+            tooltip=self.tr(
+                "The mempool instance provides mempool data and fee estimates used by the application."
+            )
+        )
         self.edit_mempool_url.setPlaceholderText(self.tr("Press ⬇ arrow key for suggestions"))
 
         self.proxy_warning_label.icon_label.setText(
             self.tr(
-                "The proxy does not apply to Sync&Chat\n"
-                "plugin and during subscription purchase!\n"
+                "The proxy does not apply to Sync&Chat plugin\n"
+                "and subscription purchases!\n"
                 "Hostname-based server location and DNS-seed discovery\n"
-                "are not resolved through the proxy in this version."
+                "are not resolved through the proxy."
             )
         )
-        self.proxy_url_edit_label.setText(self.tr("Proxy:"))
+        self.groupbox_proxy.setTitle(self.tr("Proxy"))
         self.proxy_url_edit_label.set_icon_as_help(
             tooltip=self.tr("Click here for an example of a Tor proxy configuration."),
             click_url="https://bitcoin-safe.org/en/knowledge/tor-config/",
@@ -550,7 +683,7 @@ class NetworkSettingsUI(QWidget):
             tooltip=get_p2p_tooltip_text(),
             click_url="https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/",
         )
-        self.p2p_parallel_label.textLabel.setText(self.tr("Max peers"))
+        self.p2p_parallel_label.textLabel.setText(self.tr("Number of connections:"))
         self.p2p_parallel_label.set_icon_as_help(
             tooltip=self.tr(
                 "This sets how many Bitcoin peers the listener connects to at once.\n"
@@ -560,20 +693,22 @@ class NetworkSettingsUI(QWidget):
             )
         )
 
-        self.groupbox_p2p.setTitle(self.tr("P2P monitoring"))
-        self.p2p_manual_peers_icon_label.set_icon_as_help(
+        self.groupbox_peers.setTitle(self.tr("Peer configuration"))
+        self.peer_configured_peers_button.setText(self.tr("Edit"))
+        self.groupbox_p2p.setTitle(self.tr("Unconfirmed Transaction monitoring"))
+        self.peer_selection_mode_label.set_icon_as_help(
             tooltip=self.tr(
-                "Optional list of peers (one per line) the listener should try first.\n"
-                "Keep it empty to rely on automatic peer discovery."
+                "Choose whether configured peers are preferred or used as an exclusive whitelist."
             )
         )
-        self.p2p_manual_peers_icon_label.textLabel.setText(self.tr("Manual peers"))
+        self.peer_configured_peers_button.setToolTip(self.tr("Edit configured peers"))
         self.on_p2p_type_combobox_Changed()
+        self.on_peer_selection_mode_changed()
 
         self.cbf_connection_label.set_icon_as_help(
             tooltip=self.tr("More connections increase privacy but reduce syncing speed.")
         )
-        self.cbf_connection_label.textLabel.setText(self.tr("Number of p2p connections:"))
+        self.cbf_connection_label.textLabel.setText(self.tr("Number of connections:"))
 
     def on_electrum_url_editing_finished(self):
         """On electrum url editing finished."""
@@ -596,7 +731,7 @@ class NetworkSettingsUI(QWidget):
         is_proxy = bool(self.proxy_url_edit.text().strip())
         self.proxy_warning_label.setHidden(not is_proxy)
 
-    def _test_connection(self, network_config: NetworkConfig) -> tuple[str | None, bool]:
+    def _test_connection(self, network_config: NetworkConfig) -> tuple[ConnectionTestResult, bool]:
         """Test connection."""
         server_connection = test_connection(network_config=network_config)
 
@@ -611,13 +746,18 @@ class NetworkSettingsUI(QWidget):
         return server_connection, mempool_server
 
     def _format_test_responses(
-        self, network_config: NetworkConfig, server_connection: str | None, mempool_server: bool
+        self, network_config: NetworkConfig, server_connection: ConnectionTestResult, mempool_server: bool
     ) -> str:
         """Format test responses."""
 
-        def format_status(response):
+        def format_status(response: ConnectionTestResult | bool):
             """Format status."""
-            return "Success" if response else "Failed"
+            res = None
+            if isinstance(response, bool):
+                res = response
+            if isinstance(response, ConnectionTestResult):
+                res = response.success
+            return "Success" if res else "Failed"
 
         response = self.tr("Responses:\n    {name}: {status}\n    Mempool Instance: {server}").format(
             name=network_config.server_type.name,
@@ -625,7 +765,10 @@ class NetworkSettingsUI(QWidget):
             server=format_status(mempool_server),
         )
 
-        if not server_connection and network_config.server_type == BlockchainType.Electrum:
+        if details := server_connection.format_details():
+            response += f"\n\n{details}"
+
+        if not server_connection.success and network_config.server_type == BlockchainType.Electrum:
             if network_config.electrum_url.startswith("https://"):
                 response += "\n\n" + self.tr("Please remove the '{scheme}' from the electrum url").format(
                     scheme="https://"
@@ -635,14 +778,14 @@ class NetworkSettingsUI(QWidget):
                     scheme="http://"
                 )
 
-        if not server_connection and network_config.server_type == BlockchainType.Esplora:
+        if not server_connection.success and network_config.server_type == BlockchainType.Esplora:
             if network_config.esplora_url.startswith("https://"):
                 response += "\n\n" + self.tr("Are you sure '{scheme}' is correct in the esplora url?").format(
                     scheme="https://"
                 )
 
         if network_config.proxy_url:
-            if not server_connection:
+            if not server_connection.success:
                 response += "\n\n" + self.tr("The format for tor addresses should be '{scheme}'").format(
                     scheme="xxxxxxx.onion:80"
                 )
@@ -714,9 +857,21 @@ class NetworkSettingsUI(QWidget):
     def on_apply_click(self):
         """On apply click."""
         new_network_config = self.get_network_settings_from_ui()
+        if (
+            new_network_config.server_type == BlockchainType.CompactBlockFilter
+            and new_network_config.peer_selection_mode == PeerSelectionMode.only_configured
+            and len(new_network_config.configured_peers) < new_network_config.cbf_connections
+        ):
+            Message(
+                self.tr(
+                    "At least {count} configured peers are required when using configured peers only."
+                ).format(count=new_network_config.cbf_connections),
+                parent=self,
+            )
+            return
         server_connection, mempool_server = self._test_connection(network_config=new_network_config)
 
-        if not all([server_connection, mempool_server]):
+        if not all([server_connection.success, mempool_server]):
             if not question_dialog(
                 self.tr("Error in server connection.\n{responses}\n\n Do you want to proceed anyway?").format(
                     responses=self._format_test_responses(
@@ -926,14 +1081,26 @@ class NetworkSettingsUI(QWidget):
         self.on_proxy_url_changed()
 
     @property
-    def manual_peers(self) -> Peers:
-        """Manual peers."""
-        return Peers(self.manual_peers_data)
+    def configured_peers(self) -> Peers:
+        """Configured peers."""
+        return Peers(self.configured_peers_data)
 
-    @manual_peers.setter
-    def manual_peers(self, peers: Peers | list[Peer]):
-        """Manual peers."""
-        self.manual_peers_data = Peers(peers)
+    @configured_peers.setter
+    def configured_peers(self, peers: Peers | list[Peer]):
+        """Configured peers."""
+        self.configured_peers_data = Peers(peers)
+
+    @property
+    def peer_selection_mode(self) -> PeerSelectionMode:
+        """Peer selection mode."""
+        return self.peer_selection_mode_combo.currentData()
+
+    @peer_selection_mode.setter
+    def peer_selection_mode(self, mode: PeerSelectionMode):
+        """Set peer selection mode."""
+        index = self.peer_selection_mode_combo.findData(mode)
+        if index >= 0:
+            self.peer_selection_mode_combo.setCurrentIndex(index)
 
     @property
     def p2p_listener_type(self) -> P2pListenerType:

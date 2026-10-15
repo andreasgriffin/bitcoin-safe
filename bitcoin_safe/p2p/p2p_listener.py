@@ -72,6 +72,7 @@ class P2pListener(QObject):
         timeout: int = 200,
         discovered_peers: Peers | list[Peer] | None = None,
         autodiscover_additional_peers: bool = True,
+        allowed_peers: Peers | list[Peer] | None = None,
         max_parallel_peers: int = 2,
         parent: QObject | None = None,
     ) -> None:
@@ -92,9 +93,13 @@ class P2pListener(QObject):
         self.outpoint_filter: set[str] | None = None
         self.peer_discovery = PeerDiscovery(network=network, loop_in_thread=self.loop_in_thread)
         self.autodiscover_additional_peers = autodiscover_additional_peers
+        self.allowed_peers = set(allowed_peers) if allowed_peers is not None else None
 
         self._state_lock = RLock()
-        self._discovered_peers = Peers(discovered_peers) if discovered_peers else Peers()
+        initial_peers = Peers(discovered_peers) if discovered_peers else Peers()
+        if self.allowed_peers is not None:
+            initial_peers = Peers(peer for peer in initial_peers if peer in self.allowed_peers)
+        self._discovered_peers = initial_peers
 
         self.signal_tracker = SignalTracker()
         self.clients: list[P2PClient] = []
@@ -116,6 +121,19 @@ class P2pListener(QObject):
     def _snapshot_active_peers(self) -> set[Peer]:
         with self._state_lock:
             return set(self._active_peers)
+
+    def _try_reserve_peer(self, peer: Peer) -> bool:
+        """Reserve a peer for one connection slot.
+
+        Candidate selection can await DNS discovery, so checking and adding a peer
+        must happen atomically after selection as well.  This prevents two slots
+        from connecting to the same peer when they select it concurrently.
+        """
+        with self._state_lock:
+            if peer in self._active_peers:
+                return False
+            self._active_peers.add(peer)
+            return True
 
     def _snapshot_current_connections(self) -> list[ConnectionInfo]:
         with self._state_lock:
@@ -215,6 +233,8 @@ class P2pListener(QObject):
                 logger.debug("Peer discovery disabled; no discovered peers available")
                 return None
             peer = await self.peer_discovery.get_bitcoin_peer(proxy_info=self._proxy_info)  # may be None
+            if peer is not None and self.allowed_peers is not None and peer not in self.allowed_peers:
+                return None
             logger.debug(f"Picked {peer=} from DNS seed")
             return peer
         if weight_dns == 0:
@@ -234,6 +254,8 @@ class P2pListener(QObject):
             return peer
 
         peer = await self.peer_discovery.get_bitcoin_peer(proxy_info=self._proxy_info)  # may be None
+        if peer is not None and self.allowed_peers is not None and peer not in self.allowed_peers:
+            return None
         logger.debug(f"Picked {peer=} from DNS seed")
         return peer
 
@@ -275,8 +297,8 @@ class P2pListener(QObject):
             if peer == previous_peer:
                 await asyncio.sleep(retry_delay)
 
-            with self._state_lock:
-                self._active_peers.add(peer)
+            if not self._try_reserve_peer(peer):
+                continue
             logger.info(f"[slot {slot_id}] Try peer: {peer!r}")
             start_time: float | None = None
 
@@ -410,6 +432,9 @@ class P2pListener(QObject):
         maximum_new_peers = 300
         # restricting the total is necessary to restrict memory
         maximum_total_peers = 1000
+
+        if self.allowed_peers is not None:
+            peers = Peers(peer for peer in peers if peer in self.allowed_peers)
 
         with self._state_lock:
             new_peers = [peer for peer in peers if peer not in self._discovered_peers]

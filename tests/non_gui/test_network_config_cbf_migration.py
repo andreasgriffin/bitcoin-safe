@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import bdkpython as bdk
 
-from bitcoin_safe.network_config import NetworkConfigs, P2pListenerType
+from bitcoin_safe.network_config import NetworkConfig, NetworkConfigs, P2pListenerType, PeerSelectionMode
 from bitcoin_safe.pythonbdk_types import BlockchainType
 
 
@@ -69,3 +69,20 @@ def test_enable_compact_block_filters_where_supported() -> None:
 
     assert network_configs.configs[bdk.Network.TESTNET4.name].server_type == BlockchainType.Esplora
     assert network_configs.configs[bdk.Network.TESTNET4.name].p2p_listener_type == P2pListenerType.deactive
+
+
+def test_network_config_migrates_shared_peer_configuration() -> None:
+    peer = {"host": "127.0.0.1", "port": 18444}
+    migrated = NetworkConfig.from_dump_migration(
+        {
+            "VERSION": "0.2.6",
+            "network": bdk.Network.REGTEST,
+            "manual_peers": [peer],
+            "p2p_autodiscover_additional_peers": False,
+        }
+    )
+
+    assert migrated["configured_peers"] == [peer]
+    assert migrated["peer_selection_mode"] is PeerSelectionMode.only_configured
+    assert "manual_peers" not in migrated
+    assert "p2p_autodiscover_additional_peers" not in migrated

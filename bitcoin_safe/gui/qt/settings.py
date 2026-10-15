@@ -31,6 +31,7 @@ from __future__ import annotations
 
 from typing import cast
 
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QKeyEvent, QShowEvent
@@ -56,6 +57,7 @@ class Settings(QTabWidget):
         signals: Signals,
         language_chooser: LanguageChooser,
         fx: FX,
+        loop_in_thread: LoopInThread | None = None,
         parent=None,
     ) -> None:
         """Initialize instance."""
@@ -63,6 +65,7 @@ class Settings(QTabWidget):
         self.signals = signals
         self.language_chooser = language_chooser
         self._license_dialog = LicenseDialog(self)
+        settings_loop = loop_in_thread if loop_in_thread is not None else LoopInThread()
 
         self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
 
@@ -78,7 +81,11 @@ class Settings(QTabWidget):
         self.addTab(self.langauge_ui, "")
 
         self.network_settings_ui = NetworkSettingsUI(
-            network=config.network, network_configs=config.network_configs, signals=signals, parent=self
+            network=config.network,
+            network_configs=config.network_configs,
+            signals=signals,
+            loop_in_thread=settings_loop,
+            parent=self,
         )
         self.addTab(self.network_settings_ui, "")
         self.network_settings_ui.signal_cancel.connect(self.close)

@@ -102,6 +102,7 @@ class Client:
         """Handle log warning and returns and returns if the sync_status was changed."""
         if isinstance(warning, (bdk.Warning.NEED_CONNECTIONS, bdk.Warning.COULD_NOT_CONNECT)):
             self.status_msg = translate("Client", "Connecting to nodes")
+            return self.set_sync_status(SyncStatus.syncing)
         else:
             self.status_msg = warning.__class__.__name__
         if isinstance(self.client, CbfSync) and not self.client.node_running():
@@ -204,7 +205,8 @@ class Client:
     @classmethod
     def from_cbf(
         cls,
-        manual_peers: Peers | list[Peer] | None,
+        configured_peers: Peers | list[Peer] | None,
+        only_configured_peers: bool,
         bdkwallet: bdk.Wallet,
         proxy_info: ProxyInfo | None,
         data_dir: Path,
@@ -217,19 +219,20 @@ class Client:
         """From cbf."""
         peers: set[Peer] = set()
 
-        if manual_peers:
-            peers.update(manual_peers)
+        if configured_peers:
+            peers.update(configured_peers)
 
-        p2p_discovery = PeerDiscovery(network=bdkwallet.network(), loop_in_thread=loop_in_thread)
-        discovered_peers = loop_in_thread.run_foreground(
-            p2p_discovery.get_bitcoin_peers(
-                required_services=CBF_REQUIRED_SERVICE_FLAGS,
-                lower_bound=200,
-                proxy_info=proxy_info,
-                timeout=0.2,
+        if not only_configured_peers:
+            p2p_discovery = PeerDiscovery(network=bdkwallet.network(), loop_in_thread=loop_in_thread)
+            discovered_peers = loop_in_thread.run_foreground(
+                p2p_discovery.get_bitcoin_peers(
+                    required_services=CBF_REQUIRED_SERVICE_FLAGS,
+                    lower_bound=200,
+                    proxy_info=proxy_info,
+                    timeout=0.2,
+                )
             )
-        )
-        peers = peers.union(discovered_peers)
+            peers = peers.union(discovered_peers)
 
         client = CbfSync(
             wallet_id=wallet_id,

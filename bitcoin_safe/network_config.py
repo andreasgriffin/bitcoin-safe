@@ -244,8 +244,7 @@ def get_description(network: bdk.Network, server_type: BlockchainType) -> str:
             "Compact Block Filters are a private and fast way to get all blockchain information. "
             "The wallet will connect directly to multiple bitcoin nodes and download "
             "block summaries (Compact Block Filters) from them.<br>"
-            "If you specify manual peers in the 'P2P monitoring' section below, "
-            "Compact Block Filters will connect to them first.",
+            "You can configure preferred or exclusive peers in the 'Peer configuration' section below.",
         )
         d = {
             bdk.Network.BITCOIN: cbf_default_description,
@@ -416,13 +415,19 @@ class P2pListenerType(enum.Enum):
     deactive = enum.auto()
 
 
+class PeerSelectionMode(enum.Enum):
+    additional = enum.auto()
+    only_configured = enum.auto()
+
+
 class NetworkConfig(BaseSaveableClass):
-    VERSION = "0.2.6"
+    VERSION = "0.2.7"
     known_classes = {
         **BaseSaveableClass.known_classes,
         BlockchainType.__name__: BlockchainType,
         bdk.Network.__name__: bdk.Network,
         P2pListenerType.__name__: P2pListenerType,
+        PeerSelectionMode.__name__: PeerSelectionMode,
         MempoolData.__name__: MempoolData,
     }
 
@@ -454,8 +459,8 @@ class NetworkConfig(BaseSaveableClass):
         self.mempool_url: str = get_mempool_url(network)["default"]
         self.proxy_url: str | None = None
         self.p2p_listener_type: P2pListenerType = P2pListenerType.automatic
-        self.manual_peers: Peers = Peers()
-        self.p2p_autodiscover_additional_peers: bool = True
+        self.configured_peers: Peers = Peers()
+        self.peer_selection_mode: PeerSelectionMode = PeerSelectionMode.additional
         # testnets nodes are less reliable, so we need more connections
         self.p2p_listener_parallel_connections: int = 4 if self.network == bdk.Network.BITCOIN else 6
         self.discovered_peers: Peers | list[Peer] = discovered_peers if discovered_peers else Peers()
@@ -491,13 +496,13 @@ class NetworkConfig(BaseSaveableClass):
 
         # overwrite the dict value
         d["discovered_peers"] = Peers() + [asdict(peer) for peer in self.discovered_peers]
-        d["manual_peers"] = Peers() + [asdict(peer) for peer in self.manual_peers]
+        d["configured_peers"] = Peers() + [asdict(peer) for peer in self.configured_peers]
 
         return d
 
-    def get_manual_peers(self) -> Peers:
-        """Return manually configured peers (copy)."""
-        return Peers(self.manual_peers)
+    def get_configured_peers(self) -> Peers:
+        """Return configured peers (copy)."""
+        return Peers(self.configured_peers)
 
     @classmethod
     def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> NetworkConfig:
@@ -509,7 +514,9 @@ class NetworkConfig(BaseSaveableClass):
         dct["discovered_peers"] = [
             Peer(**filtered_for_init(peer, Peer)) for peer in dct.get("discovered_peers", [])
         ]
-        dct["manual_peers"] = [Peer(**filtered_for_init(peer, Peer)) for peer in dct.get("manual_peers", [])]
+        dct["configured_peers"] = [
+            Peer(**filtered_for_init(peer, Peer)) for peer in dct.get("configured_peers", [])
+        ]
 
         for k, v in dct.items():
             if v is not None:  # only overwrite the default value, if there is a value
@@ -561,6 +568,12 @@ class NetworkConfig(BaseSaveableClass):
             elif dct.get("p2p_listener_type") is P2pListenerType.automatic:
                 # when it was automatic, the inital peer was not considered
                 dct["manual_peers"] = []
+        if fast_version(str(dct["VERSION"])) < fast_version("0.2.7"):
+            dct["configured_peers"] = dct.pop("manual_peers", [])
+            autodiscover = dct.pop("p2p_autodiscover_additional_peers", True)
+            dct["peer_selection_mode"] = (
+                PeerSelectionMode.additional if autodiscover else PeerSelectionMode.only_configured
+            )
 
         return super().from_dump_migration(dct=dct)
 

@@ -32,6 +32,7 @@ from __future__ import annotations
 import asyncio
 import base64
 import collections
+import contextlib
 import enum
 import hashlib
 import ipaddress
@@ -57,6 +58,78 @@ from bitcoin_safe.util import default_timeout
 
 logger = logging.getLogger(__name__)
 
+
+@dataclass(frozen=True)
+class PeerConnectionResult:
+    """Result of testing one configured peer."""
+
+    peer: Peer
+    connected: bool
+    error: str | None = None
+
+
+@dataclass(frozen=True)
+class PeerConnectionTestResult:
+    """Results of testing all configured peers."""
+
+    results: tuple[PeerConnectionResult, ...]
+    required_connections: int
+
+    @property
+    def successful_connections(self) -> int:
+        """Return the number of successful peer connections."""
+        return sum(result.connected for result in self.results)
+
+    @property
+    def success(self) -> bool:
+        """Return whether the required number of peers connected."""
+        return self.successful_connections >= self.required_connections
+
+    def format_details(self) -> str:
+        """Format per-peer connection results for display."""
+        details = []
+        for result in self.results:
+            status = "Connected" if result.connected else f"Failed: {result.error}"
+            details.append(f"{result.peer}: {status}")
+        return "\n".join(details)
+
+
+async def _test_peer_connection(
+    peer: Peer, network: bdk.Network, proxy_info: ProxyInfo | None
+) -> PeerConnectionResult:
+    """Test one peer using the same transport path as the P2P client."""
+    try:
+        await check_peer_connection(
+            peer=peer,
+            network=network,
+            proxy_info=proxy_info,
+            timeout=default_timeout(proxy_info),
+        )
+        return PeerConnectionResult(peer=peer, connected=True)
+    except Exception as exc:
+        return PeerConnectionResult(peer=peer, connected=False, error=str(exc) or type(exc).__name__)
+
+
+def validate_peer_connections(
+    peers: Peers | list[Peer],
+    network: bdk.Network,
+    proxy_info: ProxyInfo | None,
+    required_connections: int,
+) -> PeerConnectionTestResult:
+    """Test every peer and require a minimum number of successful connections."""
+    if required_connections < 1:
+        raise ValueError("required_connections must be >= 1")
+    results = asyncio.run(_test_all_peer_connections(peers=peers, network=network, proxy_info=proxy_info))
+    return PeerConnectionTestResult(results=tuple(results), required_connections=required_connections)
+
+
+async def _test_all_peer_connections(
+    peers: Peers | list[Peer], network: bdk.Network, proxy_info: ProxyInfo | None
+) -> list[PeerConnectionResult]:
+    """Test all peers concurrently without short-circuiting on success."""
+    return list(await asyncio.gather(*(_test_peer_connection(peer, network, proxy_info) for peer in peers)))
+
+
 ###############################################################################
 # Constants & helpers
 ###############################################################################
@@ -79,6 +152,35 @@ MAGIC_VALUES: dict[Any, int] = {
     bdk.Network.SIGNET: 0x0A03CF40,  # https://en.bitcoin.it/wiki/Signet#Differences
     bdk.Network.TESTNET4: 0x1C163F28,  # https://github.com/bitcoin/bitcoin/blob/7590e93bc73b3bbac641f05d490fd5c984156b33/src/kernel/chainparams.cpp#L346
 }
+
+
+async def is_peer_on_network(reader: StreamReader, network: bdk.Network, timeout: float) -> bool:
+    """Check that the peer's initial VERSION message belongs to the requested network."""
+    header = await asyncio.wait_for(reader.readexactly(24), timeout=timeout)
+    magic = struct.unpack(">L", header[:4])[0]
+    command = header[4:16].rstrip(b"\x00")
+    payload_length = struct.unpack("<L", header[16:20])[0]
+    checksum = header[20:24]
+    if magic != MAGIC_VALUES[network] or command != b"version" or payload_length > 4096:
+        return False
+    payload = await asyncio.wait_for(reader.readexactly(payload_length), timeout=timeout)
+    return checksum == double_sha256(payload)[:4]
+
+
+async def check_peer_connection(
+    peer: Peer, network: bdk.Network, proxy_info: ProxyInfo | None, timeout: float
+) -> None:
+    """Connect to a peer, validate its network, and close the probe connection."""
+    writer: StreamWriter | None = None
+    try:
+        reader, writer = await P2PClient._connect(peer=peer, proxy_info=proxy_info, timeout=timeout)
+        if not await is_peer_on_network(reader=reader, network=network, timeout=timeout):
+            raise ConnectionError(f"Peer is not on the {network.name} network")
+    finally:
+        if writer is not None:
+            writer.close()
+            with contextlib.suppress(Exception):
+                await writer.wait_closed()
 
 
 # Inventory type constants (superset – see BIP 339 / 152 / 157)

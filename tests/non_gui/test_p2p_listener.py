@@ -56,3 +56,33 @@ def test_p2p_listener_shared_state_accessors_return_snapshots() -> None:
         assert listener.active_connections == [connection]
     finally:
         listener.stop()
+
+
+def test_p2p_listener_allowed_peers_filter_discovered_peers() -> None:
+    allowed_peer = Peer(host="127.0.0.1", port=18444)
+    rejected_peer = Peer(host="127.0.0.1", port=18445)
+    listener = P2pListener(
+        network=bdk.Network.REGTEST,
+        loop_in_thread=None,
+        autodiscover_additional_peers=False,
+        allowed_peers=[allowed_peer],
+        discovered_peers=[allowed_peer, rejected_peer],
+    )
+    try:
+        listener.add_peers([rejected_peer])
+        listener.on_received_peers([rejected_peer])
+        assert listener.discovered_peers == [allowed_peer]
+    finally:
+        listener.stop()
+
+
+def test_p2p_listener_reserves_peer_only_once() -> None:
+    peer = Peer(host="127.0.0.1", port=18444)
+    listener = P2pListener(
+        network=bdk.Network.REGTEST, loop_in_thread=None, autodiscover_additional_peers=False
+    )
+    try:
+        assert listener._try_reserve_peer(peer)
+        assert not listener._try_reserve_peer(peer)
+    finally:
+        listener.stop()
