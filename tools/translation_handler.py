@@ -126,7 +126,7 @@ def ts_to_csv(ts_path: Path, csv_path: Path):
 
             rows.append([context_name, filename, line, source, translation])
 
-    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+    with open(csv_path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.writer(f)
         writer.writerow(["context", "filename", "line", source_key, "translation"])
         writer.writerows(rows)
@@ -136,7 +136,7 @@ def csv_to_ts(csv_path: Path, ts_path: Path):
     """Csv to ts."""
     root = ET.Element("TS", version="2.1")
 
-    with open(csv_path, newline="", encoding="utf-8") as f:
+    with open(csv_path, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         contexts: dict[str, ET.Element] = {}
 
@@ -240,7 +240,7 @@ Content to translate:
             sort_columns (Tuple[str, ...]): A tuple of column names to sort the CSV data by (in priority order).
         """
         # Read the CSV file into a list of dictionaries
-        with open(str(input_file), newline="", encoding="utf-8") as infile:
+        with open(str(input_file), newline="", encoding="utf-8-sig") as infile:
             reader = csv.DictReader(infile)
             rows = list(reader)
 
@@ -255,7 +255,7 @@ Content to translate:
         sorted_rows = sorted(rows, key=operator.itemgetter(*sort_columns))
 
         # Write the sorted data to the output CSV file
-        with open(str(output_file), mode="w", newline="", encoding="utf-8") as outfile:
+        with open(str(output_file), mode="w", newline="", encoding="utf-8-sig") as outfile:
             writer = csv.DictWriter(outfile, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
             writer.writeheader()
             writer.writerows(sorted_rows)
@@ -287,7 +287,7 @@ Content to translate:
 
     def assert_no_escaped_quotes(self, ts_file: Path):
         """Assert no escaped quotes."""
-        with open(ts_file, encoding="utf-8") as f:
+        with open(ts_file, encoding="utf-8-sig") as f:
             content = f.read()
         assert "&#13;" not in content
         assert '""' not in content
@@ -339,7 +339,7 @@ Content to translate:
         current_lang = None
         current_lines: list[str] = []
 
-        with open(translation_file, encoding="utf-8") as f:
+        with open(translation_file, encoding="utf-8-sig") as f:
             for raw_line in f:
                 line = raw_line.replace("\\", "").rstrip("\n")
                 if not line:
@@ -380,7 +380,7 @@ Content to translate:
             lang_lines = translations.get(lang, [])
 
             # Read all rows from the CSV
-            with open(csv_path, newline="", encoding="utf-8") as f:
+            with open(csv_path, newline="", encoding="utf-8-sig") as f:
                 reader = csv.DictReader(f)
                 rows = list(reader)
 
@@ -414,7 +414,7 @@ Content to translate:
                 rows[i_empty][target_key] = translation_line
 
             # Write updated rows back to CSV
-            with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            with open(csv_path, "w", newline="", encoding="utf-8-sig") as f:
                 fieldnames = [location_key, "filename", "line", source_key, target_key]
                 writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()

@@ -3360,6 +3360,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>သတ်မှတ်ပြင်ဆင်ထားသော peer များကိုသာ အသုံးပြုသည့်အခါ အနည်းဆုံး {count} ခု လိုအပ်ပါသည်။</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>အလိုအလျောက်</translation>
 		</message>
@@ -3367,6 +3372,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>Blockchain ဒေတာရင်းမြစ်</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>သတ်မှတ်ပြင်ဆင်ထားသော peer များကို ဦးစားပေးအသုံးပြုမလား သို့မဟုတ် ၎င်းတို့ကိုသာ ခွင့်ပြုသည့် သီးသန့်စာရင်းအဖြစ် အသုံးပြုမလား ရွေးချယ်ပါ။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3380,13 +3390,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>သတ်မှတ်ပြင်ဆင်ထားသော peer များ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>သတ်မှတ်ပြင်ဆင်ထားသော peer များကိုသာ အသုံးပြုရန်</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>အခြား peer သို့ ချိတ်ဆက်ရန်</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>Peer စာရင်းကို အပ်ဒိတ်လုပ်၍ မရပါ။</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>ပိတ်ရန်</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>ဒေသတွင်းကွန်ရက်ရှိ peer များကို ရှာဖွေရန်</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>ပြင်ဆင်ပါ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>သတ်မှတ်ပြင်ဆင်ထားသော peer များကို တည်းဖြတ်ရန်</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3405,6 +3445,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>ဒေသတွင်းကွန်ရက်တွင် peer {count} ခု တွေ့ရှိခဲ့သည်။</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>IP လိပ်စာ:</translation>
 		</message>
@@ -3415,13 +3460,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>လက်ဖြင့် သတ်မှတ်ထားသော ပီယာများ</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>အများဆုံး ပီယာအရေအတွက်</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>ဒေသတွင်းကွန်ရက်ရှိ peer များကို ရှာဖွေခြင်း မအောင်မြင်ပါ: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3430,8 +3470,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>Mempool Instance URL</translation>
+			<source>Mempool Instance</source>
+			<translation>Mempool အင်စတန့်</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3445,24 +3485,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>p2p ချိတ်ဆက်မှု အရေအတွက်:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>လစ်စနာက ဦးစွာ ကြိုးစားသင့်သော ရွေးချယ်နိုင်သော ပီယာစာရင်း (တစ်ကြောင်းလျှင် တစ်ခု)။ အလိုအလျောက် ပီယာရှာဖွေမှုကို ယုံကြည်ရန် အလွတ်ထားပါ။</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>P2P စောင့်ကြည့်ခြင်း</translation>
+			<source>Number of connections:</source>
+			<translation>ချိတ်ဆက်မှု အရေအတွက်:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>စကားဝှက်:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>Peer သတ်မှတ်ချက်များ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3481,13 +3515,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>ဦးစားပေး peer များ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>အကြံပြုချက်များအတွက် မြှားခလုတ် ⬇ ကိုနှိပ်ပါ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>Proxy:</translation>
+			<source>Proxy</source>
+			<translation>ပရောက်စီ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3505,6 +3544,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>ဒေသတွင်းကွန်ရက်ကို စစ်ဆေးနေသည်…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>ချိတ်ဆက်မှုစမ်းသပ်ပါ</translation>
 		</message>
@@ -3515,11 +3559,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>mempool အင်စတန့်သည် အပလီကေးရှင်းအသုံးပြုသော mempool ဒေတာနှင့် ငွေလွှဲခ ခန့်မှန်းချက်များကို ပံ့ပိုးပေးပါသည်။</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>proxy သည် Sync&amp;Chat plugin နှင့် subscription ဝယ်ယူနေစဉ် မသက်ရောက်ပါ! ဤဗားရှင်းတွင် hostname အခြေခံ ဆာဗာတည်နေရာနှင့် DNS-seed ရှာဖွေမှုများကို proxy မှတစ်ဆင့် ဖြေရှင်းမပေးပါ။</translation>
+are not resolved through the proxy.</source>
+			<translation>ပရောက်စီသည် Sync&amp;Chat ပလပ်အင်
+နှင့် စာရင်းသွင်းဝယ်ယူမှုများအတွက် အကျုံးမဝင်ပါ။
+ဟို့စ်အမည်အခြေပြု ဆာဗာတည်နေရာ ရှာဖွေခြင်းနှင့် DNS seed မှတစ်ဆင့် ရှာဖွေခြင်းတို့ကို
+ပရောက်စီမှတစ်ဆင့် မလုပ်ဆောင်ပါ။</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3533,6 +3585,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>အတည်မပြုရသေးသော ငွေလွှဲမှုများကို စောင့်ကြည့်ခြင်း</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3648,16 +3705,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>အသိပေးချက်ကိုပိတ်ပါ</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>ပလပ်အင် အပ်ဒိတ်များ ရရှိနိုင်ပါသည်။</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>ပလပ်အင် အပ်ဒိတ်များကို ပြရန်</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3736,7 +3783,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>အခမဲ့စမ်းသုံးမှု စတင်ရန် / ရှိပြီးသား စာရင်းသွင်းမှုကို ရယူရန်</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4224,12 +4271,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>{plugin} ပလပ်အင်ကို ပြန်လည်ရယူ၍ မရပါ။ အခြေအနေအသစ်ကို ဖွင့်ထားပါသည်။ သင့်ပိုက်ဆံအိတ်၏ ယခင်အခြေအနေကို {filename} တွင် အရန်သိမ်းထားပါသည်။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>{plugin} ပလပ်အင်ကို ပြန်လည်ရယူ၍ မရပါ။ ၎င်း၏ ယခင်အခြေအနေကို လုံခြုံစွာ အရန်မသိမ်းနိုင်ခဲ့သဖြင့် အခြေအနေအသစ်ကို မဖွင့်ထားပါ။</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5024,12 +5071,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT တွင် ကိုက်ညီမှုမရှိသော UTXO ဒေတာများ ပါဝင်နေသည်။ ပုံစံမမှန်သော ဤ PSBT ကို လက်မှတ်ထိုးရန် ငြင်းပယ်ထားသည်။</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT သည် စံမမီသော sighash ကို တောင်းဆိုနေသည်။ ပုံစံမမှန်သော ဤ PSBT ကို လက်မှတ်ထိုးရန် ငြင်းပယ်ထားသည်။</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5821,7 +5868,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Trezor ဖမ်းဝဲ အပ်ဒိတ် ပြီးစီးသွားပြီး စက်ကို ပြန်လည်စတင်ထားပါသည်။ စက်ကို ပြန်လည်ချိတ်ဆက်ပြီး ထပ်မံကြိုးစားပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -7775,8 +7822,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters သည် blockchain အချက်အလက်အားလုံးကို ကိုယ်ရေးကိုယ်တာလုံခြုံပြီး မြန်ဆန်စွာ ရယူနိုင်သော နည်းလမ်းတစ်ခုဖြစ်သည်။ ပိုက်ဆံအိတ်သည် bitcoin node အများအပြားနှင့် တိုက်ရိုက်ချိတ်ဆက်ပြီး ၎င်းတို့ထံမှ block အကျဉ်းချုပ်များ (Compact Block Filters) ကို ဒေါင်းလုဒ်လုပ်ပါမည်။&lt;br&gt;အောက်ရှိ 'P2P စောင့်ကြည့်ခြင်း' အပိုင်းတွင် manual peer များကို သတ်မှတ်ပါက Compact Block Filters သည် ၎င်းတို့နှင့် အရင်ဆုံးချိတ်ဆက်ပါမည်။</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>Compact Block Filters သည် blockchain အချက်အလက်အားလုံးကို ကိုယ်ရေးလုံခြုံမှုရှိစွာနှင့် လျင်မြန်စွာ ရယူနိုင်သည့် နည်းလမ်းဖြစ်သည်။ ပိုက်ဆံအိတ်သည် Bitcoin node အများအပြားသို့ တိုက်ရိုက်ချိတ်ဆက်ပြီး ၎င်းတို့ထံမှ block အကျဉ်းချုပ်များ (Compact Block Filters) ကို ဒေါင်းလုဒ်လုပ်ပါမည်။&lt;br&gt;အောက်ပါ 'Peer သတ်မှတ်ချက်များ' အပိုင်းတွင် ဦးစားပေး peer များ သို့မဟုတ် သီးသန့်ခွင့်ပြုထားသော peer များကို သတ်မှတ်နိုင်ပါသည်။</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

@@ -3372,6 +3372,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>Cần ít nhất {count} nút ngang hàng đã cấu hình khi chỉ sử dụng các nút ngang hàng đã cấu hình.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>Tự động</translation>
 		</message>
@@ -3379,6 +3384,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>Nguồn dữ liệu blockchain</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>Chọn ưu tiên các nút ngang hàng đã cấu hình hoặc chỉ cho phép kết nối với các nút này.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3392,13 +3402,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>Các nút ngang hàng đã cấu hình</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>Chỉ sử dụng nút ngang hàng đã cấu hình</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>Kết nối tới peer khác</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>Không thể cập nhật danh sách nút ngang hàng.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>Tắt</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>Tìm nút ngang hàng trong mạng cục bộ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>Chỉnh sửa</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>Chỉnh sửa các nút ngang hàng đã cấu hình</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3417,6 +3457,11 @@ Bạn có muốn tiếp tục không?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>Đã tìm thấy {count} nút ngang hàng trong mạng cục bộ.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>Địa chỉ IP:</translation>
 		</message>
@@ -3427,13 +3472,8 @@ Bạn có muốn tiếp tục không?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>Peer thủ công</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>Số peer tối đa</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>Không thể tìm nút ngang hàng trong mạng cục bộ: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3442,8 +3482,8 @@ Bạn có muốn tiếp tục không?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>URL instance mempool</translation>
+			<source>Mempool Instance</source>
+			<translation>Phiên bản Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3457,25 +3497,18 @@ Bạn có muốn tiếp tục không?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>Số kết nối p2p:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>Danh sách tùy chọn peer (mỗi dòng một peer) listener nên thử trước.
-Để trống để dùng phát hiện peer tự động.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>Giám sát P2P</translation>
+			<source>Number of connections:</source>
+			<translation>Số lượng kết nối:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>Mật khẩu:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>Cấu hình nút ngang hàng</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3494,13 +3527,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>Nút ngang hàng ưu tiên</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>Nhấn phím mũi tên ⬇ để xem gợi ý</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>Proxy:</translation>
+			<source>Proxy</source>
+			<translation>Proxy</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3518,6 +3556,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>Đang quét mạng cục bộ…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>Kiểm tra kết nối</translation>
 		</message>
@@ -3528,11 +3571,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>Phiên bản mempool cung cấp dữ liệu mempool và ước tính phí giao dịch được ứng dụng sử dụng.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>Proxy không áp dụng cho plugin Sync&amp;Chat và trong khi mua gói đăng ký! Vị trí máy chủ dựa trên tên máy chủ và phát hiện DNS-seed không được phân giải qua proxy trong phiên bản này.</translation>
+are not resolved through the proxy.</source>
+			<translation>Proxy không áp dụng cho plugin Sync&amp;Chat
+và các giao dịch mua gói đăng ký!
+Việc xác định vị trí máy chủ dựa trên tên máy chủ và khám phá qua DNS seed
+không được thực hiện thông qua proxy.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3549,6 +3600,11 @@ Dùng nhiều peer cải thiện phạm vi nhưng dùng nhiều băng thông và
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>Giám sát giao dịch chưa được xác nhận</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3665,16 +3721,6 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 			<source>Close notification</source>
 			<translation>Đóng thông báo</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>Hiện có bản cập nhật plugin.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>Hiển thị bản cập nhật plugin</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3753,7 +3799,7 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>Bắt đầu dùng thử miễn phí / Lấy gói đăng ký hiện có</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4240,12 +4286,12 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>Không thể khôi phục plugin {plugin}. Đã tải trạng thái mới. Trạng thái ví trước đó của bạn đã được sao lưu vào {filename}.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>Không thể khôi phục plugin {plugin}. Trạng thái cũ chưa được sao lưu an toàn nên không tải trạng thái mới.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5045,12 +5091,12 @@ Nếu bạn sai ở đây, tiền của bạn sẽ mất!</translation>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT chứa dữ liệu UTXO không nhất quán. Từ chối ký PSBT không hợp lệ này.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT yêu cầu sighash không tiêu chuẩn. Từ chối ký PSBT không hợp lệ này.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5847,7 +5893,7 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Quá trình cập nhật firmware Trezor đã hoàn tất và thiết bị đã khởi động lại. Vui lòng kết nối lại thiết bị và thử lại.</translation>
 		</message>
 	</context>
 	<context>
@@ -7801,8 +7847,8 @@ Quốc gia: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters là một cách riêng tư và nhanh chóng để lấy toàn bộ thông tin blockchain. Ví sẽ kết nối trực tiếp với nhiều nút bitcoin và tải xuống các bản tóm tắt khối (Compact Block Filters) từ chúng.&lt;br&gt;Nếu bạn chỉ định peer thủ công trong phần 'Giám sát P2P' bên dưới, Compact Block Filters sẽ kết nối với chúng trước.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>Bộ lọc khối nhỏ gọn là phương pháp nhanh chóng và bảo mật để lấy toàn bộ thông tin blockchain. Ví sẽ kết nối trực tiếp với nhiều nút Bitcoin và tải xuống bản tóm tắt khối (Bộ lọc khối nhỏ gọn) từ các nút đó.&lt;br&gt;Bạn có thể cấu hình các nút ngang hàng ưu tiên hoặc chỉ cho phép các nút ngang hàng cụ thể trong mục 'Cấu hình nút ngang hàng' bên dưới.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

@@ -3376,6 +3376,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>仅使用已配置的对等节点时，至少需要配置 {count} 个对等节点。</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>自动</translation>
 		</message>
@@ -3383,6 +3388,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>区块链数据源</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>选择优先使用已配置的对等节点，或将其作为唯一允许连接的白名单。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3396,13 +3406,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>已配置的对等节点</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>仅使用已配置的对等节点</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>连接到其他节点</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>无法更新对等节点列表。</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>停用</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>发现局域网中的对等节点</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>编辑</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>编辑已配置的对等节点</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3422,6 +3462,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>在局域网中发现 {count} 个对等节点。</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>IP 地址：</translation>
 		</message>
@@ -3432,13 +3477,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>手动对等节点</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>最大对等节点数</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>局域网对等节点发现失败：{error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3447,8 +3487,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>Mempool 实例网址</translation>
+			<source>Mempool Instance</source>
+			<translation>Mempool 实例</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3462,25 +3502,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>点对点连接数：</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>可选的对等节点列表（每行一个），监听器应当先尝试连接这些节点。
-保持列表为空以依赖自动对等节点发现功能。</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>P2P 监视</translation>
+			<source>Number of connections:</source>
+			<translation>连接数量：</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>密码：</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>对等节点配置</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3499,13 +3532,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>首选对等节点</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>请按 ⬇ 方向键以获取建议</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>代理：</translation>
+			<source>Proxy</source>
+			<translation>代理</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3523,6 +3561,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>正在扫描局域网…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>测试连接</translation>
 		</message>
@@ -3533,14 +3576,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>Mempool 实例提供应用程序使用的内存池数据和交易手续费估算。</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>代理设置不适用于 Sync&amp;Chat
-插件，也不适用于订阅购买过程！
-基于主机名的服务器位置和 DNS-seed 发现
-在该版本中不会通过代理进行解析。</translation>
+are not resolved through the proxy.</source>
+			<translation>代理不适用于 Sync&amp;Chat 插件
+和订阅购买！
+基于主机名的服务器定位和 DNS 种子发现
+不会通过代理进行解析。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3557,6 +3605,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>网址：</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>未确认交易监控</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3673,16 +3726,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>关闭通知</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>有可用的插件更新。</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>显示插件更新</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3761,7 +3804,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>开始免费试用 / 获取现有订阅</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4249,12 +4292,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>无法恢复插件 {plugin}。已加载全新状态。您之前的钱包状态已备份至 {filename}。</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>无法恢复插件 {plugin}。由于其旧状态未能安全备份，因此未加载全新状态。</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5060,12 +5103,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT 包含不一致的 UTXO 数据。拒绝签署此格式错误的 PSBT。</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT 请求使用非标准 sighash。拒绝签署此格式错误的 PSBT。</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5864,7 +5907,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Trezor 固件更新已完成，设备已重新启动。请重新连接设备并重试。</translation>
 		</message>
 	</context>
 	<context>
@@ -7818,8 +7861,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters 是一种私密且快速获取所有区块链信息的方式。钱包将直接连接到多个 bitcoin 节点，并从它们下载区块摘要（Compact Block Filters）。&lt;br&gt;如果你在下面的“P2P 监控”部分指定手动对等节点，Compact Block Filters 将优先连接到它们。</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>紧凑区块过滤器是一种快速且保护隐私的方式，可用于获取所有区块链信息。钱包将直接连接到多个比特币节点，并从这些节点下载区块摘要（紧凑区块过滤器）。&lt;br&gt;您可以在下方的“对等节点配置”部分配置首选对等节点，或指定仅允许连接的对等节点。</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

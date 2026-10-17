@@ -3372,6 +3372,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>Sono necessari almeno {count} peer configurati quando si utilizzano esclusivamente i peer configurati.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>Automatico</translation>
 		</message>
@@ -3379,6 +3384,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>Fonte dati blockchain</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>Scegli se dare la priorità ai peer configurati o utilizzarli come whitelist esclusiva.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3392,13 +3402,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>Peer configurati</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>Solo peer configurati</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>Connetti a un peer diverso</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>Impossibile aggiornare l'elenco dei peer.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>Disattiva</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>Cerca peer nella rete locale</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>Modifica</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>Modifica i peer configurati</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3419,6 +3459,11 @@ Vuoi procedere comunque?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>Trovati {count} peer nella rete locale.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>Indirizzo IP:</translation>
 		</message>
@@ -3429,13 +3474,8 @@ Vuoi procedere comunque?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>Peer manuali</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>Numero massimo di peer</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>Ricerca dei peer nella rete locale non riuscita: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3444,8 +3484,8 @@ Vuoi procedere comunque?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>URL dell'istanza Mempool</translation>
+			<source>Mempool Instance</source>
+			<translation>Istanza Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3459,25 +3499,18 @@ Vuoi procedere comunque?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>Numero di connessioni p2p:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>Elenco facoltativo di peer (uno per riga) che il listener dovrebbe provare per primi.
-Lasciare vuoto per affidarsi alla scoperta automatica dei peer.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>Monitoraggio P2P</translation>
+			<source>Number of connections:</source>
+			<translation>Numero di connessioni:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>Password:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>Configurazione dei peer</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3496,13 +3529,18 @@ Lasciare vuoto per affidarsi alla scoperta automatica dei peer.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>Peer preferiti</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>Premere il tasto freccia ⬇ per suggerimenti</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>Proxy:</translation>
+			<source>Proxy</source>
+			<translation>Proxy</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3520,6 +3558,11 @@ Lasciare vuoto per affidarsi alla scoperta automatica dei peer.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>Scansione della rete locale…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>Testa Connessione</translation>
 		</message>
@@ -3530,11 +3573,19 @@ Lasciare vuoto per affidarsi alla scoperta automatica dei peer.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>L'istanza mempool fornisce i dati del mempool e le stime delle commissioni utilizzati dall'applicazione.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>Il proxy non si applica al plugin Sync&amp;Chat né durante l’acquisto dell’abbonamento! La posizione del server basata sul nome host e il rilevamento DNS-seed non vengono risolti tramite il proxy in questa versione.</translation>
+are not resolved through the proxy.</source>
+			<translation>Il proxy non si applica al plugin Sync&amp;Chat
+né agli acquisti di abbonamenti!
+La localizzazione dei server basata sul nome host e il rilevamento tramite seed DNS
+non vengono eseguiti attraverso il proxy.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3551,6 +3602,11 @@ L’uso di più peer migliora la copertura ma utilizza più larghezza di banda e
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>Monitoraggio delle transazioni non confermate</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3667,16 +3723,6 @@ Puoi passare a Testnet per provare {app_name} senza usare Bitcoin reali.</transl
 			<source>Close notification</source>
 			<translation>Chiudi notifica</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>Sono disponibili aggiornamenti dei plugin.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>Mostra aggiornamenti dei plugin</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3755,7 +3801,7 @@ Puoi passare a Testnet per provare {app_name} senza usare Bitcoin reali.</transl
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>Inizia la prova gratuita / Recupera l'abbonamento esistente</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4243,12 +4289,12 @@ Puoi passare a Testnet per provare {app_name} senza usare Bitcoin reali.</transl
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>Impossibile ripristinare il plugin {plugin}. È stato caricato un nuovo stato. Lo stato precedente del tuo portafoglio è stato salvato in un backup in {filename}.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>Impossibile ripristinare il plugin {plugin}. Non è stato possibile eseguire un backup sicuro del suo stato precedente, quindi non è stato caricato alcun nuovo stato.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5048,12 +5094,12 @@ Se commetti un errore qui, i tuoi soldi sono persi!</translation>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>La PSBT contiene dati UTXO incoerenti. Firma di questa PSBT non valida rifiutata.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>La PSBT richiede un sighash non standard. Firma di questa PSBT non valida rifiutata.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5849,7 +5895,7 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>L'aggiornamento del firmware Trezor è terminato e il dispositivo si è riavviato. Ricollega il dispositivo e riprova.</translation>
 		</message>
 	</context>
 	<context>
@@ -7803,8 +7849,8 @@ Paese: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters è un modo privato e veloce per ottenere tutte le informazioni della blockchain. Il portafoglio si collegherà direttamente a più nodi bitcoin e scaricherà da essi i riepiloghi dei blocchi (Compact Block Filters).&lt;br&gt;Se specifichi peer manuali nella sezione 'Monitoraggio P2P' qui sotto, Compact Block Filters si collegherà prima a questi.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>I filtri di blocco compatti sono un modo rapido e rispettoso della privacy per ottenere tutte le informazioni della blockchain. Il portafoglio si connetterà direttamente a più nodi Bitcoin e scaricherà da essi i riepiloghi dei blocchi (filtri di blocco compatti).&lt;br&gt;Puoi configurare i peer preferiti o esclusivi nella sezione 'Configurazione dei peer' qui sotto.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

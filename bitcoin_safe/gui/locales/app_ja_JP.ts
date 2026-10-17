@@ -3359,6 +3359,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>設定済みのピアのみを使用する場合、少なくとも {count} 個の設定済みピアが必要です。</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>自動</translation>
 		</message>
@@ -3366,6 +3371,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>URL：</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>設定済みのピアを優先するか、接続を許可するピアの限定リストとして使用するかを選択してください。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3379,13 +3389,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>設定済みのピア</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>設定済みのピアのみ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>別のピアに接続</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>ピアリストを更新できませんでした。</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>無効化</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>ローカルネットワークのピアを検出</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>編集</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>設定済みのピアを編集</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3405,6 +3445,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>ローカルネットワークで {count} 個のピアが見つかりました。</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>パスワード：</translation>
 		</message>
@@ -3415,13 +3460,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>手動ピア</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>最大ピア数</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>ローカルネットワークのピア検出に失敗しました: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3430,8 +3470,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>新しいウォレットを作成</translation>
+			<source>Mempool Instance</source>
+			<translation>Mempool インスタンス</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3445,24 +3485,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>p2p 接続数:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>リスナーが最初に試行すべき任意のピア一覧（1行に1つ）。自動ピア検出に依存する場合は空のままにしてください。</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>P2P 監視</translation>
+			<source>Number of connections:</source>
+			<translation>接続数:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>パスワード:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>ピア設定</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3481,13 +3515,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>優先ピア</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>提案のために⬇矢印キーを押してください</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>プロキシ：</translation>
+			<source>Proxy</source>
+			<translation>プロキシ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3505,6 +3544,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>ローカルネットワークをスキャン中…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>ブロックチェーンデータソース</translation>
 		</message>
@@ -3515,11 +3559,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>Mempool インスタンスは、アプリケーションで使用するメモリプールデータと手数料の推定値を提供します。</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>プロキシは Sync&amp;Chat プラグインおよびサブスクリプション購入中には適用されません！このバージョンでは、ホスト名ベースのサーバー位置情報と DNS-seed 検出はプロキシ経由で解決されません。</translation>
+are not resolved through the proxy.</source>
+			<translation>プロキシは Sync&amp;Chat プラグイン
+およびサブスクリプションの購入には適用されません！
+ホスト名に基づくサーバーの場所の特定と DNS シードによる検出は、
+プロキシ経由では行われません。</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3533,6 +3585,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>ポート：</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>未承認トランザクションの監視</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3648,16 +3705,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>通知を閉じる</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>プラグインのアップデートがあります。</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>プラグインのアップデートを表示</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3736,7 +3783,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>無料トライアルを開始 / 既存のサブスクリプションを取得</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4224,12 +4271,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>プラグイン {plugin} を復元できませんでした。新しい状態を読み込みました。以前のウォレットの状態は {filename} にバックアップされました。</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>プラグイン {plugin} を復元できませんでした。以前の状態を安全にバックアップできなかったため、新しい状態は読み込まれませんでした。</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5025,12 +5072,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT に整合性のない UTXO データが含まれています。この不正な形式の PSBT への署名を拒否しました。</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT が標準外の sighash を要求しています。この不正な形式の PSBT への署名を拒否しました。</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5821,7 +5868,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Trezor のファームウェア更新が完了し、デバイスが再起動しました。デバイスを再接続して、もう一度お試しください。</translation>
 		</message>
 	</context>
 	<context>
@@ -7775,8 +7822,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters は、すべてのブロックチェーン情報をプライベートかつ高速に取得する方法です。ウォレットは複数の bitcoin ノードに直接接続し、それらからブロック概要（Compact Block Filters）をダウンロードします。&lt;br&gt;下の「P2P 監視」セクションで手動ピアを指定した場合、Compact Block Filters は最初にそれらへ接続します。</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>コンパクトブロックフィルターは、ブロックチェーンのすべての情報をプライバシーを保護しながら高速に取得する方法です。ウォレットは複数の Bitcoin ノードに直接接続し、ブロックの要約（コンパクトブロックフィルター）をダウンロードします。&lt;br&gt;下の「ピア設定」セクションで、優先ピアまたは接続を限定するピアを設定できます。</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

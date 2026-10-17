@@ -3371,6 +3371,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>Calen almenys {count} parells configurats quan només s'utilitzen parells configurats.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>Automàtic</translation>
 		</message>
@@ -3378,6 +3383,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>Font de dades de la cadena de blocs</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>Trieu si els parells configurats tenen preferència o s'utilitzen com a llista blanca exclusiva.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3391,13 +3401,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>Parells configurats</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>Només parells configurats</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>Connecta’t a un altre parell</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>No s'ha pogut actualitzar la llista de parells.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>Desactivar</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>Descobreix parells de la xarxa local</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>Edita</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>Edita els parells configurats</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3416,6 +3456,11 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>S'han trobat {count} parells a la xarxa local.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>Adreça IP:</translation>
 		</message>
@@ -3426,13 +3471,8 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>Parells manuals</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>Màxim de parells</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>Ha fallat la descoberta de parells de la xarxa local: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3441,8 +3481,8 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>URL de la instància Mempool</translation>
+			<source>Mempool Instance</source>
+			<translation>Instància de Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3456,25 +3496,18 @@ Vols continuar igualment?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>Nombre de connexions p2p:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>Llista opcional de parells (un per línia) que l’escoltador hauria d’intentar primer.
-Deixeu-la buida per confiar en el descobriment automàtic de parells.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>Monitoratge P2P</translation>
+			<source>Number of connections:</source>
+			<translation>Nombre de connexions:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>Contrasenya:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>Configuració de parells</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3493,13 +3526,18 @@ Deixeu-la buida per confiar en el descobriment automàtic de parells.</translati
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>Parells preferits</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>Prem la tecla ⬇ per a suggeriments</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>Proxy:</translation>
+			<source>Proxy</source>
+			<translation>Servidor intermediari</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3517,6 +3555,11 @@ Deixeu-la buida per confiar en el descobriment automàtic de parells.</translati
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>S'està explorant la xarxa local…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>Prova la connexió</translation>
 		</message>
@@ -3527,11 +3570,19 @@ Deixeu-la buida per confiar en el descobriment automàtic de parells.</translati
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>La instància de mempool proporciona les dades de la mempool i les estimacions de comissions que utilitza l'aplicació.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>El proxy no s’aplica al connector Sync&amp;Chat ni durant la compra de la subscripció! La ubicació del servidor basada en el nom d’amfitrió i el descobriment DNS-seed no es resolen a través del proxy en aquesta versió.</translation>
+are not resolved through the proxy.</source>
+			<translation>El servidor intermediari no s'aplica al connector Sync&amp;Chat
+ni a les compres de subscripcions!
+La localització de servidors basada en noms d'amfitrió i la descoberta mitjançant llavors DNS
+no es resolen a través del servidor intermediari.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3548,6 +3599,11 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>Supervisió de transaccions no confirmades</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3664,16 +3720,6 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 			<source>Close notification</source>
 			<translation>Tanca notificació</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>Hi ha actualitzacions de connectors disponibles.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>Mostra les actualitzacions dels connectors</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3752,7 +3798,7 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>Inicia la prova gratuïta / Recupera la subscripció existent</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4240,12 +4286,12 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>No s'ha pogut restaurar el connector {plugin}. S'ha carregat un estat nou. L'estat anterior del vostre moneder s'ha desat en una còpia de seguretat a {filename}.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>No s'ha pogut restaurar el connector {plugin}. No s'ha pogut fer una còpia de seguretat segura del seu estat anterior i, per tant, no s'ha carregat cap estat nou.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5045,12 +5091,12 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>La PSBT conté dades UTXO incoherents. Es rebutja la signatura d'aquesta PSBT malformada.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>La PSBT sol·licita un sighash no estàndard. Es rebutja la signatura d'aquesta PSBT malformada.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5846,7 +5892,7 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>L'actualització del microprogramari de Trezor ha finalitzat i el dispositiu s'ha reiniciat. Torneu a connectar el dispositiu i proveu-ho de nou.</translation>
 		</message>
 	</context>
 	<context>
@@ -7800,8 +7846,8 @@ País: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters són una manera privada i ràpida d’obtenir tota la informació de la cadena de blocs. El moneder es connectarà directament a diversos nodes bitcoin i en descarregarà resums de blocs (Compact Block Filters).&lt;br&gt;Si especifiqueu peers manuals a la secció 'Monitoratge P2P' de sota, Compact Block Filters s’hi connectarà primer.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>Els filtres de blocs compactes són una manera privada i ràpida d'obtenir tota la informació de la cadena de blocs. El moneder es connectarà directament a diversos nodes de Bitcoin i en descarregarà els resums dels blocs (filtres de blocs compactes).&lt;br&gt;Podeu configurar parells preferits o exclusius a la secció «Configuració de parells» de més avall.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

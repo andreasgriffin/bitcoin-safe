@@ -3370,6 +3370,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>Setidaknya {count} peer yang dikonfigurasi diperlukan saat hanya menggunakan peer yang dikonfigurasi.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>Otomatis</translation>
 		</message>
@@ -3377,6 +3382,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>Sumber data blockchain</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>Pilih apakah peer yang dikonfigurasi akan diprioritaskan atau digunakan sebagai daftar izin eksklusif.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3390,13 +3400,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>Peer yang dikonfigurasi</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>Hanya peer yang dikonfigurasi</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>Hubungkan ke peer lain</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>Tidak dapat memperbarui daftar peer.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>Nonaktifkan</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>Temukan peer jaringan lokal</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>Edit</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>Edit peer yang dikonfigurasi</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3415,6 +3455,11 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>Ditemukan {count} peer di jaringan lokal.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>Alamat IP:</translation>
 		</message>
@@ -3425,13 +3470,8 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>Peer manual</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>Maksimum peer</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>Penemuan peer jaringan lokal gagal: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3440,8 +3480,8 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>URL Instansi Mempool</translation>
+			<source>Mempool Instance</source>
+			<translation>Instans Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3455,25 +3495,18 @@ Apakah Anda ingin melanjutkan saja?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>Jumlah koneksi p2p:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>Daftar peer opsional (satu per baris) yang harus dicoba terlebih dahulu oleh pendengar.
-Biarkan kosong untuk mengandalkan penemuan peer otomatis.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>Pemantauan P2P</translation>
+			<source>Number of connections:</source>
+			<translation>Jumlah koneksi:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>Kata sandi:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>Konfigurasi peer</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3492,13 +3525,18 @@ Biarkan kosong untuk mengandalkan penemuan peer otomatis.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>Peer pilihan</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>Tekan tombol panah ⬇ untuk saran</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>Proxy:</translation>
+			<source>Proxy</source>
+			<translation>Proksi</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3516,6 +3554,11 @@ Biarkan kosong untuk mengandalkan penemuan peer otomatis.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>Memindai jaringan lokal…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>Uji Koneksi</translation>
 		</message>
@@ -3526,11 +3569,19 @@ Biarkan kosong untuk mengandalkan penemuan peer otomatis.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>Instans mempool menyediakan data mempool dan estimasi biaya transaksi yang digunakan oleh aplikasi.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>Proxy tidak berlaku untuk plugin Sync&amp;Chat dan selama pembelian langganan! Lokasi server berbasis nama host dan penemuan DNS-seed tidak diselesaikan melalui proxy dalam versi ini.</translation>
+are not resolved through the proxy.</source>
+			<translation>Proksi tidak berlaku untuk plugin Sync&amp;Chat
+dan pembelian langganan!
+Penentuan lokasi server berdasarkan nama host dan penemuan melalui DNS seed
+tidak dilakukan melalui proksi.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3547,6 +3598,11 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>Pemantauan transaksi yang belum dikonfirmasi</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3663,16 +3719,6 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 			<source>Close notification</source>
 			<translation>Tutup notifikasi</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>Pembaruan plugin tersedia.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>Tampilkan pembaruan plugin</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3751,7 +3797,7 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>Mulai uji coba gratis / Ambil langganan yang sudah ada</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4239,12 +4285,12 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>Plugin {plugin} tidak dapat dipulihkan. Status baru telah dimuat. Status dompet Anda sebelumnya telah dicadangkan ke {filename}.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>Plugin {plugin} tidak dapat dipulihkan. Status lamanya tidak berhasil dicadangkan dengan aman, sehingga status baru tidak dimuat.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5044,12 +5090,12 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT berisi data UTXO yang tidak konsisten. PSBT yang tidak valid ini tidak akan ditandatangani.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT meminta sighash nonstandar. PSBT yang tidak valid ini tidak akan ditandatangani.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5845,7 +5891,7 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Pembaruan firmware Trezor selesai dan perangkat telah dimulai ulang. Harap sambungkan kembali perangkat dan coba lagi.</translation>
 		</message>
 	</context>
 	<context>
@@ -7799,8 +7845,8 @@ Negara: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters adalah cara privat dan cepat untuk mendapatkan semua informasi blockchain. Dompet akan terhubung langsung ke beberapa node bitcoin dan mengunduh ringkasan blok (Compact Block Filters) dari node tersebut.&lt;br&gt;Jika Anda menentukan peer manual di bagian 'Pemantauan P2P' di bawah, Compact Block Filters akan terhubung ke peer tersebut terlebih dahulu.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>Compact Block Filters adalah cara yang privat dan cepat untuk mendapatkan semua informasi blockchain. Dompet akan terhubung langsung ke beberapa node Bitcoin dan mengunduh ringkasan blok (Compact Block Filters) dari node tersebut.&lt;br&gt;Anda dapat mengonfigurasi peer pilihan atau peer eksklusif di bagian 'Konfigurasi peer' di bawah ini.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
