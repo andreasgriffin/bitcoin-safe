@@ -112,6 +112,9 @@ jobs:
       DISPLAY: ":99"
       QT_QPA_PLATFORM: xcb
       XDG_RUNTIME_DIR: /tmp/runtime-bitcoin-safe
+      LANG: en_US.UTF-8
+      LANGUAGE: en_US:en
+      LC_ALL: en_US.UTF-8
     steps:
       - name: Checkout default branch
         uses: actions/checkout@v5
@@ -182,6 +185,13 @@ jobs:
           fi
           bash tools/build_linux/flathub_flatpak/install_and_smoke_test_bundle.sh "$BUNDLE_PATH" org.bitcoin_safe.BitcoinSafe
 
+      - name: Collect Flatpak startup logs
+        if: always()
+        run: |
+          mkdir -p flatpak-startup-logs
+          cp -a "$HOME/.var/app/org.bitcoin_safe.BitcoinSafe/config/bitcoin_safe" \
+            flatpak-startup-logs/ || true
+
       - name: Upload Flatpak startup logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -192,5 +202,5 @@ jobs:
             tools/build_linux/flathub_flatpak/build/flatpak-run.log
             tools/build_linux/flathub_flatpak/build/flatpak-screenshot-*.xwd
             tools/build_linux/flathub_flatpak/build/flatpak-screenshot-*.png
-            ${{ env.HOME }}/.var/app/org.bitcoin_safe.BitcoinSafe/config/bitcoin_safe/bitcoin_safe.log
+            flatpak-startup-logs/**
           if-no-files-found: ignore

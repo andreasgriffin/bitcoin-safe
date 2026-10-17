@@ -247,7 +247,10 @@ def center_on_screen(widget: QWidget, min_height: int = 0, min_width: int = 0) -
         return
 
     # Make sure we have a usable size
-    if widget.width() == 0 or widget.height() == 0:
+    # Do not force layout calculation for a window which has not been shown
+    # yet.  On some Qt/platform combinations this enters native layout code
+    # while the widget hierarchy is still being constructed.
+    if widget.isVisible() and (widget.width() == 0 or widget.height() == 0):
         widget.adjustSize()
 
     screen = QGuiApplication.screenAt(QCursor.pos()) or QGuiApplication.primaryScreen()
@@ -497,6 +500,7 @@ class AspectRatioSvgWidget(QWidget):
         """PaintEvent."""
         painter = QPainter(self)
         if not self._renderer.isValid():
+            painter.end()
             return
 
         view_box: QRectF = self._renderer.viewBoxF()
@@ -513,6 +517,7 @@ class AspectRatioSvgWidget(QWidget):
         target = QRectF(x, y, new_w, new_h)
 
         self._renderer.render(painter, target)
+        painter.end()
 
 
 def add_centered_icons(

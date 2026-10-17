@@ -469,6 +469,9 @@ class DistributeSeeds(BaseTab):
             if index < len(previous_states):
                 self.sheet_selection_checkboxes[index].setChecked(previous_states[index])
             self.sheet_previews_layout.addWidget(card)
+        if not self.sheet_previews_scroll_area.isVisible():
+            return
+
         self.sheet_previews_scroll_area.content_widget.adjustSize()
         scrollbar = self.sheet_previews_scroll_area.horizontalScrollBar()
         scrollbar_height = scrollbar.sizeHint().height() if scrollbar else 0

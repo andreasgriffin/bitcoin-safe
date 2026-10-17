@@ -67,7 +67,7 @@ APP_ID = APP_METADATA.flatpak_app_id
 APP_NAME = APP_METADATA.application_name
 BUNDLE_FILENAME = f"{APP_ID}.flatpak"
 FLATPAK_BRANCH = "master"
-FLATHUB_KDE_RUNTIME_VERSION = "6.10"
+FLATHUB_KDE_RUNTIME_VERSION = "6.11"
 PYQT_BASEAPP_ID = "com.riverbankcomputing.PyQt.BaseApp"
 FLATPAK_PYTHON_FULL_VERSION = "3.13.0"
 FLATPAK_PYTHON_VERSION = "3.13"
@@ -109,12 +109,6 @@ BASEAPP_OWNED_RUNTIME_PACKAGES = {
     "pyqt6-charts-qt6",
     "pyqt6-qt6",
     "pyqt6-sip",
-}
-RUNTIME_PACKAGE_VERSION_OVERRIDES = {
-    # The PyQt BaseApp is currently built on Qt 6.10, so PyQt6-Charts must
-    # stay on the matching 6.10 line instead of the lockfile's newer 6.11
-    # wheel, which requires Qt_6.11 symbols at runtime.
-    "pyqt6-charts": "6.10.0",
 }
 INTERNAL_GENERATED_DEPENDENCY_MODULES = {
     "build/generated/python3-build-backends.json",
@@ -165,6 +159,7 @@ BASE_MANIFEST: dict[str, Any] = {
         "--share=ipc",
         "--socket=wayland",
         "--socket=fallback-x11",
+        "--talk-name=org.kde.StatusNotifierWatcher",
         "--device=all",
         "--filesystem=home",
     ],
@@ -517,21 +512,6 @@ def artifact_source_entry(
         "type": "file",
         "url": pypi.file_url(name, version, file_entry["file"]),
         "sha256": file_entry["hash"].split(":", 1)[1],
-    }
-
-
-def runtime_package_from_pypi(name: str, version: str, pypi: PypiIndex) -> dict[str, Any]:
-    payload = pypi.release_json(name, version)
-    files = [
-        {"file": entry["filename"], "hash": f"sha256:{entry['digests']['sha256']}"}
-        for entry in payload["urls"]
-    ]
-    chosen_artifact = choose_artifact(name, version, files)
-    return {
-        "name": name,
-        "version": version,
-        "chosen_artifact": chosen_artifact,
-        "artifact_url": pypi.file_url(name, version, chosen_artifact["file"]),
     }
 
 
@@ -1050,12 +1030,6 @@ def prepare_runtime_packages(
         package = copy.deepcopy(package)
         normalized_name = normalize_project_name(package["name"])
         if normalized_name in BASEAPP_OWNED_RUNTIME_PACKAGES:
-            continue
-        if normalized_name in RUNTIME_PACKAGE_VERSION_OVERRIDES:
-            overridden_version = RUNTIME_PACKAGE_VERSION_OVERRIDES[normalized_name]
-            package = runtime_package_from_pypi(package["name"], overridden_version, pypi)
-            runtime_packages.append(package)
-            runtime_names.add(normalized_name)
             continue
         if package.get("source", {}).get("type") == "git":
             git_packages.append(package)

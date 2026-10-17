@@ -90,7 +90,7 @@ class GridFormLayout(QGridLayout):
 
         # Refresh layout on the parent widget
         parent = self.parentWidget()
-        if parent is not None:
+        if parent is not None and parent.isVisible():
             if layout := parent.layout():
                 layout.invalidate()
             parent.adjustSize()

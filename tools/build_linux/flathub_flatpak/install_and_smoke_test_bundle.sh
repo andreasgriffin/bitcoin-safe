@@ -67,11 +67,11 @@ smoke_test_bundle() {
     grep -q 'pyzbar could be loaded successfully' "${log_file}" \
         || fail "pyzbar did not load successfully inside Flatpak."
 
-    if grep -Eq 'ModuleNotFoundError|ImportError|failed to load pyzbar|error while loading shared libraries' \
+    if grep -Eq 'ModuleNotFoundError|ImportError|failed to load pyzbar|error while loading shared libraries|KDE platform plugin is loaded but SNI unavailable' \
         "${log_file}" "${RUN_LOG}"; then
         cat "${RUN_LOG}" >&2 || true
         cat "${log_file}" >&2 || true
-        fail "Detected missing module or shared-library error in Flatpak startup logs."
+        fail "Detected a Flatpak startup error or warning in the application logs."
     fi
     if ! grep -Eq 'mainwindow showevent' "${log_file}"  ; then
         fail "mainwindow showevent not in logfile"
