@@ -3362,6 +3362,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>केवल कॉन्फ़िगर किए गए पीयर का उपयोग करते समय कम से कम {count} कॉन्फ़िगर किए गए पीयर आवश्यक हैं।</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>स्वचालित</translation>
 		</message>
@@ -3369,6 +3374,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>ब्लॉकचेन डेटा स्रोत</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>चुनें कि कॉन्फ़िगर किए गए पीयर को प्राथमिकता दी जाए या उन्हें एक विशेष अनुमति सूची के रूप में उपयोग किया जाए।</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3382,13 +3392,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>कॉन्फ़िगर किए गए पीयर</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>केवल कॉन्फ़िगर किए गए पीयर</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>किसी अलग पीयर से कनेक्ट करें</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>पीयर सूची अपडेट नहीं की जा सकी।</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>निष्क्रिय करें</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>स्थानीय नेटवर्क पर पीयर खोजें</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>संपादित करें</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>कॉन्फ़िगर किए गए पीयर संपादित करें</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3408,6 +3448,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>स्थानीय नेटवर्क पर {count} पीयर मिले।</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>IP पता:</translation>
 		</message>
@@ -3418,13 +3463,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>मैनुअल पीयर</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>अधिकतम पीयर</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>स्थानीय नेटवर्क पर पीयर खोज विफल रही: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3433,8 +3473,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>मेमपूल इंस्टेंस URL</translation>
+			<source>Mempool Instance</source>
+			<translation>Mempool इंस्टेंस</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3448,24 +3488,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>p2p कनेक्शनों की संख्या:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>वैकल्पिक पीयर सूची (प्रति पंक्ति एक) जिन्हें लिस्नर को पहले आज़माना चाहिए। स्वचालित पीयर खोज पर निर्भर रहने के लिए इसे खाली रखें।</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>P2P निगरानी</translation>
+			<source>Number of connections:</source>
+			<translation>कनेक्शन की संख्या:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>पासवर्ड:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>पीयर कॉन्फ़िगरेशन</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3484,13 +3518,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>पसंदीदा पीयर</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>सुझावों के लिए ⬇ तीर कुंजी दबाएं</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>प्रॉक्सी:</translation>
+			<source>Proxy</source>
+			<translation>प्रॉक्सी</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3508,6 +3547,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>स्थानीय नेटवर्क स्कैन किया जा रहा है…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>कनेक्शन का परीक्षण करें</translation>
 		</message>
@@ -3518,11 +3562,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>mempool इंस्टेंस ऐप द्वारा उपयोग किए जाने वाले मेमपूल डेटा और लेनदेन शुल्क के अनुमान प्रदान करता है।</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>प्रॉक्सी Sync&amp;Chat प्लगइन और सदस्यता खरीद के दौरान लागू नहीं होता! इस संस्करण में होस्टनाम-आधारित सर्वर स्थान और DNS-seed खोज प्रॉक्सी के माध्यम से हल नहीं किए जाते।</translation>
+are not resolved through the proxy.</source>
+			<translation>प्रॉक्सी Sync&amp;Chat प्लगइन
+और सब्सक्रिप्शन खरीद पर लागू नहीं होती!
+होस्टनाम के आधार पर सर्वर का स्थान निर्धारित करना और DNS सीड के माध्यम से खोज करना
+प्रॉक्सी के ज़रिए नहीं किया जाता।</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3536,6 +3588,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>अपुष्ट लेनदेन की निगरानी</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3651,16 +3708,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>नोटिफिकेशन बंद करें</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>प्लगइन अपडेट उपलब्ध हैं।</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>प्लगइन अपडेट दिखाएँ</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3739,7 +3786,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>मुफ़्त ट्रायल शुरू करें / मौजूदा सब्सक्रिप्शन प्राप्त करें</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4227,12 +4274,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>प्लगइन {plugin} को पुनर्स्थापित नहीं किया जा सका। एक नई स्थिति लोड की गई। आपके वॉलेट की पिछली स्थिति का बैकअप {filename} में सहेजा गया है।</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>प्लगइन {plugin} को पुनर्स्थापित नहीं किया जा सका। इसकी पुरानी स्थिति का सुरक्षित बैकअप नहीं लिया जा सका, इसलिए कोई नई स्थिति लोड नहीं की गई।</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5027,12 +5074,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT में असंगत UTXO डेटा है। इस अमान्य PSBT पर हस्ताक्षर करने से इनकार किया गया।</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT एक गैर-मानक sighash का अनुरोध करता है। इस अमान्य PSBT पर हस्ताक्षर करने से इनकार किया गया।</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5825,7 +5872,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Trezor फ़र्मवेयर अपडेट पूरा हो गया है और डिवाइस रीबूट हो गया है। कृपया डिवाइस को दोबारा कनेक्ट करें और फिर से प्रयास करें।</translation>
 		</message>
 	</context>
 	<context>
@@ -7779,8 +7826,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters सभी ब्लॉकचेन जानकारी प्राप्त करने का एक निजी और तेज़ तरीका है। वॉलेट सीधे कई bitcoin नोड्स से जुड़ेगा और उनसे ब्लॉक सारांश (Compact Block Filters) डाउनलोड करेगा।&lt;br&gt;यदि आप नीचे 'P2P निगरानी' अनुभाग में मैनुअल पीयर निर्दिष्ट करते हैं, तो Compact Block Filters पहले उनसे जुड़ेगा।</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>कॉम्पैक्ट ब्लॉक फ़िल्टर सभी ब्लॉकचेन जानकारी प्राप्त करने का एक निजी और तेज़ तरीका है। वॉलेट सीधे कई Bitcoin नोड्स से कनेक्ट होगा और उनसे ब्लॉक सारांश (कॉम्पैक्ट ब्लॉक फ़िल्टर) डाउनलोड करेगा।&lt;br&gt;आप नीचे 'पीयर कॉन्फ़िगरेशन' अनुभाग में पसंदीदा पीयर या केवल अनुमत पीयर कॉन्फ़िगर कर सकते हैं।</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

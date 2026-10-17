@@ -3369,6 +3369,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>هنگام استفاده انحصاری از همتایان پیکربندی‌شده، حداقل {count} همتای پیکربندی‌شده لازم است.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>خودکار</translation>
 		</message>
@@ -3376,6 +3381,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>منبع دادهٔ بلاکچین</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>انتخاب کنید که همتایان پیکربندی‌شده در اولویت باشند یا به‌عنوان فهرست مجاز انحصاری استفاده شوند.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3389,13 +3399,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>همتایان پیکربندی‌شده</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>فقط همتایان پیکربندی‌شده</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>اتصال به همتای دیگر</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>به‌روزرسانی فهرست همتایان امکان‌پذیر نبود.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>غیرفعال کردن</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>کشف همتایان شبکه محلی</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>ویرایش</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>ویرایش همتایان پیکربندی‌شده</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3414,6 +3454,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>تعداد {count} همتا در شبکه محلی پیدا شد.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>آدرس IP:</translation>
 		</message>
@@ -3424,13 +3469,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>همتاهای دستی</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>حداکثر همتاها</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>کشف همتایان شبکه محلی ناموفق بود: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3439,8 +3479,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>نشانی نمونهٔ Mempool</translation>
+			<source>Mempool Instance</source>
+			<translation>نمونه Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3454,25 +3494,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>تعداد اتصال‌های p2p:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>فهرست اختیاری همتاها (یکی در هر خط) که شنونده باید ابتدا امتحان کند.
-برای اتکا به کشف خودکار همتاها آن را خالی بگذارید.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>پایش P2P</translation>
+			<source>Number of connections:</source>
+			<translation>تعداد اتصال‌ها:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>گذرواژه:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>پیکربندی همتایان</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3491,13 +3524,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>همتایان ترجیحی</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>کلید ↓ را برای پیشنهادها فشار دهید</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>پروکسی:</translation>
+			<source>Proxy</source>
+			<translation>پروکسی</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3515,6 +3553,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>در حال اسکن شبکه محلی…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>آزمایش اتصال</translation>
 		</message>
@@ -3525,11 +3568,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>نمونه mempool داده‌های ممپول و تخمین کارمزدهای مورد استفاده برنامه را فراهم می‌کند.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>پروکسی برای افزونه Sync&amp;Chat و هنگام خرید اشتراک اعمال نمی‌شود! مکان سرور مبتنی بر نام میزبان و کشف DNS-seed در این نسخه از طریق پروکسی حل نمی‌شوند.</translation>
+are not resolved through the proxy.</source>
+			<translation>پروکسی برای افزونه Sync&amp;Chat
+و خرید اشتراک‌ها اعمال نمی‌شود!
+مکان‌یابی سرور بر اساس نام میزبان و کشف از طریق بذرهای DNS
+از طریق پروکسی انجام نمی‌شوند.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3546,6 +3597,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>نظارت بر تراکنش‌های تأییدنشده</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3662,16 +3718,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>بستن نوتیفیکیشن</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>به‌روزرسانی افزونه‌ها در دسترس است.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>نمایش به‌روزرسانی افزونه‌ها</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3750,7 +3796,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>شروع دوره آزمایشی رایگان / بازیابی اشتراک موجود</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4238,12 +4284,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>افزونه {plugin} بازیابی نشد. وضعیت جدیدی بارگذاری شد. از وضعیت قبلی کیف پول شما در {filename} نسخه پشتیبان تهیه شد.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>افزونه {plugin} بازیابی نشد. از وضعیت قبلی آن به‌طور ایمن نسخه پشتیبان تهیه نشد، بنابراین هیچ وضعیت جدیدی بارگذاری نشد.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5043,12 +5089,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT حاوی داده‌های UTXO ناسازگار است. امضای این PSBT نامعتبر رد شد.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT درخواست sighash غیراستاندارد دارد. امضای این PSBT نامعتبر رد شد.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5843,7 +5889,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>به‌روزرسانی میان‌افزار Trezor به پایان رسید و دستگاه راه‌اندازی مجدد شد. لطفاً دستگاه را دوباره متصل کنید و مجدداً تلاش کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -7797,8 +7843,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters روشی خصوصی و سریع برای دریافت تمام اطلاعات بلاکچین است. کیف پول مستقیماً به چندین گره bitcoin متصل می‌شود و خلاصه‌های بلوک (Compact Block Filters) را از آن‌ها دانلود می‌کند.&lt;br&gt;اگر در بخش 'پایش P2P' در پایین همتایان دستی مشخص کنید، Compact Block Filters ابتدا به آن‌ها متصل می‌شود.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>فیلترهای بلوک فشرده روشی سریع و حافظ حریم خصوصی برای دریافت تمام اطلاعات بلاک‌چین هستند. کیف پول مستقیماً به چندین گره بیت‌کوین متصل می‌شود و خلاصه‌های بلوک (فیلترهای بلوک فشرده) را از آن‌ها دانلود می‌کند.&lt;br&gt;می‌توانید همتایان ترجیحی یا همتایان مجاز انحصاری را در بخش «پیکربندی همتایان» در پایین تنظیم کنید.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

@@ -3371,6 +3371,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>Yalnızca yapılandırılmış eşler kullanılırken en az {count} yapılandırılmış eş gereklidir.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>Otomatik</translation>
 		</message>
@@ -3378,6 +3383,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>Blockchain veri kaynağı</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>Yapılandırılmış eşlerin tercih edilmesini veya yalnızca izin verilen eşler listesi olarak kullanılmasını seçin.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3391,13 +3401,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>Yapılandırılmış eşler</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>Yalnızca yapılandırılmış eşler</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>Farklı bir eşe bağlan</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>Eş listesi güncellenemedi.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>Devre dışı bırak</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>Yerel ağdaki eşleri keşfet</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>Düzenle</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>Yapılandırılmış eşleri düzenle</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3416,6 +3456,11 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>Yerel ağda {count} eş bulundu.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>IP Adresi:</translation>
 		</message>
@@ -3426,13 +3471,8 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>Manuel eşler</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>Maksimum eş sayısı</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>Yerel ağdaki eşlerin keşfi başarısız oldu: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3441,8 +3481,8 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>Mempool Örnek URL’si</translation>
+			<source>Mempool Instance</source>
+			<translation>Mempool Örneği</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3456,25 +3496,18 @@ Yine de devam etmek istiyor musunuz?</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>p2p bağlantı sayısı:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>Dinleyicinin önce denemesi gereken isteğe bağlı eş listesi (satır başına bir tane).
-Otomatik eş keşfine güvenmek için boş bırakın.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>P2P izleme</translation>
+			<source>Number of connections:</source>
+			<translation>Bağlantı sayısı:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>Şifre:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>Eş yapılandırması</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3493,13 +3526,18 @@ Otomatik eş keşfine güvenmek için boş bırakın.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>Tercih edilen eşler</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>Öneriler için ⬇ ok tuşuna basın</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>Proxy:</translation>
+			<source>Proxy</source>
+			<translation>Proxy</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3517,6 +3555,11 @@ Otomatik eş keşfine güvenmek için boş bırakın.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>Yerel ağ taranıyor…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>Bağlantıyı Test Et</translation>
 		</message>
@@ -3527,11 +3570,19 @@ Otomatik eş keşfine güvenmek için boş bırakın.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>Mempool örneği, uygulama tarafından kullanılan mempool verilerini ve işlem ücreti tahminlerini sağlar.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>Proxy, Sync&amp;Chat eklentisi ve abonelik satın alma sırasında geçerli değildir! Ana makine adına dayalı sunucu konumu ve DNS seed keşfi bu sürümde proxy üzerinden çözümlenmez.</translation>
+are not resolved through the proxy.</source>
+			<translation>Proxy, Sync&amp;Chat eklentisi
+ve abonelik satın alımları için geçerli değildir!
+Sunucu konumunun ana bilgisayar adına göre belirlenmesi ve DNS seed keşfi
+proxy üzerinden gerçekleştirilmez.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3548,6 +3599,11 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>Onaylanmamış işlem izleme</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3664,16 +3720,6 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 			<source>Close notification</source>
 			<translation>Bildirim kapat</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>Eklenti güncellemeleri mevcut.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>Eklenti güncellemelerini göster</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3752,7 +3798,7 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>Ücretsiz denemeyi başlat / Mevcut aboneliği getir</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4240,12 +4286,12 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>{plugin} eklentisi geri yüklenemedi. Yeni bir durum yüklendi. Önceki cüzdan durumunuz {filename} konumuna yedeklendi.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>{plugin} eklentisi geri yüklenemedi. Eski durumu güvenli bir şekilde yedeklenemediğinden yeni bir durum yüklenmedi.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5045,12 +5091,12 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT tutarsız UTXO verileri içeriyor. Bu hatalı PSBT imzalanmayacak.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT standart dışı bir sighash talep ediyor. Bu hatalı PSBT imzalanmayacak.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5846,7 +5892,7 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Trezor ürün yazılımı güncellemesi tamamlandı ve cihaz yeniden başlatıldı. Lütfen cihazı yeniden bağlayıp tekrar deneyin.</translation>
 		</message>
 	</context>
 	<context>
@@ -7800,8 +7846,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters, tüm blok zinciri bilgilerini edinmenin özel ve hızlı bir yoludur. Cüzdan doğrudan birden fazla bitcoin düğümüne bağlanacak ve onlardan blok özetlerini (Compact Block Filters) indirecektir.&lt;br&gt;Aşağıdaki 'P2P izleme' bölümünde manuel eşler belirtirseniz, Compact Block Filters önce onlara bağlanacaktır.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>Kompakt Blok Filtreleri, tüm blok zinciri bilgilerini edinmenin gizli ve hızlı bir yoludur. Cüzdan, birden fazla Bitcoin düğümüne doğrudan bağlanacak ve bunlardan blok özetlerini (Kompakt Blok Filtreleri) indirecektir.&lt;br&gt;Aşağıdaki 'Eş yapılandırması' bölümünde tercih edilen veya yalnızca izin verilen eşleri yapılandırabilirsiniz.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
@@ -8333,7 +8379,7 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<name>subscription</name>
 		<message>
 			<source>Complete subscription setup</source>
-			<translation/>
+			<translation>Abonelik kurulumunu tamamla</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8388,7 +8434,7 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<name>subscription</name>
 		<message>
 			<source>Management URL</source>
-			<translation/>
+			<translation>Yönetim URL’si</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8408,17 +8454,17 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<name>subscription</name>
 		<message>
 			<source>Paste management URL</source>
-			<translation/>
+			<translation>Yönetim URL’sini yapıştır</translation>
 		</message>
 		<name>subscription</name>
 		<message>
 			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
-			<translation/>
+			<translation>Yönetim URL’sini almak için lütfen &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; adresiyle iletişime geçin, ardından URL’yi aşağıdaki alana yapıştırın.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
 			<source>Please enter a valid HTTP(S) management URL.</source>
-			<translation/>
+			<translation>Lütfen geçerli bir HTTP(S) yönetim URL’si girin.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8433,7 +8479,7 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<name>subscription</name>
 		<message>
 			<source>Subscription ID</source>
-			<translation/>
+			<translation>Abonelik kimliği</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8468,17 +8514,17 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<name>subscription</name>
 		<message>
 			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation/>
+			<translation>Yönetim URL’si farklı bir abonelik kimliğine ait olduğundan kaydedilmedi.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
 			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation/>
+			<translation>Yönetim sayfasında abonelik kimliği bulunmadığından yönetim URL’si kaydedilmedi.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
 			<source>The subscription management URL could not be fetched automatically.</source>
-			<translation/>
+			<translation>Abonelik yönetim URL’si otomatik olarak alınamadı.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8488,7 +8534,7 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<name>subscription</name>
 		<message>
 			<source>Use management URL</source>
-			<translation/>
+			<translation>Yönetim URL’sini kullan</translation>
 		</message>
 		<name>subscription</name>
 		<message>

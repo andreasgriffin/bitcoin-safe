@@ -3367,6 +3367,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>구성된 피어만 사용하는 경우 최소 {count}개의 구성된 피어가 필요합니다.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>자동</translation>
 		</message>
@@ -3374,6 +3379,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>블록체인 데이터 소스</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>구성된 피어를 우선적으로 사용할지, 아니면 허용 목록에 있는 피어만 사용하도록 제한할지 선택하세요.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3387,13 +3397,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>구성된 피어</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>구성된 피어만 사용</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>다른 피어에 연결</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>피어 목록을 업데이트하지 못했습니다.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>비활성화</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>로컬 네트워크 피어 검색</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>편집</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>구성된 피어 편집</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3412,6 +3452,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>로컬 네트워크에서 {count}개의 피어를 찾았습니다.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>IP 주소:</translation>
 		</message>
@@ -3422,13 +3467,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>수동 피어</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>최대 피어 수</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>로컬 네트워크 피어 검색 실패: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3437,8 +3477,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>Mempool 인스턴스 URL</translation>
+			<source>Mempool Instance</source>
+			<translation>Mempool 인스턴스</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3452,25 +3492,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>p2p 연결 수:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>리스너가 먼저 시도해야 할 선택적 피어 목록(한 줄에 하나).
-자동 피어 검색에 의존하려면 비워 두세요.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>P2P 모니터링</translation>
+			<source>Number of connections:</source>
+			<translation>연결 수:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>비밀번호:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>피어 구성</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3489,13 +3522,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>선호 피어</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>제안을 보려면 ⬇ 화살표 키를 누르세요.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>프록시:</translation>
+			<source>Proxy</source>
+			<translation>프록시</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3513,6 +3551,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>로컬 네트워크 검색 중…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>연결 테스트</translation>
 		</message>
@@ -3523,11 +3566,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>Mempool 인스턴스는 애플리케이션에서 사용하는 멤풀 데이터와 수수료 추정치를 제공합니다.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>프록시는 Sync&amp;Chat 플러그인 및 구독 구매 중에는 적용되지 않습니다! 호스트 이름 기반 서버 위치와 DNS-seed 검색은 이 버전에서 프록시를 통해 확인되지 않습니다.</translation>
+are not resolved through the proxy.</source>
+			<translation>프록시는 Sync&amp;Chat 플러그인
+및 구독 구매에는 적용되지 않습니다!
+호스트 이름 기반 서버 위치 확인 및 DNS 시드 검색은
+프록시를 통해 처리되지 않습니다.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3544,6 +3595,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>미확인 트랜잭션 모니터링</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3660,16 +3716,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>알림 닫기</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>플러그인 업데이트를 사용할 수 있습니다.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>플러그인 업데이트 표시</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3748,7 +3794,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>무료 체험 시작 / 기존 구독 정보 가져오기</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4236,12 +4282,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>{plugin} 플러그인을 복원할 수 없습니다. 새로운 상태를 불러왔습니다. 이전 지갑 상태는 {filename}에 백업되었습니다.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>{plugin} 플러그인을 복원할 수 없습니다. 이전 상태가 안전하게 백업되지 않아 새로운 상태를 불러오지 않았습니다.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5040,12 +5086,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT에 일관되지 않은 UTXO 데이터가 포함되어 있습니다. 형식이 잘못된 이 PSBT에는 서명하지 않습니다.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT가 비표준 sighash를 요청합니다. 형식이 잘못된 이 PSBT에는 서명하지 않습니다.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5840,7 +5886,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Trezor 펌웨어 업데이트가 완료되었으며 기기가 재부팅되었습니다. 기기를 다시 연결한 후 재시도하세요.</translation>
 		</message>
 	</context>
 	<context>
@@ -7794,8 +7840,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters는 모든 블록체인 정보를 비공개로 빠르게 얻는 방법입니다. 지갑은 여러 bitcoin 노드에 직접 연결하여 해당 노드에서 블록 요약(Compact Block Filters)을 다운로드합니다.&lt;br&gt;아래 'P2P 모니터링' 섹션에서 수동 피어를 지정하면 Compact Block Filters가 먼저 해당 피어에 연결됩니다.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>컴팩트 블록 필터는 모든 블록체인 정보를 비공개로 빠르게 가져올 수 있는 방법입니다. 지갑은 여러 비트코인 노드에 직접 연결하여 블록 요약 정보(컴팩트 블록 필터)를 다운로드합니다.&lt;br&gt;아래 '피어 구성' 섹션에서 선호 피어 또는 허용된 피어만 사용하도록 구성할 수 있습니다.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

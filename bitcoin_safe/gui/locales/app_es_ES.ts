@@ -3381,6 +3381,11 @@ de bitcoin recibidos de estas parejas a través de la red bitcoin.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>Se requieren al menos {count} pares configurados cuando se utilizan únicamente los pares configurados.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>Automático</translation>
 		</message>
@@ -3388,6 +3393,11 @@ de bitcoin recibidos de estas parejas a través de la red bitcoin.</translation>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>Fuente de datos de la cadena de bloques</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>Elige si los pares configurados tendrán prioridad o se utilizarán como una lista blanca exclusiva.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3401,13 +3411,43 @@ de bitcoin recibidos de estas parejas a través de la red bitcoin.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>Pares configurados</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>Solo pares configurados</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>Conectar con un par diferente</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>No se ha podido actualizar la lista de pares.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>Desactivar</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>Descubrir pares de la red local</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>Editar</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>Editar pares configurados</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3427,6 +3467,11 @@ de bitcoin recibidos de estas parejas a través de la red bitcoin.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>Se han encontrado {count} pares en la red local.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>Dirección IP:</translation>
 		</message>
@@ -3437,13 +3482,8 @@ de bitcoin recibidos de estas parejas a través de la red bitcoin.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>Pares manuales</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>Máximo de pares</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>Error al descubrir pares de la red local: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3452,8 +3492,8 @@ de bitcoin recibidos de estas parejas a través de la red bitcoin.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>URL de instancia de Mempool</translation>
+			<source>Mempool Instance</source>
+			<translation>Instancia de Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3467,25 +3507,18 @@ de bitcoin recibidos de estas parejas a través de la red bitcoin.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>Número de conexiones p2p:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>Lista opcional de pares (uno por línea) que el oyente debería intentar primero.
-Déjela vacía para confiar en el descubrimiento automático de pares.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>Supervisión P2P</translation>
+			<source>Number of connections:</source>
+			<translation>Número de conexiones:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>Contraseña:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>Configuración de pares</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3504,13 +3537,18 @@ Déjela vacía para confiar en el descubrimiento automático de pares.</translat
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>Pares preferidos</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>Presione la tecla de flecha ⬇ para sugerencias</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>Proxy:</translation>
+			<source>Proxy</source>
+			<translation>Proxy</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3528,6 +3566,11 @@ Mempool Instance: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>Analizando la red local…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>Probar Conexión</translation>
 		</message>
@@ -3538,14 +3581,19 @@ Mempool Instance: {server}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>La instancia de mempool proporciona los datos del mempool y las estimaciones de comisiones que utiliza la aplicación.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
+are not resolved through the proxy.</source>
 			<translation>El proxy no se aplica al complemento Sync&amp;Chat
-ni durante la compra de la suscripción.
-El lugar del servidor basada en el nombre de host y el descubrimiento
-DNS-seed no se resuelven a través del proxy en esta versión.</translation>
+ni a las compras de suscripciones.
+La localización de servidores basada en nombres de host y el descubrimiento mediante semillas DNS
+no se realizan a través del proxy.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3562,6 +3610,11 @@ Usar más pares mejora la cobertura, pero utiliza más ancho de banda y conexion
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>Supervisión de transacciones sin confirmar</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3678,16 +3731,6 @@ Puedes cambiar a Testnet para probar {app_name} sin usar Bitcoin real.</translat
 			<source>Close notification</source>
 			<translation>Cerrar notificación</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>Hay actualizaciones de complementos disponibles.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>Mostrar actualizaciones de complementos</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3766,7 +3809,7 @@ Puedes cambiar a Testnet para probar {app_name} sin usar Bitcoin real.</translat
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>Iniciar prueba gratuita / Recuperar suscripción existente</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4253,12 +4296,12 @@ Puedes cambiar a Testnet para probar {app_name} sin usar Bitcoin real.</translat
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>No se ha podido restaurar el complemento {plugin}. Se ha cargado un estado nuevo. El estado anterior de tu monedero se ha guardado en una copia de seguridad en {filename}.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>No se ha podido restaurar el complemento {plugin}. Su estado anterior no se ha podido guardar de forma segura, por lo que no se ha cargado ningún estado nuevo.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5064,12 +5107,12 @@ Si cometes un error aquí, ¡tu dinero se perderá!</translation>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>La PSBT contiene datos UTXO incoherentes. Se rechaza la firma de esta PSBT malformada.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>La PSBT solicita un sighash no estándar. Se rechaza la firma de esta PSBT malformada.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5865,7 +5908,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>La actualización del firmware de Trezor ha finalizado y el dispositivo se ha reiniciado. Vuelve a conectar el dispositivo e inténtalo de nuevo.</translation>
 		</message>
 	</context>
 	<context>
@@ -7819,8 +7862,8 @@ País: {country}</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters es una forma privada y rápida de obtener toda la información de la cadena de bloques. La cartera se conectará directamente a varios nodos bitcoin y descargará de ellos resúmenes de bloques (Compact Block Filters).&lt;br&gt;Si especificas pares manuales en la sección «Supervisión P2P» de abajo, Compact Block Filters se conectará primero a ellos.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>Los filtros de bloques compactos son una forma rápida y privada de obtener toda la información de la cadena de bloques. El monedero se conectará directamente a varios nodos de Bitcoin y descargará de ellos los resúmenes de bloques (filtros de bloques compactos).&lt;br&gt;Puedes configurar pares preferidos o exclusivos en la sección «Configuración de pares» que aparece a continuación.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

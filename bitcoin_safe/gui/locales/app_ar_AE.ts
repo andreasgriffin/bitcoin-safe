@@ -3369,6 +3369,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>يلزم إعداد ما لا يقل عن {count} من الأقران عند استخدام الأقران المُعدّين فقط.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>تلقائي</translation>
 		</message>
@@ -3376,6 +3381,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>مصدر بيانات البلوكتشين</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>اختر ما إذا كان سيتم تفضيل الأقران المُعدّين أو استخدامهم كقائمة سماح حصرية.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3389,13 +3399,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>الأقران المُعدّون</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>الأقران المُعدّون فقط</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>الاتصال بقرين مختلف</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>تعذّر تحديث قائمة الأقران.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>تعطيل</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>اكتشاف الأقران على الشبكة المحلية</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>يحرر</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>تعديل الأقران المُعدّين</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3416,6 +3456,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>تم العثور على {count} من الأقران على الشبكة المحلية.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>عنوان IP:</translation>
 		</message>
@@ -3426,13 +3471,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>نظراء يدويون</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>الحد الأقصى للنظراء</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>فشل اكتشاف الأقران على الشبكة المحلية: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3441,8 +3481,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>عنوان Mempool Instance</translation>
+			<source>Mempool Instance</source>
+			<translation>مثيل Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3456,25 +3496,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>عدد اتصالات p2p:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>قائمة اختيارية من النظراء (واحد لكل سطر) يجب أن يحاول المستمع الاتصال بهم أولًا.
-اتركها فارغة للاعتماد على الاكتشاف التلقائي للنظراء.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>مراقبة P2P</translation>
+			<source>Number of connections:</source>
+			<translation>عدد الاتصالات:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>كلمة المرور:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>إعدادات الأقران</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3493,13 +3526,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>الأقران المفضّلون</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>اضغط على مفتاح السهم ⬇ للاقتراحات</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>بروكسي:</translation>
+			<source>Proxy</source>
+			<translation>الوكيل</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3517,6 +3555,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>جارٍ فحص الشبكة المحلية…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>اختبار الاتصال</translation>
 		</message>
@@ -3527,11 +3570,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>يوفّر مثيل mempool بيانات مجمع المعاملات وتقديرات الرسوم التي يستخدمها التطبيق.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>لا ينطبق الوكيل على إضافة Sync&amp;Chat وأثناء شراء الاشتراك! لا يتم حل موقع الخادم المعتمد على اسم المضيف واكتشاف DNS-seed عبر الوكيل في هذا الإصدار.</translation>
+are not resolved through the proxy.</source>
+			<translation>لا ينطبق الوكيل على إضافة Sync&amp;Chat
+ولا على عمليات شراء الاشتراكات!
+لا يتم تحديد مواقع الخوادم استنادًا إلى أسماء المضيفين أو اكتشافها عبر بذور DNS
+من خلال الوكيل.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3548,6 +3599,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>الرابط:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>مراقبة المعاملات غير المؤكدة</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3664,16 +3720,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>إغلاق الإشعار</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>تتوفر تحديثات للمكونات الإضافية.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>إظهار تحديثات المكونات الإضافية</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3752,7 +3798,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>بدء الفترة التجريبية المجانية / استرداد الاشتراك الحالي</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4240,12 +4286,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>تعذّرت استعادة الإضافة {plugin}. تم تحميل حالة جديدة. تم حفظ نسخة احتياطية من الحالة السابقة لمحفظتك في {filename}.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>تعذّرت استعادة الإضافة {plugin}. لم يتم نسخ حالتها السابقة احتياطيًا بأمان، لذلك لم يتم تحميل حالة جديدة.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5045,12 +5091,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>تحتوي معاملة PSBT على بيانات UTXO غير متسقة. تم رفض توقيع معاملة PSBT غير الصالحة هذه.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>تطلب معاملة PSBT قيمة sighash غير قياسية. تم رفض توقيع معاملة PSBT غير الصالحة هذه.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5845,7 +5891,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>اكتمل تحديث البرنامج الثابت لجهاز Trezor وأُعيد تشغيل الجهاز. يُرجى إعادة توصيل الجهاز والمحاولة مرة أخرى.</translation>
 		</message>
 	</context>
 	<context>
@@ -7799,8 +7845,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters هي طريقة خاصة وسريعة للحصول على جميع معلومات سلسلة الكتل. ستتصل المحفظة مباشرة بعدة عُقد bitcoin وستنزّل منها ملخصات الكتل (Compact Block Filters).&lt;br&gt;إذا حدّدت أقرانًا يدويين في قسم 'مراقبة P2P' أدناه، فستتصل Compact Block Filters بهم أولًا.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>تُعد مرشحات الكتل المدمجة طريقة سريعة وتحافظ على الخصوصية للحصول على جميع معلومات سلسلة الكتل. ستتصل المحفظة مباشرةً بعُقد بيتكوين متعددة وتنزّل منها ملخصات الكتل (مرشحات الكتل المدمجة).&lt;br&gt;يمكنك إعداد الأقران المفضّلين أو الأقران المسموح بهم حصريًا في قسم 'إعدادات الأقران' أدناه.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

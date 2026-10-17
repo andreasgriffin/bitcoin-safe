@@ -3380,6 +3380,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>கட்டமைக்கப்பட்ட பியர்களை மட்டுமே பயன்படுத்தும்போது குறைந்தபட்சம் {count} கட்டமைக்கப்பட்ட பியர்கள் தேவை.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>தானியங்கி</translation>
 		</message>
@@ -3387,6 +3392,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>பிளாக்செயின் தரவு சான்று</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>கட்டமைக்கப்பட்ட பியர்களுக்கு முன்னுரிமை அளிக்க வேண்டுமா அல்லது அவற்றை மட்டுமே அனுமதிக்கும் பிரத்யேக அனுமதிப் பட்டியலாகப் பயன்படுத்த வேண்டுமா என்பதைத் தேர்ந்தெடுக்கவும்.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3400,13 +3410,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>கட்டமைக்கப்பட்ட பியர்கள்</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>கட்டமைக்கப்பட்ட பியர்கள் மட்டும்</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>வேறு ஒருவருடன் இணையுங்கள்</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>பியர் பட்டியலைப் புதுப்பிக்க முடியவில்லை.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>இழுக்கும்</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>உள்ளூர் நெட்வொர்க் பியர்களைக் கண்டறி</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>தொகு</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>கட்டமைக்கப்பட்ட பியர்களைத் திருத்து</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3426,6 +3466,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>உள்ளூர் நெட்வொர்க்கில் {count} பியர்கள் கண்டறியப்பட்டன.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>ஐபி முகவரி:</translation>
 		</message>
@@ -3436,13 +3481,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>கையேடு சகாக்கள்</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>அதிகபட்சம் சகாக்கள்</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>உள்ளூர் நெட்வொர்க் பியர்களைக் கண்டறிவது தோல்வியடைந்தது: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3451,8 +3491,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>மெம்பூல் நிகழ்வு முகவரி</translation>
+			<source>Mempool Instance</source>
+			<translation>Mempool நிகழ்வு</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3466,25 +3506,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>p2p இணைப்புகளின் எண்ணிக்கை:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>சகாக்களின் விருப்பப் பட்டியல் (ஒரு வரிக்கு ஒன்று) கேட்பவர் முதலில் முயற்சிக்க வேண்டும்.
-தன்னியக்க தம கண்டுபிடிப்பை நம்புவதற்கு அதை காலியாக வைக்கவும்.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>P2P கண்காணிப்பு</translation>
+			<source>Number of connections:</source>
+			<translation>இணைப்புகளின் எண்ணிக்கை:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>கடவுச்சொல்:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>பியர் கட்டமைப்பு</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3503,13 +3536,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>விருப்பமான பியர்கள்</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>பரிந்துரைகளுக்கு ⬇ அம்புக்குறியை அழுத்தவும்</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>பதிலாள்:</translation>
+			<source>Proxy</source>
+			<translation>ப்ராக்ஸி</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3527,6 +3565,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>உள்ளூர் நெட்வொர்க் ஸ்கேன் செய்யப்படுகிறது…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>சோதனை இணைப்பு</translation>
 		</message>
@@ -3537,14 +3580,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>mempool நிகழ்வு, பயன்பாடு பயன்படுத்தும் மெம்பூல் தரவுகளையும் பரிவர்த்தனைக் கட்டண மதிப்பீடுகளையும் வழங்குகிறது.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>Sync&amp;Chatக்கு பதிலாள் பொருந்தாது 
-சொருகி மற்றும் சந்தா வாங்கும் போது! 
-ஓச்ட்பெயர் அடிப்படையிலான சர்வர் இருப்பிடம் மற்றும் DNS-விதை கண்டுபிடிப்பு 
-இந்த பதிப்பில் பதிலாள் மூலம் தீர்க்கப்படவில்லை.</translation>
+are not resolved through the proxy.</source>
+			<translation>ப்ராக்ஸி, Sync&amp;Chat செருகுநிரலுக்கும்
+சந்தா வாங்குதல்களுக்கும் பொருந்தாது!
+ஹோஸ்ட்பெயர் அடிப்படையிலான சேவையக இருப்பிடக் கண்டறிதலும் DNS சீட் வழியான கண்டறிதலும்
+ப்ராக்ஸி மூலம் மேற்கொள்ளப்படுவதில்லை.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3561,6 +3609,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>உறுதிப்படுத்தப்படாத பரிவர்த்தனைகளைக் கண்காணித்தல்</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3677,16 +3730,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 			<source>Close notification</source>
 			<translation>அறிவிப்பை மூடு</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>செருகுநிரல் புதுப்பிப்புகள் உள்ளன.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>செருகுநிரல் புதுப்பிப்புகளைக் காட்டு</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3765,7 +3808,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>இலவச சோதனையைத் தொடங்கு / ஏற்கெனவே உள்ள சந்தாவைப் பெறு</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4252,12 +4295,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>{plugin} செருகுநிரலை மீட்டெடுக்க முடியவில்லை. புதிய நிலை ஏற்றப்பட்டது. உங்கள் பணப்பையின் முந்தைய நிலை {filename} இல் காப்புப் பிரதி எடுக்கப்பட்டது.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>{plugin} செருகுநிரலை மீட்டெடுக்க முடியவில்லை. அதன் பழைய நிலை பாதுகாப்பாகக் காப்புப் பிரதி எடுக்கப்படாததால் புதிய நிலை ஏற்றப்படவில்லை.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5064,12 +5107,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT-யில் முரண்பட்ட UTXO தரவு உள்ளது. தவறான வடிவமைப்பில் உள்ள இந்த PSBT-யில் கையொப்பமிட மறுக்கப்படுகிறது.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT தரமற்ற sighash-ஐக் கோருகிறது. தவறான வடிவமைப்பில் உள்ள இந்த PSBT-யில் கையொப்பமிட மறுக்கப்படுகிறது.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5869,7 +5912,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Trezor ஃபார்ம்வேர் புதுப்பிப்பு முடிந்தது, சாதனம் மீண்டும் தொடங்கப்பட்டது. சாதனத்தை மீண்டும் இணைத்து மீண்டும் முயற்சிக்கவும்.</translation>
 		</message>
 	</context>
 	<context>
@@ -7823,8 +7866,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>சிறிய பிளாக் வடிப்பான்கள் அனைத்து பிளாக்செயின் தகவல்களையும் பெறுவதற்கான தனிப்பட்ட மற்றும் விரைவான வழியாகும். பணப்பையானது பல பிட்காயின் முனைகளுடன் நேரடியாக இணைக்கப்பட்டு அவற்றிலிருந்து தொகுதி சுருக்கங்களை (காம்பாக்ட் பிளாக் ஃபில்டர்கள்) பதிவிறக்கும்.&lt;br&gt;கீழே உள்ள 'P2P கண்காணிப்பு' பிரிவில் கையேடு சகாக்களைக் குறிப்பிட்டால், சிறிய பிளாக் வடிப்பான்கள் முதலில் அவர்களுடன் இணைக்கப்படும்.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>காம்பாக்ட் பிளாக் ஃபில்டர்கள் அனைத்து பிளாக்செயின் தகவல்களையும் தனியுரிமையுடன் விரைவாகப் பெறுவதற்கான ஒரு வழியாகும். பணப்பை பல Bitcoin நோடுகளுடன் நேரடியாக இணைந்து, அவற்றிலிருந்து பிளாக் சுருக்கங்களை (காம்பாக்ட் பிளாக் ஃபில்டர்கள்) பதிவிறக்கும்.&lt;br&gt;கீழே உள்ள 'பியர் கட்டமைப்பு' பிரிவில் விருப்பமான பியர்களையோ பிரத்தியேகமாக அனுமதிக்கப்பட்ட பியர்களையோ கட்டமைக்கலாம்.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

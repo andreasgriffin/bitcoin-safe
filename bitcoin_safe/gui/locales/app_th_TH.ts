@@ -3360,6 +3360,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>ต้องกำหนดเพียร์อย่างน้อย {count} รายการเมื่อเลือกใช้เฉพาะเพียร์ที่กำหนดค่าไว้</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>อัตโนมัติ</translation>
 		</message>
@@ -3367,6 +3372,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>แหล่งข้อมูลบล็อกเชน</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>เลือกว่าจะให้ความสำคัญกับเพียร์ที่กำหนดค่าไว้ หรือใช้เป็นรายการอนุญาตแบบเฉพาะเท่านั้น</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3380,13 +3390,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>เพียร์ที่กำหนดค่าไว้</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>ใช้เฉพาะเพียร์ที่กำหนดค่าไว้</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>เชื่อมต่อกับเพียร์อื่น</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>ไม่สามารถอัปเดตรายการเพียร์ได้</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>ปิดการใช้งาน</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>ค้นหาเพียร์ในเครือข่ายภายใน</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>แก้ไข</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>แก้ไขเพียร์ที่กำหนดค่าไว้</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3405,6 +3445,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>พบเพียร์ในเครือข่ายภายใน {count} รายการ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>IP Address:</translation>
 		</message>
@@ -3415,13 +3460,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>เพียร์แบบกำหนดเอง</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>จำนวนเพียร์สูงสุด</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>การค้นหาเพียร์ในเครือข่ายภายในล้มเหลว: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3430,8 +3470,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>URL ของ Mempool Instance</translation>
+			<source>Mempool Instance</source>
+			<translation>อินสแตนซ์ Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3445,24 +3485,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>จำนวนการเชื่อมต่อ p2p:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>รายการเพียร์ทางเลือก (หนึ่งรายการต่อบรรทัด) ที่ตัวรับฟังควรลองก่อน เว้นว่างไว้เพื่อพึ่งพาการค้นหาเพียร์อัตโนมัติ</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>การตรวจสอบ P2P</translation>
+			<source>Number of connections:</source>
+			<translation>จำนวนการเชื่อมต่อ:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>รหัสผ่าน:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>การกำหนดค่าเพียร์</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3481,13 +3515,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>เพียร์ที่ต้องการ</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>กดปุ่มลูกศรลง ⬇ เพื่อข้อเสนอแนะ</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>Proxy:</translation>
+			<source>Proxy</source>
+			<translation>พร็อกซี</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3505,6 +3544,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>กำลังสแกนเครือข่ายภายใน…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>ทดสอบการเชื่อมต่อ</translation>
 		</message>
@@ -3515,11 +3559,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>อินสแตนซ์ mempool ให้ข้อมูลเมมพูลและค่าประมาณค่าธรรมเนียมที่แอปพลิเคชันใช้</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>พร็อกซีไม่มีผลกับปลั๊กอิน Sync&amp;Chat และระหว่างการซื้อการสมัครสมาชิก! ตำแหน่งเซิร์ฟเวอร์ตามชื่อโฮสต์และการค้นหา DNS-seed จะไม่ถูกแก้ไขผ่านพร็อกซีในเวอร์ชันนี้</translation>
+are not resolved through the proxy.</source>
+			<translation>พร็อกซีไม่มีผลกับปลั๊กอิน Sync&amp;Chat
+และการซื้อการสมัครสมาชิก!
+การระบุตำแหน่งเซิร์ฟเวอร์จากชื่อโฮสต์และการค้นหาผ่าน DNS seed
+จะไม่ดำเนินการผ่านพร็อกซี</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3533,6 +3585,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>การตรวจสอบธุรกรรมที่ยังไม่ได้รับการยืนยัน</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3648,16 +3705,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>ปิดการแจ้งเตือน</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>มีการอัปเดตปลั๊กอิน</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>แสดงการอัปเดตปลั๊กอิน</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3736,7 +3783,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>เริ่มทดลองใช้ฟรี / ดึงข้อมูลการสมัครสมาชิกที่มีอยู่</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4224,12 +4271,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>ไม่สามารถกู้คืนปลั๊กอิน {plugin} ได้ โหลดสถานะใหม่แล้ว สถานะกระเป๋าเงินก่อนหน้าของคุณได้รับการสำรองข้อมูลไว้ที่ {filename}</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>ไม่สามารถกู้คืนปลั๊กอิน {plugin} ได้ เนื่องจากสถานะเดิมไม่ได้รับการสำรองข้อมูลอย่างปลอดภัย จึงไม่มีการโหลดสถานะใหม่</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5024,12 +5071,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT มีข้อมูล UTXO ที่ไม่สอดคล้องกัน ปฏิเสธการลงนาม PSBT ที่มีรูปแบบไม่ถูกต้องนี้</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT ร้องขอ sighash ที่ไม่เป็นมาตรฐาน ปฏิเสธการลงนาม PSBT ที่มีรูปแบบไม่ถูกต้องนี้</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5821,7 +5868,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>การอัปเดตเฟิร์มแวร์ Trezor เสร็จสิ้นแล้วและอุปกรณ์ได้รีบูตแล้ว โปรดเชื่อมต่ออุปกรณ์อีกครั้งแล้วลองใหม่</translation>
 		</message>
 	</context>
 	<context>
@@ -7775,8 +7822,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters เป็นวิธีที่เป็นส่วนตัวและรวดเร็วในการรับข้อมูลบล็อกเชนทั้งหมด กระเป๋าเงินจะเชื่อมต่อโดยตรงกับโหนด bitcoin หลายโหนดและดาวน์โหลดสรุปบล็อก (Compact Block Filters) จากโหนดเหล่านั้น&lt;br&gt;หากคุณระบุเพียร์ด้วยตนเองในส่วน 'การตรวจสอบ P2P' ด้านล่าง Compact Block Filters จะเชื่อมต่อกับเพียร์เหล่านั้นก่อน</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>Compact Block Filters เป็นวิธีที่รวดเร็วและรักษาความเป็นส่วนตัวในการรับข้อมูลทั้งหมดของบล็อกเชน กระเป๋าเงินจะเชื่อมต่อโดยตรงกับโหนด Bitcoin หลายโหนดและดาวน์โหลดข้อมูลสรุปบล็อก (Compact Block Filters) จากโหนดเหล่านั้น&lt;br&gt;คุณสามารถกำหนดค่าเพียร์ที่ต้องการหรือกำหนดให้ใช้เฉพาะเพียร์ที่อนุญาตได้ในส่วน 'การกำหนดค่าเพียร์' ด้านล่าง</translation>
 		</message>
 		<name>net_conf</name>
 		<message>

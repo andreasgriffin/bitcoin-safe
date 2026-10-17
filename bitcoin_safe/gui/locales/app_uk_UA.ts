@@ -3371,6 +3371,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>At least {count} configured peers are required when using configured peers only.</source>
+			<translation>Для використання лише налаштованих вузлів потрібно щонайменше {count} налаштованих вузлів.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Automatic</source>
 			<translation>Автоматично</translation>
 		</message>
@@ -3378,6 +3383,11 @@ received from these peers via the bitcoin network.</source>
 		<message>
 			<source>Blockchain data source</source>
 			<translation>Джерело даних блокчейну</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+			<translation>Виберіть, чи надавати перевагу налаштованим вузлам, чи використовувати їх як виключний список дозволених вузлів.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3391,13 +3401,43 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Configured peers</source>
+			<translation>Налаштовані вузли</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Configured peers only</source>
+			<translation>Лише налаштовані вузли</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Connect to a different peer</source>
 			<translation>Підключитися до іншого піра</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Could not update the peer list.</source>
+			<translation>Не вдалося оновити список вузлів.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Deactive</source>
 			<translation>Деактивувати</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Discover local network peers</source>
+			<translation>Знайти вузли в локальній мережі</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit</source>
+			<translation>Редагувати</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Edit configured peers</source>
+			<translation>Редагувати налаштовані вузли</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3416,6 +3456,11 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Found {count} local network peer(s).</source>
+			<translation>Знайдено вузлів у локальній мережі: {count}.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>IP Address:</source>
 			<translation>IP-адреса:</translation>
 		</message>
@@ -3426,13 +3471,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Manual peers</source>
-			<translation>Ручні піри</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Max peers</source>
-			<translation>Максимум пірів</translation>
+			<source>Local peer discovery failed: {error}</source>
+			<translation>Не вдалося знайти вузли в локальній мережі: {error}</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3441,8 +3481,8 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Mempool Instance URL</source>
-			<translation>URL екземпляра Mempool</translation>
+			<source>Mempool Instance</source>
+			<translation>Екземпляр Mempool</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3456,25 +3496,18 @@ received from these peers via the bitcoin network.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Number of p2p connections:</source>
-			<translation>Кількість p2p-з’єднань:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Optional list of peers (one per line) the listener should try first.
-Keep it empty to rely on automatic peer discovery.</source>
-			<translation>Необов’язковий список пірів (по одному в рядку), які слухач має спробувати першими.
-Залиште порожнім, щоб покладатися на автоматичне виявлення пірів.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>P2P monitoring</source>
-			<translation>Моніторинг P2P</translation>
+			<source>Number of connections:</source>
+			<translation>Кількість з'єднань:</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
 			<source>Password:</source>
 			<translation>Пароль:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Peer configuration</source>
+			<translation>Налаштування вузлів</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3493,13 +3526,18 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Preferred peers</source>
+			<translation>Пріоритетні вузли</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Press ⬇ arrow key for suggestions</source>
 			<translation>Натисніть клавішу стрілка ⬇ для підказок</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>Proxy:</source>
-			<translation>Проксі:</translation>
+			<source>Proxy</source>
+			<translation>Проксі</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3517,6 +3555,11 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
+			<source>Scanning local network…</source>
+			<translation>Сканування локальної мережі…</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
 			<source>Test Connection</source>
 			<translation>Перевірити підключення</translation>
 		</message>
@@ -3527,11 +3570,19 @@ Keep it empty to rely on automatic peer discovery.</source>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
-			<source>The proxy does not apply to Sync&amp;Chat
-plugin and during subscription purchase!
+			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+			<translation>Екземпляр mempool надає дані мемпулу й оцінки комісій, які використовує застосунок.</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>The proxy does not apply to Sync&amp;Chat plugin
+and subscription purchases!
 Hostname-based server location and DNS-seed discovery
-are not resolved through the proxy in this version.</source>
-			<translation>Проксі не застосовується до плагіна Sync&amp;Chat і під час купівлі підписки! Визначення місцезнаходження сервера на основі імені хоста та виявлення DNS-seed у цій версії не виконуються через проксі.</translation>
+are not resolved through the proxy.</source>
+			<translation>Проксі не застосовується до плагіна Sync&amp;Chat
+і придбання підписок!
+Визначення розташування серверів за іменем хоста та виявлення через DNS-сіди
+не виконуються через проксі.</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3548,6 +3599,11 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 		<message>
 			<source>URL:</source>
 			<translation>URL:</translation>
+		</message>
+		<name>NetworkSettingsUI</name>
+		<message>
+			<source>Unconfirmed Transaction monitoring</source>
+			<translation>Моніторинг непідтверджених транзакцій</translation>
 		</message>
 		<name>NetworkSettingsUI</name>
 		<message>
@@ -3664,16 +3720,6 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 			<source>Close notification</source>
 			<translation>Закрити сповіщення</translation>
 		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>Доступні оновлення плагінів.</translation>
-		</message>
-		<name>NotificationBar</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>Показати оновлення плагінів</translation>
-		</message>
 	</context>
 	<context>
 		<name>NotificationBarCBF</name>
@@ -3752,7 +3798,7 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>PaidPluginClient</name>
 		<message>
 			<source>Start free trial / Fetch existing subscription</source>
-			<translation/>
+			<translation>Почати безкоштовний пробний період / Отримати наявну підписку</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -4240,12 +4286,12 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation/>
+			<translation>Не вдалося відновити плагін {plugin}. Завантажено новий стан. Попередній стан вашого гаманця збережено в резервній копії {filename}.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
 			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation/>
+			<translation>Не вдалося відновити плагін {plugin}. Його попередній стан не було безпечно збережено, тому новий стан не завантажено.</translation>
 		</message>
 		<name>QTWallet</name>
 		<message>
@@ -5045,12 +5091,12 @@ If you make a mistake here, your money is lost!</source>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT містить суперечливі дані UTXO. Підписання цього некоректного PSBT відхилено.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
 			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation/>
+			<translation>PSBT запитує нестандартний sighash. Підписання цього некоректного PSBT відхилено.</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
@@ -5846,7 +5892,7 @@ Do you want to broadcast anyway?</source>
 		<name>USBDevice</name>
 		<message>
 			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation/>
+			<translation>Оновлення прошивки Trezor завершено, пристрій перезавантажено. Повторно підключіть пристрій і спробуйте ще раз.</translation>
 		</message>
 	</context>
 	<context>
@@ -7800,8 +7846,8 @@ Country: {country}</source>
 		</message>
 		<name>net_conf</name>
 		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;If you specify manual peers in the 'P2P monitoring' section below, Compact Block Filters will connect to them first.</source>
-			<translation>Compact Block Filters — це приватний і швидкий спосіб отримати всю інформацію блокчейну. Гаманець напряму під’єднається до кількох bitcoin-вузлів і завантажить від них зведення блоків (Compact Block Filters).&lt;br&gt;Якщо ви вкажете ручних пірів у розділі «Моніторинг P2P» нижче, Compact Block Filters спочатку під’єднається до них.</translation>
+			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
+			<translation>Компактні фільтри блоків — це швидкий і конфіденційний спосіб отримання всієї інформації блокчейну. Гаманець безпосередньо підключатиметься до кількох вузлів Bitcoin і завантажуватиме з них зведення блоків (компактні фільтри блоків).&lt;br&gt;Ви можете налаштувати пріоритетні або виключно дозволені вузли в розділі «Налаштування вузлів» нижче.</translation>
 		</message>
 		<name>net_conf</name>
 		<message>
