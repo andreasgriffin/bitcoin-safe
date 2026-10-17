@@ -39,16 +39,21 @@ from pathlib import Path
 from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
-from PyQt6.QtCore import QPointF, QRect, QRectF, QSize, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QPointF, QRect, QRectF, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QAction,
     QColor,
+    QFontMetricsF,
     QLinearGradient,
     QMouseEvent,
     QPainter,
     QPainterPath,
     QPaintEvent,
+    QPalette,
     QPen,
+    QResizeEvent,
+    QShowEvent,
+    QStaticText,
 )
 from PyQt6.QtSvg import QSvgGenerator
 from PyQt6.QtWidgets import (
@@ -83,6 +88,7 @@ class FlowIndex:
 
 class SankeyWidget(QWidget):
     signal_on_label_click = cast(SignalProtocol[[FlowIndex]], pyqtSignal(FlowIndex))
+    signal_data_changed = pyqtSignal()
 
     center_color = ColorScheme.Purple.as_color()
     border_color = ColorScheme.Purple.as_color()
@@ -91,12 +97,15 @@ class SankeyWidget(QWidget):
         """Initialize instance."""
         super().__init__(parent=parent)
         self.show_tooltips = show_tooltips
-        self.setEnabled(False)  #  set() wasnt called yet
+        self._has_data = False
 
         self.colors: dict[FlowIndex, QColor] = {}
         self.labels: dict[FlowIndex, str] | None = None
         self.text_outline = True
         self.text_rects: list[tuple[QRectF, FlowIndex]] = []
+        self._label_texts: dict[FlowIndex, QStaticText] = {}
+        self._label_positions: dict[FlowIndex, QPointF] = {}
+        self._labels_need_update = False
 
         self.node_width: float = 0
         self.x_offset: float = 0
@@ -105,6 +114,11 @@ class SankeyWidget(QWidget):
         # self.signal_on_label_click.connect(lambda flow_index: print(flow_index))
 
         self.gradient_dict: dict[str, tuple[QColor, QColor]] = {}
+        self.signal_data_changed.connect(self._on_data_changed)
+
+    def _on_data_changed(self) -> None:
+        """Schedule repainting on the GUI thread after worker-thread updates."""
+        self.update()
 
     @property
     def image_width(self) -> float:
@@ -186,8 +200,8 @@ class SankeyWidget(QWidget):
         self.text_outline = text_outline
         self.space_fraction = max(min(space_fraction, 0.95), 0)
 
-        self.in_flows_raw = in_flows
-        self.out_flows_raw = out_flows
+        self.in_flows_raw = list(in_flows)
+        self.out_flows_raw = list(out_flows)
         self.sum_in_flows_raw = sum(self.in_flows_raw)
         self.sum_out_flows_raw = sum(self.out_flows_raw)
 
@@ -197,7 +211,69 @@ class SankeyWidget(QWidget):
 
         self.node_width = 0
         self.x_offset = 0
-        self.setEnabled(True)  #  set() was called
+        # set_tx() can run on the asyncio worker thread.  Do not touch Qt GUI
+        # objects here; labels are prepared by draw_content() on the GUI thread.
+        self._has_data = True
+        self._labels_need_update = True
+        self.signal_data_changed.emit()
+
+    def _create_label_texts(self) -> None:
+        """Prepare multiline labels without creating child widgets."""
+        self._label_texts = {}
+        for flow_index, text in (self.labels or {}).items():
+            if not text:
+                continue
+            static_text = QStaticText(text)
+            static_text.setTextFormat(Qt.TextFormat.PlainText)
+            self._label_texts[flow_index] = static_text
+
+    def _update_label_positions(self) -> None:
+        """Position label overlays according to the current diagram geometry."""
+        self.text_rects.clear()
+        self._label_positions.clear()
+        if not self._label_texts or self.width() <= 0 or self.height() <= 0:
+            self._labels_need_update = False
+            return
+
+        # QStaticText.size() crashes in some Flatpak Qt builds, so measure the
+        # (already ascii-only) text with QFontMetricsF instead.
+        font_metrics = QFontMetricsF(self.font())
+        positions = (
+            (FlowType.InFlow, self.in_flow_y_positions, False),
+            (FlowType.OutFlow, self.out_flow_y_positions, True),
+        )
+        for flow_type, y_positions, reverse in positions:
+            image_left = self.x_offset if not reverse else self.image_width + self.x_offset
+            direction = -1 if reverse else 1
+            for index, y_position in enumerate(y_positions):
+                flow_index = FlowIndex(flow_type, index)
+                static_text = self._label_texts.get(flow_index)
+                if static_text is None:
+                    continue
+
+                text_size = font_metrics.boundingRect(
+                    QRectF(), int(Qt.TextFlag.TextExpandTabs), static_text.text()
+                )
+                x_position = image_left + 5 * direction
+                if reverse:
+                    x_position -= text_size.width()
+                y_position -= text_size.height()
+                position = QPointF(x_position, y_position)
+                self._label_positions[flow_index] = position
+                self.text_rects.append((QRectF(position, text_size.size()), flow_index))
+
+    def resizeEvent(self, a0: QResizeEvent | None) -> None:
+        super().resizeEvent(a0)
+        self._labels_need_update = True
+
+    def showEvent(self, a0: QShowEvent | None) -> None:
+        super().showEvent(a0)
+        self._labels_need_update = True
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if a0 is not None and a0.type() == QEvent.Type.FontChange:
+            self._labels_need_update = True
 
     @staticmethod
     def _find_best_positions(thicknesses: list[float], available_space: float) -> list[float]:
@@ -262,16 +338,6 @@ class SankeyWidget(QWidget):
                 workaround_for_svg=workaround_for_svg,
             )
 
-            # Draw text at the start point
-            if self.labels and flow_index in self.labels:
-                self.draw_multiline_text(
-                    painter,
-                    self.labels[flow_index],
-                    QPointF(image_left, start_y),
-                    direction,
-                    flow_index=FlowIndex(flow_type=flow_type, i=i),
-                )
-
     def draw_path(
         self,
         painter: QPainter,
@@ -313,71 +379,16 @@ class SankeyWidget(QWidget):
         painter.setPen(pen)
         painter.drawPath(path)
 
-    def draw_multiline_text(
-        self, painter: QPainter, text: str, position: QPointF, direction: int, flow_index: FlowIndex
-    ):
-        """Draw multiline text."""
-        painter.setPen(QColor("black"))
-        font_metrics = painter.fontMetrics()
-        lines = text.split("\n")  # Split the text into lines
-        x, y = position.x(), position.y()
-
-        for i, line in enumerate(lines):
-            text_width = font_metrics.horizontalAdvance(line)
-            # Adjust x position based on direction and width of the text
-            text_x = x + (5 * direction) - (text_width if direction == -1 else 0)
-            sub_position = QPointF(text_x, y + i * font_metrics.height())
-            # save the full-text (not just the line)  at the sub_position in text_positions
-            self.text_rects.append(
-                (
-                    QRectF(
-                        sub_position.x(),
-                        sub_position.y() - font_metrics.height(),
-                        text_width,
-                        font_metrics.height(),
-                    ),
-                    flow_index,
-                )
-            )
-            # Draw text line by line
-            if self.text_outline:
-                self.draw_text_with_outline(painter, line, sub_position)
-            else:
-                painter.drawText(sub_position, line)
-
-    def draw_text_with_outline(self, painter: QPainter, text: str, position: QPointF):
-        # Configuration for the outline
-        """Draw text with outline."""
-        outline_offset = 1  # How far the outline is from the text
-        outline_color = QColor("white")
-        text_color = QColor("black")  # Color of the main text
-
-        # Create a list of positions for the outline around the original position
-        offsets = [
-            QPointF(outline_offset, 0),
-            QPointF(-outline_offset, 0),
-            QPointF(0, outline_offset),
-            QPointF(0, -outline_offset),
-            QPointF(outline_offset, outline_offset),
-            QPointF(-outline_offset, -outline_offset),
-            QPointF(outline_offset, -outline_offset),
-            QPointF(-outline_offset, outline_offset),
-        ]
-
-        # Draw the outline by offsetting the text slightly in various directions
-        painter.setPen(outline_color)
-        for offset in offsets:
-            painter.drawText(position + offset, text)
-
-        # Draw the main text on top
-        painter.setPen(text_color)
-        painter.drawText(position, text)
-
     def draw_content(self, painter: QPainter, workaround_for_svg=False):
         """Draw content."""
-        self.gradient_dict.clear()
-        self.text_rects.clear()
+        if not painter.isActive() or self.width() <= 0 or self.height() <= 0:
+            return
 
+        if self._labels_need_update:
+            self._create_label_texts()
+            self._update_label_positions()
+
+        self.gradient_dict.clear()
         self._paint_one_side(
             painter,
             self.in_flows,
@@ -395,14 +406,42 @@ class SankeyWidget(QWidget):
             flow_type=FlowType.OutFlow,
             workaround_for_svg=workaround_for_svg,
         )
-        painter.end()
+        painter.save()
+        painter.setClipRect(self.rect())
+        for flow_index, position in self._label_positions.items():
+            static_text = self._label_texts.get(flow_index)
+            if static_text is not None:
+                self._draw_label(painter, position, static_text)
+        painter.restore()
+
+    def _draw_label(self, painter: QPainter, position: QPointF, text: QStaticText) -> None:
+        """Draw a label and its outline without using Qt's point text overload."""
+        text_color = self.palette().color(QPalette.ColorRole.Text)
+        if self.text_outline:
+            painter.setPen(self.palette().color(QPalette.ColorRole.Base))
+            for x_offset, y_offset in (
+                (1, 0),
+                (-1, 0),
+                (0, 1),
+                (0, -1),
+                (1, 1),
+                (-1, -1),
+                (1, -1),
+                (-1, 1),
+            ):
+                painter.drawStaticText(position + QPointF(x_offset, y_offset), text)
+        painter.setPen(text_color)
+        painter.drawStaticText(position, text)
 
     def paintEvent(self, a0: QPaintEvent | None) -> None:
         """PaintEvent."""
-        if not self.isEnabled():
+        if not self._has_data or self.width() <= 0 or self.height() <= 0:
             return
         painter = QPainter(self)
-        self.draw_content(painter)
+        try:
+            self.draw_content(painter)
+        finally:
+            painter.end()
 
     def mouseMoveEvent(self, a0: QMouseEvent | None) -> None:
         """MouseMoveEvent."""
@@ -468,7 +507,11 @@ class SankeyWidget(QWidget):
         generator.setTitle(f"SVG Export by {APP_NAME}")
         generator.setDescription(f"SVG Export by {APP_NAME}")
 
-        self.draw_content(QPainter(generator), workaround_for_svg=True)
+        painter = QPainter(generator)
+        try:
+            self.draw_content(painter, workaround_for_svg=True)
+        finally:
+            painter.end()
 
         with open(str(filename), encoding="utf-8") as file:
             contents = file.read()

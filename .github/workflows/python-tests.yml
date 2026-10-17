@@ -67,6 +67,13 @@ jobs:
         ref: ${{ inputs.ref != '' && inputs.ref || github.ref }}
         fetch-depth: 0
 
+    - name: Set English locale for Linux GUI tests
+      if: runner.os == 'Linux'
+      run: |
+        echo "LANG=en_US.UTF-8" >> "$GITHUB_ENV"
+        echo "LANGUAGE=en_US:en" >> "$GITHUB_ENV"
+        echo "LC_ALL=en_US.UTF-8" >> "$GITHUB_ENV"
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:

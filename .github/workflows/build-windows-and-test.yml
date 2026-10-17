@@ -309,7 +309,8 @@ jobs:
             for ($i = 0; $i -lt 30; $i++) {
               if (Test-Path $expectedLogPath) {
                 $content = Get-Content -Path $expectedLogPath -Raw -ErrorAction SilentlyContinue
-                if ($content -match 'pyzbar could be loaded successfully') {
+                if ($content -match 'pyzbar could be loaded successfully' -and
+                    $content -match 'mainwindow showevent') {
                   $resolvedLogPath = $expectedLogPath
                   $logEntryFound = $true
                   break
@@ -319,9 +320,16 @@ jobs:
             }
 
             if (-not $logEntryFound) {
+              throw "Did not find required startup log entries in $expectedLogPath"
+            }
+            if ($content -notmatch 'pyzbar could be loaded successfully') {
               throw "Did not find 'pyzbar could be loaded successfully' in $expectedLogPath"
             }
             Write-Log "Verified 'pyzbar could be loaded successfully' in application log."
+            if ($content -notmatch 'mainwindow showevent') {
+              throw "Did not find 'mainwindow showevent' in $expectedLogPath"
+            }
+            Write-Log "Verified 'mainwindow showevent' in application log."
             $criticalMatches = Select-String -Path $resolvedLogPath -Pattern 'CRITICAL' -SimpleMatch
             if ($criticalMatches) {
               foreach ($match in $criticalMatches) {

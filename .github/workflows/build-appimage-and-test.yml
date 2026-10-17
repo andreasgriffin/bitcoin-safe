@@ -148,6 +148,9 @@ jobs:
       DISPLAY: ":99"
       QTWEBENGINE_DISABLE_SANDBOX: "1"
       XDG_RUNTIME_DIR: /tmp/runtime-bitcoin-safe
+      LANG: en_US.UTF-8
+      LANGUAGE: en_US:en
+      LC_ALL: en_US.UTF-8
     steps:
       - name: Download build artifacts
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.skip_build_and_test_release_tag == '' }}
@@ -324,14 +327,21 @@ jobs:
             exit 1
           fi
           for i in $(seq 1 30); do
-            if grep -q "pyzbar could be loaded successfully" "$LOG_PATH"; then
+            if grep -q "pyzbar could be loaded successfully" "$LOG_PATH" \
+              && grep -q "mainwindow showevent" "$LOG_PATH"; then
               echo "Found expected pyzbar log entry"
+              echo "Found expected mainwindow showevent log entry"
               break
             fi
             sleep 2
           done
           if ! grep -q "pyzbar could be loaded successfully" "$LOG_PATH"; then
-            echo "Expected log entry not found"
+            echo "Expected 'pyzbar could be loaded successfully' log entry not found"
+            tail -n 100 "$LOG_PATH" || true
+            exit 1
+          fi
+          if ! grep -q "mainwindow showevent" "$LOG_PATH"; then
+            echo "Expected 'mainwindow showevent' log entry not found"
             tail -n 100 "$LOG_PATH" || true
             exit 1
           fi

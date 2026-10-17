@@ -236,6 +236,10 @@ jobs:
             echo "Error: 'pyzbar could be loaded successfully' not found in bitcoin_safe.log" | tee -a test_dmg.log
             exit 1
           fi
+          if ! grep -q "mainwindow showevent" "$LOG_PATH"; then
+            echo "Error: 'mainwindow showevent' not found in bitcoin_safe.log" | tee -a test_dmg.log
+            exit 1
+          fi
           if grep -q "CRITICAL" "$LOG_PATH"; then
             grep -n "CRITICAL" "$LOG_PATH" | tee -a test_dmg.log || true
             echo "Error: unexpected CRITICAL entry found in bitcoin_safe.log" | tee -a test_dmg.log
