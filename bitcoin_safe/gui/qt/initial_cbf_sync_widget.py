@@ -546,6 +546,7 @@ class NetworkMapWidget(QWidget):
         self._resolved_server_host: str | None = None
         self._server_resolution_pending = False
         self._server_resolution_request: tuple[str, str | None] | None = None
+        self._server_config_key: tuple[BlockchainType, str | None, str | None] | None = None
 
         self._build_ui()
         self.set_network_config()
@@ -650,11 +651,20 @@ class NetworkMapWidget(QWidget):
         self._refresh_points_and_legend()
 
     def set_network_config(self) -> None:
+        server_name = self._configured_server_name()
+        config_key = (
+            self.config.network_config.server_type,
+            server_name,
+            self.config.network_config.proxy_url,
+        )
+        if config_key == self._server_config_key:
+            return
+
+        self._server_config_key = config_key
         self._resolved_server_host = None
         self._server_resolution_pending = False
         self._server_resolution_request = None
 
-        server_name = self._configured_server_name()
         host = None
         if server_name:
             host, _port = get_host_and_port(server_name)

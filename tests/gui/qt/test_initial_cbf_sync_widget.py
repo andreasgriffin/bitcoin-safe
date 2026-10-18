@@ -269,6 +269,37 @@ def test_network_map_wallet_progress_refresh_reuses_cards_and_map_geometry(qtbot
     assert widget.map_widget.geometry() == map_geometry
 
 
+def test_network_map_refresh_does_not_restart_unchanged_server_resolution(
+    qtbot: QtBot, test_config, monkeypatch
+) -> None:
+    test_config.network_config.server_type = BlockchainType.Electrum
+    test_config.network_config.electrum_url = "electrum.example:50002"
+    resolution_calls = 0
+
+    async def resolve_host(*_args, **_kwargs) -> list[str]:
+        nonlocal resolution_calls
+        resolution_calls += 1
+        return ["8.8.8.8"]
+
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.initial_cbf_sync_widget.resolve_host_addresses_async", resolve_host
+    )
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    qtbot.waitUntil(lambda: not widget._server_resolution_pending)
+    resolved_host = widget._resolved_server_host
+    initial_server_points = [point for point in widget.map_widget._points if point.source.name == "server"]
+
+    for _ in range(5):
+        widget.set_network_config()
+
+    assert resolution_calls == 1
+    assert widget._resolved_server_host == resolved_host
+    assert [
+        point for point in widget.map_widget._points if point.source.name == "server"
+    ] == initial_server_points
+
+
 def test_network_map_widget_visibility_depends_on_network_mode(
     qtbot: QtBot, tmp_path, monkeypatch, test_config
 ) -> None:
