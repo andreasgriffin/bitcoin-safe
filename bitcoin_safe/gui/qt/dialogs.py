@@ -71,6 +71,7 @@ class PasswordQuestion(QDialog):
 
         self.setWindowTitle(self.tr("Password Input"))
         self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
 
         self._layout = QVBoxLayout(self)
 
