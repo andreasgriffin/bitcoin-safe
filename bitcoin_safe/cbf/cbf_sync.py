@@ -49,6 +49,8 @@ PERSISTENCE_FILES = [
     Path("./data/signet/peers.db"),
 ]
 
+NEED_CONNECTIONS_REBUILD_DELAY = 60
+
 
 class CbfSync:
     """Encapsulates Bitcoin CBF synchronization logic using asyncio primitives."""
@@ -78,6 +80,7 @@ class CbfSync:
         self.only_configured_peers = only_configured_peers
         self.is_new_wallet = is_new_wallet
         self._connected_peer_hosts: list[str] = []
+        self._need_connections_task: asyncio.Task[None] | None = None
 
     def connected_peer_hosts(self) -> list[str]:
         """Return the latest known connected CBF peer hosts."""
@@ -101,6 +104,28 @@ class CbfSync:
     def _handle_log_warning(self, warning: bdk.Warning):
         """Handle log warning."""
         logger.info(f"{self.wallet_id} - {warning}")
+
+    def _handle_need_connections(self):
+        """Start rebuilding the node if it cannot find peers for one minute."""
+        if self._need_connections_task is None or self._need_connections_task.done():
+            self._need_connections_task = asyncio.create_task(self._rebuild_after_need_connections())
+
+    def _cancel_need_connections_rebuild(self):
+        """Cancel the pending NEED_CONNECTIONS rebuild."""
+        if self._need_connections_task and not self._need_connections_task.done():
+            self._need_connections_task.cancel()
+        self._need_connections_task = None
+
+    async def _rebuild_after_need_connections(self):
+        """Rebuild the node after a prolonged lack of connections."""
+        try:
+            await asyncio.sleep(NEED_CONNECTIONS_REBUILD_DELAY)
+        except asyncio.CancelledError:
+            return
+
+        logger.warning("%s - rebuilding CBF node after prolonged lack of connections", self.wallet_id)
+        self.shutdown_node()
+        self.build_node()
 
     def _handle_update(self, update: UpdateInfo):
         """Handle update."""
@@ -164,6 +189,10 @@ class CbfSync:
             return None
         if warning is not None:
             self._handle_log_warning(warning)
+            if isinstance(warning, bdk.Warning.NEED_CONNECTIONS):
+                self._handle_need_connections()
+            else:
+                self._cancel_need_connections_rebuild()
         return warning
 
     async def next_update_info(self) -> UpdateInfo | None:
@@ -274,4 +303,5 @@ class CbfSync:
 
     def close(self):
         """Close."""
+        self._cancel_need_connections_rebuild()
         self.shutdown_node()
