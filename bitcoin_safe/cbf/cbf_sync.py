@@ -170,6 +170,7 @@ class CbfSync:
             logger.error("Client not running")
             await self.attempt_restart_node()
             return None
+        self._cancel_need_connections_rebuild()
 
         try:
             info = await self.client.next_info()
@@ -216,6 +217,7 @@ class CbfSync:
             logger.error("Client not running")
             await self.attempt_restart_node()
             return None
+        self._cancel_need_connections_rebuild()
 
         try:
             update = await self.client.update()
