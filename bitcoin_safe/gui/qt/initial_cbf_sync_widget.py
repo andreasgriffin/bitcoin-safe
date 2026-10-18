@@ -916,8 +916,7 @@ class NetworkMapWidget(QWidget):
         cbf_peer_count = self._cbf_peer_count
 
         p2p_hosts = [peer.host for peer in p2p_connections]
-        p2p_host_set = set(p2p_hosts)
-        node_hosts = [peer.host for peer in nodes if peer.host not in p2p_host_set]
+        node_hosts = [peer.host for peer in nodes]
 
         node_points = self._build_mapped_points(node_hosts, PeerSource.node)
         p2p_points = self._build_mapped_points(p2p_hosts, PeerSource.p2p_listener)
