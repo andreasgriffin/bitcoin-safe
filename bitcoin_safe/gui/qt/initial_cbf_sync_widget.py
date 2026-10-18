@@ -29,6 +29,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import ipaddress
 import json
 import logging
 from dataclasses import dataclass
@@ -875,10 +877,11 @@ class NetworkMapWidget(QWidget):
             location = self.geoip.lookup_host(host)
             if not location:
                 continue
+            latitude_jitter, longitude_jitter = self._coordinate_jitter(host)
             points.append(
                 PeerMapPoint(
-                    latitude=location.latitude,
-                    longitude=location.longitude,
+                    latitude=max(-90.0, min(90.0, location.latitude + latitude_jitter)),
+                    longitude=(location.longitude + longitude_jitter + 180.0) % 360.0 - 180.0,
                     host=host,
                     source=source,
                     country_code=location.country_code,
@@ -886,6 +889,15 @@ class NetworkMapWidget(QWidget):
                 )
             )
         return points
+
+    @staticmethod
+    def _coordinate_jitter(host: str) -> tuple[float, float]:
+        """Return stable offsets within five degrees, derived from the host IP."""
+        digest = hashlib.blake2b(ipaddress.ip_address(host).packed, digest_size=8).digest()
+        scale = 5.0 / (2**32 - 1)
+        latitude_jitter = int.from_bytes(digest[:4], "big") * scale - 2.5
+        longitude_jitter = int.from_bytes(digest[4:], "big") * scale - 2.5
+        return latitude_jitter, longitude_jitter
 
     def _build_server_points(self) -> list[PeerMapPoint]:
         label = self._server_source_label()

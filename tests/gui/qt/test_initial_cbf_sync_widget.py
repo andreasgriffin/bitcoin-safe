@@ -42,7 +42,7 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
 from bitcoin_safe.geoip_rough import RoughGeoIpDatabase
-from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
+from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode, PeerSource
 from bitcoin_safe.gui.qt.util import get_neutral_surface_colors, to_color_name
 from bitcoin_safe.network_config import Peer
 from bitcoin_safe.pythonbdk_types import BlockchainType
@@ -204,6 +204,22 @@ def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, t
     point_index = map_widget._point_index_at_position(QPointF(center), map_rect)
     assert point_index is not None
     assert map_widget._points[point_index].source.name == "node"
+
+
+def test_network_map_point_jitter_is_deterministic_per_ip(qtbot: QtBot, tmp_path, test_config) -> None:
+    db_file = tmp_path / "geoip_rough_v1.json"
+    write_geoip_fixture(db_file)
+
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.cbf_initial_sync)
+    widget.geoip = RoughGeoIpDatabase(db_path=db_file)
+    qtbot.addWidget(widget)
+
+    first = widget._build_mapped_points(["8.8.8.8"], source=PeerSource.p2p_listener)
+    repeated = widget._build_mapped_points(["8.8.8.8"], source=PeerSource.p2p_listener)
+    other_ip = widget._build_mapped_points(["8.8.9.1"], source=PeerSource.p2p_listener)
+
+    assert (first[0].latitude, first[0].longitude) == (repeated[0].latitude, repeated[0].longitude)
+    assert (first[0].latitude, first[0].longitude) != (other_ip[0].latitude, other_ip[0].longitude)
 
 
 def test_network_map_widget_p2p_tooltip_contains_tx_rate(qtbot: QtBot, test_config) -> None:
