@@ -121,6 +121,11 @@ class SankeyWidget(QWidget):
         self.update()
 
     @property
+    def has_data(self) -> bool:
+        """Whether a diagram has been constructed for this widget."""
+        return self._has_data
+
+    @property
     def image_width(self) -> float:
         """Image width."""
         return self.width()

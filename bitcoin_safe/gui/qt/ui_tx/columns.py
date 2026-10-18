@@ -226,7 +226,7 @@ class ColumnSankey(BaseColumn):
 
     def is_available(self) -> bool:
         """Is available."""
-        return self.sankey_bitcoin.isEnabled()
+        return self.sankey_bitcoin.has_data
 
     def close(self):
         """Close."""
