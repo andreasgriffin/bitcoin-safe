@@ -32,8 +32,12 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import pytest
+from PyQt6 import sip
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QLabel
 from pytestqt.qtbot import QtBot
 
+from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
 from bitcoin_safe.gui.qt.tray_controller import TrayController
 from bitcoin_safe.gui.qt.unlockable_main_window import UnlockableMainWindow
 from bitcoin_safe.gui.qt.util import Message
@@ -95,3 +99,62 @@ def test_tray_restore_requires_unlock_when_locked(qtbot: QtBot) -> None:
 
     assert parent.unlock_calls == 1
     tray.hide()
+
+
+@pytest.mark.marker_qt_3
+def test_tray_restore_skips_deleted_window(qtbot: QtBot) -> None:
+    parent = _UnlockingMainWindow(unlock_result=True)
+    qtbot.addWidget(parent)
+    parent.show()
+    tray = TrayController(parent=parent)
+    label = QLabel()
+    label.show()
+
+    tray.minimize_to_tray()
+    sip.delete(label)
+
+    tray.restore_from_tray()
+
+    assert parent.isVisible()
+    tray.hide()
+
+
+@pytest.mark.marker_qt_3
+def test_minimize_to_tray_does_not_capture_tooltip_window(qtbot: QtBot) -> None:
+    parent = _UnlockingMainWindow(unlock_result=True)
+    qtbot.addWidget(parent)
+    parent.show()
+    tray = TrayController(parent=parent)
+    tooltip = QLabel()
+    tooltip.setWindowFlag(Qt.WindowType.ToolTip)
+    tooltip.show()
+
+    tray.minimize_to_tray()
+
+    assert tooltip not in tray._tray_visible_windows
+    tray.restore_from_tray()
+    tooltip.hide()
+    tray.hide()
+
+
+@pytest.mark.marker_qt_3
+def test_minimize_to_tray_hides_window_with_network_map(qtbot: QtBot, test_config) -> None:
+    parent = _UnlockingMainWindow(unlock_result=True)
+    qtbot.addWidget(parent)
+    map_widget = NetworkMapWidget(
+        config=test_config,
+        mode=NetworkMapWidgetMode.cbf_initial_sync,
+        parent=parent,
+    )
+    parent.show()
+    tray = TrayController(parent=parent)
+    assert parent.isVisible()
+
+    with patch.object(tray, "is_available", return_value=True):
+        tray.minimize_to_tray_from_menu()
+
+    assert parent in tray._tray_visible_windows
+    assert parent.isHidden()
+    tray.restore_from_tray()
+    tray.hide()
+    map_widget.close()

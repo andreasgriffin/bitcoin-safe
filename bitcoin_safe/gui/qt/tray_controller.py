@@ -33,6 +33,7 @@ from functools import partial
 from typing import cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from PyQt6 import sip
 from PyQt6.QtCore import QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QIcon, QPainter, QPixmap
 from PyQt6.QtWidgets import QApplication, QSystemTrayIcon, QWidget
@@ -133,7 +134,11 @@ class TrayController(QSystemTrayIcon):
 
     def minimize_to_tray(self) -> None:
         """Minimize to tray."""
-        self._tray_visible_windows = [w for w in QApplication.topLevelWidgets() if w.isVisible()]
+        self._tray_visible_windows = [
+            window
+            for window in QApplication.topLevelWidgets()
+            if window.isVisible() and window.windowType() != Qt.WindowType.ToolTip
+        ]
         self._tray_prev_active = QApplication.activeWindow()
         self.set_hidden(True)
 
@@ -148,7 +153,8 @@ class TrayController(QSystemTrayIcon):
                 return
             self._show_suppressed_notifications()
 
-        if not self._tray_visible_windows:
+        windows = [window for window in self._tray_visible_windows if not sip.isdeleted(window)]
+        if not windows:
             self._parent.show()
             self._parent.setWindowState(
                 (self._parent.windowState() & ~Qt.WindowState.WindowMinimized) | Qt.WindowState.WindowActive
@@ -158,13 +164,15 @@ class TrayController(QSystemTrayIcon):
             self.set_hidden(False)
             return
 
-        for window in self._tray_visible_windows:
+        for window in windows:
             window.show()
             window.setWindowState(
                 (window.windowState() & ~Qt.WindowState.WindowMinimized) | Qt.WindowState.WindowActive
             )
 
-        target = self._tray_prev_active or self._tray_visible_windows[0]
+        target = self._tray_prev_active
+        if target is None or sip.isdeleted(target) or target not in windows:
+            target = windows[0]
         target.activateWindow()
         target.raise_()
 
