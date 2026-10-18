@@ -81,6 +81,7 @@ class CbfSync:
         self.is_new_wallet = is_new_wallet
         self._connected_peer_hosts: list[str] = []
         self._need_connections_task: asyncio.Task[None] | None = None
+        self._need_connections_loop: asyncio.AbstractEventLoop | None = None
 
     def connected_peer_hosts(self) -> list[str]:
         """Return the latest known connected CBF peer hosts."""
@@ -108,13 +109,24 @@ class CbfSync:
     def _handle_need_connections(self):
         """Start rebuilding the node if it cannot find peers for one minute."""
         if self._need_connections_task is None or self._need_connections_task.done():
+            self._need_connections_loop = asyncio.get_running_loop()
             self._need_connections_task = asyncio.create_task(self._rebuild_after_need_connections())
 
     def _cancel_need_connections_rebuild(self):
         """Cancel the pending NEED_CONNECTIONS rebuild."""
-        if self._need_connections_task and not self._need_connections_task.done():
-            self._need_connections_task.cancel()
+        task = self._need_connections_task
+        loop = self._need_connections_loop
+        if task and not task.done():
+            try:
+                current_loop = asyncio.get_running_loop()
+            except RuntimeError:
+                current_loop = None
+            if loop and loop is not current_loop:
+                loop.call_soon_threadsafe(task.cancel)
+            else:
+                task.cancel()
         self._need_connections_task = None
+        self._need_connections_loop = None
 
     async def _rebuild_after_need_connections(self):
         """Rebuild the node after a prolonged lack of connections."""
@@ -294,6 +306,12 @@ class CbfSync:
                 self.client.shutdown()
             except Exception as e:
                 logger.error(f"shutdown_node {e}")
+
+    def restart_node(self):
+        """Restart the node and discard any pending connection watchdog."""
+        self._cancel_need_connections_rebuild()
+        self.shutdown_node()
+        self.build_node()
 
     def node_running(self) -> bool:
         """Node running."""

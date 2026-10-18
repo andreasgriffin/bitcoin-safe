@@ -66,9 +66,24 @@ def test_need_connections_rebuild_can_be_cancelled() -> None:
     async def _run() -> None:
         cbf_sync = object.__new__(CbfSync)
         cbf_sync._need_connections_task = asyncio.create_task(asyncio.sleep(60))
+        cbf_sync._need_connections_loop = asyncio.get_running_loop()
 
         cbf_sync._cancel_need_connections_rebuild()
 
         assert cbf_sync._need_connections_task is None
 
     asyncio.run(_run())
+
+
+def test_restart_node_shuts_down_and_rebuilds() -> None:
+    """Manual node restart refreshes the CBF client."""
+    cbf_sync = object.__new__(CbfSync)
+    cbf_sync._need_connections_task = None
+    cbf_sync._need_connections_loop = None
+    cbf_sync.shutdown_node = Mock()
+    cbf_sync.build_node = Mock()
+
+    cbf_sync.restart_node()
+
+    cbf_sync.shutdown_node.assert_called_once_with()
+    cbf_sync.build_node.assert_called_once_with()
