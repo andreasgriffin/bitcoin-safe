@@ -35,8 +35,8 @@ import json
 from datetime import timedelta
 from typing import Any
 
-from PyQt6.QtCore import QEvent, QRectF
-from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtCore import QEvent, QPointF, QRectF
+from PyQt6.QtGui import QColor, QImage, QPainter, QPalette
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
@@ -187,7 +187,23 @@ def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, t
     widget.set_p2p_listener_peers([peer])
     widget.set_nodes({peer})
 
-    assert any(point.source.name == "node" and point.host == peer.host for point in widget.map_widget._points)
+    matching_points = [point for point in widget.map_widget._points if point.host == peer.host]
+    assert {point.source.name for point in matching_points} == {"node", "p2p_listener"}
+
+    map_widget = widget.map_widget
+    map_rect = map_widget._fit_map_rect(QRectF(map_widget.rect().adjusted(1, 1, -1, -1)))
+    center = map_widget._point_center(matching_points[0], map_rect)
+    image = QImage(map_widget.size(), QImage.Format.Format_ARGB32)
+    image.fill(QColor("white"))
+    painter = QPainter(image)
+    map_widget._draw_points(painter, map_rect)
+    painter.end()
+
+    pixel = image.pixelColor(round(center.x()), round(center.y()))
+    assert pixel == map_widget._NODE_COLOR
+    point_index = map_widget._point_index_at_position(QPointF(center), map_rect)
+    assert point_index is not None
+    assert map_widget._points[point_index].source.name == "node"
 
 
 def test_network_map_widget_p2p_tooltip_contains_tx_rate(qtbot: QtBot, test_config) -> None:

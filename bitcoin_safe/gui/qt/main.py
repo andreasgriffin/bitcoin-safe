@@ -120,7 +120,7 @@ from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.logging_handlers import mail_feedback, mail_help_contact
 from bitcoin_safe.logging_setup import get_log_file
-from bitcoin_safe.network_config import P2pListenerType, Peers, PeerSelectionMode
+from bitcoin_safe.network_config import P2pListenerType, Peer, Peers, PeerSelectionMode
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.p2p.p2p_client import ConnectionInfo
 from bitcoin_safe.p2p.p2p_listener import P2pListener
@@ -863,9 +863,7 @@ class MainWindow(UnlockableMainWindow):
         )
         self.p2p_listener.signal_relevant_tx.connect(self.p2p_listening_on_tx)
         self.p2p_listener.signal_block.connect(self.p2p_listening_on_block)
-        self.p2p_listener.signal_peer_tx_rate_change.connect(
-            lambda _peer, _rate: self.update_all_history_initial_sync_widgets()
-        )
+        self.p2p_listener.signal_peer_tx_rate_change.connect(self.on_p2p_tx_rate_change)
         self.p2p_listener.start(
             preferred_peers=configured_peers if configured_peers else None,
             proxy_info=(
@@ -879,6 +877,10 @@ class MainWindow(UnlockableMainWindow):
             self.on_p2p_listener_refresh_button
         )
         self.p2p_listening_update_lists(UpdateFilter())
+
+    def on_p2p_tx_rate_change(self, _peer: Peer, _rate: float) -> None:
+        """Refresh network maps when a peer's transaction rate changes."""
+        self.update_all_history_initial_sync_widgets()
 
     def on_p2p_listener_refresh_button(self):
         """On p2p listener refresh button."""

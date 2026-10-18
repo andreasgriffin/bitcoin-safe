@@ -47,6 +47,15 @@ VALID_TEST_TX = (
 )
 
 
+def _always_running() -> bool:
+    return True
+
+
+def _always_match_outpoint(tx: bdk.Transaction, outpoint_filter: set[str]) -> bool:
+    del tx, outpoint_filter
+    return True
+
+
 def test_p2p_listener_shared_state_accessors_return_snapshots() -> None:
     listener = P2pListener(
         network=bdk.Network.REGTEST, loop_in_thread=None, autodiscover_additional_peers=False
@@ -96,6 +105,35 @@ def test_p2p_listener_reserves_peer_only_once() -> None:
     try:
         assert listener._try_reserve_peer(peer)
         assert not listener._try_reserve_peer(peer)
+    finally:
+        listener.stop()
+
+
+def test_p2p_listener_skips_disallowed_and_cooled_preferred_peers() -> None:
+    allowed_peer = Peer(host="127.0.0.1", port=18444)
+    rejected_peer = Peer(host="127.0.0.1", port=18445)
+    listener = P2pListener(
+        network=bdk.Network.REGTEST,
+        loop_in_thread=None,
+        autodiscover_additional_peers=False,
+        allowed_peers=[allowed_peer],
+        discovered_peers=[allowed_peer],
+    )
+
+    async def select_preferred_peer(peer: Peer) -> Peer | None:
+        preferred_queue: asyncio.Queue[Peer] = asyncio.Queue()
+        preferred_queue.put_nowait(peer)
+        return await listener._next_peer_candidate(preferred_queue, exclude_peers=set())
+
+    try:
+        assert asyncio.run(select_preferred_peer(rejected_peer)) == allowed_peer
+        listener._penalize_peer(
+            allowed_peer,
+            penalty=1.0,
+            cooldown_seconds=120.0,
+            reason="test cooldown",
+        )
+        assert asyncio.run(select_preferred_peer(allowed_peer)) is None
     finally:
         listener.stop()
 
@@ -156,10 +194,14 @@ def test_p2p_listener_on_received_tx_updates_rate_and_emits_relevant_tx(monkeypa
     tx = bdk.Transaction(bytes.fromhex(VALID_TEST_TX))
     seen_txs: list[bdk.Transaction] = []
     seen_rates: list[tuple[Peer, float]] = []
+
+    def record_rate(seen_peer: Peer, rate: float) -> None:
+        seen_rates.append((seen_peer, rate))
+
     listener.signal_relevant_tx.connect(seen_txs.append)
-    listener.signal_peer_tx_rate_change.connect(lambda seen_peer, rate: seen_rates.append((seen_peer, rate)))
+    listener.signal_peer_tx_rate_change.connect(record_rate)
     listener.set_outpoint_filter({"mock:0"})
-    monkeypatch.setattr("bitcoin_safe.p2p.p2p_listener.outpoint_match", lambda tx, outpoint_filter: True)
+    monkeypatch.setattr("bitcoin_safe.p2p.p2p_listener.outpoint_match", _always_match_outpoint)
     try:
         listener.on_received_tx(slot_id=0, client=client, tx=tx)
         assert seen_txs == [tx]
@@ -249,7 +291,7 @@ def test_p2p_client_idle_timeout_after_handshake_sends_ping_gracefully() -> None
         sent_messages.append((cmd, payload))
 
     client._send_raw = fake_send_raw  # type: ignore[method-assign]
-    client.is_running = lambda: True  # type: ignore[method-assign]
+    client.is_running = _always_running  # type: ignore[method-assign]
 
     assert asyncio.run(client._handle_idle_read_timeout(expected_bytes=24, received_bytes=0))
     assert sent_messages
@@ -268,7 +310,7 @@ def test_p2p_client_idle_timeout_before_handshake_disconnects() -> None:
         sent_messages.append((cmd, payload))
 
     client._send_raw = fake_send_raw  # type: ignore[method-assign]
-    client.is_running = lambda: True  # type: ignore[method-assign]
+    client.is_running = _always_running  # type: ignore[method-assign]
 
     assert not asyncio.run(client._handle_idle_read_timeout(expected_bytes=24, received_bytes=0))
     assert not sent_messages

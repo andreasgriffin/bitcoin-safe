@@ -330,7 +330,7 @@ class WorldPeerMapWidget(QWidget):
         return country_name if country_name else normalized
 
     def _point_index_at_position(self, position: QPointF, map_rect: QRectF) -> int | None:
-        for index in range(len(self._points) - 1, -1, -1):
+        for index in reversed(self._paint_order_indices()):
             point = self._points[index]
             center = self._point_center(point, map_rect)
             hover_radius = self._hover_radius(point)
@@ -340,16 +340,23 @@ class WorldPeerMapWidget(QWidget):
                 return index
         return None
 
+    def _paint_order_indices(self) -> list[int]:
+        """Paint nodes last so peer markers cannot conceal their locations."""
+        return sorted(
+            range(len(self._points)), key=lambda index: self._points[index].source == PeerSource.node
+        )
+
     def _draw_points(self, painter: QPainter, map_rect: QRectF) -> None:
-        for point in self._points:
+        for index in self._paint_order_indices():
+            point = self._points[index]
             center = self._point_center(point, map_rect)
             color = self._point_color(point.source)
 
             if point.source == PeerSource.node:
-                # Node points: smaller, no glow, no outer ring
-                painter.setPen(Qt.PenStyle.NoPen)
+                # Keep node locations visible over other marker types.
+                painter.setPen(QPen(self._POINT_RING_COLOR, 0.8))
                 painter.setBrush(color)
-                painter.drawEllipse(center, 2.5, 2.5)
+                painter.drawEllipse(center, 3.2, 3.2)
             else:
                 # Other points: glow + outer ring
                 glow = QColor(color)

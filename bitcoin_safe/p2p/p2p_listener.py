@@ -508,7 +508,10 @@ class P2pListener(QObject):
         try:
             while True:
                 candidate = preferred_queue.get_nowait()
-                if candidate not in exclude_peers:
+                allowed = self.allowed_peers is None or candidate in self.allowed_peers
+                if candidate in exclude_peers or not allowed:
+                    continue
+                if self._is_selectable_peer(candidate, time.time()):
                     return candidate
         except QueueEmpty:
             pass
@@ -700,7 +703,7 @@ class P2pListener(QObject):
         """Keep the strongest known peers when trimming the discovered pool."""
         unique_peers = list(dict.fromkeys(peers))
         random.shuffle(unique_peers)
-        unique_peers.sort(key=lambda peer: self._selection_score(peer, time.time()), reverse=True)
+        unique_peers.sort(key=partial(self._selection_score, now=time.time()), reverse=True)
         del unique_peers[max_len:]
         return Peers(unique_peers)
 

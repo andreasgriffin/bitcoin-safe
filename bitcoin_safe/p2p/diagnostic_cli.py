@@ -37,6 +37,7 @@ import sys
 import time
 from collections import Counter
 from dataclasses import dataclass, field
+from operator import attrgetter
 
 import bdkpython as bdk
 from PyQt6.QtCore import QCoreApplication, QTimer
@@ -260,7 +261,7 @@ class DiagnosticCollector:
     def _render_active_sessions(self, active: list[PeerSession]) -> list[str]:
         lines: list[str] = []
         now = time.time()
-        for session in sorted(active, key=lambda item: item.started_at):
+        for session in sorted(active, key=attrgetter("started_at")):
             tx_rate = self.last_tx_rates.get(session.peer, 0.0)
             lines.append(
                 "  "
@@ -464,7 +465,8 @@ def main(argv: list[str] | None = None) -> int:
 
     stop_timer = QTimer()
     stop_timer.setSingleShot(True)
-    stop_timer.timeout.connect(lambda: (listener.stop(), app.quit()))
+    stop_timer.timeout.connect(listener.stop)
+    stop_timer.timeout.connect(app.quit)
     stop_timer.start(max(args.duration, 1) * 1000)
 
     summary_timer: QTimer | None = None
