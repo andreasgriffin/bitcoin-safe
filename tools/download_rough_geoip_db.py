@@ -383,27 +383,27 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--output",
         type=Path,
-        default=Path("bitcoin_safe/data/geoip_rough_v1.json"),
-        help="Output JSON path",
+        default=Path("bitcoin_safe/data/geoip_rough_v1.json.gz"),
+        help="Output JSON or gzip-compressed JSON path",
     )
     p.add_argument(
         "--ipv4-prefix",
         type=int,
-        default=10,
+        default=12,
         help=(
             "IPv4 prefix length used for rough grouping. "
             "Lower values produce a much smaller DB with coarser accuracy "
-            "(default: 10)."
+            "(default: 12)."
         ),
     )
     p.add_argument(
         "--ipv6-prefix",
         type=int,
-        default=24,
+        default=32,
         help=(
             "IPv6 prefix length used for rough grouping. "
             "Lower values produce a much smaller DB with coarser accuracy "
-            "(default: 24)."
+            "(default: 32)."
         ),
     )
     return p
@@ -474,7 +474,12 @@ def main() -> None:
     }
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
+    serialized = json.dumps(payload, separators=(",", ":"))
+    if args.output.suffix == ".gz":
+        with gzip.open(args.output, "wt", encoding="utf-8", compresslevel=9) as file_handle:
+            file_handle.write(serialized)
+    else:
+        args.output.write_text(serialized, encoding="utf-8")
 
     print(f"Wrote rough GeoIP DB to {args.output}")
     print(f"IPv4 prefixes: {len(ipv4_map)}")

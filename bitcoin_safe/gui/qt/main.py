@@ -821,6 +821,7 @@ class MainWindow(UnlockableMainWindow):
                 if self.p2p_listener
                 else None,
                 p2p_connections=self.p2p_listener.get_current_peers() if self.p2p_listener else None,
+                p2p_tx_rates=self.p2p_listener.tx_rates if self.p2p_listener else None,
             )
         self.refresh_global_network_map()
 
@@ -860,8 +861,11 @@ class MainWindow(UnlockableMainWindow):
             allowed_peers=configured_peers if only_configured_peers else None,
             max_parallel_peers=self.config.network_config.p2p_listener_parallel_connections,
         )
-        self.p2p_listener.signal_tx.connect(self.p2p_listening_on_tx)
+        self.p2p_listener.signal_relevant_tx.connect(self.p2p_listening_on_tx)
         self.p2p_listener.signal_block.connect(self.p2p_listening_on_block)
+        self.p2p_listener.signal_peer_tx_rate_change.connect(
+            lambda _peer, _rate: self.update_all_history_initial_sync_widgets()
+        )
         self.p2p_listener.start(
             preferred_peers=configured_peers if configured_peers else None,
             proxy_info=(
@@ -1501,7 +1505,8 @@ class MainWindow(UnlockableMainWindow):
 
         if self.p2p_listener:
             widget.set_p2p_listener_peers(
-                [connection.peer for connection in self.p2p_listener.get_current_peers()]
+                [connection.peer for connection in self.p2p_listener.get_current_peers()],
+                tx_rates=self.p2p_listener.tx_rates,
             )
             widget.set_nodes(self.p2p_listener.peer_discovery.total_discovered_peers)
         else:

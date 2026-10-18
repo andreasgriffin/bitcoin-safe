@@ -69,7 +69,7 @@ def on_tx(tx: bdk.Transaction):
     print(transaction_table(tx, network))
 
 
-client.signal_tx.connect(on_tx)
+client.signal_relevant_tx.connect(on_tx)
 client.start(proxy_info=proxy_info, preferred_peers=[initial_peer])
 
 

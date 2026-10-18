@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import gzip
 import ipaddress
 import json
 
@@ -65,3 +66,25 @@ def test_lookup_ipv4_and_ipv6(tmp_path) -> None:
 def test_missing_db_returns_none(tmp_path) -> None:
     db = RoughGeoIpDatabase(db_path=tmp_path / "missing.json")
     assert db.lookup_host("8.8.8.8") is None
+
+
+def test_lookup_gzip_database_and_share_decoded_maps(tmp_path) -> None:
+    ipv4_key = int(ipaddress.ip_address("8.8.8.8")) >> (32 - 12)
+    db_file = tmp_path / "geoip_rough_v1.json.gz"
+    with gzip.open(db_file, "wt", encoding="utf-8") as file_handle:
+        json.dump(
+            {
+                "prefix_lengths": {"ipv4": 12, "ipv6": 32},
+                "ipv4": {str(ipv4_key): [37.42, -122.08, "US"]},
+                "ipv6": {},
+            },
+            file_handle,
+        )
+
+    cache_misses_before = RoughGeoIpDatabase._load_database.cache_info().misses
+    first = RoughGeoIpDatabase(db_path=db_file)
+    second = RoughGeoIpDatabase(db_path=db_file)
+
+    assert first.lookup_host("8.8.8.8") == second.lookup_host("8.8.8.8")
+    assert first._ipv4_map is second._ipv4_map
+    assert RoughGeoIpDatabase._load_database.cache_info().misses == cache_misses_before + 1

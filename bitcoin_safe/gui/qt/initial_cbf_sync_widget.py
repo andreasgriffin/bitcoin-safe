@@ -99,6 +99,7 @@ class PeerMapPoint:
     source: PeerSource
     country_code: str | None = None
     label: str | None = None
+    tx_rate: float | None = None
 
 
 class WorldPeerMapWidget(QWidget):
@@ -305,11 +306,15 @@ class WorldPeerMapWidget(QWidget):
 
         country = self._country_name(point.country_code)
         endpoint_label = self.tr("IP") if is_ip_address(point.host) else self.tr("Host")
-        return self.tr("{source}\n{endpoint_label}: {ip}\nCountry: {country}").format(
+        tx_rate = ""
+        if point.source == PeerSource.p2p_listener and point.tx_rate is not None:
+            tx_rate = self.tr("\nReceived: {rate:.2f} txs/s").format(rate=point.tx_rate)
+        return self.tr("{source}\n{endpoint_label}: {ip}\nCountry: {country}{tx_rate}").format(
             source=source_label,
             endpoint_label=endpoint_label,
             ip=point.host,
             country=country,
+            tx_rate=tx_rate,
         )
 
     def _country_name(self, country_code: str | None) -> str:
@@ -522,6 +527,8 @@ class NetworkMapWidget(QWidget):
 
         self.geoip = RoughGeoIpDatabase()
         self._p2p_connections: list[Peer] = []
+        self._p2p_tx_rates: dict[Peer, float] = {}
+        self._p2p_total_tx_rate = 0.0
         self._nodes: set[Peer] = set()
         self._cbf_peer_hosts: list[str] = []
         self._cbf_peer_count: int = 0
@@ -663,8 +670,12 @@ class NetworkMapWidget(QWidget):
         self._last_progress_info = progress_info
         self.local_progress_card.set_progress_info(progress_info)
 
-    def set_p2p_listener_peers(self, connections: list[Peer]) -> None:
+    def set_p2p_listener_peers(
+        self, connections: list[Peer], tx_rates: dict[Peer, float] | None = None
+    ) -> None:
         self._p2p_connections = list(connections)
+        self._p2p_tx_rates = dict(tx_rates or {})
+        self._p2p_total_tx_rate = sum(self._p2p_tx_rates.values())
         self._refresh_points_and_legend()
 
     def set_nodes(self, nodes: set[Peer]) -> None:
@@ -920,6 +931,25 @@ class NetworkMapWidget(QWidget):
 
         node_points = self._build_mapped_points(node_hosts, PeerSource.node)
         p2p_points = self._build_mapped_points(p2p_hosts, PeerSource.p2p_listener)
+        p2p_points = [
+            PeerMapPoint(
+                latitude=point.latitude,
+                longitude=point.longitude,
+                host=point.host,
+                source=point.source,
+                country_code=point.country_code,
+                label=point.label,
+                tx_rate=next(
+                    (
+                        self._p2p_tx_rates.get(peer, 0.0)
+                        for peer in p2p_connections
+                        if peer.host == point.host
+                    ),
+                    None,
+                ),
+            )
+            for point in p2p_points
+        ]
         cbf_points = self._build_mapped_points(list(cbf_peer_hosts), PeerSource.cbf)
         server_points = self._build_server_points()
 
@@ -940,8 +970,10 @@ class NetworkMapWidget(QWidget):
         )
         self.peer_legend_label.set_icon_as_help(
             tooltip=self.tr(
-                "Recently broadcasted messages are received\nfrom these peers via the bitcoin network."
-            )
+                "Recently broadcasted messages are received\n"
+                "from these peers via the bitcoin network.\n"
+                "Current total receive rate: {rate:.2f} txs/s"
+            ).format(rate=self._p2p_total_tx_rate)
         )
 
         show_cbf = self.config.network_config.server_type == BlockchainType.CompactBlockFilter

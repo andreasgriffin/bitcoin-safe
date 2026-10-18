@@ -171,6 +171,9 @@ def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config
         assert widget.cbf_legend_label.textLabel.text() == ""
     assert "Bitcoin nodes: 1" in widget.node_legend_label.textLabel.text()
 
+    point = next(point for point in widget.map_widget._points if point.host == "8.8.8.8")
+    assert "0.00 txs/s" in widget.map_widget._tooltip_for_point(point)
+
 
 def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, tmp_path, test_config) -> None:
     db_file = tmp_path / "geoip_rough_v1.json"
@@ -185,6 +188,27 @@ def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, t
     widget.set_nodes({peer})
 
     assert any(point.source.name == "node" and point.host == peer.host for point in widget.map_widget._points)
+
+
+def test_network_map_widget_p2p_tooltip_contains_tx_rate(qtbot: QtBot, test_config) -> None:
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    peer = Peer(host="8.8.8.8", port=8333)
+    widget.set_p2p_listener_peers([peer], tx_rates={peer: 1.25})
+
+    point = next(point for point in widget.map_widget._points if point.host == peer.host)
+    assert "1.25 txs/s" in widget.map_widget._tooltip_for_point(point)
+    assert "Current total receive rate: 1.25 txs/s" in widget.peer_legend_label.toolTip()
+
+
+def test_network_map_widget_legend_tooltip_sums_p2p_rates(qtbot: QtBot, test_config) -> None:
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    peer_a = Peer(host="8.8.8.8", port=8333)
+    peer_b = Peer(host="1.1.1.1", port=8333)
+    widget.set_p2p_listener_peers([peer_a, peer_b], tx_rates={peer_a: 1.25, peer_b: 0.75})
+
+    assert "Current total receive rate: 2.00 txs/s" in widget.peer_legend_label.toolTip()
 
 
 def test_network_map_widget_visibility_depends_on_network_mode(

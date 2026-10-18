@@ -163,8 +163,8 @@ def test_update_history_initial_sync_widgets_stays_lazy_when_placeholder_not_nee
             self.signal_request_open_network_settings = object()
             created_widgets.append(self)
 
-        def set_p2p_listener_peers(self, peers) -> None:
-            del peers
+        def set_p2p_listener_peers(self, peers, tx_rates=None) -> None:
+            del peers, tx_rates
 
         def set_nodes(self, nodes) -> None:
             del nodes
