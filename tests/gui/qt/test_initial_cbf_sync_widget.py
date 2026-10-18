@@ -172,6 +172,21 @@ def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config
     assert "Bitcoin nodes: 1" in widget.node_legend_label.textLabel.text()
 
 
+def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, tmp_path, test_config) -> None:
+    db_file = tmp_path / "geoip_rough_v1.json"
+    write_geoip_fixture(db_file)
+
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.cbf_initial_sync)
+    widget.geoip = RoughGeoIpDatabase(db_path=db_file)
+    qtbot.addWidget(widget)
+
+    peer = Peer(host="8.8.8.8", port=8333)
+    widget.set_p2p_listener_peers([peer])
+    widget.set_nodes({peer})
+
+    assert any(point.source.name == "node" and point.host == peer.host for point in widget.map_widget._points)
+
+
 def test_network_map_widget_visibility_depends_on_network_mode(
     qtbot: QtBot, tmp_path, monkeypatch, test_config
 ) -> None:
