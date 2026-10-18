@@ -34,6 +34,7 @@ import ipaddress
 import json
 from datetime import timedelta
 from typing import Any
+from unittest.mock import patch
 
 from PyQt6.QtCore import QEvent, QPointF, QRectF
 from PyQt6.QtGui import QColor, QImage, QPainter, QPalette
@@ -173,6 +174,19 @@ def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config
 
     point = next(point for point in widget.map_widget._points if point.host == "8.8.8.8")
     assert "0.00 txs/s" in widget.map_widget._tooltip_for_point(point)
+
+
+def test_world_peer_map_hides_tooltip_when_hidden(qtbot: QtBot, test_config) -> None:
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.cbf_initial_sync)
+    qtbot.addWidget(widget)
+    map_widget = widget.map_widget
+    map_widget._hovered_point_index = 0
+
+    with patch("bitcoin_safe.gui.qt.initial_cbf_sync_widget.QToolTip.hideText") as hide_tooltip:
+        map_widget.hide()
+
+    hide_tooltip.assert_called_once_with()
+    assert map_widget._hovered_point_index is None
 
 
 def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, tmp_path, test_config) -> None:

@@ -45,6 +45,7 @@ from PyQt6.QtCore import QEvent, QLocale, QPointF, QRectF, Qt, pyqtSignal
 from PyQt6.QtGui import (
     QColor,
     QFont,
+    QHideEvent,
     QLinearGradient,
     QMouseEvent,
     QPainter,
@@ -440,6 +441,11 @@ class WorldPeerMapWidget(QWidget):
             QToolTip.showText(a0.globalPosition().toPoint(), tooltip_text, self)
 
         super().mouseMoveEvent(a0)
+
+    def hideEvent(self, a0: QHideEvent | None) -> None:
+        self._hovered_point_index = None
+        QToolTip.hideText()
+        super().hideEvent(a0)
 
 
 class NetworkMapWidgetMode(Enum):
