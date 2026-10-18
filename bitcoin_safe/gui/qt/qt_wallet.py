@@ -68,6 +68,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.category_info import CategoryInfo
+from bitcoin_safe.cbf.cbf_sync import CbfSync
 from bitcoin_safe.client import Client, ProgressInfo, UpdateInfo
 from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.fx import FX
@@ -2067,6 +2068,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             key=f"{id(self)}sync",
             multiple_strategy=MultipleStrategy.REJECT_NEW_TASK,
         )
+
+    def restart_cbf_node(self) -> None:
+        """Restart the CBF node for this wallet, if it uses CBF."""
+        if self.wallet.client and isinstance(self.wallet.client.client, CbfSync):
+            self.wallet.client.client.restart_node()
 
     def _handle_client_log_info(self, info: bdk.Info):
         """Handle client log info."""

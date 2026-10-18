@@ -88,6 +88,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.cbf.cbf_sync import CbfSync
 from bitcoin_safe.client import Client
 from bitcoin_safe.client_helpers import SyncStatus
 from bitcoin_safe.constants import APP_NAME, LOGO_NAME
@@ -896,6 +897,12 @@ class MainWindow(UnlockableMainWindow):
                 slot=qt_wallet.sync,
                 icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
             )
+            if qt_wallet.wallet.client and isinstance(qt_wallet.wallet.client.client, CbfSync):
+                menu.add_action(
+                    self.tr("Restart CBF node"),
+                    slot=qt_wallet.restart_cbf_node,
+                    icon=svg_tools.get_QIcon("bi--arrow-clockwise.svg"),
+                )
             self.action_reveal_file_explorer = menu.add_action(
                 self.tr("Reveal in file explorer"),
                 slot=partial(self.reveal_wallet_in_file_explorer, qt_wallet),
