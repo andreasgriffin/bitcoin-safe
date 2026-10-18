@@ -89,7 +89,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.cbf.cbf_sync import CbfSync
-from bitcoin_safe.client import Client
+from bitcoin_safe.client import Client, ProgressInfo
 from bitcoin_safe.client_helpers import SyncStatus
 from bitcoin_safe.constants import APP_NAME, LOGO_NAME
 from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
@@ -1503,7 +1503,7 @@ class MainWindow(UnlockableMainWindow):
 
         widget.set_network_config()
         cbf_peer_hosts: list[str] = []
-        widget.clear_wallet_progress()
+        wallet_progress: dict[str, tuple[str, ProgressInfo]] = {}
 
         if self.p2p_listener:
             widget.set_p2p_listener_peers(
@@ -1525,12 +1525,9 @@ class MainWindow(UnlockableMainWindow):
             cbf_peer_hosts.extend(wallet_cbf_peer_hosts)
             if client.sync_status not in [SyncStatus.syncing, SyncStatus.unknown]:
                 continue
-            widget.set_wallet_progress(
-                wallet_id=qt_wallet.wallet.id,
-                wallet_title=qt_wallet.wallet.id,
-                progress_info=client.progress_info,
-            )
+            wallet_progress[qt_wallet.wallet.id] = (qt_wallet.wallet.id, client.progress_info)
 
+        widget.set_wallet_progresses(wallet_progress)
         widget.set_cbf_peer_hosts(list(dict.fromkeys(cbf_peer_hosts)))
         widget.set_cbf_peer_count(len(cbf_peer_hosts))
 

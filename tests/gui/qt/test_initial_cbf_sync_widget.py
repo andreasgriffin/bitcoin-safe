@@ -243,6 +243,32 @@ def test_network_map_widget_legend_tooltip_sums_p2p_rates(qtbot: QtBot, test_con
     assert "Current total receive rate: 2.00 txs/s" in widget.peer_legend_label.toolTip()
 
 
+def test_network_map_wallet_progress_refresh_reuses_cards_and_map_geometry(qtbot: QtBot, test_config) -> None:
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    widget.resize(1000, 700)
+    widget.show()
+    qtbot.waitExposed(widget)
+
+    progress = ProgressInfo(
+        progress=0.25,
+        passed_time=timedelta(seconds=10),
+        remaining_time=timedelta(seconds=30),
+        status_msg="",
+        sync_status=SyncStatus.syncing,
+    )
+    widget.set_wallet_progresses({"wallet-a": ("Wallet A", progress)})
+    qtbot.wait(50)
+    map_geometry = widget.map_widget.geometry()
+    card = widget._wallet_progress_cards["wallet-a"]
+
+    widget.set_wallet_progresses({"wallet-a": ("Wallet A", progress)})
+    qtbot.wait(50)
+
+    assert widget._wallet_progress_cards["wallet-a"] is card
+    assert widget.map_widget.geometry() == map_geometry
+
+
 def test_network_map_widget_visibility_depends_on_network_mode(
     qtbot: QtBot, tmp_path, monkeypatch, test_config
 ) -> None:

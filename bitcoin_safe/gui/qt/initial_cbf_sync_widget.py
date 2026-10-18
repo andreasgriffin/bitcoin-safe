@@ -705,16 +705,34 @@ class NetworkMapWidget(QWidget):
         wallet_title: str,
         progress_info: ProgressInfo,
     ) -> None:
-        if wallet_id not in self._wallet_progress_cards:
+        self._update_wallet_progress_card(wallet_id, wallet_title, progress_info)
+        self._update_copy()
+        self._sync_wallet_progress_visibility()
+
+    def set_wallet_progresses(self, progresses: dict[str, tuple[str, ProgressInfo]]) -> None:
+        """Update wallet cards in place and remove cards for closed/inactive wallets."""
+        for wallet_id in self._wallet_progress_cards.keys() - progresses.keys():
+            card = self._wallet_progress_cards.pop(wallet_id)
+            card.hide()
+            card.setParent(None)
+            card.deleteLater()
+
+        for wallet_id, (wallet_title, progress_info) in progresses.items():
+            self._update_wallet_progress_card(wallet_id, wallet_title, progress_info)
+
+        self._update_copy()
+        self._sync_wallet_progress_visibility()
+
+    def _update_wallet_progress_card(
+        self, wallet_id: str, wallet_title: str, progress_info: ProgressInfo
+    ) -> None:
+        card = self._wallet_progress_cards.get(wallet_id)
+        if card is None:
             card = WalletSyncProgressCard(config=self.config, parent=self.wallet_progress_cards_container)
             self._wallet_progress_cards[wallet_id] = card
             self.wallet_progress_cards_layout.addWidget(card)
-
-        card = self._wallet_progress_cards[wallet_id]
         card.set_wallet_title(wallet_title)
         card.set_progress_info(progress_info)
-        self._update_copy()
-        self._sync_wallet_progress_visibility()
 
     def remove_wallet_progress(self, wallet_id: str) -> None:
         card = self._wallet_progress_cards.pop(wallet_id, None)
