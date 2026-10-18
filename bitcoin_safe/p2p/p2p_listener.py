@@ -30,11 +30,13 @@
 from __future__ import annotations
 
 import asyncio
+import ipaddress
 import logging
 import random
 import time
 from asyncio import Queue, QueueEmpty
 from concurrent.futures import Future
+from dataclasses import dataclass
 from functools import partial
 from threading import RLock
 from typing import TypeVar, cast
@@ -44,24 +46,44 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from PyQt6.QtCore import QObject, pyqtSignal
 
+from bitcoin_safe.execute_config import ENABLE_P2P_LISTENER_DIAGNOSTICS
 from bitcoin_safe.network_config import ConnectionInfo
 from bitcoin_safe.network_utils import ProxyInfo
+from bitcoin_safe.tx import short_tx_id
 
-from .p2p_client import Inventory, InventoryType, P2PClient, Peer, Peers
+from .p2p_client import Inventory, InventoryType, P2PClient, P2PDiagnosticEvent, Peer, Peers
 from .peer_discovery import PeerDiscovery
 from .tools import address_match, outpoint_match
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T", bound=list)
+SHORT_LIVED_CONNECTION_SECONDS = 30.0
+STABLE_CONNECTION_SECONDS = 180.0
+CONNECT_FAILURE_COOLDOWN_SECONDS = 120.0
+SHORT_LIVED_COOLDOWN_SECONDS = 180.0
+PROTOCOL_FAILURE_COOLDOWN_SECONDS = 300.0
+
+
+@dataclass
+class PeerQuality:
+    score: float = 0.0
+    attempts: int = 0
+    handshake_successes: int = 0
+    completed_sessions: int = 0
+    total_uptime_seconds: float = 0.0
+    consecutive_failures: int = 0
+    cooldown_until: float = 0.0
+    last_failure_reason: str | None = None
 
 
 class P2pListener(QObject):
-    signal_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
+    signal_relevant_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
     signal_block = cast(SignalProtocol[[str]], pyqtSignal(str))
     signal_break_current_connection = cast(SignalProtocol[[]], pyqtSignal())
     signal_disconnected_to = cast(SignalProtocol[[Peer]], pyqtSignal(Peer))
     signal_try_connecting_to = cast(SignalProtocol[[ConnectionInfo]], pyqtSignal(ConnectionInfo))
     signal_current_peers_change = cast(SignalProtocol[[list[ConnectionInfo]]], pyqtSignal(list))
+    signal_peer_tx_rate_change = cast(SignalProtocol[[Peer, float]], pyqtSignal(object, float))
 
     def __init__(
         self,
@@ -108,6 +130,8 @@ class P2pListener(QObject):
         self._current_peers: dict[int, ConnectionInfo | None] = {}
         self._stop_requested = False
         self._proxy_info: ProxyInfo | None = None
+        self._tx_times_by_peer: dict[Peer, list[float]] = {}
+        self._peer_quality_by_peer: dict[Peer, PeerQuality] = {}
 
         self.signal_tracker.connect(self.signal_disconnected_to, self.on_disconnected_to)
         self.signal_tracker.connect(self.signal_break_current_connection, self._on_break_current_connection)
@@ -139,6 +163,197 @@ class P2pListener(QObject):
         with self._state_lock:
             return [info for info in self._current_peers.values() if info]
 
+    def _peer_quality(self, peer: Peer) -> PeerQuality:
+        with self._state_lock:
+            quality = self._peer_quality_by_peer.get(peer)
+            if quality is None:
+                quality = PeerQuality()
+                self._peer_quality_by_peer[peer] = quality
+            return quality
+
+    def _selection_score(self, peer: Peer, now: float) -> float:
+        quality = self._peer_quality(peer)
+        uptime_bonus = min(quality.total_uptime_seconds / 300.0, 6.0)
+        cooldown_penalty = 50.0 if quality.cooldown_until > now else 0.0
+        return quality.score + uptime_bonus - cooldown_penalty
+
+    def _is_selectable_peer(self, peer: Peer, now: float) -> bool:
+        return self._peer_quality(peer).cooldown_until <= now
+
+    def _record_connect_attempt(self, peer: Peer) -> None:
+        quality = self._peer_quality(peer)
+        with self._state_lock:
+            quality.attempts += 1
+
+    def _reward_peer(self, peer: Peer, reward: float, reset_failures: bool) -> None:
+        quality = self._peer_quality(peer)
+        with self._state_lock:
+            quality.score = min(quality.score + reward, 40.0)
+            if reset_failures:
+                quality.consecutive_failures = 0
+                quality.cooldown_until = 0.0
+                quality.last_failure_reason = None
+
+    def _penalize_peer(self, peer: Peer, penalty: float, cooldown_seconds: float, reason: str) -> None:
+        quality = self._peer_quality(peer)
+        now = time.time()
+        with self._state_lock:
+            quality.score = max(quality.score - penalty, -40.0)
+            quality.consecutive_failures += 1
+            quality.last_failure_reason = reason
+            multiplier = min(quality.consecutive_failures, 4)
+            quality.cooldown_until = max(quality.cooldown_until, now + cooldown_seconds * multiplier)
+
+    @staticmethod
+    def _disconnect_category(reason: str | None) -> str:
+        reason_lower = (reason or "").lower()
+        if "timed out while waiting" in reason_lower:
+            return "read_timeout"
+        if "timed out while sending" in reason_lower:
+            return "send_timeout"
+        if "timed out while establishing" in reason_lower:
+            return "connect_timeout"
+        if (
+            "network is unreachable" in reason_lower
+            or "no route to host" in reason_lower
+            or "connection refused" in reason_lower
+            or "connect call failed" in reason_lower
+            or "name or service not known" in reason_lower
+        ):
+            return "connect_error"
+        if "peer closed" in reason_lower:
+            return "peer_closed"
+        if "checksum" in reason_lower:
+            return "bad_checksum"
+        if "payload" in reason_lower:
+            return "oversized_payload"
+        if "rate limit" in reason_lower:
+            return "rate_limit"
+        if "handler error" in reason_lower or "unknown-command" in reason_lower:
+            return "protocol_error"
+        return "other"
+
+    def _should_keep_discovered_peer(self, peer: Peer) -> bool:
+        quality = self._peer_quality(peer)
+        with self._state_lock:
+            return quality.score > -20.0 or quality.handshake_successes > 0
+
+    @staticmethod
+    def _peer_host_sort_key(peer: Peer) -> int:
+        try:
+            address = ipaddress.ip_address(peer.host)
+        except ValueError:
+            return 1
+        if address.version == 4:
+            return 2
+        return 0
+
+    def _select_discovered_peer(self, candidates: list[Peer]) -> Peer | None:
+        if not candidates:
+            return None
+        now = time.time()
+        selectable = [peer for peer in candidates if self._is_selectable_peer(peer, now)]
+        if not selectable:
+            return None
+
+        best_score = max(self._selection_score(peer, now) for peer in selectable)
+        best_candidates = [peer for peer in selectable if self._selection_score(peer, now) == best_score]
+        best_candidates.sort(key=self._peer_host_sort_key, reverse=True)
+        return random.choice(best_candidates)
+
+    async def _select_dns_peer(self, exclude_peers: set[Peer]) -> Peer | None:
+        for _ in range(5):
+            peer = await self.peer_discovery.get_bitcoin_peer(proxy_info=self._proxy_info)
+            if peer is None:
+                return None
+            if self.allowed_peers is not None and peer not in self.allowed_peers:
+                continue
+            if peer in exclude_peers:
+                continue
+            if not self._is_selectable_peer(peer, time.time()):
+                continue
+            return peer
+        return None
+
+    def on_client_diagnostic(self, event: P2PDiagnosticEvent) -> None:
+        peer = event.peer
+        if peer is None:
+            return
+
+        if event.event == "connect_attempt":
+            self._record_connect_attempt(peer)
+            return
+        if event.event == "verack_received":
+            quality = self._peer_quality(peer)
+            with self._state_lock:
+                quality.handshake_successes += 1
+            self._reward_peer(peer, reward=2.0, reset_failures=True)
+            return
+        if event.event == "connect_timeout":
+            self._penalize_peer(
+                peer,
+                penalty=5.0,
+                cooldown_seconds=CONNECT_FAILURE_COOLDOWN_SECONDS,
+                reason=event.detail or "connect_timeout",
+            )
+            return
+        if event.event == "connect_error":
+            self._penalize_peer(
+                peer,
+                penalty=6.0,
+                cooldown_seconds=CONNECT_FAILURE_COOLDOWN_SECONDS,
+                reason=event.detail or "connect_error",
+            )
+            return
+        if event.event != "disconnected":
+            return
+
+        uptime = event.uptime_seconds or 0.0
+        quality = self._peer_quality(peer)
+        with self._state_lock:
+            quality.completed_sessions += 1
+            quality.total_uptime_seconds += uptime
+
+        category = self._disconnect_category(event.detail)
+        if category == "read_timeout" and uptime >= max(float(self.timeout) - 5.0, 30.0):
+            self._reward_peer(peer, reward=2.0, reset_failures=True)
+            return
+        if uptime >= STABLE_CONNECTION_SECONDS:
+            self._reward_peer(peer, reward=6.0, reset_failures=True)
+            return
+        if category == "peer_closed":
+            if uptime < SHORT_LIVED_CONNECTION_SECONDS:
+                self._penalize_peer(
+                    peer,
+                    penalty=4.0,
+                    cooldown_seconds=SHORT_LIVED_COOLDOWN_SECONDS,
+                    reason=event.detail or "peer_closed",
+                )
+            else:
+                self._reward_peer(peer, reward=1.0, reset_failures=True)
+            return
+        if category in {"send_timeout", "bad_checksum", "oversized_payload", "rate_limit", "protocol_error"}:
+            self._penalize_peer(
+                peer,
+                penalty=5.0,
+                cooldown_seconds=PROTOCOL_FAILURE_COOLDOWN_SECONDS,
+                reason=event.detail or category,
+            )
+            return
+        if uptime < SHORT_LIVED_CONNECTION_SECONDS:
+            self._penalize_peer(
+                peer,
+                penalty=3.0,
+                cooldown_seconds=SHORT_LIVED_COOLDOWN_SECONDS,
+                reason=event.detail or category,
+            )
+            return
+        self._reward_peer(peer, reward=1.0, reset_failures=True)
+
+    def _on_client_diagnostic_signal(self, event: object) -> None:
+        if isinstance(event, P2PDiagnosticEvent):
+            self.on_client_diagnostic(event)
+
     def _build_client(self, slot_id: int) -> P2PClient:
         """Create and wire a P2PClient for the given slot."""
         client = P2PClient(
@@ -150,8 +365,9 @@ class P2pListener(QObject):
         self.signal_tracker.connect(client.signal_received_peers, self.on_received_peers)
         self.signal_tracker.connect(client.signal_disconnected_to, self.on_disconnected_to)
         self.signal_tracker.connect(client.signal_inv, partial(self.on_inv_from_client, client))
-        self.signal_tracker.connect(client.signal_tx, self.on_tx)
+        self.signal_tracker.connect(client.signal_tx_received, partial(self.on_received_tx, slot_id, client))
         self.signal_tracker.connect(client.signal_try_connecting_to, self.signal_try_connecting_to.emit)
+        self.signal_tracker.connect(client.signal_diagnostic, self._on_client_diagnostic_signal)
         self.signal_tracker.connect(
             client.signal_current_peer_change, partial(self._on_current_peer_change, slot_id)
         )
@@ -184,15 +400,43 @@ class P2pListener(QObject):
     def get_current_peers(self):
         return self._snapshot_current_connections()
 
-    def on_tx(self, tx: bdk.Transaction):
-        """On tx."""
+    @property
+    def tx_rates(self) -> dict[Peer, float]:
+        """Return rolling received transaction rates per connected peer."""
+        now = time.monotonic()
+        with self._state_lock:
+            return {
+                peer: len([timestamp for timestamp in timestamps if timestamp >= now - 60.0]) / 60.0
+                for peer, timestamps in self._tx_times_by_peer.items()
+            }
+
+    def on_received_tx(self, slot_id: int, client: P2PClient, tx: bdk.Transaction):
+        """Track per-peer tx rate and forward wallet-relevant transactions."""
+        peer = client.current_peer()
+        if peer is None:
+            if ENABLE_P2P_LISTENER_DIAGNOSTICS:
+                logger.warning("P2P tx received on slot %s without a current peer", slot_id)
+            return
+
+        now = time.monotonic()
+        with self._state_lock:
+            timestamps = self._tx_times_by_peer.setdefault(peer, [])
+            timestamps[:] = [timestamp for timestamp in timestamps if timestamp >= now - 60.0]
+            timestamps.append(now)
+            rate = len(timestamps) / 60.0
+        self.signal_peer_tx_rate_change.emit(peer, rate)
+
+        if ENABLE_P2P_LISTENER_DIAGNOSTICS:
+            txid = short_tx_id(tx.compute_txid())
+            logger.info("P2P tx [slot %s %s] txid=%s rate=%.2f txs/s", slot_id, peer, txid, rate)
+
         if (self.address_filter is not None) and address_match(
             tx=tx, network=self.network, address_filter=self.address_filter
         ):
-            self.signal_tx.emit(tx)
+            self.signal_relevant_tx.emit(tx)
             return
         if (self.outpoint_filter is not None) and outpoint_match(tx=tx, outpoint_filter=self.outpoint_filter):
-            self.signal_tx.emit(tx)
+            self.signal_relevant_tx.emit(tx)
             return
 
     async def random_select_peer(
@@ -232,13 +476,11 @@ class P2pListener(QObject):
             if not self.autodiscover_additional_peers:
                 logger.debug("Peer discovery disabled; no discovered peers available")
                 return None
-            peer = await self.peer_discovery.get_bitcoin_peer(proxy_info=self._proxy_info)  # may be None
-            if peer is not None and self.allowed_peers is not None and peer not in self.allowed_peers:
-                return None
+            peer = await self._select_dns_peer(exclude_peers=exclude_peers)
             logger.debug(f"Picked {peer=} from DNS seed")
             return peer
         if weight_dns == 0:
-            peer = random.choice(discovered_candidates)
+            peer = self._select_discovered_peer(discovered_candidates)
             logger.debug(f"Picked {peer=} from discovered_peers")
             return peer
 
@@ -249,13 +491,11 @@ class P2pListener(QObject):
         # Weighted choice -------------------------------------------
         pick = random.random() * total
         if pick < weight_getaddr and discovered_candidates:
-            peer = random.choice(discovered_candidates)
+            peer = self._select_discovered_peer(discovered_candidates)
             logger.debug(f"Picked {peer=} from discovered_peers")
             return peer
 
-        peer = await self.peer_discovery.get_bitcoin_peer(proxy_info=self._proxy_info)  # may be None
-        if peer is not None and self.allowed_peers is not None and peer not in self.allowed_peers:
-            return None
+        peer = await self._select_dns_peer(exclude_peers=exclude_peers)
         logger.debug(f"Picked {peer=} from DNS seed")
         return peer
 
@@ -268,7 +508,10 @@ class P2pListener(QObject):
         try:
             while True:
                 candidate = preferred_queue.get_nowait()
-                if candidate not in exclude_peers:
+                allowed = self.allowed_peers is None or candidate in self.allowed_peers
+                if candidate in exclude_peers or not allowed:
+                    continue
+                if self._is_selectable_peer(candidate, time.time()):
                     return candidate
         except QueueEmpty:
             pass
@@ -345,6 +588,7 @@ class P2pListener(QObject):
         with self._state_lock:
             self._active_peers.clear()
             self._current_peers = {i: None for i in range(len(self.clients))}
+            self._tx_times_by_peer.clear()
         self._connection_tasks.clear()
         self.signal_current_peers_change.emit([])
 
@@ -416,11 +660,8 @@ class P2pListener(QObject):
 
     def on_disconnected_to(self, peer: Peer):
         "Do not keep peers in the list, which disconnected in the past"
-        if not self.autodiscover_additional_peers:
-            return
         with self._state_lock:
-            if peer in self._discovered_peers:
-                self._discovered_peers.remove(peer)
+            self._tx_times_by_peer.pop(peer, None)
 
     def on_received_peers(self, peers: Peers):
         """On received peers."""
@@ -439,8 +680,12 @@ class P2pListener(QObject):
         with self._state_lock:
             new_peers = [peer for peer in peers if peer not in self._discovered_peers]
             new_peers = self._shuffle_and_restrict(new_peers, max_len=maximum_new_peers)
-            self._discovered_peers = self._shuffle_and_restrict(
-                Peers(self._discovered_peers + new_peers), max_len=maximum_total_peers
+            combined_peers = [
+                peer for peer in self._discovered_peers if self._should_keep_discovered_peer(peer)
+            ]
+            combined_peers.extend(new_peers)
+            self._discovered_peers = self._restrict_peers_by_quality(
+                combined_peers, max_len=maximum_total_peers
             )
             discovered_count = len(self._discovered_peers)
         logger.debug(
@@ -453,6 +698,14 @@ class P2pListener(QObject):
         random.shuffle(some_list)
         del some_list[max_len:]
         return some_list
+
+    def _restrict_peers_by_quality(self, peers: list[Peer], max_len: int) -> Peers:
+        """Keep the strongest known peers when trimming the discovered pool."""
+        unique_peers = list(dict.fromkeys(peers))
+        random.shuffle(unique_peers)
+        unique_peers.sort(key=partial(self._selection_score, now=time.time()), reverse=True)
+        del unique_peers[max_len:]
+        return Peers(unique_peers)
 
     def _on_break_current_connection(self) -> None:
         """Slot invoked when `signal_break_current_connection` fires.

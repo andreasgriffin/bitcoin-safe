@@ -29,10 +29,12 @@
 
 from __future__ import annotations
 
+import gzip
 import ipaddress
 import json
 import logging
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 
 from bitcoin_safe.util import resource_path
@@ -55,7 +57,7 @@ class RoughGeoIpDatabase:
     """
 
     def __init__(self, db_path: Path | None = None) -> None:
-        self.db_path = db_path or Path(resource_path("data", "geoip_rough_v1.json"))
+        self.db_path = db_path or Path(resource_path("data", "geoip_rough_v1.json.gz"))
         self._loaded = False
         self._ipv4_prefix = 12
         self._ipv6_prefix = 32
@@ -67,22 +69,41 @@ class RoughGeoIpDatabase:
             return
 
         self._loaded = True
-        if not self.db_path.exists():
+        try:
+            stat = self.db_path.stat()
+        except OSError:
             logger.info("GeoIP rough database not found at %s", self.db_path)
             return
 
         try:
-            payload = json.loads(self.db_path.read_text(encoding="utf-8"))
+            prefix_lengths, self._ipv4_map, self._ipv6_map = self._load_database(
+                str(self.db_path.resolve()), stat.st_mtime_ns, stat.st_size
+            )
         except Exception:
             logger.exception("Failed reading GeoIP rough database from %s", self.db_path)
             return
 
-        prefix_lengths = payload.get("prefix_lengths", {})
-        self._ipv4_prefix = int(prefix_lengths.get("ipv4", 12))
-        self._ipv6_prefix = int(prefix_lengths.get("ipv6", 32))
+        self._ipv4_prefix, self._ipv6_prefix = prefix_lengths
 
-        self._ipv4_map = self._decode_map(payload.get("ipv4", {}))
-        self._ipv6_map = self._decode_map(payload.get("ipv6", {}))
+    @classmethod
+    @lru_cache(maxsize=8)
+    def _load_database(
+        cls, db_path: str, modified_ns: int, size: int
+    ) -> tuple[tuple[int, int], dict[int, GeoLocation], dict[int, GeoLocation]]:
+        del modified_ns, size
+        path = Path(db_path)
+        if path.suffix == ".gz":
+            with gzip.open(path, "rt", encoding="utf-8") as file_handle:
+                payload = json.load(file_handle)
+        else:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+
+        prefix_lengths = payload.get("prefix_lengths", {})
+        ipv4_prefix = int(prefix_lengths.get("ipv4", 12))
+        ipv6_prefix = int(prefix_lengths.get("ipv6", 32))
+        ipv4_map = cls._decode_map(payload.get("ipv4", {}))
+        ipv6_map = cls._decode_map(payload.get("ipv6", {}))
+        return (ipv4_prefix, ipv6_prefix), ipv4_map, ipv6_map
 
     @staticmethod
     def _decode_map(data: dict[str, list[object]]) -> dict[int, GeoLocation]:

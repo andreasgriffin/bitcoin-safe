@@ -29,6 +29,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import ipaddress
 import json
 import logging
 from dataclasses import dataclass
@@ -99,6 +101,7 @@ class PeerMapPoint:
     source: PeerSource
     country_code: str | None = None
     label: str | None = None
+    tx_rate: float | None = None
 
 
 class WorldPeerMapWidget(QWidget):
@@ -305,11 +308,15 @@ class WorldPeerMapWidget(QWidget):
 
         country = self._country_name(point.country_code)
         endpoint_label = self.tr("IP") if is_ip_address(point.host) else self.tr("Host")
-        return self.tr("{source}\n{endpoint_label}: {ip}\nCountry: {country}").format(
+        tx_rate = ""
+        if point.source == PeerSource.p2p_listener and point.tx_rate is not None:
+            tx_rate = self.tr("\nReceived: {rate:.2f} txs/s").format(rate=point.tx_rate)
+        return self.tr("{source}\n{endpoint_label}: {ip}\nCountry: {country}{tx_rate}").format(
             source=source_label,
             endpoint_label=endpoint_label,
             ip=point.host,
             country=country,
+            tx_rate=tx_rate,
         )
 
     def _country_name(self, country_code: str | None) -> str:
@@ -325,7 +332,7 @@ class WorldPeerMapWidget(QWidget):
         return country_name if country_name else normalized
 
     def _point_index_at_position(self, position: QPointF, map_rect: QRectF) -> int | None:
-        for index in range(len(self._points) - 1, -1, -1):
+        for index in reversed(self._paint_order_indices()):
             point = self._points[index]
             center = self._point_center(point, map_rect)
             hover_radius = self._hover_radius(point)
@@ -335,16 +342,23 @@ class WorldPeerMapWidget(QWidget):
                 return index
         return None
 
+    def _paint_order_indices(self) -> list[int]:
+        """Paint nodes last so peer markers cannot conceal their locations."""
+        return sorted(
+            range(len(self._points)), key=lambda index: self._points[index].source == PeerSource.node
+        )
+
     def _draw_points(self, painter: QPainter, map_rect: QRectF) -> None:
-        for point in self._points:
+        for index in self._paint_order_indices():
+            point = self._points[index]
             center = self._point_center(point, map_rect)
             color = self._point_color(point.source)
 
             if point.source == PeerSource.node:
-                # Node points: smaller, no glow, no outer ring
-                painter.setPen(Qt.PenStyle.NoPen)
+                # Keep node locations visible over other marker types.
+                painter.setPen(QPen(self._POINT_RING_COLOR, 0.8))
                 painter.setBrush(color)
-                painter.drawEllipse(center, 2.5, 2.5)
+                painter.drawEllipse(center, 3.2, 3.2)
             else:
                 # Other points: glow + outer ring
                 glow = QColor(color)
@@ -522,6 +536,8 @@ class NetworkMapWidget(QWidget):
 
         self.geoip = RoughGeoIpDatabase()
         self._p2p_connections: list[Peer] = []
+        self._p2p_tx_rates: dict[Peer, float] = {}
+        self._p2p_total_tx_rate = 0.0
         self._nodes: set[Peer] = set()
         self._cbf_peer_hosts: list[str] = []
         self._cbf_peer_count: int = 0
@@ -530,6 +546,7 @@ class NetworkMapWidget(QWidget):
         self._resolved_server_host: str | None = None
         self._server_resolution_pending = False
         self._server_resolution_request: tuple[str, str | None] | None = None
+        self._server_config_key: tuple[BlockchainType, str | None, str | None] | None = None
 
         self._build_ui()
         self.set_network_config()
@@ -634,11 +651,20 @@ class NetworkMapWidget(QWidget):
         self._refresh_points_and_legend()
 
     def set_network_config(self) -> None:
+        server_name = self._configured_server_name()
+        config_key = (
+            self.config.network_config.server_type,
+            server_name,
+            self.config.network_config.proxy_url,
+        )
+        if config_key == self._server_config_key:
+            return
+
+        self._server_config_key = config_key
         self._resolved_server_host = None
         self._server_resolution_pending = False
         self._server_resolution_request = None
 
-        server_name = self._configured_server_name()
         host = None
         if server_name:
             host, _port = get_host_and_port(server_name)
@@ -663,8 +689,12 @@ class NetworkMapWidget(QWidget):
         self._last_progress_info = progress_info
         self.local_progress_card.set_progress_info(progress_info)
 
-    def set_p2p_listener_peers(self, connections: list[Peer]) -> None:
+    def set_p2p_listener_peers(
+        self, connections: list[Peer], tx_rates: dict[Peer, float] | None = None
+    ) -> None:
         self._p2p_connections = list(connections)
+        self._p2p_tx_rates = dict(tx_rates or {})
+        self._p2p_total_tx_rate = sum(self._p2p_tx_rates.values())
         self._refresh_points_and_legend()
 
     def set_nodes(self, nodes: set[Peer]) -> None:
@@ -685,16 +715,34 @@ class NetworkMapWidget(QWidget):
         wallet_title: str,
         progress_info: ProgressInfo,
     ) -> None:
-        if wallet_id not in self._wallet_progress_cards:
+        self._update_wallet_progress_card(wallet_id, wallet_title, progress_info)
+        self._update_copy()
+        self._sync_wallet_progress_visibility()
+
+    def set_wallet_progresses(self, progresses: dict[str, tuple[str, ProgressInfo]]) -> None:
+        """Update wallet cards in place and remove cards for closed/inactive wallets."""
+        for wallet_id in self._wallet_progress_cards.keys() - progresses.keys():
+            card = self._wallet_progress_cards.pop(wallet_id)
+            card.hide()
+            card.setParent(None)
+            card.deleteLater()
+
+        for wallet_id, (wallet_title, progress_info) in progresses.items():
+            self._update_wallet_progress_card(wallet_id, wallet_title, progress_info)
+
+        self._update_copy()
+        self._sync_wallet_progress_visibility()
+
+    def _update_wallet_progress_card(
+        self, wallet_id: str, wallet_title: str, progress_info: ProgressInfo
+    ) -> None:
+        card = self._wallet_progress_cards.get(wallet_id)
+        if card is None:
             card = WalletSyncProgressCard(config=self.config, parent=self.wallet_progress_cards_container)
             self._wallet_progress_cards[wallet_id] = card
             self.wallet_progress_cards_layout.addWidget(card)
-
-        card = self._wallet_progress_cards[wallet_id]
         card.set_wallet_title(wallet_title)
         card.set_progress_info(progress_info)
-        self._update_copy()
-        self._sync_wallet_progress_visibility()
 
     def remove_wallet_progress(self, wallet_id: str) -> None:
         card = self._wallet_progress_cards.pop(wallet_id, None)
@@ -857,10 +905,11 @@ class NetworkMapWidget(QWidget):
             location = self.geoip.lookup_host(host)
             if not location:
                 continue
+            latitude_jitter, longitude_jitter = self._coordinate_jitter(host)
             points.append(
                 PeerMapPoint(
-                    latitude=location.latitude,
-                    longitude=location.longitude,
+                    latitude=max(-90.0, min(90.0, location.latitude + latitude_jitter)),
+                    longitude=(location.longitude + longitude_jitter + 180.0) % 360.0 - 180.0,
                     host=host,
                     source=source,
                     country_code=location.country_code,
@@ -868,6 +917,15 @@ class NetworkMapWidget(QWidget):
                 )
             )
         return points
+
+    @staticmethod
+    def _coordinate_jitter(host: str) -> tuple[float, float]:
+        """Return stable offsets within five degrees, derived from the host IP."""
+        digest = hashlib.blake2b(ipaddress.ip_address(host).packed, digest_size=8).digest()
+        scale = 12.0 / (2**32 - 1)
+        latitude_jitter = int.from_bytes(digest[:4], "big") * scale - 2.5
+        longitude_jitter = int.from_bytes(digest[4:], "big") * scale - 2.5
+        return latitude_jitter, longitude_jitter
 
     def _build_server_points(self) -> list[PeerMapPoint]:
         label = self._server_source_label()
@@ -920,6 +978,25 @@ class NetworkMapWidget(QWidget):
 
         node_points = self._build_mapped_points(node_hosts, PeerSource.node)
         p2p_points = self._build_mapped_points(p2p_hosts, PeerSource.p2p_listener)
+        p2p_points = [
+            PeerMapPoint(
+                latitude=point.latitude,
+                longitude=point.longitude,
+                host=point.host,
+                source=point.source,
+                country_code=point.country_code,
+                label=point.label,
+                tx_rate=next(
+                    (
+                        self._p2p_tx_rates.get(peer, 0.0)
+                        for peer in p2p_connections
+                        if peer.host == point.host
+                    ),
+                    None,
+                ),
+            )
+            for point in p2p_points
+        ]
         cbf_points = self._build_mapped_points(list(cbf_peer_hosts), PeerSource.cbf)
         server_points = self._build_server_points()
 
@@ -940,8 +1017,10 @@ class NetworkMapWidget(QWidget):
         )
         self.peer_legend_label.set_icon_as_help(
             tooltip=self.tr(
-                "Recently broadcasted messages are received\nfrom these peers via the bitcoin network."
-            )
+                "Recently broadcasted messages are received\n"
+                "from these peers via the bitcoin network.\n"
+                "Current total receive rate: {rate:.2f} txs/s"
+            ).format(rate=self._p2p_total_tx_rate)
         )
 
         show_cbf = self.config.network_config.server_type == BlockchainType.CompactBlockFilter

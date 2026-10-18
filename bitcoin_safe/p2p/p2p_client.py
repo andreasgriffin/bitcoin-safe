@@ -94,6 +94,23 @@ class PeerConnectionTestResult:
         return "\n".join(details)
 
 
+@dataclass(frozen=True)
+class P2PDiagnosticEvent:
+    """Structured connection lifecycle event emitted by ``P2PClient``."""
+
+    event: str
+    peer: Peer | None
+    timestamp: float
+    handshake_stage: str
+    detail: str | None = None
+    command: str | None = None
+    last_command: str | None = None
+    error_type: str | None = None
+    uptime_seconds: float | None = None
+    message_count: int = 0
+    tx_count: int = 0
+
+
 async def _test_peer_connection(
     peer: Peer, network: bdk.Network, proxy_info: ProxyInfo | None
 ) -> PeerConnectionResult:
@@ -139,10 +156,16 @@ async def _test_all_peer_connections(
 # ────────────────────────────────────────────────────────────────
 MAX_PAYLOAD_LEN = 32 * 1024 * 1024  # 32 MiB – hard upper bound (BIP-339)
 MAX_INV_ITEMS = 50_000  # reasonable inv list cap
-MAX_MSGS_PER_SEC = 100  # generic message rate
-MAX_TXS_PER_SEC = 50  # stricter limit for “tx”
+# Keep these well above normal relay bursts.  The listener is a transaction
+# observer, so disconnecting a healthy peer because it announces a short burst
+# of mempool traffic is worse than accepting the burst and applying the payload
+# and inventory-size limits below.
+MAX_MSGS_PER_SEC = 1000  # generic message rate
+MAX_TXS_PER_SEC = 500  # transaction rate
 RATE_WINDOW_SEC = 1.0  # sliding-window size
 MAX_ADDR_ITEMS = 1000  # Cap addr/v1 and addrv2 list sizes
+NODE_WITNESS = 1 << 3
+IDLE_PING_TIMEOUT_GRACE = 1
 
 # Mapping of recognised networks → magic value (big‑endian as on‑the‑wire)
 MAGIC_VALUES: dict[Any, int] = {
@@ -281,6 +304,7 @@ class P2PClient(QObject):
     signal_headers = cast(SignalProtocol[[object]], pyqtSignal(object))
     signal_block = cast(SignalProtocol[[str]], pyqtSignal(str))  # block hash
     signal_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
+    signal_tx_received = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
     signal_getblocktxn = cast(SignalProtocol[[object]], pyqtSignal(object))
     signal_blocktxn = cast(SignalProtocol[[object]], pyqtSignal(object))
     signal_cmpctblock = cast(SignalProtocol[[object]], pyqtSignal(object))
@@ -308,6 +332,7 @@ class P2PClient(QObject):
     signal_try_connecting_to = cast(SignalProtocol[[ConnectionInfo]], pyqtSignal(ConnectionInfo))
     signal_current_peer_change = cast(SignalProtocol[[ConnectionInfo | None]], pyqtSignal(object))
     signal_received_peers = cast(SignalProtocol[[Peers]], pyqtSignal(Peers))
+    signal_diagnostic = cast(SignalProtocol[[object]], pyqtSignal(object))
 
     # ------------------------------------------------------------------
 
@@ -330,6 +355,14 @@ class P2PClient(QObject):
         self._msg_times: collections.deque[float] = collections.deque()
         self._tx_times: collections.deque[float] = collections.deque()
         self._current_peer: Peer | None = None
+        self._send_lock = asyncio.Lock()
+        self._connected_at: float | None = None
+        self._message_count = 0
+        self._received_tx_count = 0
+        self._handshake_stage = "disconnected"
+        self._last_command: str | None = None
+        self._idle_timeout_probes_sent = 0
+        self._last_ping_nonce: bytes | None = None
 
         # call once
         self._DISPATCH_TABLE: dict[str, Callable[[Any], Coroutine[Any, Any, None]]] = {}
@@ -357,6 +390,14 @@ class P2PClient(QObject):
         Can raise Expceptions
         """
         logger.debug(f"Connecting to {peer}")
+        self._connected_at = None
+        self._message_count = 0
+        self._received_tx_count = 0
+        self._handshake_stage = "connecting"
+        self._last_command = None
+        self._idle_timeout_probes_sent = 0
+        self._last_ping_nonce = None
+        self._emit_diagnostic(event="connect_attempt", peer=peer, detail="Opening TCP connection")
         self.signal_try_connecting_to.emit(ConnectionInfo(peer=peer, proxy_info=proxy_info))
 
         try:
@@ -364,16 +405,40 @@ class P2PClient(QObject):
                 peer=peer, proxy_info=proxy_info, timeout=default_timeout(proxy_info)
             )
             self._current_peer = peer
+            self._connected_at = time.monotonic()
+            self._handshake_stage = "tcp_connected"
+            self._emit_diagnostic(event="tcp_connected", detail="TCP connection established")
         except asyncio.TimeoutError:
             logger.debug(f"Connection to {peer} timed-out")
+            self._emit_diagnostic(
+                event="connect_timeout",
+                peer=peer,
+                detail="Timed out while establishing TCP connection",
+                error_type="TimeoutError",
+            )
             self.signal_disconnected_to.emit(peer)
             return
+        except Exception as exc:
+            self._emit_diagnostic(
+                event="connect_error",
+                peer=peer,
+                detail=str(exc) or type(exc).__name__,
+                error_type=type(exc).__name__,
+            )
+            raise
 
         logger.debug(f"Connected to {peer} - sending version")
         await self._send_raw("version", self._version_payload(peer))
+        if not self.is_running():
+            return
+        self._handshake_stage = "version_sent"
+        self._emit_diagnostic(event="version_sent", command="version")
 
         # BIP-155: announce ADDRv2 support *before* VERACK, exactly once
         await self._send_raw("sendaddrv2", b"")
+        if not self.is_running():
+            return
+        self._emit_diagnostic(event="sendaddrv2_sent", command="sendaddrv2")
         connection_info = ConnectionInfo(peer=peer, proxy_info=proxy_info)
         logger.info(f"Connected to {connection_info}")
         self.signal_current_peer_change.emit(connection_info)
@@ -432,9 +497,13 @@ class P2PClient(QObject):
         # 4) Anything else is unsupported
         raise ValueError(f"Unsupported proxy scheme: {proxy_info.scheme!r}")
 
-    async def disconnect(self) -> None:  # type: ignore
+    async def disconnect(self, reason: str | None = None) -> None:  # type: ignore
         """Close the underlying TCP connection *and* clear the reader/writer so that
         ``is_running()`` immediately reflects the new (disconnected) state."""
+        peer = self._current_peer
+        uptime_seconds = self._session_uptime_seconds()
+        should_emit = peer is not None or self._connected_at is not None
+
         if self.writer:
             self.writer.close()
             try:
@@ -446,8 +515,22 @@ class P2PClient(QObject):
 
         self.reader = None
         self.writer = None
+        if should_emit:
+            self._emit_diagnostic(
+                event="disconnected",
+                peer=peer,
+                detail=reason or "disconnect called",
+                uptime_seconds=uptime_seconds,
+            )
         logger.debug(f"Disconnected from {self._current_peer}")
         self._current_peer = None
+        self._connected_at = None
+        self._message_count = 0
+        self._received_tx_count = 0
+        self._handshake_stage = "disconnected"
+        self._last_command = None
+        self._idle_timeout_probes_sent = 0
+        self._last_ping_nonce = None
         self.signal_current_peer_change.emit(None)
 
     # ------------------------------------------------------------------
@@ -461,12 +544,43 @@ class P2PClient(QObject):
         """Current peer."""
         return self._current_peer
 
+    def _session_uptime_seconds(self) -> float | None:
+        """Return current connection uptime in seconds."""
+        if self._connected_at is None:
+            return None
+        return max(time.monotonic() - self._connected_at, 0.0)
+
+    def _emit_diagnostic(
+        self,
+        event: str,
+        peer: Peer | None = None,
+        detail: str | None = None,
+        command: str | None = None,
+        error_type: str | None = None,
+        uptime_seconds: float | None = None,
+    ) -> None:
+        """Emit a structured diagnostic event for the current connection session."""
+        self.signal_diagnostic.emit(
+            P2PDiagnosticEvent(
+                event=event,
+                peer=peer if peer is not None else self._current_peer,
+                timestamp=time.time(),
+                handshake_stage=self._handshake_stage,
+                detail=detail,
+                command=command,
+                last_command=self._last_command,
+                error_type=error_type,
+                uptime_seconds=self._session_uptime_seconds() if uptime_seconds is None else uptime_seconds,
+                message_count=self._message_count,
+                tx_count=self._received_tx_count,
+            )
+        )
+
     @staticmethod
-    def make_core_user_agent() -> bytes:
-        """Make core user agent."""
-        versions = [f"{i}.0" for i in range(22, 28)]
-        v = random.choice(versions)
-        return f"/Satoshi:{v}/".encode()
+    def make_user_agent() -> bytes:
+        """Return a common Bitcoin Core user agent without identifying the application."""
+        version = random.choice([f"{number}.0" for number in range(22, 28)])
+        return f"/Satoshi:{version}/".encode()
 
     def _version_payload(self, peer: Peer) -> bytes:
         """Build the payload for an outgoing `version` message, handling IPv4, IPv6, Tor
@@ -536,14 +650,14 @@ class P2PClient(QObject):
         # — end of encode_address helper —
         #
 
-        my_ip = "127.0.0.1"
-        my_port = 8333
+        my_ip = "0.0.0.0"
+        my_port = 0
 
         version = 70016  # protocol version
-        services = 1  # NODE_NETWORK
+        services = NODE_WITNESS  # Receive/relay segwit transactions; do not claim block serving.
         timestamp = int(time.time())
         nonce = int.from_bytes(os.urandom(8), "little")
-        user_agent = self.make_core_user_agent()
+        user_agent = self.make_user_agent()
         start_height = 0
         relay = True
 
@@ -657,16 +771,17 @@ class P2PClient(QObject):
             + double_sha256(payload)[:4]
         )
 
-        self.writer.write(header + payload)
-        try:
-            # ──────────────────────────────────────────────────────────────
-            # Enforce I/O-level timeout on the actual socket flush
-            # ──────────────────────────────────────────────────────────────
-            await asyncio.wait_for(self.writer.drain(), timeout=self.timeout)
-        except asyncio.TimeoutError:
-            logger.debug(f"-> {cmd} timed-out after {self.timeout} s during drain()")
-            await self.disconnect()
-            return
+        async with self._send_lock:
+            self.writer.write(header + payload)
+            try:
+                # ──────────────────────────────────────────────────────────
+                # Enforce I/O-level timeout on the actual socket flush
+                # ──────────────────────────────────────────────────────────
+                await asyncio.wait_for(self.writer.drain(), timeout=self.timeout)
+            except asyncio.TimeoutError:
+                logger.debug(f"-> {cmd} timed-out after {self.timeout} s during drain()")
+                await self.disconnect(reason=f"Timed out while sending {cmd}")
+                return
 
         # logger.debug(f"-> {cmd} ({len(payload)} bytes)")
 
@@ -684,20 +799,50 @@ class P2PClient(QObject):
                 # ──────────────────────────────────────────────────────────
                 chunk = await asyncio.wait_for(self.reader.readexactly(n - len(data)), timeout=self.timeout)
             except asyncio.TimeoutError:
+                if await self._handle_idle_read_timeout(expected_bytes=n, received_bytes=len(data)):
+                    continue
                 logger.debug(f"<- read timed-out after {self.timeout} s")
-                await self.disconnect()
+                await self.disconnect(reason="Timed out while waiting for peer data")
                 raise
             except asyncio.exceptions.IncompleteReadError as e:
                 # e.partial is a bytes object containing however many bytes arrived
                 logger.debug(
                     f"Peer closed early — got {len(e.partial)}/{n - len(data)} header bytes: {e.partial!r}",
                 )
+                await self.disconnect(reason="Peer closed the connection during read")
                 raise
 
             if not chunk:
+                await self.disconnect(reason="Peer closed the connection")
                 raise ConnectionError("Connection closed by peer")
+            self._idle_timeout_probes_sent = 0
             data += chunk
         return data
+
+    async def _handle_idle_read_timeout(self, expected_bytes: int, received_bytes: int) -> bool:
+        """Probe an established but silent peer once before disconnecting it."""
+        if received_bytes != 0:
+            return False
+        if self._handshake_stage != "verack_received":
+            return False
+        if self._idle_timeout_probes_sent >= IDLE_PING_TIMEOUT_GRACE:
+            return False
+        if not self.is_running():
+            return False
+
+        self._idle_timeout_probes_sent += 1
+        nonce = os.urandom(8)
+        self._last_ping_nonce = nonce
+        self._emit_diagnostic(
+            event="idle_probe_sent",
+            command="ping",
+            detail=(
+                f"Peer was silent for {self.timeout}s while waiting for {expected_bytes} bytes; "
+                "allowing one grace interval"
+            ),
+        )
+        await self._send_raw("ping", nonce)
+        return self.is_running()
 
     # ────────────────────────────────────────────────────────────────
     # Sliding-window rate-limiter (O(1))
@@ -718,11 +863,12 @@ class P2PClient(QObject):
             dq.popleft()
 
         if len(dq) > max_per_sec:
+            reason = f"Exceeded {label} rate limit ({len(dq)} > {max_per_sec} in {RATE_WINDOW_SEC:.1f}s)"
             logger.debug(
                 f"Peer exceeded {label} rate limit ({len(dq)} > {max_per_sec} in {RATE_WINDOW_SEC:.1f}s) – disconnecting"
             )
             # schedule an async disconnect without blocking
-            asyncio.create_task(self.disconnect())
+            asyncio.create_task(self.disconnect(reason=reason))
 
     async def _read_message(self) -> None:
         """
@@ -750,11 +896,12 @@ class P2PClient(QObject):
         # 2) Parse command and payload length
         cmd = header[4:16].rstrip(b"\x00").decode(errors="ignore")
         length = struct.unpack("<L", header[16:20])[0]
+        self._last_command = cmd
 
         # ── HARDENING: reject over-large payloads
         if length > MAX_PAYLOAD_LEN:
             logger.debug(f"Payload {length} bytes for {cmd} exceeds {MAX_PAYLOAD_LEN} – disconnecting")
-            await self.disconnect()
+            await self.disconnect(reason=f"Payload for {cmd} exceeded limit ({length} > {MAX_PAYLOAD_LEN})")
             return
 
         # 3) Read the payload
@@ -765,16 +912,19 @@ class P2PClient(QObject):
         checksum_calc = double_sha256(payload)[:4]
         if checksum_recv != checksum_calc:
             logger.debug(f"Bad checksum for {cmd} – disconnecting")
-            await self.disconnect()
+            await self.disconnect(reason=f"Bad checksum for {cmd}")
             return
 
         # logger.debug(f"<- {cmd} ({length} bytes)")
+        self._message_count += 1
+        self._idle_timeout_probes_sent = 0
 
         # 4) Generic rate limiter
         self._enforce_rate_limit(self._msg_times, MAX_MSGS_PER_SEC, "message")
 
         # 5) Specific TX spam limiter
         if cmd == "tx":
+            self._received_tx_count += 1
             self._enforce_rate_limit(self._tx_times, MAX_TXS_PER_SEC, "tx")
 
         # 6) Dispatch safely
@@ -834,24 +984,38 @@ class P2PClient(QObject):
                 self.signal_unknown.emit(safe_cmd, payload)
             except Exception as e:
                 logger.debug(f"Error emitting unknown for {safe_cmd}: {e}")
-                await self.disconnect()
+                await self.disconnect(reason=f"Unknown-command signal emission failed for {safe_cmd}: {e}")
             return
 
         try:
             await handler(payload)
         except Exception as e:
             logger.debug(f"Error handling {safe_cmd}: {e} – disconnecting")
-            await self.disconnect()
+            await self.disconnect(reason=f"Handler error for {safe_cmd}: {e}")
 
     # Individual handlers ------------------------------------------------------------------
 
     async def _handle_version(self, p: bytes) -> None:
         """Handle version."""
-        self.signal_version.emit(self._decode_version(p))
+        version_payload = self._decode_version(p)
+        self._handshake_stage = "version_received"
+        self._emit_diagnostic(
+            event="version_received",
+            command="version",
+            detail=(
+                f"user_agent={version_payload['user_agent']} "
+                f"services={version_payload['services']} start_height={version_payload['start_height']}"
+            ),
+        )
+        self.signal_version.emit(version_payload)
         await self._send_raw("verack", b"")
+        if self.is_running():
+            self._emit_diagnostic(event="verack_sent", command="verack")
 
     async def _handle_verack(self, p: bytes) -> None:
         """Handle verack."""
+        self._handshake_stage = "verack_received"
+        self._emit_diagnostic(event="verack_received", command="verack", detail="Handshake complete")
         self.signal_verack.emit()
 
         # Immediately (and silently) ask for the address list.
@@ -866,6 +1030,11 @@ class P2PClient(QObject):
 
     async def _handle_pong(self, p: bytes) -> None:
         """Handle pong."""
+        if self._last_ping_nonce is not None and p[:8] == self._last_ping_nonce:
+            self._emit_diagnostic(
+                event="idle_probe_ack", command="pong", detail="Peer responded to liveness probe"
+            )
+            self._last_ping_nonce = None
         self.signal_pong.emit()
 
     async def _handle_sendheaders(self, p: bytes) -> None:
@@ -912,7 +1081,9 @@ class P2PClient(QObject):
 
     async def _handle_tx(self, p: bytes) -> None:
         """Handle tx."""
-        self.signal_tx.emit(bdk.Transaction(p))
+        tx = bdk.Transaction(p)
+        self.signal_tx_received.emit(tx)
+        self.signal_tx.emit(tx)
 
     async def _handle_block(self, p: bytes) -> None:
         """Handle block."""
@@ -1013,12 +1184,20 @@ class P2PClient(QObject):
             raise ValueError(f"inv list too large ({count} > {MAX_INV_ITEMS})")
 
         for i in range(count):
-            inv_type_int, h = struct.unpack_from("<I32s", p, consumed + i * 36)
+            offset = consumed + i * 36
+            if offset + 36 > len(p):
+                raise ValueError("truncated inv payload")
+            inv_type_int, h = struct.unpack_from("<I32s", p, offset)
             if not isinstance(h, bytes):
                 logger.debug(f"expected bytes, but got {h=}")
                 continue
+            try:
+                inventory_type = InventoryType(inv_type_int)
+            except ValueError:
+                logger.debug("Ignoring unknown inventory type %s", inv_type_int)
+                continue
             items.append(
-                InventoryItem(type=InventoryType(inv_type_int), payload=h[::-1].hex())
+                InventoryItem(type=inventory_type, payload=h[::-1].hex())
             )  # convert to big‑endian for caller
         return items
 

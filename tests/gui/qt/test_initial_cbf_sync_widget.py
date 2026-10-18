@@ -35,14 +35,14 @@ import json
 from datetime import timedelta
 from typing import Any
 
-from PyQt6.QtCore import QEvent, QRectF
-from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtCore import QEvent, QPointF, QRectF
+from PyQt6.QtGui import QColor, QImage, QPainter, QPalette
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
 from bitcoin_safe.geoip_rough import RoughGeoIpDatabase
-from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
+from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode, PeerSource
 from bitcoin_safe.gui.qt.util import get_neutral_surface_colors, to_color_name
 from bitcoin_safe.network_config import Peer
 from bitcoin_safe.pythonbdk_types import BlockchainType
@@ -171,6 +171,9 @@ def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config
         assert widget.cbf_legend_label.textLabel.text() == ""
     assert "Bitcoin nodes: 1" in widget.node_legend_label.textLabel.text()
 
+    point = next(point for point in widget.map_widget._points if point.host == "8.8.8.8")
+    assert "0.00 txs/s" in widget.map_widget._tooltip_for_point(point)
+
 
 def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, tmp_path, test_config) -> None:
     db_file = tmp_path / "geoip_rough_v1.json"
@@ -184,7 +187,117 @@ def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, t
     widget.set_p2p_listener_peers([peer])
     widget.set_nodes({peer})
 
-    assert any(point.source.name == "node" and point.host == peer.host for point in widget.map_widget._points)
+    matching_points = [point for point in widget.map_widget._points if point.host == peer.host]
+    assert {point.source.name for point in matching_points} == {"node", "p2p_listener"}
+
+    map_widget = widget.map_widget
+    map_rect = map_widget._fit_map_rect(QRectF(map_widget.rect().adjusted(1, 1, -1, -1)))
+    center = map_widget._point_center(matching_points[0], map_rect)
+    image = QImage(map_widget.size(), QImage.Format.Format_ARGB32)
+    image.fill(QColor("white"))
+    painter = QPainter(image)
+    map_widget._draw_points(painter, map_rect)
+    painter.end()
+
+    pixel = image.pixelColor(round(center.x()), round(center.y()))
+    assert pixel == map_widget._NODE_COLOR
+    point_index = map_widget._point_index_at_position(QPointF(center), map_rect)
+    assert point_index is not None
+    assert map_widget._points[point_index].source.name == "node"
+
+
+def test_network_map_point_jitter_is_deterministic_per_ip(qtbot: QtBot, tmp_path, test_config) -> None:
+    db_file = tmp_path / "geoip_rough_v1.json"
+    write_geoip_fixture(db_file)
+
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.cbf_initial_sync)
+    widget.geoip = RoughGeoIpDatabase(db_path=db_file)
+    qtbot.addWidget(widget)
+
+    first = widget._build_mapped_points(["8.8.8.8"], source=PeerSource.p2p_listener)
+    repeated = widget._build_mapped_points(["8.8.8.8"], source=PeerSource.p2p_listener)
+    other_ip = widget._build_mapped_points(["8.8.9.1"], source=PeerSource.p2p_listener)
+
+    assert (first[0].latitude, first[0].longitude) == (repeated[0].latitude, repeated[0].longitude)
+    assert (first[0].latitude, first[0].longitude) != (other_ip[0].latitude, other_ip[0].longitude)
+
+
+def test_network_map_widget_p2p_tooltip_contains_tx_rate(qtbot: QtBot, test_config) -> None:
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    peer = Peer(host="8.8.8.8", port=8333)
+    widget.set_p2p_listener_peers([peer], tx_rates={peer: 1.25})
+
+    point = next(point for point in widget.map_widget._points if point.host == peer.host)
+    assert "1.25 txs/s" in widget.map_widget._tooltip_for_point(point)
+    assert "Current total receive rate: 1.25 txs/s" in widget.peer_legend_label.toolTip()
+
+
+def test_network_map_widget_legend_tooltip_sums_p2p_rates(qtbot: QtBot, test_config) -> None:
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    peer_a = Peer(host="8.8.8.8", port=8333)
+    peer_b = Peer(host="1.1.1.1", port=8333)
+    widget.set_p2p_listener_peers([peer_a, peer_b], tx_rates={peer_a: 1.25, peer_b: 0.75})
+
+    assert "Current total receive rate: 2.00 txs/s" in widget.peer_legend_label.toolTip()
+
+
+def test_network_map_wallet_progress_refresh_reuses_cards_and_map_geometry(qtbot: QtBot, test_config) -> None:
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    widget.resize(1000, 700)
+    widget.show()
+    qtbot.waitExposed(widget)
+
+    progress = ProgressInfo(
+        progress=0.25,
+        passed_time=timedelta(seconds=10),
+        remaining_time=timedelta(seconds=30),
+        status_msg="",
+        sync_status=SyncStatus.syncing,
+    )
+    widget.set_wallet_progresses({"wallet-a": ("Wallet A", progress)})
+    qtbot.wait(50)
+    map_geometry = widget.map_widget.geometry()
+    card = widget._wallet_progress_cards["wallet-a"]
+
+    widget.set_wallet_progresses({"wallet-a": ("Wallet A", progress)})
+    qtbot.wait(50)
+
+    assert widget._wallet_progress_cards["wallet-a"] is card
+    assert widget.map_widget.geometry() == map_geometry
+
+
+def test_network_map_refresh_does_not_restart_unchanged_server_resolution(
+    qtbot: QtBot, test_config, monkeypatch
+) -> None:
+    test_config.network_config.server_type = BlockchainType.Electrum
+    test_config.network_config.electrum_url = "electrum.example:50002"
+    resolution_calls = 0
+
+    async def resolve_host(*_args, **_kwargs) -> list[str]:
+        nonlocal resolution_calls
+        resolution_calls += 1
+        return ["8.8.8.8"]
+
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.initial_cbf_sync_widget.resolve_host_addresses_async", resolve_host
+    )
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    qtbot.waitUntil(lambda: not widget._server_resolution_pending)
+    resolved_host = widget._resolved_server_host
+    initial_server_points = [point for point in widget.map_widget._points if point.source.name == "server"]
+
+    for _ in range(5):
+        widget.set_network_config()
+
+    assert resolution_calls == 1
+    assert widget._resolved_server_host == resolved_host
+    assert [
+        point for point in widget.map_widget._points if point.source.name == "server"
+    ] == initial_server_points
 
 
 def test_network_map_widget_visibility_depends_on_network_mode(

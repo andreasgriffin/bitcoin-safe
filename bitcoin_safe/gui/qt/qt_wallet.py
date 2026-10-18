@@ -2219,14 +2219,19 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             )
 
     def update_history_initial_sync_widgets(
-        self, total_discovered_peers: set[Peer] | None, p2p_connections: list[ConnectionInfo] | None
+        self,
+        total_discovered_peers: set[Peer] | None,
+        p2p_connections: list[ConnectionInfo] | None,
+        p2p_tx_rates: dict[Peer, float] | None = None,
     ):
         if not self.network_map_widget and not self.should_show_initial_sync_placeholder():
             return
 
         history_initial_sync_widget = self.get_or_create_history_initial_sync_widget()
         if p2p_connections is not None:
-            history_initial_sync_widget.set_p2p_listener_peers([c.peer for c in p2p_connections])
+            history_initial_sync_widget.set_p2p_listener_peers(
+                [c.peer for c in p2p_connections], tx_rates=p2p_tx_rates
+            )
         if total_discovered_peers is not None:
             history_initial_sync_widget.set_nodes(total_discovered_peers)
         self._refresh_history_initial_sync_cbf_peers(history_initial_sync_widget)

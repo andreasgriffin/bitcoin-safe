@@ -89,7 +89,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.cbf.cbf_sync import CbfSync
-from bitcoin_safe.client import Client
+from bitcoin_safe.client import Client, ProgressInfo
 from bitcoin_safe.client_helpers import SyncStatus
 from bitcoin_safe.constants import APP_NAME, LOGO_NAME
 from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
@@ -120,7 +120,7 @@ from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.logging_handlers import mail_feedback, mail_help_contact
 from bitcoin_safe.logging_setup import get_log_file
-from bitcoin_safe.network_config import P2pListenerType, Peers, PeerSelectionMode
+from bitcoin_safe.network_config import P2pListenerType, Peer, Peers, PeerSelectionMode
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.p2p.p2p_client import ConnectionInfo
 from bitcoin_safe.p2p.p2p_listener import P2pListener
@@ -821,6 +821,7 @@ class MainWindow(UnlockableMainWindow):
                 if self.p2p_listener
                 else None,
                 p2p_connections=self.p2p_listener.get_current_peers() if self.p2p_listener else None,
+                p2p_tx_rates=self.p2p_listener.tx_rates if self.p2p_listener else None,
             )
         self.refresh_global_network_map()
 
@@ -860,8 +861,9 @@ class MainWindow(UnlockableMainWindow):
             allowed_peers=configured_peers if only_configured_peers else None,
             max_parallel_peers=self.config.network_config.p2p_listener_parallel_connections,
         )
-        self.p2p_listener.signal_tx.connect(self.p2p_listening_on_tx)
+        self.p2p_listener.signal_relevant_tx.connect(self.p2p_listening_on_tx)
         self.p2p_listener.signal_block.connect(self.p2p_listening_on_block)
+        self.p2p_listener.signal_peer_tx_rate_change.connect(self.on_p2p_tx_rate_change)
         self.p2p_listener.start(
             preferred_peers=configured_peers if configured_peers else None,
             proxy_info=(
@@ -875,6 +877,10 @@ class MainWindow(UnlockableMainWindow):
             self.on_p2p_listener_refresh_button
         )
         self.p2p_listening_update_lists(UpdateFilter())
+
+    def on_p2p_tx_rate_change(self, _peer: Peer, _rate: float) -> None:
+        """Refresh network maps when a peer's transaction rate changes."""
+        self.update_all_history_initial_sync_widgets()
 
     def on_p2p_listener_refresh_button(self):
         """On p2p listener refresh button."""
@@ -1497,11 +1503,12 @@ class MainWindow(UnlockableMainWindow):
 
         widget.set_network_config()
         cbf_peer_hosts: list[str] = []
-        widget.clear_wallet_progress()
+        wallet_progress: dict[str, tuple[str, ProgressInfo]] = {}
 
         if self.p2p_listener:
             widget.set_p2p_listener_peers(
-                [connection.peer for connection in self.p2p_listener.get_current_peers()]
+                [connection.peer for connection in self.p2p_listener.get_current_peers()],
+                tx_rates=self.p2p_listener.tx_rates,
             )
             widget.set_nodes(self.p2p_listener.peer_discovery.total_discovered_peers)
         else:
@@ -1518,12 +1525,9 @@ class MainWindow(UnlockableMainWindow):
             cbf_peer_hosts.extend(wallet_cbf_peer_hosts)
             if client.sync_status not in [SyncStatus.syncing, SyncStatus.unknown]:
                 continue
-            widget.set_wallet_progress(
-                wallet_id=qt_wallet.wallet.id,
-                wallet_title=qt_wallet.wallet.id,
-                progress_info=client.progress_info,
-            )
+            wallet_progress[qt_wallet.wallet.id] = (qt_wallet.wallet.id, client.progress_info)
 
+        widget.set_wallet_progresses(wallet_progress)
         widget.set_cbf_peer_hosts(list(dict.fromkeys(cbf_peer_hosts)))
         widget.set_cbf_peer_count(len(cbf_peer_hosts))
 
