@@ -123,6 +123,7 @@ class SankeyBitcoin(SankeyWidget):
         txo_dict: dict[str, PythonUtxo] | None = None,
     ) -> bool:
         """Set tx."""
+        self._has_data = False
 
         def get_label_and_tooltip(
             value: int | None,
