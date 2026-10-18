@@ -137,7 +137,7 @@ class TrayController(QSystemTrayIcon):
         self._tray_visible_windows = [
             window
             for window in QApplication.topLevelWidgets()
-            if window.isVisible() and not window.windowFlags() & Qt.WindowType.ToolTip
+            if window.isVisible() and window.windowType() != Qt.WindowType.ToolTip
         ]
         self._tray_prev_active = QApplication.activeWindow()
         self.set_hidden(True)
