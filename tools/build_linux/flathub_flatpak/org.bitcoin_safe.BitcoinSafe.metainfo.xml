@@ -53,11 +53,14 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="2.1.4" date="2026-08-05">
+    <release version="2.2.0" date="2026-10-18">
       <description>
         <ul>
-          <li>Upgraded HWI</li>
-          <li>Hardened external plugin Manager and plugin state preservation</li>
+          <li>Toggle between exlusive or additive custom peers for compact block filter and p2p transaction monitoring</li>
+          <li>Improved transaction monitoring robustness</li>
+          <li>Reconnect to compact block filter nodes after all connections are lost</li>
+          <li>Upgraded Flatpak QT version</li>
+          <li>Hardened plugin manager and plugin state preservation</li>
           <li>Faster plugin loading on wallet startup</li>
         </ul>
       </description>
