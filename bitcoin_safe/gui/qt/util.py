@@ -127,6 +127,7 @@ _THEME_PALETTE_ROLES: tuple[QPalette.ColorRole, ...] = (
     QPalette.ColorRole.HighlightedText,
     QPalette.ColorRole.Link,
     QPalette.ColorRole.Mid,
+    QPalette.ColorRole.Midlight,
     QPalette.ColorRole.Dark,
 )
 
