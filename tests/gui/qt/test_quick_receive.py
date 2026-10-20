@@ -37,6 +37,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pytest
+from PyQt6.QtGui import QPalette
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
@@ -44,6 +45,7 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.gui.qt.invisible_scroll_area import InvisibleScrollArea
 from bitcoin_safe.gui.qt.qr_components.quick_receive import QuickReceive, ReceiveGroup
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
+from bitcoin_safe.theme import create_dark_palette, create_light_palette
 
 from ...helpers import TestConfig
 from .helpers import Shutter, main_window_context
@@ -63,6 +65,43 @@ def test_quick_receive_uses_invisible_scroll_area(qtbot: QtBot) -> None:
     assert isinstance(widget.scroll_area, InvisibleScrollArea)
     assert widget.content_widget is widget.scroll_area.content_widget
     assert "border: none;" in widget.scroll_area.styleSheet()
+
+
+def test_add_category_button_rethemes_with_application_palette(qapp: QApplication, qtbot: QtBot) -> None:
+    original_palette = QPalette(qapp.palette())
+    light_palette = create_light_palette(original_palette)
+    dark_palette = create_dark_palette(original_palette)
+    widget = QuickReceive()
+    qtbot.addWidget(widget)
+    widget.show()
+
+    try:
+        qapp.setPalette(light_palette)
+        light_background = light_palette.color(QPalette.ColorRole.Midlight).name()
+        light_border = light_palette.color(QPalette.ColorRole.Mid).name()
+        qtbot.waitUntil(
+            lambda: (
+                light_background in widget.add_category_button.styleSheet()
+                and light_border in widget.add_category_button.styleSheet()
+            ),
+            timeout=5000,
+        )
+
+        qapp.setPalette(dark_palette)
+        dark_background = dark_palette.color(QPalette.ColorRole.Midlight).name()
+        dark_border = dark_palette.color(QPalette.ColorRole.Mid).name()
+        qtbot.waitUntil(
+            lambda: (
+                dark_background in widget.add_category_button.styleSheet()
+                and dark_border in widget.add_category_button.styleSheet()
+            ),
+            timeout=5000,
+        )
+    finally:
+        qapp.setPalette(original_palette)
+
+    assert dark_background != light_background
+    assert dark_border != light_border
 
 
 @pytest.mark.marker_qt_3

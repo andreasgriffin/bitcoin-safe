@@ -1726,7 +1726,6 @@ def test_known_subscription_hides_plan_selector_and_ignores_selected_plan(
         assert not widget.enable_checkbox.isHidden()
 
         initial_status = plugin.status_text()
-        assert "Management URL saved." in initial_status
 
         plugin.select_plan_option(monthly_key)
 

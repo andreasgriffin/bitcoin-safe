@@ -63,6 +63,8 @@ def create_dark_palette(base_palette: QPalette | None = None) -> QPalette:
     dark_palette.setColor(QPalette.ColorRole.Text, QColor(255, 255, 255))
     dark_palette.setColor(QPalette.ColorRole.Button, QColor(53, 53, 53))
     dark_palette.setColor(QPalette.ColorRole.ButtonText, QColor(255, 255, 255))
+    dark_palette.setColor(QPalette.ColorRole.Midlight, QColor(66, 66, 66))
+    dark_palette.setColor(QPalette.ColorRole.Mid, QColor(112, 112, 112))
     dark_palette.setColor(QPalette.ColorRole.BrightText, QColor(255, 0, 0))
     dark_palette.setColor(QPalette.ColorRole.Link, QColor(42, 130, 218))
     dark_palette.setColor(QPalette.ColorRole.Highlight, QColor(42, 130, 218))
@@ -82,6 +84,8 @@ def create_light_palette(base_palette: QPalette | None = None) -> QPalette:
     light_palette.setColor(QPalette.ColorRole.Text, QColor("#000000"))
     light_palette.setColor(QPalette.ColorRole.Button, QColor("#efefef"))
     light_palette.setColor(QPalette.ColorRole.ButtonText, QColor("#000000"))
+    light_palette.setColor(QPalette.ColorRole.Midlight, QColor("#f7f7f7"))
+    light_palette.setColor(QPalette.ColorRole.Mid, QColor("#b8b8b8"))
     light_palette.setColor(QPalette.ColorRole.BrightText, QColor("#ffffff"))
     return light_palette
 
