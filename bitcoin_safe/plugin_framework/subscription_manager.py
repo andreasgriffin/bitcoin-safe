@@ -287,7 +287,7 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         if not self.management_url:
             return translate("subscription", "No subscription has been activated yet.")
 
-        parts = [translate("subscription", "Management URL saved.")]
+        parts = []
         if self.stored_subscription_status.status:
             status = self.stored_subscription_status.status.status
             if status == SubscriptionManagementStatusCode.UPGRADE_REQUIRED:
