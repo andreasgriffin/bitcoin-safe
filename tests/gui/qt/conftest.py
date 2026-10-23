@@ -174,7 +174,7 @@ _GLOBAL_PALETTE_GUI_TEST_MODULES = {
     "test_button_edit.py",
     "test_card_base.py",
     "test_icon_label.py",
-    "test_initial_cbf_sync_widget.py",
+    "test_network_map_widget.py",
     "test_keystore_ui.py",
     "test_my_treeview.py",
     "test_notification_bar.py",

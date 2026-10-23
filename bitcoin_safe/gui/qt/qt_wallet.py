@@ -126,7 +126,7 @@ from .descriptor_ui import DescriptorUI
 from .dialogs import PasswordCreation, PasswordQuestion
 from .hist_list import HistList, HistListWithToolbar
 from .history_range import HistoryRangeController
-from .initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
+from .network_map_widget import NetworkMapWidget, NetworkMapWidgetMode
 from .util import (
     Message,
     MessageType,

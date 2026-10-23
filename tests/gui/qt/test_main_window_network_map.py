@@ -32,7 +32,7 @@ from __future__ import annotations
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget
+from bitcoin_safe.gui.qt.network_map_widget import NetworkMapWidget
 
 from ...helpers import TestConfig
 from .helpers import main_window_context

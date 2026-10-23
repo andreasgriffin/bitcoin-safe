@@ -911,11 +911,10 @@ class NetworkMapWidget(QWidget):
             location = self.geoip.lookup_host(host)
             if not location:
                 continue
-            latitude_jitter, longitude_jitter = self._coordinate_jitter(host)
             points.append(
                 PeerMapPoint(
-                    latitude=max(-90.0, min(90.0, location.latitude + latitude_jitter)),
-                    longitude=(location.longitude + longitude_jitter + 180.0) % 360.0 - 180.0,
+                    latitude=location.latitude,
+                    longitude=location.longitude,
                     host=host,
                     source=source,
                     country_code=location.country_code,
@@ -932,6 +931,31 @@ class NetworkMapWidget(QWidget):
         latitude_jitter = int.from_bytes(digest[:4], "big") * scale - 2.5
         longitude_jitter = int.from_bytes(digest[4:], "big") * scale - 2.5
         return latitude_jitter, longitude_jitter
+
+    @classmethod
+    def _jitter_collocated_points(cls, points: list[PeerMapPoint]) -> list[PeerMapPoint]:
+        """Offset only peer markers that share the same mapped coordinates."""
+        locations: dict[tuple[float, float], list[int]] = {}
+        for index, point in enumerate(points):
+            locations.setdefault((point.latitude, point.longitude), []).append(index)
+
+        adjusted = list(points)
+        for indexes in locations.values():
+            if len({points[index].host for index in indexes}) < 2:
+                continue
+            for index in indexes:
+                point = points[index]
+                latitude_jitter, longitude_jitter = cls._coordinate_jitter(point.host)
+                adjusted[index] = PeerMapPoint(
+                    latitude=max(-90.0, min(90.0, point.latitude + latitude_jitter)),
+                    longitude=(point.longitude + longitude_jitter + 180.0) % 360.0 - 180.0,
+                    host=point.host,
+                    source=point.source,
+                    country_code=point.country_code,
+                    label=point.label,
+                    tx_rate=point.tx_rate,
+                )
+        return adjusted
 
     def _build_server_points(self) -> list[PeerMapPoint]:
         label = self._server_source_label()
@@ -1004,9 +1028,13 @@ class NetworkMapWidget(QWidget):
             for point in p2p_points
         ]
         cbf_points = self._build_mapped_points(list(cbf_peer_hosts), PeerSource.cbf)
+        peer_points = self._jitter_collocated_points(node_points + p2p_points + cbf_points)
+        node_points = [point for point in peer_points if point.source == PeerSource.node]
+        p2p_points = [point for point in peer_points if point.source == PeerSource.p2p_listener]
+        cbf_points = [point for point in peer_points if point.source == PeerSource.cbf]
         server_points = self._build_server_points()
 
-        points = node_points + p2p_points + cbf_points + server_points
+        points = peer_points + server_points
         self.map_widget.set_points(points)
 
         gray = self.map_widget._LAND_FILL.name()
@@ -1090,18 +1118,3 @@ class NetworkMapWidget(QWidget):
         if self._owns_loop_in_thread:
             self.loop_in_thread.stop()
         return super().close()
-
-
-class InitialCbfSyncWidget(NetworkMapWidget):
-    def __init__(
-        self,
-        config: UserConfig,
-        loop_in_thread: LoopInThread | None = None,
-        parent: QWidget | None = None,
-    ) -> None:
-        super().__init__(
-            config=config,
-            mode=NetworkMapWidgetMode.cbf_initial_sync,
-            loop_in_thread=loop_in_thread,
-            parent=parent,
-        )

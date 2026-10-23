@@ -147,8 +147,8 @@ from . import address_dialog
 from .attached_widgets import AttachedWidgets
 from .dialog_import import ImportDialog, file_to_str
 from .dialogs import PasswordQuestion, WalletIdDialog, show_textedit_message
-from .initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
 from .loading_wallet_tab import LoadingWalletTab
+from .network_map_widget import NetworkMapWidget, NetworkMapWidgetMode
 from .new_wallet_welcome_screen import NetworkChoiceWelcomeScreen, NewWalletWelcomeScreen
 from .qt_wallet import QTProtoWallet, QTWallet, QtWalletBase, create_tx_viewer
 from .recent_wallets_sidebar import RecentlyOpenedWalletsGroup

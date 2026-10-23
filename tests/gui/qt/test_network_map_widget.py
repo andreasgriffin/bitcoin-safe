@@ -43,7 +43,7 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
 from bitcoin_safe.geoip_rough import RoughGeoIpDatabase
-from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode, PeerSource
+from bitcoin_safe.gui.qt.network_map_widget import NetworkMapWidget, NetworkMapWidgetMode, PeerSource
 from bitcoin_safe.gui.qt.util import get_neutral_surface_colors, to_color_name
 from bitcoin_safe.network_config import Peer
 from bitcoin_safe.pythonbdk_types import BlockchainType
@@ -78,7 +78,7 @@ async def _resolve_to_google(*_args, **_kwargs) -> list[str]:
     return ["8.8.8.8"]
 
 
-def test_initial_cbf_sync_widget_visual_smoke(
+def test_network_map_widget_visual_smoke(
     qtbot: QtBot,
     tmp_path,
     mytest_start_time,
@@ -146,7 +146,7 @@ def test_initial_cbf_sync_widget_visual_smoke(
     assert screenshot_path.exists()
 
 
-def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config) -> None:
+def test_network_map_widget_copies_mutable_inputs(qtbot: QtBot, test_config) -> None:
     widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.cbf_initial_sync)
     qtbot.addWidget(widget)
 
@@ -176,13 +176,51 @@ def test_initial_cbf_sync_widget_copies_mutable_inputs(qtbot: QtBot, test_config
     assert "0.00 txs/s" in widget.map_widget._tooltip_for_point(point)
 
 
+def test_network_map_jitters_only_peers_with_same_location(qtbot: QtBot, tmp_path, test_config) -> None:
+    db_file = tmp_path / "geoip_rough_v1.json"
+    write_geoip_fixture(db_file)
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    widget.geoip = RoughGeoIpDatabase(db_path=db_file)
+    qtbot.addWidget(widget)
+
+    widget.set_p2p_listener_peers(
+        [
+            Peer(host="8.8.8.8", port=8333),
+            Peer(host="8.8.4.4", port=8333),
+            Peer(host="1.1.1.1", port=8333),
+        ]
+    )
+
+    points = {point.host: point for point in widget.map_widget._points}
+    google_location = widget.geoip.lookup_host("8.8.8.8")
+    cloudflare_location = widget.geoip.lookup_host("1.1.1.1")
+    assert google_location is not None
+    assert cloudflare_location is not None
+    assert (points["8.8.8.8"].latitude, points["8.8.8.8"].longitude) != (
+        google_location.latitude,
+        google_location.longitude,
+    )
+    assert (points["8.8.4.4"].latitude, points["8.8.4.4"].longitude) != (
+        google_location.latitude,
+        google_location.longitude,
+    )
+    assert (points["8.8.8.8"].latitude, points["8.8.8.8"].longitude) != (
+        points["8.8.4.4"].latitude,
+        points["8.8.4.4"].longitude,
+    )
+    assert (points["1.1.1.1"].latitude, points["1.1.1.1"].longitude) == (
+        cloudflare_location.latitude,
+        cloudflare_location.longitude,
+    )
+
+
 def test_world_peer_map_hides_tooltip_when_hidden(qtbot: QtBot, test_config) -> None:
     widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.cbf_initial_sync)
     qtbot.addWidget(widget)
     map_widget = widget.map_widget
     map_widget._hovered_point_index = 0
 
-    with patch("bitcoin_safe.gui.qt.initial_cbf_sync_widget.QToolTip.hideText") as hide_tooltip:
+    with patch("bitcoin_safe.gui.qt.network_map_widget.QToolTip.hideText") as hide_tooltip:
         map_widget.hide()
 
     hide_tooltip.assert_called_once_with()
@@ -220,7 +258,9 @@ def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, t
     assert map_widget._points[point_index].source.name == "node"
 
 
-def test_network_map_point_jitter_is_deterministic_per_ip(qtbot: QtBot, tmp_path, test_config) -> None:
+def test_network_map_jitter_is_deterministic_for_collocated_peers(
+    qtbot: QtBot, tmp_path, test_config
+) -> None:
     db_file = tmp_path / "geoip_rough_v1.json"
     write_geoip_fixture(db_file)
 
@@ -230,10 +270,17 @@ def test_network_map_point_jitter_is_deterministic_per_ip(qtbot: QtBot, tmp_path
 
     first = widget._build_mapped_points(["8.8.8.8"], source=PeerSource.p2p_listener)
     repeated = widget._build_mapped_points(["8.8.8.8"], source=PeerSource.p2p_listener)
-    other_ip = widget._build_mapped_points(["8.8.9.1"], source=PeerSource.p2p_listener)
+    collocated = widget._build_mapped_points(["8.8.9.1"], source=PeerSource.cbf)
 
     assert (first[0].latitude, first[0].longitude) == (repeated[0].latitude, repeated[0].longitude)
-    assert (first[0].latitude, first[0].longitude) != (other_ip[0].latitude, other_ip[0].longitude)
+    assert (first[0].latitude, first[0].longitude) == (collocated[0].latitude, collocated[0].longitude)
+
+    adjusted = widget._jitter_collocated_points(first + collocated)
+    assert (adjusted[0].latitude, adjusted[0].longitude) != (first[0].latitude, first[0].longitude)
+    assert (adjusted[0].latitude, adjusted[0].longitude) != (
+        adjusted[1].latitude,
+        adjusted[1].longitude,
+    )
 
 
 def test_network_map_widget_p2p_tooltip_contains_tx_rate(qtbot: QtBot, test_config) -> None:
@@ -295,9 +342,7 @@ def test_network_map_refresh_does_not_restart_unchanged_server_resolution(
         resolution_calls += 1
         return ["8.8.8.8"]
 
-    monkeypatch.setattr(
-        "bitcoin_safe.gui.qt.initial_cbf_sync_widget.resolve_host_addresses_async", resolve_host
-    )
+    monkeypatch.setattr("bitcoin_safe.gui.qt.network_map_widget.resolve_host_addresses_async", resolve_host)
     widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
     qtbot.addWidget(widget)
     qtbot.waitUntil(lambda: not widget._server_resolution_pending)
@@ -320,7 +365,7 @@ def test_network_map_widget_visibility_depends_on_network_mode(
     db_file = tmp_path / "geoip_rough_v1.json"
     write_geoip_fixture(db_file)
     monkeypatch.setattr(
-        "bitcoin_safe.gui.qt.initial_cbf_sync_widget.resolve_host_addresses_async",
+        "bitcoin_safe.gui.qt.network_map_widget.resolve_host_addresses_async",
         _resolve_to_google,
     )
 
@@ -484,7 +529,7 @@ def test_network_map_widget_maps_electrum_server_hostnames(
     test_config.network_config.electrum_url = "electrum.example:50002"
 
     monkeypatch.setattr(
-        "bitcoin_safe.gui.qt.initial_cbf_sync_widget.resolve_host_addresses_async",
+        "bitcoin_safe.gui.qt.network_map_widget.resolve_host_addresses_async",
         _resolve_to_google,
     )
 
