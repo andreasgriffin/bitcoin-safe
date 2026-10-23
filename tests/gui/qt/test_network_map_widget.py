@@ -177,6 +177,27 @@ def test_network_map_widget_copies_mutable_inputs(qtbot: QtBot, test_config) -> 
     assert "0.00 txs/s" in widget.map_widget._tooltip_for_point(point)
 
 
+def test_network_map_peer_data_batch_refreshes_once(qtbot: QtBot, test_config, monkeypatch) -> None:
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    qtbot.addWidget(widget)
+    refreshes = 0
+
+    def count_refreshes() -> None:
+        nonlocal refreshes
+        refreshes += 1
+
+    monkeypatch.setattr(widget, "_refresh_points_and_legend", count_refreshes)
+    widget.set_peer_data(
+        p2p_connections=[Peer(host="8.8.8.8", port=8333)],
+        nodes={Peer(host="1.1.1.1", port=8333)},
+        cbf_peer_hosts=["8.8.4.4"],
+        cbf_peer_count=3,
+        tx_rates={},
+    )
+
+    assert refreshes == 1
+
+
 def test_network_map_jitters_only_peers_with_same_location(qtbot: QtBot, tmp_path, test_config) -> None:
     db_file = tmp_path / "geoip_rough_v1.json"
     write_geoip_fixture(db_file)

@@ -1498,15 +1498,13 @@ class MainWindow(UnlockableMainWindow):
         cbf_peer_hosts: list[str] = []
         wallet_progress: dict[str, tuple[str, ProgressInfo]] = {}
 
+        p2p_connections = []
+        nodes = set()
+        tx_rates = None
         if self.p2p_listener:
-            widget.set_p2p_listener_peers(
-                [connection.peer for connection in self.p2p_listener.get_current_peers()],
-                tx_rates=self.p2p_listener.tx_rates,
-            )
-            widget.set_nodes(self.p2p_listener.peer_discovery.total_discovered_peers)
-        else:
-            widget.set_p2p_listener_peers([])
-            widget.set_nodes(set())
+            p2p_connections = [connection.peer for connection in self.p2p_listener.get_current_peers()]
+            nodes = self.p2p_listener.peer_discovery.total_discovered_peers
+            tx_rates = self.p2p_listener.tx_rates
 
         for qt_wallet in self.qt_wallets.values():
             client = qt_wallet.wallet.client
@@ -1521,8 +1519,13 @@ class MainWindow(UnlockableMainWindow):
             wallet_progress[qt_wallet.wallet.id] = (qt_wallet.wallet.id, client.progress_info)
 
         widget.set_wallet_progresses(wallet_progress)
-        widget.set_cbf_peer_hosts(list(dict.fromkeys(cbf_peer_hosts)))
-        widget.set_cbf_peer_count(len(cbf_peer_hosts))
+        widget.set_peer_data(
+            p2p_connections=p2p_connections,
+            nodes=nodes,
+            cbf_peer_hosts=list(dict.fromkeys(cbf_peer_hosts)),
+            cbf_peer_count=len(cbf_peer_hosts),
+            tx_rates=tx_rates,
+        )
 
     def open_network_map(self) -> None:
         if self.global_network_map_widget:

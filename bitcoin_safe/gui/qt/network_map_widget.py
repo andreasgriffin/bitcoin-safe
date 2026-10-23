@@ -655,7 +655,6 @@ class NetworkMapWidget(QWidget):
         layout.addStretch(1)
 
         self.updateUi()
-        self._refresh_points_and_legend()
 
     def set_network_config(self) -> None:
         server_name = self._configured_server_name()
@@ -690,7 +689,6 @@ class NetworkMapWidget(QWidget):
                 )
 
         self.updateUi()
-        self._refresh_points_and_legend()
 
     def set_progress_info(self, progress_info: ProgressInfo) -> None:
         self._last_progress_info = progress_info
@@ -699,21 +697,35 @@ class NetworkMapWidget(QWidget):
     def set_p2p_listener_peers(
         self, connections: list[Peer], tx_rates: dict[Peer, float] | None = None
     ) -> None:
-        self._p2p_connections = list(connections)
-        self._p2p_tx_rates = dict(tx_rates or {})
-        self._p2p_total_tx_rate = sum(self._p2p_tx_rates.values())
-        self._refresh_points_and_legend()
+        self.set_peer_data(p2p_connections=connections, tx_rates=tx_rates)
 
     def set_nodes(self, nodes: set[Peer]) -> None:
-        self._nodes = set(nodes)
-        self._refresh_points_and_legend()
+        self.set_peer_data(nodes=nodes)
 
     def set_cbf_peer_hosts(self, peer_hosts: list[str]) -> None:
-        self._cbf_peer_hosts = list(peer_hosts)
-        self._refresh_points_and_legend()
+        self.set_peer_data(cbf_peer_hosts=peer_hosts)
 
     def set_cbf_peer_count(self, count: int) -> None:
-        self._cbf_peer_count = max(0, count)
+        self.set_peer_data(cbf_peer_count=count)
+
+    def set_peer_data(
+        self,
+        p2p_connections: list[Peer] | None = None,
+        nodes: set[Peer] | None = None,
+        cbf_peer_hosts: list[str] | None = None,
+        cbf_peer_count: int | None = None,
+        tx_rates: dict[Peer, float] | None = None,
+    ) -> None:
+        if p2p_connections is not None:
+            self._p2p_connections = list(p2p_connections)
+            self._p2p_tx_rates = dict(tx_rates or {})
+            self._p2p_total_tx_rate = sum(self._p2p_tx_rates.values())
+        if nodes is not None:
+            self._nodes = set(nodes)
+        if cbf_peer_hosts is not None:
+            self._cbf_peer_hosts = list(cbf_peer_hosts)
+        if cbf_peer_count is not None:
+            self._cbf_peer_count = max(0, cbf_peer_count)
         self._refresh_points_and_legend()
 
     def set_wallet_progress(
@@ -899,7 +911,6 @@ class NetworkMapWidget(QWidget):
             None,
         )
         self.updateUi()
-        self._refresh_points_and_legend()
 
     def _build_mapped_points(
         self,
