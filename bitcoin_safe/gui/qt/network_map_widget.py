@@ -35,6 +35,7 @@ import json
 import logging
 from dataclasses import dataclass
 from enum import Enum
+from functools import lru_cache
 from pathlib import Path
 from typing import cast
 
@@ -344,9 +345,9 @@ class WorldPeerMapWidget(QWidget):
         return None
 
     def _paint_order_indices(self) -> list[int]:
-        """Paint nodes last so peer markers cannot conceal their locations."""
+        """Paint nodes first so peer markers remain visible above them."""
         return sorted(
-            range(len(self._points)), key=lambda index: self._points[index].source == PeerSource.node
+            range(len(self._points)), key=lambda index: self._points[index].source != PeerSource.node
         )
 
     def _draw_points(self, painter: QPainter, map_rect: QRectF) -> None:
@@ -356,7 +357,6 @@ class WorldPeerMapWidget(QWidget):
             color = self._point_color(point.source)
 
             if point.source == PeerSource.node:
-                # Keep node locations visible over other marker types.
                 painter.setPen(QPen(self._POINT_RING_COLOR, 0.8))
                 painter.setBrush(color)
                 painter.drawEllipse(center, 3.2, 3.2)
@@ -654,7 +654,6 @@ class NetworkMapWidget(QWidget):
         layout.addStretch(1)
 
         self.updateUi()
-        self._refresh_points_and_legend()
 
     def set_network_config(self) -> None:
         server_name = self._configured_server_name()
@@ -689,7 +688,6 @@ class NetworkMapWidget(QWidget):
                 )
 
         self.updateUi()
-        self._refresh_points_and_legend()
 
     def set_progress_info(self, progress_info: ProgressInfo) -> None:
         self._last_progress_info = progress_info
@@ -698,21 +696,35 @@ class NetworkMapWidget(QWidget):
     def set_p2p_listener_peers(
         self, connections: list[Peer], tx_rates: dict[Peer, float] | None = None
     ) -> None:
-        self._p2p_connections = list(connections)
-        self._p2p_tx_rates = dict(tx_rates or {})
-        self._p2p_total_tx_rate = sum(self._p2p_tx_rates.values())
-        self._refresh_points_and_legend()
+        self.set_peer_data(p2p_connections=connections, tx_rates=tx_rates)
 
     def set_nodes(self, nodes: set[Peer]) -> None:
-        self._nodes = set(nodes)
-        self._refresh_points_and_legend()
+        self.set_peer_data(nodes=nodes)
 
     def set_cbf_peer_hosts(self, peer_hosts: list[str]) -> None:
-        self._cbf_peer_hosts = list(peer_hosts)
-        self._refresh_points_and_legend()
+        self.set_peer_data(cbf_peer_hosts=peer_hosts)
 
     def set_cbf_peer_count(self, count: int) -> None:
-        self._cbf_peer_count = max(0, count)
+        self.set_peer_data(cbf_peer_count=count)
+
+    def set_peer_data(
+        self,
+        p2p_connections: list[Peer] | None = None,
+        nodes: set[Peer] | None = None,
+        cbf_peer_hosts: list[str] | None = None,
+        cbf_peer_count: int | None = None,
+        tx_rates: dict[Peer, float] | None = None,
+    ) -> None:
+        if p2p_connections is not None:
+            self._p2p_connections = list(p2p_connections)
+            self._p2p_tx_rates = dict(tx_rates or {})
+            self._p2p_total_tx_rate = sum(self._p2p_tx_rates.values())
+        if nodes is not None:
+            self._nodes = set(nodes)
+        if cbf_peer_hosts is not None:
+            self._cbf_peer_hosts = list(cbf_peer_hosts)
+        if cbf_peer_count is not None:
+            self._cbf_peer_count = max(0, cbf_peer_count)
         self._refresh_points_and_legend()
 
     def set_wallet_progress(
@@ -898,33 +910,34 @@ class NetworkMapWidget(QWidget):
             None,
         )
         self.updateUi()
-        self._refresh_points_and_legend()
 
     def _build_mapped_points(
         self,
         hosts: list[str],
         source: PeerSource,
         label: str | None = None,
+        tx_rates_by_host: dict[str, float] | None = None,
     ) -> list[PeerMapPoint]:
         points: list[PeerMapPoint] = []
         for host in hosts:
             location = self.geoip.lookup_host(host)
             if not location:
                 continue
-            latitude_jitter, longitude_jitter = self._coordinate_jitter(host)
             points.append(
                 PeerMapPoint(
-                    latitude=max(-90.0, min(90.0, location.latitude + latitude_jitter)),
-                    longitude=(location.longitude + longitude_jitter + 180.0) % 360.0 - 180.0,
+                    latitude=location.latitude,
+                    longitude=location.longitude,
                     host=host,
                     source=source,
                     country_code=location.country_code,
                     label=label,
+                    tx_rate=tx_rates_by_host.get(host) if tx_rates_by_host is not None else None,
                 )
             )
         return points
 
     @staticmethod
+    @lru_cache(maxsize=4096)
     def _coordinate_jitter(host: str) -> tuple[float, float]:
         """Return stable offsets within five degrees, derived from the host IP."""
         digest = hashlib.blake2b(ipaddress.ip_address(host).packed, digest_size=8).digest()
@@ -932,6 +945,31 @@ class NetworkMapWidget(QWidget):
         latitude_jitter = int.from_bytes(digest[:4], "big") * scale - 2.5
         longitude_jitter = int.from_bytes(digest[4:], "big") * scale - 2.5
         return latitude_jitter, longitude_jitter
+
+    @classmethod
+    def _jitter_collocated_points(cls, points: list[PeerMapPoint]) -> list[PeerMapPoint]:
+        """Offset only peer markers that share the same mapped coordinates."""
+        locations: dict[tuple[float, float], list[int]] = {}
+        for index, point in enumerate(points):
+            locations.setdefault((point.latitude, point.longitude), []).append(index)
+
+        adjusted = list(points)
+        for indexes in locations.values():
+            if len({points[index].host for index in indexes}) < 2:
+                continue
+            for index in indexes:
+                point = points[index]
+                latitude_jitter, longitude_jitter = cls._coordinate_jitter(point.host)
+                adjusted[index] = PeerMapPoint(
+                    latitude=max(-90.0, min(90.0, point.latitude + latitude_jitter)),
+                    longitude=(point.longitude + longitude_jitter + 180.0) % 360.0 - 180.0,
+                    host=point.host,
+                    source=point.source,
+                    country_code=point.country_code,
+                    label=point.label,
+                    tx_rate=point.tx_rate,
+                )
+        return adjusted
 
     def _build_server_points(self) -> list[PeerMapPoint]:
         label = self._server_source_label()
@@ -981,32 +1019,31 @@ class NetworkMapWidget(QWidget):
 
         p2p_hosts = [peer.host for peer in p2p_connections]
         node_hosts = [peer.host for peer in nodes]
+        tx_rates_by_host: dict[str, float] = {}
+        for peer in p2p_connections:
+            tx_rates_by_host.setdefault(peer.host, self._p2p_tx_rates.get(peer, 0.0))
 
         node_points = self._build_mapped_points(node_hosts, PeerSource.node)
-        p2p_points = self._build_mapped_points(p2p_hosts, PeerSource.p2p_listener)
-        p2p_points = [
-            PeerMapPoint(
-                latitude=point.latitude,
-                longitude=point.longitude,
-                host=point.host,
-                source=point.source,
-                country_code=point.country_code,
-                label=point.label,
-                tx_rate=next(
-                    (
-                        self._p2p_tx_rates.get(peer, 0.0)
-                        for peer in p2p_connections
-                        if peer.host == point.host
-                    ),
-                    None,
-                ),
-            )
-            for point in p2p_points
-        ]
+        p2p_points = self._build_mapped_points(
+            p2p_hosts,
+            PeerSource.p2p_listener,
+            tx_rates_by_host=tx_rates_by_host,
+        )
         cbf_points = self._build_mapped_points(list(cbf_peer_hosts), PeerSource.cbf)
+        peer_points = self._jitter_collocated_points(node_points + p2p_points + cbf_points)
+        mapped_node_points: list[PeerMapPoint] = []
+        mapped_p2p_points: list[PeerMapPoint] = []
+        mapped_cbf_points: list[PeerMapPoint] = []
+        for point in peer_points:
+            if point.source == PeerSource.node:
+                mapped_node_points.append(point)
+            elif point.source == PeerSource.p2p_listener:
+                mapped_p2p_points.append(point)
+            else:
+                mapped_cbf_points.append(point)
         server_points = self._build_server_points()
 
-        points = node_points + p2p_points + cbf_points + server_points
+        points = peer_points + server_points
         self.map_widget.set_points(points)
 
         gray = self.map_widget._LAND_FILL.name()
@@ -1016,7 +1053,7 @@ class NetworkMapWidget(QWidget):
                 "<span style='color:{gray}'>(mapped: {mapped})</span> &nbsp;&nbsp;"
             ).format(
                 total=len(p2p_connections),
-                mapped=len(p2p_points),
+                mapped=len(mapped_p2p_points),
                 color=self.map_widget._P2P_COLOR.name(),
                 gray=gray,
             )
@@ -1038,7 +1075,7 @@ class NetworkMapWidget(QWidget):
                     "<span style='color:{gray}'>(mapped: {mapped})</span>"
                 ).format(
                     total=cbf_peer_count,
-                    mapped=len(cbf_points),
+                    mapped=len(mapped_cbf_points),
                     color=self.map_widget._CBF_COLOR.name(),
                     gray=gray,
                 )
@@ -1075,7 +1112,7 @@ class NetworkMapWidget(QWidget):
                 "<span style='color:{gray}'>(mapped: {mapped})</span>"
             ).format(
                 total=len(nodes),
-                mapped=len(node_points),
+                mapped=len(mapped_node_points),
                 color=self.map_widget._NODE_COLOR.name(),
                 gray=gray,
             )
@@ -1090,18 +1127,3 @@ class NetworkMapWidget(QWidget):
         if self._owns_loop_in_thread:
             self.loop_in_thread.stop()
         return super().close()
-
-
-class InitialCbfSyncWidget(NetworkMapWidget):
-    def __init__(
-        self,
-        config: UserConfig,
-        loop_in_thread: LoopInThread | None = None,
-        parent: QWidget | None = None,
-    ) -> None:
-        super().__init__(
-            config=config,
-            mode=NetworkMapWidgetMode.cbf_initial_sync,
-            loop_in_thread=loop_in_thread,
-            parent=parent,
-        )

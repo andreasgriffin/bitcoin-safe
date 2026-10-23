@@ -37,7 +37,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QLabel
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.gui.qt.initial_cbf_sync_widget import NetworkMapWidget, NetworkMapWidgetMode
+from bitcoin_safe.gui.qt.network_map_widget import NetworkMapWidget, NetworkMapWidgetMode
 from bitcoin_safe.gui.qt.tray_controller import TrayController
 from bitcoin_safe.gui.qt.unlockable_main_window import UnlockableMainWindow
 from bitcoin_safe.gui.qt.util import Message
