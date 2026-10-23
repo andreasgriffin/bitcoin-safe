@@ -381,6 +381,8 @@ class PeerDiscovery:
             Peer(str(host), scan_port) for network in local_ipv4_routes() for host in network.hosts()
         )
         candidates.extend(Peer(host, scan_port) for host in local_ipv4_neighbors())
+        candidates.append(Peer("127.0.0.1", scan_port))
+        candidates.extend(Peer("127.0.0.1", local_port) for local_port in local_ipv4_listening_ports())
         candidates = list(dict.fromkeys(candidates))
         semaphore = asyncio.Semaphore(max_concurrent)
 
@@ -482,3 +484,23 @@ def local_ipv4_neighbors() -> tuple[str, ...]:
         if address.version == 4 and not address.is_loopback and not address.is_unspecified:
             neighbors.add(str(address))
     return tuple(sorted(neighbors))
+
+
+def local_ipv4_listening_ports() -> tuple[int, ...]:
+    """Return ports listening on IPv4 loopback or all IPv4 interfaces."""
+    try:
+        connections = psutil.net_connections(kind="tcp")
+    except psutil.Error:
+        return ()
+
+    ports: set[int] = set()
+    for connection in connections:
+        if connection.status != psutil.CONN_LISTEN or not connection.laddr:
+            continue
+        try:
+            address = ip_address(connection.laddr.ip)
+        except ValueError:
+            continue
+        if address.version == 4 and (address.is_unspecified or address.is_loopback):
+            ports.add(connection.laddr.port)
+    return tuple(sorted(ports))
