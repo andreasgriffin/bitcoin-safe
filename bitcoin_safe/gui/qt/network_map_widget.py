@@ -345,9 +345,9 @@ class WorldPeerMapWidget(QWidget):
         return None
 
     def _paint_order_indices(self) -> list[int]:
-        """Paint nodes last so peer markers cannot conceal their locations."""
+        """Paint nodes first so peer markers remain visible above them."""
         return sorted(
-            range(len(self._points)), key=lambda index: self._points[index].source == PeerSource.node
+            range(len(self._points)), key=lambda index: self._points[index].source != PeerSource.node
         )
 
     def _draw_points(self, painter: QPainter, map_rect: QRectF) -> None:
@@ -357,7 +357,6 @@ class WorldPeerMapWidget(QWidget):
             color = self._point_color(point.source)
 
             if point.source == PeerSource.node:
-                # Keep node locations visible over other marker types.
                 painter.setPen(QPen(self._POINT_RING_COLOR, 0.8))
                 painter.setBrush(color)
                 painter.drawEllipse(center, 3.2, 3.2)

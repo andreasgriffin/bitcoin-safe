@@ -249,7 +249,7 @@ def test_world_peer_map_hides_tooltip_when_hidden(qtbot: QtBot, test_config) -> 
     assert map_widget._hovered_point_index is None
 
 
-def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, tmp_path, test_config) -> None:
+def test_network_map_draws_p2p_peer_above_discovered_node(qtbot: QtBot, tmp_path, test_config) -> None:
     db_file = tmp_path / "geoip_rough_v1.json"
     write_geoip_fixture(db_file)
 
@@ -274,10 +274,10 @@ def test_network_map_keeps_discovered_node_when_it_is_a_p2p_peer(qtbot: QtBot, t
     painter.end()
 
     pixel = image.pixelColor(round(center.x()), round(center.y()))
-    assert pixel == map_widget._NODE_COLOR
+    assert pixel == map_widget._P2P_COLOR
     point_index = map_widget._point_index_at_position(QPointF(center), map_rect)
     assert point_index is not None
-    assert map_widget._points[point_index].source.name == "node"
+    assert map_widget._points[point_index].source.name == "p2p_listener"
 
 
 def test_network_map_jitter_is_deterministic_for_collocated_peers(
