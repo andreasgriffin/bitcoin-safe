@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import asyncio
+import time
 
 import bdkpython as bdk
 
@@ -100,6 +101,42 @@ def test_total_discovered_peers_returns_snapshot() -> None:
         assert discovery.total_discovered_peers == {peer}
     finally:
         discovery.stop()
+
+
+def test_minimum_discovery_interval_skips_repeated_calls(monkeypatch) -> None:
+    discovery = PeerDiscovery(
+        network=bdk.Network.BITCOIN,
+        loop_in_thread=None,
+    )
+    calls = 0
+
+    async def fake_gather(coroutines, **_kwargs):
+        nonlocal calls
+        calls += 1
+        for coroutine in coroutines:
+            coroutine.close()
+        return []
+
+    monkeypatch.setattr(discovery._loop_in_thread, "gather", fake_gather)
+
+    async def run() -> None:
+        try:
+            first = await discovery.get_bitcoin_peers(
+                lower_bound=None, required_services=0, minimum_interval=60
+            )
+            second = await discovery.get_bitcoin_peers(
+                lower_bound=None, required_services=0, minimum_interval=60
+            )
+            assert first == set()
+            assert second == set()
+            assert calls == 1
+            discovery._last_discovery_at[60] = time.monotonic() - 61
+            await discovery.get_bitcoin_peers(lower_bound=None, required_services=0, minimum_interval=60)
+            assert calls == 2
+        finally:
+            discovery.stop()
+
+    asyncio.run(run())
 
 
 def test_resolve_dns_seed_uses_shared_resolver(monkeypatch) -> None:

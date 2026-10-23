@@ -44,7 +44,10 @@ from bitcoin_safe.client_helpers import ProgressInfo, SyncStatus, UpdateInfo
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.network_config import ElectrumConfig, Peer, Peers
 from bitcoin_safe.network_utils import ProxyInfo, clean_electrum_url
-from bitcoin_safe.p2p.peer_discovery import CBF_REQUIRED_SERVICE_FLAGS, PeerDiscovery
+from bitcoin_safe.p2p.peer_discovery import (
+    CBF_REQUIRED_SERVICE_FLAGS,
+    PeerDiscovery,
+)
 from bitcoin_safe.psbt_util import FeeRate
 
 logger = logging.getLogger(__name__)
@@ -55,6 +58,7 @@ class Client:
     BROADCAST_TIMEOUT = 3
     MIN_BROADCAST_FEE_QUERY_TIMEOUT = 0.5
     CBF_PEER_INFO_TIMEOUT = 0.2
+    CBF_PEER_DISCOVERY_MIN_INTERVAL = 60
 
     def __init__(
         self,
@@ -62,6 +66,8 @@ class Client:
         electrum_config: ElectrumConfig | None,
         proxy_info: ProxyInfo | None,
         loop_in_thread: LoopInThread,
+        cbf_peer_discovery: PeerDiscovery | None = None,
+        cbf_known_peers: set[Peer] | None = None,
     ) -> None:
         """Initialize instance."""
         self.client = client
@@ -76,7 +82,10 @@ class Client:
         self._sync_status: SyncStatus = SyncStatus.unknown
         self._update_queue: asyncio.Queue[UpdateInfo] = asyncio.Queue()
         self._cbf_update_task: Future[None] | None = None
+        self._cbf_peer_discovery_task: Future[None] | None = None
         self._stop_event: asyncio.Event = asyncio.Event()
+        self._cbf_peer_discovery = cbf_peer_discovery
+        self._cbf_known_peers = set(cbf_known_peers or ())
 
         if isinstance(client, CbfSync):
             self.status_msg = translate("Client", "Connecting to nodes")
@@ -102,12 +111,74 @@ class Client:
         """Handle log warning and returns and returns if the sync_status was changed."""
         if isinstance(warning, (bdk.Warning.NEED_CONNECTIONS, bdk.Warning.COULD_NOT_CONNECT)):
             self.status_msg = translate("Client", "Connecting to nodes")
+            if isinstance(warning, bdk.Warning.NEED_CONNECTIONS):
+                self._discover_cbf_peers()
             return self.set_sync_status(SyncStatus.syncing)
         else:
             self.status_msg = warning.__class__.__name__
         if isinstance(self.client, CbfSync) and not self.client.node_running():
             return self.set_sync_status(SyncStatus.error)
         return False
+
+    def _discover_cbf_peers(self) -> None:
+        """Schedule discovery and connection of additional CBF peers."""
+        if not self._cbf_peer_discovery:
+            return
+        if self._cbf_peer_discovery_task and not self._cbf_peer_discovery_task.done():
+            return
+
+        self._cbf_peer_discovery_task = self.loop_in_thread.run_background(
+            self._discover_and_connect_cbf_peers()
+        )
+
+    @staticmethod
+    async def _get_cbf_peers(
+        discovery: PeerDiscovery,
+        proxy_info: ProxyInfo | None,
+        timeout: float,
+        minimum_interval: float = 0,
+    ) -> set[Peer]:
+        """Discover peers with the service flags required by compact filters."""
+        return await discovery.get_bitcoin_peers(
+            lower_bound=200,
+            required_services=CBF_REQUIRED_SERVICE_FLAGS,
+            proxy_info=proxy_info,
+            timeout=timeout,
+            minimum_interval=minimum_interval,
+        )
+
+    async def _discover_and_connect_cbf_peers(self) -> None:
+        """Connect newly discovered peers to the running CBF client."""
+        cbf_sync = self.client
+        if not isinstance(cbf_sync, CbfSync) or not cbf_sync.client:
+            return
+        discovery = self._cbf_peer_discovery
+        if not discovery:
+            return
+
+        try:
+            peers = await self._get_cbf_peers(
+                discovery,
+                self.proxy_info,
+                timeout=5,
+                minimum_interval=self.CBF_PEER_DISCOVERY_MIN_INTERVAL,
+            )
+        except asyncio.CancelledError:
+            raise
+        except Exception:
+            logger.exception("%s - failed to discover CBF peers", cbf_sync.wallet_id)
+            return
+
+        for peer in peers - self._cbf_known_peers:
+            bdk_peer = peer.to_bdk(v2_transport=True)
+            if bdk_peer is None:
+                continue
+            try:
+                cbf_sync.client.connect(bdk_peer)
+            except Exception:
+                logger.exception("%s - failed to add discovered CBF peer %s", cbf_sync.wallet_id, peer)
+            else:
+                self._cbf_known_peers.add(peer)
 
     def handle_log_info(self, info: bdk.Info) -> bool:
         """Handle log info and returns if the sync_status was changed ."""
@@ -218,20 +289,23 @@ class Client:
     ):
         """From cbf."""
         peers: set[Peer] = set()
+        p2p_discovery: PeerDiscovery | None = None
 
         if configured_peers:
             peers.update(configured_peers)
 
         if not only_configured_peers:
-            p2p_discovery = PeerDiscovery(network=bdkwallet.network(), loop_in_thread=loop_in_thread)
-            discovered_peers = loop_in_thread.run_foreground(
-                p2p_discovery.get_bitcoin_peers(
-                    required_services=CBF_REQUIRED_SERVICE_FLAGS,
-                    lower_bound=200,
-                    proxy_info=proxy_info,
-                    timeout=0.2,
-                )
+            p2p_discovery = PeerDiscovery(
+                network=bdkwallet.network(),
+                loop_in_thread=loop_in_thread,
             )
+            try:
+                discovered_peers = loop_in_thread.run_foreground(
+                    cls._get_cbf_peers(p2p_discovery, proxy_info, timeout=0.2)
+                )
+            except Exception:
+                logger.exception("Failed to discover peers for initial CBF connection")
+                discovered_peers = set()
             peers = peers.union(discovered_peers)
 
         client = CbfSync(
@@ -242,12 +316,20 @@ class Client:
             peers=[bdk_peer for peer in peers if (bdk_peer := peer.to_bdk(v2_transport=True))],
             proxy_info=proxy_info,
             cbf_connections=cbf_connections,
+            only_configured_peers=only_configured_peers,
             is_new_wallet=is_new_wallet,
         )
 
         client.build_node()
         time.sleep(0.1)  # this prevents an ifinite loop of getting info messages from cbf client
-        return cls(client=client, proxy_info=proxy_info, electrum_config=None, loop_in_thread=loop_in_thread)
+        return cls(
+            client=client,
+            proxy_info=proxy_info,
+            electrum_config=None,
+            loop_in_thread=loop_in_thread,
+            cbf_peer_discovery=p2p_discovery,
+            cbf_known_peers=peers,
+        )
 
     def broadcast(self, tx: bdk.Transaction):
         """Broadcast."""
@@ -430,11 +512,15 @@ class Client:
     def close(self):
         """Close."""
         self.stop()
+        if self._cbf_peer_discovery_task and not self._cbf_peer_discovery_task.done():
+            self._cbf_peer_discovery_task.cancel()
+        if self._cbf_peer_discovery:
+            self._cbf_peer_discovery.stop()
         if isinstance(self.client, bdk.ElectrumClient):
             pass
         elif isinstance(self.client, bdk.EsploraClient):
             pass
         elif isinstance(self.client, CbfSync):
-            self.client.shutdown_node()
+            self.client.close()
         else:
             raise NotImplementedError(f"Client is of type {type(self.client)}")
