@@ -304,6 +304,22 @@ def test_network_map_widget_legend_tooltip_sums_p2p_rates(qtbot: QtBot, test_con
     assert "Current total receive rate: 2.00 txs/s" in widget.peer_legend_label.toolTip()
 
 
+def test_network_map_maps_tx_rates_for_many_peers_in_one_pass(qtbot: QtBot, tmp_path, test_config) -> None:
+    db_file = tmp_path / "geoip_rough_v1.json"
+    write_geoip_fixture(db_file)
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    widget.geoip = RoughGeoIpDatabase(db_path=db_file)
+    qtbot.addWidget(widget)
+
+    peers = [Peer(host=f"8.8.0.{index}", port=8333) for index in range(1, 129)]
+    rates = {peer: float(index) for index, peer in enumerate(peers, start=1)}
+    widget.set_p2p_listener_peers(peers, rates)
+
+    points = {point.host: point for point in widget.map_widget._points}
+    assert len(points) == len(peers)
+    assert all(points[peer.host].tx_rate == rates[peer] for peer in peers)
+
+
 def test_network_map_wallet_progress_refresh_reuses_cards_and_map_geometry(qtbot: QtBot, test_config) -> None:
     widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
     qtbot.addWidget(widget)

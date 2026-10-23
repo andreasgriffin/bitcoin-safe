@@ -905,6 +905,7 @@ class NetworkMapWidget(QWidget):
         hosts: list[str],
         source: PeerSource,
         label: str | None = None,
+        tx_rates_by_host: dict[str, float] | None = None,
     ) -> list[PeerMapPoint]:
         points: list[PeerMapPoint] = []
         for host in hosts:
@@ -919,6 +920,7 @@ class NetworkMapWidget(QWidget):
                     source=source,
                     country_code=location.country_code,
                     label=label,
+                    tx_rate=tx_rates_by_host.get(host) if tx_rates_by_host is not None else None,
                 )
             )
         return points
@@ -1005,33 +1007,28 @@ class NetworkMapWidget(QWidget):
 
         p2p_hosts = [peer.host for peer in p2p_connections]
         node_hosts = [peer.host for peer in nodes]
+        tx_rates_by_host: dict[str, float] = {}
+        for peer in p2p_connections:
+            tx_rates_by_host.setdefault(peer.host, self._p2p_tx_rates.get(peer, 0.0))
 
         node_points = self._build_mapped_points(node_hosts, PeerSource.node)
-        p2p_points = self._build_mapped_points(p2p_hosts, PeerSource.p2p_listener)
-        p2p_points = [
-            PeerMapPoint(
-                latitude=point.latitude,
-                longitude=point.longitude,
-                host=point.host,
-                source=point.source,
-                country_code=point.country_code,
-                label=point.label,
-                tx_rate=next(
-                    (
-                        self._p2p_tx_rates.get(peer, 0.0)
-                        for peer in p2p_connections
-                        if peer.host == point.host
-                    ),
-                    None,
-                ),
-            )
-            for point in p2p_points
-        ]
+        p2p_points = self._build_mapped_points(
+            p2p_hosts,
+            PeerSource.p2p_listener,
+            tx_rates_by_host=tx_rates_by_host,
+        )
         cbf_points = self._build_mapped_points(list(cbf_peer_hosts), PeerSource.cbf)
         peer_points = self._jitter_collocated_points(node_points + p2p_points + cbf_points)
-        node_points = [point for point in peer_points if point.source == PeerSource.node]
-        p2p_points = [point for point in peer_points if point.source == PeerSource.p2p_listener]
-        cbf_points = [point for point in peer_points if point.source == PeerSource.cbf]
+        mapped_node_points: list[PeerMapPoint] = []
+        mapped_p2p_points: list[PeerMapPoint] = []
+        mapped_cbf_points: list[PeerMapPoint] = []
+        for point in peer_points:
+            if point.source == PeerSource.node:
+                mapped_node_points.append(point)
+            elif point.source == PeerSource.p2p_listener:
+                mapped_p2p_points.append(point)
+            else:
+                mapped_cbf_points.append(point)
         server_points = self._build_server_points()
 
         points = peer_points + server_points
@@ -1044,7 +1041,7 @@ class NetworkMapWidget(QWidget):
                 "<span style='color:{gray}'>(mapped: {mapped})</span> &nbsp;&nbsp;"
             ).format(
                 total=len(p2p_connections),
-                mapped=len(p2p_points),
+                mapped=len(mapped_p2p_points),
                 color=self.map_widget._P2P_COLOR.name(),
                 gray=gray,
             )
@@ -1066,7 +1063,7 @@ class NetworkMapWidget(QWidget):
                     "<span style='color:{gray}'>(mapped: {mapped})</span>"
                 ).format(
                     total=cbf_peer_count,
-                    mapped=len(cbf_points),
+                    mapped=len(mapped_cbf_points),
                     color=self.map_widget._CBF_COLOR.name(),
                     gray=gray,
                 )
@@ -1103,7 +1100,7 @@ class NetworkMapWidget(QWidget):
                 "<span style='color:{gray}'>(mapped: {mapped})</span>"
             ).format(
                 total=len(nodes),
-                mapped=len(node_points),
+                mapped=len(mapped_node_points),
                 color=self.map_widget._NODE_COLOR.name(),
                 gray=gray,
             )
