@@ -194,16 +194,20 @@ async def check_peer_connection(
     peer: Peer, network: bdk.Network, proxy_info: ProxyInfo | None, timeout: float
 ) -> None:
     """Connect to a peer, validate its network, and close the probe connection."""
-    writer: StreamWriter | None = None
+    client = P2PClient(network=network, debug=False, fetch_txs=False, timeout=max(1, int(timeout)))
     try:
-        reader, writer = await P2PClient._connect(peer=peer, proxy_info=proxy_info, timeout=timeout)
-        if not await is_peer_on_network(reader=reader, network=network, timeout=timeout):
+        client.reader, client.writer = await P2PClient._connect(
+            peer=peer, proxy_info=proxy_info, timeout=timeout
+        )
+        await client._send_raw("version", client._version_payload(peer))
+        assert client.reader is not None
+        if not await is_peer_on_network(reader=client.reader, network=network, timeout=timeout):
             raise ConnectionError(f"Peer is not on the {network.name} network")
     finally:
-        if writer is not None:
-            writer.close()
+        if client.writer is not None:
+            client.writer.close()
             with contextlib.suppress(Exception):
-                await writer.wait_closed()
+                await client.writer.wait_closed()
 
 
 # Inventory type constants (superset – see BIP 339 / 152 / 157)

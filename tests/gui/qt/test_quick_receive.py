@@ -37,6 +37,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pytest
+from PyQt6.QtCore import QEvent
 from PyQt6.QtGui import QPalette
 from PyQt6.QtTest import QTest
 from PyQt6.QtWidgets import QApplication
@@ -76,27 +77,20 @@ def test_add_category_button_rethemes_with_application_palette(qapp: QApplicatio
     widget.show()
 
     try:
-        qapp.setPalette(light_palette)
-        light_background = light_palette.color(QPalette.ColorRole.Midlight).name()
-        light_border = light_palette.color(QPalette.ColorRole.Mid).name()
-        qtbot.waitUntil(
-            lambda: (
-                light_background in widget.add_category_button.styleSheet()
-                and light_border in widget.add_category_button.styleSheet()
-            ),
-            timeout=5000,
-        )
+        for palette in (light_palette, dark_palette):
+            qapp.setPalette(palette)
+            QApplication.sendEvent(widget, QEvent(QEvent.Type.ApplicationPaletteChange))
 
-        qapp.setPalette(dark_palette)
-        dark_background = dark_palette.color(QPalette.ColorRole.Midlight).name()
-        dark_border = dark_palette.color(QPalette.ColorRole.Mid).name()
-        qtbot.waitUntil(
-            lambda: (
-                dark_background in widget.add_category_button.styleSheet()
-                and dark_border in widget.add_category_button.styleSheet()
-            ),
-            timeout=5000,
-        )
+            background = palette.color(QPalette.ColorRole.Midlight).name()
+            border = palette.color(QPalette.ColorRole.Mid).name()
+            stylesheet = widget.add_category_button.styleSheet()
+            assert background in stylesheet
+            assert border in stylesheet
+
+            if palette is light_palette:
+                light_background, light_border = background, border
+            else:
+                dark_background, dark_border = background, border
     finally:
         qapp.setPalette(original_palette)
 

@@ -45,6 +45,15 @@ from bitcoin_safe.p2p.peer_discovery import PeerDiscovery
 
 
 class FakeWriter:
+    def is_closing(self) -> bool:
+        return False
+
+    def write(self, data: bytes) -> None:
+        pass
+
+    async def drain(self) -> None:
+        pass
+
     def close(self) -> None:
         pass
 
@@ -135,6 +144,9 @@ def test_discover_local_peers_uses_default_port_and_bounded_probes(monkeypatch) 
         "local_ipv4_networks",
         lambda: (IPv4Network("192.168.1.0/30"), IPv4Network("192.168.1.0/30")),
     )
+    monkeypatch.setattr(peer_discovery, "local_ipv4_routes", lambda: ())
+    monkeypatch.setattr(peer_discovery, "local_ipv4_neighbors", lambda: ())
+    monkeypatch.setattr(peer_discovery, "local_ipv4_listening_ports", lambda: ())
     active = 0
     maximum_active = 0
 
@@ -158,6 +170,52 @@ def test_discover_local_peers_uses_default_port_and_bounded_probes(monkeypatch) 
     assert maximum_active == 1
 
 
+def test_discover_local_peers_includes_loopback(monkeypatch) -> None:
+    monkeypatch.setattr(peer_discovery, "local_ipv4_networks", lambda: ())
+    monkeypatch.setattr(peer_discovery, "local_ipv4_routes", lambda: ())
+    monkeypatch.setattr(peer_discovery, "local_ipv4_neighbors", lambda: ())
+    monkeypatch.setattr(peer_discovery, "local_ipv4_listening_ports", lambda: ())
+    probed: list[Peer] = []
+
+    async def fake_reachable(self, peer: Peer, timeout: float) -> bool:
+        probed.append(peer)
+        return peer.host == "127.0.0.1"
+
+    monkeypatch.setattr(PeerDiscovery, "_is_peer_reachable", fake_reachable)
+
+    discovery = PeerDiscovery(network=bdk.Network.REGTEST, loop_in_thread=None)
+    try:
+        peers = asyncio.run(discovery.discover_local_peers())
+    finally:
+        discovery.stop()
+
+    assert probed == [Peer("127.0.0.1", 18444)]
+    assert peers == [Peer("127.0.0.1", 18444)]
+
+
+def test_discover_local_peers_probes_custom_local_listening_ports(monkeypatch) -> None:
+    monkeypatch.setattr(peer_discovery, "local_ipv4_networks", lambda: ())
+    monkeypatch.setattr(peer_discovery, "local_ipv4_routes", lambda: ())
+    monkeypatch.setattr(peer_discovery, "local_ipv4_neighbors", lambda: ())
+    monkeypatch.setattr(peer_discovery, "local_ipv4_listening_ports", lambda: (19444,))
+    probed: list[Peer] = []
+
+    async def fake_reachable(self, peer: Peer, timeout: float) -> bool:
+        probed.append(peer)
+        return peer.port == 19444
+
+    monkeypatch.setattr(PeerDiscovery, "_is_peer_reachable", fake_reachable)
+
+    discovery = PeerDiscovery(network=bdk.Network.REGTEST, loop_in_thread=None)
+    try:
+        peers = asyncio.run(discovery.discover_local_peers())
+    finally:
+        discovery.stop()
+
+    assert probed == [Peer("127.0.0.1", 18444), Peer("127.0.0.1", 19444)]
+    assert peers == [Peer("127.0.0.1", 19444)]
+
+
 def test_local_discovery_accepts_matching_network_handshake(monkeypatch) -> None:
     payload = b"\x70\x11\x01\x00" + b"\x00" * 100
     header = (
@@ -168,6 +226,7 @@ def test_local_discovery_accepts_matching_network_handshake(monkeypatch) -> None
     )
 
     async def fake_connect(peer, proxy_info, timeout):
+        del peer, timeout
         assert proxy_info is None
         return FakeReader(header + payload), FakeWriter()
 
@@ -189,6 +248,7 @@ def test_local_discovery_rejects_wrong_network_handshake(monkeypatch) -> None:
     )
 
     async def fake_connect(peer, proxy_info, timeout):
+        del peer, proxy_info, timeout
         return FakeReader(header + payload), FakeWriter()
 
     monkeypatch.setattr(P2PClient, "_connect", fake_connect)

@@ -43,9 +43,20 @@ from bitcoin_safe.p2p.p2p_client import (
 from bitcoin_safe.pythonbdk_types import BlockchainType
 
 
+class _Reader:
+    async def readexactly(self, size: int) -> bytes:
+        return bytes(size)
+
+
 class _Writer:
     def __init__(self) -> None:
         self.closed = False
+
+    def write(self, data: bytes) -> None:
+        pass
+
+    async def drain(self) -> None:
+        pass
 
     def close(self) -> None:
         self.closed = True
@@ -62,7 +73,7 @@ def test_peer_connections_tests_all_peers_and_applies_threshold(monkeypatch) -> 
         attempted.append((peer, proxy_info))
         if peer.port == 18446:
             raise ConnectionError("refused")
-        return None, _Writer()
+        return _Reader(), _Writer()
 
     monkeypatch.setattr(P2PClient, "_connect", classmethod(fake_connect))
 
@@ -113,7 +124,7 @@ def test_peer_connections_rejects_peer_on_wrong_network(monkeypatch) -> None:
 
     async def fake_connect(cls, peer, proxy_info, timeout):
         del cls, peer, proxy_info, timeout
-        return None, _Writer()
+        return _Reader(), _Writer()
 
     async def fake_is_peer_on_network(**kwargs):
         del kwargs
