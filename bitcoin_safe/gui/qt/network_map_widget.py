@@ -35,6 +35,7 @@ import json
 import logging
 from dataclasses import dataclass
 from enum import Enum
+from functools import lru_cache
 from pathlib import Path
 from typing import cast
 
@@ -926,6 +927,7 @@ class NetworkMapWidget(QWidget):
         return points
 
     @staticmethod
+    @lru_cache(maxsize=4096)
     def _coordinate_jitter(host: str) -> tuple[float, float]:
         """Return stable offsets within five degrees, derived from the host IP."""
         digest = hashlib.blake2b(ipaddress.ip_address(host).packed, digest_size=8).digest()

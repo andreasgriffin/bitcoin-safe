@@ -118,6 +118,8 @@ class IconLabel(QWidget):
 
     def set_icon(self, icon: str | Path | None, sizes: tuple[int | None, int | None] = (None, None)) -> None:
         """Set icon."""
+        if icon == self._icon_name and sizes == self._icon_sizes:
+            return
         self._icon_name = icon
         self._icon_sizes = sizes
         self._apply_icon()

@@ -32,6 +32,7 @@ from __future__ import annotations
 import inspect
 import ipaddress
 import json
+import time
 from datetime import timedelta
 from typing import Any
 from unittest.mock import patch
@@ -318,6 +319,27 @@ def test_network_map_maps_tx_rates_for_many_peers_in_one_pass(qtbot: QtBot, tmp_
     points = {point.host: point for point in widget.map_widget._points}
     assert len(points) == len(peers)
     assert all(points[peer.host].tx_rate == rates[peer] for peer in peers)
+
+
+def test_network_map_refreshes_1000_nodes_within_reasonable_time(qtbot: QtBot, tmp_path, test_config) -> None:
+    db_file = tmp_path / "geoip_rough_v1.json"
+    write_geoip_fixture(db_file)
+    widget = NetworkMapWidget(config=test_config, mode=NetworkMapWidgetMode.tools_tab)
+    widget.geoip = RoughGeoIpDatabase(db_path=db_file)
+    qtbot.addWidget(widget)
+    nodes = {Peer(host=f"8.8.{index // 256}.{index % 256}", port=8333) for index in range(1, 1001)}
+
+    started = time.perf_counter()
+    widget.set_nodes(nodes)
+    initial_elapsed = time.perf_counter() - started
+    started = time.perf_counter()
+    widget._refresh_points_and_legend()
+    repeated_elapsed = time.perf_counter() - started
+
+    assert len(widget.map_widget._points) == 1000
+    assert initial_elapsed < 0.5
+    assert repeated_elapsed < 0.5
+    print(f"1000-node refresh: first={initial_elapsed:.3f}s, repeated={repeated_elapsed:.3f}s")
 
 
 def test_network_map_wallet_progress_refresh_reuses_cards_and_map_geometry(qtbot: QtBot, test_config) -> None:

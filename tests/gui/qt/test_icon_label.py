@@ -97,6 +97,29 @@ def test_icon_label_re_renders_theme_icon_on_palette_change(qtbot: QtBot) -> Non
     assert light_image != dark_image
 
 
+def test_icon_label_does_not_reload_unchanged_help_icon(qtbot: QtBot, monkeypatch) -> None:
+    from bitcoin_safe.gui.qt import icon_label as icon_label_module
+
+    calls = 0
+    get_icon = icon_label_module.svg_tools.get_QIcon
+
+    def count_icon_loads(icon_name: str):
+        nonlocal calls
+        calls += 1
+        return get_icon(icon_name)
+
+    monkeypatch.setattr(icon_label_module.svg_tools, "get_QIcon", count_icon_loads)
+    label = IconLabel("Peer legend")
+    qtbot.addWidget(label)
+
+    label.set_icon_as_help("Peer details")
+    first_call_count = calls
+    label.set_icon_as_help("Peer details")
+
+    assert first_call_count == 1
+    assert calls == first_call_count
+
+
 def test_icon_label_supports_absolute_icon_path_on_palette_change(qtbot: QtBot) -> None:
     app = QApplication.instance()
     assert app is not None

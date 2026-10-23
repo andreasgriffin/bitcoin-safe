@@ -33,6 +33,7 @@ import gzip
 import ipaddress
 import json
 import logging
+from collections import OrderedDict
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -63,6 +64,7 @@ class RoughGeoIpDatabase:
         self._ipv6_prefix = 32
         self._ipv4_map: dict[int, GeoLocation] = {}
         self._ipv6_map: dict[int, GeoLocation] = {}
+        self._host_cache: OrderedDict[str, GeoLocation | None] = OrderedDict()
 
     def _load(self) -> None:
         if self._loaded:
@@ -145,9 +147,18 @@ class RoughGeoIpDatabase:
         return self._ipv6_map.get(prefix_key)
 
     def lookup_host(self, host: str) -> GeoLocation | None:
+        if host in self._host_cache:
+            self._host_cache.move_to_end(host)
+            return self._host_cache[host]
+
         try:
             ip = ipaddress.ip_address(host)
         except ValueError:
-            return None
+            location = None
+        else:
+            location = self.lookup_ip(ip)
 
-        return self.lookup_ip(ip)
+        self._host_cache[host] = location
+        if len(self._host_cache) > 8192:
+            self._host_cache.popitem(last=False)
+        return location
