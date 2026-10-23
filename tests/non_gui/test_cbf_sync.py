@@ -29,61 +29,16 @@
 
 from __future__ import annotations
 
-import asyncio
 from unittest.mock import Mock
 
 from bitcoin_safe.cbf.cbf_sync import CbfSync
 
 
-def test_need_connections_rebuilds_node_after_delay(monkeypatch) -> None:
-    """A prolonged lack of connections rebuilds the CBF node once."""
-
-    async def _run() -> None:
-        cbf_sync = object.__new__(CbfSync)
-        cbf_sync.wallet_id = "test-wallet"
-        cbf_sync._need_connections_task = None
-        cbf_sync.shutdown_node = Mock()
-        cbf_sync.build_node = Mock()
-        monkeypatch.setattr("bitcoin_safe.cbf.cbf_sync.NEED_CONNECTIONS_REBUILD_DELAY", 0)
-
-        cbf_sync._handle_need_connections()
-        first_task = cbf_sync._need_connections_task
-        cbf_sync._handle_need_connections()
-
-        await asyncio.sleep(0)
-        await asyncio.sleep(0)
-
-        assert cbf_sync._need_connections_task is first_task
-        cbf_sync.shutdown_node.assert_called_once_with()
-        cbf_sync.build_node.assert_called_once_with()
-
-    asyncio.run(_run())
-
-
-def test_need_connections_rebuild_can_be_cancelled() -> None:
-    """A recovered connection cancels the pending rebuild."""
-
-    async def _run() -> None:
-        cbf_sync = object.__new__(CbfSync)
-        cbf_sync._need_connections_task = asyncio.create_task(asyncio.sleep(60))
-        cbf_sync._need_connections_loop = asyncio.get_running_loop()
-
-        cbf_sync._cancel_need_connections_rebuild()
-
-        assert cbf_sync._need_connections_task is None
-
-    asyncio.run(_run())
-
-
-def test_restart_node_shuts_down_and_rebuilds() -> None:
-    """Manual node restart refreshes the CBF client."""
+def test_cbf_sync_close_shuts_down_node() -> None:
+    """Closing CBF sync shuts down its running node."""
     cbf_sync = object.__new__(CbfSync)
-    cbf_sync._need_connections_task = None
-    cbf_sync._need_connections_loop = None
     cbf_sync.shutdown_node = Mock()
-    cbf_sync.build_node = Mock()
 
-    cbf_sync.restart_node()
+    cbf_sync.close()
 
     cbf_sync.shutdown_node.assert_called_once_with()
-    cbf_sync.build_node.assert_called_once_with()

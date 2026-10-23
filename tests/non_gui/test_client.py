@@ -39,6 +39,7 @@ import pytest
 import bitcoin_safe.client as client_module
 from bitcoin_safe.client import Client
 from bitcoin_safe.client_helpers import UpdateInfo
+from bitcoin_safe.network_config import Peer
 from bitcoin_safe.psbt_util import FeeRate
 
 
@@ -306,6 +307,47 @@ def test_get_connected_cbf_peer_hosts_returns_cached_hosts_on_timeout(monkeypatc
     )
 
     assert client.get_connected_cbf_peer_hosts() == ["1.1.1.1"]
+
+
+def test_discover_and_connect_cbf_peers_adds_only_new_peers(monkeypatch) -> None:
+    """Client recovery connects discovered peers not already configured at startup."""
+    peer = Peer("8.8.8.8", 8333)
+    bdk_peer = object()
+    monkeypatch.setattr(Peer, "to_bdk", lambda _peer, v2_transport=False: bdk_peer)
+
+    class FakeDiscovery:
+        async def get_bitcoin_peers(self, **_kwargs) -> set[Peer]:
+            return {peer}
+
+    client = object.__new__(Client)
+    client.client = object.__new__(client_module.CbfSync)
+    client.client.client = SimpleNamespace(connect=MagicMock())
+    client.client.wallet_id = "test-wallet"
+    client._cbf_peer_discovery = FakeDiscovery()
+    client._cbf_known_peers = set()
+    client.proxy_info = None
+
+    asyncio.run(client._discover_and_connect_cbf_peers())
+
+    client.client.client.connect.assert_called_once_with(bdk_peer)
+    assert client._cbf_known_peers == {peer}
+
+
+def test_need_connections_coalesces_peer_discovery() -> None:
+    """Repeated NEED_CONNECTIONS warnings schedule only one discovery task."""
+    loop_in_thread = MagicMock()
+    client = object.__new__(Client)
+    client._cbf_peer_discovery = MagicMock()
+    client._cbf_peer_discovery_task = None
+    client.loop_in_thread = loop_in_thread
+    pending_task = MagicMock(done=lambda: False)
+    loop_in_thread.run_background.side_effect = lambda coroutine: (coroutine.close(), pending_task)[1]
+
+    client._discover_cbf_peers()
+    client._discover_cbf_peers()
+
+    assert client._cbf_peer_discovery_task is pending_task
+    loop_in_thread.run_background.assert_called_once()
 
 
 class FakeElectrumClient:

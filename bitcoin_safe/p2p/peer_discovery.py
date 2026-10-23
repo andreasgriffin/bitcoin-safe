@@ -34,6 +34,7 @@ import logging
 import random
 import socket
 import subprocess
+import time
 from ipaddress import IPv4Network, ip_address, ip_interface
 from threading import RLock
 from typing import Any
@@ -194,7 +195,11 @@ DNS_SEEDS: dict[bdk.Network, dict[str, Any]] = {
 
 
 class PeerDiscovery:
-    def __init__(self, network: bdk.Network, loop_in_thread: LoopInThread | None) -> None:
+    def __init__(
+        self,
+        network: bdk.Network,
+        loop_in_thread: LoopInThread | None,
+    ) -> None:
         """Initialize instance.
 
         Parameters
@@ -214,6 +219,7 @@ class PeerDiscovery:
         self._state_lock = RLock()
         self._total_discovered_peers: set[Peer] = set()
         self._proxy_info: ProxyInfo | None = None
+        self._last_discovery_at: dict[float, float] = {}
 
     @property
     def total_discovered_peers(self) -> set[Peer]:
@@ -304,7 +310,17 @@ class PeerDiscovery:
         required_services: int | None,
         proxy_info: ProxyInfo | None = None,
         timeout: float = 5,
+        minimum_interval: float = 0,
     ):
+        if minimum_interval > 0:
+            with self._state_lock:
+                now = time.monotonic()
+                last_discovery_at = self._last_discovery_at.get(minimum_interval)
+                if last_discovery_at is not None and now - last_discovery_at < minimum_interval:
+                    logger.debug("Skipping peer discovery due to minimum discovery interval")
+                    return set()
+                self._last_discovery_at[minimum_interval] = now
+
         self._proxy_info = proxy_info
         dns_seeds = DNS_SEEDS[self.network]["hosts"].copy()
         random.shuffle(dns_seeds)
