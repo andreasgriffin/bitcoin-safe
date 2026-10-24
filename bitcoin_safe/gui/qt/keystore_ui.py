@@ -83,7 +83,7 @@ from bitcoin_safe.gui.qt.custom_edits import (
 )
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
-from bitcoin_safe.gui.qt.util import svg_tools, svg_tools_hardware_signer
+from bitcoin_safe.gui.qt.util import set_pixmap_if_changed, svg_tools, svg_tools_hardware_signer
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 
@@ -676,7 +676,7 @@ class KeyStoreUI(CardBase):
             else self.selected_hardware_signer or HardwareSigners.generic
         )
         pixmap = svg_tools_hardware_signer.get_QIcon(hardware_signer.icon_name).pixmap(34, 34)
-        self.header_icon.setPixmap(pixmap)
+        set_pixmap_if_changed(self.header_icon, pixmap)
         self.header_icon.setText("")
 
     def _update_header_subtitle(self) -> None:
@@ -720,7 +720,7 @@ class KeyStoreUI(CardBase):
             self.header_status_icon.setVisible(False)
             return
         analysis = self.get_worst_analysis()
-        self.header_status_icon.setPixmap(self._status_pixmaps[analysis.state])
+        set_pixmap_if_changed(self.header_status_icon, self._status_pixmaps[analysis.state])
         self.header_status_icon.setToolTip(
             "\n".join(str(item) for item in self.get_analysis_list(min_state=AnalyzerState.Warning))
         )

@@ -51,7 +51,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.invisible_scroll_area import InvisibleScrollArea
 from bitcoin_safe.gui.qt.qr_components.square_buttons import FlatSquareButton
-from bitcoin_safe.gui.qt.util import do_copy, set_translucent, svg_tools
+from bitcoin_safe.gui.qt.util import do_copy, set_pixmap_if_changed, set_translucent, svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pythonbdk_types import AddressInfoMin
 
@@ -215,6 +215,8 @@ class AddCategoryButton(TitledComponent):
 
         self.icon_label = QLabel(self._content_widget)
         self.icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        icon = svg_tools.get_QIcon("bi--plus-lg.svg")
+        set_pixmap_if_changed(self.icon_label, icon.pixmap(QSize(36, 36), self.devicePixelRatioF()))
         self._content_layout.addWidget(self.icon_label, 0, Qt.AlignmentFlag.AlignHCenter)
         self._content_layout.addSpacing(24)
 
@@ -236,8 +238,6 @@ class AddCategoryButton(TitledComponent):
         self.caption_label = add_label(size=13)
         self.caption_label_sub = add_label(size=11)
 
-        icon = svg_tools.get_QIcon("bi--plus-lg.svg")
-        self.icon_label.setPixmap(icon.pixmap(QSize(36, 36), self.devicePixelRatioF()))
         opacity_effect = QGraphicsOpacityEffect()
         opacity_effect.setOpacity(0.6)  # 0.0 = transparent, 1.0 = opaque
         self.icon_label.setGraphicsEffect(opacity_effect)
@@ -256,8 +256,6 @@ class AddCategoryButton(TitledComponent):
     def updateUi(self) -> None:
         # self.title.setText(self.tr("Add New Category"))
         """UpdateUi."""
-        icon = svg_tools.get_QIcon("bi--plus-lg.svg")
-        self.icon_label.setPixmap(icon.pixmap(QSize(36, 36), self.devicePixelRatioF()))
         self.caption_label.setText(self.tr("Add new category"))
         self.caption_label_sub.setText(self.tr("KYC Exchange, Private, ..."))
         self.setToolTip(self.tr("Add new category"))

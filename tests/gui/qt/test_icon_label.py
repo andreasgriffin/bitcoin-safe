@@ -30,12 +30,12 @@
 from pathlib import Path
 
 from PyQt6.QtCore import QEvent
-from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtGui import QColor, QPalette, QPixmap
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.icon_label import IconLabel
-from bitcoin_safe.gui.qt.util import get_icon_path
+from bitcoin_safe.gui.qt.util import get_icon_path, set_pixmap_if_changed
 
 
 def test_icon_label_defaults_to_icon_left(qtbot: QtBot) -> None:
@@ -164,3 +164,24 @@ def test_icon_label_ignores_style_change_event(qtbot: QtBot, monkeypatch) -> Non
     label.changeEvent(QEvent(QEvent.Type.StyleChange))
 
     assert calls == 0
+
+
+def test_set_pixmap_if_changed_skips_identical_pixmaps(qtbot: QtBot, monkeypatch) -> None:
+    label = IconLabel()
+    qtbot.addWidget(label)
+    pixmap = QPixmap(16, 16)
+    pixmap.fill(QColor("red"))
+    calls = 0
+    set_pixmap = label.icon_label.setPixmap
+
+    def track_set_pixmap(value: QPixmap) -> None:
+        nonlocal calls
+        calls += 1
+        set_pixmap(value)
+
+    monkeypatch.setattr(label.icon_label, "setPixmap", track_set_pixmap)
+
+    set_pixmap_if_changed(label.icon_label, pixmap)
+    set_pixmap_if_changed(label.icon_label, pixmap)
+
+    assert calls == 1

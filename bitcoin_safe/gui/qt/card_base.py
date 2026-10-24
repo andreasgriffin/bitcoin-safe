@@ -55,6 +55,7 @@ from .util import (
     SvgTools,
     get_neutral_surface_colors,
     set_no_margins,
+    set_pixmap_if_changed,
     should_process_theme_change,
     svg_tools,
     to_color_name,
@@ -84,7 +85,9 @@ class CardBase(BaseCardFrame):
         self._header_click_targets: list[QWidget] = []
         self._icon_source: QIcon | QPixmap | Path | str | None = None
         self._icon_size: tuple[int, int] | None = None
+        self._effective_icon_size: tuple[int, int] | None = None
         self._icon_svg_tools: SvgTools | None = None
+        self._icon_source_cache_key: int | None = None
 
         self.root_layout = QVBoxLayout(self)
 
@@ -209,17 +212,34 @@ class CardBase(BaseCardFrame):
         icon: QIcon | QPixmap | Path | str | None,
         size: tuple[int, int] | None = None,
         svg_tools_custom: SvgTools | None = None,
+        force: bool = False,
     ) -> None:
+        icon_size = size or (self.header_icon.width(), self.header_icon.height())
+        same_source = icon is self._icon_source or (
+            isinstance(icon, (Path, str))
+            and isinstance(self._icon_source, (Path, str))
+            and icon == self._icon_source
+        )
+        source_cache_key = icon.cacheKey() if isinstance(icon, QPixmap) else None
+        if (
+            not force
+            and same_source
+            and (not isinstance(icon, QPixmap) or source_cache_key == self._icon_source_cache_key)
+            and icon_size == self._effective_icon_size
+            and svg_tools_custom is self._icon_svg_tools
+        ):
+            return
         self._icon_source = icon
         self._icon_size = size
+        self._effective_icon_size = icon_size
         self._icon_svg_tools = svg_tools_custom
+        self._icon_source_cache_key = source_cache_key
         if icon is None:
             self.header_icon.clear()
             return
 
-        icon_size = size or (self.header_icon.width(), self.header_icon.height())
         pixmap = self._coerce_pixmap(icon=icon, size=icon_size)
-        self.header_icon.setPixmap(pixmap)
+        set_pixmap_if_changed(self.header_icon, pixmap)
         self.header_icon.setText("")
 
     def set_content_widget(self, widget: QWidget) -> None:
@@ -331,7 +351,12 @@ class CardBase(BaseCardFrame):
         self.header_subtitle.setPalette(subtitle_palette)
 
         if self._icon_source is not None:
-            self.set_icon(self._icon_source, self._icon_size, svg_tools_custom=self._icon_svg_tools)
+            self.set_icon(
+                self._icon_source,
+                self._icon_size,
+                svg_tools_custom=self._icon_svg_tools,
+                force=True,
+            )
 
     def _coerce_pixmap(
         self,

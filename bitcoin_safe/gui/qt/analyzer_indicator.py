@@ -46,6 +46,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.gui.qt.analyzers import AnalyzerMessage, AnalyzerState, BaseAnalyzer
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerLineEdit, AnalyzerTextEdit
+from bitcoin_safe.gui.qt.util import set_pixmap_if_changed
 
 logger = logging.getLogger(__name__)
 
@@ -169,10 +170,12 @@ class AnalyzerIndicator(QWidget):
 
     def update_status(self) -> None:
         """Update icon based on line edits' contents and validation."""
-        self.icon_label.setPixmap(self.icons[self.get_worst_analysis().state])
-        self.icon_label.setToolTip(
-            "\n".join([str(analysis) for analysis in self.get_analysis_list(min_state=AnalyzerState.Warning)])
-        )
+        analyses = self.get_analysis_list()
+        worst_analysis = BaseAnalyzer.worst_message(analyses)
+        set_pixmap_if_changed(self.icon_label, self.icons[worst_analysis.state])
+        tooltip = "\n".join(str(analysis) for analysis in analyses if analysis.state >= AnalyzerState.Warning)
+        if self.icon_label.toolTip() != tooltip:
+            self.icon_label.setToolTip(tooltip)
 
         if self.hide_if_all_empty:
             self.setHidden(all([le.text() == "" for le in self.line_edits]))
@@ -181,11 +184,16 @@ class AnalyzerIndicator(QWidget):
         """Update text label to show text of all line edits formatted with their object
         names."""
         titles = [f"{le.display_name}:" for le in self.line_edits]
-        self.title_label.setText("\n".join(titles))
+        title = "\n".join(titles)
+        if self.title_label.text() != title:
+            self.title_label.setText(title)
 
         texts: list[str] = [le.text() for le in self.line_edits]
-        self.text_label.setText("\n".join(texts))
-        self.text_label.setToolTip("\n".join(texts))
+        text = "\n".join(texts)
+        if self.text_label.text() != text:
+            self.text_label.setText(text)
+        if self.text_label.toolTip() != text:
+            self.text_label.setToolTip(text)
 
 
 if __name__ == "__main__":
