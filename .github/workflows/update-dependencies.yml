@@ -1,0 +1,61 @@
+name: "update dependencies"
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Branch the pull request should target (defaults to the branch the workflow runs on)"
+        required: false
+        type: string
+  schedule:
+    - cron: "0 5 * * 1" # every Monday 05:00 UTC
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install poetry and pre-commit
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry pre-commit
+
+      - name: Update poetry lock file
+        run: poetry update
+
+      - name: Install project environment
+        run: poetry install --with dev
+
+      - name: Recompile deterministic build requirements
+        run: bash tools/deterministic-build/compile.sh
+
+      - name: Run pre-commit hooks
+        # Hooks like ruff-format modify files and exit non-zero; the second run verifies the fixed state.
+        run: |
+          export PATH="$(poetry env info -p)/bin:$PATH"
+          pre-commit run --all-files || pre-commit run --all-files
+
+      - name: Create signed commit and pull request
+        # sign-commits uses the GitHub API, so commits are signed by GitHub and show as verified.
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: deps-update-${{ github.run_id }}
+          base: ${{ inputs.base || github.ref_name }}
+          sign-commits: true
+          commit-message: "Update dependencies and recompile build requirements"
+          title: "Update dependencies and recompile build requirements"
+          body: "Automated update via `poetry update` and `tools/deterministic-build/compile.sh`."
+          delete-branch: true
