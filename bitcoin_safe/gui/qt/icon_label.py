@@ -39,7 +39,7 @@ from PyQt6.QtCore import QEvent, QObject, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QMouseEvent
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import set_pixmap_if_changed, svg_tools
 
 from .util import set_no_margins, should_process_theme_change
 
@@ -135,7 +135,10 @@ class IconLabel(QWidget):
         fm = self.textLabel.fontMetrics()
         line_height = fm.height()
         pixmap_sizes = [s if s else line_height for s in self._icon_sizes]
-        self.icon_label.setPixmap(icon.pixmap(QSize(*pixmap_sizes), self.devicePixelRatioF()))
+        set_pixmap_if_changed(
+            self.icon_label,
+            icon.pixmap(QSize(*pixmap_sizes), self.devicePixelRatioF()),
+        )
         self.icon_label.setFixedSize(QSize(*pixmap_sizes))
 
     def on_icon_click(self):

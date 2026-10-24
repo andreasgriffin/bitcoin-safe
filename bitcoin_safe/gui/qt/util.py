@@ -1328,6 +1328,19 @@ def set_no_margins(layout: QLayout) -> None:
     layout.setContentsMargins(0, 0, 0, 0)
 
 
+def set_pixmap_if_changed(label: QLabel, pixmap: QPixmap) -> None:
+    """Update a label only when its pixmap or device size changes."""
+    current = label.pixmap()
+    if (
+        current is not None
+        and current.size() == pixmap.size()
+        and current.devicePixelRatio() == pixmap.devicePixelRatio()
+        and current.cacheKey() == pixmap.cacheKey()
+    ):
+        return
+    label.setPixmap(pixmap)
+
+
 def add_item_with_top_spacer(
     parent_layout: QBoxLayout,
     item: QWidget | QLayout,
