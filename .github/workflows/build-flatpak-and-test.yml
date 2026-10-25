@@ -95,7 +95,7 @@ jobs:
           fi
 
       - name: Upload Flatpak artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.artifact_name_prefix }}flatpak-artifacts
           path: |
@@ -128,7 +128,7 @@ jobs:
           git checkout ${{ inputs.commitHash }}
 
       - name: Download Flatpak artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: ${{ inputs.artifact_name_prefix }}flatpak-artifacts
           path: artifacts
@@ -194,7 +194,7 @@ jobs:
 
       - name: Upload Flatpak startup logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: flatpak-startup-logs
           path: |
