@@ -30,12 +30,67 @@
 from __future__ import annotations
 
 import logging
+import time
+from collections import OrderedDict
+from threading import Lock
 
 import bdkpython as bdk
 
 from bitcoin_safe.pythonbdk_types import TxOut, robust_address_str_from_txout
 
 logger = logging.getLogger(__name__)
+RATE_WINDOW_SECONDS = 60.0
+
+
+class BoundedTxidSet:
+    """Thread-safe set of txids that evicts the oldest inserted entry when full.
+
+    Also tracks the rate of duplicate hits (`add_if_new` returning False) over a rolling window.
+    """
+
+    def __init__(self, max_size: int) -> None:
+        if max_size < 1:
+            raise ValueError("max_size must be >= 1")
+        self.max_size = max_size
+        self._items: OrderedDict[str, None] = OrderedDict()
+        self._duplicate_times: list[float] = []
+        self._lock = Lock()
+
+    def add_if_new(self, txid: str) -> bool:
+        """Atomically insert txid. Returns True if it was not present before.
+
+        A False return is counted as a duplicate hit for `duplicate_rate`.
+        """
+        now = time.monotonic()
+        with self._lock:
+            if txid in self._items:
+                self._duplicate_times[:] = [
+                    t for t in self._duplicate_times if t >= now - RATE_WINDOW_SECONDS
+                ]
+                self._duplicate_times.append(now)
+                return False
+            self._items[txid] = None
+            if len(self._items) > self.max_size:
+                self._items.popitem(last=False)
+            return True
+
+    @property
+    def duplicate_rate(self) -> float:
+        """Duplicate hits per second over the last RATE_WINDOW_SECONDS."""
+        now = time.monotonic()
+        with self._lock:
+            return (
+                len([t for t in self._duplicate_times if t >= now - RATE_WINDOW_SECONDS])
+                / RATE_WINDOW_SECONDS
+            )
+
+    def __contains__(self, txid: object) -> bool:
+        with self._lock:
+            return txid in self._items
+
+    def __len__(self) -> int:
+        with self._lock:
+            return len(self._items)
 
 
 def address_match(tx: bdk.Transaction, network: bdk.Network, address_filter: set[str]) -> bool:
