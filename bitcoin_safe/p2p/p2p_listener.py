@@ -258,8 +258,9 @@ class P2pListener(QObject):
         if not selectable:
             return None
 
-        best_score = max(self._selection_score(peer, now) for peer in selectable)
-        best_candidates = [peer for peer in selectable if self._selection_score(peer, now) == best_score]
+        scores = {peer: self._selection_score(peer, now) for peer in selectable}
+        best_score = max(scores.values())
+        best_candidates = [peer for peer, score in scores.items() if score == best_score]
         best_candidates.sort(key=self._peer_host_sort_key, reverse=True)
         return random.choice(best_candidates)
 
@@ -699,7 +700,8 @@ class P2pListener(QObject):
             peers = Peers(peer for peer in peers if peer in self.allowed_peers)
 
         with self._state_lock:
-            new_peers = [peer for peer in peers if peer not in self._discovered_peers]
+            known_peers = set(self._discovered_peers)
+            new_peers = [peer for peer in peers if peer not in known_peers]
             new_peers = self._shuffle_and_restrict(new_peers, max_len=maximum_new_peers)
             combined_peers = [
                 peer for peer in self._discovered_peers if self._should_keep_discovered_peer(peer)

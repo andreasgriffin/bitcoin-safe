@@ -846,8 +846,10 @@ class MainWindow(UnlockableMainWindow):
             return
         configured_peers = self.config.network_config.get_configured_peers()
         discovered_peers = Peers(self.config.network_config.discovered_peers)
+        known_peers = set(discovered_peers)
         for peer in configured_peers:
-            if peer not in discovered_peers:
+            if peer not in known_peers:
+                known_peers.add(peer)
                 discovered_peers.append(peer)
         only_configured_peers = (
             self.config.network_config.peer_selection_mode == PeerSelectionMode.only_configured

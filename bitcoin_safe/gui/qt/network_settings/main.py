@@ -153,8 +153,10 @@ def test_mempool_space_server(url: str, proxies: dict | None) -> bool:
 def merge_configured_peers(existing: Peers, discovered: Peers) -> Peers:
     """Append discovered peers while preserving existing order and uniqueness."""
     merged = Peers(existing)
+    known_peers = set(existing)
     for peer in discovered:
-        if peer not in merged:
+        if peer not in known_peers:
+            known_peers.add(peer)
             merged.append(peer)
     return merged
 
