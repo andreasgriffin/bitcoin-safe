@@ -9,7 +9,7 @@ anyio==4.15.1 \
     --hash=sha256:9f28306018cbd6d329e64a36d58256edff76dd996fe423bc957326e578b82a94
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
-    #   httpx
+    #   httpx2
 backports-zstd==1.8.0 \
     --hash=sha256:029bca2385ebb4355135bdb8559792d2768ae19707705eea84e68c42a30a0276 \
     --hash=sha256:045e15ed3b3ebd8816edaa7d66f024becf050d9aec09605f549ce33cfda01098 \
@@ -123,8 +123,6 @@ certifi==2026.10.23 \
     --hash=sha256:e9b54de76e530bb6cf0ccd036787103acb58fd42ba930ea8bf948ddbaa2f61d1
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
-    #   httpcore
-    #   httpx
     #   requests
 cffi==2.1.1 \
     --hash=sha256:046bfc24911b37851ee1b51aab8bffe713d89c68c6a057b09484ce9fd5f69b4e \
@@ -562,16 +560,16 @@ h11==0.16.0 \
     --hash=sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
-    #   httpcore
-httpcore==1.0.9 \
-    --hash=sha256:2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55 \
-    --hash=sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8
+    #   httpcore2
+httpcore2==2.14.0 \
+    --hash=sha256:4c4f64f4b544afeb778c42c0ffb5941b29e671157e90ed3f6dc787c4bca90cd1 \
+    --hash=sha256:4f57a1a8249fe6af589d935cfd456f1d13bbdcb0f0fc72af9142368fc94811d7
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
-    #   httpx
-httpx==0.28.1 \
-    --hash=sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc \
-    --hash=sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad
+    #   httpx2
+httpx2==2.14.0 \
+    --hash=sha256:47ad61a3c40282cd8d0dc96311531f00f5bfc71a066c6fe3b36d8f63fb9e4f6e \
+    --hash=sha256:9d20c13a10bae1773a0be3b0f1e5beeb4bdd549bc3a2ba18efa32897c65403e4
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   pbs-installer
@@ -581,7 +579,7 @@ idna==3.20 \
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   anyio
-    #   httpx
+    #   httpx2
     #   requests
 installer==1.1.0 \
     --hash=sha256:5adc0c01ce62d809989e246987cd68944fe5df8af562d0358f65b2ab15cb5de7 \
@@ -732,9 +730,9 @@ packaging==26.3 \
     #   poetry
     #   virtualenv
     #   wheel
-pbs-installer[download,install]==2026.10.21 \
-    --hash=sha256:265c46b81ecc7ffddcc4607be0b87c0797c91911e1492325a563428f569a20c5 \
-    --hash=sha256:d779e503bee739b0fd39be8b1be05e4ebe9e5d2adab8ff80416d39cd920d4b0d
+pbs-installer[download,install]==2026.10.25 \
+    --hash=sha256:19158e6fe4c941a230fdd017e48562ccea8a1d9320d9ffb30b38826d516b375b \
+    --hash=sha256:d7cfcc37f15f55926d51b93e5275cca548e2d91fe530109f56258bc3aa754ea9
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry
@@ -908,12 +906,20 @@ trove-classifiers==2026.9.21.13 \
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry
+truststore==0.10.5 \
+    --hash=sha256:30d36967ccaded5cbb38d602c433f53600036c79d502f4533a49b60a03bbefcd \
+    --hash=sha256:9aaaedaefaf06d8b206278cf8b5012bc897f485a874503501e12d776df78951c
+    # via
+    #   -c tools/deterministic-build/.locked-build-constraints.txt
+    #   httpcore2
+    #   httpx2
 typing-extensions==4.16.0 \
     --hash=sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8 \
     --hash=sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   anyio
+    #   httpx2
 urllib3==2.8.0 \
     --hash=sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3 \
     --hash=sha256:63bf2ead4c879426ebf22ef2a781eeb4aa3b4ae798a0435506f8687fd5bb9b63
