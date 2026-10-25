@@ -1339,6 +1339,7 @@ class P2PClient(QObject):
         5 = I2P
         """
         received_peers = Peers()
+        seen_peers: set[Peer] = set()
         try:
             count, off = decode_varint(payload)
         except Exception as exc:
@@ -1394,7 +1395,8 @@ class P2PClient(QObject):
                 continue
 
             peer = Peer(host=host, port=port)
-            if peer not in received_peers:
+            if peer not in seen_peers:
+                seen_peers.add(peer)
                 received_peers.append(peer)
         logger.debug(f"Received { len(received_peers)=} peers")
         self.signal_received_peers.emit(received_peers)
