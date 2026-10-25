@@ -5,13 +5,16 @@
 
 ## Prepare 1
 
-* tag the main commit with the version
-* Build for all platforms
-* Sign all binaries
 * Write `release-notes/<version>.md`
 * Run `python .update_version.py` to refresh the checked-in packaging and Flathub files
 * `python tools/release.py`  (as draft)
+
+* tag the main commit with the version
+* Build for all platforms
+* Sign all binaries
+
 * Create release notes for github, nostr, substr, X
+
 
 ## Prepare Plugins
 

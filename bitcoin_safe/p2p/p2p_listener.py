@@ -53,10 +53,11 @@ from bitcoin_safe.tx import short_tx_id
 
 from .p2p_client import Inventory, InventoryType, P2PClient, P2PDiagnosticEvent, Peer, Peers
 from .peer_discovery import PeerDiscovery
-from .tools import address_match, outpoint_match
+from .tools import BoundedTxidSet, address_match, outpoint_match
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T", bound=list)
+TXID_CACHE_MAX_SIZE = 10_000
 SHORT_LIVED_CONNECTION_SECONDS = 30.0
 STABLE_CONNECTION_SECONDS = 180.0
 CONNECT_FAILURE_COOLDOWN_SECONDS = 120.0
@@ -132,6 +133,7 @@ class P2pListener(QObject):
         self._proxy_info: ProxyInfo | None = None
         self._tx_times_by_peer: dict[Peer, list[float]] = {}
         self._peer_quality_by_peer: dict[Peer, PeerQuality] = {}
+        self._seen_txids = BoundedTxidSet(max_size=TXID_CACHE_MAX_SIZE)
 
         self.signal_tracker.connect(self.signal_disconnected_to, self.on_disconnected_to)
         self.signal_tracker.connect(self.signal_break_current_connection, self._on_break_current_connection)
@@ -418,6 +420,18 @@ class P2pListener(QObject):
                 logger.warning("P2P tx received on slot %s without a current peer", slot_id)
             return
 
+        txid = str(tx.compute_txid())
+        if not self._seen_txids.add_if_new(txid):
+            if ENABLE_P2P_LISTENER_DIAGNOSTICS:
+                logger.info(
+                    "P2P deduplicated tx [slot %s %s] txid=%s deduplicated_tx/s=%.2f",
+                    slot_id,
+                    peer,
+                    short_tx_id(txid),
+                    self._seen_txids.duplicate_rate,
+                )
+            return
+
         now = time.monotonic()
         with self._state_lock:
             timestamps = self._tx_times_by_peer.setdefault(peer, [])
@@ -427,8 +441,13 @@ class P2pListener(QObject):
         self.signal_peer_tx_rate_change.emit(peer, rate)
 
         if ENABLE_P2P_LISTENER_DIAGNOSTICS:
-            txid = short_tx_id(tx.compute_txid())
-            logger.info("P2P tx [slot %s %s] txid=%s rate=%.2f txs/s", slot_id, peer, txid, rate)
+            logger.info(
+                "P2P tx [slot %s %s] txid=%s rate=%.2f txs/s",
+                slot_id,
+                peer,
+                short_tx_id(txid),
+                rate,
+            )
 
         if (self.address_filter is not None) and address_match(
             tx=tx, network=self.network, address_filter=self.address_filter
@@ -635,7 +654,9 @@ class P2pListener(QObject):
         """Do fetch txs."""
         tx_inventory = Inventory()
         for item in inventory:
-            if item.type in [InventoryType.MSG_TX, InventoryType.MSG_WITNESS_TX]:
+            if item.type in [InventoryType.MSG_TX, InventoryType.MSG_WITNESS_TX] and (
+                item.payload not in self._seen_txids
+            ):
                 tx_inventory.append(item)
         if tx_inventory:
             self.loop_in_thread.run_background(client.getdata(tx_inventory))
