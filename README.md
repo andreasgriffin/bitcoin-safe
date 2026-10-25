@@ -34,7 +34,6 @@
 |-----------------------------|-----------------------------|----------------------------|
 | Windows                    | Mac OS X                   | Linux                     |
 
-
 ## Comprehensive Feature List
 
 - **Import and Export Capabilities**
@@ -73,29 +72,28 @@
 
 
 - **Transaction / PSBT Creation**
-  
+
   - 1-click fee selection and mempool block preview
   - Automatic merging of utxos when fees are low
   - Highlighting of own addresses 
   - [Address poisoning detection and warning](https://bitcoin-safe.org/en/features/address-poisoning/)
-
 - **Security and Reliability**
-  
+
   - [No seed generation or storage on mainnet](https://bitcoin-safe.org/en/knowledge/hardware-signer-only/)
   - [Seed storage requires a separate hardware signer](https://bitcoin-safe.org/en/knowledge/hardware-signer-only/)  
   - [Update notifications](https://bitcoin-safe.org/en/knowledge/instant-transactions-notifications/) and signature verification
   - Powered by [Bitcoin Development Kit (BDK)](https://github.com/bitcoindevkit/bdk)
-
 - **Ease of Use for Multisig Wallets**
-  
+
   - [Simplified setup](https://bitcoin-safe.org/en/knowledge/setup-multisig-wallet/) for multisig wallets, including step-by-step instructions and [PDF backup sheet](https://bitcoin-safe.org/en/features/pdf-export/)
   - [Test signing](https://bitcoin-safe.org/en/knowledge/setup-multisig-wallet/) with all hardware signers
   - [Collaborative wallet management](https://bitcoin-safe.org/en/features/collaboration/) including chat and PSBT sharing via nostr and label synchronization between trusted devices
   - Optional custom nostr server 
-
 - **Fast syncing**: 
   - [Compact Block Filters](https://bitcoin-safe.org/en/knowledge/compact-block-filters/) by default for private syncing without a centralized server
   - Optional Electrum/Esplora server support
+- **Live map of bitcoin p2p connections** ![networkmap](docs/networkmap.png)
+
 
 
 ## Installation from Git repository
@@ -127,13 +125,13 @@
   git clone https://github.com/andreasgriffin/bitcoin-safe.git
   cd bitcoin-safe
   ```
- 
+
 
 
 - *Optional*: dependency `zbar`
   ```sh 
   brew install zbar  
-  ``` 
+  ```
   
 - Run `bitcoin_safe`
   
