@@ -159,13 +159,13 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Download first Flatpak artifact set
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: repro-flatpak-run-1-flatpak-artifacts
           path: artifacts/flatpak-run-1
 
       - name: Download second Flatpak artifact set
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: repro-flatpak-run-2-flatpak-artifacts
           path: artifacts/flatpak-run-2

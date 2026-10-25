@@ -24,7 +24,7 @@ jobs:
 
       - name: Upload EXE Files from dist/
         id: upload-unsigned-artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: win-artifact
           path: dist/*  # zip everything in the folder
@@ -45,7 +45,7 @@ jobs:
 
       - name: Upload Signed EXE Files from signpath-signed/
         id: upload-signed-artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: signpath-signed
           path: signpath-signed/*  # zip everything in the folder
