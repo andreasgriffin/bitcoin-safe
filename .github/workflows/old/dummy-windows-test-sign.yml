@@ -31,7 +31,7 @@ jobs:
 
       - name: 'signing with test signing'
         id: signpath-io
-        uses: signpath/github-action-submit-signing-request@v1.1
+        uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
           organization-id: '0981059c-bbd4-461c-abcf-b99bd074a723'
