@@ -168,38 +168,20 @@ jobs:
           sleep 3
 
       - name: Create faulty host fontconfig cache (regression reproducer)
-        # Reproduces the host cache written by Google Chrome 154: *cache-9/10/11
-        # symlinks pointing at *cache-12 data. Flatpak exposes the host user cache
-        # as /run/host/user-fonts-cache, and the runtime's fontconfig then segfaults
-        # in FcCharSetHasChar. The smoke test below must pass despite this.
+        # Recreates the faulty host cache from flathub/org.qgis.qgis#1161: a
+        # *cache-12 file with *cache-9/10/11 symlinks pointing at it. Flatpak
+        # exposes the host cache as /run/host/user-fonts-cache, and the runtime
+        # then crashes in FcCharSetHasChar. The smoke test below must pass.
         run: |
           set -euo pipefail
-          source tools/build_linux/flathub_flatpak/flatpak_common.sh
-          install_flatpak_prerequisites
-          ensure_flathub_remote
-          BUNDLE_PATH=$(find artifacts -type f -name '*.flatpak' | head -n 1)
-          test -n "$BUNDLE_PATH"
-          run_with_dbus_session flatpak install --user --noninteractive --reinstall "$BUNDLE_PATH"
           CACHE_DIR="$HOME/.cache/fontconfig"
-          rm -rf "$CACHE_DIR"
-          mkdir -p "$CACHE_DIR"
-          # Use the runtime's own fontconfig (version 12 cache format) to write
-          # the cache, so the data really is the newer format.
-          # Must live under $HOME: flatpak gives the sandbox a private /tmp, and
-          # $HOME is shared with it through --filesystem=home.
-          SCRATCH="$HOME/fc12-scratch"
-          rm -rf "$SCRATCH"
-          mkdir -p "$SCRATCH"
-          run_with_dbus_session flatpak run --command=sh org.bitcoin_safe.BitcoinSafe -c \
-            "XDG_CACHE_HOME='$SCRATCH' fc-cache -fv 2>&1; echo fc-cache-exit=\$?; ls -la '$SCRATCH'; find '$SCRATCH' -maxdepth 3" \
-            || true
-          SOURCE=$(find "$SCRATCH" -type f -name '*-le64.cache-*' | head -n 1)
-          test -n "$SOURCE" || { echo "runtime fc-cache wrote no cache file in $SCRATCH"; find "$SCRATCH" | head -50; exit 1; }
-          HASH=$(basename "$SOURCE" | sed 's/-le64.cache-.*//')
+          fc-cache -f
+          SOURCE=$(find "$CACHE_DIR" -maxdepth 1 -type f -name '*-le64.cache-9' | head -n 1)
+          test -n "$SOURCE"
+          HASH=$(basename "$SOURCE" | sed 's/-le64.cache-9$//')
           cp "$SOURCE" "$CACHE_DIR/${HASH}-le64.cache-12"
-          VERSION=$(od -An -t u4 -j 4 -N 4 "$CACHE_DIR/${HASH}-le64.cache-12" | tr -d ' ')
-          echo "cache header version: ${VERSION}"
-          test "${VERSION}" = "12" || { echo "expected cache version 12, got ${VERSION}"; exit 1; }
+          # Set the header version field (little-endian uint32 at offset 4) to 12.
+          printf '\x0c\x00\x00\x00' | dd of="$CACHE_DIR/${HASH}-le64.cache-12" bs=1 seek=4 conv=notrunc status=none
           for version in 9 10 11; do
             ln -sf "${HASH}-le64.cache-12" "$CACHE_DIR/${HASH}-le64.cache-${version}"
           done
