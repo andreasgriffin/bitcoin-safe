@@ -54,8 +54,20 @@ flatpak-app:
 	install -d /app/etc/bitcoin-safe-fontconfig/conf.d
 	cp -a /etc/fonts/conf.d/. /app/etc/bitcoin-safe-fontconfig/conf.d/
 	find /app/etc/bitcoin-safe-fontconfig -type f \
-	    -exec sed -i '/\/run\/host\/user-fonts-cache/d' {} +
-	cp /etc/fonts/fonts.conf /app/etc/bitcoin-safe-fontconfig/fonts.conf
+	    -exec sed -i -e '/\/run\/host\/user-fonts-cache/d' -e '/\/run\/host\/fonts-cache/d' {} +
+	sed -e '/<cachedir>~\/.fontconfig<\/cachedir>/d' \
+	    -e 's#<include ignore_missing="yes">conf.d</include>#<include ignore_missing="yes">/app/etc/bitcoin-safe-fontconfig/conf.d</include>#' \
+	    /etc/fonts/fonts.conf > /app/etc/bitcoin-safe-fontconfig/fonts.conf
+	grep -q '<include ignore_missing="yes">/app/etc/bitcoin-safe-fontconfig/conf.d</include>' /app/etc/bitcoin-safe-fontconfig/fonts.conf
+	grep -q '<cachedir prefix="xdg">fontconfig</cachedir>' /app/etc/bitcoin-safe-fontconfig/fonts.conf
+	if grep -rq '/run/host/[a-z-]*cache' /app/etc/bitcoin-safe-fontconfig; then
+		echo "error: host font cache still referenced in bitcoin-safe fontconfig" >&2
+		exit 1
+	fi
+	if grep -rq '<cachedir>~/' /app/etc/bitcoin-safe-fontconfig; then
+		echo "error: home-relative cachedir still referenced in bitcoin-safe fontconfig" >&2
+		exit 1
+	fi
 	install -Dm644 "$(FLATHUB_ASSET_DIR)/org.bitcoin_safe.BitcoinSafe.svg" /app/share/icons/hicolor/scalable/apps/org.bitcoin_safe.BitcoinSafe.svg
 	install -Dm644 tools/resources/icon-128.png /app/share/icons/hicolor/128x128/apps/org.bitcoin_safe.BitcoinSafe.png
 	install -Dm644 "$(FLATHUB_ASSET_DIR)/org.bitcoin_safe.BitcoinSafe.metainfo.xml" /app/share/metainfo/org.bitcoin_safe.BitcoinSafe.metainfo.xml
