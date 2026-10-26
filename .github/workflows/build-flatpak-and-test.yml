@@ -191,9 +191,10 @@ jobs:
           rm -rf "$SCRATCH"
           mkdir -p "$SCRATCH"
           run_with_dbus_session flatpak run --command=sh org.bitcoin_safe.BitcoinSafe -c \
-            "XDG_CACHE_HOME='$SCRATCH' fc-cache -f"
+            "XDG_CACHE_HOME='$SCRATCH' fc-cache -fv 2>&1; echo fc-cache-exit=\$?; ls -la '$SCRATCH'; find '$SCRATCH' -maxdepth 3" \
+            || true
           SOURCE=$(find "$SCRATCH" -type f -name '*-le64.cache-*' | head -n 1)
-          test -n "$SOURCE" || { echo "runtime fc-cache wrote no cache file"; exit 1; }
+          test -n "$SOURCE" || { echo "runtime fc-cache wrote no cache file in $SCRATCH"; find "$SCRATCH" | head -50; exit 1; }
           HASH=$(basename "$SOURCE" | sed 's/-le64.cache-.*//')
           cp "$SOURCE" "$CACHE_DIR/${HASH}-le64.cache-12"
           VERSION=$(od -An -t u4 -j 4 -N 4 "$CACHE_DIR/${HASH}-le64.cache-12" | tr -d ' ')
