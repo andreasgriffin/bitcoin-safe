@@ -174,17 +174,20 @@ jobs:
         # in FcCharSetHasChar. The smoke test below must pass despite this.
         run: |
           set -euo pipefail
+          source tools/build_linux/flathub_flatpak/flatpak_common.sh
+          install_flatpak_prerequisites
+          ensure_flathub_remote
           BUNDLE_PATH=$(find artifacts -type f -name '*.flatpak' | head -n 1)
           test -n "$BUNDLE_PATH"
+          run_with_dbus_session flatpak install --user --noninteractive --reinstall "$BUNDLE_PATH"
           CACHE_DIR="$HOME/.cache/fontconfig"
           rm -rf "$CACHE_DIR"
           mkdir -p "$CACHE_DIR"
           # Use the runtime's own fontconfig (version 12 cache format) to write
           # the cache, so the data really is the newer format.
           SCRATCH=$(mktemp -d)
-          flatpak install --user --noninteractive --reinstall "$BUNDLE_PATH" >/dev/null
-          flatpak run --command=sh org.bitcoin_safe.BitcoinSafe -c \
-            'XDG_CACHE_HOME="'"$SCRATCH"'" fc-cache -f' || true
+          run_with_dbus_session flatpak run --command=sh org.bitcoin_safe.BitcoinSafe -c \
+            "XDG_CACHE_HOME='$SCRATCH' fc-cache -f"
           SOURCE=$(find "$SCRATCH" -type f -name '*-le64.cache-*' | head -n 1)
           test -n "$SOURCE" || { echo "runtime fc-cache wrote no cache file"; exit 1; }
           HASH=$(basename "$SOURCE" | sed 's/-le64.cache-.*//')
