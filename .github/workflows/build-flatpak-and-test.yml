@@ -167,6 +167,36 @@ jobs:
           echo $! > xvfb.pid
           sleep 3
 
+      - name: Create faulty host fontconfig cache (regression reproducer)
+        # Reproduces the host cache written by Google Chrome 154: *cache-9/10/11
+        # symlinks pointing at *cache-12 data. Flatpak exposes the host user cache
+        # as /run/host/user-fonts-cache, and the runtime's fontconfig then segfaults
+        # in FcCharSetHasChar. The smoke test below must pass despite this.
+        run: |
+          set -euo pipefail
+          BUNDLE_PATH=$(find artifacts -type f -name '*.flatpak' | head -n 1)
+          test -n "$BUNDLE_PATH"
+          CACHE_DIR="$HOME/.cache/fontconfig"
+          rm -rf "$CACHE_DIR"
+          mkdir -p "$CACHE_DIR"
+          # Use the runtime's own fontconfig (version 12 cache format) to write
+          # the cache, so the data really is the newer format.
+          SCRATCH=$(mktemp -d)
+          flatpak install --user --noninteractive --reinstall "$BUNDLE_PATH" >/dev/null
+          flatpak run --command=sh org.bitcoin_safe.BitcoinSafe -c \
+            'XDG_CACHE_HOME="'"$SCRATCH"'" fc-cache -f' || true
+          SOURCE=$(find "$SCRATCH" -type f -name '*-le64.cache-*' | head -n 1)
+          test -n "$SOURCE" || { echo "runtime fc-cache wrote no cache file"; exit 1; }
+          HASH=$(basename "$SOURCE" | sed 's/-le64.cache-.*//')
+          cp "$SOURCE" "$CACHE_DIR/${HASH}-le64.cache-12"
+          VERSION=$(od -An -t u4 -j 4 -N 4 "$CACHE_DIR/${HASH}-le64.cache-12" | tr -d ' ')
+          echo "cache header version: ${VERSION}"
+          test "${VERSION}" = "12" || { echo "expected cache version 12, got ${VERSION}"; exit 1; }
+          for version in 9 10 11; do
+            ln -sf "${HASH}-le64.cache-12" "$CACHE_DIR/${HASH}-le64.cache-${version}"
+          done
+          ls -la "$CACHE_DIR"
+
       - name: Prepare user namespaces for Flatpak smoke test
         run: |
           if sysctl kernel.apparmor_restrict_unprivileged_userns >/dev/null 2>&1; then
