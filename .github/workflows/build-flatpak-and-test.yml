@@ -185,7 +185,11 @@ jobs:
           mkdir -p "$CACHE_DIR"
           # Use the runtime's own fontconfig (version 12 cache format) to write
           # the cache, so the data really is the newer format.
-          SCRATCH=$(mktemp -d)
+          # Must live under $HOME: flatpak gives the sandbox a private /tmp, and
+          # $HOME is shared with it through --filesystem=home.
+          SCRATCH="$HOME/fc12-scratch"
+          rm -rf "$SCRATCH"
+          mkdir -p "$SCRATCH"
           run_with_dbus_session flatpak run --command=sh org.bitcoin_safe.BitcoinSafe -c \
             "XDG_CACHE_HOME='$SCRATCH' fc-cache -f"
           SOURCE=$(find "$SCRATCH" -type f -name '*-le64.cache-*' | head -n 1)
