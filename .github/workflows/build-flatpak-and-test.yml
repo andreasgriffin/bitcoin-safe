@@ -168,20 +168,20 @@ jobs:
           sleep 3
 
       - name: Create faulty host fontconfig cache (regression reproducer)
-        # Recreates the faulty host cache from flathub/org.qgis.qgis#1161: a
-        # *cache-12 file with *cache-9/10/11 symlinks pointing at it. Flatpak
-        # exposes the host cache as /run/host/user-fonts-cache, and the runtime
-        # then crashes in FcCharSetHasChar. The smoke test below must pass.
+        # Installs the faulty host cache from flathub/org.qgis.qgis#1161: a real
+        # *cache-12 file with *cache-9/10/11 symlinks pointing at it. Flatpak exposes
+        # the host cache as /run/host/user-fonts-cache, and the runtime then crashes
+        # in FcCharSetHasChar. The smoke test below must pass once the fix works.
         run: |
           set -euo pipefail
+          SAMPLE_DIR=tools/build_linux/flathub_flatpak/faulty-fontconfig-cache
           CACHE_DIR="$HOME/.cache/fontconfig"
-          fc-cache -f
-          SOURCE=$(find "$CACHE_DIR" -maxdepth 1 -type f -name '*-le64.cache-9' | head -n 1)
-          test -n "$SOURCE"
-          HASH=$(basename "$SOURCE" | sed 's/-le64.cache-9$//')
-          cp "$SOURCE" "$CACHE_DIR/${HASH}-le64.cache-12"
-          # Set the header version field (little-endian uint32 at offset 4) to 12.
-          printf '\x0c\x00\x00\x00' | dd of="$CACHE_DIR/${HASH}-le64.cache-12" bs=1 seek=4 conv=notrunc status=none
+          rm -rf "$CACHE_DIR"
+          mkdir -p "$CACHE_DIR"
+          SAMPLE=$(find "$SAMPLE_DIR" -name '*-le64.cache-12' | head -n 1)
+          test -n "$SAMPLE"
+          HASH=$(basename "$SAMPLE" | sed 's/-le64.cache-12$//')
+          cp "$SAMPLE" "$CACHE_DIR/${HASH}-le64.cache-12"
           for version in 9 10 11; do
             ln -sf "${HASH}-le64.cache-12" "$CACHE_DIR/${HASH}-le64.cache-${version}"
           done
