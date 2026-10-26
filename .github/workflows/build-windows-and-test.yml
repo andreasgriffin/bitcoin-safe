@@ -147,7 +147,7 @@ jobs:
       - name: 'signing with ${{ inputs.signing-policy-slug }}'
         id: signpath-io
         if: ${{ inputs.skip_build_and_test_release_tag == '' && inputs.signing-policy-slug != '' }}
-        uses: signpath/github-action-submit-signing-request@v1.1
+        uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
           organization-id: '0981059c-bbd4-461c-abcf-b99bd074a723'
