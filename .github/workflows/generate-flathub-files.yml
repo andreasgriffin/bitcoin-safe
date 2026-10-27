@@ -1,0 +1,74 @@
+name: Generate Flathub files
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: 'Full 40-character commit SHA on main (leave empty for the head of main)'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout main with full history
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify requested commit is on main
+        env:
+          REQUESTED_COMMIT: ${{ inputs.commit }}
+        run: |
+          set -euo pipefail
+          if [ -z "$REQUESTED_COMMIT" ]; then
+            exit 0
+          fi
+          if ! [[ "$REQUESTED_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Commit must be a full lowercase 40-character SHA" >&2
+            exit 1
+          fi
+          git merge-base --is-ancestor "$REQUESTED_COMMIT" origin/main \
+            || { echo "Commit $REQUESTED_COMMIT is not on main" >&2; exit 1; }
+          git checkout --detach "$REQUESTED_COMMIT"
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Flatpak tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install -y --noninteractive flathub org.flatpak.Builder
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+
+      - name: Generate Flathub manifest repo
+        run: |
+          poetry run python -m tools.build_linux.flathub_flatpak.populate_cli \
+            --release-tag "$(git rev-parse HEAD)" \
+            --local-source-checkout . \
+            --output-dir flathub-output \
+            --skip-build
+
+      - name: Upload Flathub files
+        uses: actions/upload-artifact@v7
+        with:
+          name: flathub-files-${{ github.sha }}
+          path: flathub-output/**
+          include-hidden-files: true
+          if-no-files-found: error
