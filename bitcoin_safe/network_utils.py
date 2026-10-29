@@ -243,7 +243,8 @@ def resolve_host_endpoints(
     def _resolve() -> list[ResolvedEndpoint]:
         infos = socket.getaddrinfo(host, port, family=family, type=socktype)
         endpoints: list[ResolvedEndpoint] = []
-        for resolved_family, _, _, _, sockaddr in infos:
+        for family_code, _, _, _, sockaddr in infos:
+            resolved_family: int = family_code
             if resolved_family not in (socket.AF_INET, socket.AF_INET6):
                 continue
             candidate = sockaddr[0]
