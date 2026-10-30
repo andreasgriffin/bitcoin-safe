@@ -143,9 +143,9 @@ CBF_REQUIRED_SERVICE_FLAGS = DEFAULT_REQUIRED_SERVICE_FLAGS | NODE_COMPACT_FILTE
 DNS_SEEDS: dict[bdk.Network, dict[str, Any]] = {
     bdk.Network.BITCOIN: {
         "hosts": [
+            "seed.rustaceanrob.com`",  # BIP157 specific nodes
             "seed.bitcoin.sipa.be",  # Pieter Wuille
             "dnsseed.bluematt.me",  # Matt Corallo
-            "dnsseed.bitcoin.dashjr-list-of-p2p-nodes.us",  # Luke Dashjr
             "seed.bitcoin.jonasschnelli.ch",  # Jonas Schnelli
             "seed.btc.petertodd.net",  # Peter Todd
             "seed.bitcoin.sprovoost.nl",  # Sjors Provoost
