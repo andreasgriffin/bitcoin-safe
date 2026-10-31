@@ -283,9 +283,9 @@ def _verify_p2wsh(
 
 
 def _verify_p2tr_keypath(
-    tx: Transaction, index: int, prevouts: list[Prevout], witness: list[bytes]
+    tx: Transaction, index: int, prevouts: list[Prevout | None], witness: list[bytes]
 ) -> InputVerdict:
-    """Verify a BIP341 key-path spend. The sighash commits to every prevout of the transaction."""
+    """Verify a BIP341 key-path spend using its committed prevouts."""
     # BIP341 annexes are optional and, when present, are the final item beginning
     # with 0x50. Remove it before deciding whether this is key-path or script-path.
     annex = None
@@ -303,16 +303,29 @@ def _verify_p2tr_keypath(
         sighash = SIGHASH.DEFAULT
     else:
         sighash = sig_bytes[64]
-        if sighash == SIGHASH.DEFAULT:
-            return InputVerdict.invalid  # BIP341: an explicit 0x00 sighash byte is not allowed
+        if sighash not in (0x01, 0x02, 0x03, 0x81, 0x82, 0x83):
+            # BIP341 permits DEFAULT only when implied by a 64-byte signature. In
+            # particular, embit masks ANYONECANPAY before checking the base type,
+            # which would otherwise incorrectly accept the forbidden 0x80 value.
+            return InputVerdict.invalid
+    anyonecanpay = bool(sighash & SIGHASH.ANYONECANPAY)
+    if prevouts[index] is None:
+        return InputVerdict.unchecked
+    if not anyonecanpay and any(prevout is None for prevout in prevouts):
+        return InputVerdict.unchecked
+    current_prevout = prevouts[index]
+    assert current_prevout is not None
     try:
-        output_key = PublicKey.from_xonly(prevouts[index].script_pubkey[2:34])
+        output_key = PublicKey.from_xonly(current_prevout.script_pubkey[2:34])
     except Exception:
         return InputVerdict.invalid
+    # embit requires arrays matching the input count even for ANYONECANPAY, but
+    # its implementation reads only this input's entry on that path. Keep unknown
+    # entries as None rather than inventing data that might affect another hash mode.
     msg = tx.sighash_taproot(
         index,
-        [Script(p.script_pubkey) for p in prevouts],
-        [p.value for p in prevouts],
+        [Script(p.script_pubkey) if p is not None else None for p in prevouts],  # type: ignore[list-item]
+        [p.value if p is not None else None for p in prevouts],  # type: ignore[list-item]
         sighash,
         annex=annex,
     )
@@ -323,7 +336,9 @@ def _verify_p2tr_keypath(
     )
 
 
-def _verify_input(tx: Transaction, index: int, prevouts: list[Prevout | None]) -> InputVerdict:
+def _verify_input(
+    tx: Transaction, index: int, prevouts: list[Prevout | None], wallet_owned: bool
+) -> InputVerdict:
     # A prevout is the exact output being spent. Its script selects the
     # verification template; without it, there is no trustworthy sighash context.
     prevout = prevouts[index]
@@ -333,40 +348,74 @@ def _verify_input(tx: Transaction, index: int, prevouts: list[Prevout | None]) -
     witness = list(tx_input.witness.items)
     script_sig = tx_input.script_sig.data
 
+    if not wallet_owned:
+        # We still enforce the native-witness scriptSig consensus constraint
+        # below, but never interpret or verify a participant's signature.
+        if (_is_p2wpkh(prevout.script_pubkey) or _is_p2tr(prevout.script_pubkey)) and script_sig:
+            return InputVerdict.invalid
+        if len(prevout.script_pubkey) == 34 and prevout.script_pubkey[:2] == b"\x00\x20" and script_sig:
+            return InputVerdict.invalid
+        return InputVerdict.unchecked
+
     if _is_p2pkh(prevout.script_pubkey):
         return _verify_p2pkh(tx, index, prevout, script_sig)
     if _is_p2wpkh(prevout.script_pubkey):
+        if script_sig:
+            # Native witness programs require an empty scriptSig under Bitcoin
+            # consensus rules; a valid witness signature alone cannot make a
+            # transaction with a modified scriptSig valid.
+            return InputVerdict.invalid
         return _verify_p2wpkh(tx, index, prevout, witness, prevout.script_pubkey[2:22])
     if _is_p2sh(prevout.script_pubkey):
         return _verify_p2sh_p2wpkh(tx, index, prevout, script_sig, witness)
     if len(prevout.script_pubkey) == 34 and prevout.script_pubkey[:2] == b"\x00\x20":
+        if script_sig:
+            # Native witness programs require an empty scriptSig under Bitcoin
+            # consensus rules; a valid witness signature alone is insufficient.
+            return InputVerdict.invalid
         return _verify_p2wsh(tx, index, prevout, witness, prevout.script_pubkey[2:])
     if _is_p2tr(prevout.script_pubkey):
-        if any(p is None for p in prevouts):
-            return InputVerdict.unchecked  # the taproot sighash needs every prevout
-        return _verify_p2tr_keypath(tx, index, [p for p in prevouts if p is not None], witness)
+        if script_sig:
+            # Native witness programs require an empty scriptSig under Bitcoin
+            # consensus rules, including script-path spends that this verifier skips.
+            return InputVerdict.invalid
+        return _verify_p2tr_keypath(tx, index, prevouts, witness)
     return InputVerdict.unchecked
 
 
-def verify_transaction(tx: bdk.Transaction, prevouts: list[Prevout | None]) -> TxVerification:
+def verify_transaction(
+    tx: bdk.Transaction,
+    prevouts: list[Prevout | None],
+    wallet_owned_inputs: list[bool] | None = None,
+) -> TxVerification:
     """Verify every input of ``tx``.
 
-    ``prevouts`` holds the spent output of each input, in input order, or ``None`` when the
-    wallet does not know that output.
+    ``prevouts`` holds known spent outputs regardless of ownership. Ownership is
+    separate because external prevouts still contribute to non-ANYONECANPAY Taproot
+    sighashes, while only wallet-owned input signatures are checked.
     """
     # embit provides the sighash and secp256k1 helpers used here; round-trip the
     # BDK transaction bytes so verification uses the same inputs and outputs.
     embit_tx = Transaction.parse(tx.serialize())
-    if len(prevouts) != len(embit_tx.vin):
+    if wallet_owned_inputs is None:
+        # Standalone callers historically ask to verify every input; wallet callers
+        # pass explicit ownership flags so external participant signatures are skipped.
+        wallet_owned_inputs = [True] * len(embit_tx.vin)
+    if len(prevouts) != len(embit_tx.vin) or len(wallet_owned_inputs) != len(embit_tx.vin):
         return TxVerification(verdicts=[InputVerdict.invalid] * len(embit_tx.vin))
     return TxVerification(
-        verdicts=[_verify_input_safely(embit_tx, index, prevouts) for index in range(len(embit_tx.vin))],
+        verdicts=[
+            _verify_input_safely(embit_tx, index, prevouts, wallet_owned_inputs[index])
+            for index in range(len(embit_tx.vin))
+        ],
     )
 
 
-def _verify_input_safely(tx: Transaction, index: int, prevouts: list[Prevout | None]) -> InputVerdict:
+def _verify_input_safely(
+    tx: Transaction, index: int, prevouts: list[Prevout | None], wallet_owned: bool
+) -> InputVerdict:
     """Treat malformed input encodings as invalid instead of aborting transaction processing."""
     try:
-        return _verify_input(tx, index, prevouts)
+        return _verify_input(tx, index, prevouts, wallet_owned)
     except Exception:
         return InputVerdict.invalid

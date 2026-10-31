@@ -114,8 +114,9 @@ def _spend(
         tx.vin[0].witness.items = [der, pub.sec()]
     elif input_kind == "p2tr":
         tweaked = key.taproot_tweak()
-        msg = tx.sighash_taproot(0, [spk], [VALUE], SIGHASH.DEFAULT)
-        tx.vin[0].witness.items = [tweaked.schnorr_sign(msg).serialize()]
+        msg = tx.sighash_taproot(0, [spk], [VALUE], sighash)
+        signature = tweaked.schnorr_sign(msg).serialize()
+        tx.vin[0].witness.items = [signature if sighash == SIGHASH.DEFAULT else signature + bytes([sighash])]
     else:
         raise ValueError(input_kind)
     return tx, prevouts
@@ -152,6 +153,12 @@ def test_valid_p2wpkh() -> None:
     assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.valid]
 
 
+def test_native_p2wpkh_rejects_nonempty_script_sig() -> None:
+    tx, prevouts = _spend(_p2wpkh_spk(KEY), KEY, "p2wpkh")
+    tx.vin[0].script_sig = Script(b"\x01\x01")
+    assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.invalid]
+
+
 def test_valid_p2sh_p2wpkh() -> None:
     spk = _p2sh_p2wpkh_spk(KEY)
     tx, prevouts = _spend(spk, KEY, "p2sh_p2wpkh")
@@ -164,14 +171,98 @@ def test_valid_p2tr_keypath() -> None:
     assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.valid]
 
 
+def test_native_p2tr_rejects_nonempty_script_sig() -> None:
+    tx, prevouts = _spend(_p2tr_spk(KEY), KEY, "p2tr")
+    tx.vin[0].script_sig = Script(b"\x01\x01")
+    assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.invalid]
+
+
+def test_native_p2tr_script_path_rejects_nonempty_script_sig() -> None:
+    tx, prevouts = _spend(_p2tr_spk(KEY), KEY, "p2tr")
+    tx.vin[0].witness.items = [b"script", b"control block"]
+    tx.vin[0].script_sig = Script(b"\x01\x01")
+    assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.invalid]
+
+
 def test_valid_p2wsh_multisig() -> None:
     tx, prevouts = _spend_p2wsh([KEY, OTHER_KEY])
     assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.valid]
 
 
+def test_native_p2wsh_rejects_nonempty_script_sig() -> None:
+    tx, prevouts = _spend_p2wsh([KEY, OTHER_KEY])
+    tx.vin[0].script_sig = Script(b"\x01\x01")
+    assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.invalid]
+
+
 def test_valid_nested_p2sh_p2wsh_multisig() -> None:
     tx, prevouts = _spend_p2wsh([KEY, OTHER_KEY], nested=True)
     assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.valid]
+
+
+def test_valid_nested_p2sh_p2wpkh_keeps_redeem_script_sig() -> None:
+    tx, prevouts = _spend(_p2sh_p2wpkh_spk(KEY), KEY, "p2sh_p2wpkh")
+    assert tx.vin[0].script_sig.data
+    assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.valid]
+
+
+@pytest.mark.parametrize("sighash", [0x01, 0x02, 0x03, 0x81, 0x82, 0x83])
+def test_valid_explicit_taproot_sighash_types(sighash: int) -> None:
+    tx, prevouts = _spend(_p2tr_spk(KEY), KEY, "p2tr", sighash=sighash)
+    assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.valid]
+
+
+@pytest.mark.parametrize("sighash", [0x00, 0x80, 0x04, 0x84, 0x7F])
+def test_invalid_explicit_taproot_sighash_types(sighash: int) -> None:
+    if sighash == 0x80:
+        # embit can sign this forbidden type after masking ANYONECANPAY, so test
+        # the verifier with an otherwise valid signature for exactly that hash.
+        tx, prevouts = _spend(_p2tr_spk(KEY), KEY, "p2tr", sighash=sighash)
+    else:
+        tx, prevouts = _spend(_p2tr_spk(KEY), KEY, "p2tr")
+        signature = tx.vin[0].witness.items[0]
+        tx.vin[0].witness.items[0] = signature + bytes([sighash])
+    assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.invalid]
+
+
+def _spend_taproot_with_external_input(
+    sighash: int, external_prevout: Prevout | None
+) -> tuple[Transaction, list[Prevout | None]]:
+    wallet_spk = _p2tr_spk(KEY)
+    tx = Transaction(
+        vin=[TransactionInput(PARENT_TXID, 0), TransactionInput(b"\xcd" * 32, 1)],
+        vout=[TransactionOutput(VALUE - 2_000, _p2wpkh_spk(OTHER_KEY))],
+    )
+    prevouts = [Prevout(wallet_spk.data, VALUE), external_prevout]
+    signing_external = external_prevout or Prevout(b"\x00\x14" + b"\x44" * 20, 25_000)
+    script_pubkeys = [Script(wallet_spk.data), Script(signing_external.script_pubkey)]
+    values = [VALUE, signing_external.value]
+    message = tx.sighash_taproot(0, script_pubkeys, values, sighash)
+    signature = KEY.taproot_tweak().schnorr_sign(message).serialize()
+    tx.vin[0].witness.items = [signature if sighash == SIGHASH.DEFAULT else signature + bytes([sighash])]
+    # An external signature is deliberately malformed; this wallet verifier must not
+    # claim to validate a participant's input signature.
+    tx.vin[1].witness.items = [b"not an external signature"]
+    return tx, prevouts
+
+
+def test_taproot_sighash_uses_known_external_prevout() -> None:
+    external = Prevout(_p2wpkh_spk(OTHER_KEY).data, 25_000)
+    tx, prevouts = _spend_taproot_with_external_input(SIGHASH.DEFAULT, external)
+    result = verify_transaction(_to_bdk(tx), prevouts, [True, False])
+    assert result.verdicts == [InputVerdict.valid, InputVerdict.unchecked]
+
+
+def test_taproot_default_is_unchecked_with_unknown_external_prevout() -> None:
+    tx, prevouts = _spend_taproot_with_external_input(SIGHASH.DEFAULT, None)
+    result = verify_transaction(_to_bdk(tx), prevouts, [True, False])
+    assert result.verdicts == [InputVerdict.unchecked, InputVerdict.unchecked]
+
+
+def test_taproot_anyonecanpay_allows_unknown_external_prevout() -> None:
+    tx, prevouts = _spend_taproot_with_external_input(0x81, None)
+    result = verify_transaction(_to_bdk(tx), prevouts, [True, False])
+    assert result.verdicts == [InputVerdict.valid, InputVerdict.unchecked]
 
 
 @pytest.mark.parametrize("input_kind", ["p2pkh", "p2wpkh"])
