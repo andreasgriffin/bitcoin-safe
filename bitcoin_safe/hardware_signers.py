@@ -422,6 +422,16 @@ class HardwareSigners:
         icon_filename="krux-icon.svg",
         screenshot_name="krux",
     )
+    keycard_shell = HardwareSigner(
+        id="keycard_shell",
+        brand_name="Keycard",
+        display_name="Shell",
+        qr_types=[QrExportTypes.ur, DescriptorQrExportTypes.default],
+        descriptor_export_types=[DescriptorExportTypes.default],
+        usb=FeatureLevel.supported,
+        info_url=_signer_info_url("keycard"),
+        icon_filename="keycard-icon.svg",
+    )
 
     @classmethod
     def as_list(cls, include_generic: bool = True) -> list[HardwareSigner]:
