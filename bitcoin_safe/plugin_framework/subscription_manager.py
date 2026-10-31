@@ -45,6 +45,7 @@ from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.storage import BaseSaveableClass, SaveAllClass, filtered_for_init
 from btcpay_tools.btcpay_subscription_nostr.core import PosInvoiceMetadata, derive_subscriber_email
 from btcpay_tools.btcpay_subscription_nostr.service import (
+    MAX_NETWORK_TIMEOUT_SECONDS,
     PurchaseSession,
     SubscriptionManagementClient,
     SubscriptionManagementPhase,
@@ -597,6 +598,7 @@ class SubscriptionManager(QObject, BaseSaveableClass):
                 buyer_email=subscriber_email,
                 message_to_be_signed=to_be_signed,
             ),
+            timeout_seconds=MAX_NETWORK_TIMEOUT_SECONDS,
             proxy_dict=self.proxy_dict(),
             loop_in_thread=self.loop_in_thread,
             npub_bitcoin_safe_pos=self.btcpay_config.npub_bitcoin_safe_pos,

@@ -386,7 +386,7 @@ class ButtonEdit(QWidget):
         )
         if set_data_as_string:
             self._temp_bitcoin_video_widget.signal_data.connect(self._result_callback_input_qr_from_camera)
-        self._temp_bitcoin_video_widget.signal_data.connect(self.signal_data)
+        self._temp_bitcoin_video_widget.signal_data.connect(self.signal_data.emit)
         self._temp_bitcoin_video_widget.signal_recognize_exception.connect(_exception_callback)
         self._temp_bitcoin_video_widget.show()
 
