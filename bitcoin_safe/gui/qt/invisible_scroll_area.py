@@ -32,8 +32,6 @@ from __future__ import annotations
 from PyQt6.QtCore import QEvent
 from PyQt6.QtWidgets import QScrollArea, QWidget
 
-from .util import should_process_theme_change
-
 
 class InvisibleScrollArea(QScrollArea):
     def __init__(self, parent=None) -> None:
@@ -53,6 +51,8 @@ class InvisibleScrollArea(QScrollArea):
 
     def changeEvent(self, a0: QEvent | None) -> None:
         super().changeEvent(a0)
-        if should_process_theme_change(self, a0):
+        # Only a palette change needs a repaint. Reading the style here (via
+        # should_process_theme_change) can touch a style that Qt already freed.
+        if a0 is not None and a0.type() in {QEvent.Type.ApplicationPaletteChange, QEvent.Type.PaletteChange}:
             if viewport := self.viewport():
                 viewport.update()
