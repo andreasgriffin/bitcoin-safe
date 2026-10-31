@@ -98,9 +98,9 @@ logger = logging.getLogger(__name__)
 
 
 class DataGroupBox(QGroupBox):
-    def __init__(self, title: str | None = None, parent=None, data=None) -> None:
+    def __init__(self, title: str | None = None, parent: QWidget | None = None, data=None) -> None:
         """Initialize instance."""
-        super().__init__(title=title if title else "", parent=parent)
+        super().__init__(title if title else "", parent)
         self.data = data
         self._layout: QVBoxLayout | QHBoxLayout = QVBoxLayout()
 

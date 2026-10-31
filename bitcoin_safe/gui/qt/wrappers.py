@@ -46,7 +46,7 @@ class Menu(QMenu):
         icon: QIcon | None = None,
     ) -> QAction:
         """Add action."""
-        action = QAction(text=text, parent=self)
+        action = QAction(text, self)
         if slot:
             if callable(slot):
                 action.triggered.connect(

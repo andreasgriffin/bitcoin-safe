@@ -1723,7 +1723,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         )
         history_tab_content_layout.addWidget(self.wallet_corruption_warning_bar)
 
-        splitter = QSplitter(orientation=Qt.Orientation.Vertical)
+        splitter = QSplitter(Qt.Orientation.Vertical)
         history_tab_content_layout.addWidget(splitter)
         self.history_tab_content_stack.addWidget(self.history_tab_content)
 

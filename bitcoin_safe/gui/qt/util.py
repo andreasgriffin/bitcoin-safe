@@ -138,7 +138,7 @@ def _style_identity(target: QApplication | QWidget) -> tuple[str, str]:
         return ("", "")
 
     meta_object = style.metaObject()
-    return (style.objectName(), meta_object.className() if meta_object else "")
+    return (style.objectName(), (meta_object.className() or "") if meta_object else "")
 
 
 def current_theme_state(target: QApplication | QWidget) -> tuple[object, ...]:

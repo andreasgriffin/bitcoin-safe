@@ -1943,7 +1943,7 @@ class MainWindow(UnlockableMainWindow):
         """Load tx like from qr."""
         self.signals.close_all_video_widgets.emit()
         d = BitcoinVideoWidget()
-        d.aboutToClose.connect(self.signal_remove_attached_widget)
+        d.aboutToClose.connect(self.signal_remove_attached_widget.emit)
         self._register_attached_widget(d)
         d.signal_data.connect(self._result_callback_load_tx_like_from_qr)
         d.signal_recognize_exception.connect(self._load_tx_like_from_qr_exception_callback)
@@ -1970,7 +1970,7 @@ class MainWindow(UnlockableMainWindow):
             title=self.tr("QR Scanner"),
         )
         self._register_attached_widget(self._qr_scanner)
-        self._qr_scanner.aboutToClose.connect(self.signal_remove_attached_widget)
+        self._qr_scanner.aboutToClose.connect(self.signal_remove_attached_widget.emit)
 
     def dialog_open_tx_from_str(self) -> ImportDialog:
         """Dialog open tx from str."""
