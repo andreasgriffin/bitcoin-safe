@@ -41,7 +41,7 @@ Full script validation is out of scope.
 
 
 
-This entire file should be removed once BDK has implmeneted signature checks for unconfirmed tx.
+This entire file should be removed once BDK has implemented signature checks for wallet-owned inputs.
 """
 
 from __future__ import annotations
