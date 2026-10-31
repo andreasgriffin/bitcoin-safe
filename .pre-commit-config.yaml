@@ -71,7 +71,7 @@ repos:
           - pytest-mypy
           - types-Pillow
           - types-reportlab
-          - pyqt6==6.11.0
+          - pyqt6
           - pysequoia 
 
 

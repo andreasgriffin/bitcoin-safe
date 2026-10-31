@@ -1412,17 +1412,22 @@ gmpy2 = ["gmpy2"]
 
 [[package]]
 name = "embit"
-version = "0.8.0"
-description = "A minimal bitcoin library for MicroPython and Python3 with a focus on embedded systems."
+version = "0.8.1"
+description = "A minimal bitcoin library for MicroPython and CPython 3.10+ with a focus on embedded systems."
 optional = false
-python-versions = "*"
+python-versions = ">=3.10"
 groups = ["main"]
-files = [
-    {file = "embit-0.8.0.tar.gz", hash = "sha256:8bf4b10073c67400370ce523fb16f035fe759f6fdd987c579bdcc268d75ed770"},
-]
+files = []
+develop = false
 
 [package.extras]
-dev = ["black", "mkdocs", "mkdocs-material", "mkdocstrings[python]", "mypy", "pre-commit", "pytest", "pytest-cov", "requests"]
+dev = ["black", "mkdocs", "mkdocs-material", "mkdocstrings[python]", "mypy", "pre-commit", "pytest", "pytest-cov", "requests", "ruff"]
+
+[package.source]
+type = "git"
+url = "https://github.com/diybitcoinhardware/embit.git"
+reference = "eb6104fd85d3becabba628756cd5e1b75619f3a1"
+resolved_reference = "eb6104fd85d3becabba628756cd5e1b75619f3a1"
 
 [[package]]
 name = "fastjsonschema"
@@ -5421,4 +5426,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "2e019037e9540850cfc65f5ff3ac3a561bd167155f8fb385941a9b5851b36e1b"
+content-hash = "8727e16a58dcb65b7d343371a1fb8a852b14ae9287fd20cbfbf7d8067cf72909"

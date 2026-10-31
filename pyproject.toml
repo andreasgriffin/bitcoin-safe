@@ -54,7 +54,7 @@ cryptography = [
     # Everything else: resolve to newest compatible version at lock/update time
     { version = ">=49.0.0", markers = "sys_platform != 'darwin' or platform_machine != 'x86_64'" },
 ]
-embit = "^0.8.0"
+embit = { git = "https://github.com/diybitcoinhardware/embit.git", rev = "eb6104fd85d3becabba628756cd5e1b75619f3a1" }
 
 
 
