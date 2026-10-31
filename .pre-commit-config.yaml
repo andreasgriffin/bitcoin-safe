@@ -43,7 +43,7 @@ repos:
 
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v2.4.0   # Use the latest MyPy version
+    rev: v2.4.1   # Use the latest MyPy version
     hooks:
       - id: mypy
         files: ^bitcoin_safe/|^tools/
@@ -60,9 +60,8 @@ repos:
           - --warn-unreachable
           # - --disallow-any-generics           
           # - --strict        
-          - --install-types
-          - --non-interactive   
           - --ignore-missing-imports
+          - --no-site-packages  # skip PyQt6 .pyi stubs, which fail to parse under mypy 2.x
           - --show-error-codes 
         additional_dependencies: 
           - types-requests
