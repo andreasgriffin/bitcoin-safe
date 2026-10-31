@@ -189,3 +189,35 @@ def test_sync_clears_wallet_caches_before_verifying_events(monkeypatch) -> None:
 
     assert calls == ["clear_cache", "verify", "persist"]
     wallet.close()
+
+
+def test_sync_evicts_and_returns_invalid_unconfirmed_transaction(monkeypatch) -> None:
+    wallet, outpoint = _wallet_with_funded_unconfirmed_output()
+    try:
+        spend = _create_signed_spend(wallet, outpoint)
+        tampered = EmbitTransaction.parse(spend.serialize())
+        signature = bytearray(tampered.vin[0].witness.items[0])
+        signature[5] ^= 1
+        tampered.vin[0].witness.items[0] = bytes(signature)
+        invalid_tx = bdk.Transaction(tampered.serialize())
+        event = bdk.WalletEvent.TX_UNCONFIRMED(
+            txid=invalid_tx.compute_txid(), tx=invalid_tx, old_block_time=None
+        )
+        evicted: list[list[str]] = []
+        monkeypatch.setattr(wallet.bdkwallet, "apply_update_events", lambda _update: [event])
+        monkeypatch.setattr(
+            wallet,
+            "get_tx",
+            lambda _txid: SimpleNamespace(transaction=invalid_tx),
+        )
+        monkeypatch.setattr(wallet, "_verify_tx_signatures", lambda _tx: False)
+        monkeypatch.setattr(wallet, "apply_evicted_txs", lambda txids, evicted_at: evicted.append(txids))
+        monkeypatch.setattr(wallet, "persist", lambda: None)
+
+        update_result = wallet._apply_update(object())
+        events = update_result[0] if isinstance(update_result, tuple) else update_result
+
+        assert events == [event]
+    finally:
+        wallet.close()
+        assert evicted == [[str(invalid_tx.compute_txid())]]
