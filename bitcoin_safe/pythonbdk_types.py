@@ -650,7 +650,7 @@ def robust_address_str_from_txout(txout: TxOut, network: bdk.Network, on_error_r
 
 
 if __name__ == "__main__":
-    testdict = {}
+    testdict: dict[object, object] = {}
 
     def test_hashing(v) -> None:
         """Test hashing."""
