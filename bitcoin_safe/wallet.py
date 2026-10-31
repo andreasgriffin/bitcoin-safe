@@ -88,6 +88,7 @@ from .descriptors import (
     get_default_address_type,
 )
 from .i18n import translate
+from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
 from .keystore import KeyStore
 from .labels import Labels, LabelType
 from .pythonbdk_types import (
@@ -1354,11 +1355,70 @@ class Wallet(BaseSaveableClass, CacheManager):
     def _apply_update(self, update: bdk.Update) -> list[bdk.WalletEvent]:
         """Apply a client update to the local wallet caches."""
         wallet_events = self.bdkwallet.apply_update_events(update)
+        # Event handling reads transaction details through cached wallet lookups.
+        # Drop the pre-update snapshot before looking up the newly applied txs.
+        self.clear_cache()
+        self._evict_txs_with_invalid_signatures(wallet_events)
 
         self.persist()
 
         logger.info(f"Applied update with events {[type(event) for event in wallet_events]}")
         return wallet_events
+
+    def _prevouts_of_tx(self, transaction: bdk.Transaction) -> list[Prevout | None]:
+        """Return known wallet-owned spent outputs in transaction input order."""
+        prevouts: list[Prevout | None] = []
+        for tx_in in transaction.input():
+            parent = self.get_tx(str(tx_in.previous_output.txid))
+            if parent is None:
+                prevouts.append(None)
+                continue
+            spent = parent.transaction.output()[tx_in.previous_output.vout]
+            if not self.bdkwallet.is_mine(spent.script_pubkey):
+                # Knowing a parent transaction does not mean this wallet owns
+                # every output it creates. Leave external inputs unchecked.
+                prevouts.append(None)
+                continue
+            prevouts.append(
+                Prevout(script_pubkey=TxOut.from_bdk(spent).spk_bytes, value=spent.value.to_sat())
+            )
+        return prevouts
+
+    def _verify_tx_signatures(self, transaction: bdk.Transaction) -> bool:
+        """Return False if an input spending a wallet output carries an invalid signature."""
+        try:
+            prevouts = self._prevouts_of_tx(transaction)
+            verification = verify_transaction(transaction, prevouts)
+        except Exception:
+            logger.exception(f"Failed to verify wallet inputs of transaction {transaction.compute_txid()}")
+            return False
+        has_unchecked_wallet_input = any(
+            verdict is InputVerdict.unchecked and prevout is not None
+            for verdict, prevout in zip(verification.verdicts, prevouts, strict=True)
+        )
+        if verification.is_invalid or has_unchecked_wallet_input:
+            logger.error(
+                f"Transaction {transaction.compute_txid()} has an invalid or unverifiable wallet input"
+            )
+            return False
+        return True
+
+    def _evict_txs_with_invalid_signatures(self, wallet_events: list[bdk.WalletEvent]) -> None:
+        """Evict unconfirmed txs of an applied update whose signatures do not verify.
+
+        bdk does not expose the txs of an update before it is applied, so the check runs
+        on the wallet state after the update. The evicted tx is not returned to the wallet
+        later, because its eviction time is newer than its last-seen time.
+        """
+        txids_to_evict: list[str] = []
+        for event in wallet_events:
+            if not isinstance(event, bdk.WalletEvent.TX_UNCONFIRMED):
+                continue
+            wallet_tx = self.get_tx(str(event.txid))
+            if wallet_tx and not self._verify_tx_signatures(wallet_tx.transaction):
+                txids_to_evict.append(str(event.txid))
+        if txids_to_evict:
+            self.apply_evicted_txs(txids_to_evict, evicted_at=int(time()))
 
     def forward_search_unused_address(
         self, category: str | None = None, is_change=False
@@ -2729,6 +2789,8 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         applied_txs: list[bdk.UnconfirmedTx] = []
         for tx in txs:
+            if not self._verify_tx_signatures(tx):
+                continue
             wallet_tx = self.get_tx(str(tx.compute_txid()))
             if (
                 wallet_tx

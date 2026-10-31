@@ -54,6 +54,7 @@ cryptography = [
     # Everything else: resolve to newest compatible version at lock/update time
     { version = ">=49.0.0", markers = "sys_platform != 'darwin' or platform_machine != 'x86_64'" },
 ]
+embit = "^0.8.0"
 
 
 
