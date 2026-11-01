@@ -53,6 +53,15 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.2.1" date="2026-11-01">
+      <description>
+        <ul>
+          <li>Keycard Shell support.</li>
+          <li>Wallet input signature verification.</li>
+          <li>BIP157 compact block filter DNS seed.</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.2.0" date="2026-10-27">
       <description>
         <ul>
