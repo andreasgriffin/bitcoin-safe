@@ -32,8 +32,8 @@ pyyaml = ">=6.0"
 hwi = ">=3.2.0"
 appdirs = ">=1.4.4"
 reportlab = ">=4.0.8"
-pyqt6 = "^6.10"
-pyqt6-charts = "^6.10"
+pyqt6 = ">=6.11,<6.12"  #  must match the flatpak qt runtime
+pyqt6-charts = ">=6.11,<6.12"  #  must match the flatpak qt runtime
 pysequoia = "^0.1.34"
 python-gnupg = "^0.5.2"
 numpy = "2.2.1" # error in wine/pyinstaller when increased
