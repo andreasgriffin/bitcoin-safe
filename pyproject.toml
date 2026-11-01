@@ -101,11 +101,17 @@ markers = [
     "integration: marks tests that hit live external services",
 ]
 
-[[tool.mypy.overrides]]
-module = "PyQt6.*"
+
+[tool.mypy]
+follow_imports_for_stubs = true
+
+
+[[tool.mypy.overrides]] 
+module = [
+    "PyQt6",
+    "PyQt6.*",
+]
 follow_imports = "skip"
-
-
 
 
 [tool.ruff]
