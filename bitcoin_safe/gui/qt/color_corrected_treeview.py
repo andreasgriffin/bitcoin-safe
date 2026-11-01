@@ -73,7 +73,8 @@ class ColorCorrectedTreeView(QTreeView):
                 continue
             style_names.add(style.objectName().lower())
             if meta_object := style.metaObject():
-                style_names.add(meta_object.className().lower())
+                if class_name := meta_object.className():
+                    style_names.add(class_name.lower())
 
         result = any(
             windows_style_name in style_name

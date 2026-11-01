@@ -697,7 +697,7 @@ class Message:
         if isinstance(icon, QPixmap):
             return QIcon(icon)
 
-        if type(icon) is QMessageBox.Icon:
+        if isinstance(icon, QMessageBox.Icon):
             if icon == QMessageBox.Icon.Information:
                 return QSystemTrayIcon.MessageIcon.Information
             if icon == QMessageBox.Icon.Warning:

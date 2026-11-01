@@ -34,7 +34,7 @@ import sys
 from collections.abc import Callable
 from functools import partial
 from pathlib import Path
-from typing import Generic, TypeVar, cast
+from typing import Generic, TypeAlias, TypeVar, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from PyQt6.QtCore import QEvent, QPoint, Qt, pyqtSignal
@@ -71,7 +71,7 @@ from bitcoin_safe.gui.qt.util import (
 
 logger = logging.getLogger(__name__)
 
-ColorSpec = str | QColor | QPalette.ColorRole
+ColorSpec: TypeAlias = str | QColor | QPalette.ColorRole
 
 
 class SidebarRow(QWidget):
