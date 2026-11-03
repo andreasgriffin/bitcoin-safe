@@ -222,6 +222,98 @@ def test_download_manifest_and_verify_wrong_signature(monkeypatch: pytest.Monkey
         )
 
 
+OPENSATS_PUBLIC_KEY_BLOCK = """-----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: 8198 A185 30A5 22A0 9561  2439 89C4 A25E 69A5 DE7F
+Comment: Gigi <dergigi@pm.me>
+Comment: Gigi D. <gigi@opensats.org>
+
+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
+nghMBFghgxaGDXLZFxE=
+=FotA
+-----END PGP PUBLIC KEY BLOCK-----
+"""
+
+OPENSATS_FINGERPRINT = "8198A18530A522A09561243989C4A25E69A5DE7F"
+
+
+@pytest.fixture
+def opensats_keyserver(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Serve the OpenSats public key instead of contacting keys.openpgp.org."""
+
+    class _KeyserverResponse:
+        status_code = 200
+        text = OPENSATS_PUBLIC_KEY_BLOCK
+
+        def raise_for_status(self) -> None:
+            return None
+
+    def fake_get(url: str, *args: object, **kwargs: object) -> _KeyserverResponse:
+        assert url.endswith(OPENSATS_FINGERPRINT)
+        return _KeyserverResponse()
+
+    monkeypatch.setattr("bitcoin_safe.signature_manager.requests.get", fake_get)
+
+
+@pytest.mark.usefixtures("opensats_keyserver")
 def test_verify_signed_message_block_opensats_canary() -> None:
     """Verify a known OpenSats canary PGP-signed message."""
 
@@ -277,11 +369,7 @@ kEM8Jtcf183QgWT6hgT3oFoYRqj64Boh6Zn5s4HAR1Bph665rPk=
     # Verify that the canary signature matches the expected fingerprint.
     signer_keys, error = manager.verify_signed_message_block(signed_message, downloaded_key)
     assert signer_keys, error
-    assert (
-        manager._normalize_fingerprint(signer_keys[0].fingerprint)
-        == fingerprint
-        == "8198A18530A522A09561243989C4A25E69A5DE7F"
-    )
+    assert manager._normalize_fingerprint(signer_keys[0].fingerprint) == fingerprint == OPENSATS_FINGERPRINT
 
     # Modifying the message should invalidate the signature.
     changed_message = signed_message

@@ -696,6 +696,10 @@ class PaidPluginWidget(PluginWidget):
             svg_tools=svg_tools,
         )
         self.subscription_buttons_layout.addWidget(self.start_trial_button)
+        self.check_subscription_button = self._add_section_button(
+            parent=self.subscription_buttons_container,
+            layout=self.subscription_buttons_layout,
+        )
         self.manage_subscription_button = self.add_detail_button()
         self.refresh_subscription_button = self.add_detail_button()
         self.management_buttons_layout.addStretch()
@@ -704,6 +708,9 @@ class PaidPluginWidget(PluginWidget):
         self.plugin.trigger_start_trial()
         if not self.plugin.subscription_manager.activation_in_progress:
             self.start_trial_button.enable_button()
+
+    def _on_check_subscription_clicked(self) -> None:
+        self.plugin.trigger_check_subscription()
 
     def _enable_toggle_visible(self) -> bool:
         return self.plugin.supports_enable_toggle() and self.plugin.subscription_allows_access()
@@ -731,6 +738,13 @@ class PaidPluginWidget(PluginWidget):
             button=self.start_trial_button,
             text=self.plugin.start_trial_button_text(),
             callback=self._on_start_trial_clicked,
+            visible=show_start_trial,
+            enable=not self.plugin.subscription_manager.activation_in_progress,
+        )
+        self._set_button_action(
+            button=self.check_subscription_button,
+            text=self.plugin.check_subscription_button_text(),
+            callback=self._on_check_subscription_clicked,
             visible=show_start_trial,
             enable=not self.plugin.subscription_manager.activation_in_progress,
         )

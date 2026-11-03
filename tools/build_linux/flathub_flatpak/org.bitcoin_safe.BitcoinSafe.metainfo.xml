@@ -53,6 +53,16 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.2.2" date="2026-11-03">
+      <description>
+        <ul>
+          <li>Subscriptions and the Business Plan now use the public subscription service (subscription.bitcoin-safe.org). Plans, status, management links and the store are read from the service.</li>
+          <li>Plugins declare their subscription plans in their manifest (btcpay.plan_ids). Plugins built for the previous subscription format need an update.</li>
+          <li>Donation invoices take their store from the subscription service.</li>
+          <li>Removed the unused BTCPay pay-button address fetcher.</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.2.1" date="2026-11-01">
       <description>
         <ul>
