@@ -90,7 +90,7 @@ class PluginSource(SaveAllClass):
 
 @dataclass(frozen=True)
 class ExternalPluginCatalogEntry(SaveAllClass):
-    VERSION = "0.0.2"
+    VERSION = "0.0.3"
     known_classes = {**SaveAllClass.known_classes}
     source_id: str
     source_display_name: str
@@ -133,9 +133,10 @@ class ExternalPluginCatalogEntry(SaveAllClass):
 
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
-        # Entries saved before 0.0.2 carry the removed BTCPay product catalog, which cannot
-        # be interpreted any more. The entry is refreshed from its source, so drop that block.
-        if isinstance(raw := dct.get("btcpay_config"), dict) and "plan_ids" not in raw:
+        # Entries saved before 0.0.2 carry the removed BTCPay product catalog, and entries before
+        # 0.0.3 carry plan_ids instead of product_id. Neither can be interpreted any more, so the
+        # block is dropped and the entry is refreshed from its source.
+        if isinstance(raw := dct.get("btcpay_config"), dict) and "product_id" not in raw:
             dct["btcpay_config"] = None
         return super().from_dump_migration(dct)
 

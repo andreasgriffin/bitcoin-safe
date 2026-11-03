@@ -29,11 +29,10 @@
 
 from __future__ import annotations
 
-import asyncio
 import logging
 from typing import Any, cast
 
-from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import pyqtSignal
 
@@ -41,12 +40,7 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.fx import FX
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.plugin_framework.paid_plugin_client import PaidPluginClient
-from bitcoin_safe.plugin_framework.subscription_api_client import (
-    SubscriptionApiClient,
-    plan_id_for_product,
-)
 from bitcoin_safe.plugin_framework.subscription_manager import SubscriptionManager
 from bitcoin_safe.plugin_framework.subscription_price_lookup import SubscriptionPriceLookup
 
@@ -65,7 +59,7 @@ class BusinessPlanItem(PaidPluginClient):
         "Start the free trial first, then manage or refresh the subscription here.",
     )
     provider = APP_NAME
-    subscription_product_id = "business-plan"
+    BUSINESS_PLAN_PRODUCT_ID = "business-plan"
 
     signal_request_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
     signal_enabled_changed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
@@ -113,49 +107,13 @@ class BusinessPlanItem(PaidPluginClient):
             loop_in_thread=loop_in_thread,
             enabled=False,
             additional_access_providers=[],
+            subscription_product_id=self.BUSINESS_PLAN_PRODUCT_ID,
             subscription_managers=subscription_managers,
             selected_subscription_key=selected_subscription_key,
             subscription_price_lookup=subscription_price_lookup,
         )
 
         self._sync_enabled_state()
-        self._resolve_business_plan_id()
-
-    def _resolve_business_plan_id(self) -> None:
-        """
-        The Business Plan is looked up by its product id in the service catalog. Until that succeeds,
-        no plan is configured and no access is granted.
-        """
-        if self.loop_in_thread is None:
-            logger.warning("Business Plan lookup skipped: no loop available")
-            return
-        proxy_url = self.config.network_config.proxy_url
-        proxy_dict = ProxyInfo.parse(proxy_url).get_requests_proxy_dict() if proxy_url else None
-
-        product_id = self.subscription_product_id
-        assert product_id is not None
-
-        async def do() -> str | None:
-            plans = await asyncio.to_thread(SubscriptionApiClient(proxy_dict).fetch_plans)
-            if not plans.get(product_id):
-                return None
-            return plan_id_for_product(plans, product_id)
-
-        def on_success(plan_id: str | None) -> None:
-            # A catalog without the product clears obsolete plan ids, so their access cannot survive.
-            self.set_subscription_plan_ids((plan_id,) if plan_id else ())
-
-        def on_error(error_info: ExcInfo | None) -> None:
-            logger.warning("Business Plan lookup failed: %s", error_info)
-
-        self.loop_in_thread.run_task(
-            do(),
-            on_done=lambda result: None,
-            on_success=on_success,
-            on_error=on_error,
-            key="business_plan_lookup",
-            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
-        )
 
     def _sync_access_state(self) -> None:
         self._sync_enabled_state()

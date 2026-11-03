@@ -786,10 +786,10 @@ class ExternalPluginRegistry(BaseSaveableClass):
             if issubclass(client_cls, PaidPluginClient):
                 if catalog_entry.btcpay_config is None:
                     raise ExternalPluginError(
-                        f"{bundle_name} must define btcpay.plan_ids for {client_cls.__name__}."
+                        f"{bundle_name} must define btcpay.product_id for {client_cls.__name__}."
                     )
                 additional_class_kwargs_by_client_class[client_cls] = {
-                    "subscription_plan_ids": catalog_entry.btcpay_config.plan_ids,
+                    "subscription_product_id": catalog_entry.btcpay_config.product_id,
                 }
         runtime_bundle = normalize_runtime_plugin_bundle(
             module=cast(PluginBundleModule, module),

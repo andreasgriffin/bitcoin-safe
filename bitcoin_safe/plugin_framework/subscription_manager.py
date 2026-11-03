@@ -162,7 +162,63 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         self.additional_access_provider = additional_access_provider
 
     def set_plan_id(self, plan_id: str) -> None:
-        self.plan_id = plan_id
+        """
+        Switch to the plan that now carries this product. An existing subscription follows the
+        switch: its email and status are kept until the new plan answers. Without a subscription
+        there is nothing to move.
+        """
+        old_plan_id = self.plan_id
+        if plan_id == old_plan_id:
+            return
+        if not old_plan_id or not self.subscriber_email or not self.management_url:
+            self.plan_id = plan_id
+            return
+        self._move_subscription_to_plan(plan_id=plan_id, buyer_email=self.subscriber_email)
+
+    def _move_subscription_to_plan(self, plan_id: str, buyer_email: str) -> None:
+        """
+        Ask the new plan for the buyer's status and management URL. The plan_id is only committed
+        on success, so a failed move is retried on the next start.
+        """
+        client = SubscriptionApiClient(self.proxy_dict())
+
+        async def do() -> tuple[SubscriptionStatusResponse, str | None]:
+            status = await asyncio.to_thread(client.fetch_status, plan_id, buyer_email)
+            if status.status not in _LIVE_SUBSCRIPTION_CODES:
+                return status, None
+            management_url = await asyncio.to_thread(client.fetch_management_url, plan_id, buyer_email)
+            return status, management_url
+
+        def on_success(result: tuple[SubscriptionStatusResponse, str | None] | None) -> None:
+            if result is None:
+                return
+            status, management_url = result
+            if status.status == SubscriptionStatusCode.UNKNOWN:
+                self._handle_subscription_refresh_error(
+                    translate("subscription", "Could not determine the current subscription status."),
+                    notify_on_error=False,
+                )
+                return
+            # The management URL belongs to the old store, so it is replaced or cleared, never kept.
+            self.plan_id = plan_id
+            self.management_url = management_url
+            self._apply_management_status(status, disable_if_inactive=True)
+
+        def on_error(error_info: ExcInfo | None) -> None:
+            error = self._error_from_exc_info(error_info)
+            self._handle_subscription_refresh_error(
+                str(error) if error is not None else translate("subscription", "Subscription move failed."),
+                notify_on_error=False,
+            )
+
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=lambda result: None,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}_plan_move",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
 
     @property
     def activation_in_progress(self) -> bool:

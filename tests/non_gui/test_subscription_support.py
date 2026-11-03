@@ -39,12 +39,12 @@ from btcpay_tools.btcpay_subscription_api.models import SubscriptionStatusCode, 
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import SUPPORT_EMAIL
-from bitcoin_safe.plugin_framework.subscription_api_client import SubscriptionApiClient
+from bitcoin_safe.plugin_framework.subscription_api_client import SubscriptionApiClient, SubscriptionApiError
 from bitcoin_safe.plugin_framework.subscription_manager import (
     StoredSubscriptionStatus,
     SubscriptionManager,
 )
-from tests.btcpay_support import TEST_MONTHLY_PLAN_ID
+from tests.btcpay_support import TEST_MONTHLY_PLAN_ID, TEST_YEARLY_PLAN_ID
 
 MANAGEMENT_URL = "https://example.com/manage"
 
@@ -467,3 +467,92 @@ def _run_tasks_synchronously(monkeypatch: pytest.MonkeyPatch) -> None:
         return None
 
     monkeypatch.setattr(LoopInThread, "run_task", lambda self, *a, **k: run_task_sync(*a, **k))
+
+
+def test_set_plan_id_moves_existing_subscription_keeping_email_and_status(
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    support = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        plan_id=TEST_MONTHLY_PLAN_ID,
+        subscriber_email="buyer@v0.bitcoin-safe.org",
+        management_url="https://old.example.com/manage",
+        stored_subscription_status=StoredSubscriptionStatus(
+            status=_status(SubscriptionStatusCode.ACTIVE), checked_at_ts=1.0, last_status_error=None
+        ),
+    )
+    calls: list[tuple[str, str]] = []
+
+    def fake_fetch_status(self, plan_id: str, buyer_email: str) -> SubscriptionStatusResponse:
+        calls.append((plan_id, buyer_email))
+        return SubscriptionStatusResponse(plan_id=plan_id, status=SubscriptionStatusCode.ACTIVE)
+
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_status", fake_fetch_status)
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: "https://new.example.com/manage",
+    )
+    _run_tasks_synchronously(monkeypatch)
+
+    support.set_plan_id(TEST_YEARLY_PLAN_ID)
+
+    assert calls == [(TEST_YEARLY_PLAN_ID, "buyer@v0.bitcoin-safe.org")]
+    assert support.plan_id == TEST_YEARLY_PLAN_ID
+    assert support.subscriber_email == "buyer@v0.bitcoin-safe.org"
+    assert support.management_url == "https://new.example.com/manage"
+    assert support.subscription_allows_access()
+
+    support.close()
+
+
+def test_set_plan_id_offline_keeps_previous_plan_and_access(
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    support = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        plan_id=TEST_MONTHLY_PLAN_ID,
+        subscriber_email="buyer@v0.bitcoin-safe.org",
+        management_url="https://old.example.com/manage",
+        stored_subscription_status=StoredSubscriptionStatus(
+            status=_status(SubscriptionStatusCode.ACTIVE), checked_at_ts=1.0, last_status_error=None
+        ),
+    )
+
+    def offline(self, plan_id: str, buyer_email: str) -> SubscriptionStatusResponse:
+        raise SubscriptionApiError("Subscription service unreachable")
+
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_status", offline)
+    _run_tasks_synchronously(monkeypatch)
+
+    support.set_plan_id(TEST_YEARLY_PLAN_ID)
+
+    assert support.plan_id == TEST_MONTHLY_PLAN_ID
+    assert support.management_url == "https://old.example.com/manage"
+    assert support.subscription_allows_access()
+    assert support.stored_subscription_status.last_status_error == "Subscription service unreachable"
+
+    support.close()
+
+
+def test_set_plan_id_without_subscription_only_assigns_plan(
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[str] = []
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: calls.append(plan_id),
+    )
+    support = SubscriptionManager(config=test_config_main_chain, loop_in_thread=None)
+
+    support.set_plan_id(TEST_MONTHLY_PLAN_ID)
+
+    assert support.plan_id == TEST_MONTHLY_PLAN_ID
+    assert calls == []
+    support.close()

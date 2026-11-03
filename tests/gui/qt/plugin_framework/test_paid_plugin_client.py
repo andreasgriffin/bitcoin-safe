@@ -37,7 +37,11 @@ from typing import Any
 import bdkpython as bdk
 import pytest
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from btcpay_tools.btcpay_subscription_api.models import SubscriptionStatusCode, SubscriptionStatusResponse
+from btcpay_tools.btcpay_subscription_api.models import (
+    PlanCatalogItem,
+    SubscriptionStatusCode,
+    SubscriptionStatusResponse,
+)
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import (
     QApplication,
@@ -72,13 +76,16 @@ from bitcoin_safe.plugin_framework.subscription_price_lookup import Subscription
 from tests.btcpay_support import (
     TEST_BUSINESS_PLAN_ID,
     TEST_MONTHLY_PLAN_ID,
-    TEST_YEARLY_PLAN_ID,
 )
+
+BUSINESS_PRODUCT_ID = "business-plan"
+TEST_DEMO_PRODUCT_ID = "demo-plan"
 
 
 def _make_subscription_managers(
     config: UserConfig,
     loop_in_thread: LoopInThread | None,
+    product_id: str,
     plan_id: str,
     management_url: str | None = None,
     status: SubscriptionStatusResponse | None = None,
@@ -86,7 +93,7 @@ def _make_subscription_managers(
     if management_url is None and status is None:
         return None
     return {
-        plan_id: SubscriptionManager(
+        product_id: SubscriptionManager(
             config=config,
             loop_in_thread=loop_in_thread,
             plan_id=plan_id,
@@ -136,11 +143,12 @@ def _make_business_plan(
     subscription_managers = _make_subscription_managers(
         config=config,
         loop_in_thread=loop_in_thread,
+        product_id=BUSINESS_PRODUCT_ID,
         plan_id=TEST_BUSINESS_PLAN_ID,
         management_url=management_url,
         status=status,
     ) or {
-        TEST_BUSINESS_PLAN_ID: SubscriptionManager(
+        BUSINESS_PRODUCT_ID: SubscriptionManager(
             config=config, loop_in_thread=loop_in_thread, plan_id=TEST_BUSINESS_PLAN_ID
         )
     }
@@ -166,7 +174,7 @@ class DemoPaidPluginClient(PaidPluginClient):
         "Use this to verify subscription-gated activation and plugin-manager actions."
     )
     provider = "Bitcoin-Safe"
-    subscription_plan_ids = (TEST_MONTHLY_PLAN_ID, TEST_YEARLY_PLAN_ID)
+    subscription_product_id = TEST_DEMO_PRODUCT_ID
 
     @classmethod
     def cls_kwargs(
@@ -214,7 +222,7 @@ class DemoPaidPluginClient(PaidPluginClient):
             subscription_managers=subscription_managers,
             selected_subscription_key=selected_subscription_key,
             additional_access_providers=additional_access_providers,
-            subscription_plan_ids=self.subscription_plan_ids,
+            subscription_product_id=self.subscription_product_id,
             subscription_price_lookup=subscription_price_lookup,
         )
 
@@ -295,6 +303,7 @@ def _make_demo_plugin(
         subscription_managers=_make_subscription_managers(
             config=config,
             loop_in_thread=loop_in_thread,
+            product_id=TEST_DEMO_PRODUCT_ID,
             plan_id=TEST_MONTHLY_PLAN_ID,
             management_url=management_url,
             status=status,
@@ -588,8 +597,6 @@ def test_known_subscription_hides_plan_selector_and_ignores_selected_plan(
     test_config_main_chain: UserConfig,
 ) -> None:
     config = test_config_main_chain
-    monthly_key = TEST_MONTHLY_PLAN_ID
-    yearly_key = TEST_YEARLY_PLAN_ID
     fx = FX(config=config, loop_in_thread=None, update_rates=False)
     plugin = DemoPaidPluginClient(
         config=config,
@@ -597,15 +604,14 @@ def test_known_subscription_hides_plan_selector_and_ignores_selected_plan(
         loop_in_thread=None,
         additional_access_providers=None,
         subscription_managers={
-            monthly_key: _subscribed_manager(config, monthly_key),
-            yearly_key: SubscriptionManager(config=config, loop_in_thread=None, plan_id=yearly_key),
+            TEST_DEMO_PRODUCT_ID: _subscribed_manager(config, TEST_MONTHLY_PLAN_ID),
         },
-        selected_subscription_key=yearly_key,
+        selected_subscription_key=TEST_DEMO_PRODUCT_ID,
     )
 
     try:
         widget = PaidPluginWidget(plugin)
-        assert plugin.displayed_subscription_manager.plan_id == monthly_key
+        assert plugin.displayed_subscription_manager.plan_id == TEST_MONTHLY_PLAN_ID
         assert widget.plan_selector_container.isHidden()
         assert widget.start_trial_button.isHidden()
         assert not widget.manage_subscription_button.isHidden()
@@ -613,7 +619,7 @@ def test_known_subscription_hides_plan_selector_and_ignores_selected_plan(
 
         initial_status = plugin.status_text()
 
-        plugin.select_plan_option(yearly_key)
+        plugin.select_plan_option(TEST_DEMO_PRODUCT_ID)
 
         assert plugin.status_text() == initial_status
         assert widget.status_label.text() == initial_status
@@ -986,6 +992,7 @@ def test_demo_paid_plugin_requires_active_subscription_on_mainnet(
     config.network = bdk.Network.BITCOIN
     fx = FX(config=config, loop_in_thread=None, update_rates=False)
     plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None)
+    plugin.subscription_manager.set_plan_id(TEST_MONTHLY_PLAN_ID)
 
     plugin.set_enabled(True)
     assert not plugin.enabled
@@ -1090,7 +1097,7 @@ def test_obsolete_plan_removal_revokes_access(
     config = test_config_main_chain
     fx = FX(config=config, loop_in_thread=None, update_rates=False)
     plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None)
-    plugin.set_subscription_plan_ids((TEST_MONTHLY_PLAN_ID,))
+    plugin._set_subscription_plan_id(TEST_MONTHLY_PLAN_ID)
     active_manager = plugin.subscription_managers[0]
     active_manager.management_url = "https://example.com/manage"
     active_manager.subscriber_email = SUBSCRIBER_EMAIL
@@ -1104,12 +1111,11 @@ def test_obsolete_plan_removal_revokes_access(
     try:
         assert plugin.subscription_allows_access()
 
-        plugin.set_subscription_plan_ids((TEST_YEARLY_PLAN_ID,))
+        plugin._set_subscription_plan_id(None)
 
         assert not plugin.subscription_allows_access()
         assert not plugin.enabled
         assert enabled_values == [False]
-        assert active_manager.plan_id == TEST_MONTHLY_PLAN_ID
         assert active_manager not in plugin.subscription_managers
     finally:
         plugin.close()
@@ -1135,7 +1141,7 @@ def test_removing_only_access_source_disables_enabled_plugin(
     enabled_values: list[bool] = []
     plugin.signal_enabled_changed.connect(enabled_values.append)
     try:
-        plugin.set_subscription_plan_ids((TEST_YEARLY_PLAN_ID,))
+        plugin._set_subscription_plan_id(None)
 
         assert not plugin.enabled
         assert enabled_values == [False]
@@ -1167,7 +1173,7 @@ def test_business_plan_removal_disables_dependent_plugin(
     try:
         assert plugin.subscription_allows_access()
 
-        business_plan.set_subscription_plan_ids(())
+        business_plan._set_subscription_plan_id(None)
 
         assert not business_plan.enabled
         assert not plugin.subscription_allows_access()
@@ -1203,9 +1209,8 @@ def test_business_plan_missing_product_clears_plan_ids_and_managers(
     monkeypatch.setattr(SubscriptionApiClient, "fetch_plans", lambda self: {"other-product": []})
     _run_subscription_tasks_synchronously(monkeypatch, (previous_manager,))
     try:
-        business_plan._resolve_business_plan_id()
+        business_plan._resolve_subscription_plans()
 
-        assert business_plan.subscription_plan_ids == ()
         assert business_plan.subscription_managers == ()
         assert closed == [True]
         assert not business_plan.enabled
@@ -1245,7 +1250,7 @@ def test_removing_individual_subscription_keeps_business_plan_access(
     try:
         assert plugin._has_direct_subscription_access()
 
-        plugin.set_subscription_plan_ids((TEST_YEARLY_PLAN_ID,))
+        plugin._set_subscription_plan_id(None)
 
         assert not plugin._has_direct_subscription_access()
         assert plugin._has_additional_access()
@@ -1261,6 +1266,8 @@ def test_removing_individual_subscription_keeps_business_plan_access(
 def test_replacing_plan_ids_while_access_remains_emits_no_revocation(
     qapp: QApplication,
     test_config_main_chain: UserConfig,
+    loop_in_thread: LoopInThread,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     config = test_config_main_chain
     config.network = bdk.Network.BITCOIN
@@ -1280,15 +1287,234 @@ def test_replacing_plan_ids_while_access_remains_emits_no_revocation(
     revocations: list[str] = []
     enabled_values: list[bool] = []
     plugin.signal_enabled_changed.connect(enabled_values.append)
-    plugin.subscription_manager.signal_access_revoked.connect(lambda: revocations.append("revoked"))
+    business_plan.subscription_manager.signal_access_revoked.connect(lambda: revocations.append("revoked"))
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
+            plan_id=plan_id, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: "https://example.com/moved",
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (business_plan.subscription_manager,))
     try:
-        plugin.set_subscription_plan_ids((TEST_YEARLY_PLAN_ID,))
+        business_plan.subscription_manager.set_plan_id("plan_moved")
 
+        assert business_plan.subscription_manager.plan_id == "plan_moved"
+        assert business_plan.subscription_manager.subscriber_email == SUBSCRIBER_EMAIL
+        assert business_plan.subscription_manager.management_url == "https://example.com/moved"
+        assert business_plan.subscription_allows_access()
         assert plugin.subscription_allows_access()
         assert plugin.enabled
         assert revocations == []
-        assert enabled_values == [True]
     finally:
         plugin.close()
         business_plan.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_legacy_plan_id_keyed_dump_adopts_single_manager_for_product(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    legacy_manager = _subscribed_manager(config, TEST_MONTHLY_PLAN_ID)
+    plugin = DemoPaidPluginClient(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        additional_access_providers=None,
+        subscription_managers={TEST_MONTHLY_PLAN_ID: legacy_manager},
+    )
+    try:
+        assert plugin.subscription_managers == (legacy_manager,)
+        assert plugin.subscription_manager.subscriber_email == SUBSCRIBER_EMAIL
+        assert plugin.subscription_manager.management_url == "https://example.com/manage"
+        assert plugin._subscription_managers_by_key == {TEST_DEMO_PRODUCT_ID: legacy_manager}
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_offline_catalog_lookup_keeps_managers_and_access(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    loop_in_thread: LoopInThread,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=loop_in_thread,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.ACTIVE),
+    )
+    previous_manager = plugin.subscription_manager
+    closed: list[bool] = []
+    monkeypatch.setattr(previous_manager, "close", lambda: closed.append(True))
+
+    def offline(self) -> dict:
+        raise ConnectionError("offline")
+
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_plans", offline)
+    _run_subscription_tasks_synchronously(monkeypatch, (previous_manager,))
+    try:
+        plugin._resolve_subscription_plans()
+
+        assert plugin.subscription_manager is previous_manager
+        assert closed == []
+        assert plugin.subscription_allows_access()
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_store_move_keeps_enabled_plugin_enabled_with_new_plan_ids(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    loop_in_thread: LoopInThread,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = test_config_main_chain
+    config.network = bdk.Network.BITCOIN
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    old_plan_id = TEST_MONTHLY_PLAN_ID
+    new_plan_id = "plan_moved_to_new_store"
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=loop_in_thread,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=old_plan_id, status=SubscriptionStatusCode.ACTIVE),
+    )
+    plugin.set_enabled(True)
+    assert plugin.enabled
+
+    enabled_values: list[bool] = []
+    plugin.signal_enabled_changed.connect(enabled_values.append)
+    revocations: list[str] = []
+    plugin.subscription_manager.signal_access_revoked.connect(lambda: revocations.append("revoked"))
+
+    # The new store: the catalog maps the same product to a new plan id,
+    # and the new plan answers ACTIVE for the buyer.
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_plans",
+        lambda self: {
+            TEST_DEMO_PRODUCT_ID: [
+                PlanCatalogItem(
+                    plan_id=new_plan_id,
+                    duration="month",
+                    name="Monthly",
+                    price="10",
+                    currency="USD",
+                    recurringType="monthly",
+                    status="active",
+                )
+            ]
+        },
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
+            plan_id=plan_id, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: "https://example.com/moved",
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (plugin.subscription_manager,))
+    try:
+        plugin._resolve_subscription_plans()
+
+        manager = plugin.subscription_manager
+        assert manager.plan_id == new_plan_id
+        assert manager.subscriber_email == SUBSCRIBER_EMAIL
+        assert manager.management_url == "https://example.com/moved"
+        assert plugin.subscription_allows_access()
+        assert plugin.enabled
+        assert revocations == []
+        assert False not in enabled_values
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_store_move_reenables_plugin_once_new_plan_is_active(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    loop_in_thread: LoopInThread,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = test_config_main_chain
+    config.network = bdk.Network.BITCOIN
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    new_plan_id = "plan_moved_to_new_store"
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=loop_in_thread,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.ACTIVE),
+    )
+    plugin.set_enabled(True)
+    assert plugin.enabled
+
+    # Before the move the new store has no subscription for the buyer yet: access is revoked.
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
+            plan_id=plan_id, status=SubscriptionStatusCode.NOT_FOUND
+        ),
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (plugin.subscription_manager,))
+    plugin.subscription_manager.set_plan_id(new_plan_id)
+    assert not plugin.subscription_allows_access()
+    assert not plugin.enabled
+
+    # The operator re-creates the subscription under the new plan: the status is ACTIVE.
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
+            plan_id=plan_id, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: "https://example.com/moved",
+    )
+    requested_enable: list[bool] = []
+    plugin.signal_request_enabled.connect(requested_enable.append)
+    monkeypatch.setattr(
+        SubscriptionManager,
+        "get_to_be_signed",
+        lambda self, multipath_descriptor: "wallet-hash",
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (plugin.subscription_manager,))
+    try:
+        plugin.subscription_manager.check_existing_subscription(multipath_descriptor=object())  # type: ignore[arg-type]
+
+        assert plugin.subscription_manager.plan_id == new_plan_id
+        assert plugin.subscription_allows_access()
+        assert plugin.subscription_manager.management_url == "https://example.com/moved"
+        assert requested_enable == [True]
+    finally:
+        plugin.close()
         fx.close()

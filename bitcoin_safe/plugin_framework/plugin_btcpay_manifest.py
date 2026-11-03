@@ -33,18 +33,16 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class BtcpayManifestConfig(BaseModel):
-    """The `btcpay` block of a plugin manifest: the subscription plan IDs a plugin sells."""
+    """The `btcpay` block of a plugin manifest: the subscription product ID a plugin sells."""
 
     model_config = ConfigDict(extra="ignore", frozen=True)
 
-    plan_ids: tuple[str, ...]
+    product_id: str
 
-    @field_validator("plan_ids")
+    @field_validator("product_id")
     @classmethod
-    def _validate_plan_ids(cls, value: tuple[str, ...]) -> tuple[str, ...]:
-        stripped = tuple(plan_id.strip() for plan_id in value)
-        if not stripped or any(not plan_id for plan_id in stripped):
-            raise ValueError("plan_ids must be a non-empty list of non-empty strings")
-        if len(set(stripped)) != len(stripped):
-            raise ValueError("plan_ids must not contain duplicates")
+    def _validate_product_id(cls, value: str) -> str:
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("product_id must be a non-empty string")
         return stripped

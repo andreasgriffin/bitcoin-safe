@@ -125,6 +125,7 @@ from bitcoin_safe.plugin_framework.subscription_manager import (
 from bitcoin_safe.signals import Signals, WalletFunctions
 from tests.btcpay_support import (
     TEST_MONTHLY_PLAN_ID,
+    TEST_SCHEDULE_PRODUCT_ID,
 )
 
 
@@ -254,7 +255,7 @@ class _PaidStateTrackingPluginClient(PaidPluginClient):
             additional_access_providers=additional_access_providers,
             parent=parent,
         )
-        data["subscription_plan_ids"] = (TEST_MONTHLY_PLAN_ID,)
+        data["subscription_product_id"] = TEST_SCHEDULE_PRODUCT_ID
         if subscription_managers is not None:
             data["subscription_managers"] = subscription_managers
         if selected_subscription_key is not None:
@@ -271,7 +272,7 @@ class _PaidStateTrackingPluginClient(PaidPluginClient):
         subscription_managers: dict[str, SubscriptionManager] | None = None,
         selected_subscription_key: str | None = None,
         parent: QWidget | None = None,
-        subscription_plan_ids: tuple[str, ...] | None = None,
+        subscription_product_id: str = TEST_SCHEDULE_PRODUCT_ID,
     ) -> None:
         super().__init__(
             config=config,
@@ -280,7 +281,7 @@ class _PaidStateTrackingPluginClient(PaidPluginClient):
             icon=QIcon(),
             enabled=enabled,
             additional_access_providers=additional_access_providers,
-            subscription_plan_ids=subscription_plan_ids,
+            subscription_product_id=subscription_product_id,
             subscription_managers=subscription_managers,
             selected_subscription_key=selected_subscription_key,
             parent=parent,
@@ -643,7 +644,7 @@ def _unresolved_catalog_entry(
 
 
 def _btcpay_config() -> BtcpayManifestConfig:
-    return BtcpayManifestConfig(plan_ids=(TEST_MONTHLY_PLAN_ID,))
+    return BtcpayManifestConfig(product_id=TEST_SCHEDULE_PRODUCT_ID)
 
 
 def _write_minimal_plugin_manifest(package_root: Path) -> None:
@@ -664,7 +665,7 @@ def _write_minimal_plugin_manifest(package_root: Path) -> None:
                 'bitcoin_safe_version: ">=0.0.0,<999.0.0"',
                 'python: ">=3.10,<3.13"',
                 "btcpay:",
-                f'  plan_ids: ["{TEST_MONTHLY_PLAN_ID}"]',
+                f'  product_id: "{TEST_SCHEDULE_PRODUCT_ID}"',
                 "",
             ]
         ),
@@ -2120,7 +2121,7 @@ def test_load_external_plugin_btcpay_config_from_source_manifest(tmp_path: Path)
                 'bitcoin_safe_version: ">=0.0.0,<999.0.0"',
                 'python: ">=3.10,<3.13"',
                 "btcpay:",
-                f'  plan_ids: ["{TEST_MONTHLY_PLAN_ID}"]',
+                f'  product_id: "{TEST_SCHEDULE_PRODUCT_ID}"',
                 "",
             ]
         ),
@@ -2129,7 +2130,7 @@ def test_load_external_plugin_btcpay_config_from_source_manifest(tmp_path: Path)
 
     config = load_external_plugin_btcpay_config(package_root)
 
-    assert config.plan_ids == (TEST_MONTHLY_PLAN_ID,)
+    assert config.product_id == TEST_SCHEDULE_PRODUCT_ID
 
 
 def test_load_external_plugin_btcpay_config_from_bytecode_pyproject(tmp_path: Path) -> None:
@@ -2152,7 +2153,7 @@ def test_load_external_plugin_btcpay_config_from_bytecode_pyproject(tmp_path: Pa
                 'provider = "Tests"',
                 "",
                 "[tool.bitcoin_safe.plugin.btcpay]",
-                f'plan_ids = ["{TEST_MONTHLY_PLAN_ID}"]',
+                f'product_id = "{TEST_SCHEDULE_PRODUCT_ID}"',
                 "",
             ]
         ),
@@ -2161,7 +2162,7 @@ def test_load_external_plugin_btcpay_config_from_bytecode_pyproject(tmp_path: Pa
 
     config = load_external_plugin_btcpay_config(package_root)
 
-    assert config.plan_ids == (TEST_MONTHLY_PLAN_ID,)
+    assert config.product_id == TEST_SCHEDULE_PRODUCT_ID
 
 
 def test_external_plugin_resources_reload_translator_installs_matching_qm(
@@ -2963,9 +2964,9 @@ def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
             loop_in_thread=loop_in_thread,
             additional_access_providers=None,
             enabled=False,
-            subscription_plan_ids=(TEST_MONTHLY_PLAN_ID,),
+            subscription_product_id=TEST_SCHEDULE_PRODUCT_ID,
             subscription_managers={
-                TEST_MONTHLY_PLAN_ID: SubscriptionManager(
+                TEST_SCHEDULE_PRODUCT_ID: SubscriptionManager(
                     config=config,
                     loop_in_thread=loop_in_thread,
                     plan_id=TEST_MONTHLY_PLAN_ID,
@@ -2977,7 +2978,7 @@ def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
                     ),
                 )
             },
-            selected_subscription_key=TEST_MONTHLY_PLAN_ID,
+            selected_subscription_key=TEST_SCHEDULE_PRODUCT_ID,
         )
         paid_client.set_plugin_identity(
             plugin_source=PluginClientSource.EXTERNAL,
