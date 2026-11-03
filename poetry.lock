@@ -599,8 +599,8 @@ requests = "^2.32.3"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/btcpay-tools.git"
-reference = "feat/public-btcpay-subscription-api"
-resolved_reference = "0dbfb81e64c4f565db63ede0228b68a4f2e66ef5"
+reference = "main"
+resolved_reference = "9088b03f7b25858acfdc17f10d2711ea30de9b35"
 
 [[package]]
 name = "build"
@@ -4152,14 +4152,14 @@ pyvirtualdisplay = ">=1.3"
 
 [[package]]
 name = "python-discovery"
-version = "1.9.1"
+version = "1.9.2"
 description = "Python interpreter discovery"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "python_discovery-1.9.1-py3-none-any.whl", hash = "sha256:a78322b3b70c5d61dddc2f37ca1beffa9a5ce01cedf3526444e01bfc94f50b35"},
-    {file = "python_discovery-1.9.1.tar.gz", hash = "sha256:83e3c0024b93e256809dc9cd053537a37df6d3badc3b68aa03006a224336b21f"},
+    {file = "python_discovery-1.9.2-py3-none-any.whl", hash = "sha256:65857e689ba72aeb5517e68b7025430ed60372b78d037245e0bed3d41ae7ba65"},
+    {file = "python_discovery-1.9.2.tar.gz", hash = "sha256:de397b9c4b09a5fb8bb4c51db3c0da71fb81d2283718d74fd1efaabffc32afbc"},
 ]
 
 [package.dependencies]
@@ -5443,4 +5443,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "ad13cc21f7a6a996bc861e0c6c17a5c37ed939227596314eafdc6eccf2d4941a"
+content-hash = "a6e4b742b6a5f9d44b1233d36abb1e934df532963a2c9f4878ad5f78ccb3dfd7"
