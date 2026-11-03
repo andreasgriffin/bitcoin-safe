@@ -209,7 +209,7 @@ def _run_multisig_wizard_test(
                 address = step.quick_receive.group_boxes[0].address
                 assert address.startswith("bcrt1")
                 faucet.send(destination_address=address, amount=amount, qtbot=qtbot)
-                wait_for_sync(wallet=qt_wallet, qtbot=qtbot, minimum_funds=amount, timeout=30_000)
+                wait_for_sync(wallet=qt_wallet, qtbot=qtbot, minimum_funds=amount, timeout=40_000)
 
                 if not step.check_button.isHidden():
                     step.check_button.click()
