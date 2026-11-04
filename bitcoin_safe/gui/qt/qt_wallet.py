@@ -906,6 +906,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         """File path."""
         self._file_path = value
 
+    @property
+    def has_file_path(self) -> bool:
+        """True once the wallet has been assigned a file location."""
+        return bool(self._file_path)
+
     def create_and_add_settings_tab(self) -> tuple[DescriptorUI, SidebarNode]:
         "Create a wallet settings tab, such that one can create a wallet (e.g. with xpub)"
         wallet_descriptor_ui = DescriptorUI(
