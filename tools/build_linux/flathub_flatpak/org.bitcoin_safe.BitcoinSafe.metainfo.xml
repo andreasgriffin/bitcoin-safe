@@ -53,7 +53,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="2.2.2" date="2026-11-03">
+    <release version="2.3.0" date="2026-11-05">
       <description>
         <ul>
           <li>Subscriptions and the Business Plan now use the public subscription service (subscription.bitcoin-safe.org). Plans, status, management links and the store are read from the service.</li>
