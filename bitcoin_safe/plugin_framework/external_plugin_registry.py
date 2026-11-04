@@ -97,6 +97,10 @@ from bitcoin_safe.plugin_framework.plugin_source_models import (
 from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer, SimpleGPGKey
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_PLUGIN_SOURCE_URL = "https://github.com/andreasgriffin/plugins.git"
+DEFAULT_PLUGIN_SOURCE_ID = "plugin-repository"
+DEFAULT_PLUGIN_SOURCE_DISPLAY_NAME = "Bitcoin-Safe official plugins"
 _ORIGINAL_FETCH_BYTES = fetch_bytes
 
 
@@ -391,7 +395,20 @@ class ExternalPluginRegistry(BaseSaveableClass):
                 class_kwargs={ExternalPluginRegistry.__name__: {"config": config}},
             )
         except Exception:
-            return ExternalPluginRegistry(config=config)
+            registry = ExternalPluginRegistry(config=config)
+            registry._write_source(cls._default_source())
+            registry.save()
+            return registry
+
+    @classmethod
+    def _default_source(cls) -> PluginSource:
+        return PluginSource(
+            source_id=DEFAULT_PLUGIN_SOURCE_ID,
+            display_name=DEFAULT_PLUGIN_SOURCE_DISPLAY_NAME,
+            manifest_url=cls._normalize_manifest_url(DEFAULT_PLUGIN_SOURCE_URL),
+            pinned_source_public_key=KnownGPGKeys.andreasgriffin.key.strip(),
+            auth_config=PluginSourceAuthConfig(),
+        )
 
     def dump(self) -> dict[str, Any]:
         d = super().dump()

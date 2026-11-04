@@ -11,6 +11,7 @@
 - take every change you do as an opportunity to improve architecture: think about if the change does introduce or remove coupling and what architecture improvements this could be used for 
 - for GUI changes take into account that it should look nice in light and darkmode. (black) color in Icons should be named currrentColor (see bitcoin_safe/gui/icons/theme.csv) 
 - for UI try to use existing classes that provide the styling to ensure a unified design across the application
+- For AI development only: always run shell commands from the project root with relative paths. Never put `cd /absolute/path` or absolute paths in a command, because they trigger the AI harness external-directory restriction. Use the shell tool's `workdir` parameter set to the project root (or a relative subdirectory) instead of `cd`, and write file paths relative to the project root, e.g. `bitcoin_safe/plugin_framework/plugin_manager.py`, not `/home/.../bitcoin_safe/...`.
 
 ## App run + GUI interaction notes
 - Launch the app with `DISPLAY=desktop:0 poetry run python -m bitcoin_safe`.

@@ -1284,7 +1284,7 @@ class PluginManager(BaseSaveableClass):
         self._startup_source_refresh_timer = QTimer(self.widget)
         self._startup_source_refresh_timer.setSingleShot(True)
         self._startup_source_refresh_timer.timeout.connect(self._refresh_plugin_sources_after_startup)
-        self._startup_source_refresh_timer.start(60_000)
+        self._startup_source_refresh_timer.start(15_000)
 
     def _refresh_plugin_sources_after_startup(self) -> None:
         self.refresh_plugin_sources(show_errors=False)
