@@ -35,7 +35,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 from email.utils import parseaddr
-from typing import Any, Protocol, cast, runtime_checkable
+from typing import Any, cast
 from urllib.parse import urlsplit
 
 import bdkpython as bdk
@@ -43,104 +43,72 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, M
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.storage import BaseSaveableClass, SaveAllClass, filtered_for_init
-from btcpay_tools.btcpay_subscription_nostr.core import PosInvoiceMetadata, derive_subscriber_email
-from btcpay_tools.btcpay_subscription_nostr.service import (
-    PurchaseSession,
-    SubscriptionManagementClient,
-    SubscriptionManagementPhase,
-    SubscriptionManagementStatus,
-    SubscriptionManagementStatusCode,
-    SubscriptionPurchaseClient,
-)
-from btcpay_tools.config import BTCPayConfig, PlanDuration, SubscriptionProduct
+from btcpay_tools.btcpay_subscription_api.models import SubscriptionStatusCode, SubscriptionStatusResponse
 from PyQt6.QtCore import QObject, Qt, pyqtSignal
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QLineEdit, QVBoxLayout, QWidget
 
-from bitcoin_safe.btcpay_config import BTCPAY_SUBSCRIPTION_CONFIG
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import SUPPORT_EMAIL
 from bitcoin_safe.descriptors import hash_from_descriptor
 from bitcoin_safe.gui.qt.util import Message, MessageType, open_website
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.network_utils import ProxyInfo
+from bitcoin_safe.plugin_framework.subscription_api_client import (
+    LIVE_SUBSCRIPTION_CODES,
+    SubscriptionApiClient,
+    SubscriptionApiError,
+    derive_subscriber_email,
+)
 
 logger = logging.getLogger(__name__)
 
 
-@runtime_checkable
-class HasSubscriptionSupport(Protocol):
-    subscription_manager: SubscriptionManager
-
-
-class NoSubscriptionKeyRequired:
-    pass
-
-
 @dataclass
 class StoredSubscriptionStatus(SaveAllClass):
-    VERSION = "0.1.0"
+    VERSION = "0.2.0"
     known_classes = {
         **BaseSaveableClass.known_classes,
-        SubscriptionManagementStatus.__name__: SubscriptionManagementStatus,
     }
 
-    status: SubscriptionManagementStatus | None
+    status: SubscriptionStatusResponse | None
     checked_at_ts: float | None
     last_status_error: str | None
 
     def dump(self) -> dict[str, Any]:
         data = super().dump()
-        data["status"] = self._dump_status()
+        data["status"] = self.status.model_dump(mode="json") if self.status else None
         return data
 
     @classmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None) -> StoredSubscriptionStatus:
         super()._from_dump(dct, class_kwargs=class_kwargs)
-        dct["status"] = cls._load_status(dct.get("status"))
+        raw_status = dct.get("status")
+        dct["status"] = SubscriptionStatusResponse.model_validate(raw_status) if raw_status else None
         return cls(**filtered_for_init(dct, cls))
 
-    def _dump_status(self) -> dict[str, Any] | None:
-        if self.status is None:
-            return None
-        return {
-            "status": self.status.status.value,
-            "phase": self.status.phase.value,
-            "is_active": self.status.is_active,
-            "is_suspended": self.status.is_suspended,
-            "pending_invoice": self.status.pending_invoice,
-            "payment_due": self.status.payment_due,
-            "upgrade_required": self.status.upgrade_required,
-            "auto_renew": self.status.auto_renew,
-            "subscriber_email": self.status.subscriber_email,
-        }
-
-    @staticmethod
-    def _load_status(status_data: dict[str, Any] | None) -> SubscriptionManagementStatus | None:
-        if status_data is None:
-            return None
-        return SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode(status_data["status"]),
-            phase=SubscriptionManagementPhase(status_data["phase"]),
-            is_active=status_data["is_active"],
-            is_suspended=status_data["is_suspended"],
-            pending_invoice=status_data["pending_invoice"],
-            payment_due=status_data["payment_due"],
-            upgrade_required=status_data["upgrade_required"],
-            auto_renew=status_data["auto_renew"],
-            subscriber_email=status_data.get("subscriber_email"),
-        )
+    @classmethod
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        # Pre-0.2.0 statuses came from the nostr/management page format and cannot be
+        # converted. Drop them; the next refresh recreates the status.
+        if not isinstance(dct.get("status"), dict) or "plan_id" not in dct["status"]:
+            dct["status"] = None
+            dct["checked_at_ts"] = None
+        return super().from_dump_migration(dct)
 
 
 class SubscriptionManager(QObject, BaseSaveableClass):
     """
-    multipath_descriptor is not persisted and set_subscription_multipath_descriptor
-    needs to be called after init.
+    Tracks one subscription plan for one buyer email.
+
+    The subscription service has no authentication, so a successful status response is only
+    used together with the email that created the subscription, never as proof of ownership.
     """
 
-    VERSION = "0.2.2"
+    VERSION = "0.3.0"
     known_classes = {
         **BaseSaveableClass.known_classes,
         StoredSubscriptionStatus.__name__: StoredSubscriptionStatus,
+        SubscriptionStatusResponse.__name__: SubscriptionStatusResponse,
         UserConfig.__name__: UserConfig,
     }
 
@@ -153,24 +121,20 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         cls,
         config: UserConfig,
         loop_in_thread: LoopInThread | None,
-        btcpay_config: BTCPayConfig = BTCPAY_SUBSCRIPTION_CONFIG,
     ) -> dict[str, object | None]:
         return {
             "config": config,
             "loop_in_thread": loop_in_thread,
-            "btcpay_config": btcpay_config,
         }
 
     def __init__(
         self,
         config: UserConfig,
         loop_in_thread: LoopInThread | None,
-        subscription_product_key: str | None | NoSubscriptionKeyRequired,
-        btcpay_config: BTCPayConfig = BTCPAY_SUBSCRIPTION_CONFIG,
-        subscription_duration: PlanDuration | str | None = None,
-        stored_subscription_status: StoredSubscriptionStatus | None = None,
+        plan_id: str | None = None,
         subscriber_email: str | None = None,
         management_url: str | None = None,
+        stored_subscription_status: StoredSubscriptionStatus | None = None,
         parent: QWidget | None = None,
         additional_access_provider: Callable[[], bool] | None = None,
         ask_for_email: bool = False,
@@ -180,13 +144,7 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         self.config = config
         self.loop_in_thread = loop_in_thread or LoopInThread()
         self._owns_loop_in_thread = loop_in_thread is None
-        self.subscription_product_key = subscription_product_key
-        self.btcpay_config = btcpay_config
-        self._subscription_duration = (
-            subscription_duration
-            if isinstance(subscription_duration, PlanDuration) or subscription_duration is None
-            else PlanDuration(subscription_duration)
-        )
+        self.plan_id = plan_id
         self.subscriber_email = subscriber_email
         self.management_url = management_url
         self.stored_subscription_status = stored_subscription_status or StoredSubscriptionStatus(
@@ -200,46 +158,68 @@ class SubscriptionManager(QObject, BaseSaveableClass):
     def set_additional_access_provider(self, additional_access_provider: Callable[[], bool] | None) -> None:
         self.additional_access_provider = additional_access_provider
 
-    def set_btcpay_config(self, btcpay_config: BTCPayConfig) -> None:
-        self.btcpay_config = btcpay_config
+    def set_plan_id(self, plan_id: str) -> None:
+        """
+        Switch to the plan that now carries this product. An existing subscription follows the
+        switch: its email and status are kept until the new plan answers. Without a subscription
+        there is nothing to move.
+        """
+        old_plan_id = self.plan_id
+        if plan_id == old_plan_id:
+            return
+        if not old_plan_id or not self.subscriber_email or not self.management_url:
+            self.plan_id = plan_id
+            return
+        self._move_subscription_to_plan(plan_id=plan_id, buyer_email=self.subscriber_email)
 
-    def set_subscription_target(
-        self,
-        subscription_product_key: str | None | NoSubscriptionKeyRequired,
-        subscription_duration: PlanDuration | None,
-    ) -> None:
-        self.subscription_product_key = subscription_product_key
-        self._subscription_duration = subscription_duration
+    def _move_subscription_to_plan(self, plan_id: str, buyer_email: str) -> None:
+        """
+        Ask the new plan for the buyer's status and management URL. The plan_id is only committed
+        on success, so a failed move is retried on the next start.
+        """
+        client = SubscriptionApiClient(self.proxy_dict())
+
+        async def do() -> tuple[SubscriptionStatusResponse, str | None]:
+            status = await asyncio.to_thread(client.fetch_status, plan_id, buyer_email)
+            if status.status not in LIVE_SUBSCRIPTION_CODES:
+                return status, None
+            management_url = await asyncio.to_thread(client.fetch_management_url, plan_id, buyer_email)
+            return status, management_url
+
+        def on_success(result: tuple[SubscriptionStatusResponse, str | None] | None) -> None:
+            if result is None:
+                return
+            status, management_url = result
+            if status.status == SubscriptionStatusCode.UNKNOWN:
+                self._handle_subscription_refresh_error(
+                    translate("subscription", "Could not determine the current subscription status."),
+                    notify_on_error=False,
+                )
+                return
+            # The management URL belongs to the old store, so it is replaced or cleared, never kept.
+            self.plan_id = plan_id
+            self.management_url = management_url
+            self._apply_management_status(status, disable_if_inactive=True)
+
+        def on_error(error_info: ExcInfo | None) -> None:
+            error = self._error_from_exc_info(error_info)
+            self._handle_subscription_refresh_error(
+                str(error) if error is not None else translate("subscription", "Subscription move failed."),
+                notify_on_error=False,
+            )
+
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=lambda result: None,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}_plan_move",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
 
     @property
     def activation_in_progress(self) -> bool:
         return self._activation_in_progress
-
-    @property
-    def subscription_product(self) -> SubscriptionProduct | None:
-        if not self.subscription_product_key or isinstance(
-            self.subscription_product_key, NoSubscriptionKeyRequired
-        ):
-            return None
-        return self.btcpay_config.resolve_subscription(
-            self.subscription_product_key,
-            duration=self._subscription_duration,
-        )
-
-    @property
-    def subscription_duration(self) -> PlanDuration | None:
-        if self._subscription_duration is not None:
-            return self._subscription_duration
-        subscription_product = self.subscription_product
-        if subscription_product is None:
-            return None
-        return subscription_product.duration
-
-    @property
-    def subscription_pos_base_url(self) -> str:
-        if not self.subscription_product_key:
-            return ""
-        return self.btcpay_config.subscription_pos_base_url()
 
     def allow_subscription_enable_request(self, multipath_descriptor: bdk.Descriptor) -> bool:
         if self.subscription_allows_access():
@@ -254,12 +234,45 @@ class SubscriptionManager(QObject, BaseSaveableClass):
     def supports_manage_subscription(self) -> bool:
         return bool(self.management_url)
 
-    def manage_subscription_text(self) -> str:
-        return translate("subscription", "Manage Subscription")
-
     def trigger_manage_subscription(self) -> None:
-        if self.management_url:
-            open_website(self.management_url)
+        self._open_fresh_management_url()
+
+    def _open_fresh_management_url(self) -> None:
+        """
+        Open a newly fetched management URL, since a saved one goes stale quickly. The saved URL is
+        only used when the fresh one cannot be fetched.
+        """
+        if not self.plan_id or not self.subscriber_email:
+            if self.management_url:
+                open_website(self.management_url)
+            return
+        plan_id = self.plan_id
+        buyer_email = self.subscriber_email
+        saved_management_url = self.management_url
+        client = SubscriptionApiClient(self.proxy_dict())
+
+        async def do() -> str:
+            return await asyncio.to_thread(client.fetch_management_url, plan_id, buyer_email)
+
+        def on_success(management_url: str | None) -> None:
+            url = management_url or saved_management_url
+            if url:
+                self.management_url = url
+                open_website(url)
+
+        def on_error(error_info: ExcInfo | None) -> None:
+            logger.warning("Fresh management URL could not be fetched; using the saved URL")
+            if saved_management_url:
+                open_website(saved_management_url)
+
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=lambda result: None,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}_manage_subscription",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
 
     def supports_refresh_subscription_status(self) -> bool:
         return bool(self.management_url)
@@ -279,22 +292,91 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             notify_on_error=notify_on_error,
         )
 
+    def check_existing_subscription(
+        self,
+        multipath_descriptor: bdk.Descriptor,
+        product_plan_ids: list[str],
+    ) -> None:
+        """
+        Look up the wallet's live subscription among the plans of this product in one request. The
+        response lists only live plans, so after an upgrade the new plan is adopted and the replaced
+        plan is dropped. Its management URL, status and plan_id are taken from that live entry.
+        """
+        to_be_signed = self.get_to_be_signed(multipath_descriptor=multipath_descriptor)
+        if not to_be_signed:
+            return
+
+        buyer_email = derive_subscriber_email(to_be_signed)
+        client = SubscriptionApiClient(self.proxy_dict())
+
+        async def do() -> tuple[SubscriptionStatusResponse | None, str | None]:
+            live_subscriptions = await asyncio.to_thread(
+                client.fetch_active_subscriptions, buyer_email, product_plan_ids
+            )
+            if not live_subscriptions:
+                return None, None
+            live = live_subscriptions[0]
+            try:
+                management_url = await asyncio.to_thread(
+                    client.fetch_management_url, live.plan_id, buyer_email
+                )
+            except SubscriptionApiError:
+                logger.warning("Management URL could not be fetched for an existing subscription")
+                return live, None
+            return live, management_url
+
+        def on_success(result: tuple[SubscriptionStatusResponse | None, str | None] | None) -> None:
+            if result is None:
+                return
+            status, management_url = result
+            if status is None:
+                had_direct_access = self.has_direct_subscription_access()
+                self.subscriber_email = None
+                self.management_url = None
+                self._activation_in_progress = False
+                self.stored_subscription_status = StoredSubscriptionStatus(
+                    status=None,
+                    checked_at_ts=datetime.now().timestamp(),
+                    last_status_error=translate("subscription", "No subscription was found for this wallet."),
+                )
+                self.signal_state_changed.emit()
+                if had_direct_access and not self.subscription_allows_access():
+                    self.signal_access_revoked.emit()
+                return
+            # The management URL of another plan is never kept.
+            if management_url or status.plan_id != self.plan_id:
+                self.management_url = management_url
+            self.plan_id = status.plan_id
+            self.subscriber_email = buyer_email
+            self._apply_management_status(status, disable_if_inactive=False)
+
+        def on_error(error_info: ExcInfo | None) -> None:
+            error = self._error_from_exc_info(error_info)
+            self._handle_subscription_refresh_error(
+                str(error) if error is not None else translate("subscription", "Subscription check failed."),
+                notify_on_error=True,
+            )
+
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=lambda result: None,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}_check_subscription",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
+
     def subscription_status_text(self) -> str:
         if self._has_additional_access():
             return translate("subscription", "Business plan access is active.")
         if self._activation_in_progress:
             return translate("subscription", "Waiting for the free trial to be activated...")
-        if not self.management_url:
-            return translate("subscription", "No subscription has been activated yet.")
 
         parts = []
-        if self.stored_subscription_status.status:
-            status = self.stored_subscription_status.status.status
-            if status == SubscriptionManagementStatusCode.UPGRADE_REQUIRED:
-                # TODO: handle this better
-                status = SubscriptionManagementStatusCode.ACTIVE
-
-            status_label = status.value.replace("_", " ")
+        if not self.management_url:
+            parts.append(translate("subscription", "No subscription has been activated yet."))
+        elif self.stored_subscription_status.status:
+            status_label = self.stored_subscription_status.status.status.value.replace("_", " ")
             parts.append(
                 translate("subscription", "Current status: {status}.").format(status=status_label.title())
             )
@@ -319,42 +401,25 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         return self.has_direct_subscription_access()
 
     def has_direct_subscription_access(self) -> bool:
-        if not self.management_url or not self.stored_subscription_status.status:
+        status = self.stored_subscription_status.status
+        if not self.management_url or status is None:
             return False
-        if not self._subscription_email_matches(self.stored_subscription_status.status):
+        if self.subscriber_email is None:
             return False
-        if self.stored_subscription_status.status.is_suspended:
-            return False
-        if self.stored_subscription_status.status.status in {
-            SubscriptionManagementStatusCode.EXPIRED,
-            SubscriptionManagementStatusCode.SESSION_EXPIRED,
-        }:
-            return False
-        if self.stored_subscription_status.status.is_active is not None:
-            return self.stored_subscription_status.status.is_active
-        return self.stored_subscription_status.status.status != SubscriptionManagementStatusCode.UNKNOWN
-
-    def is_trial_subscription_active(self) -> bool:
-        return bool(
-            self.management_url
-            and self.stored_subscription_status.status
-            and self.stored_subscription_status.status.status == SubscriptionManagementStatusCode.TRIAL
-            and self.subscription_allows_access()
-        )
+        return status.status in {
+            SubscriptionStatusCode.ACTIVE,
+            SubscriptionStatusCode.TRIAL,
+            SubscriptionStatusCode.GRACE,
+        }
 
     def dump(self) -> dict[str, Any]:
         data = super().dump()
         data.update(
             {
+                "plan_id": self.plan_id,
                 "management_url": self.management_url,
                 "subscriber_email": self.subscriber_email,
                 "stored_subscription_status": self.stored_subscription_status,
-                "subscription_product_key": NoSubscriptionKeyRequired.__name__
-                if isinstance(self.subscription_product_key, NoSubscriptionKeyRequired)
-                else self.subscription_product_key,
-                "subscription_duration": (
-                    self._subscription_duration.value if self._subscription_duration else None
-                ),
                 "ask_for_email": self.ask_for_email,
             }
         )
@@ -363,16 +428,14 @@ class SubscriptionManager(QObject, BaseSaveableClass):
     @classmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None) -> SubscriptionManager:
         super()._from_dump(dct, class_kwargs=class_kwargs)
-        if (
-            subscription_product_key := dct.get("subscription_product_key")
-        ) and subscription_product_key == NoSubscriptionKeyRequired.__name__:
-            dct["subscription_product_key"] = NoSubscriptionKeyRequired()
-        if subscription_duration := dct.get("subscription_duration"):
-            dct["subscription_duration"] = PlanDuration(subscription_duration)
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        # Pre-0.3.0 managers were keyed by plan key and carried no plan_id. The stored
+        # status belongs to the old format and is dropped by StoredSubscriptionStatus.
+        dct.pop("subscription_product_key", None)
+        dct.pop("subscription_duration", None)
         return super().from_dump_migration(dct)
 
     def clear_subscription_state(self) -> None:
@@ -566,11 +629,11 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             false_button=translate("subscription", "Cancel"),
         )
         if response:
-            open_website(self.management_url)
+            self._open_fresh_management_url()
         return False
 
     def _start_free_trial_purchase(self, multipath_descriptor: bdk.Descriptor) -> None:
-        if self.subscription_product is None:
+        if not self.plan_id:
             return
 
         to_be_signed = self.get_to_be_signed(multipath_descriptor=multipath_descriptor)
@@ -590,28 +653,23 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         self._activation_in_progress = True
         self.signal_state_changed.emit()
 
-        purchase_client = SubscriptionPurchaseClient(
-            pos_base_url=self.subscription_pos_base_url,
-            pos_item_id=self.subscription_product.trial_pos_id,
-            metadata=PosInvoiceMetadata(
-                buyer_email=subscriber_email,
-                message_to_be_signed=to_be_signed,
-            ),
-            proxy_dict=self.proxy_dict(),
-            loop_in_thread=self.loop_in_thread,
-            npub_bitcoin_safe_pos=self.btcpay_config.npub_bitcoin_safe_pos,
-        )
+        plan_id = self.plan_id
+        client = SubscriptionApiClient(self.proxy_dict())
 
-        async def do() -> PurchaseSession:
-            return await purchase_client.start_and_wait()
+        async def do() -> str:
+            return await asyncio.to_thread(client.fetch_management_url, plan_id, subscriber_email)
 
-        def on_success(session: PurchaseSession | None) -> None:
-            if session is None:
+        def on_success(management_url: str | None) -> None:
+            if not management_url:
                 self._handle_trial_purchase_error(
-                    translate("subscription", "Free-trial purchase did not return a session.")
+                    translate("subscription", "Free-trial purchase did not return a management URL.")
                 )
                 return
-            self._handle_trial_purchase_success(session)
+            self._refresh_subscription_status(
+                disable_if_inactive=True,
+                notify_on_error=True,
+                candidate_management_url=management_url,
+            )
 
         def on_error(error_info: ExcInfo | None) -> None:
             if error_info:
@@ -625,20 +683,6 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             on_error=on_error,
             key=f"{id(self)}_trial_purchase",
             multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
-        )
-
-    def _handle_trial_purchase_success(self, session: PurchaseSession) -> None:
-        if not session.management_payload:
-            self._handle_trial_purchase_error(
-                translate("subscription", "Free-trial purchase did not return a management payload.")
-            )
-            return
-
-        self.management_payload = session.management_payload
-        self._refresh_subscription_status(
-            disable_if_inactive=True,
-            notify_on_error=True,
-            candidate_management_url=session.management_payload.management_url,
         )
 
     def _handle_trial_purchase_error(self, error_text: str) -> None:
@@ -690,10 +734,7 @@ class SubscriptionManager(QObject, BaseSaveableClass):
 
     @staticmethod
     def _is_timeout_error(error: BaseException) -> bool:
-        return (
-            isinstance(error, (TimeoutError, asyncio.TimeoutError))
-            or "timeout" in type(error).__name__.lower()
-        )
+        return isinstance(error, TimeoutError) or "timeout" in type(error).__name__.lower()
 
     def _refresh_subscription_status(
         self,
@@ -703,41 +744,31 @@ class SubscriptionManager(QObject, BaseSaveableClass):
     ) -> None:
         if self._has_additional_access():
             return
+        if not self.plan_id or not self.subscriber_email:
+            return
 
         management_url = candidate_management_url or self.management_url
         if not management_url:
             return
-        proxy_dict = self.proxy_dict()
-        management_client = SubscriptionManagementClient(
-            proxy_dict=proxy_dict,
-            loop_in_thread=self.loop_in_thread,
-        )
 
-        async def do() -> SubscriptionManagementStatus:
-            return await management_client.get_management_status(
-                management_url,
-                proxy_dict=proxy_dict,
-            )
+        plan_id = self.plan_id
+        buyer_email = self.subscriber_email
+        client = SubscriptionApiClient(self.proxy_dict())
 
-        def on_success(subscription_management_status: SubscriptionManagementStatus | None) -> None:
-            if subscription_management_status is None:
+        async def do() -> SubscriptionStatusResponse:
+            return await asyncio.to_thread(client.fetch_status, plan_id, buyer_email)
+
+        def on_success(status: SubscriptionStatusResponse | None) -> None:
+            if status is None:
                 self._handle_subscription_refresh_error(
                     translate("subscription", "Subscription status refresh returned no result."),
-                    notify_on_error=notify_on_error,
-                )
-                return
-            if identity_error := self._management_status_identity_error(subscription_management_status):
-                self._handle_subscription_refresh_error(
-                    identity_error,
                     notify_on_error=notify_on_error,
                 )
                 return
             if candidate_management_url:
                 self.management_url = candidate_management_url
                 self.signal_state_changed.emit()
-            self._apply_management_status(
-                subscription_management_status, disable_if_inactive=disable_if_inactive
-            )
+            self._apply_management_status(status, disable_if_inactive=disable_if_inactive)
 
         def on_error(error_info: ExcInfo | None) -> None:
             error = self._error_from_exc_info(error_info)
@@ -759,13 +790,14 @@ class SubscriptionManager(QObject, BaseSaveableClass):
 
     def _apply_management_status(
         self,
-        status: SubscriptionManagementStatus,
+        status: SubscriptionStatusResponse,
         disable_if_inactive: bool,
-    ) -> SubscriptionManagementStatus | None:
-        if status.status == SubscriptionManagementStatusCode.UNKNOWN and self.stored_subscription_status:
+    ) -> SubscriptionStatusResponse | None:
+        if status.status == SubscriptionStatusCode.UNKNOWN:
             self.stored_subscription_status.last_status_error = translate(
                 "subscription", "Could not determine the current subscription status."
             )
+            self._activation_in_progress = False
             self.signal_state_changed.emit()
             return self.stored_subscription_status.status
         self.stored_subscription_status = StoredSubscriptionStatus(
@@ -789,7 +821,7 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         self,
         error_text: str,
         notify_on_error: bool,
-    ) -> SubscriptionManagementStatus | None:
+    ) -> SubscriptionStatusResponse | None:
         self.stored_subscription_status.last_status_error = error_text
         self._activation_in_progress = False
         self.signal_state_changed.emit()
@@ -805,40 +837,22 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         local_part, _, domain = email.rpartition("@")
         return bool(local_part and domain and "." in domain and " " not in email)
 
-    def _is_valid_management_url(self, management_url: str) -> bool:
+    @staticmethod
+    def _is_valid_management_url(management_url: str) -> bool:
+        if any(character.isspace() for character in management_url):
+            return False
         try:
             parsed_url = urlsplit(management_url)
-            subscription_pos_url = urlsplit(self.subscription_pos_base_url)
+            port = parsed_url.port
             return (
-                parsed_url.scheme in {"http", "https"}
-                and parsed_url.scheme == subscription_pos_url.scheme
-                and parsed_url.hostname == subscription_pos_url.hostname
-                and parsed_url.port == subscription_pos_url.port
+                parsed_url.scheme == "https"
+                and parsed_url.hostname is not None
                 and parsed_url.username is None
                 and parsed_url.password is None
+                and (port is None or 1 <= port <= 65535)
             )
         except ValueError:
             return False
-
-    def _management_status_identity_error(self, status: SubscriptionManagementStatus) -> str | None:
-        if self._subscription_email_matches(status):
-            return None
-        if status.subscriber_email is None:
-            return translate(
-                "subscription",
-                "The management page does not expose a subscription ID. The management URL was not saved.",
-            )
-        return translate(
-            "subscription",
-            "The management URL belongs to a different subscription ID and was not saved.",
-        )
-
-    def _subscription_email_matches(self, status: SubscriptionManagementStatus) -> bool:
-        if self.subscriber_email is None:
-            return True
-        if status.subscriber_email is None:
-            return False
-        return status.subscriber_email.casefold() == self.subscriber_email.casefold()
 
     def _proxy_info(self) -> ProxyInfo | None:
         proxy_url = self.config.network_config.proxy_url

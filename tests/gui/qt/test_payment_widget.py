@@ -34,6 +34,7 @@ import threading
 from datetime import datetime
 from unittest.mock import Mock
 
+from btcpay_tools.btcpay_subscription_api.models import StoreInfoResponse
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtGui import QCloseEvent
 
@@ -143,17 +144,25 @@ def test_create_invoice_request_normalizes_relative_location_header(
     monkeypatch, qtbot, loop_in_thread
 ) -> None:
     button = _payment_button(qtbot=qtbot, loop_in_thread=loop_in_thread)
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.btcpay_web_button.SubscriptionApiClient.fetch_store",
+        lambda self: StoreInfoResponse(base_url="https://payments.example.com", store_id="test-store"),
+    )
+    request_urls: list[str] = []
+    request_data: list[dict[str, str]] = []
+
+    async def fake_post_form_async(**kwargs):
+        request_urls.append(kwargs["url"])
+        request_data.append(kwargs["data"])
+        return AsyncHttpResponse(
+            status_code=302,
+            headers={"Location": "/invoice?id=test"},
+            body=b"",
+        )
 
     monkeypatch.setattr(
         "bitcoin_safe.gui.qt.btcpay_web_button.post_form_async",
-        lambda **kwargs: asyncio.sleep(
-            0,
-            result=AsyncHttpResponse(
-                status_code=302,
-                headers={"Location": "/invoice?id=test"},
-                body=b"",
-            ),
-        ),
+        fake_post_form_async,
     )
 
     result = asyncio.run(
@@ -167,7 +176,97 @@ def test_create_invoice_request_normalizes_relative_location_header(
         )
     )
 
-    assert result[1].url == "https://pay.bitcoin-safe.org/invoice?id=test"
+    assert request_urls == ["https://payments.example.com/api/v1/invoices"]
+    assert result[1].url == "https://payments.example.com/invoice?id=test"
+    assert request_data[0]["storeId"] == "test-store"
+
+
+def _invoice_request_for_store(
+    monkeypatch,
+    qtbot,
+    loop_in_thread,
+    base_url: str,
+    location: str = "/invoice?id=test",
+    proxy_url: str | None = None,
+) -> tuple[list[str], list[object], tuple[int, BtcPayInvoiceDetails]]:
+    config = UserConfig()
+    config.network_config.proxy_url = proxy_url
+    button = BTCPayWebButton(config=config, loop_in_thread=loop_in_thread)
+    qtbot.addWidget(button)
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.btcpay_web_button.SubscriptionApiClient.fetch_store",
+        lambda self: StoreInfoResponse(base_url=base_url, store_id="test-store"),
+    )
+    request_urls: list[str] = []
+    request_proxies: list[object] = []
+
+    async def fake_post_form_async(**kwargs):
+        request_urls.append(kwargs["url"])
+        request_proxies.append(kwargs["proxy_info"])
+        return AsyncHttpResponse(status_code=302, headers={"Location": location}, body=b"")
+
+    monkeypatch.setattr("bitcoin_safe.gui.qt.btcpay_web_button.post_form_async", fake_post_form_async)
+
+    result = asyncio.run(
+        button._create_invoice_request(
+            invoice_details=BtcPayInvoiceDetails(id="invoice-id", amount=1234, url=None, bitcoin_address=None)
+        )
+    )
+    return request_urls, request_proxies, result
+
+
+def test_invoice_uses_default_btcpay_base_url(monkeypatch, qtbot, loop_in_thread) -> None:
+    request_urls, _, _ = _invoice_request_for_store(
+        monkeypatch, qtbot, loop_in_thread, base_url="https://pay.bitcoin-safe.org"
+    )
+
+    assert request_urls == ["https://pay.bitcoin-safe.org/api/v1/invoices"]
+
+
+def test_invoice_uses_custom_btcpay_base_url(monkeypatch, qtbot, loop_in_thread) -> None:
+    request_urls, _, _ = _invoice_request_for_store(
+        monkeypatch, qtbot, loop_in_thread, base_url="https://custom-btcpay.example.com"
+    )
+
+    assert request_urls == ["https://custom-btcpay.example.com/api/v1/invoices"]
+
+
+def test_invoice_endpoint_has_no_duplicate_slash_for_trailing_slash(
+    monkeypatch, qtbot, loop_in_thread
+) -> None:
+    request_urls, _, _ = _invoice_request_for_store(
+        monkeypatch, qtbot, loop_in_thread, base_url="https://custom-btcpay.example.com/"
+    )
+
+    assert request_urls == ["https://custom-btcpay.example.com/api/v1/invoices"]
+
+
+def test_invoice_relative_redirect_resolves_against_configured_endpoint(
+    monkeypatch, qtbot, loop_in_thread
+) -> None:
+    _, _, result = _invoice_request_for_store(
+        monkeypatch,
+        qtbot,
+        loop_in_thread,
+        base_url="https://custom-btcpay.example.com",
+        location="/i/abc123",
+    )
+
+    assert result[1].url == "https://custom-btcpay.example.com/i/abc123"
+
+
+def test_invoice_request_keeps_configured_proxy(monkeypatch, qtbot, loop_in_thread) -> None:
+    _, request_proxies, _ = _invoice_request_for_store(
+        monkeypatch,
+        qtbot,
+        loop_in_thread,
+        base_url="https://pay.bitcoin-safe.org",
+        proxy_url="socks5h://127.0.0.1:9050",
+    )
+
+    assert request_proxies[0] is not None
+    assert request_proxies[0].host == "127.0.0.1"
+    assert request_proxies[0].port == 9050
 
 
 def test_duplicate_callback_is_ignored_after_state_is_consumed(qtbot, loop_in_thread, monkeypatch) -> None:

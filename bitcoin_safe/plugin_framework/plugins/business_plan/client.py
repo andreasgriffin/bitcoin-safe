@@ -29,21 +29,22 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any, cast
 
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import pyqtSignal
 
-from bitcoin_safe.btcpay_config import BTCPAY_SUBSCRIPTION_CONFIG
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.fx import FX
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.paid_plugin_client import PaidPluginClient
+from bitcoin_safe.plugin_framework.subscription_manager import SubscriptionManager
 from bitcoin_safe.plugin_framework.subscription_price_lookup import SubscriptionPriceLookup
 
-from ...subscription_manager import SubscriptionManager
+logger = logging.getLogger(__name__)
 
 
 class BusinessPlanItem(PaidPluginClient):
@@ -58,7 +59,7 @@ class BusinessPlanItem(PaidPluginClient):
         "Start the free trial first, then manage or refresh the subscription here.",
     )
     provider = APP_NAME
-    subscription_product_id = "business-plan"
+    BUSINESS_PLAN_PRODUCT_ID = "business-plan"
 
     signal_request_enabled = cast(SignalProtocol[[bool]], pyqtSignal(bool))
     signal_enabled_changed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
@@ -85,7 +86,6 @@ class BusinessPlanItem(PaidPluginClient):
             "config": config,
             "fx": fx,
             "loop_in_thread": loop_in_thread,
-            "btcpay_config": BTCPAY_SUBSCRIPTION_CONFIG,
         }
         if subscription_price_lookup is not None:
             data["subscription_price_lookup"] = subscription_price_lookup
@@ -107,12 +107,15 @@ class BusinessPlanItem(PaidPluginClient):
             loop_in_thread=loop_in_thread,
             enabled=False,
             additional_access_providers=[],
+            subscription_product_id=self.BUSINESS_PLAN_PRODUCT_ID,
             subscription_managers=subscription_managers,
             selected_subscription_key=selected_subscription_key,
-            btcpay_config=BTCPAY_SUBSCRIPTION_CONFIG,
             subscription_price_lookup=subscription_price_lookup,
         )
 
+        self._sync_enabled_state()
+
+    def _sync_access_state(self) -> None:
         self._sync_enabled_state()
 
     def set_business_plan(self, business_plan: BusinessPlanItem | None) -> None:

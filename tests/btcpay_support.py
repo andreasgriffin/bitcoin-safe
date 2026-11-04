@@ -29,35 +29,12 @@
 
 from __future__ import annotations
 
-from btcpay_tools.config import BTCPayConfig
+from bitcoin_safe.plugin_framework.plugin_btcpay_manifest import BtcpayManifestConfig
 
-TEST_BTCPAY_CONFIG_YAML = """
-btcpay_base:
-  base_url: https://testnet.demo.btcpayserver.org
-  pos_app_id: 3sgZmTZfKP8mRQciCqNh6g5F1G1s
-  store_id: 98rXQCLFR3jmjbh5V5BomnqKJT5xC9kYejFRJHfmLWBq
+TEST_BUSINESS_PLAN_ID = "plan_4JmXn9YxbMbTv75dNK"
+TEST_SCHEDULE_PLAN_ID = "plan_E8A8xrESQqhG4UGXga"
+TEST_MONTHLY_PLAN_ID = "plan_JCvJEumcQBEDrxHgs4"
+TEST_YEARLY_PLAN_ID = "plan_6GdwKTCXLDtSMR8WL1"
 
-products:
-  demo-plugin:
-    - offering_id: offering_89j5mBhvUYuvFfxNL1
-      plan_id: plan_Bqm6FpomH4TvZLj113
-      pos_id: demo-plugin
-      trial_pos_id: demo-plugin-trial
-      duration: month
-    - offering_id: offering_89j5mBhvUYuvFfxNL1
-      plan_id: plan_C777vfiXKT7okGGzSs
-      pos_id: demo-plugin-yearly
-      trial_pos_id: demo-plugin-yearly-trial
-      duration: year
-  business-plan:
-    - offering_id: offering_CLbpG77sJMWjoM9jB4
-      plan_id: plan_7TezijGHpX3wzZRhbV
-      pos_id: business-plan
-      trial_pos_id: business-plan-trial
-      duration: year
-
-client:
-  npub_bitcoin_safe_pos: npub150ncc39ala3h9zudddrjqy9f7wenp7d20rjm99wchwtkdpze07wqukr9cu
-"""
-
-TEST_BTCPAY_SUBSCRIPTION_CONFIG = BTCPayConfig.loads(TEST_BTCPAY_CONFIG_YAML)
+TEST_SCHEDULE_PRODUCT_ID = "schedule"
+TEST_BTCPAY_SUBSCRIPTION_CONFIG = BtcpayManifestConfig(product_id=TEST_SCHEDULE_PRODUCT_ID)

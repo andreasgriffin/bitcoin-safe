@@ -29,24 +29,41 @@
 
 from __future__ import annotations
 
-from btcpay_tools.config import BTCPayConfig
+import pytest
+from btcpay_tools.btcpay_subscription_api.models import StoreInfoResponse
 
-_BTCPAY_CONFIG_YAML = """
-btcpay_base:
-  base_url: "https://pay.bitcoin-safe.org"
-  pos_app_id: "U59nqzCsTq9vECCHaxiXwnwoSmL"
-  store_id: "7agECo6zfJRp4Thi8vnBCjCoopb2yrnstaA5FophRfJe"
+from bitcoin_safe.plugin_framework.subscription_api_client import SubscriptionApiClient
 
-products:
-  business-plan:
-    - offering_id: offering_Lnh3PrdKrZgn9XnzQh
-      plan_id: plan_JqASqLMXqgzzQoCopE
-      pos_id: business-plan
-      trial_pos_id: business-plan-trial
-      duration: year
+LIVE_STORE_RESPONSE = {
+    "schema_version": 1,
+    "base_url": "https://pay.bitcoin-safe.org",
+    "store_id": "GUwgxbBcM3CTo7rSCP2KEcATmzEXMHQXe4WbfBhEyWrS",
+}
 
-client:
-  npub_bitcoin_safe_pos: npub150ncc39ala3h9zudddrjqy9f7wenp7d20rjm99wchwtkdpze07wqukr9cu
-"""
 
-BTCPAY_SUBSCRIPTION_CONFIG = BTCPayConfig.loads(_BTCPAY_CONFIG_YAML)
+def test_fetch_store_parses_store_info(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "_request",
+        lambda self, method, path, payload=None: LIVE_STORE_RESPONSE,
+    )
+
+    store = SubscriptionApiClient(None).fetch_store()
+
+    assert store == StoreInfoResponse.model_validate(LIVE_STORE_RESPONSE)
+    assert store.store_id == "GUwgxbBcM3CTo7rSCP2KEcATmzEXMHQXe4WbfBhEyWrS"
+    assert store.base_url == "https://pay.bitcoin-safe.org"
+
+
+def test_fetch_store_requests_the_store_endpoint(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[tuple[str, str]] = []
+
+    def fake_request(self, method, path, payload=None):
+        calls.append((method, path))
+        return LIVE_STORE_RESPONSE
+
+    monkeypatch.setattr(SubscriptionApiClient, "_request", fake_request)
+
+    SubscriptionApiClient(None).fetch_store()
+
+    assert calls == [("GET", "/api/store")]

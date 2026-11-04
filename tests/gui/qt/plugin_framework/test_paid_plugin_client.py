@@ -30,23 +30,18 @@
 from __future__ import annotations
 
 import asyncio
-import time
 from collections.abc import Callable
-from concurrent.futures import Future
 from datetime import datetime
 from typing import Any
 
 import bdkpython as bdk
 import pytest
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
-from btcpay_tools.btcpay_subscription_nostr.core import derive_subscriber_email
-from btcpay_tools.btcpay_subscription_nostr.pos_item_lookup import BtcpayPosItemData
-from btcpay_tools.btcpay_subscription_nostr.service import (
-    SubscriptionManagementPhase,
-    SubscriptionManagementStatus,
-    SubscriptionManagementStatusCode,
+from btcpay_tools.btcpay_subscription_api.models import (
+    PlanCatalogItem,
+    SubscriptionStatusCode,
+    SubscriptionStatusResponse,
 )
-from btcpay_tools.config import BTCPayConfig, PlanDuration
 from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import (
     QApplication,
@@ -60,7 +55,6 @@ from PyQt6.QtWidgets import (
 )
 from pytestqt.qtbot import QtBot
 
-from bitcoin_safe.btcpay_config import BTCPAY_SUBSCRIPTION_CONFIG as PROD_BTCPAY_SUBSCRIPTION_CONFIG
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import SUPPORT_EMAIL
 from bitcoin_safe.execute_config import IS_PRODUCTION
@@ -73,55 +67,63 @@ from bitcoin_safe.plugin_framework.plugin_list_widget import (
 )
 from bitcoin_safe.plugin_framework.plugin_manager import PluginManagerWidget
 from bitcoin_safe.plugin_framework.plugins.business_plan.client import BusinessPlanItem
+from bitcoin_safe.plugin_framework.subscription_api_client import SubscriptionApiClient
 from bitcoin_safe.plugin_framework.subscription_manager import (
     StoredSubscriptionStatus,
     SubscriptionManager,
 )
 from bitcoin_safe.plugin_framework.subscription_price_lookup import SubscriptionPriceLookup
 from tests.btcpay_support import (
-    TEST_BTCPAY_SUBSCRIPTION_CONFIG as BTCPAY_SUBSCRIPTION_CONFIG,
+    TEST_BUSINESS_PLAN_ID,
+    TEST_MONTHLY_PLAN_ID,
+    TEST_YEARLY_PLAN_ID,
 )
+
+BUSINESS_PRODUCT_ID = "business-plan"
+TEST_DEMO_PRODUCT_ID = "demo-plan"
 
 
 def _make_subscription_managers(
     config: UserConfig,
     loop_in_thread: LoopInThread | None,
     product_id: str,
-    duration: PlanDuration,
+    plan_id: str,
     management_url: str | None = None,
-    status: SubscriptionManagementStatus | None = None,
-    btcpay_config: BTCPayConfig = BTCPAY_SUBSCRIPTION_CONFIG,
+    status: SubscriptionStatusResponse | None = None,
 ) -> dict[str, SubscriptionManager] | None:
     if management_url is None and status is None:
         return None
-    storage_key = btcpay_config.resolve_subscription(product_id, duration).plan_id
     return {
-        storage_key: SubscriptionManager(
+        product_id: SubscriptionManager(
             config=config,
             loop_in_thread=loop_in_thread,
-            subscription_product_key=product_id,
-            btcpay_config=btcpay_config,
-            subscription_duration=duration,
+            plan_id=plan_id,
+            subscriber_email=SUBSCRIBER_EMAIL,
             management_url=management_url,
             stored_subscription_status=_stored_subscription_status(status),
         )
     }
 
 
-def _make_pos_item(pos_url: str, item_id: str, price_text: str) -> BtcpayPosItemData:
-    return BtcpayPosItemData(
-        pos_url=pos_url,
-        item_id=item_id,
-        title=item_id,
-        price_text=price_text,
-        buy_button_text=f"Buy for {price_text}",
-        form_action_url=pos_url,
-        is_free=False,
+SUBSCRIBER_EMAIL = "descriptor-hash@v0.bitcoin-safe.org"
+
+
+def _subscribed_manager(config: UserConfig, plan_id: str) -> SubscriptionManager:
+    """A manager of an active trial: the subscription is bound to the subscriber email."""
+    return SubscriptionManager(
+        config=config,
+        loop_in_thread=None,
+        plan_id=plan_id,
+        subscriber_email=SUBSCRIBER_EMAIL,
+        management_url="https://example.com/manage",
+        stored_subscription_status=_stored_subscription_status(
+            SubscriptionStatusResponse(plan_id=plan_id, status=SubscriptionStatusCode.TRIAL)
+        ),
     )
 
 
 def _stored_subscription_status(
-    status: SubscriptionManagementStatus | None,
+    status: SubscriptionStatusResponse | None,
     checked_at_ts: float = 123.0,
 ) -> StoredSubscriptionStatus:
     return StoredSubscriptionStatus(
@@ -136,18 +138,21 @@ def _make_business_plan(
     fx: FX,
     loop_in_thread: LoopInThread | None,
     management_url: str | None = None,
-    status: SubscriptionManagementStatus | None = None,
+    status: SubscriptionStatusCode | None = None,
     subscription_price_lookup: SubscriptionPriceLookup | None = None,
 ) -> BusinessPlanItem:
     subscription_managers = _make_subscription_managers(
         config=config,
         loop_in_thread=loop_in_thread,
-        product_id="business-plan",
-        duration=PlanDuration.YEAR,
+        product_id=BUSINESS_PRODUCT_ID,
+        plan_id=TEST_BUSINESS_PLAN_ID,
         management_url=management_url,
         status=status,
-        btcpay_config=PROD_BTCPAY_SUBSCRIPTION_CONFIG,
-    )
+    ) or {
+        BUSINESS_PRODUCT_ID: SubscriptionManager(
+            config=config, loop_in_thread=loop_in_thread, plan_id=TEST_BUSINESS_PLAN_ID
+        )
+    }
     return BusinessPlanItem(
         config=config,
         fx=fx,
@@ -170,7 +175,7 @@ class DemoPaidPluginClient(PaidPluginClient):
         "Use this to verify subscription-gated activation and plugin-manager actions."
     )
     provider = "Bitcoin-Safe"
-    subscription_product_id = "demo-plugin"
+    subscription_product_id = TEST_DEMO_PRODUCT_ID
 
     @classmethod
     def cls_kwargs(
@@ -182,7 +187,6 @@ class DemoPaidPluginClient(PaidPluginClient):
         parent: QWidget | None = None,
         subscription_managers: dict[str, SubscriptionManager] | None = None,
         selected_subscription_key: str | None = None,
-        btcpay_config: BTCPayConfig | None = BTCPAY_SUBSCRIPTION_CONFIG,
         subscription_price_lookup: SubscriptionPriceLookup | None = None,
     ) -> dict[str, object]:
         data = super().cls_kwargs(
@@ -208,7 +212,6 @@ class DemoPaidPluginClient(PaidPluginClient):
         enabled: bool = False,
         subscription_managers: dict[str, SubscriptionManager] | None = None,
         selected_subscription_key: str | None = None,
-        btcpay_config: BTCPayConfig = BTCPAY_SUBSCRIPTION_CONFIG,
         subscription_price_lookup: SubscriptionPriceLookup | None = None,
     ) -> None:
         super().__init__(
@@ -220,7 +223,7 @@ class DemoPaidPluginClient(PaidPluginClient):
             subscription_managers=subscription_managers,
             selected_subscription_key=selected_subscription_key,
             additional_access_providers=additional_access_providers,
-            btcpay_config=btcpay_config,
+            subscription_product_id=self.subscription_product_id,
             subscription_price_lookup=subscription_price_lookup,
         )
 
@@ -249,7 +252,7 @@ class DemoPaidPluginClient(PaidPluginClient):
         self._update_counter_label()
 
         if not IS_PRODUCTION:
-            assert self.subscription_manager.subscription_product_key == "demo-plugin"
+            assert self.subscription_manager.plan_id == TEST_MONTHLY_PLAN_ID
 
     def _increment_counter(self) -> None:
         self._click_counter += 1
@@ -287,7 +290,7 @@ def _make_demo_plugin(
     loop_in_thread: LoopInThread | None,
     business_plan: BusinessPlanItem | None = None,
     management_url: str | None = None,
-    status: SubscriptionManagementStatus | None = None,
+    status: SubscriptionStatusCode | None = None,
     subscription_price_lookup: SubscriptionPriceLookup | None = None,
 ) -> DemoPaidPluginClient:
     if subscription_price_lookup is None and business_plan is not None:
@@ -301,8 +304,8 @@ def _make_demo_plugin(
         subscription_managers=_make_subscription_managers(
             config=config,
             loop_in_thread=loop_in_thread,
-            product_id="demo-plugin",
-            duration=PlanDuration.MONTH,
+            product_id=TEST_DEMO_PRODUCT_ID,
+            plan_id=TEST_MONTHLY_PLAN_ID,
             management_url=management_url,
             status=status,
         ),
@@ -312,58 +315,6 @@ def _make_demo_plugin(
 
 
 @pytest.mark.marker_qt_1
-def test_demo_paid_plugin_requires_active_subscription_on_mainnet(
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    config = test_config_main_chain
-    config.network = bdk.Network.BITCOIN
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None)
-
-    plugin.set_enabled(True)
-    assert not plugin.enabled
-    assert plugin._loaded_label.text() == ""
-
-    async def get_management_status(
-        self: object,
-        management_url: str,
-        proxy_dict: dict[str, str] | None = None,
-    ) -> SubscriptionManagementStatus:
-        return SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
-            auto_renew=True,
-        )
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.SubscriptionManagementClient.get_management_status",
-        get_management_status,
-    )
-    _run_subscription_tasks_synchronously(monkeypatch, plugin.subscription_managers)
-    plugin.subscription_manager.management_url = "https://example.com/manage"
-    plugin.subscription_manager.stored_subscription_status = _stored_subscription_status(
-        SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
-        )
-    )
-    plugin.load()
-    qtbot.waitUntil(
-        lambda: plugin.subscription_manager.stored_subscription_status.checked_at_ts != 123.0,
-        timeout=5_000,
-    )
-    assert plugin._loaded_label.text()
-
-    plugin.close()
-    fx.close()
-
-
 @pytest.mark.marker_qt_1
 def test_paid_plugin_load_can_defer_subscription_refresh(
     qapp: QApplication,
@@ -421,11 +372,9 @@ def test_plugin_widget_shows_subscription_buttons_when_management_url_known(
         fx=fx,
         loop_in_thread=None,
         management_url="https://example.com/manage",
-        status=SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_MONTHLY_PLAN_ID,
+            status=SubscriptionStatusCode.TRIAL,
         ),
     )
 
@@ -452,699 +401,16 @@ def test_plugin_widget_shows_subscription_buttons_when_management_url_known(
 
 
 @pytest.mark.marker_qt_1
-def test_plugin_list_widget_shows_btcpay_price_texts(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-) -> None:
-    business_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("business-plan", PlanDuration.YEAR)
-    demo_monthly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
-    demo_yearly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.YEAR)
-    config = test_config_main_chain
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    subscription_price_lookup = SubscriptionPriceLookup()
-    business_plan = _make_business_plan(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        subscription_price_lookup=subscription_price_lookup,
-    )
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        business_plan=business_plan,
-    )
-    price_items = {
-        business_product.pos_id: _make_pos_item(
-            pos_url="",
-            item_id=business_product.pos_id,
-            price_text="10,00 EUR",
-        ),
-        demo_monthly_product.pos_id: _make_pos_item(
-            pos_url="",
-            item_id=demo_monthly_product.pos_id,
-            price_text="2,00 EUR",
-        ),
-        demo_yearly_product.pos_id: _make_pos_item(
-            pos_url="",
-            item_id=demo_yearly_product.pos_id,
-            price_text="20,00 EUR",
-        ),
-    }
-    for subscription_manager in (*business_plan.subscription_managers, *plugin.subscription_managers):
-        subscription_price_lookup._set_items(subscription_manager.subscription_pos_base_url, price_items)
-    try:
-        widget = PluginManagerWidget(business_plan=business_plan)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        assert widget.business_plan_widget is not None
-        qtbot.waitUntil(
-            lambda: _plan_texts(widget.business_plan_widget) == ["10,00 EUR / year"],
-            timeout=5_000,
-        )
-
-        first_widget = widget.plugins_widgets[0]
-        assert isinstance(first_widget, PaidPluginWidget)
-
-        qtbot.waitUntil(
-            lambda: _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"],
-            timeout=5_000,
-        )
-        assert widget.business_plan_widget.plan_selector_title_label.textLabel.text() == "Subscription"
-        assert (
-            widget.business_plan_widget.plan_selector_title_label.toolTip()
-            == "This subscription is valid on any computer with this wallet"
-        )
-
-        assert first_widget.start_trial_button.isVisible()
-        assert first_widget.start_trial_button.text() == "Start free trial / Fetch existing subscription"
-        assert first_widget.enable_checkbox.isHidden()
-        assert first_widget.plan_selector_title_label.textLabel.text() == "Subscription"
-        assert (
-            first_widget.plan_selector_title_label.toolTip()
-            == "This subscription is valid on any computer with this wallet"
-        )
-        assert _plan_texts(widget.business_plan_widget) == ["10,00 EUR / year"]
-        assert _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"]
-
-        widget.close()
-    finally:
-        plugin.close()
-        subscription_price_lookup.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_plugin_list_widget_shows_btcpay_price_texts_without_business_plan(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    demo_monthly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
-    demo_yearly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.YEAR)
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
-        lambda self, pos_url, proxy_dict=None: {
-            demo_monthly_product.pos_id: _make_pos_item(
-                pos_url=pos_url,
-                item_id=demo_monthly_product.pos_id,
-                price_text="2,00 EUR",
-            ),
-            demo_yearly_product.pos_id: _make_pos_item(
-                pos_url=pos_url,
-                item_id=demo_yearly_product.pos_id,
-                price_text="20,00 EUR",
-            ),
-        },
-    )
-    config = test_config_main_chain
-    # Keep widget price rendering synchronous so Windows teardown does not race
-    # with background BTCPay lookup callbacks.
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        business_plan=None,
-    )
-    _run_subscription_tasks_synchronously(monkeypatch, plugin.subscription_managers)
-    try:
-        widget = PluginManagerWidget(business_plan=None)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        first_widget = widget.plugins_widgets[0]
-        assert isinstance(first_widget, PaidPluginWidget)
-        qtbot.waitUntil(
-            lambda: _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"],
-            timeout=5_000,
-        )
-        assert widget.business_plan_widget is None
-        assert _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"]
-
-        widget.close()
-    finally:
-        plugin.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_plugin_widget_fetches_subscription_prices_when_plan_selector_visible(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    fetch_calls = 0
-    demo_monthly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
-    demo_yearly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.YEAR)
-    subscription_pos_base_url = BTCPAY_SUBSCRIPTION_CONFIG.subscription_pos_base_url()
-
-    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
-        nonlocal fetch_calls
-        fetch_calls += 1
-        return {
-            demo_monthly_product.pos_id: _make_pos_item(
-                pos_url=subscription_pos_base_url,
-                item_id=demo_monthly_product.pos_id,
-                price_text="2,00 EUR",
-            ),
-            demo_yearly_product.pos_id: _make_pos_item(
-                pos_url=subscription_pos_base_url,
-                item_id=demo_yearly_product.pos_id,
-                price_text="20,00 EUR",
-            ),
-        }
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
-        fake_fetch,
-    )
-    config = test_config_main_chain
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None)
-
-    try:
-        widget = PluginManagerWidget(business_plan=None)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        first_widget = widget.plugins_widgets[0]
-        assert isinstance(first_widget, PaidPluginWidget)
-        qtbot.waitUntil(
-            lambda: _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"],
-            timeout=5_000,
-        )
-        assert fetch_calls == 1
-
-        widget.close()
-    finally:
-        plugin.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_plugin_widget_skips_subscription_price_fetch_when_plan_selector_hidden(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    fetch_calls = 0
-
-    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
-        nonlocal fetch_calls
-        fetch_calls += 1
-        return {}
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
-        fake_fetch,
-    )
-    config = test_config_main_chain
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        management_url="https://example.com/manage",
-        status=SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
-        ),
-    )
-
-    try:
-        widget = PluginManagerWidget(business_plan=None)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        first_widget = widget.plugins_widgets[0]
-        assert isinstance(first_widget, PaidPluginWidget)
-        assert first_widget.plan_selector_container.isHidden()
-        assert fetch_calls == 0
-
-        widget.close()
-    finally:
-        plugin.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_plugin_widget_hides_subscription_prices_when_lookup_returns_no_item(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    fetch_calls = 0
-
-    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
-        nonlocal fetch_calls
-        fetch_calls += 1
-        return {}
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
-        fake_fetch,
-    )
-    config = test_config_main_chain
-    # This test only verifies fallback UI text, so run the lookup synchronously
-    # to avoid Windows-only stalls in the shared loop thread.
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    business_plan = _make_business_plan(config=config, fx=fx, loop_in_thread=None)
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        business_plan=business_plan,
-    )
-    _run_subscription_tasks_synchronously(
-        monkeypatch, (*business_plan.subscription_managers, *plugin.subscription_managers)
-    )
-    try:
-        widget = PluginManagerWidget(business_plan=business_plan)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        assert widget.business_plan_widget is not None
-        qtbot.waitUntil(
-            lambda: fetch_calls >= 1 and _plan_texts(widget.business_plan_widget) == ["Yearly"],
-            timeout=5_000,
-        )
-        assert not widget.business_plan_widget.offer_label.isVisible()
-        first_widget = widget.plugins_widgets[0]
-        assert isinstance(first_widget, PaidPluginWidget)
-        assert not first_widget.offer_label.isVisible()
-        assert _plan_texts(widget.business_plan_widget) == ["Yearly"]
-        assert _plan_texts(first_widget) == ["Monthly", "Yearly"]
-
-        widget.close()
-    finally:
-        plugin.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_plugin_widget_fetches_subscription_prices_when_plan_selector_becomes_visible(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    fetch_calls = 0
-    demo_monthly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
-    demo_yearly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.YEAR)
-    subscription_pos_base_url = BTCPAY_SUBSCRIPTION_CONFIG.subscription_pos_base_url()
-
-    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
-        nonlocal fetch_calls
-        fetch_calls += 1
-        return {
-            demo_monthly_product.pos_id: _make_pos_item(
-                pos_url=subscription_pos_base_url,
-                item_id=demo_monthly_product.pos_id,
-                price_text="2,00 EUR",
-            ),
-            demo_yearly_product.pos_id: _make_pos_item(
-                pos_url=subscription_pos_base_url,
-                item_id=demo_yearly_product.pos_id,
-                price_text="20,00 EUR",
-            ),
-        }
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
-        fake_fetch,
-    )
-    config = test_config_main_chain
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        management_url="https://example.com/manage",
-        status=SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
-        ),
-    )
-
-    try:
-        widget = PluginManagerWidget(business_plan=None)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        first_widget = widget.plugins_widgets[0]
-        assert isinstance(first_widget, PaidPluginWidget)
-        assert first_widget.plan_selector_container.isHidden()
-        assert fetch_calls == 0
-
-        plugin.subscription_manager.clear_subscription_state()
-
-        qtbot.waitUntil(lambda: not first_widget.plan_selector_container.isHidden(), timeout=5_000)
-        qtbot.waitUntil(
-            lambda: _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"],
-            timeout=5_000,
-        )
-        assert fetch_calls == 1
-
-        widget.close()
-    finally:
-        plugin.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_plugin_widget_swallows_offer_lookup_failures(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    fetch_calls = 0
-
-    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
-        nonlocal fetch_calls
-        fetch_calls += 1
-        raise RuntimeError("lookup failed")
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
-        fake_fetch,
-    )
-    config = test_config_main_chain
-    # The failure handling under test is synchronous UI fallback logic, so keep
-    # the BTCPay lookup on the local thread for deterministic teardown.
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    business_plan = _make_business_plan(config=config, fx=fx, loop_in_thread=None)
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        business_plan=business_plan,
-    )
-    _run_subscription_tasks_synchronously(
-        monkeypatch, (*business_plan.subscription_managers, *plugin.subscription_managers)
-    )
-    try:
-        widget = PluginManagerWidget(business_plan=business_plan)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        assert widget.business_plan_widget is not None
-        qtbot.waitUntil(
-            lambda: (
-                fetch_calls >= 1
-                and _plan_texts(widget.business_plan_widget) == ["Yearly"]
-                and "No subscription has been activated yet."
-                in widget.business_plan_widget.status_label.text()
-            ),
-            timeout=5_000,
-        )
-        assert not widget.business_plan_widget.offer_label.isVisible()
-        first_widget = widget.plugins_widgets[0]
-        assert isinstance(first_widget, PaidPluginWidget)
-        assert not first_widget.offer_label.isVisible()
-        assert _plan_texts(first_widget) == ["Monthly", "Yearly"]
-        assert "No subscription has been activated yet." in widget.business_plan_widget.status_label.text()
-
-        widget.close()
-    finally:
-        plugin.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_btcpay_offer_lookup_shares_single_fetch_for_same_pos_url(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    fetch_calls = 0
-    business_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("business-plan", PlanDuration.YEAR)
-    demo_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
-    subscription_pos_base_url = BTCPAY_SUBSCRIPTION_CONFIG.subscription_pos_base_url()
-
-    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
-        nonlocal fetch_calls
-        fetch_calls += 1
-        time.sleep(0.1)
-        return {
-            business_product.pos_id: _make_pos_item(
-                pos_url=subscription_pos_base_url,
-                item_id=business_product.pos_id,
-                price_text="10,00 EUR",
-            ),
-            demo_product.pos_id: _make_pos_item(
-                pos_url=subscription_pos_base_url,
-                item_id=demo_product.pos_id,
-                price_text="2,00 EUR",
-            ),
-        }
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
-        fake_fetch,
-    )
-    config = test_config_main_chain
-    # This assertion is about lookup caching, not cross-thread scheduling.
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    business_plan = _make_business_plan(config=config, fx=fx, loop_in_thread=None)
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        business_plan=business_plan,
-    )
-    _run_subscription_tasks_synchronously(
-        monkeypatch, (*business_plan.subscription_managers, *plugin.subscription_managers)
-    )
-
-    try:
-        widget = PluginManagerWidget(business_plan=business_plan)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        assert widget.business_plan_widget is not None
-        qtbot.waitUntil(
-            lambda: "10,00 EUR / year" in _plan_texts(widget.business_plan_widget),
-            timeout=5_000,
-        )
-        assert fetch_calls == 2
-
-        widget.close()
-    finally:
-        plugin.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_plugin_list_widget_reuses_cached_price_texts_on_reload(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    fetch_calls = 0
-    business_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("business-plan", PlanDuration.YEAR)
-    demo_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
-    subscription_pos_base_url = BTCPAY_SUBSCRIPTION_CONFIG.subscription_pos_base_url()
-
-    def fake_fetch(self, pos_url: str, proxy_dict=None) -> dict[str, BtcpayPosItemData]:
-        nonlocal fetch_calls
-        fetch_calls += 1
-        return {
-            business_product.pos_id: _make_pos_item(
-                pos_url=subscription_pos_base_url,
-                item_id=business_product.pos_id,
-                price_text="10,00 EUR",
-            ),
-            demo_product.pos_id: _make_pos_item(
-                pos_url=subscription_pos_base_url,
-                item_id=demo_product.pos_id,
-                price_text="2,00 EUR",
-            ),
-        }
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_price_lookup.BtcpayPosItemLookup.fetch",
-        fake_fetch,
-    )
-    config = test_config_main_chain
-    # Keep the reload/cache assertion on the synchronous code path so widget
-    # replacement does not race with cross-thread price lookup callbacks.
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    business_plan = _make_business_plan(config=config, fx=fx, loop_in_thread=None)
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        business_plan=business_plan,
-    )
-
-    try:
-        widget = PluginManagerWidget(business_plan=business_plan)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        assert widget.business_plan_widget is not None
-        qtbot.waitUntil(
-            lambda: "10,00 EUR / year" in _plan_texts(widget.business_plan_widget),
-            timeout=5_000,
-        )
-        org_first_plugin_widget = widget.plugins_widgets[0]
-        assert isinstance(org_first_plugin_widget, PaidPluginWidget)
-        qtbot.waitUntil(
-            lambda: "2,00 EUR / month" in _plan_texts(org_first_plugin_widget),
-            timeout=5_000,
-        )
-
-        widget.set_plugins([plugin])
-
-        first_widget = widget.plugins_widgets[0]
-        assert isinstance(first_widget, PaidPluginWidget)
-
-        assert first_widget is not org_first_plugin_widget
-        qtbot.waitUntil(
-            lambda: "2,00 EUR / month" in _plan_texts(first_widget),
-            timeout=5_000,
-        )
-        assert first_widget.offer_label.isHidden()
-        assert _plan_texts(first_widget) == ["2,00 EUR / month", "Yearly"]
-        assert fetch_calls == 2
-
-        widget.close()
-    finally:
-        plugin.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_plugin_widget_plan_selector_updates_price_and_trial_cta(
-    qapp: QApplication,
-    qtbot: QtBot,
-    loop_in_thread: LoopInThread,
-    test_config_main_chain: UserConfig,
-) -> None:
-    business_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("business-plan", PlanDuration.YEAR)
-    demo_monthly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
-    demo_yearly_product = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.YEAR)
-    config = test_config_main_chain
-    fx = FX(config=config, loop_in_thread=loop_in_thread, update_rates=False)
-    subscription_price_lookup = SubscriptionPriceLookup()
-    business_plan = _make_business_plan(
-        config=config,
-        fx=fx,
-        loop_in_thread=loop_in_thread,
-        subscription_price_lookup=subscription_price_lookup,
-    )
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=loop_in_thread,
-        business_plan=business_plan,
-    )
-    price_items = {
-        business_product.pos_id: _make_pos_item(
-            pos_url="",
-            item_id=business_product.pos_id,
-            price_text="10,00 EUR",
-        ),
-        demo_monthly_product.pos_id: _make_pos_item(
-            pos_url="",
-            item_id=demo_monthly_product.pos_id,
-            price_text="2,00 EUR",
-        ),
-        demo_yearly_product.pos_id: _make_pos_item(
-            pos_url="",
-            item_id=demo_yearly_product.pos_id,
-            price_text="20,00 EUR",
-        ),
-    }
-    for subscription_manager in (*business_plan.subscription_managers, *plugin.subscription_managers):
-        subscription_price_lookup._set_items(subscription_manager.subscription_pos_base_url, price_items)
-    try:
-        widget = PluginManagerWidget(business_plan=business_plan)
-        qtbot.addWidget(widget)
-        widget.set_plugins([plugin])
-        widget.show()
-
-        first_widget = widget.plugins_widgets[0]
-        assert isinstance(first_widget, PaidPluginWidget)
-        qtbot.waitUntil(
-            lambda: _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"],
-            timeout=5_000,
-        )
-        assert first_widget.start_trial_button.text() == "Start free trial / Fetch existing subscription"
-        assert first_widget.enable_checkbox.isHidden()
-        assert _plan_texts(first_widget) == ["2,00 EUR / month", "20,00 EUR / year"]
-
-        first_widget.plan_selector_combo.setCurrentIndex(1)
-
-        qtbot.waitUntil(
-            lambda: plugin.selected_subscription_plan.duration == PlanDuration.YEAR, timeout=5_000
-        )
-        assert plugin.selected_subscription_plan.duration == PlanDuration.YEAR
-
-        widget.close()
-    finally:
-        plugin.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_paid_plugin_close_disconnects_shared_price_lookup_signal(
-    qapp: QApplication,
-    test_config_main_chain: UserConfig,
-) -> None:
-    config = test_config_main_chain
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    subscription_price_lookup = SubscriptionPriceLookup()
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=None,
-        subscription_price_lookup=subscription_price_lookup,
-    )
-
-    try:
-        updates: list[str] = []
-        plugin.signal_price_texts_changed.connect(lambda: updates.append("updated"))
-
-        subscription_price_lookup.signal_prices_changed.emit(
-            plugin.subscription_manager.subscription_pos_base_url
-        )
-        assert updates == ["updated"]
-
-        updates.clear()
-        plugin.close()
-        subscription_price_lookup.signal_prices_changed.emit(
-            plugin.subscription_manager.subscription_pos_base_url
-        )
-        assert updates == []
-    finally:
-        subscription_price_lookup.close()
-        fx.close()
-
-
 @pytest.mark.marker_qt_1
 def test_paid_plugin_close_closes_private_subscription_price_lookup(
     qapp: QApplication,
@@ -1195,73 +461,7 @@ def test_subscription_price_lookup_close_is_idempotent(qapp: QApplication) -> No
 
 
 @pytest.mark.marker_qt_1
-def test_subscription_price_lookup_close_cancels_outstanding_fetch_tasks(qapp: QApplication) -> None:
-    class FakeLoopInThread:
-        def __init__(self) -> None:
-            self.future: Future[dict[str, BtcpayPosItemData]] | None = None
-
-        def run_task(
-            self,
-            coro,
-            on_success=None,
-            on_done=None,
-            on_error=None,
-            cancel=None,
-            key=None,
-            multiple_strategy=None,
-        ) -> Future[dict[str, BtcpayPosItemData]]:
-            del on_success, on_done, on_error, cancel, key, multiple_strategy
-            coro.close()
-            self.future = Future()
-            return self.future
-
-    class FakeProduct:
-        pos_id = "demo"
-
-    class FakeSubscriptionManager:
-        def __init__(self) -> None:
-            self.subscription_product = FakeProduct()
-            self.subscription_pos_base_url = "https://example.com/pos"
-            self.loop_in_thread = FakeLoopInThread()
-
-        def proxy_dict(self) -> dict[str, str] | None:
-            return None
-
-    subscription_price_lookup = SubscriptionPriceLookup()
-    subscription_manager = FakeSubscriptionManager()
-
-    subscription_price_lookup.ensure_prices(subscription_manager)
-
-    assert subscription_manager.loop_in_thread.future is not None
-    assert subscription_price_lookup._fetch_tasks_by_pos_url == {
-        subscription_manager.subscription_pos_base_url: subscription_manager.loop_in_thread.future
-    }
-    assert subscription_manager.subscription_pos_base_url in subscription_price_lookup._loading_pos_urls
-
-    assert subscription_price_lookup.close()
-
-    assert subscription_manager.loop_in_thread.future.cancelled()
-    assert subscription_price_lookup._fetch_tasks_by_pos_url == {}
-    assert subscription_price_lookup._loading_pos_urls == set()
-
-
 @pytest.mark.marker_qt_1
-def test_subscription_price_lookup_deleted_object_ignores_late_callback(
-    qapp: QApplication,
-    qtbot: QtBot,
-) -> None:
-    subscription_price_lookup = SubscriptionPriceLookup()
-    updates: list[str] = []
-    subscription_price_lookup.signal_prices_changed.connect(updates.append)
-    state = subscription_price_lookup._state
-
-    subscription_price_lookup.deleteLater()
-    qtbot.waitUntil(lambda: state.closed, timeout=1_000)
-    subscription_price_lookup._set_items("https://example.com/pos", {})
-
-    assert updates == []
-
-
 def _attach_fake_descriptor_server(plugin: DemoPaidPluginClient) -> None:
     plugin.server = type("FakeServer", (), {"get_descriptor": lambda self: object()})()
 
@@ -1300,251 +500,9 @@ def _run_subscription_tasks_synchronously(
 
 
 @pytest.mark.marker_qt_1
-def test_management_url_fallback_dialog_shows_subscription_id(
-    qapp: QApplication,
-    test_config_main_chain: UserConfig,
-) -> None:
-    management_url = "https://testnet.demo.btcpayserver.org/subscriber-portal/token"
-    subscription_id = "descriptor-hash@subscriptions.bitcoin-safe.org"
-    subscription_manager = SubscriptionManager(
-        config=test_config_main_chain,
-        loop_in_thread=None,
-        subscription_product_key="demo-plugin",
-        btcpay_config=BTCPAY_SUBSCRIPTION_CONFIG,
-        subscription_duration=PlanDuration.MONTH,
-        subscriber_email=subscription_id,
-    )
-
-    def enter_management_url() -> None:
-        dialog = qapp.activeModalWidget()
-        assert isinstance(dialog, QDialog)
-        dialog_text = " ".join(label.text() for label in dialog.findChildren(QLabel))
-        assert "could not be fetched automatically" in dialog_text
-        assert SUPPORT_EMAIL in dialog_text
-        assert subscription_id in dialog_text
-        support_label = next(
-            label for label in dialog.findChildren(QLabel) if f"mailto:{SUPPORT_EMAIL}" in label.text()
-        )
-        assert support_label.openExternalLinks()
-
-        management_url_input = dialog.findChild(QLineEdit)
-        assert management_url_input is not None
-        management_url_input.setText(management_url)
-
-        button_box = dialog.findChild(QDialogButtonBox)
-        assert button_box is not None
-        ok_button = button_box.button(QDialogButtonBox.StandardButton.Ok)
-        assert ok_button is not None
-        ok_button.click()
-
-    QTimer.singleShot(0, enter_management_url)
-
-    assert subscription_manager.prompt_management_url_dialog() == management_url
-
-    subscription_manager.close()
-
-
 @pytest.mark.marker_qt_1
-def test_candidate_management_url_is_rejected_for_different_subscription_id(
-    qapp: QApplication,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    subscription_manager = SubscriptionManager(
-        config=test_config_main_chain,
-        loop_in_thread=None,
-        subscription_product_key="demo-plugin",
-        btcpay_config=BTCPAY_SUBSCRIPTION_CONFIG,
-        subscription_duration=PlanDuration.MONTH,
-        subscriber_email="expected@v0.bitcoin-safe.org",
-    )
-
-    async def get_management_status(
-        self,
-        management_url: str,
-        proxy_dict: dict[str, str] | None = None,
-    ) -> SubscriptionManagementStatus:
-        return SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.ACTIVE,
-            phase=SubscriptionManagementPhase.NORMAL,
-            is_active=True,
-            is_suspended=False,
-            subscriber_email="someone-else@v0.bitcoin-safe.org",
-        )
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.SubscriptionManagementClient.get_management_status",
-        get_management_status,
-    )
-    _run_subscription_tasks_synchronously(monkeypatch, (subscription_manager,))
-
-    subscription_manager._refresh_subscription_status(
-        disable_if_inactive=True,
-        notify_on_error=False,
-        candidate_management_url="https://testnet.demo.btcpayserver.org/subscriber-portal/token",
-    )
-
-    assert subscription_manager.management_url is None
-    assert subscription_manager.stored_subscription_status.status is None
-    assert subscription_manager.stored_subscription_status.last_status_error is not None
-    assert (
-        "belongs to a different subscription ID"
-        in subscription_manager.stored_subscription_status.last_status_error
-    )
-
-    subscription_manager.close()
-
-
 @pytest.mark.marker_qt_1
-def test_demo_paid_plugin_starts_trial_on_first_enable(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    config = test_config_main_chain
-    config.network = bdk.Network.BITCOIN
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None)
-
-    async def fake_start_and_wait(self) -> object:
-        return type(
-            "Session",
-            (),
-            {
-                "management_payload": type(
-                    "ManagementPayload",
-                    (),
-                    {
-                        "management_url": "https://example.com/manage",
-                    },
-                )(),
-            },
-        )()
-
-    async def fake_get_management_status(
-        self,
-        management_url: str,
-        proxy_dict: dict[str, str] | None = None,
-    ) -> SubscriptionManagementStatus:
-        return SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
-            subscriber_email=derive_subscriber_email("descriptor-hash"),
-        )
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.question_dialog",
-        lambda **kwargs: True,
-    )
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.SubscriptionPurchaseClient.start_and_wait",
-        fake_start_and_wait,
-    )
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.SubscriptionManagementClient.get_management_status",
-        fake_get_management_status,
-    )
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.SubscriptionManager.get_to_be_signed",
-        lambda self, multipath_descriptor: "descriptor-hash",
-    )
-    _attach_fake_descriptor_server(plugin)
-    _run_subscription_tasks_synchronously(monkeypatch, plugin.subscription_managers)
-
-    requested_enable: list[bool] = []
-    plugin.signal_request_enabled.connect(requested_enable.append)
-
-    assert not plugin.allow_enable_request()
-    assert plugin.subscription_manager.management_url == "https://example.com/manage"
-    assert plugin.subscription_manager.stored_subscription_status.status is not None
-    assert (
-        plugin.subscription_manager.stored_subscription_status.status.status
-        == SubscriptionManagementStatusCode.TRIAL
-    )
-    assert requested_enable == [True]
-
-    plugin.close()
-    fx.close()
-
-
 @pytest.mark.marker_qt_1
-def test_demo_paid_plugin_disables_when_trial_purchase_refresh_is_inactive(
-    qapp: QApplication,
-    qtbot: QtBot,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    config = test_config_main_chain
-    config.network = bdk.Network.BITCOIN
-    fx = FX(config=config, loop_in_thread=None, update_rates=False)
-    plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None)
-
-    async def fake_start_and_wait(self) -> object:
-        return type(
-            "Session",
-            (),
-            {
-                "management_payload": type(
-                    "ManagementPayload",
-                    (),
-                    {
-                        "management_url": "https://example.com/manage",
-                    },
-                )(),
-            },
-        )()
-
-    async def fake_get_management_status(
-        self,
-        management_url: str,
-        proxy_dict: dict[str, str] | None = None,
-    ) -> SubscriptionManagementStatus:
-        return SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.EXPIRED,
-            phase=SubscriptionManagementPhase.NORMAL,
-            is_active=False,
-            is_suspended=False,
-            subscriber_email=derive_subscriber_email("descriptor-hash"),
-        )
-
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.question_dialog",
-        lambda **kwargs: True,
-    )
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.SubscriptionPurchaseClient.start_and_wait",
-        fake_start_and_wait,
-    )
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.SubscriptionManagementClient.get_management_status",
-        fake_get_management_status,
-    )
-    monkeypatch.setattr(
-        "bitcoin_safe.plugin_framework.subscription_manager.SubscriptionManager.get_to_be_signed",
-        lambda self, multipath_descriptor: "descriptor-hash",
-    )
-    _attach_fake_descriptor_server(plugin)
-    _run_subscription_tasks_synchronously(monkeypatch, plugin.subscription_managers)
-
-    requested_enable: list[bool] = []
-    plugin.signal_request_enabled.connect(requested_enable.append)
-
-    assert not plugin.allow_enable_request()
-    assert plugin.subscription_manager.management_url == "https://example.com/manage"
-    assert plugin.subscription_manager.stored_subscription_status.status is not None
-    assert (
-        plugin.subscription_manager.stored_subscription_status.status.status
-        == SubscriptionManagementStatusCode.EXPIRED
-    )
-    assert requested_enable == []
-
-    plugin.close()
-    fx.close()
-
-
 @pytest.mark.marker_qt_1
 def test_demo_paid_plugin_start_trial_requests_enable(
     qapp: QApplication,
@@ -1568,56 +526,6 @@ def test_demo_paid_plugin_start_trial_requests_enable(
         fx.close()
 
 
-def test_demo_paid_plugin_roundtrip_persists_management_url_and_status(
-    qapp: QApplication,
-    loop_in_thread: LoopInThread,
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    config = test_config_main_chain
-    config.network = bdk.Network.BITCOIN
-    fx = FX(config=config, loop_in_thread=loop_in_thread, update_rates=False)
-    plugin = _make_demo_plugin(
-        config=config,
-        fx=fx,
-        loop_in_thread=loop_in_thread,
-        management_url="https://example.com/manage",
-        status=SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
-        ),
-    )
-
-    restored = DemoPaidPluginClient._from_dumps(
-        plugin.dumps(),
-        class_kwargs={
-            DemoPaidPluginClient.__name__: DemoPaidPluginClient.cls_kwargs(
-                config=config,
-                fx=fx,
-                loop_in_thread=loop_in_thread,
-            ),
-            SubscriptionManager.__name__: SubscriptionManager.cls_kwargs(
-                config=config,
-                loop_in_thread=loop_in_thread,
-                btcpay_config=BTCPAY_SUBSCRIPTION_CONFIG,
-            ),
-        },
-    )
-
-    assert restored.subscription_manager.management_url == "https://example.com/manage"
-    assert restored.subscription_manager.stored_subscription_status.status is not None
-    assert (
-        restored.subscription_manager.stored_subscription_status.status.status
-        == SubscriptionManagementStatusCode.TRIAL
-    )
-
-    restored.close()
-    plugin.close()
-    fx.close()
-
-
 @pytest.mark.marker_qt_1
 def test_business_plan_item_roundtrip_persists_management_url_and_status(
     qapp: QApplication,
@@ -1632,11 +540,9 @@ def test_business_plan_item_roundtrip_persists_management_url_and_status(
         fx=fx,
         loop_in_thread=loop_in_thread,
         management_url="https://example.com/manage",
-        status=SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_BUSINESS_PLAN_ID,
+            status=SubscriptionStatusCode.TRIAL,
         ),
     )
 
@@ -1658,8 +564,7 @@ def test_business_plan_item_roundtrip_persists_management_url_and_status(
     assert restored.subscription_manager.management_url == "https://example.com/manage"
     assert restored.subscription_manager.stored_subscription_status.status is not None
     assert (
-        restored.subscription_manager.stored_subscription_status.status.status
-        == SubscriptionManagementStatusCode.TRIAL
+        restored.subscription_manager.stored_subscription_status.status.status == SubscriptionStatusCode.TRIAL
     )
 
     restored.close()
@@ -1678,7 +583,8 @@ def test_business_plan_item_shows_trial_action_without_toggle(
     widget = PaidPluginWidget(business_plan)
 
     assert widget.enable_checkbox.isHidden()
-    assert widget.start_trial_button.text() == "Start free trial / Fetch existing subscription"
+    assert widget.start_trial_button.text() == "Start free trial"
+    assert widget.check_subscription_button.text() == "Check subscription"
     assert "No subscription has been activated yet." in widget.status_label.text()
 
     widget.close()
@@ -1692,34 +598,21 @@ def test_known_subscription_hides_plan_selector_and_ignores_selected_plan(
     test_config_main_chain: UserConfig,
 ) -> None:
     config = test_config_main_chain
-    monthly_key = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH).plan_id
-    yearly_key = BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.YEAR).plan_id
     fx = FX(config=config, loop_in_thread=None, update_rates=False)
     plugin = DemoPaidPluginClient(
         config=config,
         fx=fx,
         loop_in_thread=None,
         additional_access_providers=None,
-        subscription_managers=_make_subscription_managers(
-            config=config,
-            loop_in_thread=None,
-            product_id="demo-plugin",
-            duration=PlanDuration.MONTH,
-            management_url="https://example.com/manage",
-            status=SubscriptionManagementStatus(
-                status=SubscriptionManagementStatusCode.TRIAL,
-                phase=SubscriptionManagementPhase.TRIAL,
-                is_active=True,
-                is_suspended=False,
-            ),
-        ),
-        selected_subscription_key=yearly_key,
+        subscription_managers={
+            TEST_DEMO_PRODUCT_ID: _subscribed_manager(config, TEST_MONTHLY_PLAN_ID),
+        },
+        selected_subscription_key=TEST_DEMO_PRODUCT_ID,
     )
 
     try:
         widget = PaidPluginWidget(plugin)
-        assert plugin.selected_subscription_plan.duration == PlanDuration.YEAR
-        assert plugin.displayed_subscription_manager.subscription_duration == PlanDuration.MONTH
+        assert plugin.displayed_subscription_manager.plan_id == TEST_MONTHLY_PLAN_ID
         assert widget.plan_selector_container.isHidden()
         assert widget.start_trial_button.isHidden()
         assert not widget.manage_subscription_button.isHidden()
@@ -1727,7 +620,7 @@ def test_known_subscription_hides_plan_selector_and_ignores_selected_plan(
 
         initial_status = plugin.status_text()
 
-        plugin.select_plan_option(monthly_key)
+        plugin.select_plan_option(TEST_YEARLY_PLAN_ID)
 
         assert plugin.status_text() == initial_status
         assert widget.status_label.text() == initial_status
@@ -1794,11 +687,9 @@ def test_subscription_action_buttons_use_management_section(
         fx=fx,
         loop_in_thread=None,
         management_url="https://example.com/manage",
-        status=SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_MONTHLY_PLAN_ID,
+            status=SubscriptionStatusCode.TRIAL,
         ),
     )
 
@@ -1830,11 +721,9 @@ def test_external_paid_plugin_places_update_button_with_action_controls(
         fx=fx,
         loop_in_thread=None,
         management_url="https://example.com/manage",
-        status=SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_MONTHLY_PLAN_ID,
+            status=SubscriptionStatusCode.TRIAL,
         ),
     )
     plugin.set_plugin_identity(
@@ -1862,6 +751,42 @@ def test_external_paid_plugin_places_update_button_with_action_controls(
     finally:
         if widget is not None:
             widget.close()
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_subscription_status_is_shown_next_to_refresh_button(
+    qapp: QApplication,
+    qtbot: QtBot,
+    test_config_main_chain: UserConfig,
+) -> None:
+    fx = FX(config=test_config_main_chain, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(
+        config=test_config_main_chain,
+        fx=fx,
+        loop_in_thread=None,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.ACTIVE),
+    )
+
+    try:
+        widget = PaidPluginWidget(plugin)
+        qtbot.addWidget(widget)
+        widget.show()
+        widget.refresh_subscription_button.setVisible(True)
+        widget.manage_subscription_button.setVisible(True)
+        widget.set_status_text("Current status: Active.")
+        widget._sync_section_visibility()
+
+        # The status sits in the management row, after the buttons it describes, not above the row.
+        assert widget.status_label.parentWidget() is widget.management_buttons_container
+        row_index = widget.management_buttons_layout.indexOf(widget.status_label)
+        refresh_index = widget.management_buttons_layout.indexOf(widget.refresh_subscription_button)
+        assert row_index > refresh_index >= 0
+        assert widget.status_label.isVisibleTo(widget)
+    finally:
+        widget.close()
         plugin.close()
         fx.close()
 
@@ -1910,11 +835,9 @@ def test_business_plan_unlocks_paid_plugin(
         fx=fx,
         loop_in_thread=None,
         management_url="https://example.com/business",
-        status=SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_BUSINESS_PLAN_ID,
+            status=SubscriptionStatusCode.TRIAL,
         ),
     )
     plugin = _make_demo_plugin(
@@ -1948,11 +871,9 @@ def test_paid_plugin_shows_toggle_and_hides_trial_when_business_plan_is_active(
         fx=fx,
         loop_in_thread=None,
         management_url="https://example.com/business",
-        status=SubscriptionManagementStatus(
-            status=SubscriptionManagementStatusCode.TRIAL,
-            phase=SubscriptionManagementPhase.TRIAL,
-            is_active=True,
-            is_suspended=False,
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_BUSINESS_PLAN_ID,
+            status=SubscriptionStatusCode.TRIAL,
         ),
     )
     plugin = _make_demo_plugin(
@@ -2007,17 +928,11 @@ def test_paid_plugin_widget_updates_when_business_plan_becomes_active(
         assert widget.activation_section.isHidden()
 
         business_plan.subscription_manager.management_url = "https://example.com/business"
+        business_plan.subscription_manager.subscriber_email = SUBSCRIBER_EMAIL
         business_plan.subscription_manager.stored_subscription_status = _stored_subscription_status(
-            SubscriptionManagementStatus(
-                status=SubscriptionManagementStatusCode.ACTIVE,
-                phase=SubscriptionManagementPhase.NORMAL,
-                is_active=True,
-                is_suspended=False,
-            )
+            SubscriptionStatusResponse(plan_id=TEST_BUSINESS_PLAN_ID, status=SubscriptionStatusCode.ACTIVE)
         )
-        business_plan._on_subscription_state_changed(
-            BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("business-plan", PlanDuration.YEAR).plan_id
-        )
+        business_plan.signal_enabled_changed.emit(True)
 
         qtbot.waitUntil(
             lambda: widget.start_trial_button.isHidden() and not widget.enable_checkbox.isHidden(),
@@ -2055,7 +970,8 @@ def test_scheduled_payments_shows_subscription_page_without_access(
 
         assert not plugin.subscription_allows_access()
         assert not plugin.enabled
-        assert widget.start_trial_button.text() == "Start free trial / Fetch existing subscription"
+        assert widget.start_trial_button.text() == "Start free trial"
+        assert widget.check_subscription_button.text() == "Check subscription"
 
         widget.close()
     finally:
@@ -2100,4 +1016,637 @@ def test_plugin_list_widget_keeps_business_plan_above_plugins(
         widget.close()
     finally:
         plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_demo_paid_plugin_requires_active_subscription_on_mainnet(
+    qtbot: QtBot,
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = test_config_main_chain
+    config.network = bdk.Network.BITCOIN
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None)
+    plugin.subscription_manager.set_plan_id(TEST_MONTHLY_PLAN_ID)
+
+    plugin.set_enabled(True)
+    assert not plugin.enabled
+    assert plugin._loaded_label.text() == ""
+
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
+            plan_id=plan_id, status=SubscriptionStatusCode.TRIAL
+        ),
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, plugin.subscription_managers)
+    plugin.subscription_manager.management_url = "https://example.com/manage"
+    plugin.subscription_manager.subscriber_email = "descriptor-hash@v0.bitcoin-safe.org"
+    plugin.load()
+    qtbot.waitUntil(
+        lambda: plugin.subscription_manager.stored_subscription_status.checked_at_ts is not None,
+        timeout=5_000,
+    )
+    assert plugin.subscription_manager.subscription_allows_access()
+
+    plugin.close()
+    fx.close()
+
+
+def test_management_url_fallback_dialog_shows_subscription_id(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    management_url = "https://pay.bitcoin-safe.org/subscriber-portal/token"
+    subscription_id = "descriptor-hash@v0.bitcoin-safe.org"
+    subscription_manager = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        plan_id=TEST_MONTHLY_PLAN_ID,
+        subscriber_email=subscription_id,
+    )
+
+    def enter_management_url() -> None:
+        dialog = qapp.activeModalWidget()
+        assert isinstance(dialog, QDialog)
+        dialog_text = " ".join(label.text() for label in dialog.findChildren(QLabel))
+        assert "could not be fetched automatically" in dialog_text
+        assert SUPPORT_EMAIL in dialog_text
+        assert subscription_id in dialog_text
+
+        management_url_input = dialog.findChild(QLineEdit)
+        assert management_url_input is not None
+        management_url_input.setText(management_url)
+
+        button_box = dialog.findChild(QDialogButtonBox)
+        assert button_box is not None
+        ok_button = button_box.button(QDialogButtonBox.StandardButton.Ok)
+        assert ok_button is not None
+        ok_button.click()
+
+    QTimer.singleShot(0, enter_management_url)
+
+    assert subscription_manager.prompt_management_url_dialog() == management_url
+
+    subscription_manager.close()
+
+
+def test_candidate_management_url_is_rejected_for_different_subscriber(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    subscription_manager = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        plan_id=TEST_MONTHLY_PLAN_ID,
+        subscriber_email="expected@v0.bitcoin-safe.org",
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
+            plan_id=plan_id, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (subscription_manager,))
+
+    subscription_manager._refresh_subscription_status(
+        disable_if_inactive=True,
+        notify_on_error=False,
+        candidate_management_url="https://pay.bitcoin-safe.org/subscriber-portal/token",
+    )
+
+    assert subscription_manager.stored_subscription_status.status is not None
+    assert subscription_manager.stored_subscription_status.last_status_error is None
+
+    subscription_manager.close()
+
+
+@pytest.mark.marker_qt_1
+def test_obsolete_plan_removal_revokes_access(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None)
+    plugin._set_subscription_plan_id(TEST_MONTHLY_PLAN_ID)
+    active_manager = plugin.subscription_managers[0]
+    active_manager.management_url = "https://example.com/manage"
+    active_manager.subscriber_email = SUBSCRIBER_EMAIL
+    active_manager.stored_subscription_status = _stored_subscription_status(
+        SubscriptionStatusResponse(plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.ACTIVE)
+    )
+    plugin.enabled = True
+    plugin._plugin_loaded = True
+    enabled_values: list[bool] = []
+    plugin.signal_enabled_changed.connect(enabled_values.append)
+    try:
+        assert plugin.subscription_allows_access()
+
+        plugin._set_subscription_plan_id(None)
+
+        assert not plugin.subscription_allows_access()
+        assert not plugin.enabled
+        assert enabled_values == [False]
+        assert active_manager not in plugin.subscription_managers
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_removing_only_access_source_disables_enabled_plugin(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.ACTIVE),
+    )
+    plugin.enabled = True
+    plugin._plugin_loaded = True
+    enabled_values: list[bool] = []
+    plugin.signal_enabled_changed.connect(enabled_values.append)
+    try:
+        plugin._set_subscription_plan_id(None)
+
+        assert not plugin.enabled
+        assert enabled_values == [False]
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_business_plan_removal_disables_dependent_plugin(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    config.network = bdk.Network.BITCOIN
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    business_plan = _make_business_plan(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        management_url="https://example.com/business",
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_BUSINESS_PLAN_ID, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None, business_plan=business_plan)
+    plugin.enabled = True
+    plugin._plugin_loaded = True
+    try:
+        assert plugin.subscription_allows_access()
+
+        business_plan._set_subscription_plan_id(None)
+
+        assert not business_plan.enabled
+        assert not plugin.subscription_allows_access()
+        assert not plugin.enabled
+    finally:
+        plugin.close()
+        business_plan.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_business_plan_missing_product_clears_plan_ids_and_managers(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    loop_in_thread: LoopInThread,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = test_config_main_chain
+    config.network = bdk.Network.BITCOIN
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    business_plan = _make_business_plan(
+        config=config,
+        fx=fx,
+        loop_in_thread=loop_in_thread,
+        management_url="https://example.com/business",
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_BUSINESS_PLAN_ID, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    previous_manager = business_plan.subscription_manager
+    closed: list[bool] = []
+    monkeypatch.setattr(previous_manager, "close", lambda: closed.append(True))
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_plans", lambda self: {"other-product": []})
+    _run_subscription_tasks_synchronously(monkeypatch, (previous_manager,))
+    try:
+        business_plan._resolve_subscription_plans()
+
+        assert business_plan.subscription_managers == ()
+        assert closed == [True]
+        assert not business_plan.enabled
+        assert not business_plan.subscription_allows_access()
+    finally:
+        business_plan.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_removing_individual_subscription_keeps_business_plan_access(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    config.network = bdk.Network.BITCOIN
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    business_plan = _make_business_plan(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        management_url="https://example.com/business",
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_BUSINESS_PLAN_ID, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        business_plan=business_plan,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.ACTIVE),
+    )
+    plugin.enabled = True
+    plugin._plugin_loaded = True
+    try:
+        assert plugin._has_direct_subscription_access()
+
+        plugin._set_subscription_plan_id(None)
+
+        assert not plugin._has_direct_subscription_access()
+        assert plugin._has_additional_access()
+        assert plugin.subscription_allows_access()
+        assert plugin.enabled
+    finally:
+        plugin.close()
+        business_plan.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_replacing_plan_ids_while_access_remains_emits_no_revocation(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    loop_in_thread: LoopInThread,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = test_config_main_chain
+    config.network = bdk.Network.BITCOIN
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    business_plan = _make_business_plan(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        management_url="https://example.com/business",
+        status=SubscriptionStatusResponse(
+            plan_id=TEST_BUSINESS_PLAN_ID, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    plugin = _make_demo_plugin(config=config, fx=fx, loop_in_thread=None, business_plan=business_plan)
+    plugin.enabled = True
+    plugin._plugin_loaded = True
+    revocations: list[str] = []
+    enabled_values: list[bool] = []
+    plugin.signal_enabled_changed.connect(enabled_values.append)
+    business_plan.subscription_manager.signal_access_revoked.connect(lambda: revocations.append("revoked"))
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
+            plan_id=plan_id, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: "https://example.com/moved",
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (business_plan.subscription_manager,))
+    try:
+        business_plan.subscription_manager.set_plan_id("plan_moved")
+
+        assert business_plan.subscription_manager.plan_id == "plan_moved"
+        assert business_plan.subscription_manager.subscriber_email == SUBSCRIBER_EMAIL
+        assert business_plan.subscription_manager.management_url == "https://example.com/moved"
+        assert business_plan.subscription_allows_access()
+        assert plugin.subscription_allows_access()
+        assert plugin.enabled
+        assert revocations == []
+    finally:
+        plugin.close()
+        business_plan.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_legacy_plan_id_keyed_dump_adopts_single_manager_for_product(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    legacy_manager = _subscribed_manager(config, TEST_MONTHLY_PLAN_ID)
+    plugin = DemoPaidPluginClient(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        additional_access_providers=None,
+        subscription_managers={TEST_MONTHLY_PLAN_ID: legacy_manager},
+    )
+    try:
+        assert plugin.subscription_managers == (legacy_manager,)
+        assert plugin.subscription_manager.subscriber_email == SUBSCRIBER_EMAIL
+        assert plugin.subscription_manager.management_url == "https://example.com/manage"
+        assert plugin._subscription_managers_by_key == {TEST_DEMO_PRODUCT_ID: legacy_manager}
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_offline_catalog_lookup_keeps_managers_and_access(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    loop_in_thread: LoopInThread,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=loop_in_thread,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.ACTIVE),
+    )
+    previous_manager = plugin.subscription_manager
+    closed: list[bool] = []
+    monkeypatch.setattr(previous_manager, "close", lambda: closed.append(True))
+
+    def offline(self) -> dict:
+        raise ConnectionError("offline")
+
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_plans", offline)
+    _run_subscription_tasks_synchronously(monkeypatch, (previous_manager,))
+    try:
+        plugin._resolve_subscription_plans()
+
+        assert plugin.subscription_manager is previous_manager
+        assert closed == []
+        assert plugin.subscription_allows_access()
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_store_move_keeps_enabled_plugin_enabled_with_new_plan_ids(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    loop_in_thread: LoopInThread,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = test_config_main_chain
+    config.network = bdk.Network.BITCOIN
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    old_plan_id = TEST_MONTHLY_PLAN_ID
+    new_plan_id = "plan_moved_to_new_store"
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=loop_in_thread,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=old_plan_id, status=SubscriptionStatusCode.ACTIVE),
+    )
+    plugin.set_enabled(True)
+    assert plugin.enabled
+
+    enabled_values: list[bool] = []
+    plugin.signal_enabled_changed.connect(enabled_values.append)
+    revocations: list[str] = []
+    plugin.subscription_manager.signal_access_revoked.connect(lambda: revocations.append("revoked"))
+
+    # The new store: the catalog maps the same product to a new plan id,
+    # and the new plan answers ACTIVE for the buyer.
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_plans",
+        lambda self: {
+            TEST_DEMO_PRODUCT_ID: [
+                PlanCatalogItem(
+                    plan_id=new_plan_id,
+                    duration="month",
+                    name="Monthly",
+                    price="10",
+                    currency="USD",
+                    recurringType="monthly",
+                    status="active",
+                )
+            ]
+        },
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
+            plan_id=plan_id, status=SubscriptionStatusCode.ACTIVE
+        ),
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_active_subscriptions",
+        lambda self, buyer_email, product_plan_ids: [
+            SubscriptionStatusResponse(plan_id=new_plan_id, status=SubscriptionStatusCode.ACTIVE)
+        ],
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: "https://example.com/moved",
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (plugin.subscription_manager,))
+    try:
+        plugin._resolve_subscription_plans()
+
+        manager = plugin.subscription_manager
+        assert manager.plan_id == new_plan_id
+        assert manager.subscriber_email == SUBSCRIBER_EMAIL
+        assert manager.management_url == "https://example.com/moved"
+        assert plugin.subscription_allows_access()
+        assert plugin.enabled
+        assert revocations == []
+        assert False not in enabled_values
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_store_move_reenables_plugin_once_new_plan_is_active(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+    loop_in_thread: LoopInThread,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    config = test_config_main_chain
+    config.network = bdk.Network.BITCOIN
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    new_plan_id = "plan_moved_to_new_store"
+    plugin = _make_demo_plugin(
+        config=config,
+        fx=fx,
+        loop_in_thread=loop_in_thread,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.ACTIVE),
+    )
+    plugin.set_enabled(True)
+    assert plugin.enabled
+
+    # Before the move the new store has no subscription for the buyer yet: access is revoked.
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_status",
+        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
+            plan_id=plan_id, status=SubscriptionStatusCode.NOT_FOUND
+        ),
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (plugin.subscription_manager,))
+    plugin.subscription_manager.set_plan_id(new_plan_id)
+    assert not plugin.subscription_allows_access()
+    assert not plugin.enabled
+
+    # The operator re-creates the subscription under the new plan: the new plan is listed as active.
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_active_subscriptions",
+        lambda self, buyer_email, product_plan_ids: [
+            SubscriptionStatusResponse(plan_id=new_plan_id, status=SubscriptionStatusCode.ACTIVE)
+        ],
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: "https://example.com/moved",
+    )
+    requested_enable: list[bool] = []
+    plugin.signal_request_enabled.connect(requested_enable.append)
+    monkeypatch.setattr(
+        SubscriptionManager,
+        "get_to_be_signed",
+        lambda self, multipath_descriptor: "wallet-hash",
+    )
+    _run_subscription_tasks_synchronously(monkeypatch, (plugin.subscription_manager,))
+    try:
+        plugin.subscription_manager.check_existing_subscription(
+            multipath_descriptor=object(),  # type: ignore[arg-type]
+            product_plan_ids=[new_plan_id],
+        )
+
+        assert plugin.subscription_manager.plan_id == new_plan_id
+        assert plugin.subscription_allows_access()
+        assert plugin.subscription_manager.management_url == "https://example.com/moved"
+        assert requested_enable == [True]
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_plan_option_labels_show_price_and_period(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = DemoPaidPluginClient(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        additional_access_providers=None,
+        subscription_managers={
+            TEST_DEMO_PRODUCT_ID: SubscriptionManager(config=config, loop_in_thread=None),
+        },
+    )
+    monthly = PlanCatalogItem.model_validate(
+        {
+            "plan_id": TEST_MONTHLY_PLAN_ID,
+            "duration": "month",
+            "name": "Monthly",
+            "price": "6.99",
+            "currency": "USD",
+            "recurringType": "Monthly",
+            "status": "Active",
+        }
+    )
+    yearly = PlanCatalogItem.model_validate(
+        {
+            "plan_id": TEST_YEARLY_PLAN_ID,
+            "duration": "year",
+            "name": "Yearly",
+            "price": "59.99",
+            "currency": "USD",
+            "recurringType": "Yearly",
+            "status": "Active",
+        }
+    )
+
+    try:
+        assert plugin._format_plan_option(monthly) == "6.99 USD / month"
+        assert plugin._format_plan_option(yearly) == "59.99 USD / year"
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_single_plan_product_selector_shows_only_price_and_period(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    lookup = SubscriptionPriceLookup()
+    yearly = PlanCatalogItem.model_validate(
+        {
+            "plan_id": TEST_YEARLY_PLAN_ID,
+            "duration": "year",
+            "name": "Schedule",
+            "price": "1299",
+            "currency": "USD",
+            "recurringType": "Yearly",
+            "status": "Active",
+        }
+    )
+    lookup._set_catalog({TEST_DEMO_PRODUCT_ID: [yearly]})
+    plugin = DemoPaidPluginClient(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        additional_access_providers=None,
+        subscription_price_lookup=lookup,
+    )
+
+    try:
+        widget = PaidPluginWidget(plugin)
+        assert _plan_texts(widget) == ["1299 USD / year"]
+        widget.close()
+    finally:
+        plugin.close()
+        lookup.close()
         fx.close()

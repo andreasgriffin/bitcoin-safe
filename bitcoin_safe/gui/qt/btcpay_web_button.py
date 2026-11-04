@@ -72,6 +72,7 @@ from bitcoin_safe.constants import APP_NAME, LOGO_NAME, SUPPORT_EMAIL
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.logging_handlers import mail_help_contact
 from bitcoin_safe.network_utils import ProxyInfo, post_form_async
+from bitcoin_safe.plugin_framework.subscription_api_client import SubscriptionApiClient
 from bitcoin_safe.util import SATOSHIS_PER_BTC, OptExcInfo
 from bitcoin_safe.util_os import webopen
 
@@ -80,8 +81,7 @@ from .ui_tx.spinbox import FiatSpinBox
 
 logger = logging.getLogger(__name__)
 
-DONATION_STORE_ID = "7agECo6zfJRp4Thi8vnBCjCoopb2yrnstaA5FophRfJe"
-DONATION_INVOICE_ENDPOINT = "https://pay.bitcoin-safe.org/api/v1/invoices"
+DONATION_INVOICE_PATH = "/api/v1/invoices"
 INVOICE_TIMEOUT = timedelta(minutes=15)
 
 
@@ -122,9 +122,6 @@ class BTCPayWebButton(QPushButton):
 
     def set_amount(self, amount: int) -> None:
         self.amount = amount
-
-    def set_invoice_id(self, order_id: str) -> None:
-        self.invoice_id = order_id.strip() if order_id else str(uuid4())
 
     def set_checkout_desc(self, checkout_desc: str | None) -> None:
         self._checkout_desc = checkout_desc.strip() if checkout_desc else None
@@ -186,9 +183,13 @@ class BTCPayWebButton(QPushButton):
         if not invoice_details.amount:
             raise ValueError("Invoice must have an amount")
 
+        proxy_dict = proxy_info.get_requests_proxy_dict() if proxy_info else None
+        store = await asyncio.to_thread(SubscriptionApiClient(proxy_dict).fetch_store)
+        invoice_endpoint = f"{store.base_url.rstrip('/')}{DONATION_INVOICE_PATH}"
+
         redirect_url = redirect_url_override or f"https://bitcoin-safe.org/redirecturl{uuid4()}"
         request_data: dict[str, str] = {
-            "storeId": DONATION_STORE_ID,
+            "storeId": store.store_id,
             "currency": "BTC",
             "price": f"{invoice_details.amount / SATOSHIS_PER_BTC:.8f}",
             "browserRedirect": redirect_url,
@@ -199,7 +200,7 @@ class BTCPayWebButton(QPushButton):
             request_data["checkoutDesc"] = checkout_desc
 
         response = await post_form_async(
-            url=DONATION_INVOICE_ENDPOINT,
+            url=invoice_endpoint,
             data=request_data,
             proxy_info=proxy_info,
             timeout=20 if proxy_info else 10,
@@ -207,7 +208,7 @@ class BTCPayWebButton(QPushButton):
         )
         status_code, invoice_url = response.status_code, response.headers.get("Location")
 
-        invoice_details.url = urljoin(DONATION_INVOICE_ENDPOINT, invoice_url) if invoice_url else None
+        invoice_details.url = urljoin(invoice_endpoint, invoice_url) if invoice_url else None
 
         return status_code, invoice_details
 

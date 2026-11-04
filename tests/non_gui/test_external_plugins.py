@@ -49,12 +49,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, MultipleStrateg
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.storage import BaseSaveableClass
 from bitcoin_safe_lib.util import network_kind
-from btcpay_tools.btcpay_subscription_nostr.service import (
-    SubscriptionManagementPhase,
-    SubscriptionManagementStatus,
-    SubscriptionManagementStatusCode,
-)
-from btcpay_tools.config import BTCPayConfig, PlanDuration
+from btcpay_tools.btcpay_subscription_api.models import SubscriptionStatusCode, SubscriptionStatusResponse
 from packaging.version import Version
 from PyQt6.QtGui import QColor, QIcon, QPixmap
 from PyQt6.QtWidgets import (
@@ -93,6 +88,7 @@ from bitcoin_safe.plugin_framework.external_plugin_resources import (
     resolve_external_plugin_package_root,
 )
 from bitcoin_safe.plugin_framework.paid_plugin_client import PaidPluginClient
+from bitcoin_safe.plugin_framework.plugin_btcpay_manifest import BtcpayManifestConfig
 from bitcoin_safe.plugin_framework.plugin_bundle import (
     PluginRuntimeContext,
     RuntimePluginBundle,
@@ -128,7 +124,8 @@ from bitcoin_safe.plugin_framework.subscription_manager import (
 )
 from bitcoin_safe.signals import Signals, WalletFunctions
 from tests.btcpay_support import (
-    TEST_BTCPAY_SUBSCRIPTION_CONFIG,
+    TEST_MONTHLY_PLAN_ID,
+    TEST_SCHEDULE_PRODUCT_ID,
 )
 
 
@@ -224,7 +221,7 @@ class _LoadTrackingPluginClient(_DisplayMetadataPluginClient):
 
 
 def _stored_subscription_status(
-    status: SubscriptionManagementStatus | None,
+    status: SubscriptionStatusResponse | None,
     checked_at_ts: float = 123.0,
 ) -> StoredSubscriptionStatus:
     return StoredSubscriptionStatus(
@@ -239,7 +236,6 @@ class _PaidStateTrackingPluginClient(PaidPluginClient):
     title = "Test Paid Plugin"
     description = "Tracks paid-plugin state through runtime replacement."
     provider = "Tests"
-    subscription_product_id = "demo-plugin"
 
     @classmethod
     def cls_kwargs(
@@ -259,6 +255,7 @@ class _PaidStateTrackingPluginClient(PaidPluginClient):
             additional_access_providers=additional_access_providers,
             parent=parent,
         )
+        data["subscription_product_id"] = TEST_SCHEDULE_PRODUCT_ID
         if subscription_managers is not None:
             data["subscription_managers"] = subscription_managers
         if selected_subscription_key is not None:
@@ -275,15 +272,16 @@ class _PaidStateTrackingPluginClient(PaidPluginClient):
         subscription_managers: dict[str, SubscriptionManager] | None = None,
         selected_subscription_key: str | None = None,
         parent: QWidget | None = None,
+        subscription_product_id: str = TEST_SCHEDULE_PRODUCT_ID,
     ) -> None:
         super().__init__(
             config=config,
             fx=fx,
             loop_in_thread=loop_in_thread,
             icon=QIcon(),
-            btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
             enabled=enabled,
             additional_access_providers=additional_access_providers,
+            subscription_product_id=subscription_product_id,
             subscription_managers=subscription_managers,
             selected_subscription_key=selected_subscription_key,
             parent=parent,
@@ -645,30 +643,8 @@ def _unresolved_catalog_entry(
     )
 
 
-def _btcpay_config() -> BTCPayConfig:
-    return BTCPayConfig.model_validate(
-        {
-            "btcpay_base": {
-                "base_url": "https://testnet.demo.btcpayserver.org",
-                "pos_app_id": "3sgZmTZfKP8mRQciCqNh6g5F1G1s",
-                "store_id": "98rXQCLFR3jmjbh5V5BomnqKJT5xC9kYejFRJHfmLWBq",
-            },
-            "client": {
-                "npub_bitcoin_safe_pos": ("npub150ncc39ala3h9zudddrjqy9f7wenp7d20rjm99wchwtkdpze07wqukr9cu")
-            },
-            "products": {
-                "demo-plugin": [
-                    {
-                        "offering_id": "offering_89j5mBhvUYuvFfxNL1",
-                        "plan_id": "plan_Bqm6FpomH4TvZLj113",
-                        "pos_id": "demo-plugin",
-                        "trial_pos_id": "demo-plugin-trial",
-                        "duration": "month",
-                    }
-                ]
-            },
-        }
-    )
+def _btcpay_config() -> BtcpayManifestConfig:
+    return BtcpayManifestConfig(product_id=TEST_SCHEDULE_PRODUCT_ID)
 
 
 def _write_minimal_plugin_manifest(package_root: Path) -> None:
@@ -689,19 +665,7 @@ def _write_minimal_plugin_manifest(package_root: Path) -> None:
                 'bitcoin_safe_version: ">=0.0.0,<999.0.0"',
                 'python: ">=3.10,<3.13"',
                 "btcpay:",
-                "  btcpay_base:",
-                '    base_url: "https://testnet.demo.btcpayserver.org"',
-                '    pos_app_id: "3sgZmTZfKP8mRQciCqNh6g5F1G1s"',
-                '    store_id: "98rXQCLFR3jmjbh5V5BomnqKJT5xC9kYejFRJHfmLWBq"',
-                "  client:",
-                '    npub_bitcoin_safe_pos: "npub150ncc39ala3h9zudddrjqy9f7wenp7d20rjm99wchwtkdpze07wqukr9cu"',
-                "  products:",
-                "    demo-plugin:",
-                '      - offering_id: "offering_89j5mBhvUYuvFfxNL1"',
-                '        plan_id: "plan_Bqm6FpomH4TvZLj113"',
-                '        pos_id: "demo-plugin"',
-                '        trial_pos_id: "demo-plugin-trial"',
-                '        duration: "month"',
+                f'  product_id: "{TEST_SCHEDULE_PRODUCT_ID}"',
                 "",
             ]
         ),
@@ -2085,8 +2049,7 @@ def test_external_registry_persists_structured_catalog_with_btcpay_config(tmp_pa
     assert isinstance(loaded.load_source(source.source_id).auth_config, PluginSourceAuthConfig)
     assert loaded.load_source(source.source_id).auth_config.kind == "bearer"
     assert loaded.load_source(source.source_id).auth_config.bearer_token == "secret-token"
-    assert loaded_entry.btcpay_config is not None
-    assert loaded_entry.btcpay_config.npub_bitcoin_safe_pos == _btcpay_config().npub_bitcoin_safe_pos
+    assert loaded_entry.btcpay_config == _btcpay_config()
     assert loaded_entry.installed_version is None
     assert loaded.load_installed_metadata()[catalog_entry.bundle_id].source_id == source.source_id
     assert (
@@ -2158,19 +2121,7 @@ def test_load_external_plugin_btcpay_config_from_source_manifest(tmp_path: Path)
                 'bitcoin_safe_version: ">=0.0.0,<999.0.0"',
                 'python: ">=3.10,<3.13"',
                 "btcpay:",
-                "  btcpay_base:",
-                '    base_url: "https://testnet.demo.btcpayserver.org"',
-                '    pos_app_id: "3sgZmTZfKP8mRQciCqNh6g5F1G1s"',
-                '    store_id: "98rXQCLFR3jmjbh5V5BomnqKJT5xC9kYejFRJHfmLWBq"',
-                "  client:",
-                '    npub_bitcoin_safe_pos: "npub150ncc39ala3h9zudddrjqy9f7wenp7d20rjm99wchwtkdpze07wqukr9cu"',
-                "  products:",
-                "    demo-plugin:",
-                '      - offering_id: "offering_89j5mBhvUYuvFfxNL1"',
-                '        plan_id: "plan_Bqm6FpomH4TvZLj113"',
-                '        pos_id: "demo-plugin"',
-                '        trial_pos_id: "demo-plugin-trial"',
-                '        duration: "month"',
+                f'  product_id: "{TEST_SCHEDULE_PRODUCT_ID}"',
                 "",
             ]
         ),
@@ -2179,8 +2130,7 @@ def test_load_external_plugin_btcpay_config_from_source_manifest(tmp_path: Path)
 
     config = load_external_plugin_btcpay_config(package_root)
 
-    assert config.btcpay_base.store_id == "98rXQCLFR3jmjbh5V5BomnqKJT5xC9kYejFRJHfmLWBq"
-    assert config.resolve_subscription("demo-plugin", "month").plan_id == "plan_Bqm6FpomH4TvZLj113"
+    assert config.product_id == TEST_SCHEDULE_PRODUCT_ID
 
 
 def test_load_external_plugin_btcpay_config_from_bytecode_pyproject(tmp_path: Path) -> None:
@@ -2202,20 +2152,8 @@ def test_load_external_plugin_btcpay_config_from_bytecode_pyproject(tmp_path: Pa
                 'bitcoin_safe_version = ">=0.0.0,<999.0.0"',
                 'provider = "Tests"',
                 "",
-                "[tool.bitcoin_safe.plugin.btcpay.btcpay_base]",
-                'base_url = "https://testnet.demo.btcpayserver.org"',
-                'pos_app_id = "3sgZmTZfKP8mRQciCqNh6g5F1G1s"',
-                'store_id = "98rXQCLFR3jmjbh5V5BomnqKJT5xC9kYejFRJHfmLWBq"',
-                "",
-                "[tool.bitcoin_safe.plugin.btcpay.client]",
-                'npub_bitcoin_safe_pos = "npub150ncc39ala3h9zudddrjqy9f7wenp7d20rjm99wchwtkdpze07wqukr9cu"',
-                "",
-                "[[tool.bitcoin_safe.plugin.btcpay.products.demo-plugin]]",
-                'offering_id = "offering_89j5mBhvUYuvFfxNL1"',
-                'plan_id = "plan_Bqm6FpomH4TvZLj113"',
-                'pos_id = "demo-plugin"',
-                'trial_pos_id = "demo-plugin-trial"',
-                'duration = "month"',
+                "[tool.bitcoin_safe.plugin.btcpay]",
+                f'product_id = "{TEST_SCHEDULE_PRODUCT_ID}"',
                 "",
             ]
         ),
@@ -2224,8 +2162,7 @@ def test_load_external_plugin_btcpay_config_from_bytecode_pyproject(tmp_path: Pa
 
     config = load_external_plugin_btcpay_config(package_root)
 
-    assert config.btcpay_base.store_id == "98rXQCLFR3jmjbh5V5BomnqKJT5xC9kYejFRJHfmLWBq"
-    assert config.resolve_subscription("demo-plugin", "month").plan_id == "plan_Bqm6FpomH4TvZLj113"
+    assert config.product_id == TEST_SCHEDULE_PRODUCT_ID
 
 
 def test_external_plugin_resources_reload_translator_installs_matching_qm(
@@ -3019,7 +2956,6 @@ def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
     config = _make_config(tmp_path)
     loop_in_thread = _ImmediateLoopInThread()
     fx = _DummyFX()
-    selected_plan = TEST_BTCPAY_SUBSCRIPTION_CONFIG.resolve_subscription("demo-plugin", PlanDuration.MONTH)
 
     def _paid_client(bundle_id: str, management_url: str) -> _PaidStateTrackingPluginClient:
         paid_client = _PaidStateTrackingPluginClient(
@@ -3028,25 +2964,21 @@ def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
             loop_in_thread=loop_in_thread,
             additional_access_providers=None,
             enabled=False,
+            subscription_product_id=TEST_SCHEDULE_PRODUCT_ID,
             subscription_managers={
-                selected_plan.plan_id: SubscriptionManager(
+                TEST_SCHEDULE_PRODUCT_ID: SubscriptionManager(
                     config=config,
                     loop_in_thread=loop_in_thread,
-                    subscription_product_key="demo-plugin",
-                    btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
-                    subscription_duration=selected_plan.duration,
+                    plan_id=TEST_MONTHLY_PLAN_ID,
                     management_url=management_url,
                     stored_subscription_status=_stored_subscription_status(
-                        SubscriptionManagementStatus(
-                            status=SubscriptionManagementStatusCode.TRIAL,
-                            phase=SubscriptionManagementPhase.TRIAL,
-                            is_active=True,
-                            is_suspended=False,
+                        SubscriptionStatusResponse(
+                            plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.TRIAL
                         )
                     ),
                 )
             },
-            selected_subscription_key=selected_plan.plan_id,
+            selected_subscription_key=TEST_SCHEDULE_PRODUCT_ID,
         )
         paid_client.set_plugin_identity(
             plugin_source=PluginClientSource.EXTERNAL,
@@ -3107,7 +3039,6 @@ def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
                 SubscriptionManager.__name__: SubscriptionManager.cls_kwargs(
                     config=config,
                     loop_in_thread=loop_in_thread,
-                    btcpay_config=TEST_BTCPAY_SUBSCRIPTION_CONFIG,
                 ),
             }
 
@@ -3139,7 +3070,7 @@ def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
         assert replacement_client.subscription_manager.stored_subscription_status.status is not None
         assert (
             replacement_client.subscription_manager.stored_subscription_status.status.status
-            == SubscriptionManagementStatusCode.TRIAL
+            == SubscriptionStatusCode.TRIAL
         )
         other_replacement_client = manager._client_for_plugin_id(other_client.plugin_id)
         assert isinstance(other_replacement_client, _PaidStateTrackingPluginClient)
@@ -3149,7 +3080,7 @@ def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
         assert other_replacement_client.subscription_manager.stored_subscription_status.status is not None
         assert (
             other_replacement_client.subscription_manager.stored_subscription_status.status.status
-            == SubscriptionManagementStatusCode.TRIAL
+            == SubscriptionStatusCode.TRIAL
         )
     finally:
         manager.close()

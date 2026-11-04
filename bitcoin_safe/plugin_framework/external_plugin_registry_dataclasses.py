@@ -35,9 +35,9 @@ from pathlib import Path
 from typing import Any
 
 from bitcoin_safe_lib.storage import SaveAllClass, filtered_for_init
-from btcpay_tools.config import BTCPayConfig
 
 from bitcoin_safe.network_utils import ExternalPluginError  # noqa: F401  (re-exported)
+from bitcoin_safe.plugin_framework.plugin_btcpay_manifest import BtcpayManifestConfig
 from bitcoin_safe.plugin_framework.plugin_bundle import RuntimePluginBundle
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_identity import PluginSource as PluginClientSource
@@ -90,8 +90,8 @@ class PluginSource(SaveAllClass):
 
 @dataclass(frozen=True)
 class ExternalPluginCatalogEntry(SaveAllClass):
-    VERSION = "0.0.1"
-    known_classes = {**SaveAllClass.known_classes, BTCPayConfig.__name__: BTCPayConfig}
+    VERSION = "0.0.3"
+    known_classes = {**SaveAllClass.known_classes}
     source_id: str
     source_display_name: str
     bundle_id: str
@@ -104,7 +104,7 @@ class ExternalPluginCatalogEntry(SaveAllClass):
     app_version_specifier: str
     folder_hash: str
     release_ref: str
-    btcpay_config: BTCPayConfig | None = None
+    btcpay_config: BtcpayManifestConfig | None = None
     installed_version: str | None = None
     installed_folder_hash: str | None = None
     update_available: bool = False
@@ -120,7 +120,7 @@ class ExternalPluginCatalogEntry(SaveAllClass):
         d.pop("installed_folder_hash", None)
         d.pop("update_available", None)
         if self.btcpay_config is not None:
-            d["btcpay_config"] = self.btcpay_config.model_dump(mode="json", by_alias=True)
+            d["btcpay_config"] = self.btcpay_config.model_dump(mode="json")
         return d
 
     @classmethod
@@ -128,8 +128,17 @@ class ExternalPluginCatalogEntry(SaveAllClass):
         super()._from_dump(dct, class_kwargs=None)
         raw_btcpay_config = dct.get("btcpay_config")
         if isinstance(raw_btcpay_config, dict):
-            dct["btcpay_config"] = BTCPayConfig.model_validate(raw_btcpay_config)
+            dct["btcpay_config"] = BtcpayManifestConfig.model_validate(raw_btcpay_config)
         return cls(**filtered_for_init(dct, cls))
+
+    @classmethod
+    def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
+        # Entries saved before 0.0.2 carry the removed BTCPay product catalog, and entries before
+        # 0.0.3 carry plan_ids instead of product_id. Neither can be interpreted any more, so the
+        # block is dropped and the entry is refreshed from its source.
+        if isinstance(raw := dct.get("btcpay_config"), dict) and "product_id" not in raw:
+            dct["btcpay_config"] = None
+        return super().from_dump_migration(dct)
 
 
 @dataclass(frozen=True)

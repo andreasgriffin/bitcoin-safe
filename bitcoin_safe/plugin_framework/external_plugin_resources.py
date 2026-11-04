@@ -34,11 +34,11 @@ from typing import Any
 
 import tomllib  # pyright: ignore[reportMissingImports]
 import yaml
-from btcpay_tools.config import BTCPayConfig
 from PyQt6.QtCore import QTranslator
 from PyQt6.QtWidgets import QApplication
 
 from bitcoin_safe.config import UserConfig
+from bitcoin_safe.plugin_framework.plugin_btcpay_manifest import BtcpayManifestConfig
 
 BYTECODE_DIRECTORY_NAME = "_bytecode"
 
@@ -61,7 +61,7 @@ def resolve_external_plugin_package_root(module_file: str, package_name: str) ->
     return package_root
 
 
-def _load_btcpay_config_from_mapping(data: Any, source_path: Path) -> BTCPayConfig:
+def _load_btcpay_config_from_mapping(data: Any, source_path: Path) -> BtcpayManifestConfig:
     if not isinstance(data, dict):
         raise RuntimeError(f"{source_path} must contain a mapping")
 
@@ -70,12 +70,12 @@ def _load_btcpay_config_from_mapping(data: Any, source_path: Path) -> BTCPayConf
         raise RuntimeError(f"{source_path} must define a 'btcpay' mapping")
 
     try:
-        return BTCPayConfig.model_validate(btcpay_data)
+        return BtcpayManifestConfig.model_validate(btcpay_data)
     except Exception as exc:
         raise RuntimeError(f"{source_path} has invalid 'btcpay' config: {exc}") from exc
 
 
-def load_external_plugin_btcpay_config(package_root: Path) -> BTCPayConfig:
+def load_external_plugin_btcpay_config(package_root: Path) -> BtcpayManifestConfig:
     plugin_manifest_path = package_root / "plugin.yaml"
     if plugin_manifest_path.is_file():
         manifest_data = yaml.safe_load(plugin_manifest_path.read_text(encoding="utf-8"))

@@ -29,29 +29,35 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from collections.abc import Callable
 from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
-from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
-from btcpay_tools.config import BTCPayConfig, PlanDuration, SubscriptionProduct
+from btcpay_tools.btcpay_subscription_api.models import PlanCatalogItem
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
+from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.plugin_framework.plugin_list_widget import (
     ExternalPaidPluginWidget,
     PaidPluginWidget,
 )
 from bitcoin_safe.plugin_framework.plugin_server import PluginPermission
+from bitcoin_safe.plugin_framework.subscription_api_client import (
+    SubscriptionApiClient,
+    plan_id_for_product,
+)
 
 from .plugin_client import PluginClient
-from .subscription_manager import NoSubscriptionKeyRequired, StoredSubscriptionStatus, SubscriptionManager
+from .subscription_manager import StoredSubscriptionStatus, SubscriptionManager
 from .subscription_price_lookup import SubscriptionPriceLookup
 
 if TYPE_CHECKING:
@@ -61,7 +67,14 @@ logger = logging.getLogger(__name__)
 
 
 class PaidPluginClient(PluginClient):
-    VERSION = "0.1.0"
+    """
+    A plugin that is unlocked by a subscription product of the subscription service.
+
+    Managers are keyed by the product id, which is stable across store moves. The plan_id of the
+    product is resolved from the service catalog and follows the store when it moves.
+    """
+
+    VERSION = "0.3.0"
     known_classes = {
         **PluginClient.known_classes,
         StoredSubscriptionStatus.__name__: StoredSubscriptionStatus,
@@ -72,8 +85,6 @@ class PaidPluginClient(PluginClient):
         {PluginPermission.DESCRIPTOR}
     )
 
-    subscription_product_id: str | NoSubscriptionKeyRequired = ""
-    subscription_plans: tuple[SubscriptionProduct, ...] = ()
     signal_price_texts_changed = cast(SignalProtocol[[]], pyqtSignal())
 
     @staticmethod
@@ -102,9 +113,9 @@ class PaidPluginClient(PluginClient):
         fx: FX,
         loop_in_thread: LoopInThread | None,
         icon: QIcon | Path | str,
-        btcpay_config: BTCPayConfig,
         enabled: bool,
         additional_access_providers: list[Callable[[], bool]] | None,
+        subscription_product_id: str,
         subscription_managers: dict[str, SubscriptionManager] | None = None,
         selected_subscription_key: str | None = None,
         subscription_price_lookup: SubscriptionPriceLookup | None = None,
@@ -112,13 +123,14 @@ class PaidPluginClient(PluginClient):
     ) -> None:
         super().__init__(enabled=enabled, icon=icon, parent=parent)
         self.fx = fx
-        self.btcpay_config = btcpay_config
-        self.subscription_plans = self._subscription_plans(self.subscription_product_id)
-        assert self.subscription_plans, f"subscription_product_id must be set in {self.__class__.__name__}"
+        self.config = config
+        self.loop_in_thread = loop_in_thread
+        self.subscription_product_id = subscription_product_id
         self.additional_access_providers = additional_access_providers or []
         self._business_plan_access_provider: Callable[[], bool] | None = None
         self._business_plan_signal_tracker = SignalTracker()
         self._price_signal_tracker = SignalTracker()
+        self._manager_signal_tracker = SignalTracker()
         self._owns_subscription_price_lookup = subscription_price_lookup is None
         self.subscription_price_lookup = (
             subscription_price_lookup
@@ -129,13 +141,17 @@ class PaidPluginClient(PluginClient):
             self.subscription_price_lookup.signal_prices_changed,
             self._on_subscription_prices_changed,
         )
-        self._subscription_managers_by_key = self._build_subscription_managers(
+        self._subscription_managers_by_key: dict[str, SubscriptionManager] = {}
+        self._selected_subscription_key = ""
+        self._inert_manager = SubscriptionManager(
             config=config,
             loop_in_thread=loop_in_thread,
-            subscription_managers=subscription_managers,
+            parent=self,
+            additional_access_provider=self._has_additional_access,
         )
-        self._selected_subscription_key = self._resolve_selected_subscription_key(selected_subscription_key)
+        self._subscription_managers_by_key = self._restored_subscription_managers(subscription_managers)
         self._connect_subscription_manager_signals()
+        self._selected_subscription_key = self._resolve_selected_subscription_key(selected_subscription_key)
 
         self._plugin_loaded = False
         self._defer_subscription_refresh = False
@@ -147,22 +163,16 @@ class PaidPluginClient(PluginClient):
         self._layout.addWidget(self._plugin_content)
 
         self._refresh_plugin_ui()
+        self._resolve_subscription_plans()
 
     @property
     def subscription_manager(self) -> SubscriptionManager:
-        return self._subscription_managers_by_key[self._selected_subscription_key]
-
-    @property
-    def selected_subscription_plan(self) -> SubscriptionProduct:
-        return self._plan_by_storage_key(self._selected_subscription_key)
-
-    @property
-    def available_subscription_plans(self) -> tuple[SubscriptionProduct, ...]:
-        return self.subscription_plans
+        """The product's manager, or an inert one while the product has no plan yet."""
+        return self._subscription_managers_by_key.get(self._selected_subscription_key, self._inert_manager)
 
     @property
     def subscription_managers(self) -> tuple[SubscriptionManager, ...]:
-        return tuple(self._subscription_managers_by_key[plan.plan_id] for plan in self.subscription_plans)
+        return tuple(self._subscription_managers_by_key.values())
 
     @property
     def displayed_subscription_manager(self) -> SubscriptionManager:
@@ -183,13 +193,18 @@ class PaidPluginClient(PluginClient):
         return True
 
     def available_plan_options(self) -> tuple[tuple[str, str], ...]:
-        return tuple((plan.plan_id, self._plan_title(plan)) for plan in self.subscription_plans)
+        return tuple(
+            (catalog_item.plan_id, self._format_plan_option(catalog_item))
+            for catalog_item in self.subscription_price_lookup.catalog_items_for_product(
+                self.subscription_product_id
+            )
+        )
 
     def selected_plan_option_key(self) -> str:
-        return self._selected_subscription_key
+        return self.subscription_manager.plan_id or ""
 
     def select_plan_option(self, storage_key: str) -> None:
-        self._set_selected_subscription_key(storage_key)
+        self.subscription_manager.set_plan_id(storage_key)
 
     def set_paid_content_widget(self, widget: QWidget) -> None:
         self._layout.removeWidget(self._plugin_content)
@@ -217,10 +232,31 @@ class PaidPluginClient(PluginClient):
         )
 
     def start_trial_button_text(self) -> str:
-        return self.tr("Start free trial / Fetch existing subscription")
+        return self.tr("Start free trial")
 
     def trigger_start_trial(self) -> None:
         self.signal_request_enabled.emit(True)
+
+    def check_subscription_button_text(self) -> str:
+        return self.tr("Check subscription")
+
+    def trigger_check_subscription(self) -> None:
+        """Look up an existing subscription for this wallet via subscriptions/status."""
+        descriptor = self.server.get_descriptor() if self.server else None
+        if not descriptor:
+            logger.warning("No descriptor available; cannot check the subscription")
+            return
+        product_plan_ids = [
+            catalog_item.plan_id
+            for catalog_item in self.subscription_price_lookup.catalog_items_for_product(
+                self.subscription_product_id
+            )
+        ]
+        for subscription_manager in self.subscription_managers:
+            subscription_manager.check_existing_subscription(
+                multipath_descriptor=descriptor,
+                product_plan_ids=product_plan_ids,
+            )
 
     def supports_refresh_subscription_status_action(self) -> bool:
         return self.displayed_subscription_manager.supports_refresh_subscription_status()
@@ -230,23 +266,6 @@ class PaidPluginClient(PluginClient):
 
     def trigger_refresh_subscription_status_action(self) -> None:
         self.displayed_subscription_manager.trigger_refresh_subscription_status(disable_if_inactive=True)
-
-    def subscription_price_text(self, storage_key: str | None = None) -> str | None:
-        subscription_manager = (
-            self.subscription_manager
-            if storage_key is None
-            else self.subscription_manager_for_storage_key(storage_key)
-        )
-        price_text = self.subscription_price_lookup.raw_price_text_for_manager(subscription_manager)
-        if price_text is None and self._needs_subscription_price_texts():
-            self.subscription_price_lookup.ensure_prices(subscription_manager)
-            price_text = self.subscription_price_lookup.raw_price_text_for_manager(subscription_manager)
-        if price_text is None:
-            return None
-        return self._format_subscription_price_text(
-            price_text=price_text,
-            duration=subscription_manager.subscription_duration,
-        )
 
     def status_text(self) -> str:
         return self.displayed_subscription_manager.subscription_status_text()
@@ -393,55 +412,134 @@ class PaidPluginClient(PluginClient):
     def _on_business_plan_enabled_changed(self, _enabled: bool) -> None:
         self.on_business_plan_changed()
 
-    def _on_subscription_prices_changed(self, pos_url: str) -> None:
-        for subscription_manager in self.subscription_managers:
-            if subscription_manager.subscription_pos_base_url == pos_url:
-                self.signal_price_texts_changed.emit()
-                return
+    def _on_subscription_prices_changed(self, _cache_key: str) -> None:
+        self.signal_price_texts_changed.emit()
 
-    def _build_subscription_managers(
-        self,
-        config: UserConfig,
-        loop_in_thread: LoopInThread | None,
-        subscription_managers: dict[str, SubscriptionManager] | None,
-    ) -> dict[str, SubscriptionManager]:
-        managers_by_key: dict[str, SubscriptionManager] = {}
-        persisted_managers = subscription_managers or {}
-        for plan in self.subscription_plans:
-            manager = persisted_managers.get(plan.plan_id)
-            if manager is None:
-                manager = SubscriptionManager(
-                    config=config,
-                    loop_in_thread=loop_in_thread,
-                    subscription_product_key=self.subscription_product_id,
-                    subscription_duration=plan.duration,
-                    btcpay_config=self.btcpay_config,
-                    parent=self,
-                    additional_access_provider=self._has_additional_access,
+    def _resolve_subscription_plans(self) -> None:
+        """
+        Look up the plan of this client's product in the service catalog. A catalog without the
+        product clears its manager, so access cannot survive a removed product. A failed lookup
+        keeps the persisted state, so access continues from the cache while offline.
+        """
+        if self.loop_in_thread is None:
+            logger.warning("Subscription plan lookup skipped: no loop available")
+            return
+        proxy_url = self.config.network_config.proxy_url
+        proxy_dict = ProxyInfo.parse(proxy_url).get_requests_proxy_dict() if proxy_url else None
+        product_id = self.subscription_product_id
+        preferred_plan_id = self.subscription_manager.plan_id
+        subscriber_email = self.subscription_manager.subscriber_email
+        has_subscription = self.subscription_manager.management_url is not None
+
+        async def do() -> str | None:
+            client = SubscriptionApiClient(proxy_dict)
+            plans = await asyncio.to_thread(client.fetch_plans)
+            if not plans.get(product_id):
+                return None
+            if subscriber_email and has_subscription:
+                # The subscriber may be on a plan other than the preferred one, e.g. after an upgrade.
+                product_plan_ids = [plan.plan_id for plan in plans[product_id]]
+                active = await asyncio.to_thread(
+                    client.fetch_active_subscriptions, subscriber_email, product_plan_ids
                 )
-            manager.set_btcpay_config(self.btcpay_config)
-            manager.set_subscription_target(
-                subscription_product_key=self.subscription_product_id,
-                subscription_duration=plan.duration,
+                if active:
+                    return active[0].plan_id
+            return plan_id_for_product(plans, product_id, preferred_plan_id)
+
+        def on_success(plan_id: str | None) -> None:
+            self._set_subscription_plan_id(plan_id)
+
+        def on_error(error_info: ExcInfo | None) -> None:
+            logger.warning("Subscription plan lookup failed for %s: %s", product_id, error_info)
+
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=lambda result: None,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"subscription_plans:{product_id}",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
+
+    def _set_subscription_plan_id(self, plan_id: str | None) -> None:
+        """
+        Apply the catalog's plan_id of the product. None removes the product's manager and its access.
+        A changed plan_id moves the existing subscription to the new plan.
+        """
+        had_access = self.subscription_allows_access()
+        product_id = self.subscription_product_id
+        self._manager_signal_tracker.disconnect_all()
+        if plan_id is None:
+            for subscription_manager in self._subscription_managers_by_key.values():
+                subscription_manager.close()
+            self._subscription_managers_by_key = {}
+        else:
+            manager = self._subscription_managers_by_key.get(product_id)
+            if manager is None:
+                manager = self._new_subscription_manager()
+                self._subscription_managers_by_key = {product_id: manager}
+            manager.set_plan_id(plan_id)
+        self._connect_subscription_manager_signals()
+        self._selected_subscription_key = self._resolve_selected_subscription_key(
+            self._selected_subscription_key
+        )
+        self._sync_access_state()
+        self._refresh_plugin_ui()
+        self.signal_needs_persist.emit()
+        if had_access and not self.subscription_allows_access():
+            self._on_subscription_state_changed(product_id)
+        else:
+            self.signal_enabled_changed.emit(self.enabled)
+
+    def _sync_access_state(self) -> None:
+        """Hook for subclasses whose enabled state mirrors subscription access."""
+
+    def _restored_subscription_managers(
+        self,
+        persisted_managers: dict[str, SubscriptionManager] | None,
+    ) -> dict[str, SubscriptionManager]:
+        """
+        Pick the product's manager from a persisted dump. A dump keyed by an older plan_id has its
+        single manager adopted, keeping email, management URL and status; its plan_id is moved to the
+        catalog's plan later. Any other persisted manager is closed.
+        """
+        managers = dict(persisted_managers or {})
+        manager = managers.pop(self.subscription_product_id, None)
+        if manager is None and len(managers) == 1:
+            legacy_key, manager = managers.popitem()
+            logger.info(
+                "Adopting the subscription of legacy key %s for product %s",
+                legacy_key,
+                self.subscription_product_id,
             )
-            manager.set_additional_access_provider(self._has_additional_access)
-            managers_by_key[plan.plan_id] = manager
-        return managers_by_key
+        for orphaned_manager in managers.values():
+            orphaned_manager.close()
+        if manager is None:
+            manager = self._new_subscription_manager()
+        manager.set_additional_access_provider(self._has_additional_access)
+        return {self.subscription_product_id: manager}
+
+    def _new_subscription_manager(self) -> SubscriptionManager:
+        return SubscriptionManager(
+            config=self.config,
+            loop_in_thread=self.loop_in_thread,
+            parent=self,
+            additional_access_provider=self._has_additional_access,
+        )
 
     def _connect_subscription_manager_signals(self) -> None:
-        for plan in self.subscription_plans:
-            manager = self._subscription_managers_by_key[plan.plan_id]
-            manager.signal_tracker.connect(
+        for storage_key, manager in self._subscription_managers_by_key.items():
+            self._manager_signal_tracker.connect(
                 manager.signal_state_changed,
-                partial(self._on_subscription_state_changed, plan.plan_id),
+                partial(self._on_subscription_state_changed, storage_key),
             )
-            manager.signal_tracker.connect(
+            self._manager_signal_tracker.connect(
                 manager.signal_access_activated,
-                partial(self._on_subscription_access_activated, plan.plan_id),
+                partial(self._on_subscription_access_activated, storage_key),
             )
-            manager.signal_tracker.connect(
+            self._manager_signal_tracker.connect(
                 manager.signal_access_revoked,
-                partial(self._on_subscription_access_revoked, plan.plan_id),
+                partial(self._on_subscription_access_revoked, storage_key),
             )
 
     def _manager_with_access(self) -> SubscriptionManager | None:
@@ -466,6 +564,8 @@ class PaidPluginClient(PluginClient):
         return self.supports_plan_selection() and not self.subscription_allows_access()
 
     def subscription_allows_access(self) -> bool:
+        if self._has_additional_access():
+            return True
         return any(manager.subscription_allows_access() for manager in self.subscription_managers)
 
     def _has_direct_subscription_access(self) -> bool:
@@ -473,15 +573,6 @@ class PaidPluginClient(PluginClient):
 
     def _has_business_plan_access_only(self) -> bool:
         return self._has_additional_access() and not self._has_direct_subscription_access()
-
-    def subscription_manager_for_plan(
-        self,
-        plan: SubscriptionProduct,
-    ) -> SubscriptionManager:
-        return self._subscription_managers_by_key[plan.plan_id]
-
-    def subscription_manager_for_storage_key(self, storage_key: str) -> SubscriptionManager:
-        return self._subscription_managers_by_key[storage_key]
 
     def _set_selected_subscription_key(self, storage_key: str, emit_signal: bool = True) -> None:
         if storage_key not in self._subscription_managers_by_key:
@@ -494,46 +585,23 @@ class PaidPluginClient(PluginClient):
             self.signal_needs_persist.emit()
 
     def _resolve_selected_subscription_key(self, selected_subscription_key: str | None) -> str:
-        if selected_subscription_key and selected_subscription_key in self._subscription_managers_by_key:
+        if selected_subscription_key in self._subscription_managers_by_key:
             return selected_subscription_key
-        return self.subscription_plans[0].plan_id
-
-    def _plan_by_storage_key(self, storage_key: str) -> SubscriptionProduct:
-        for plan in self.subscription_plans:
-            if plan.plan_id == storage_key:
-                return plan
-        raise KeyError(storage_key)
+        return next(iter(self._subscription_managers_by_key), "")
 
     def _storage_key_for_manager(self, target_manager: SubscriptionManager) -> str:
-        for plan in self.subscription_plans:
-            manager = self._subscription_managers_by_key[plan.plan_id]
-            if manager is target_manager:
-                return plan.plan_id
+        for storage_key, subscription_manager in self._subscription_managers_by_key.items():
+            if subscription_manager is target_manager:
+                return storage_key
         raise KeyError("subscription manager not registered")
 
-    def _subscription_plans(
-        self,
-        subscription_product_id: str | NoSubscriptionKeyRequired,
-    ) -> tuple[SubscriptionProduct, ...]:
-        if isinstance(subscription_product_id, NoSubscriptionKeyRequired):
-            return ()
-        return self.btcpay_config.plans(subscription_product_id)
-
-    def _plan_title(self, plan: SubscriptionProduct) -> str:
-        if plan.duration == PlanDuration.MONTH:
-            return self.tr("Monthly")
-        if plan.duration == PlanDuration.YEAR:
-            return self.tr("Yearly")
-        return plan.duration.value.title()
-
-    def _format_subscription_price_text(self, price_text: str, duration: PlanDuration | None) -> str:
-        return self.tr("{price} / {duration}").format(
-            price=price_text,
-            duration=self._duration_text(duration),
+    def _format_plan_option(self, catalog_item: PlanCatalogItem) -> str:
+        period = self.tr("month") if catalog_item.duration == "month" else self.tr("year")
+        return self.tr("{price} {currency} / {period}").format(
+            price=catalog_item.price,
+            currency=catalog_item.currency,
+            period=period,
         )
-
-    def _duration_text(self, duration: PlanDuration | None) -> str:
-        return self.tr(duration.value) if duration else ""
 
     def create_plugin_widget(
         self,
@@ -546,8 +614,9 @@ class PaidPluginClient(PluginClient):
     def close(self) -> bool:
         self._price_signal_tracker.disconnect_all()
         self._business_plan_signal_tracker.disconnect_all()
+        self._manager_signal_tracker.disconnect_all()
         if self._owns_subscription_price_lookup:
             self.subscription_price_lookup.close()
-        for subscription_manager in self.subscription_managers:
+        for subscription_manager in (*self.subscription_managers, self._inert_manager):
             subscription_manager.close()
         return super().close()

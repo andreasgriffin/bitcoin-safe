@@ -32,8 +32,9 @@ from __future__ import annotations
 import json
 from pathlib import Path, PurePosixPath
 
-from btcpay_tools.config import BTCPayConfig
 from pydantic import BaseModel, ConfigDict, ValidationError, field_validator, model_validator
+
+from bitcoin_safe.plugin_framework.plugin_btcpay_manifest import BtcpayManifestConfig
 
 PLUGIN_PYPROJECT_FILENAME = "pyproject.toml"
 SCHEMA_VERSION = "1"
@@ -90,7 +91,7 @@ class PluginMetadataModel(_ModelBase):
     plugin_api_version: str
     entrypoint: str
     app_version_specifier: str
-    btcpay_config: BTCPayConfig | None = None
+    btcpay_config: BtcpayManifestConfig | None = None
 
     @field_validator(
         "schema_version",
@@ -158,7 +159,7 @@ class ToolPluginModel(_ModelBase):
     entrypoint: str
     bitcoin_safe_version: str
     provider: str | None = None
-    btcpay: BTCPayConfig | None = None
+    btcpay: BtcpayManifestConfig | None = None
 
     @field_validator(
         "schema_version", "display_name", "plugin_api_version", "entrypoint", "bitcoin_safe_version"

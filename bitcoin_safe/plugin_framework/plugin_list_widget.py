@@ -123,7 +123,6 @@ class BasePluginWidget(CardBase):
         self.description_label.setOpenExternalLinks(True)
 
         self.status_label = QLabel("", self.text_container)
-        self.status_label.setWordWrap(True)
         self.status_label.setForegroundRole(QPalette.ColorRole.Dark)
 
         self.text_layout.insertWidget(1, self.metadata_row)
@@ -625,18 +624,7 @@ class PaidPluginWidget(PluginWidget):
         callback: Callable[[str], None] | None,
         visible: bool,
     ) -> None:
-        if not visible or not options:
-            self.plan_selector_title_label.setText(title)
-            self.plan_selector_title_label.setVisible(False)
-            self.plan_selector_combo.blockSignals(True)
-            self.plan_selector_combo.clear()
-            self.plan_selector_combo.blockSignals(False)
-            self._plan_option_keys = []
-            self.plan_selector_container.setVisible(False)
-            return
-
-        self.plan_selector_title_label.setText(title)
-        self.plan_selector_title_label.setVisible(bool(title))
+        """The combo is shown only when there are plans. The container is owned by the caller: its buttons outlive an empty catalog."""
         try:
             self.plan_selector_combo.currentIndexChanged.disconnect()
         except TypeError:
@@ -645,7 +633,7 @@ class PaidPluginWidget(PluginWidget):
         self.plan_selector_combo.blockSignals(True)
         self.plan_selector_combo.clear()
         self._plan_option_keys = []
-        for storage_key, label in options:
+        for storage_key, label in options if visible else ():
             self.plan_selector_combo.addItem(label)
             self._plan_option_keys.append(storage_key)
 
@@ -655,12 +643,15 @@ class PaidPluginWidget(PluginWidget):
         self.plan_selector_combo.setCurrentIndex(selected_index)
         self.plan_selector_combo.blockSignals(False)
 
-        if callback is not None:
+        has_options = bool(self._plan_option_keys)
+        self.plan_selector_title_label.setText(title)
+        self.plan_selector_title_label.setVisible(has_options and bool(title))
+        self.plan_selector_combo.setVisible(has_options)
+
+        if callback is not None and has_options:
             self.plan_selector_combo.currentIndexChanged.connect(
                 lambda index: callback(self._plan_option_keys[index]) if index >= 0 else None
             )
-
-        self.plan_selector_container.setVisible(True)
 
     def _subscription_section_visible(self) -> bool:
         return (
@@ -675,17 +666,11 @@ class PaidPluginWidget(PluginWidget):
             if item is None:
                 continue
             widget = item.widget()
-            if widget is None or widget is self.management_title_label:
+            if widget is None or widget in (self.management_title_label, self.status_label):
                 continue
             if not widget.isHidden():
                 return True
         return self._layout_has_visible_widgets(self.destructive_buttons_layout)
-
-    def _plan_options(self) -> tuple[tuple[str, str], ...]:
-        options: list[tuple[str, str]] = []
-        for storage_key, label in self.plugin.available_plan_options():
-            options.append((storage_key, self.plugin.subscription_price_text(storage_key) or label))
-        return tuple(options)
 
     def _create_action_buttons(self) -> None:
         super()._create_action_buttons()
@@ -696,14 +681,27 @@ class PaidPluginWidget(PluginWidget):
             svg_tools=svg_tools,
         )
         self.subscription_buttons_layout.addWidget(self.start_trial_button)
+        self.check_subscription_button = self._add_section_button(
+            parent=self.subscription_buttons_container,
+            layout=self.subscription_buttons_layout,
+        )
         self.manage_subscription_button = self.add_detail_button()
         self.refresh_subscription_button = self.add_detail_button()
+        self._place_status_label_in_management_row()
         self.management_buttons_layout.addStretch()
+
+    def _place_status_label_in_management_row(self) -> None:
+        """The status is shown next to the Manage and Refresh buttons it describes."""
+        self.text_layout.removeWidget(self.status_label)
+        self.management_buttons_layout.addWidget(self.status_label)
 
     def _on_start_trial_clicked(self) -> None:
         self.plugin.trigger_start_trial()
         if not self.plugin.subscription_manager.activation_in_progress:
             self.start_trial_button.enable_button()
+
+    def _on_check_subscription_clicked(self) -> None:
+        self.plugin.trigger_check_subscription()
 
     def _enable_toggle_visible(self) -> bool:
         return self.plugin.supports_enable_toggle() and self.plugin.subscription_allows_access()
@@ -722,7 +720,7 @@ class PaidPluginWidget(PluginWidget):
 
         self.set_plan_selector(
             title=self.plugin.plan_selection_title(),
-            options=self._plan_options(),
+            options=self.plugin.available_plan_options(),
             selected_key=self.plugin.selected_plan_option_key(),
             callback=self.plugin.select_plan_option,
             visible=show_plan_selector,
@@ -734,10 +732,18 @@ class PaidPluginWidget(PluginWidget):
             visible=show_start_trial,
             enable=not self.plugin.subscription_manager.activation_in_progress,
         )
+        self._set_button_action(
+            button=self.check_subscription_button,
+            text=self.plugin.check_subscription_button_text(),
+            callback=self._on_check_subscription_clicked,
+            visible=show_start_trial,
+            enable=not self.plugin.subscription_manager.activation_in_progress,
+        )
         if self.plugin.subscription_manager.activation_in_progress:
             self.start_trial_button.start_spin()
         else:
             self.start_trial_button.enable_button()
+        self.plan_selector_container.setVisible(show_start_trial or show_plan_selector)
         self.subscription_buttons_container.setVisible(show_start_trial or show_plan_selector)
 
         self._set_button_action(
