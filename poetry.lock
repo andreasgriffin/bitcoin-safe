@@ -583,7 +583,7 @@ winrt-runtime = {version = ">=2,<3", markers = "platform_system == \"Windows\" a
 
 [[package]]
 name = "btcpay-tools"
-version = "1.0.0"
+version = "1.1.0"
 description = ""
 optional = false
 python-versions = ">=3.10,<3.15"
@@ -599,8 +599,8 @@ requests = "^2.32.3"
 [package.source]
 type = "git"
 url = "https://github.com/andreasgriffin/btcpay-tools.git"
-reference = "feat/active-subscriptions-endpoint"
-resolved_reference = "86c4e24ab973a05225cb1ee26f31d6b9f52f251c"
+reference = "main"
+resolved_reference = "34874489bc2642b2313d73d19ee0c8e2dadb97ce"
 
 [[package]]
 name = "build"
@@ -5443,4 +5443,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "a98d2d7e7e7c63f49f066129181af9981456d6a1fdc110d09bcef44aae8803b7"
+content-hash = "a6e4b742b6a5f9d44b1233d36abb1e934df532963a2c9f4878ad5f78ccb3dfd7"
