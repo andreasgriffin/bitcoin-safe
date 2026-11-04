@@ -576,11 +576,11 @@ class PaidPluginClient(PluginClient):
         raise KeyError("subscription manager not registered")
 
     def _format_plan_option(self, catalog_item: PlanCatalogItem) -> str:
-        return self.tr("{name}: {price} {currency} / {recurring}").format(
-            name=catalog_item.name,
+        period = self.tr("month") if catalog_item.duration == "month" else self.tr("year")
+        return self.tr("{price} {currency} / {period}").format(
             price=catalog_item.price,
             currency=catalog_item.currency,
-            recurring=catalog_item.recurringType,
+            period=period,
         )
 
     def create_plugin_widget(

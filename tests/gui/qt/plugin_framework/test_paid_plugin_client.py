@@ -1519,3 +1519,88 @@ def test_store_move_reenables_plugin_once_new_plan_is_active(
     finally:
         plugin.close()
         fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_plan_option_labels_show_price_and_period(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    plugin = DemoPaidPluginClient(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        additional_access_providers=None,
+        subscription_managers={
+            TEST_DEMO_PRODUCT_ID: SubscriptionManager(config=config, loop_in_thread=None),
+        },
+    )
+    monthly = PlanCatalogItem.model_validate(
+        {
+            "plan_id": TEST_MONTHLY_PLAN_ID,
+            "duration": "month",
+            "name": "Monthly",
+            "price": "6.99",
+            "currency": "USD",
+            "recurringType": "Monthly",
+            "status": "Active",
+        }
+    )
+    yearly = PlanCatalogItem.model_validate(
+        {
+            "plan_id": TEST_YEARLY_PLAN_ID,
+            "duration": "year",
+            "name": "Yearly",
+            "price": "59.99",
+            "currency": "USD",
+            "recurringType": "Yearly",
+            "status": "Active",
+        }
+    )
+
+    try:
+        assert plugin._format_plan_option(monthly) == "6.99 USD / month"
+        assert plugin._format_plan_option(yearly) == "59.99 USD / year"
+    finally:
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
+def test_single_plan_product_selector_shows_only_price_and_period(
+    qapp: QApplication,
+    test_config_main_chain: UserConfig,
+) -> None:
+    config = test_config_main_chain
+    fx = FX(config=config, loop_in_thread=None, update_rates=False)
+    lookup = SubscriptionPriceLookup()
+    yearly = PlanCatalogItem.model_validate(
+        {
+            "plan_id": TEST_YEARLY_PLAN_ID,
+            "duration": "year",
+            "name": "Schedule",
+            "price": "1299",
+            "currency": "USD",
+            "recurringType": "Yearly",
+            "status": "Active",
+        }
+    )
+    lookup._set_catalog({TEST_DEMO_PRODUCT_ID: [yearly]})
+    plugin = DemoPaidPluginClient(
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        additional_access_providers=None,
+        subscription_price_lookup=lookup,
+    )
+
+    try:
+        widget = PaidPluginWidget(plugin)
+        assert _plan_texts(widget) == ["1299 USD / year"]
+        widget.close()
+    finally:
+        plugin.close()
+        lookup.close()
+        fx.close()
