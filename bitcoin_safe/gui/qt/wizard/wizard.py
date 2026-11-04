@@ -220,7 +220,9 @@ class Wizard(WizardBase):
     def _save(self, widget: object) -> None:
         """Save."""
         del widget
-        if self.qt_wallet:
+        # a not yet saved wallet is saved explicitly by the creation flow. Saving it here as well
+        # would open a save dialog for every step change
+        if self.qt_wallet and self.qt_wallet.has_file_path:
             self.qt_wallet.save()
 
     def show_warning_not_initialized(self) -> None:
