@@ -52,8 +52,9 @@ from bitcoin_safe.plugin_framework.plugin_list_widget import (
 )
 from bitcoin_safe.plugin_framework.plugin_server import PluginPermission
 from bitcoin_safe.plugin_framework.subscription_api_client import (
+    LIVE_SUBSCRIPTION_CODES,
     SubscriptionApiClient,
-    plan_id_for_product,
+    offered_plan_ids,
 )
 
 from .plugin_client import PluginClient
@@ -128,6 +129,7 @@ class PaidPluginClient(PluginClient):
         self.subscription_product_id = subscription_product_id
         self.additional_access_providers = additional_access_providers or []
         self._business_plan_access_provider: Callable[[], bool] | None = None
+        self._offered_plan_ids: list[str] = []
         self._business_plan_signal_tracker = SignalTracker()
         self._price_signal_tracker = SignalTracker()
         self._manager_signal_tracker = SignalTracker()
@@ -247,7 +249,10 @@ class PaidPluginClient(PluginClient):
             logger.warning("No descriptor available; cannot check the subscription")
             return
         for subscription_manager in self.subscription_managers:
-            subscription_manager.check_existing_subscription(multipath_descriptor=descriptor)
+            subscription_manager.check_existing_subscription(
+                multipath_descriptor=descriptor,
+                offered_plan_ids=self._offered_plan_ids,
+            )
 
     def supports_refresh_subscription_status_action(self) -> bool:
         return self.displayed_subscription_manager.supports_refresh_subscription_status()
@@ -419,14 +424,30 @@ class PaidPluginClient(PluginClient):
         proxy_dict = ProxyInfo.parse(proxy_url).get_requests_proxy_dict() if proxy_url else None
         product_id = self.subscription_product_id
         preferred_plan_id = self.subscription_manager.plan_id
+        subscriber_email = self.subscription_manager.subscriber_email
+        has_subscription = self.subscription_manager.management_url is not None
 
-        async def do() -> str | None:
-            plans = await asyncio.to_thread(SubscriptionApiClient(proxy_dict).fetch_plans)
+        async def do() -> tuple[str | None, list[str]]:
+            client = SubscriptionApiClient(proxy_dict)
+            plans = await asyncio.to_thread(client.fetch_plans)
             if not plans.get(product_id):
-                return None
-            return plan_id_for_product(plans, product_id, preferred_plan_id)
+                return None, []
+            plan_ids = offered_plan_ids(plans, product_id, preferred_plan_id)
+            plan_id = plan_ids[0]
+            if subscriber_email and has_subscription:
+                # The subscriber may be on any offered plan, e.g. after a plan was replaced.
+                found_plan_id, status = await asyncio.to_thread(
+                    client.find_subscription, plan_ids, subscriber_email
+                )
+                if status.status in LIVE_SUBSCRIPTION_CODES:
+                    plan_id = found_plan_id
+            return plan_id, plan_ids
 
-        def on_success(plan_id: str | None) -> None:
+        def on_success(result: tuple[str | None, list[str]] | None) -> None:
+            if result is None:
+                return
+            plan_id, plan_ids = result
+            self._offered_plan_ids = plan_ids
             self._set_subscription_plan_id(plan_id)
 
         def on_error(error_info: ExcInfo | None) -> None:

@@ -378,6 +378,52 @@ def test_check_existing_subscription_revokes_stale_cached_access(
     support.close()
 
 
+def test_check_existing_subscription_finds_yearly_when_first_plan_is_not_found(
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from bitcoin_safe.plugin_framework.subscription_api_client import derive_subscriber_email
+
+    support = SubscriptionManager(
+        config=test_config_main_chain, loop_in_thread=None, plan_id=TEST_MONTHLY_PLAN_ID
+    )
+    calls: list[tuple[str, str]] = []
+
+    def fake_fetch_status(self, plan_id: str, buyer_email: str) -> SubscriptionStatusResponse:
+        calls.append((plan_id, buyer_email))
+        code = (
+            SubscriptionStatusCode.ACTIVE
+            if plan_id == TEST_YEARLY_PLAN_ID
+            else SubscriptionStatusCode.NOT_FOUND
+        )
+        return _status(code)
+
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_status", fake_fetch_status)
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: f"https://pay.bitcoin-safe.org/{plan_id}",
+    )
+    monkeypatch.setattr(
+        SubscriptionManager, "get_to_be_signed", lambda self, multipath_descriptor: "wallet-hash"
+    )
+    _run_tasks_synchronously(monkeypatch)
+
+    support.check_existing_subscription(
+        multipath_descriptor=object(),  # type: ignore[arg-type]
+        offered_plan_ids=[TEST_MONTHLY_PLAN_ID, TEST_YEARLY_PLAN_ID],
+    )
+
+    expected_email = derive_subscriber_email("wallet-hash")
+    assert calls == [(TEST_MONTHLY_PLAN_ID, expected_email), (TEST_YEARLY_PLAN_ID, expected_email)]
+    assert support.plan_id == TEST_YEARLY_PLAN_ID
+    assert support.subscriber_email == expected_email
+    assert support.management_url == f"https://pay.bitcoin-safe.org/{TEST_YEARLY_PLAN_ID}"
+    assert support.subscription_allows_access()
+
+    support.close()
+
+
 def _recorded_signals(support: SubscriptionManager) -> list[str]:
     events: list[str] = []
     support.signal_state_changed.connect(lambda: events.append("state_changed"))

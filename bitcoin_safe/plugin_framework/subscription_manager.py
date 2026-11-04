@@ -54,16 +54,13 @@ from bitcoin_safe.gui.qt.util import Message, MessageType, open_website
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.plugin_framework.subscription_api_client import (
+    LIVE_SUBSCRIPTION_CODES,
     SubscriptionApiClient,
     SubscriptionApiError,
     derive_subscriber_email,
 )
 
 logger = logging.getLogger(__name__)
-
-_LIVE_SUBSCRIPTION_CODES = frozenset(
-    {SubscriptionStatusCode.ACTIVE, SubscriptionStatusCode.TRIAL, SubscriptionStatusCode.GRACE}
-)
 
 
 @dataclass
@@ -184,7 +181,7 @@ class SubscriptionManager(QObject, BaseSaveableClass):
 
         async def do() -> tuple[SubscriptionStatusResponse, str | None]:
             status = await asyncio.to_thread(client.fetch_status, plan_id, buyer_email)
-            if status.status not in _LIVE_SUBSCRIPTION_CODES:
+            if status.status not in LIVE_SUBSCRIPTION_CODES:
                 return status, None
             management_url = await asyncio.to_thread(client.fetch_management_url, plan_id, buyer_email)
             return status, management_url
@@ -259,36 +256,44 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             notify_on_error=notify_on_error,
         )
 
-    def check_existing_subscription(self, multipath_descriptor: bdk.Descriptor) -> None:
+    def check_existing_subscription(
+        self,
+        multipath_descriptor: bdk.Descriptor,
+        offered_plan_ids: list[str] | None = None,
+    ) -> None:
         """
-        Look up an existing subscription of this wallet on the service. A live subscription is adopted:
-        its status and, when the service provides one, its management URL.
+        Look up an existing subscription of this wallet on the service. All offered plans of the
+        product are searched with the same derived email, so a subscriber whose plan was replaced
+        is found too. A live subscription is adopted: its plan, status and, when the service
+        provides one, its management URL.
         """
-        if not self.plan_id:
+        candidate_plan_ids: list[str] = [self.plan_id] if self.plan_id else []
+        candidate_plan_ids += offered_plan_ids or []
+        plan_ids = list(dict.fromkeys(candidate_plan_ids))
+        if not plan_ids:
             return
         to_be_signed = self.get_to_be_signed(multipath_descriptor=multipath_descriptor)
         if not to_be_signed:
             return
 
-        plan_id = self.plan_id
         buyer_email = derive_subscriber_email(to_be_signed)
         client = SubscriptionApiClient(self.proxy_dict())
 
-        async def do() -> tuple[SubscriptionStatusResponse, str | None]:
-            status = await asyncio.to_thread(client.fetch_status, plan_id, buyer_email)
-            if status.status not in _LIVE_SUBSCRIPTION_CODES:
-                return status, None
+        async def do() -> tuple[str, SubscriptionStatusResponse, str | None]:
+            plan_id, status = await asyncio.to_thread(client.find_subscription, plan_ids, buyer_email)
+            if status.status not in LIVE_SUBSCRIPTION_CODES:
+                return plan_id, status, None
             try:
                 management_url = await asyncio.to_thread(client.fetch_management_url, plan_id, buyer_email)
             except SubscriptionApiError:
                 logger.warning("Management URL could not be fetched for an existing subscription")
-                return status, None
-            return status, management_url
+                return plan_id, status, None
+            return plan_id, status, management_url
 
-        def on_success(result: tuple[SubscriptionStatusResponse, str | None] | None) -> None:
+        def on_success(result: tuple[str, SubscriptionStatusResponse, str | None] | None) -> None:
             if result is None:
                 return
-            status, management_url = result
+            found_plan_id, status, management_url = result
             if status.status == SubscriptionStatusCode.NOT_FOUND:
                 had_direct_access = self.has_direct_subscription_access()
                 self.subscriber_email = None
@@ -306,9 +311,11 @@ class SubscriptionManager(QObject, BaseSaveableClass):
                 if had_direct_access and not self.subscription_allows_access():
                     self.signal_access_revoked.emit()
                 return
-            self.subscriber_email = buyer_email
-            if management_url:
+            # The management URL of another plan is never kept.
+            if management_url or found_plan_id != self.plan_id:
                 self.management_url = management_url
+            self.plan_id = found_plan_id
+            self.subscriber_email = buyer_email
             self._apply_management_status(status, disable_if_inactive=False)
 
         def on_error(error_info: ExcInfo | None) -> None:

@@ -37,11 +37,15 @@ from btcpay_tools.btcpay_subscription_api.models import (
     PlanCatalogItem,
     PlanCatalogResponse,
     StoreInfoResponse,
+    SubscriptionStatusCode,
     SubscriptionStatusResponse,
 )
 
 SUBSCRIPTION_API_BASE_URL = "https://subscription.bitcoin-safe.org"
 REQUEST_TIMEOUT_SECONDS = 20
+LIVE_SUBSCRIPTION_CODES = frozenset(
+    {SubscriptionStatusCode.ACTIVE, SubscriptionStatusCode.TRIAL, SubscriptionStatusCode.GRACE}
+)
 
 
 class SubscriptionApiError(Exception):
@@ -79,6 +83,27 @@ class SubscriptionApiClient:
             {"plan_id": plan_id, "buyerEmail": buyer_email},
         )
         return SubscriptionStatusResponse.model_validate(data)
+
+    def find_subscription(
+        self, plan_ids: list[str], buyer_email: str
+    ) -> tuple[str, SubscriptionStatusResponse]:
+        """
+        Search the plans in the given order for the buyer's subscription. The first live one wins.
+        Without one, an UNKNOWN status is preferred over NOT_FOUND, so an indeterminate plan is
+        never reported as "no subscription".
+        """
+        if not plan_ids:
+            raise SubscriptionApiError("No plan to search for a subscription.")
+        results: list[tuple[str, SubscriptionStatusResponse]] = []
+        for plan_id in plan_ids:
+            status = self.fetch_status(plan_id, buyer_email)
+            if status.status in LIVE_SUBSCRIPTION_CODES:
+                return plan_id, status
+            results.append((plan_id, status))
+        return next(
+            (result for result in results if result[1].status == SubscriptionStatusCode.UNKNOWN),
+            results[0],
+        )
 
     def fetch_management_url(self, plan_id: str, buyer_email: str) -> str:
         data = self._request(
@@ -118,15 +143,23 @@ def flatten_plans(plans: dict[str, list[PlanCatalogItem]]) -> list[PlanCatalogIt
     return [plan for product_plans in plans.values() for plan in product_plans]
 
 
+def offered_plan_ids(
+    plans: dict[str, list[PlanCatalogItem]],
+    product_id: str,
+    preferred_plan_id: str | None,
+) -> list[str]:
+    """All plan_ids of a product, the preferred plan first."""
+    plan_ids = [plan.plan_id for plan in plans.get(product_id, [])]
+    return sorted(plan_ids, key=lambda plan_id: plan_id != preferred_plan_id)
+
+
 def plan_id_for_product(
     plans: dict[str, list[PlanCatalogItem]],
     product_id: str,
     preferred_plan_id: str | None,
 ) -> str:
     """The plan_id of a product: the preferred plan while it is offered, otherwise the first plan."""
-    offered_plan_ids = [plan.plan_id for plan in plans.get(product_id, [])]
-    if not offered_plan_ids:
+    plan_ids = offered_plan_ids(plans, product_id, preferred_plan_id)
+    if not plan_ids:
         raise SubscriptionApiError(f"The subscription service offers no plan for '{product_id}'.")
-    if preferred_plan_id is not None and preferred_plan_id in offered_plan_ids:
-        return preferred_plan_id
-    return offered_plan_ids[0]
+    return plan_ids[0]
