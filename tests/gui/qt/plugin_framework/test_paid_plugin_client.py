@@ -1434,6 +1434,13 @@ def test_store_move_keeps_enabled_plugin_enabled_with_new_plan_ids(
     )
     monkeypatch.setattr(
         SubscriptionApiClient,
+        "fetch_active_subscriptions",
+        lambda self, buyer_email, product_plan_ids: [
+            SubscriptionStatusResponse(plan_id=new_plan_id, status=SubscriptionStatusCode.ACTIVE)
+        ],
+    )
+    monkeypatch.setattr(
+        SubscriptionApiClient,
         "fetch_management_url",
         lambda self, plan_id, buyer_email: "https://example.com/moved",
     )
