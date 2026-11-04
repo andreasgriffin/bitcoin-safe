@@ -154,7 +154,7 @@ def test_trial_purchase_error_text_hides_network_details() -> None:
     [
         ("https://testnet.demo.btcpayserver.org/subscriber-portal/token", True),
         ("https://example.com/subscriptions/manage/token", True),
-        ("http://testnet.demo.btcpayserver.org/subscriber-portal/token", True),
+        ("http://testnet.demo.btcpayserver.org/subscriber-portal/token", False),
         ("ftp://example.com/manage", False),
         ("https:///manage", False),
         ("https://[", False),

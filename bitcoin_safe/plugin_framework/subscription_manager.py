@@ -803,7 +803,7 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             parsed_url = urlsplit(management_url)
             port = parsed_url.port
             return (
-                parsed_url.scheme in {"http", "https"}
+                parsed_url.scheme == "https"
                 and parsed_url.hostname is not None
                 and parsed_url.username is None
                 and parsed_url.password is None
