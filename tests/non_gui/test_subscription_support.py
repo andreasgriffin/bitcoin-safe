@@ -39,6 +39,7 @@ from btcpay_tools.btcpay_subscription_api.models import SubscriptionStatusCode, 
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import SUPPORT_EMAIL
+from bitcoin_safe.plugin_framework import subscription_manager as subscription_manager_module
 from bitcoin_safe.plugin_framework.subscription_api_client import SubscriptionApiClient, SubscriptionApiError
 from bitcoin_safe.plugin_framework.subscription_manager import (
     StoredSubscriptionStatus,
@@ -501,6 +502,84 @@ def test_check_existing_subscription_never_adopts_other_product(
 
     assert support.plan_id == scheduled_plan_id
     assert support.management_url == f"https://pay.bitcoin-safe.org/{scheduled_plan_id}"
+
+    support.close()
+
+
+def _manage_support(test_config_main_chain: UserConfig) -> SubscriptionManager:
+    return SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        plan_id=TEST_MONTHLY_PLAN_ID,
+        subscriber_email="wallet-hash@v0.bitcoin-safe.org",
+        management_url="https://pay.bitcoin-safe.org/subscriber-portal/ps_saved",
+        stored_subscription_status=StoredSubscriptionStatus(
+            status=_status(SubscriptionStatusCode.ACTIVE), checked_at_ts=1.0, last_status_error=None
+        ),
+    )
+
+
+def test_manage_subscription_opens_freshly_fetched_url(
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    support = _manage_support(test_config_main_chain)
+    opened: list[str] = []
+    monkeypatch.setattr(subscription_manager_module, "open_website", opened.append)
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: "https://pay.bitcoin-safe.org/subscriber-portal/ps_fresh",
+    )
+    _run_tasks_synchronously(monkeypatch)
+
+    support.trigger_manage_subscription()
+
+    assert opened == ["https://pay.bitcoin-safe.org/subscriber-portal/ps_fresh"]
+    assert support.management_url == "https://pay.bitcoin-safe.org/subscriber-portal/ps_fresh"
+
+    support.close()
+
+
+def test_manage_subscription_falls_back_to_saved_url_when_fetch_fails(
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    support = _manage_support(test_config_main_chain)
+    opened: list[str] = []
+    monkeypatch.setattr(subscription_manager_module, "open_website", opened.append)
+
+    def failing_fetch(self, plan_id: str, buyer_email: str) -> str:
+        raise SubscriptionApiError("Subscription service unreachable")
+
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_management_url", failing_fetch)
+    _run_tasks_synchronously(monkeypatch)
+
+    support.trigger_manage_subscription()
+
+    assert opened == ["https://pay.bitcoin-safe.org/subscriber-portal/ps_saved"]
+
+    support.close()
+
+
+def test_extend_subscription_prompt_opens_freshly_fetched_url(
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    support = _manage_support(test_config_main_chain)
+    opened: list[str] = []
+    monkeypatch.setattr(subscription_manager_module, "open_website", opened.append)
+    monkeypatch.setattr(subscription_manager_module, "question_dialog", lambda **kwargs: True)
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: "https://pay.bitcoin-safe.org/subscriber-portal/ps_fresh",
+    )
+    _run_tasks_synchronously(monkeypatch)
+
+    assert support._prompt_extend_subscription() is False
+
+    assert opened == ["https://pay.bitcoin-safe.org/subscriber-portal/ps_fresh"]
 
     support.close()
 

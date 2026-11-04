@@ -235,8 +235,44 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         return bool(self.management_url)
 
     def trigger_manage_subscription(self) -> None:
-        if self.management_url:
-            open_website(self.management_url)
+        self._open_fresh_management_url()
+
+    def _open_fresh_management_url(self) -> None:
+        """
+        Open a newly fetched management URL, since a saved one goes stale quickly. The saved URL is
+        only used when the fresh one cannot be fetched.
+        """
+        if not self.plan_id or not self.subscriber_email:
+            if self.management_url:
+                open_website(self.management_url)
+            return
+        plan_id = self.plan_id
+        buyer_email = self.subscriber_email
+        saved_management_url = self.management_url
+        client = SubscriptionApiClient(self.proxy_dict())
+
+        async def do() -> str:
+            return await asyncio.to_thread(client.fetch_management_url, plan_id, buyer_email)
+
+        def on_success(management_url: str | None) -> None:
+            url = management_url or saved_management_url
+            if url:
+                self.management_url = url
+                open_website(url)
+
+        def on_error(error_info: ExcInfo | None) -> None:
+            logger.warning("Fresh management URL could not be fetched; using the saved URL")
+            if saved_management_url:
+                open_website(saved_management_url)
+
+        self.loop_in_thread.run_task(
+            do(),
+            on_done=lambda result: None,
+            on_success=on_success,
+            on_error=on_error,
+            key=f"{id(self)}_manage_subscription",
+            multiple_strategy=MultipleStrategy.CANCEL_OLD_TASK,
+        )
 
     def supports_refresh_subscription_status(self) -> bool:
         return bool(self.management_url)
@@ -593,7 +629,7 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             false_button=translate("subscription", "Cancel"),
         )
         if response:
-            open_website(self.management_url)
+            self._open_fresh_management_url()
         return False
 
     def _start_free_trial_purchase(self, multipath_descriptor: bdk.Descriptor) -> None:
