@@ -123,7 +123,6 @@ class BasePluginWidget(CardBase):
         self.description_label.setOpenExternalLinks(True)
 
         self.status_label = QLabel("", self.text_container)
-        self.status_label.setWordWrap(True)
         self.status_label.setForegroundRole(QPalette.ColorRole.Dark)
 
         self.text_layout.insertWidget(1, self.metadata_row)
@@ -667,7 +666,7 @@ class PaidPluginWidget(PluginWidget):
             if item is None:
                 continue
             widget = item.widget()
-            if widget is None or widget is self.management_title_label:
+            if widget is None or widget in (self.management_title_label, self.status_label):
                 continue
             if not widget.isHidden():
                 return True
@@ -688,7 +687,13 @@ class PaidPluginWidget(PluginWidget):
         )
         self.manage_subscription_button = self.add_detail_button()
         self.refresh_subscription_button = self.add_detail_button()
+        self._place_status_label_in_management_row()
         self.management_buttons_layout.addStretch()
+
+    def _place_status_label_in_management_row(self) -> None:
+        """The status is shown next to the Manage and Refresh buttons it describes."""
+        self.text_layout.removeWidget(self.status_label)
+        self.management_buttons_layout.addWidget(self.status_label)
 
     def _on_start_trial_clicked(self) -> None:
         self.plugin.trigger_start_trial()

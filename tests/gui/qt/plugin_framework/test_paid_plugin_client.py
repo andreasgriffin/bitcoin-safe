@@ -756,6 +756,42 @@ def test_external_paid_plugin_places_update_button_with_action_controls(
 
 
 @pytest.mark.marker_qt_1
+def test_subscription_status_is_shown_next_to_refresh_button(
+    qapp: QApplication,
+    qtbot: QtBot,
+    test_config_main_chain: UserConfig,
+) -> None:
+    fx = FX(config=test_config_main_chain, loop_in_thread=None, update_rates=False)
+    plugin = _make_demo_plugin(
+        config=test_config_main_chain,
+        fx=fx,
+        loop_in_thread=None,
+        management_url="https://example.com/manage",
+        status=SubscriptionStatusResponse(plan_id=TEST_MONTHLY_PLAN_ID, status=SubscriptionStatusCode.ACTIVE),
+    )
+
+    try:
+        widget = PaidPluginWidget(plugin)
+        qtbot.addWidget(widget)
+        widget.show()
+        widget.refresh_subscription_button.setVisible(True)
+        widget.manage_subscription_button.setVisible(True)
+        widget.set_status_text("Current status: Active.")
+        widget._sync_section_visibility()
+
+        # The status sits in the management row, after the buttons it describes, not above the row.
+        assert widget.status_label.parentWidget() is widget.management_buttons_container
+        row_index = widget.management_buttons_layout.indexOf(widget.status_label)
+        refresh_index = widget.management_buttons_layout.indexOf(widget.refresh_subscription_button)
+        assert row_index > refresh_index >= 0
+        assert widget.status_label.isVisibleTo(widget)
+    finally:
+        widget.close()
+        plugin.close()
+        fx.close()
+
+
+@pytest.mark.marker_qt_1
 def test_subscription_management_row_stays_hidden_without_visible_actions(
     qapp: QApplication,
     qtbot: QtBot,
