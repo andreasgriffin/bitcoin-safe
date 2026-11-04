@@ -277,6 +277,9 @@ def test_error_from_exc_info_returns_original_exception() -> None:
     assert resolved_error is error
 
 
+PRODUCT_PLAN_IDS = [TEST_MONTHLY_PLAN_ID, TEST_YEARLY_PLAN_ID]
+
+
 def _active(plan_id: str, code: SubscriptionStatusCode) -> SubscriptionStatusResponse:
     return SubscriptionStatusResponse(plan_id=plan_id, status=code)
 
@@ -292,7 +295,9 @@ def test_check_existing_subscription_adopts_active_subscription(
     )
     emails: list[str] = []
 
-    def fake_fetch_active(self, buyer_email: str) -> list[SubscriptionStatusResponse]:
+    def fake_fetch_active(
+        self, buyer_email: str, product_plan_ids: list[str]
+    ) -> list[SubscriptionStatusResponse]:
         emails.append(buyer_email)
         return [_active(TEST_MONTHLY_PLAN_ID, SubscriptionStatusCode.ACTIVE)]
 
@@ -307,7 +312,10 @@ def test_check_existing_subscription_adopts_active_subscription(
     )
     _run_tasks_synchronously(monkeypatch)
 
-    support.check_existing_subscription(multipath_descriptor=object())  # type: ignore[arg-type]
+    support.check_existing_subscription(
+        multipath_descriptor=object(),  # type: ignore[arg-type]
+        product_plan_ids=PRODUCT_PLAN_IDS,
+    )
 
     expected_email = derive_subscriber_email("wallet-hash")
     assert emails == [expected_email]
@@ -342,7 +350,9 @@ def test_check_existing_subscription_follows_upgrade_from_monthly_to_yearly(
     active_calls: list[str] = []
     management_calls: list[str] = []
 
-    def fake_fetch_active(self, buyer_email: str) -> list[SubscriptionStatusResponse]:
+    def fake_fetch_active(
+        self, buyer_email: str, product_plan_ids: list[str]
+    ) -> list[SubscriptionStatusResponse]:
         active_calls.append(buyer_email)
         return [_active(TEST_YEARLY_PLAN_ID, SubscriptionStatusCode.ACTIVE)]
 
@@ -357,7 +367,10 @@ def test_check_existing_subscription_follows_upgrade_from_monthly_to_yearly(
     )
     _run_tasks_synchronously(monkeypatch)
 
-    support.check_existing_subscription(multipath_descriptor=object())  # type: ignore[arg-type]
+    support.check_existing_subscription(
+        multipath_descriptor=object(),  # type: ignore[arg-type]
+        product_plan_ids=PRODUCT_PLAN_IDS,
+    )
 
     assert len(active_calls) == 1
     assert management_calls == [TEST_YEARLY_PLAN_ID]
@@ -378,14 +391,17 @@ def test_check_existing_subscription_reports_missing_subscription(
     monkeypatch.setattr(
         SubscriptionApiClient,
         "fetch_active_subscriptions",
-        lambda self, buyer_email: [],
+        lambda self, buyer_email, product_plan_ids: [],
     )
     monkeypatch.setattr(
         SubscriptionManager, "get_to_be_signed", lambda self, multipath_descriptor: "wallet-hash"
     )
     _run_tasks_synchronously(monkeypatch)
 
-    support.check_existing_subscription(multipath_descriptor=object())  # type: ignore[arg-type]
+    support.check_existing_subscription(
+        multipath_descriptor=object(),  # type: ignore[arg-type]
+        product_plan_ids=PRODUCT_PLAN_IDS,
+    )
 
     assert support.subscriber_email is None
     assert not support.subscription_allows_access()
@@ -413,20 +429,78 @@ def test_check_existing_subscription_revokes_stale_cached_access(
     monkeypatch.setattr(
         SubscriptionApiClient,
         "fetch_active_subscriptions",
-        lambda self, buyer_email: [],
+        lambda self, buyer_email, product_plan_ids: [],
     )
     monkeypatch.setattr(
         SubscriptionManager, "get_to_be_signed", lambda self, multipath_descriptor: "new-wallet"
     )
     _run_tasks_synchronously(monkeypatch)
 
-    support.check_existing_subscription(multipath_descriptor=object())  # type: ignore[arg-type]
+    support.check_existing_subscription(
+        multipath_descriptor=object(),  # type: ignore[arg-type]
+        product_plan_ids=PRODUCT_PLAN_IDS,
+    )
 
     assert not support.subscription_allows_access()
     assert support.management_url is None
     assert support.subscriber_email is None
     assert revoked == [True]
     assert "No subscription was found" in support.subscription_status_text()
+
+    support.close()
+
+
+def test_fetch_active_subscriptions_ignores_other_products(monkeypatch: pytest.MonkeyPatch) -> None:
+    """
+    The endpoint lists all products. A Business Plan subscription must never be adopted for a
+    Scheduled Payments product, even when it is the first entry of the response.
+    """
+    business_plan_id = "plan_business_plan"
+    scheduled_plan_id = "plan_scheduled_payments"
+    server_response = [
+        {"schema_version": 1, "plan_id": business_plan_id, "status": "active", "isActive": True},
+        {"schema_version": 1, "plan_id": scheduled_plan_id, "status": "active", "isActive": True},
+    ]
+    monkeypatch.setattr(SubscriptionApiClient, "_request", lambda self, *a, **k: server_response)
+
+    live = SubscriptionApiClient(None).fetch_active_subscriptions("buyer@example.org", [scheduled_plan_id])
+
+    assert [status.plan_id for status in live] == [scheduled_plan_id]
+
+
+def test_check_existing_subscription_never_adopts_other_product(
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """
+    Recovery for Scheduled Payments must not adopt the active Business Plan subscription, which the
+    endpoint lists first.
+    """
+    business_plan_id = "plan_business_plan"
+    scheduled_plan_id = "plan_scheduled_payments"
+    support = SubscriptionManager(config=test_config_main_chain, loop_in_thread=None, plan_id=None)
+    server_response = [
+        {"schema_version": 1, "plan_id": business_plan_id, "status": "active", "isActive": True},
+        {"schema_version": 1, "plan_id": scheduled_plan_id, "status": "active", "isActive": True},
+    ]
+    monkeypatch.setattr(SubscriptionApiClient, "_request", lambda self, *a, **k: server_response)
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_management_url",
+        lambda self, plan_id, buyer_email: f"https://pay.bitcoin-safe.org/{plan_id}",
+    )
+    monkeypatch.setattr(
+        SubscriptionManager, "get_to_be_signed", lambda self, multipath_descriptor: "wallet-hash"
+    )
+    _run_tasks_synchronously(monkeypatch)
+
+    support.check_existing_subscription(
+        multipath_descriptor=object(),  # type: ignore[arg-type]
+        product_plan_ids=[scheduled_plan_id],
+    )
+
+    assert support.plan_id == scheduled_plan_id
+    assert support.management_url == f"https://pay.bitcoin-safe.org/{scheduled_plan_id}"
 
     support.close()
 

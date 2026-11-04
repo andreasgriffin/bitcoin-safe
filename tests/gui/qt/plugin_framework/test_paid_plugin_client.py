@@ -1492,7 +1492,7 @@ def test_store_move_reenables_plugin_once_new_plan_is_active(
     monkeypatch.setattr(
         SubscriptionApiClient,
         "fetch_active_subscriptions",
-        lambda self, buyer_email: [
+        lambda self, buyer_email, product_plan_ids: [
             SubscriptionStatusResponse(plan_id=new_plan_id, status=SubscriptionStatusCode.ACTIVE)
         ],
     )
@@ -1510,7 +1510,10 @@ def test_store_move_reenables_plugin_once_new_plan_is_active(
     )
     _run_subscription_tasks_synchronously(monkeypatch, (plugin.subscription_manager,))
     try:
-        plugin.subscription_manager.check_existing_subscription(multipath_descriptor=object())  # type: ignore[arg-type]
+        plugin.subscription_manager.check_existing_subscription(
+            multipath_descriptor=object(),  # type: ignore[arg-type]
+            product_plan_ids=[new_plan_id],
+        )
 
         assert plugin.subscription_manager.plan_id == new_plan_id
         assert plugin.subscription_allows_access()

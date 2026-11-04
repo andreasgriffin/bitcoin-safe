@@ -256,9 +256,13 @@ class SubscriptionManager(QObject, BaseSaveableClass):
             notify_on_error=notify_on_error,
         )
 
-    def check_existing_subscription(self, multipath_descriptor: bdk.Descriptor) -> None:
+    def check_existing_subscription(
+        self,
+        multipath_descriptor: bdk.Descriptor,
+        product_plan_ids: list[str],
+    ) -> None:
         """
-        Look up the wallet's live subscription on any plan of the product in one request. The
+        Look up the wallet's live subscription among the plans of this product in one request. The
         response lists only live plans, so after an upgrade the new plan is adopted and the replaced
         plan is dropped. Its management URL, status and plan_id are taken from that live entry.
         """
@@ -270,10 +274,12 @@ class SubscriptionManager(QObject, BaseSaveableClass):
         client = SubscriptionApiClient(self.proxy_dict())
 
         async def do() -> tuple[SubscriptionStatusResponse | None, str | None]:
-            active = await asyncio.to_thread(client.fetch_active_subscriptions, buyer_email)
-            if not active:
+            live_subscriptions = await asyncio.to_thread(
+                client.fetch_active_subscriptions, buyer_email, product_plan_ids
+            )
+            if not live_subscriptions:
                 return None, None
-            live = active[0]
+            live = live_subscriptions[0]
             try:
                 management_url = await asyncio.to_thread(
                     client.fetch_management_url, live.plan_id, buyer_email

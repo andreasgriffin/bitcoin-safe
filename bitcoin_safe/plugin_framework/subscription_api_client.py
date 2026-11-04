@@ -84,10 +84,19 @@ class SubscriptionApiClient:
         )
         return SubscriptionStatusResponse.model_validate(data)
 
-    def fetch_active_subscriptions(self, buyer_email: str) -> list[SubscriptionStatusResponse]:
-        """Every plan of the catalog on which the buyer has a live subscription, in one request."""
+    def fetch_active_subscriptions(
+        self,
+        buyer_email: str,
+        product_plan_ids: list[str],
+    ) -> list[SubscriptionStatusResponse]:
+        """
+        The buyer's live subscriptions among the given plan_ids of one product. The endpoint lists
+        all products, so the result is filtered to this product's plans.
+        """
         data = self._request("POST", "/api/subscriptions/active", {"buyerEmail": buyer_email})
-        return [SubscriptionStatusResponse.model_validate(item) for item in data]
+        allowed = set(product_plan_ids)
+        statuses = [SubscriptionStatusResponse.model_validate(item) for item in data]
+        return [status for status in statuses if status.plan_id in allowed]
 
     def fetch_management_url(self, plan_id: str, buyer_email: str) -> str:
         data = self._request(

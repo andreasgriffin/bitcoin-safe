@@ -246,8 +246,17 @@ class PaidPluginClient(PluginClient):
         if not descriptor:
             logger.warning("No descriptor available; cannot check the subscription")
             return
+        product_plan_ids = [
+            catalog_item.plan_id
+            for catalog_item in self.subscription_price_lookup.catalog_items_for_product(
+                self.subscription_product_id
+            )
+        ]
         for subscription_manager in self.subscription_managers:
-            subscription_manager.check_existing_subscription(multipath_descriptor=descriptor)
+            subscription_manager.check_existing_subscription(
+                multipath_descriptor=descriptor,
+                product_plan_ids=product_plan_ids,
+            )
 
     def supports_refresh_subscription_status_action(self) -> bool:
         return self.displayed_subscription_manager.supports_refresh_subscription_status()
@@ -429,11 +438,12 @@ class PaidPluginClient(PluginClient):
                 return None
             if subscriber_email and has_subscription:
                 # The subscriber may be on a plan other than the preferred one, e.g. after an upgrade.
-                active = await asyncio.to_thread(client.fetch_active_subscriptions, subscriber_email)
-                live_plan_ids = {status.plan_id for status in active}
-                for plan in plans[product_id]:
-                    if plan.plan_id in live_plan_ids:
-                        return plan.plan_id
+                product_plan_ids = [plan.plan_id for plan in plans[product_id]]
+                active = await asyncio.to_thread(
+                    client.fetch_active_subscriptions, subscriber_email, product_plan_ids
+                )
+                if active:
+                    return active[0].plan_id
             return plan_id_for_product(plans, product_id, preferred_plan_id)
 
         def on_success(plan_id: str | None) -> None:
