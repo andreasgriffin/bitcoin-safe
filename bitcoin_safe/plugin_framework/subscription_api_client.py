@@ -118,11 +118,15 @@ def flatten_plans(plans: dict[str, list[PlanCatalogItem]]) -> list[PlanCatalogIt
     return [plan for product_plans in plans.values() for plan in product_plans]
 
 
-def plan_id_for_product(plans: dict[str, list[PlanCatalogItem]], product_id: str) -> str:
-    """The single plan_id of a product. Refuses to choose when the product offers several plans."""
-    product_plans = plans.get(product_id, [])
-    if not product_plans:
+def plan_id_for_product(
+    plans: dict[str, list[PlanCatalogItem]],
+    product_id: str,
+    preferred_plan_id: str | None,
+) -> str:
+    """The plan_id of a product: the preferred plan while it is offered, otherwise the first plan."""
+    offered_plan_ids = [plan.plan_id for plan in plans.get(product_id, [])]
+    if not offered_plan_ids:
         raise SubscriptionApiError(f"The subscription service offers no plan for '{product_id}'.")
-    if len(product_plans) > 1:
-        raise SubscriptionApiError(f"Several plans are offered for '{product_id}'; refusing to choose.")
-    return product_plans[0].plan_id
+    if preferred_plan_id is not None and preferred_plan_id in offered_plan_ids:
+        return preferred_plan_id
+    return offered_plan_ids[0]

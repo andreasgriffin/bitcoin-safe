@@ -65,9 +65,10 @@ class SubscriptionPriceLookup(QObject):
         super().__init__(parent)
         self.signal_tracker = SignalTracker()
         self._state = _SubscriptionPriceLookupState()
+        self._plans_by_product: dict[str, list[PlanCatalogItem]] = {}
         self._catalog_by_plan_id: dict[str, PlanCatalogItem] = {}
         self._loading = False
-        self._fetch_task: Future[list[PlanCatalogItem]] | None = None
+        self._fetch_task: Future[dict[str, list[PlanCatalogItem]]] | None = None
         self.signal_tracker.connect(cast(SignalProtocol[[]], self.destroyed), self._state.close)
 
     @property
@@ -75,21 +76,21 @@ class SubscriptionPriceLookup(QObject):
         return self._state.closed
 
     def ensure_prices(self, subscription_manager: SubscriptionManager) -> None:
-        if self._closed or self._loading or self._catalog_by_plan_id:
+        if self._closed or self._loading or self._plans_by_product:
             return
 
         proxy_dict = subscription_manager.proxy_dict()
         self._loading = True
         if subscription_manager.loop_in_thread is None:
             try:
-                self._set_catalog(flatten_plans(SubscriptionApiClient(proxy_dict).fetch_plans()))
+                self._set_catalog(SubscriptionApiClient(proxy_dict).fetch_plans())
             except Exception as exc:
                 self._handle_fetch_error(exc)
             return
 
-        future: Future[list[PlanCatalogItem]] | None = None
+        future: Future[dict[str, list[PlanCatalogItem]]] | None = None
 
-        def on_success(plans: list[PlanCatalogItem] | None) -> None:
+        def on_success(plans: dict[str, list[PlanCatalogItem]] | None) -> None:
             self._on_fetch_success(plans, future)
 
         def on_error(error_info: ExcInfo | Exception | None) -> None:
@@ -111,6 +112,11 @@ class SubscriptionPriceLookup(QObject):
             return None
         return self._catalog_by_plan_id.get(plan_id)
 
+    def catalog_items_for_product(self, product_id: str) -> list[PlanCatalogItem]:
+        if self._closed:
+            return []
+        return self._plans_by_product.get(product_id, [])
+
     def close(self) -> bool:
         if self._closed:
             return True
@@ -123,32 +129,35 @@ class SubscriptionPriceLookup(QObject):
         self._loading = False
         return True
 
-    async def _fetch_catalog_async(self, proxy_dict: dict[str, str] | None) -> list[PlanCatalogItem]:
-        return flatten_plans(SubscriptionApiClient(proxy_dict).fetch_plans())
+    async def _fetch_catalog_async(
+        self, proxy_dict: dict[str, str] | None
+    ) -> dict[str, list[PlanCatalogItem]]:
+        return SubscriptionApiClient(proxy_dict).fetch_plans()
 
     def _on_fetch_success(
         self,
-        plans: list[PlanCatalogItem] | None,
-        future: Future[list[PlanCatalogItem]] | None = None,
+        plans: dict[str, list[PlanCatalogItem]] | None,
+        future: Future[dict[str, list[PlanCatalogItem]]] | None = None,
     ) -> None:
         if self._closed:
             return
 
         self._clear_fetch_task(future)
-        self._set_catalog(plans or [])
+        self._set_catalog(plans or {})
 
-    def _set_catalog(self, plans: list[PlanCatalogItem]) -> None:
+    def _set_catalog(self, plans: dict[str, list[PlanCatalogItem]]) -> None:
         if self._closed:
             return
 
         self._loading = False
-        self._catalog_by_plan_id = {plan.plan_id: plan for plan in plans}
+        self._plans_by_product = plans
+        self._catalog_by_plan_id = {plan.plan_id: plan for plan in flatten_plans(plans)}
         self.signal_prices_changed.emit(SUBSCRIPTION_API_BASE_URL)
 
     def _handle_fetch_error(
         self,
         error_info: ExcInfo | Exception | None,
-        future: Future[list[PlanCatalogItem]] | None = None,
+        future: Future[dict[str, list[PlanCatalogItem]]] | None = None,
     ) -> None:
         if self._closed:
             return
@@ -158,6 +167,6 @@ class SubscriptionPriceLookup(QObject):
         self._loading = False
         self.signal_prices_changed.emit(SUBSCRIPTION_API_BASE_URL)
 
-    def _clear_fetch_task(self, future: Future[list[PlanCatalogItem]] | None) -> None:
+    def _clear_fetch_task(self, future: Future[dict[str, list[PlanCatalogItem]]] | None) -> None:
         if future is None or self._fetch_task is future:
             self._fetch_task = None

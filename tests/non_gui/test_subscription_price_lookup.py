@@ -121,17 +121,20 @@ def test_catalog_is_grouped_by_product(catalog: dict[str, list]) -> None:
 
 
 def test_business_plan_id_is_resolved_by_product_key(catalog: dict[str, list]) -> None:
-    assert plan_id_for_product(catalog, "business-plan") == TEST_BUSINESS_PLAN_ID
+    assert plan_id_for_product(catalog, "business-plan", None) == TEST_BUSINESS_PLAN_ID
 
 
 def test_plan_id_for_unknown_product_is_rejected(catalog: dict[str, list]) -> None:
     with pytest.raises(Exception, match="no plan"):
-        plan_id_for_product(catalog, "missing-product")
+        plan_id_for_product(catalog, "missing-product", None)
 
 
-def test_plan_id_for_product_with_several_plans_is_rejected(catalog: dict[str, list]) -> None:
-    with pytest.raises(Exception, match="refusing to choose"):
-        plan_id_for_product(catalog, "notifications")
+def test_plan_id_for_product_keeps_preferred_plan(catalog: dict[str, list]) -> None:
+    assert plan_id_for_product(catalog, "notifications", TEST_YEARLY_PLAN_ID) == TEST_YEARLY_PLAN_ID
+
+
+def test_plan_id_for_product_falls_back_to_first_plan(catalog: dict[str, list]) -> None:
+    assert plan_id_for_product(catalog, "notifications", "plan_gone") == TEST_MONTHLY_PLAN_ID
 
 
 def test_price_lookup_serves_prices_from_the_plan_catalog(
@@ -180,3 +183,36 @@ def test_price_lookup_is_empty_until_fetched(
     assert lookup.catalog_item_for_plan_id(TEST_MONTHLY_PLAN_ID) is None
 
     lookup.close()
+
+
+def test_product_plans_are_listed_with_name_and_price(
+    qtbot: QtBot,
+    qapp: QApplication,
+    loop_in_thread: LoopInThread,
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        SubscriptionApiClient,
+        "fetch_plans",
+        lambda self: PlanCatalogResponse.model_validate(CATALOG_RESPONSE).plans,
+    )
+    lookup = SubscriptionPriceLookup()
+    manager = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=loop_in_thread,
+        plan_id=TEST_MONTHLY_PLAN_ID,
+    )
+
+    with qtbot.waitSignal(lookup.signal_prices_changed, timeout=5_000):
+        lookup.ensure_prices(manager)
+
+    notification_plans = lookup.catalog_items_for_product("notifications")
+    assert [(plan.plan_id, plan.name, plan.price) for plan in notification_plans] == [
+        (TEST_MONTHLY_PLAN_ID, "Monthly", "6.99"),
+        (TEST_YEARLY_PLAN_ID, "Yearly", "59.99"),
+    ]
+    assert lookup.catalog_items_for_product("missing-product") == []
+
+    lookup.close()
+    manager.close()

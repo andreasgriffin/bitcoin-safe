@@ -194,14 +194,17 @@ class PaidPluginClient(PluginClient):
 
     def available_plan_options(self) -> tuple[tuple[str, str], ...]:
         return tuple(
-            (storage_key, self._plan_title(storage_key)) for storage_key in self._subscription_managers_by_key
+            (catalog_item.plan_id, self._format_plan_option(catalog_item))
+            for catalog_item in self.subscription_price_lookup.catalog_items_for_product(
+                self.subscription_product_id
+            )
         )
 
     def selected_plan_option_key(self) -> str:
-        return self._selected_subscription_key
+        return self.subscription_manager.plan_id or ""
 
     def select_plan_option(self, storage_key: str) -> None:
-        self._set_selected_subscription_key(storage_key)
+        self.subscription_manager.set_plan_id(storage_key)
 
     def set_paid_content_widget(self, widget: QWidget) -> None:
         self._layout.removeWidget(self._plugin_content)
@@ -254,18 +257,6 @@ class PaidPluginClient(PluginClient):
 
     def trigger_refresh_subscription_status_action(self) -> None:
         self.displayed_subscription_manager.trigger_refresh_subscription_status(disable_if_inactive=True)
-
-    def subscription_price_text(self, storage_key: str | None = None) -> str | None:
-        key = self._selected_subscription_key if storage_key is None else storage_key
-        if self._needs_subscription_price_texts():
-            self.ensure_price_texts()
-        plan_id = self._plan_id_for_key(key)
-        if plan_id is None:
-            return None
-        catalog_item = self.subscription_price_lookup.catalog_item_for_plan_id(plan_id)
-        if catalog_item is None:
-            return None
-        return self._format_subscription_price_text(catalog_item)
 
     def status_text(self) -> str:
         return self.displayed_subscription_manager.subscription_status_text()
@@ -427,12 +418,13 @@ class PaidPluginClient(PluginClient):
         proxy_url = self.config.network_config.proxy_url
         proxy_dict = ProxyInfo.parse(proxy_url).get_requests_proxy_dict() if proxy_url else None
         product_id = self.subscription_product_id
+        preferred_plan_id = self.subscription_manager.plan_id
 
         async def do() -> str | None:
             plans = await asyncio.to_thread(SubscriptionApiClient(proxy_dict).fetch_plans)
             if not plans.get(product_id):
                 return None
-            return plan_id_for_product(plans, product_id)
+            return plan_id_for_product(plans, product_id, preferred_plan_id)
 
         def on_success(plan_id: str | None) -> None:
             self._set_subscription_plan_id(plan_id)
@@ -583,21 +575,9 @@ class PaidPluginClient(PluginClient):
                 return storage_key
         raise KeyError("subscription manager not registered")
 
-    def _plan_id_for_key(self, storage_key: str) -> str | None:
-        subscription_manager = self._subscription_managers_by_key.get(storage_key)
-        return subscription_manager.plan_id if subscription_manager is not None else None
-
-    def _plan_title(self, storage_key: str) -> str:
-        plan_id = self._plan_id_for_key(storage_key)
-        catalog_item = (
-            self.subscription_price_lookup.catalog_item_for_plan_id(plan_id) if plan_id is not None else None
-        )
-        if catalog_item is not None:
-            return catalog_item.name
-        return plan_id or storage_key
-
-    def _format_subscription_price_text(self, catalog_item: PlanCatalogItem) -> str:
-        return self.tr("{price} {currency} / {recurring}").format(
+    def _format_plan_option(self, catalog_item: PlanCatalogItem) -> str:
+        return self.tr("{name}: {price} {currency} / {recurring}").format(
+            name=catalog_item.name,
             price=catalog_item.price,
             currency=catalog_item.currency,
             recurring=catalog_item.recurringType,

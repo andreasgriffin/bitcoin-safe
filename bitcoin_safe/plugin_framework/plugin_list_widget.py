@@ -625,18 +625,7 @@ class PaidPluginWidget(PluginWidget):
         callback: Callable[[str], None] | None,
         visible: bool,
     ) -> None:
-        if not visible or not options:
-            self.plan_selector_title_label.setText(title)
-            self.plan_selector_title_label.setVisible(False)
-            self.plan_selector_combo.blockSignals(True)
-            self.plan_selector_combo.clear()
-            self.plan_selector_combo.blockSignals(False)
-            self._plan_option_keys = []
-            self.plan_selector_container.setVisible(False)
-            return
-
-        self.plan_selector_title_label.setText(title)
-        self.plan_selector_title_label.setVisible(bool(title))
+        """The combo is shown only when there are plans. The container is owned by the caller: its buttons outlive an empty catalog."""
         try:
             self.plan_selector_combo.currentIndexChanged.disconnect()
         except TypeError:
@@ -645,7 +634,7 @@ class PaidPluginWidget(PluginWidget):
         self.plan_selector_combo.blockSignals(True)
         self.plan_selector_combo.clear()
         self._plan_option_keys = []
-        for storage_key, label in options:
+        for storage_key, label in options if visible else ():
             self.plan_selector_combo.addItem(label)
             self._plan_option_keys.append(storage_key)
 
@@ -655,12 +644,15 @@ class PaidPluginWidget(PluginWidget):
         self.plan_selector_combo.setCurrentIndex(selected_index)
         self.plan_selector_combo.blockSignals(False)
 
-        if callback is not None:
+        has_options = bool(self._plan_option_keys)
+        self.plan_selector_title_label.setText(title)
+        self.plan_selector_title_label.setVisible(has_options and bool(title))
+        self.plan_selector_combo.setVisible(has_options)
+
+        if callback is not None and has_options:
             self.plan_selector_combo.currentIndexChanged.connect(
                 lambda index: callback(self._plan_option_keys[index]) if index >= 0 else None
             )
-
-        self.plan_selector_container.setVisible(True)
 
     def _subscription_section_visible(self) -> bool:
         return (
@@ -680,12 +672,6 @@ class PaidPluginWidget(PluginWidget):
             if not widget.isHidden():
                 return True
         return self._layout_has_visible_widgets(self.destructive_buttons_layout)
-
-    def _plan_options(self) -> tuple[tuple[str, str], ...]:
-        options: list[tuple[str, str]] = []
-        for storage_key, label in self.plugin.available_plan_options():
-            options.append((storage_key, self.plugin.subscription_price_text(storage_key) or label))
-        return tuple(options)
 
     def _create_action_buttons(self) -> None:
         super()._create_action_buttons()
@@ -729,7 +715,7 @@ class PaidPluginWidget(PluginWidget):
 
         self.set_plan_selector(
             title=self.plugin.plan_selection_title(),
-            options=self._plan_options(),
+            options=self.plugin.available_plan_options(),
             selected_key=self.plugin.selected_plan_option_key(),
             callback=self.plugin.select_plan_option,
             visible=show_plan_selector,
@@ -752,6 +738,7 @@ class PaidPluginWidget(PluginWidget):
             self.start_trial_button.start_spin()
         else:
             self.start_trial_button.enable_button()
+        self.plan_selector_container.setVisible(show_start_trial or show_plan_selector)
         self.subscription_buttons_container.setVisible(show_start_trial or show_plan_selector)
 
         self._set_button_action(

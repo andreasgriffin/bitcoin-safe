@@ -76,6 +76,7 @@ from bitcoin_safe.plugin_framework.subscription_price_lookup import Subscription
 from tests.btcpay_support import (
     TEST_BUSINESS_PLAN_ID,
     TEST_MONTHLY_PLAN_ID,
+    TEST_YEARLY_PLAN_ID,
 )
 
 BUSINESS_PRODUCT_ID = "business-plan"
@@ -619,7 +620,7 @@ def test_known_subscription_hides_plan_selector_and_ignores_selected_plan(
 
         initial_status = plugin.status_text()
 
-        plugin.select_plan_option(TEST_DEMO_PRODUCT_ID)
+        plugin.select_plan_option(TEST_YEARLY_PLAN_ID)
 
         assert plugin.status_text() == initial_status
         assert widget.status_label.text() == initial_status
