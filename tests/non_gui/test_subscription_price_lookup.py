@@ -39,7 +39,6 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.plugin_framework.subscription_api_client import (
     SubscriptionApiClient,
     flatten_plans,
-    offered_plan_ids,
     plan_id_for_product,
 )
 from bitcoin_safe.plugin_framework.subscription_manager import SubscriptionManager
@@ -136,17 +135,6 @@ def test_plan_id_for_product_keeps_preferred_plan(catalog: dict[str, list]) -> N
 
 def test_plan_id_for_product_falls_back_to_first_plan(catalog: dict[str, list]) -> None:
     assert plan_id_for_product(catalog, "notifications", "plan_gone") == TEST_MONTHLY_PLAN_ID
-
-
-def test_offered_plan_ids_lists_all_plans_preferred_first(catalog: dict[str, list]) -> None:
-    assert offered_plan_ids(catalog, "notifications", TEST_YEARLY_PLAN_ID) == [
-        TEST_YEARLY_PLAN_ID,
-        TEST_MONTHLY_PLAN_ID,
-    ]
-    assert offered_plan_ids(catalog, "notifications", "plan_gone") == [
-        TEST_MONTHLY_PLAN_ID,
-        TEST_YEARLY_PLAN_ID,
-    ]
 
 
 def test_price_lookup_serves_prices_from_the_plan_catalog(

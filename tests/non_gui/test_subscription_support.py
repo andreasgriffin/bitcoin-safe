@@ -277,6 +277,10 @@ def test_error_from_exc_info_returns_original_exception() -> None:
     assert resolved_error is error
 
 
+def _active(plan_id: str, code: SubscriptionStatusCode) -> SubscriptionStatusResponse:
+    return SubscriptionStatusResponse(plan_id=plan_id, status=code)
+
+
 def test_check_existing_subscription_adopts_active_subscription(
     test_config_main_chain: UserConfig,
     monkeypatch: pytest.MonkeyPatch,
@@ -286,13 +290,13 @@ def test_check_existing_subscription_adopts_active_subscription(
     support = SubscriptionManager(
         config=test_config_main_chain, loop_in_thread=None, plan_id=TEST_MONTHLY_PLAN_ID
     )
-    calls: list[tuple[str, str]] = []
+    emails: list[str] = []
 
-    def fake_fetch_status(self, plan_id: str, buyer_email: str) -> SubscriptionStatusResponse:
-        calls.append((plan_id, buyer_email))
-        return _status(SubscriptionStatusCode.ACTIVE)
+    def fake_fetch_active(self, buyer_email: str) -> list[SubscriptionStatusResponse]:
+        emails.append(buyer_email)
+        return [_active(TEST_MONTHLY_PLAN_ID, SubscriptionStatusCode.ACTIVE)]
 
-    monkeypatch.setattr(SubscriptionApiClient, "fetch_status", fake_fetch_status)
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_active_subscriptions", fake_fetch_active)
     monkeypatch.setattr(
         SubscriptionApiClient,
         "fetch_management_url",
@@ -306,11 +310,60 @@ def test_check_existing_subscription_adopts_active_subscription(
     support.check_existing_subscription(multipath_descriptor=object())  # type: ignore[arg-type]
 
     expected_email = derive_subscriber_email("wallet-hash")
-    assert calls == [(TEST_MONTHLY_PLAN_ID, expected_email)]
+    assert emails == [expected_email]
     assert support.subscriber_email == expected_email
     assert support.stored_subscription_status.status is not None
     assert support.stored_subscription_status.status.status == SubscriptionStatusCode.ACTIVE
     assert support.management_url == "https://pay.bitcoin-safe.org/subscriber-portal/ps_fetched"
+
+    support.close()
+
+
+def test_check_existing_subscription_follows_upgrade_from_monthly_to_yearly(
+    test_config_main_chain: UserConfig,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """
+    The buyer had Monthly and upgraded to Yearly, so the service lists only Yearly as active. A
+    single active lookup adopts Yearly and drops Monthly, with the management URL of Yearly.
+    """
+    support = SubscriptionManager(
+        config=test_config_main_chain,
+        loop_in_thread=None,
+        plan_id=TEST_MONTHLY_PLAN_ID,
+        subscriber_email="wallet-hash@v0.bitcoin-safe.org",
+        management_url="https://pay.bitcoin-safe.org/subscriber-portal/ps_monthly",
+        stored_subscription_status=StoredSubscriptionStatus(
+            status=_active(TEST_MONTHLY_PLAN_ID, SubscriptionStatusCode.ACTIVE),
+            checked_at_ts=1.0,
+            last_status_error=None,
+        ),
+    )
+    active_calls: list[str] = []
+    management_calls: list[str] = []
+
+    def fake_fetch_active(self, buyer_email: str) -> list[SubscriptionStatusResponse]:
+        active_calls.append(buyer_email)
+        return [_active(TEST_YEARLY_PLAN_ID, SubscriptionStatusCode.ACTIVE)]
+
+    def fake_fetch_management_url(self, plan_id: str, buyer_email: str) -> str:
+        management_calls.append(plan_id)
+        return f"https://pay.bitcoin-safe.org/subscriber-portal/{plan_id}"
+
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_active_subscriptions", fake_fetch_active)
+    monkeypatch.setattr(SubscriptionApiClient, "fetch_management_url", fake_fetch_management_url)
+    monkeypatch.setattr(
+        SubscriptionManager, "get_to_be_signed", lambda self, multipath_descriptor: "wallet-hash"
+    )
+    _run_tasks_synchronously(monkeypatch)
+
+    support.check_existing_subscription(multipath_descriptor=object())  # type: ignore[arg-type]
+
+    assert len(active_calls) == 1
+    assert management_calls == [TEST_YEARLY_PLAN_ID]
+    assert support.plan_id == TEST_YEARLY_PLAN_ID
+    assert support.management_url == f"https://pay.bitcoin-safe.org/subscriber-portal/{TEST_YEARLY_PLAN_ID}"
+    assert support.subscription_allows_access()
 
     support.close()
 
@@ -324,8 +377,8 @@ def test_check_existing_subscription_reports_missing_subscription(
     )
     monkeypatch.setattr(
         SubscriptionApiClient,
-        "fetch_status",
-        lambda self, plan_id, buyer_email: _status(SubscriptionStatusCode.NOT_FOUND),
+        "fetch_active_subscriptions",
+        lambda self, buyer_email: [],
     )
     monkeypatch.setattr(
         SubscriptionManager, "get_to_be_signed", lambda self, multipath_descriptor: "wallet-hash"
@@ -359,8 +412,8 @@ def test_check_existing_subscription_revokes_stale_cached_access(
     support.signal_access_revoked.connect(lambda: revoked.append(True))
     monkeypatch.setattr(
         SubscriptionApiClient,
-        "fetch_status",
-        lambda self, plan_id, buyer_email: _status(SubscriptionStatusCode.NOT_FOUND),
+        "fetch_active_subscriptions",
+        lambda self, buyer_email: [],
     )
     monkeypatch.setattr(
         SubscriptionManager, "get_to_be_signed", lambda self, multipath_descriptor: "new-wallet"
@@ -374,52 +427,6 @@ def test_check_existing_subscription_revokes_stale_cached_access(
     assert support.subscriber_email is None
     assert revoked == [True]
     assert "No subscription was found" in support.subscription_status_text()
-
-    support.close()
-
-
-def test_check_existing_subscription_finds_yearly_when_first_plan_is_not_found(
-    test_config_main_chain: UserConfig,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    from bitcoin_safe.plugin_framework.subscription_api_client import derive_subscriber_email
-
-    support = SubscriptionManager(
-        config=test_config_main_chain, loop_in_thread=None, plan_id=TEST_MONTHLY_PLAN_ID
-    )
-    calls: list[tuple[str, str]] = []
-
-    def fake_fetch_status(self, plan_id: str, buyer_email: str) -> SubscriptionStatusResponse:
-        calls.append((plan_id, buyer_email))
-        code = (
-            SubscriptionStatusCode.ACTIVE
-            if plan_id == TEST_YEARLY_PLAN_ID
-            else SubscriptionStatusCode.NOT_FOUND
-        )
-        return _status(code)
-
-    monkeypatch.setattr(SubscriptionApiClient, "fetch_status", fake_fetch_status)
-    monkeypatch.setattr(
-        SubscriptionApiClient,
-        "fetch_management_url",
-        lambda self, plan_id, buyer_email: f"https://pay.bitcoin-safe.org/{plan_id}",
-    )
-    monkeypatch.setattr(
-        SubscriptionManager, "get_to_be_signed", lambda self, multipath_descriptor: "wallet-hash"
-    )
-    _run_tasks_synchronously(monkeypatch)
-
-    support.check_existing_subscription(
-        multipath_descriptor=object(),  # type: ignore[arg-type]
-        offered_plan_ids=[TEST_MONTHLY_PLAN_ID, TEST_YEARLY_PLAN_ID],
-    )
-
-    expected_email = derive_subscriber_email("wallet-hash")
-    assert calls == [(TEST_MONTHLY_PLAN_ID, expected_email), (TEST_YEARLY_PLAN_ID, expected_email)]
-    assert support.plan_id == TEST_YEARLY_PLAN_ID
-    assert support.subscriber_email == expected_email
-    assert support.management_url == f"https://pay.bitcoin-safe.org/{TEST_YEARLY_PLAN_ID}"
-    assert support.subscription_allows_access()
 
     support.close()
 

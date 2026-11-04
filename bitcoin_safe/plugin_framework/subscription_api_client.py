@@ -84,26 +84,10 @@ class SubscriptionApiClient:
         )
         return SubscriptionStatusResponse.model_validate(data)
 
-    def find_subscription(
-        self, plan_ids: list[str], buyer_email: str
-    ) -> tuple[str, SubscriptionStatusResponse]:
-        """
-        Search the plans in the given order for the buyer's subscription. The first live one wins.
-        Without one, an UNKNOWN status is preferred over NOT_FOUND, so an indeterminate plan is
-        never reported as "no subscription".
-        """
-        if not plan_ids:
-            raise SubscriptionApiError("No plan to search for a subscription.")
-        results: list[tuple[str, SubscriptionStatusResponse]] = []
-        for plan_id in plan_ids:
-            status = self.fetch_status(plan_id, buyer_email)
-            if status.status in LIVE_SUBSCRIPTION_CODES:
-                return plan_id, status
-            results.append((plan_id, status))
-        return next(
-            (result for result in results if result[1].status == SubscriptionStatusCode.UNKNOWN),
-            results[0],
-        )
+    def fetch_active_subscriptions(self, buyer_email: str) -> list[SubscriptionStatusResponse]:
+        """Every plan of the catalog on which the buyer has a live subscription, in one request."""
+        data = self._request("POST", "/api/subscriptions/active", {"buyerEmail": buyer_email})
+        return [SubscriptionStatusResponse.model_validate(item) for item in data]
 
     def fetch_management_url(self, plan_id: str, buyer_email: str) -> str:
         data = self._request(
@@ -116,7 +100,7 @@ class SubscriptionApiClient:
             raise SubscriptionApiError("The subscription service returned no management URL.")
         return management_url
 
-    def _request(self, method: str, path: str, payload: dict[str, str] | None = None) -> dict[str, Any]:
+    def _request(self, method: str, path: str, payload: dict[str, str] | None = None) -> Any:
         try:
             response = requests.request(
                 method,
@@ -134,23 +118,11 @@ class SubscriptionApiClient:
             data = response.json()
         except ValueError as exc:
             raise SubscriptionApiError("Subscription service returned invalid JSON.") from exc
-        if not isinstance(data, dict):
-            raise SubscriptionApiError("Subscription service returned an unexpected payload.")
         return data
 
 
 def flatten_plans(plans: dict[str, list[PlanCatalogItem]]) -> list[PlanCatalogItem]:
     return [plan for product_plans in plans.values() for plan in product_plans]
-
-
-def offered_plan_ids(
-    plans: dict[str, list[PlanCatalogItem]],
-    product_id: str,
-    preferred_plan_id: str | None,
-) -> list[str]:
-    """All plan_ids of a product, the preferred plan first."""
-    plan_ids = [plan.plan_id for plan in plans.get(product_id, [])]
-    return sorted(plan_ids, key=lambda plan_id: plan_id != preferred_plan_id)
 
 
 def plan_id_for_product(
@@ -159,7 +131,9 @@ def plan_id_for_product(
     preferred_plan_id: str | None,
 ) -> str:
     """The plan_id of a product: the preferred plan while it is offered, otherwise the first plan."""
-    plan_ids = offered_plan_ids(plans, product_id, preferred_plan_id)
-    if not plan_ids:
+    offered_plan_ids = [plan.plan_id for plan in plans.get(product_id, [])]
+    if not offered_plan_ids:
         raise SubscriptionApiError(f"The subscription service offers no plan for '{product_id}'.")
-    return plan_ids[0]
+    if preferred_plan_id is not None and preferred_plan_id in offered_plan_ids:
+        return preferred_plan_id
+    return offered_plan_ids[0]

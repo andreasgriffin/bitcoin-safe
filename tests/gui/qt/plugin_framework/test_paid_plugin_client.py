@@ -1488,13 +1488,13 @@ def test_store_move_reenables_plugin_once_new_plan_is_active(
     assert not plugin.subscription_allows_access()
     assert not plugin.enabled
 
-    # The operator re-creates the subscription under the new plan: the status is ACTIVE.
+    # The operator re-creates the subscription under the new plan: the new plan is listed as active.
     monkeypatch.setattr(
         SubscriptionApiClient,
-        "fetch_status",
-        lambda self, plan_id, buyer_email: SubscriptionStatusResponse(
-            plan_id=plan_id, status=SubscriptionStatusCode.ACTIVE
-        ),
+        "fetch_active_subscriptions",
+        lambda self, buyer_email: [
+            SubscriptionStatusResponse(plan_id=new_plan_id, status=SubscriptionStatusCode.ACTIVE)
+        ],
     )
     monkeypatch.setattr(
         SubscriptionApiClient,
