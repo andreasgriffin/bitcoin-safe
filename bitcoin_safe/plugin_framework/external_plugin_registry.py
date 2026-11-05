@@ -100,7 +100,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_PLUGIN_SOURCE_URL = "https://github.com/andreasgriffin/plugins.git"
 DEFAULT_PLUGIN_SOURCE_ID = "plugin-repository"
-DEFAULT_PLUGIN_SOURCE_DISPLAY_NAME = "Bitcoin-Safe official plugins"
+DEFAULT_PLUGIN_SOURCE_DISPLAY_NAME = f"{APP_NAME} official plugins"
 _ORIGINAL_FETCH_BYTES = fetch_bytes
 
 

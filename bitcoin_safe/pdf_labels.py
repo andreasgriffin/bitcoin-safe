@@ -37,7 +37,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.platypus import KeepInFrame, Paragraph, Spacer, Table, TableStyle
 
-from bitcoin_safe.constants import APP_NAME
+from bitcoin_safe.constants import APP_NAME, APP_WEBSITE
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import BasePDF, white_space, write_and_open_temp_pdf
 
@@ -84,7 +84,7 @@ class PDFLabels(BasePDF):
         self.elements.append(
             Paragraph(
                 translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" {APP_NAME}: {white_space * 5} www.bitcoin-safe.org",
+                + f" {APP_NAME}: {white_space * 5} {APP_WEBSITE}",
                 self.style_paragraph,
             )
         )
