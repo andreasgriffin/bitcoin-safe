@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import importlib
 import importlib.abc
 import importlib.machinery
@@ -389,16 +390,33 @@ class ExternalPluginRegistry(BaseSaveableClass):
 
     @classmethod
     def from_config(cls, config: UserConfig) -> ExternalPluginRegistry:
-        try:
-            return ExternalPluginRegistry._from_file(
-                filename=str(cls.get_repository_path(config)),
-                class_kwargs={ExternalPluginRegistry.__name__: {"config": config}},
-            )
-        except Exception:
+        repository_path = cls.get_repository_path(config)
+        if not repository_path.exists():
             registry = ExternalPluginRegistry(config=config)
-            registry._write_source(cls._default_source())
+            registry._add_default_source_if_missing()
             registry.save()
             return registry
+
+        try:
+            registry = ExternalPluginRegistry._from_file(
+                filename=str(repository_path),
+                class_kwargs={ExternalPluginRegistry.__name__: {"config": config}},
+            )
+        except Exception as exc:
+            backup_path = repository_path.with_name(repository_path.name + ".bak")
+            logger.warning("Could not load %s (%s); moving it to %s", repository_path, exc, backup_path)
+            repository_path.replace(backup_path)
+            return cls.from_config(config)
+
+        if registry._add_default_source_if_missing():
+            registry.save()
+        return registry
+
+    def _add_default_source_if_missing(self) -> bool:
+        if DEFAULT_PLUGIN_SOURCE_ID in self.sources:
+            return False
+        self._write_source(self._default_source())
+        return True
 
     @classmethod
     def _default_source(cls) -> PluginSource:
@@ -492,13 +510,14 @@ class ExternalPluginRegistry(BaseSaveableClass):
             self.last_download_time = datetime.now(timezone.utc)
         for source in enabled_sources:
             try:
-                manifest, _manifest_bytes, _signature_bytes, _plugin_metadata_texts = (
-                    self._fetch_and_verify_manifest(
-                        manifest_url=source.manifest_url,
-                        pinned_source_public_key=source.pinned_source_public_key,
-                        auth_config=source.auth_config,
-                        last_seen_source_serial=source.last_seen_source_serial,
-                    )
+                # Blocking network, parsing and signature verification run in a worker thread,
+                # so this coroutine stays cancellable. Only this coroutine writes state.
+                manifest, _manifest_bytes, _signature_bytes, _plugin_metadata_texts = await asyncio.to_thread(
+                    self._fetch_and_verify_manifest,
+                    source.manifest_url,
+                    source.pinned_source_public_key,
+                    source.auth_config,
+                    source.last_seen_source_serial,
                 )
                 updated_source = PluginSource(
                     source_id=source.source_id,

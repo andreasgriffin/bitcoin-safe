@@ -71,6 +71,7 @@ from bitcoin_safe.plugin_framework.builtin_plugins import (
     BUILTIN_PLUGIN_BUNDLES_BY_CLIENT_CLASS,
 )
 from bitcoin_safe.plugin_framework.external_plugin_registry import (
+    DEFAULT_PLUGIN_SOURCE_ID,
     ExternalPluginRegistry,
     suggested_plugin_source_display_name,
 )
@@ -1833,6 +1834,122 @@ def test_external_registry_refresh_sources_caches_plugin_metadata_for_local_cata
     assert entries[0].version == "1.0.0"
 
 
+def test_from_config_creates_default_source_when_file_missing(tmp_path: Path) -> None:
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+
+    assert DEFAULT_PLUGIN_SOURCE_ID in registry.sources
+    assert ExternalPluginRegistry.get_repository_path(config).exists()
+
+
+def test_from_config_seeds_default_source_into_existing_registry_without_it(tmp_path: Path) -> None:
+    config = _make_config(tmp_path)
+    existing = ExternalPluginRegistry(config=config)
+    existing.save()
+    assert existing.sources == {}
+
+    registry = ExternalPluginRegistry.from_config(config)
+
+    assert DEFAULT_PLUGIN_SOURCE_ID in registry.sources
+    reloaded = ExternalPluginRegistry._from_file(
+        filename=str(ExternalPluginRegistry.get_repository_path(config)),
+        class_kwargs={ExternalPluginRegistry.__name__: {"config": config}},
+    )
+    assert DEFAULT_PLUGIN_SOURCE_ID in reloaded.sources
+
+
+def test_from_config_keeps_user_sources_and_adds_missing_default(tmp_path: Path) -> None:
+    config = _make_config(tmp_path)
+    existing = ExternalPluginRegistry(config=config)
+    user_source = PluginSource(
+        source_id="user-source",
+        display_name="User Source",
+        manifest_url="https://dummy.example/source.toml",
+        pinned_source_public_key="key",
+        auth_config=PluginSourceAuthConfig(),
+    )
+    existing._write_source(user_source)
+    existing.save()
+
+    registry = ExternalPluginRegistry.from_config(config)
+
+    assert set(registry.sources) == {"user-source", DEFAULT_PLUGIN_SOURCE_ID}
+
+
+def test_from_config_does_not_save_when_default_source_present(tmp_path: Path, monkeypatch) -> None:
+    config = _make_config(tmp_path)
+    existing = ExternalPluginRegistry(config=config)
+    existing._write_source(ExternalPluginRegistry._default_source())
+    existing.save()
+    save_calls: list[None] = []
+    monkeypatch.setattr(ExternalPluginRegistry, "save", lambda self: save_calls.append(None))
+
+    ExternalPluginRegistry.from_config(config)
+
+    assert save_calls == []
+
+
+def test_from_config_moves_corrupt_registry_aside_without_overwriting_bytes(tmp_path: Path) -> None:
+    config = _make_config(tmp_path)
+    repository_path = ExternalPluginRegistry.get_repository_path(config)
+    repository_path.parent.mkdir(parents=True, exist_ok=True)
+    corrupt_bytes = b"{ this is not valid json"
+    repository_path.write_bytes(corrupt_bytes)
+
+    registry = ExternalPluginRegistry.from_config(config)
+
+    backup_path = repository_path.with_name(repository_path.name + ".bak")
+    assert backup_path.read_bytes() == corrupt_bytes
+    assert DEFAULT_PLUGIN_SOURCE_ID in registry.sources
+    assert (
+        DEFAULT_PLUGIN_SOURCE_ID
+        in ExternalPluginRegistry._from_file(
+            filename=str(repository_path),
+            class_kwargs={ExternalPluginRegistry.__name__: {"config": config}},
+        ).sources
+    )
+
+
+def test_refresh_sources_cancellation_writes_nothing(tmp_path: Path, monkeypatch) -> None:
+    registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    source = PluginSource(
+        source_id="test-source",
+        display_name="Test Source",
+        manifest_url="https://dummy.example/source.toml",
+        pinned_source_public_key="key",
+        auth_config=PluginSourceAuthConfig(),
+        enabled=True,
+        last_seen_source_serial=0,
+    )
+    registry._write_source(source)
+    started = threading.Event()
+    release = threading.Event()
+    save_calls: list[None] = []
+
+    def _blocking_verify(self: ExternalPluginRegistry, *args: Any) -> None:
+        del self, args
+        started.set()
+        release.wait(timeout=5)
+        raise ExternalPluginError("blocked fetch released")
+
+    monkeypatch.setattr(ExternalPluginRegistry, "_fetch_and_verify_manifest", _blocking_verify)
+    monkeypatch.setattr(ExternalPluginRegistry, "save", lambda self: save_calls.append(None))
+
+    async def _run() -> None:
+        task = asyncio.create_task(registry.refresh_sources(recheck_installed=False))
+        while not started.is_set():
+            await asyncio.sleep(0.01)
+        task.cancel()
+        release.set()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+
+    asyncio.run(_run())
+
+    assert save_calls == []
+    assert registry.sources["test-source"].last_checked_at is None
+
+
 def test_external_registry_load_module_reloads_changed_plugin_package_modules(tmp_path: Path) -> None:
     plugin_dir = tmp_path / "bundle"
     package_dir = plugin_dir / "test_plugin"
@@ -3378,8 +3495,8 @@ def test_plugin_manager_reschedules_startup_source_refresh_after_restart(
     monkeypatch.setattr(ExternalPluginRegistry, "load_sources", lambda self: [source])
     monkeypatch.setattr(
         PluginManager,
-        "refresh_plugin_sources",
-        lambda self, source_id=None, show_errors=True: _mark_source_refresh_run(
+        "_run_plugin_source_refresh",
+        lambda self, source_id=None, show_errors=True, startup=False: _mark_source_refresh_run(
             self, refresh_calls, show_errors
         ),
     )
