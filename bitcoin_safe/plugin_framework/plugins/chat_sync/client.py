@@ -65,7 +65,7 @@ from bitcoin_safe.html_utils import link
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
-from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
+from bitcoin_safe.plugin_framework.plugin_wallet_context import PluginWalletContext
 from bitcoin_safe.plugin_framework.plugins.chat_sync.constants import SYNC_CHAT_ICON_NAME
 from bitcoin_safe.plugin_framework.plugins.chat_sync.label_syncer import LabelSyncer
 from bitcoin_safe.signals import Signals
@@ -138,15 +138,7 @@ class BackupNsecNotificationBar(NotificationBar):
 
 class SyncClient(PluginClient):
     VERSION = "0.0.3"
-    known_classes = {**PluginClient.known_classes, PluginPermission.__name__: PluginPermission}
     plugin_conditions = PluginConditions()
-    required_permissions: set[PluginPermission] = {
-        PluginPermission.LABELS,
-        PluginPermission.WALLET_SIGNALS,
-        PluginPermission.MN_TUPLE,
-        PluginPermission.ADDRESS,
-        PluginPermission.DESCRIPTOR,
-    }
 
     @classmethod
     def set_base_infos(cls):
@@ -285,10 +277,10 @@ class SyncClient(PluginClient):
 
         if reset_keys:
             self.nostr_sync.reset_own_key()
-            if self.server:
+            if self.wallet_context:
                 self.backup_nsec_notificationbar.set_nsec(
                     nsec=self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32(),
-                    wallet_id=self.server.wallet_id,
+                    wallet_id=self.wallet_context.wallet_id,
                 )
 
         self.device_info["hostname"] = current_hostname_hash
@@ -298,25 +290,23 @@ class SyncClient(PluginClient):
         if self.enabled == value:
             return
         super().set_enabled(value=value)
-        if value and self.server:
+        if value and self.wallet_context:
             self.backup_nsec_notificationbar.set_nsec(
                 nsec=self.nostr_sync.group_chat.dm_connection.async_dm_connection.keys.secret_key().to_bech32(),
-                wallet_id=self.server.wallet_id,
+                wallet_id=self.wallet_context.wallet_id,
             )
         if self.label_syncer:
             self.label_syncer.set_enabled(value=value)
 
-    def set_server_view(
-        self,
-        server: PluginServerView,
-    ):
+    def set_wallet_context(self, wallet_context: PluginWalletContext) -> None:
         """Save connection details."""
-        super().set_server_view(server=server)
+        super().set_wallet_context(wallet_context=wallet_context)
 
-        labels = server.get_labels()
-        if not self.server:
-            return
-        wallet_signals = self.server.get_wallet_signals()
+        labels = wallet_context.labels()
+        wallet_signals = wallet_context.wallet_signals
+        if self.label_syncer:
+            self.label_syncer.close()
+            self.label_syncer = None
         if labels and wallet_signals:
             self.label_syncer = LabelSyncer(
                 labels=labels,
@@ -439,7 +429,7 @@ class SyncClient(PluginClient):
                     no_show=True,
                     parent=self,
                     content=ChatSyncMessageContent(
-                        wallet_id=self.server.wallet_id if self.server else None,
+                        wallet_id=self.wallet_context.wallet_id if self.wallet_context else None,
                         author=self.nostr_sync.chat.get_alias(dm.author),
                         description=dm.description,
                         opened_data_type=dm.data.data_type.name,
@@ -454,7 +444,7 @@ class SyncClient(PluginClient):
                     no_show=True,
                     parent=self,
                     content=ChatSyncMessageContent(
-                        wallet_id=self.server.wallet_id if self.server else None,
+                        wallet_id=self.wallet_context.wallet_id if self.wallet_context else None,
                         author=self.nostr_sync.chat.get_alias(dm.author),
                         description=dm.description,
                     ),

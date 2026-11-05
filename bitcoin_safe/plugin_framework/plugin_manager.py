@@ -73,6 +73,8 @@ from bitcoin_safe.plugin_framework.external_plugin_registry import (
     InstalledSourcePluginMetadata,
     VerifiedExternalPluginBundle,
     VerifiedPluginSourceManifest,
+    is_builtin_publisher_key,
+    publisher_key_fingerprint,
 )
 from bitcoin_safe.plugin_framework.paid_plugin_client import PaidPluginClient
 from bitcoin_safe.plugin_framework.plugin_bundle import (
@@ -89,8 +91,8 @@ from bitcoin_safe.plugin_framework.plugin_list_widget import (
     PluginListWidget,
     SectionHeader,
 )
-from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServer
 from bitcoin_safe.plugin_framework.plugin_source_widget import SourceCatalogItem
+from bitcoin_safe.plugin_framework.plugin_wallet_context import PluginWalletContext
 from bitcoin_safe.plugin_framework.plugins.business_plan.client import BusinessPlanItem
 from bitcoin_safe.plugin_framework.subscription_manager import SubscriptionManager
 from bitcoin_safe.plugin_framework.subscription_price_lookup import SubscriptionPriceLookup
@@ -264,7 +266,6 @@ class PluginManager(BaseSaveableClass):
     _base_known_classes = {
         **BaseSaveableClass.known_classes,
         PluginClient.__name__: PluginClient,
-        PluginPermission.__name__: PluginPermission,
         **{client_cls.__name__: client_cls for client_cls in BUILTIN_PLUGIN_CLIENT_CLASSES},
     }
     known_classes = _base_known_classes.copy()
@@ -387,7 +388,6 @@ class PluginManager(BaseSaveableClass):
         external_registry: ExternalPluginRegistry,
         clients: list[PluginClient] | None = None,
         serialized_client_dumps: list[str] | None = None,
-        plugin_permissions: dict[str, set[PluginPermission]] | None = None,
         subscription_price_lookup: SubscriptionPriceLookup | None = None,
         external_bundles: dict[str, VerifiedExternalPluginBundle] | None = None,
         parent: QWidget | None = None,
@@ -430,10 +430,6 @@ class PluginManager(BaseSaveableClass):
         self.clients: list[PluginClient] = clients if clients else []
         self.serialized_client_dumps: list[str] = self._merge_serialized_client_payloads(
             [payload for payload in serialized_client_dumps or [] if isinstance(payload, str)]
-        )
-        self.plugin_server: PluginServer | None = None
-        self.plugin_permissions: dict[str, set[PluginPermission]] = (
-            plugin_permissions if plugin_permissions else {}
         )
         self._client_registered_callbacks: list[Callable[[PluginClient], None]] = []
         self._plugin_state_recovery_allowed = False
@@ -1087,25 +1083,10 @@ class PluginManager(BaseSaveableClass):
         self._ensure_external_state_loaded()
         self.client_signal_tracker.disconnect_all()
         self.signal_tracker = SignalTracker()
-        self.plugin_server = PluginServer(
-            wallet_id=wallet_id,
-            network=self.network,
-            wallet_functions=self.wallet_functions,
-            plugin_permissions=self.plugin_permissions,
-        )
         self._restore_or_create_clients(descriptor=descriptor)
 
         for client in self.clients:
-            plugin_id = self._plugin_id(client)
-            if plugin_id not in self.plugin_permissions:
-                self.plugin_permissions[plugin_id] = set()
-            if self._is_permission_auto_allowed(client):
-                self.plugin_permissions[plugin_id].update(client.required_permissions)
-
-            scoped_server = self.plugin_server.view_for(plugin_id)
-            if not scoped_server.request_access(client.required_permissions):
-                client.set_enabled(False)
-            client.set_server_view(server=scoped_server)
+            client.set_wallet_context(self._wallet_context(wallet_id=wallet_id))
 
             if isinstance(client, PaidPluginClient):
                 client.defer_subscription_refresh(True)
@@ -1113,15 +1094,14 @@ class PluginManager(BaseSaveableClass):
 
         self.widget.set_plugins(self.listable_items)
 
-    def set_wallet_id(self, wallet_id: str) -> None:
-        """Update the wallet id used by connected plugin services."""
-        self._current_wallet_id = wallet_id
-        if self.plugin_server:
-            self.plugin_server.wallet_id = wallet_id
+    def _wallet_context(self, wallet_id: str) -> PluginWalletContext:
+        return PluginWalletContext(wallet_id=wallet_id, wallet_functions=self.wallet_functions)
 
-    @staticmethod
-    def _plugin_id(client: PluginClient) -> str:
-        return client.plugin_id
+    def set_wallet_id(self, wallet_id: str) -> None:
+        """Rebind all connected plugin clients to the renamed wallet id."""
+        self._current_wallet_id = wallet_id
+        for client in self.clients:
+            client.set_wallet_context(self._wallet_context(wallet_id=wallet_id))
 
     def _client_for_plugin_id(self, plugin_id: str) -> PluginClient | None:
         for client in self.clients:
@@ -1129,21 +1109,13 @@ class PluginManager(BaseSaveableClass):
                 return client
         return None
 
-    def _is_permission_auto_allowed(self, client: PluginClient) -> bool:
-        runtime_bundle = self._runtime_bundle_for_client_class(client.__class__)
-        return bool(runtime_bundle and client.__class__ in runtime_bundle.auto_allow_plugin_clients)
-
     def _on_client_enabled_changed(self, client: PluginClient, enabled: bool) -> None:
-        plugin_id = self._plugin_id(client)
-        if enabled:
-            granted_permissions = self._request_permission(plugin_id, client)
-            if not client.allow_enable_request():
-                return
-            client.set_enabled(enabled and bool(granted_permissions))
+        if not enabled:
+            client.set_enabled(False)
             return
-
-        client.set_enabled(False)
-        self.plugin_permissions[plugin_id] = set()
+        if not client.allow_enable_request():
+            return
+        client.set_enabled(True)
 
     def _on_client_delete_requested(self, client: PluginClient) -> None:
         if client.plugin_source != PluginClientSource.EXTERNAL or client.plugin_bundle_id is None:
@@ -1157,34 +1129,6 @@ class PluginManager(BaseSaveableClass):
         if entry is None or not entry.update_available:
             return
         self.update_installed_source_plugin(client, entry)
-
-    def _request_permission(self, plugin_id: str, client: PluginClient) -> bool:
-        not_yet_granted_permissions = set(client.required_permissions) - self.plugin_permissions.get(
-            plugin_id,
-            set(),
-        )
-        if not not_yet_granted_permissions:
-            return True
-
-        permission_lines = "\n".join(
-            f"- {permission.name}: {permission.description}"
-            for permission in sorted(not_yet_granted_permissions, key=lambda permission: permission.name)
-        )
-        response = self._is_permission_auto_allowed(client) or question_dialog(
-            text=(
-                f"{client.title} requests access to:\n{permission_lines}\n\n"
-                "Allow this plugin to access these features?"
-            ),
-            title="Plugin permission request",
-            true_button="Allow",
-            false_button="Deny",
-        )
-
-        if not response:
-            return False
-
-        self.plugin_permissions[plugin_id].update(not_yet_granted_permissions)
-        return True
 
     def load_all_enabled(self) -> None:
         for client in self.clients:
@@ -1344,6 +1288,9 @@ class PluginManager(BaseSaveableClass):
             )
             return
 
+        if not is_builtin_publisher_key(pinned_key) and not self._confirm_source_trust(pinned_key):
+            return
+
         try:
             manifest = self.external_registry.add_source(
                 manifest_url=manifest_url,
@@ -1356,6 +1303,21 @@ class PluginManager(BaseSaveableClass):
             logger.info("Added plugin source %s.", manifest.display_name)
         except ExternalPluginError as exc:
             Message(str(exc), type=MessageType.Error, parent=self.parent or self.widget)
+
+    def _confirm_source_trust(self, pinned_key: str) -> bool:
+        fingerprint = publisher_key_fingerprint(pinned_key) or self.widget.tr("unknown")
+        text = self.widget.tr(
+            "This source's publisher (key {fingerprint}) can ship plugins that run with full access "
+            "to this wallet, including its labels, addresses and transactions, and can keep doing so "
+            "through future updates. Only trust publishers you know."
+        ).format(fingerprint=fingerprint)
+        response = question_dialog(
+            text=text,
+            title=self.widget.tr("Trust this plugin source?"),
+            true_button=self.widget.tr("Trust and add"),
+            false_button=self.widget.tr("Cancel"),
+        )
+        return bool(response)
 
     def _log_async_registry_error(self, error_info: ExcInfo | Exception | None) -> None:
         logger.warning("Plugin source refresh failed: %s", self._render_async_registry_error(error_info))
@@ -1569,7 +1531,6 @@ class PluginManager(BaseSaveableClass):
                 existing_client for existing_client in self.clients if existing_client not in removed_clients
             ]
             for removed_client in removed_clients:
-                self.plugin_permissions.pop(removed_client.plugin_id, None)
                 removed_client.close()
             self._reconnect_client_signals()
             runtime_changed = self._refresh_external_registry_state()
@@ -1602,9 +1563,6 @@ class PluginManager(BaseSaveableClass):
     def dump(self) -> dict[str, Any]:
         data = super().dump()
         data["serialized_client_dumps"] = self._serialized_client_payloads()
-        data["plugin_permissions"] = {
-            plugin_id: list(permissions) for plugin_id, permissions in self.plugin_permissions.items()
-        }
         return data
 
     @classmethod
@@ -1613,71 +1571,13 @@ class PluginManager(BaseSaveableClass):
         if class_kwargs:
             dct.update(class_kwargs[cls.__name__])
 
-        plugin_permissions: dict[str, set[PluginPermission]] = dct.get("plugin_permissions", {})
-        for plugin_id in plugin_permissions:
-            plugin_permissions[plugin_id] = {
-                entry for entry in plugin_permissions[plugin_id] if isinstance(entry, PluginPermission)
-            }
-
         dct["clients"] = [client for client in dct.get("clients", []) if isinstance(client, PluginClient)]
         return cls(**filtered_for_init(dct, cls))
 
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
-        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
-            pass
-        if fast_version(str(dct["VERSION"])) <= fast_version("0.0.1"):
-            dct.setdefault("plugin_permissions", {})
-            for client in dct.get("clients", []):
-                if not isinstance(client, PluginClient):
-                    continue
-
-                plugin_id = client.plugin_id
-                if plugin_id in dct["plugin_permissions"]:
-                    continue
-
-                required_permissions = set(client.required_permissions)
-                enabled = bool(client.enabled)
-                if enabled:
-                    dct["plugin_permissions"][plugin_id] = set(required_permissions)
-                else:
-                    dct["plugin_permissions"].setdefault(plugin_id, set())
-
-        if fast_version(str(dct["VERSION"])) < fast_version("0.0.4"):
-            dct.setdefault("plugin_permissions", {})
-            for client in dct.get("clients", []):
-                if not isinstance(client, PluginClient):
-                    continue
-
-                plugin_id = client.plugin_id
-                if not client.enabled:
-                    continue
-
-                dct["plugin_permissions"][plugin_id] = set(client.required_permissions)
-
-        if fast_version(str(dct["VERSION"])) < fast_version("0.0.5"):
-            dct.setdefault("plugin_permissions", {})
-
         if fast_version(str(dct["VERSION"])) < fast_version("0.0.6"):
             dct.setdefault("business_plan", None)
-        if fast_version(str(dct["VERSION"])) < fast_version("0.0.12"):
-            if isinstance((client := dct.get("business_plan", None)), BusinessPlanItem):
-                plugin_id = client.plugin_id
-                dct["plugin_permissions"][plugin_id] = set(client.required_permissions)
-        if fast_version(str(dct["VERSION"])) < fast_version("0.0.14"):
-            dct.setdefault("plugin_permissions", {})
-            migrated_permissions: dict[str, set[PluginPermission]] = {}
-            for client in dct.get("clients", []):
-                if not isinstance(client, PluginClient):
-                    continue
-                old_key = client.__class__.__name__
-                if old_key in dct["plugin_permissions"]:
-                    migrated_permissions[client.plugin_id] = set(dct["plugin_permissions"][old_key])
-            if isinstance((client := dct.get("business_plan", None)), PluginClient):
-                old_key = client.__class__.__name__
-                if old_key in dct["plugin_permissions"]:
-                    migrated_permissions[client.plugin_id] = set(dct["plugin_permissions"][old_key])
-            dct["plugin_permissions"].update(migrated_permissions)
 
         if "VERSION" in dct:
             del dct["VERSION"]

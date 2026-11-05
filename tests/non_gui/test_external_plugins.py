@@ -54,6 +54,7 @@ from packaging.version import Version
 from PyQt6.QtGui import QColor, QIcon, QPixmap
 from PyQt6.QtWidgets import (
     QApplication,
+    QDialog,
     QHBoxLayout,
     QSizePolicy,
     QStackedWidget,
@@ -72,6 +73,8 @@ from bitcoin_safe.plugin_framework.builtin_plugins import (
 )
 from bitcoin_safe.plugin_framework.external_plugin_registry import (
     ExternalPluginRegistry,
+    is_builtin_publisher_key,
+    publisher_key_fingerprint,
     suggested_plugin_source_display_name,
 )
 from bitcoin_safe.plugin_framework.external_plugin_registry_dataclasses import (
@@ -105,7 +108,6 @@ from bitcoin_safe.plugin_framework.plugin_manager import (
     PluginManagerWidget,
     SourceCatalogItem,
 )
-from bitcoin_safe.plugin_framework.plugin_server import PluginPermission
 from bitcoin_safe.plugin_framework.plugin_source_download import (
     fetch_plugin_source_bytes,
 )
@@ -123,6 +125,7 @@ from bitcoin_safe.plugin_framework.subscription_manager import (
     SubscriptionManager,
 )
 from bitcoin_safe.signals import Signals, WalletFunctions
+from bitcoin_safe.signature_manager import KnownGPGKeys
 from tests.btcpay_support import (
     TEST_MONTHLY_PLAN_ID,
     TEST_SCHEDULE_PRODUCT_ID,
@@ -408,7 +411,6 @@ def _installed_source_plugin_metadata(
         version=version,
         folder_hash=folder_hash,
         installed_at="2026-04-21T00:00:00+00:00",
-        trusted_auto_allow_signer=False,
         verified_signer_fingerprint="fingerprint",
         catalog_entry=catalog_entry,
     )
@@ -466,7 +468,6 @@ def _patch_plugin_manager_for_builtin_client(
     runtime_bundle = normalize_runtime_plugin_bundle(
         module=module,
         context=_make_runtime_context(Path("/tmp")),
-        auto_allow_plugin_clients=module.PLUGIN_CLIENTS,
     )
     base_known_classes = PluginManager._base_known_classes.copy()
     base_known_classes[client_cls.__name__] = client_cls
@@ -513,7 +514,7 @@ def _plugin_pyproject_text(version: str = "1.0.0", bitcoin_safe_version: str = "
             'description = "Test description"',
             'provider = "Tests"',
             'schema_version = "1"',
-            'plugin_api_version = "1"',
+            'plugin_api_version = "2"',
             'entrypoint = "test_plugin/plugin_bundle.py"',
             f'bitcoin_safe_version = "{bitcoin_safe_version}"',
             "",
@@ -610,7 +611,7 @@ def _write_external_plugin_bundle(
                 "[tool.bitcoin_safe.plugin]",
                 'schema_version = "1"',
                 f'display_name = "{bundle_id} title"',
-                'plugin_api_version = "1"',
+                'plugin_api_version = "2"',
                 f'entrypoint = "{package_name}/plugin_bundle.py"',
                 f'bitcoin_safe_version = "{app_version_specifier}"',
                 'provider = "Tests"',
@@ -660,7 +661,7 @@ def _write_minimal_plugin_manifest(package_root: Path) -> None:
                 "authors:",
                 '  - "Tests <tests@example.com>"',
                 'provider: "Tests"',
-                'plugin_api_version: "1"',
+                'plugin_api_version: "2"',
                 'entrypoint: "test_plugin/plugin_bundle.py"',
                 'bitcoin_safe_version: ">=0.0.0,<999.0.0"',
                 'python: ">=3.10,<3.13"',
@@ -859,7 +860,7 @@ def test_plugin_manager_refresh_external_state_keeps_installed_plugin_when_newer
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=f"~{app_version}",
         folder_hash=installed_hash,
         release_ref="v1",
@@ -949,11 +950,10 @@ def test_plugin_manager_refresh_external_state_keeps_installed_plugin_when_newer
         PluginManager.known_classes = previous_known_classes
 
 
-def test_register_static_plugin_bundle_defaults_auto_allow_to_plugin_clients() -> None:
+def test_register_static_plugin_bundle_wraps_module() -> None:
     registration = register_static_plugin_bundle(_GenericBuiltinBundleModule)
 
     assert registration.module.PLUGIN_CLIENTS == _GenericBuiltinBundleModule.PLUGIN_CLIENTS
-    assert registration.auto_allow_plugin_clients == _GenericBuiltinBundleModule.PLUGIN_CLIENTS
 
 
 def test_ensure_plugin_import_path_prepends_once(tmp_path: Path) -> None:
@@ -1064,7 +1064,7 @@ def test_plugin_pyproject_rejects_unsafe_entrypoint() -> None:
                         "plugin": {
                             "schema_version": "1",
                             "display_name": "Test Plugin",
-                            "plugin_api_version": "1",
+                            "plugin_api_version": "2",
                             "entrypoint": "../plugin_bundle.py",
                             "bitcoin_safe_version": ">=0.0.0",
                         }
@@ -1079,7 +1079,6 @@ def test_normalize_runtime_plugin_bundle_keeps_optional_factory(tmp_path: Path) 
     runtime_bundle = normalize_runtime_plugin_bundle(
         module=_FactoryRuntimeBundleModule,
         context=_make_runtime_context(tmp_path),
-        auto_allow_plugin_clients=_FactoryRuntimeBundleModule.PLUGIN_CLIENTS,
     )
 
     assert isinstance(runtime_bundle, RuntimePluginBundle)
@@ -1091,7 +1090,6 @@ def test_create_runtime_plugin_clients_accepts_factory_hook(qapp: QApplication, 
     runtime_bundle = normalize_runtime_plugin_bundle(
         module=_FactoryRuntimeBundleModule,
         context=_make_runtime_context(tmp_path),
-        auto_allow_plugin_clients=_FactoryRuntimeBundleModule.PLUGIN_CLIENTS,
     )
 
     clients = create_runtime_plugin_clients(
@@ -1112,7 +1110,6 @@ def test_create_runtime_plugin_clients_skips_failed_factory_hook(qapp: QApplicat
     runtime_bundle = normalize_runtime_plugin_bundle(
         module=_FailingFactoryRuntimeBundleModule,
         context=_make_runtime_context(tmp_path),
-        auto_allow_plugin_clients=_FailingFactoryRuntimeBundleModule.PLUGIN_CLIENTS,
     )
 
     clients = create_runtime_plugin_clients(
@@ -1132,7 +1129,6 @@ def test_create_runtime_plugin_clients_skips_failed_client_from_dump(
     runtime_bundle = normalize_runtime_plugin_bundle(
         module=_PartiallyFailingBuiltinBundleModule,
         context=_make_runtime_context(tmp_path),
-        auto_allow_plugin_clients=_PartiallyFailingBuiltinBundleModule.PLUGIN_CLIENTS,
     )
 
     try:
@@ -1331,7 +1327,7 @@ def test_external_registry_install_plugin_restores_previous_files_on_swap_failur
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=">=0.0.0",
         folder_hash="new-hash",
         release_ref="main",
@@ -1701,7 +1697,7 @@ def test_external_registry_remote_metadata_and_archive_fetches_use_proxy_info(
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=">=0.0.0",
         folder_hash="new-hash",
         release_ref="main",
@@ -1862,7 +1858,7 @@ def test_external_registry_load_module_reloads_changed_plugin_package_modules(tm
                         "plugin": {
                             "schema_version": "1",
                             "display_name": "Test",
-                            "plugin_api_version": "1",
+                            "plugin_api_version": "2",
                             "entrypoint": "test_plugin/plugin_bundle.py",
                             "bitcoin_safe_version": ">=0",
                         }
@@ -1911,7 +1907,7 @@ def test_external_registry_load_module_rejects_absolute_intra_package_import(tmp
                         "plugin": {
                             "schema_version": "1",
                             "display_name": "Test",
-                            "plugin_api_version": "1",
+                            "plugin_api_version": "2",
                             "entrypoint": "test_plugin/plugin_bundle.py",
                             "bitcoin_safe_version": ">=0",
                         }
@@ -1965,7 +1961,7 @@ def test_external_registry_load_module_never_executes_forged_pycache(
                     "plugin": {
                         "schema_version": "1",
                         "display_name": "Test",
-                        "plugin_api_version": "1",
+                        "plugin_api_version": "2",
                         "entrypoint": "test_plugin/plugin_bundle.py",
                         "bitcoin_safe_version": ">=0",
                     }
@@ -2016,7 +2012,7 @@ def test_external_registry_persists_structured_catalog_with_btcpay_config(tmp_pa
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=">=0.0.0",
         folder_hash="hash",
         release_ref="main",
@@ -2116,7 +2112,7 @@ def test_load_external_plugin_btcpay_config_from_source_manifest(tmp_path: Path)
                 "authors:",
                 '  - "Tests <tests@example.com>"',
                 'provider: "Tests"',
-                'plugin_api_version: "1"',
+                'plugin_api_version: "2"',
                 'entrypoint: "test_plugin/plugin_bundle.py"',
                 'bitcoin_safe_version: ">=0.0.0,<999.0.0"',
                 'python: ">=3.10,<3.13"',
@@ -2148,7 +2144,7 @@ def test_load_external_plugin_btcpay_config_from_bytecode_pyproject(tmp_path: Pa
                 "",
                 "[tool.bitcoin_safe.plugin]",
                 'entrypoint = "test_plugin/plugin_bundle.py"',
-                'plugin_api_version = "1"',
+                'plugin_api_version = "2"',
                 'bitcoin_safe_version = ">=0.0.0,<999.0.0"',
                 'provider = "Tests"',
                 "",
@@ -2525,7 +2521,7 @@ def test_source_catalog_item_widget_shows_versions_in_status_and_button(qapp: QA
             description="Test description",
             provider="Tests",
             entrypoint="test_plugin/plugin_bundle.py",
-            plugin_api_version="1",
+            plugin_api_version="2",
             app_version_specifier=">=0.0.0",
             folder_hash="hash",
             release_ref="main",
@@ -2556,7 +2552,7 @@ def test_source_catalog_item_widget_uses_spinning_install_button(qapp: QApplicat
             description="Test description",
             provider="Tests",
             entrypoint="test_plugin/plugin_bundle.py",
-            plugin_api_version="1",
+            plugin_api_version="2",
             app_version_specifier=">=0.0.0",
             folder_hash="hash",
             release_ref="main",
@@ -2599,7 +2595,7 @@ def test_external_registry_marks_hash_only_plugin_change_as_update(tmp_path: Pat
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=">=0.0.0",
         folder_hash="new-hash",
         release_ref="main",
@@ -2618,7 +2614,6 @@ def test_external_registry_marks_hash_only_plugin_change_as_update(tmp_path: Pat
         version="1.0.0",
         folder_hash="old-hash",
         installed_at="2026-04-21T00:00:00+00:00",
-        trusted_auto_allow_signer=False,
         verified_signer_fingerprint="fingerprint",
         catalog_entry=replace(plugin, folder_hash="old-hash"),
     )
@@ -2671,7 +2666,7 @@ def test_external_registry_keeps_installed_plugin_when_newer_catalog_version_is_
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=">=0.0.0",
         folder_hash="hash-v1",
         release_ref="v1",
@@ -2690,7 +2685,6 @@ def test_external_registry_keeps_installed_plugin_when_newer_catalog_version_is_
         version="1.0.0",
         folder_hash="hash-v1",
         installed_at="2026-04-21T00:00:00+00:00",
-        trusted_auto_allow_signer=False,
         verified_signer_fingerprint="fingerprint",
         catalog_entry=installed_plugin,
     )
@@ -2888,7 +2882,7 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=">=0.0.0",
         folder_hash="new-hash",
         release_ref="main",
@@ -3006,7 +3000,7 @@ def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=">=0.0.0",
         folder_hash="new-hash",
         release_ref="main",
@@ -3199,7 +3193,7 @@ def test_plugin_manager_install_source_plugin_uses_background_task(
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=">=0.0.0",
         folder_hash="hash",
         release_ref="main",
@@ -3436,7 +3430,6 @@ def test_plugin_manager_from_dump_reuses_external_state_from_class_kwargs(
             "__class__": PluginManager.__name__,
             "VERSION": PluginManager.VERSION,
             "clients": [],
-            "plugin_permissions": {},
         },
         class_kwargs=class_kwargs,
     )
@@ -3461,7 +3454,6 @@ def test_plugin_manager_dump_writes_serialized_client_dumps_for_legacy_client_st
             "__class__": PluginManager.__name__,
             "VERSION": "0.0.16",
             "clients": [client],
-            "plugin_permissions": {},
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
@@ -3492,7 +3484,6 @@ def test_plugin_manager_from_dump_keeps_legacy_deserialized_clients(
             "__class__": PluginManager.__name__,
             "VERSION": "0.0.16",
             "clients": [client],
-            "plugin_permissions": {},
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
@@ -3522,7 +3513,6 @@ def test_plugin_manager_from_dump_defers_restore_of_known_serialized_client_payl
             "__class__": PluginManager.__name__,
             "VERSION": PluginManager.VERSION,
             "serialized_client_dumps": [payload],
-            "plugin_permissions": {},
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
@@ -3559,7 +3549,6 @@ def test_plugin_manager_from_dump_preserves_unknown_serialized_client_payload(
             "__class__": PluginManager.__name__,
             "VERSION": PluginManager.VERSION,
             "serialized_client_dumps": [payload],
-            "plugin_permissions": {},
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
@@ -3590,7 +3579,6 @@ def test_plugin_manager_restores_pending_serialized_client_when_class_becomes_av
             "__class__": PluginManager.__name__,
             "VERSION": PluginManager.VERSION,
             "serialized_client_dumps": [payload],
-            "plugin_permissions": {},
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
@@ -3630,7 +3618,6 @@ def test_plugin_manager_keeps_payload_pending_when_client_from_dump_fails_then_r
             "__class__": PluginManager.__name__,
             "VERSION": PluginManager.VERSION,
             "serialized_client_dumps": [payload],
-            "plugin_permissions": {},
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
@@ -3684,7 +3671,6 @@ def test_plugin_manager_does_not_create_fresh_client_when_recovery_is_rejected(
             "__class__": PluginManager.__name__,
             "VERSION": PluginManager.VERSION,
             "serialized_client_dumps": [payload],
-            "plugin_permissions": {},
         },
         class_kwargs=_plugin_manager_class_kwargs(tmp_path),
     )
@@ -3742,7 +3728,7 @@ def test_plugin_manager_preserves_disabled_plugin_state_through_broken_update_de
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
-        plugin_api_version="1",
+        plugin_api_version="2",
         app_version_specifier=">=0.0.0",
         folder_hash="broken-hash",
         release_ref="broken",
@@ -3882,7 +3868,7 @@ def test_plugin_manager_discards_snapshot_payload_when_live_client_survives_rebu
         manager.close()
 
 
-def test_delete_installed_source_plugin_keeps_serialized_payload_and_clears_permissions(
+def test_delete_installed_source_plugin_keeps_serialized_payload(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:
     del qapp
@@ -3902,7 +3888,6 @@ def test_delete_installed_source_plugin_keeps_serialized_payload_and_clears_perm
     client.set_enabled(False)
     manager = PluginManager(
         clients=[client],
-        plugin_permissions={client.plugin_id: {PluginPermission.LABELS}},
         parent=None,
         **_plugin_manager_init_kwargs(tmp_path),
     )
@@ -3924,9 +3909,144 @@ def test_delete_installed_source_plugin_keeps_serialized_payload_and_clears_perm
 
         assert removed_bundle_ids == ["test-plugin"]
         assert manager.clients == []
-        assert client.plugin_id not in manager.plugin_permissions
         assert len(manager.serialized_client_dumps) == 1
         assert PluginManager._payload_identity(manager.serialized_client_dumps[0]) == client.plugin_id
+    finally:
+        manager.close()
+
+
+_UNTRUSTED_TEST_KEY = KnownGPGKeys.craigraw.key
+
+
+def _add_source_manager(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, pinned_key: str, dialog_answer: bool
+) -> tuple[PluginManager, list[dict[str, object]], list[str]]:
+    monkeypatch.setattr(
+        PluginManager,
+        "_refresh_external_state",
+        classmethod(lambda cls, context, external_registry: {}),
+    )
+    manager = PluginManager(
+        clients=[],
+        parent=None,
+        **_plugin_manager_init_kwargs(tmp_path),
+    )
+    prompts: list[dict[str, object]] = []
+    added: list[str] = []
+
+    class _FakeDialog:
+        def __init__(self, parent: object) -> None:
+            del parent
+
+        def exec(self) -> int:
+            return QDialog.DialogCode.Accepted
+
+        def source_values(self) -> tuple[str, str | None, PluginSourceAuthConfig, str]:
+            return "https://example.com/manifest.json", None, PluginSourceAuthConfig(), pinned_key
+
+    def fake_dialog(**kwargs: object) -> bool:
+        prompts.append(kwargs)
+        return dialog_answer
+
+    def fake_add_source(**kwargs: object) -> VerifiedPluginSourceManifest:
+        added.append(str(kwargs["pinned_source_public_key"]))
+        raise ExternalPluginError("stop after add")
+
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_manager.AddPluginSourceDialog", _FakeDialog)
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_manager.question_dialog", fake_dialog)
+    monkeypatch.setattr(manager.external_registry, "add_source", fake_add_source)
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_manager.Message", lambda *args, **kwargs: None)
+    return manager, prompts, added
+
+
+def test_adding_untrusted_source_prompts_and_cancel_adds_nothing(
+    qapp: QApplication, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+    manager, prompts, added = _add_source_manager(
+        tmp_path, monkeypatch, pinned_key=_UNTRUSTED_TEST_KEY, dialog_answer=False
+    )
+
+    try:
+        manager.add_plugin_source()
+
+        assert len(prompts) == 1
+        assert "full access" in str(prompts[0]["text"])
+        assert "keep doing so through future updates" in str(prompts[0]["text"])
+        assert added == []
+    finally:
+        manager.close()
+
+
+def test_adding_untrusted_source_trust_and_add_calls_add_source(
+    qapp: QApplication, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+    manager, prompts, added = _add_source_manager(
+        tmp_path, monkeypatch, pinned_key=_UNTRUSTED_TEST_KEY, dialog_answer=True
+    )
+
+    try:
+        manager.add_plugin_source()
+
+        assert len(prompts) == 1
+        assert added == [_UNTRUSTED_TEST_KEY]
+    finally:
+        manager.close()
+
+
+def test_adding_builtin_publisher_source_does_not_prompt(
+    qapp: QApplication, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+    manager, prompts, added = _add_source_manager(
+        tmp_path, monkeypatch, pinned_key=KnownGPGKeys.andreasgriffin.key, dialog_answer=False
+    )
+
+    try:
+        manager.add_plugin_source()
+
+        assert prompts == []
+        assert added == [KnownGPGKeys.andreasgriffin.key]
+    finally:
+        manager.close()
+
+
+def test_builtin_key_check_ignores_whitespace_and_armor_differences() -> None:
+    builtin_key = KnownGPGKeys.andreasgriffin.key
+    assert is_builtin_publisher_key(builtin_key)
+    assert is_builtin_publisher_key(builtin_key.replace("\n", "\r\n") + "\n\n")
+
+
+def test_builtin_key_check_fails_closed_for_unreadable_key() -> None:
+    assert not is_builtin_publisher_key("not a key")
+    assert not is_builtin_publisher_key("")
+    assert publisher_key_fingerprint("not a key") is None
+
+
+def test_enabling_plugin_from_trusted_source_never_prompts(
+    qapp: QApplication, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+
+    def fail_dialog(**kwargs: object) -> bool:
+        raise AssertionError("enabling must not prompt for trust")
+
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_manager.question_dialog", fail_dialog)
+    monkeypatch.setattr(
+        PluginManager,
+        "_refresh_external_state",
+        classmethod(lambda cls, context, external_registry: {}),
+    )
+    client = _DisplayMetadataPluginClient()
+    client.set_plugin_identity(plugin_source=PluginClientSource.EXTERNAL, plugin_bundle_id="test-plugin")
+    client.set_enabled(False)
+    manager = PluginManager(clients=[client], parent=None, **_plugin_manager_init_kwargs(tmp_path))
+
+    try:
+        client.signal_request_enabled.emit(True)
+
+        assert client.enabled
     finally:
         manager.close()
 
@@ -3996,7 +4116,7 @@ def test_delete_installed_source_plugin_by_bundle_id_preserves_pending_payload(
                 description="",
                 provider="Tests",
                 entrypoint="plugins/broken",
-                plugin_api_version="1",
+                plugin_api_version="2",
                 app_version_specifier=">=0",
                 folder_hash="hash",
                 release_ref="main",
@@ -4033,7 +4153,6 @@ def test_delete_installed_source_plugin_cancel_keeps_enabled_state(
     )
     manager = PluginManager(
         clients=[client],
-        plugin_permissions={client.plugin_id: {PluginPermission.LABELS}},
         parent=None,
         **_plugin_manager_init_kwargs(tmp_path),
     )
@@ -4054,7 +4173,6 @@ def test_delete_installed_source_plugin_cancel_keeps_enabled_state(
         assert client.load_calls == 0
         assert client.unload_calls == 0
         assert manager.clients == [client]
-        assert client.plugin_id in manager.plugin_permissions
     finally:
         manager.close()
 
@@ -4078,7 +4196,6 @@ def test_delete_installed_source_plugin_failed_remove_restores_enabled_state(
     )
     manager = PluginManager(
         clients=[client],
-        plugin_permissions={client.plugin_id: {PluginPermission.LABELS}},
         parent=None,
         **_plugin_manager_init_kwargs(tmp_path),
     )
@@ -4103,7 +4220,6 @@ def test_delete_installed_source_plugin_failed_remove_restores_enabled_state(
         assert client.load_calls == 1
         assert client.unload_calls == 1
         assert manager.clients == [client]
-        assert client.plugin_id in manager.plugin_permissions
     finally:
         manager.close()
 
@@ -4120,7 +4236,7 @@ def test_source_catalog_item_allows_delete_for_installed_plugin(qapp: QApplicati
             description="",
             provider="Tests",
             entrypoint="plugins/broken",
-            plugin_api_version="1",
+            plugin_api_version="2",
             app_version_specifier=">=0",
             folder_hash="hash",
             release_ref="main",

@@ -102,7 +102,7 @@ class UserConfig(BaseSaveableClass):
         FXProvider.__name__: FXProvider,
         ThemeMode.__name__: ThemeMode,
     }
-    VERSION = "0.3.9"
+    VERSION = "0.3.10"
 
     app_name = "bitcoin_safe"
     locales_path = current_project_dir() / "gui" / "locales"
@@ -300,6 +300,9 @@ class UserConfig(BaseSaveableClass):
         if fast_version(str(dct["VERSION"])) < fast_version("0.2.11"):
             # enable labeling of change
             dct["auto_label_change_addresses"] = True
+        if fast_version(str(dct["VERSION"])) < fast_version("0.3.10"):
+            # per-publisher trust list was replaced by trust on plugin sources
+            dct.pop("trusted_publisher_fingerprints", None)
         dct.setdefault("historical_rates", {})
 
         return super().from_dump_migration(dct=dct)

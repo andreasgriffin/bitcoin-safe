@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 
 SOURCE_MANIFEST_FILENAME = "source.toml"
 SOURCE_SIGNATURE_SUFFIX = ".asc"
-SUPPORTED_PLUGIN_API_VERSION = "1"
+SUPPORTED_PLUGIN_API_VERSION = "2"
 
 
 @dataclass(frozen=True)
@@ -186,7 +186,6 @@ class InstalledSourcePluginMetadata(SaveAllClass):
     version: str
     folder_hash: str
     installed_at: str
-    trusted_auto_allow_signer: bool
     verified_signer_fingerprint: str
     catalog_entry: ExternalPluginCatalogEntry | None = None
     last_verification_ok: bool = True
@@ -201,7 +200,6 @@ class VerifiedExternalPluginBundle:
     plugin_dir: Path
     folder_hash: str
     verified_signer_fingerprint: str
-    trusted_auto_allow_signer: bool
     runtime_bundle: RuntimePluginBundle
 
     @property

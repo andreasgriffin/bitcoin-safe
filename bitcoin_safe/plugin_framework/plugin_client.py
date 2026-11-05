@@ -53,7 +53,7 @@ from bitcoin_safe.plugin_framework.plugin_identity import (
 from bitcoin_safe.plugin_framework.plugin_identity import (
     build_plugin_id,
 )
-from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
+from bitcoin_safe.plugin_framework.plugin_wallet_context import PluginWalletContext
 
 if TYPE_CHECKING:
     from bitcoin_safe.plugin_framework.plugin_list_widget import BasePluginWidget
@@ -64,14 +64,10 @@ logger = logging.getLogger(__name__)
 
 
 class PluginClient(QWidget, BaseSaveableClass):
-    known_classes: dict[str, Any] = {
-        **BaseSaveableClass.known_classes,
-        PluginPermission.__name__: PluginPermission,
-    }
+    known_classes: dict[str, Any] = {**BaseSaveableClass.known_classes}
     VERSION = "0.0.3"
     IS_AVAILABLE = True
     plugin_conditions = PluginConditions()
-    required_permissions: set[PluginPermission] = set()
     show_in_list = True
     title = "Base Plugin"
     description = ""
@@ -96,7 +92,7 @@ class PluginClient(QWidget, BaseSaveableClass):
     def __init__(self, enabled: bool, icon: QIcon | Path | str, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(parent)
-        self.server: PluginServerView | None = None
+        self.wallet_context: PluginWalletContext | None = None
         self.signal_tracker = SignalTracker()
         self.icon = icon
         self.node: SidebarNode[object] = SidebarNode[object](
@@ -275,11 +271,8 @@ class PluginClient(QWidget, BaseSaveableClass):
         self.node.setTitle(self.title)
         self.node.setIcon(self.icon)
 
-    def set_server_view(
-        self,
-        server: PluginServerView,
-    ):
-        self.server = server
+    def set_wallet_context(self, wallet_context: PluginWalletContext) -> None:
+        self.wallet_context = wallet_context
 
     def supports_enable_toggle(self) -> bool:
         return True

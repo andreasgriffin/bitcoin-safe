@@ -40,7 +40,7 @@ def test_build_pyinstaller_hiddenimports_include_external_plugin_host_api() -> N
         "bitcoin_safe.plugin_framework.paid_plugin_client",
         "bitcoin_safe.plugin_framework.plugin_bundle",
         "bitcoin_safe.plugin_framework.plugin_conditions",
-        "bitcoin_safe.plugin_framework.plugin_server",
+        "bitcoin_safe.plugin_framework.plugin_wallet_context",
         "bitcoin_safe.plugin_framework.subscription_manager",
         "bitcoin_safe.plugin_framework.subscription_price_lookup",
     }

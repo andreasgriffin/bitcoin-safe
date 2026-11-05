@@ -463,7 +463,7 @@ def test_subscription_price_lookup_close_is_idempotent(qapp: QApplication) -> No
 @pytest.mark.marker_qt_1
 @pytest.mark.marker_qt_1
 def _attach_fake_descriptor_server(plugin: DemoPaidPluginClient) -> None:
-    plugin.server = type("FakeServer", (), {"get_descriptor": lambda self: object()})()
+    plugin.wallet_context = type("FakeWalletContext", (), {"descriptor": lambda self: object()})()
 
 
 def _run_subscription_tasks_synchronously(
