@@ -55,7 +55,7 @@ from bitcoin_safe.gui.qt.util import ColorScheme, Message, MessageType
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_conditions import PluginConditions
-from bitcoin_safe.plugin_framework.plugin_server import PluginPermission, PluginServerView
+from bitcoin_safe.plugin_framework.plugin_wallet_context import PluginWalletContext
 from bitcoin_safe.plugin_framework.plugins.walletgraph.wallet_graph_items import (
     ENABLE_WALLET_GRAPH_TOOLTIPS,
 )
@@ -71,10 +71,6 @@ logger = logging.getLogger(__name__)
 
 class WalletGraphClient(PluginClient):
     plugin_conditions = PluginConditions()
-    required_permissions: set[PluginPermission] = {
-        PluginPermission.WALLET,
-        PluginPermission.WALLET_SIGNALS,
-    }
     provider = APP_NAME
 
     @classmethod
@@ -150,10 +146,10 @@ class WalletGraphClient(PluginClient):
         """Get widget."""
         return self
 
-    def set_server_view(self, server: PluginServerView) -> None:
+    def set_wallet_context(self, wallet_context: PluginWalletContext) -> None:
         """Save connection details."""
-        super().set_server_view(server=server)
-        self.wallet_id = server.wallet_id
+        super().set_wallet_context(wallet_context=wallet_context)
+        self.wallet_id = wallet_context.wallet_id
         if self.enabled:
             self.refresh_graph()
 
@@ -192,13 +188,13 @@ class WalletGraphClient(PluginClient):
     def refresh_graph(self) -> None:
         """Refresh graph."""
 
-        if not self.enabled or not self.server or not self.server.wallet_signals:
+        if not self.enabled or not self.wallet_context or not self.wallet_context.wallet_signals:
             return
 
         if self.maybe_defer_update():
             return
 
-        wallet = self.server.get_wallet()
+        wallet = self.wallet_context.wallet()
         if not wallet:
             self.graph_view.clear()
             self.export_button.setEnabled(False)
@@ -216,7 +212,7 @@ class WalletGraphClient(PluginClient):
             return
 
         self.graph_view.render_graph(
-            wallet=wallet, full_tx_details=full_tx_details, wallet_signals=self.server.wallet_signals
+            wallet=wallet, full_tx_details=full_tx_details, wallet_signals=self.wallet_context.wallet_signals
         )
         self.export_button.setEnabled(bool(full_tx_details))
 
@@ -226,16 +222,16 @@ class WalletGraphClient(PluginClient):
 
     def _connect_wallet_signal(self) -> None:
         """Connect wallet signal."""
-        if not self.server or not self.wallet_id or not self.server.wallet_signals:
+        if not self.wallet_context or not self.wallet_id or not self.wallet_context.wallet_signals:
             return
-        self.signal_tracker.connect(self.server.wallet_signals.updated, self.on_wallet_updated)
+        self.signal_tracker.connect(self.wallet_context.wallet_signals.updated, self.on_wallet_updated)
 
     def _disconnect_wallet_signal(self) -> None:
         """Disconnect wallet signal."""
-        if not self.server or not self.server.wallet_signals:
+        if not self.wallet_context or not self.wallet_context.wallet_signals:
             return
         try:
-            self.server.wallet_signals.updated.disconnect(self.on_wallet_updated)
+            self.wallet_context.wallet_signals.updated.disconnect(self.on_wallet_updated)
         except TypeError:
             pass
 
@@ -256,12 +252,16 @@ class WalletGraphClient(PluginClient):
 
     def on_export_graph(self) -> None:
         """On export graph."""
-        if not self.server or not self.graph_view.current_details or not self.graph_view.current_wallet:
+        if (
+            not self.wallet_context
+            or not self.graph_view.current_details
+            or not self.graph_view.current_wallet
+        ):
             return
         file_path, _ = QFileDialog.getSaveFileName(
             self,
             self.tr("Export wallet graph"),
-            f"{self.server.wallet_id}.graphml",
+            f"{self.wallet_context.wallet_id}.graphml",
             filter="GraphML (*.graphml);;All Files (*.*)",
             initialFilter="GraphML (*.graphml)",
         )
@@ -430,14 +430,14 @@ class WalletGraphClient(PluginClient):
 
     def _create_utxo_node(self, graph: ET.Element, utxo: PythonUtxo) -> None:
         """Create utxo node."""
-        if not self.server or not self.server.wallet_signals:
+        if not self.wallet_context or not self.wallet_context.wallet_signals:
             return
         node_id = str(utxo.outpoint)
         node = ET.SubElement(graph, "node", id=node_id)
         status = "spent" if utxo.is_spent_by_txid else "unspent"
         wallet = self.graph_view.current_wallet
         color = UtxoEllipseItem._color_for_utxo(
-            utxo, wallet=wallet, wallet_signals=self.server.wallet_signals
+            utxo, wallet=wallet, wallet_signals=self.wallet_context.wallet_signals
         )
         is_mine = wallet.is_my_address(utxo.address) if wallet else False
         self._set_data(node, "d0", "utxo")

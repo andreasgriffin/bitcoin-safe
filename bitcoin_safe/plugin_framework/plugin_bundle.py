@@ -73,22 +73,16 @@ class FactoryPluginBundleModule(PluginBundleModule, Protocol):
     ) -> tuple[PluginClient, ...]: ...
 
 
-class StaticAutoAllowPluginBundleModule(PluginBundleModule, Protocol):
-    AUTO_ALLOW_PLUGIN_CLIENTS: tuple[type[PluginClient], ...]
-
-
 @dataclass(frozen=True)
 class RuntimePluginBundle:
     client_classes: tuple[type[PluginClient], ...]
     class_kwargs: dict[str, dict[str, object]]
     create_plugin_clients: Callable[[PluginRuntimeContext, bdk.Descriptor], tuple[PluginClient, ...]] | None
-    auto_allow_plugin_clients: tuple[type[PluginClient], ...]
 
 
 @dataclass(frozen=True)
 class StaticPluginBundleRegistration:
     module: PluginBundleModule
-    auto_allow_plugin_clients: tuple[type[PluginClient], ...]
 
 
 def ensure_plugin_import_path(path: Path) -> None:
@@ -100,16 +94,7 @@ def ensure_plugin_import_path(path: Path) -> None:
 def register_static_plugin_bundle(
     module: PluginBundleModule,
 ) -> StaticPluginBundleRegistration:
-    auto_allow_plugin_clients = getattr(
-        module,
-        "AUTO_ALLOW_PLUGIN_CLIENTS",
-        module.PLUGIN_CLIENTS,
-    )
-
-    return StaticPluginBundleRegistration(
-        module=module,
-        auto_allow_plugin_clients=auto_allow_plugin_clients,
-    )
+    return StaticPluginBundleRegistration(module=module)
 
 
 def plugin_bundle_client_classes(
@@ -135,7 +120,6 @@ def normalize_runtime_plugin_bundle(
     module: PluginBundleModule,
     context: PluginRuntimeContext,
     *,
-    auto_allow_plugin_clients: tuple[type[PluginClient], ...] = (),
     bundle_name: str = "plugin bundle",
     error_type: type[Exception] = ValueError,
     additional_class_kwargs_by_client_class: dict[type[PluginClient], dict[str, object]] | None = None,
@@ -181,7 +165,6 @@ def normalize_runtime_plugin_bundle(
         client_classes=client_classes,
         class_kwargs=class_kwargs,
         create_plugin_clients=create_plugin_clients,
-        auto_allow_plugin_clients=auto_allow_plugin_clients,
     )
 
 
@@ -189,11 +172,7 @@ def normalize_static_plugin_bundle(
     bundle: StaticPluginBundleRegistration,
     context: PluginRuntimeContext,
 ) -> RuntimePluginBundle:
-    return normalize_runtime_plugin_bundle(
-        module=bundle.module,
-        context=context,
-        auto_allow_plugin_clients=bundle.auto_allow_plugin_clients,
-    )
+    return normalize_runtime_plugin_bundle(module=bundle.module, context=context)
 
 
 def create_runtime_plugin_clients(

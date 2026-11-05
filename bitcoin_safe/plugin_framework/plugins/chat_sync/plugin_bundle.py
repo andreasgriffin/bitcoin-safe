@@ -36,7 +36,6 @@ from bitcoin_safe.plugin_framework.plugin_bundle import PluginRuntimeContext
 from .client import SyncClient
 
 PLUGIN_CLIENTS = (SyncClient,)
-AUTO_ALLOW_PLUGIN_CLIENTS = PLUGIN_CLIENTS
 
 
 def class_kwargs(context: PluginRuntimeContext) -> dict[str, dict[str, object]]:
@@ -66,7 +65,6 @@ def create_plugin_clients(
 
 
 __all__ = [
-    "AUTO_ALLOW_PLUGIN_CLIENTS",
     "PLUGIN_CLIENTS",
     "class_kwargs",
     "create_plugin_clients",

@@ -40,7 +40,7 @@ EXTERNAL_PLUGIN_HOST_HIDDENIMPORTS: tuple[str, ...] = (
     "bitcoin_safe.plugin_framework.paid_plugin_client",
     "bitcoin_safe.plugin_framework.plugin_bundle",
     "bitcoin_safe.plugin_framework.plugin_conditions",
-    "bitcoin_safe.plugin_framework.plugin_server",
+    "bitcoin_safe.plugin_framework.plugin_wallet_context",
     "bitcoin_safe.plugin_framework.subscription_manager",
     "bitcoin_safe.plugin_framework.subscription_price_lookup",
 )

@@ -153,7 +153,6 @@ def _write_installed_plugin_metadata(
         "version": version,
         "folder_hash": folder_hash,
         "installed_at": "2026-04-21T00:00:00+00:00",
-        "trusted_auto_allow_signer": False,
         "verified_signer_fingerprint": signer,
         "last_verification_ok": last_verification_ok,
         "last_verification_error": last_verification_error,

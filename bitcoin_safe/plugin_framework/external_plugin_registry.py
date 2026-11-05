@@ -94,7 +94,7 @@ from bitcoin_safe.plugin_framework.plugin_source_models import (
     parse_source_manifest,
     resolve_plugin_metadata_path,
 )
-from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer, SimpleGPGKey
+from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer
 
 logger = logging.getLogger(__name__)
 _ORIGINAL_FETCH_BYTES = fetch_bytes
@@ -207,6 +207,25 @@ class _SignedPluginArtifactFinder(importlib.abc.MetaPathFinder, importlib.abc.Lo
 
 def _normalize_fingerprint(value: object) -> str:
     return str(value).replace(" ", "").upper()
+
+
+def publisher_key_fingerprint(public_key_block: str) -> str | None:
+    """Return the normalized fingerprint of a PGP public key block, or None if it cannot be read."""
+    try:
+        verifyer = SignatureVerifyer(list_of_known_keys=None, proxies=None)
+        return _normalize_fingerprint(verifyer.import_public_key_block(public_key_block).fingerprint)
+    except Exception:
+        return None
+
+
+def is_builtin_publisher_key(public_key_block: str) -> bool:
+    """Return True only if the key is readable and is the built-in bitcoin-safe publisher key.
+
+    Any failure to read either key counts as not built-in, so the user is asked to trust the source.
+    """
+    fingerprint = publisher_key_fingerprint(public_key_block)
+    builtin_fingerprint = publisher_key_fingerprint(KnownGPGKeys.andreasgriffin.key)
+    return fingerprint is not None and fingerprint == builtin_fingerprint
 
 
 @dataclass(frozen=True)
@@ -360,7 +379,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
         VerifiedPluginSourceManifest.__name__: VerifiedPluginSourceManifest,
         InstalledSourcePluginMetadata.__name__: InstalledSourcePluginMetadata,
     }
-    trusted_auto_allow_signers: tuple[SimpleGPGKey, ...] = (KnownGPGKeys.andreasgriffin,)
 
     def __init__(
         self,
@@ -374,7 +392,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
         self.last_download_time: datetime | None = None
         self.source_catalogs = source_catalogs or {}
         self.installed_plugins = installed_plugins or {}
-        self._trusted_auto_allow_fingerprints = self._compute_trusted_auto_allow_fingerprints()
         self._plugin_finders: dict[str, _SignedPluginArtifactFinder] = {}
 
     @classmethod
@@ -612,8 +629,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
                 version=plugin.version,
                 folder_hash=folder_hash,
                 installed_at=self._now_iso(),
-                trusted_auto_allow_signer=manifest.signer_fingerprint
-                in self._trusted_auto_allow_fingerprints,
                 verified_signer_fingerprint=manifest.signer_fingerprint,
                 catalog_entry=plugin,
                 last_verification_ok=True,
@@ -653,7 +668,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
                     version=metadata.version,
                     folder_hash=metadata.folder_hash,
                     installed_at=metadata.installed_at,
-                    trusted_auto_allow_signer=metadata.trusted_auto_allow_signer,
                     verified_signer_fingerprint=metadata.verified_signer_fingerprint,
                     catalog_entry=metadata.catalog_entry,
                     last_verification_ok=True,
@@ -666,7 +680,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
                     version=metadata.version,
                     folder_hash=metadata.folder_hash,
                     installed_at=metadata.installed_at,
-                    trusted_auto_allow_signer=metadata.trusted_auto_allow_signer,
                     verified_signer_fingerprint=metadata.verified_signer_fingerprint,
                     catalog_entry=metadata.catalog_entry,
                     last_verification_ok=False,
@@ -794,7 +807,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
         runtime_bundle = normalize_runtime_plugin_bundle(
             module=cast(PluginBundleModule, module),
             context=context,
-            auto_allow_plugin_clients=client_classes if metadata.trusted_auto_allow_signer else (),
             bundle_name=bundle_name,
             error_type=ExternalPluginError,
             additional_class_kwargs_by_client_class=additional_class_kwargs_by_client_class,
@@ -807,7 +819,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
             plugin_dir=bundle_dir,
             folder_hash=metadata.folder_hash,
             verified_signer_fingerprint=metadata.verified_signer_fingerprint,
-            trusted_auto_allow_signer=metadata.trusted_auto_allow_signer,
             runtime_bundle=runtime_bundle,
         )
 
@@ -1325,15 +1336,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
         except Exception:
             self._unload_plugin_namespace(namespace)
             raise
-
-    @classmethod
-    def _compute_trusted_auto_allow_fingerprints(cls) -> set[str]:
-        verifyer = SignatureVerifyer(list_of_known_keys=None, proxies=None)
-        fingerprints: set[str] = set()
-        for key in cls.trusted_auto_allow_signers:
-            public_key = verifyer.import_public_key_block(key.key)
-            fingerprints.add(str(public_key.fingerprint).replace(" ", "").upper())
-        return fingerprints
 
     @staticmethod
     def _now_iso() -> str:

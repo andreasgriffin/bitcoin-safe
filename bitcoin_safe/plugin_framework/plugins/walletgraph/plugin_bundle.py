@@ -34,7 +34,6 @@ from bitcoin_safe.plugin_framework.plugin_bundle import PluginRuntimeContext
 from .client import WalletGraphClient
 
 PLUGIN_CLIENTS = (WalletGraphClient,)
-AUTO_ALLOW_PLUGIN_CLIENTS = PLUGIN_CLIENTS
 
 
 def class_kwargs(context: PluginRuntimeContext) -> dict[str, dict[str, object]]:
@@ -47,4 +46,4 @@ def class_kwargs(context: PluginRuntimeContext) -> dict[str, dict[str, object]]:
     }
 
 
-__all__ = ["AUTO_ALLOW_PLUGIN_CLIENTS", "PLUGIN_CLIENTS", "class_kwargs"]
+__all__ = ["PLUGIN_CLIENTS", "class_kwargs"]

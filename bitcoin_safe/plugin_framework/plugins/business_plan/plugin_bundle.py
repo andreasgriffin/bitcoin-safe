@@ -33,7 +33,6 @@ from bitcoin_safe.plugin_framework.plugin_bundle import PluginRuntimeContext
 from bitcoin_safe.plugin_framework.plugins.business_plan.client import BusinessPlanItem
 
 PLUGIN_CLIENTS = (BusinessPlanItem,)
-AUTO_ALLOW_PLUGIN_CLIENTS = PLUGIN_CLIENTS
 
 
 def class_kwargs(context: PluginRuntimeContext) -> dict[str, dict[str, object]]:
@@ -47,4 +46,4 @@ def class_kwargs(context: PluginRuntimeContext) -> dict[str, dict[str, object]]:
     }
 
 
-__all__ = ["AUTO_ALLOW_PLUGIN_CLIENTS", "PLUGIN_CLIENTS", "class_kwargs"]
+__all__ = ["PLUGIN_CLIENTS", "class_kwargs"]

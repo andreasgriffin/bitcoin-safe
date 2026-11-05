@@ -186,7 +186,6 @@ class InstalledSourcePluginMetadata(SaveAllClass):
     version: str
     folder_hash: str
     installed_at: str
-    trusted_auto_allow_signer: bool
     verified_signer_fingerprint: str
     catalog_entry: ExternalPluginCatalogEntry | None = None
     last_verification_ok: bool = True
@@ -201,7 +200,6 @@ class VerifiedExternalPluginBundle:
     plugin_dir: Path
     folder_hash: str
     verified_signer_fingerprint: str
-    trusted_auto_allow_signer: bool
     runtime_bundle: RuntimePluginBundle
 
     @property

@@ -80,8 +80,3 @@ BUILTIN_PLUGIN_BUNDLES_BY_CLIENT_CLASS: dict[type[PluginClient], StaticPluginBun
 }
 
 BUILTIN_PLUGIN_CLIENT_CLASSES: tuple[type[PluginClient], ...] = tuple(BUILTIN_PLUGIN_BUNDLES_BY_CLIENT_CLASS)
-AUTO_ALLOW_BUILTIN_PLUGIN_CLIENT_CLASSES: tuple[type[PluginClient], ...] = tuple(
-    dict.fromkeys(
-        client_cls for bundle in BUILTIN_PLUGIN_BUNDLES for client_cls in bundle.auto_allow_plugin_clients
-    )
-)

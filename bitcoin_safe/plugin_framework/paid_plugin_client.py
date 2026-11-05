@@ -50,7 +50,6 @@ from bitcoin_safe.plugin_framework.plugin_list_widget import (
     ExternalPaidPluginWidget,
     PaidPluginWidget,
 )
-from bitcoin_safe.plugin_framework.plugin_server import PluginPermission
 from bitcoin_safe.plugin_framework.subscription_api_client import (
     SubscriptionApiClient,
     plan_id_for_product,
@@ -80,10 +79,6 @@ class PaidPluginClient(PluginClient):
         StoredSubscriptionStatus.__name__: StoredSubscriptionStatus,
         SubscriptionManager.__name__: SubscriptionManager,
     }
-
-    required_permissions: set[PluginPermission] = PluginClient.required_permissions.union(
-        {PluginPermission.DESCRIPTOR}
-    )
 
     signal_price_texts_changed = cast(SignalProtocol[[]], pyqtSignal())
 
@@ -216,7 +211,7 @@ class PaidPluginClient(PluginClient):
     def allow_enable_request(self) -> bool:
         if self.subscription_allows_access():
             return True
-        descriptor = self.server.get_descriptor() if self.server else None
+        descriptor = self.wallet_context.descriptor() if self.wallet_context else None
         if descriptor:
             return self.subscription_manager.allow_subscription_enable_request(
                 multipath_descriptor=descriptor
@@ -242,7 +237,7 @@ class PaidPluginClient(PluginClient):
 
     def trigger_check_subscription(self) -> None:
         """Look up an existing subscription for this wallet via subscriptions/status."""
-        descriptor = self.server.get_descriptor() if self.server else None
+        descriptor = self.wallet_context.descriptor() if self.wallet_context else None
         if not descriptor:
             logger.warning("No descriptor available; cannot check the subscription")
             return
