@@ -36,7 +36,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QComboBox, QWidget
 
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import configure_combobox_popup, svg_tools
 
 
 class NetworkComboBox(QComboBox):
@@ -45,6 +45,7 @@ class NetworkComboBox(QComboBox):
     def __init__(self, network: bdk.Network, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(parent)
+        configure_combobox_popup(self)
 
         for current_network in bdk.Network:
             self.addItem(

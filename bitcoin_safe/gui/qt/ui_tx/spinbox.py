@@ -47,7 +47,7 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.analyzers import AmountAnalyzer
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
-from bitcoin_safe.gui.qt.util import should_process_theme_change
+from bitcoin_safe.gui.qt.util import configure_combobox_popup, should_process_theme_change
 
 
 class LabelStyleReadOnlQDoubleSpinBox(QDoubleSpinBox):
@@ -458,6 +458,7 @@ if __name__ == "__main__":
 
     # — locale selector —
     locale_combo = QComboBox()
+    configure_combobox_popup(locale_combo)
     locales = [
         QLocale(QLocale.Language.English, QLocale.Country.UnitedStates),
         QLocale(QLocale.Language.German, QLocale.Country.Germany),
@@ -483,6 +484,7 @@ if __name__ == "__main__":
 
     # — currency selector —
     currency_combo = QComboBox()
+    configure_combobox_popup(currency_combo)
     # list whatever ISO codes you want to test:
     for code in ("USD", "EUR", "GBP", "JPY"):
         currency_combo.addItem(code, code)

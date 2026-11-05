@@ -48,7 +48,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import LOGO_NAME
-from bitcoin_safe.gui.qt.util import svg_tools
+from bitcoin_safe.gui.qt.util import configure_combobox_popup, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 
 from ...execute_config import DEFAULT_LANG_CODE
@@ -120,6 +120,7 @@ FLAGS = {
 def create_language_combobox(languages: dict[str, str]) -> QComboBox:
     """Create language combobox."""
     cb = QComboBox()
+    configure_combobox_popup(cb)
     for lang, name in languages.items():
         icon = LanguageChooser.create_flag_icon(FLAGS[lang]) if lang in FLAGS else QIcon()
         cb.addItem(icon, name, lang)

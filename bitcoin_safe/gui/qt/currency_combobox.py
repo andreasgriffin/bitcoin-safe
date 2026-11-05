@@ -34,6 +34,8 @@ from collections.abc import Iterable, Sequence
 
 from PyQt6.QtWidgets import QComboBox
 
+from bitcoin_safe.gui.qt.util import configure_combobox_popup
+
 from ...fx import FX
 
 
@@ -61,6 +63,7 @@ class CurrencyComboBox(QComboBox):
         formatting: CurrencyGroupFormatting,
     ) -> None:
         super().__init__()
+        configure_combobox_popup(self)
         self.fx = fx
         self.groups = groups
         self.formatting = formatting

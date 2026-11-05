@@ -46,7 +46,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from .util import add_item_with_top_spacer, set_no_margins, svg_tools
+from .util import add_item_with_top_spacer, configure_combobox_popup, set_no_margins, svg_tools
 
 if TYPE_CHECKING:
     from .hist_list import HistList
@@ -98,6 +98,7 @@ class DateRangePicker(QWidget):
         self._available_range: DateRange | None = None
 
         self.preset_combo = QComboBox(self)
+        configure_combobox_popup(self.preset_combo)
         self.start_edit = QDateEdit(self)
         self.end_edit = QDateEdit(self)
         self.to_label = QLabel(self.tr("to"))
