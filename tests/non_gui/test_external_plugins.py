@@ -3253,7 +3253,7 @@ def test_plugin_manager_schedules_startup_source_refresh_when_sources_exist(
     try:
         assert manager._startup_source_refresh_timer is not None
         assert manager._startup_source_refresh_timer.isSingleShot()
-        assert manager._startup_source_refresh_timer.interval() == 15_000
+        assert manager._startup_source_refresh_timer.interval() == 5_000
         assert manager._startup_source_refresh_timer.isActive()
         assert manager.external_registry.last_download_time is None
     finally:
