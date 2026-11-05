@@ -1086,9 +1086,7 @@ class PluginManager(BaseSaveableClass):
         self._restore_or_create_clients(descriptor=descriptor)
 
         for client in self.clients:
-            client.set_wallet_context(
-                PluginWalletContext(wallet_id=wallet_id, wallet_functions=self.wallet_functions)
-            )
+            client.set_wallet_context(self._wallet_context(wallet_id=wallet_id))
 
             if isinstance(client, PaidPluginClient):
                 client.defer_subscription_refresh(True)
@@ -1096,9 +1094,14 @@ class PluginManager(BaseSaveableClass):
 
         self.widget.set_plugins(self.listable_items)
 
+    def _wallet_context(self, wallet_id: str) -> PluginWalletContext:
+        return PluginWalletContext(wallet_id=wallet_id, wallet_functions=self.wallet_functions)
+
     def set_wallet_id(self, wallet_id: str) -> None:
-        """Update the wallet id used by connected plugin services."""
+        """Rebind all connected plugin clients to the renamed wallet id."""
         self._current_wallet_id = wallet_id
+        for client in self.clients:
+            client.set_wallet_context(self._wallet_context(wallet_id=wallet_id))
 
     def _client_for_plugin_id(self, plugin_id: str) -> PluginClient | None:
         for client in self.clients:

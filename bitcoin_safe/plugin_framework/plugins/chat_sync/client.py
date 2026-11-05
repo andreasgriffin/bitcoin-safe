@@ -304,6 +304,9 @@ class SyncClient(PluginClient):
 
         labels = wallet_context.labels()
         wallet_signals = wallet_context.wallet_signals
+        if self.label_syncer:
+            self.label_syncer.close()
+            self.label_syncer = None
         if labels and wallet_signals:
             self.label_syncer = LabelSyncer(
                 labels=labels,
