@@ -506,8 +506,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
         errors: list[str] = []
         sources = self.load_sources() if source_id is None else [self._require_source(source_id)]
         enabled_sources = [source for source in sources if source.enabled]
-        if enabled_sources:
-            self.last_download_time = datetime.now(timezone.utc)
         for source in enabled_sources:
             try:
                 # Blocking network, parsing and signature verification run in a worker thread,
@@ -552,6 +550,9 @@ class ExternalPluginRegistry(BaseSaveableClass):
                 errors.append(f"{source.display_name}: {exc}")
                 logger.warning("Failed to refresh plugin source %s: %s", source.source_id, exc)
 
+        # Set only after the loop completes: a cancelled refresh must not start the startup cooldown.
+        if enabled_sources:
+            self.last_download_time = datetime.now(timezone.utc)
         if recheck_installed:
             self.recheck_installed_plugins()
         if errors and raise_on_error:

@@ -1948,6 +1948,8 @@ def test_refresh_sources_cancellation_writes_nothing(tmp_path: Path, monkeypatch
 
     assert save_calls == []
     assert registry.sources["test-source"].last_checked_at is None
+    assert registry.last_download_time is None
+    assert registry.should_skip_startup_source_refresh() is False
 
 
 def test_external_registry_load_module_reloads_changed_plugin_package_modules(tmp_path: Path) -> None:
