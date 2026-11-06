@@ -88,7 +88,6 @@ class PluginMetadataModel(_ModelBase):
     display_name: str
     description: str
     provider: str
-    plugin_api_version: str
     entrypoint: str
     app_version_specifier: str
     btcpay_config: BtcpayManifestConfig | None = None
@@ -100,7 +99,6 @@ class PluginMetadataModel(_ModelBase):
         "display_name",
         "description",
         "provider",
-        "plugin_api_version",
         "entrypoint",
     )
     @classmethod
@@ -155,15 +153,12 @@ class PoetryModel(_ModelBase):
 class ToolPluginModel(_ModelBase):
     schema_version: str
     display_name: str
-    plugin_api_version: str
     entrypoint: str
     bitcoin_safe_version: str
     provider: str | None = None
     btcpay: BtcpayManifestConfig | None = None
 
-    @field_validator(
-        "schema_version", "display_name", "plugin_api_version", "entrypoint", "bitcoin_safe_version"
-    )
+    @field_validator("schema_version", "display_name", "entrypoint", "bitcoin_safe_version")
     @classmethod
     def _strip_required_strings(cls, value: str) -> str:
         return _strip_required(value)
@@ -294,7 +289,6 @@ def parse_plugin_pyproject(data: object, file_name: str) -> PluginMetadataModel:
             display_name=pyproject.tool.bitcoin_safe.plugin.display_name,
             description=pyproject.tool.poetry.description,
             provider=_plugin_provider(pyproject),
-            plugin_api_version=pyproject.tool.bitcoin_safe.plugin.plugin_api_version,
             entrypoint=pyproject.tool.bitcoin_safe.plugin.entrypoint,
             app_version_specifier=pyproject.tool.bitcoin_safe.plugin.bitcoin_safe_version,
             btcpay_config=pyproject.tool.bitcoin_safe.plugin.btcpay,

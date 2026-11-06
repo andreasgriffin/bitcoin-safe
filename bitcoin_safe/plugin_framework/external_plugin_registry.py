@@ -59,7 +59,6 @@ from bitcoin_safe.network_utils import ProxyInfo, fetch_bytes
 from bitcoin_safe.plugin_framework.external_plugin_registry_dataclasses import (
     SOURCE_MANIFEST_FILENAME,
     SOURCE_SIGNATURE_SUFFIX,
-    SUPPORTED_PLUGIN_API_VERSION,
     ExternalPluginCatalogEntry,
     ExternalPluginError,
     InstalledSourcePluginMetadata,
@@ -972,7 +971,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
                     description="",
                     provider="",
                     entrypoint="",
-                    plugin_api_version="",
                     app_version_specifier="",
                     folder_hash=entry.folder_hash,
                     release_ref=entry.release_ref,
@@ -1046,7 +1044,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
             description=metadata.description,
             provider=metadata.provider,
             entrypoint=metadata.entrypoint,
-            plugin_api_version=metadata.plugin_api_version,
             app_version_specifier=metadata.app_version_specifier,
             folder_hash=plugin.folder_hash,
             release_ref=plugin.release_ref,
@@ -1151,10 +1148,6 @@ class ExternalPluginRegistry(BaseSaveableClass):
             raise ExternalPluginError(f"Plugin metadata for {plugin.bundle_id} has a mismatched version.")
         if plugin_spec.entrypoint != plugin.entrypoint:
             raise ExternalPluginError(f"Plugin metadata for {plugin.bundle_id} has a mismatched entrypoint.")
-        if plugin_spec.plugin_api_version != SUPPORTED_PLUGIN_API_VERSION:
-            raise ExternalPluginError(
-                f"Plugin {plugin.bundle_id} requires unsupported plugin API {plugin_spec.plugin_api_version}."
-            )
         if not self._is_plugin_compatible(plugin.app_version_specifier):
             raise ExternalPluginError(
                 f"Plugin {plugin.bundle_id} is not compatible with this {APP_NAME} version."
