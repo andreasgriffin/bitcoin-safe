@@ -8,6 +8,12 @@ RUN apt update -qq > /dev/null && apt install -qq --yes --no-install-recommends 
 COPY apt.sources.list /etc/apt/sources.list
 COPY apt.preferences /etc/apt/preferences.d/snapshot
 
+RUN printf '%s\n' \
+    'Acquire::Retries "5";' \
+    'Acquire::http::Timeout "30";' \
+    'Acquire::https::Timeout "30";' \
+    > /etc/apt/apt.conf.d/80snapshot-retries
+    
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
