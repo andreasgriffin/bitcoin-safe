@@ -392,6 +392,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.external_registry = external_registry or ExternalPluginRegistry.from_config(config)
         self.plugins_menu = QMenu()
         self._file_path = file_path
+        self._save_in_progress = False
         self._client_bridge_tasks: list[Future[Any]] = []
         self._sync_task: Future[Any] | None = None
         self.progress_update_timer = QTimer(self)
@@ -1154,7 +1155,21 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             logger.info(f"Lock file {lock_file_path} removed.")
 
     def save(self) -> str | None:  # type: ignore
-        """Save."""
+        """Save.
+
+        Re-entrant calls are ignored while a save is in progress. Otherwise, a sync update
+        arriving while a modal save/password dialog is open would open another dialog.
+        """
+        if self._save_in_progress:
+            return None
+        self._save_in_progress = True
+        try:
+            return self._save_wallet_file()
+        finally:
+            self._save_in_progress = False
+
+    def _save_wallet_file(self) -> str | None:
+        """Save the wallet file, asking for a file location and password if needed."""
         if not self._file_path:
             if not os.path.exists(self.config.wallet_dir):
                 os.makedirs(self.config.wallet_dir, exist_ok=True)
@@ -2190,7 +2205,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         logger.info(self.tr("finished updating lists"))
 
         self.fx.update_if_needed()
-        self.save()
+        # periodic saves must never open a file dialog; only saved wallets are auto-saved
+        if self.has_file_path:
+            self.save()
         if self.wallet.client:
             self.signal_after_sync.emit(self.wallet.client.sync_status)
 
