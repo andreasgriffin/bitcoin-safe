@@ -31,11 +31,13 @@ from __future__ import annotations
 
 import asyncio
 from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytest
 from bitcoin_qr_tools.data import DataType
 from PyQt6.QtWidgets import QMessageBox
 
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import MessageType
 from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum
@@ -191,3 +193,23 @@ def test_broadcast_only_saves_local_tx_after_success(
     UITx_Viewer.broadcast(viewer)
 
     assert events == expected_events
+
+
+@pytest.mark.parametrize(
+    "wallet_heights, mempool_height, expected",
+    [
+        ([0, 250], 999, 250),  # an unsynced wallet must not win over a synced one
+        ([120, 250], 999, 250),  # the highest synced wallet is the chain tip
+        ([0, 0], 999, 999),  # no synced wallet: fall back to the mempool tip
+        ([], 999, 999),  # no wallet loaded: fall back to the mempool tip
+    ],
+)
+def test_robust_height_uses_chain_tip(wallet_heights: list[int], mempool_height: int, expected: int) -> None:
+    """The robust height is the highest synced wallet height, else the mempool tip."""
+    wallets = [SimpleNamespace(id=f"w{i}", get_height=lambda h=h: h) for i, h in enumerate(wallet_heights)]
+    viewer = SimpleNamespace(
+        wallet_functions=object(),
+        mempool_manager=SimpleNamespace(fetch_block_tip_height=lambda: mempool_height),
+    )
+    with patch("bitcoin_safe.gui.qt.ui_tx.ui_tx_base.get_wallets", return_value=wallets):
+        assert UITx_Base._get_robust_height(viewer) == expected

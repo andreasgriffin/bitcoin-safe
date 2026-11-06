@@ -293,10 +293,15 @@ class UITx_Base(SearchableTab):
         self.nlocktime_warning_label.update_nlocktime_warning(nlocktime, current_height)
 
     def _get_robust_height(self) -> int:
-        "Tries to geth the height from any wallet.  If none are open then tries mempool"
-        for wallet in get_wallets(self.wallet_functions):
-            height = wallet.get_height()
-            logger.debug(f"_get_robust_height {height=} from wallet {wallet.id}")
+        """Return the chain tip height.
+
+        Wallets sync independently and an unsynced wallet reports height 0, so the
+        highest loaded wallet height is the best local view of the chain. If no wallet
+        has synced yet, fall back to the mempool block tip.
+        """
+        height = max((wallet.get_height() for wallet in get_wallets(self.wallet_functions)), default=0)
+        if height > 0:
+            logger.debug(f"_get_robust_height {height=} from wallets")
             return height
 
         height = self.mempool_manager.fetch_block_tip_height()
