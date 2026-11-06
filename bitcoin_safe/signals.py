@@ -46,6 +46,7 @@ from typing import (
 
 if TYPE_CHECKING:
     # Import the actual class only for typing to avoid import cycles / runtime deps
+    from .client import Client
     from .gui.qt.qt_wallet import (
         QTWallet,
     )
@@ -294,6 +295,10 @@ class Signals(SignalsMin):
 
     request_manual_sync = cast(SignalProtocol[[]], pyqtSignal())
     signal_broadcast_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
+    # request a p2p broadcast of the tx, handled by the main window
+    signal_do_broadcast_tx = cast(SignalProtocol[["Client", bdk.Transaction]], pyqtSignal(object, object))
+    # result of signal_do_broadcast_tx: (tx, True if it was sent)
+    signal_broadcast_tx_finished = cast(SignalProtocol[[bdk.Transaction, bool]], pyqtSignal(object, bool))
     signal_open_history_for_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(object))
     apply_txs_to_wallets = cast(SignalProtocol[[list[bdk.Transaction], int]], pyqtSignal(object, int))
     evict_txs_from_wallet_id = cast(SignalProtocol[[list[str], str, int]], pyqtSignal(object, str, int))

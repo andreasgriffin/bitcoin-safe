@@ -548,3 +548,34 @@ def test_p2p_client_idle_timeout_before_handshake_disconnects() -> None:
 
     assert not asyncio.run(client._handle_idle_read_timeout(expected_bytes=24, received_bytes=0))
     assert not sent_messages
+
+
+def test_broadcast_tx_skips_failing_peers_until_one_succeeds(monkeypatch) -> None:
+    listener = P2pListener(network=bdk.Network.BITCOIN, loop_in_thread=None, max_parallel_peers=3)
+    tx = bdk.Transaction(bytes.fromhex(VALID_TEST_TX))
+    attempts: list[P2PClient] = []
+
+    async def fake_broadcast(self: P2PClient, raw: bytes) -> bool:
+        attempts.append(self)
+        return self is listener.clients[2]
+
+    for client in listener.clients:
+        monkeypatch.setattr(client, "is_running", _always_running)
+    monkeypatch.setattr(P2PClient, "broadcast_tx", fake_broadcast)
+
+    assert asyncio.run(listener.broadcast_tx(tx)) is True
+    assert attempts[-1] is listener.clients[2]
+
+
+def test_broadcast_tx_returns_false_when_no_peer_accepts(monkeypatch) -> None:
+    listener = P2pListener(network=bdk.Network.BITCOIN, loop_in_thread=None, max_parallel_peers=2)
+    tx = bdk.Transaction(bytes.fromhex(VALID_TEST_TX))
+
+    async def fake_broadcast(self: P2PClient, raw: bytes) -> bool:
+        return False
+
+    for client in listener.clients:
+        monkeypatch.setattr(client, "is_running", _always_running)
+    monkeypatch.setattr(P2PClient, "broadcast_tx", fake_broadcast)
+
+    assert asyncio.run(listener.broadcast_tx(tx)) is False

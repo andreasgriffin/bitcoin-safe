@@ -79,6 +79,8 @@ class PeerQuality:
 
 
 class P2pListener(QObject):
+    BROADCAST_TIMEOUT = 3
+
     signal_relevant_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
     signal_block = cast(SignalProtocol[[str]], pyqtSignal(str))
     signal_break_current_connection = cast(SignalProtocol[[]], pyqtSignal())
@@ -403,6 +405,30 @@ class P2pListener(QObject):
 
     def get_current_peers(self):
         return self._snapshot_current_connections()
+
+    async def broadcast_tx(self, tx: bdk.Transaction) -> bool:
+        """Send tx to connected peers in random order until one accepts it.
+
+        The whole attempt is bounded by BROADCAST_TIMEOUT, so the caller
+        (which may wait on it from the GUI thread) is never blocked longer than that.
+        Returns True if at least one peer accepted the transaction.
+        """
+        raw = tx.serialize()
+        clients = [client for client in self.clients if client.is_running()]
+        random.shuffle(clients)
+
+        async def send_to_first_accepting_peer() -> bool:
+            for client in clients:
+                if await client.broadcast_tx(raw):
+                    logger.info(f"Broadcast {short_tx_id(tx.compute_txid())} via {client.current_peer()}")
+                    return True
+            return False
+
+        try:
+            return await asyncio.wait_for(send_to_first_accepting_peer(), timeout=self.BROADCAST_TIMEOUT)
+        except asyncio.TimeoutError:
+            logger.warning(f"Broadcast {short_tx_id(tx.compute_txid())} via p2p peers timed out")
+            return False
 
     @property
     def tx_rates(self) -> dict[Peer, float]:

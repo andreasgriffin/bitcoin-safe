@@ -41,26 +41,35 @@ from bitcoin_safe.gui.qt.util import MessageType
 from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum
 
 
-def test_broadcast_timeout_shows_explanation(monkeypatch) -> None:
-    """A timeout should use the dedicated explanation instead of a raw error."""
-
-    class TimeoutClient:
-        def broadcast(self, _tx: object) -> None:
-            raise asyncio.TimeoutError
-
-    events: list[str] = []
-    emitted_transactions: list[object] = []
+def test_broadcast_requests_broadcast_from_main_window() -> None:
+    """The viewer must not touch the client itself; it requests the broadcast via a signal."""
+    requests: list[tuple[object, object]] = []
+    client = object()
+    tx = object()
     viewer = SimpleNamespace(
-        client=TimeoutClient(),
+        client=client,
         signals=SimpleNamespace(
-            signal_broadcast_tx=SimpleNamespace(emit=emitted_transactions.append),
+            signal_do_broadcast_tx=SimpleNamespace(emit=lambda c, t: requests.append((c, t))),
         ),
-        _show_broadcast_timeout=lambda: events.append("timeout_message"),
-        tr=lambda message: message,
     )
 
-    assert not UITx_Viewer._broadcast(viewer, object())
-    assert not emitted_transactions
+    UITx_Viewer._broadcast(viewer, tx)
+
+    assert requests == [(client, tx)]
+
+
+def test_broadcast_timeout_result_shows_explanation() -> None:
+    """A failed broadcast result should show the timeout explanation."""
+    events: list[str] = []
+    viewer = SimpleNamespace(
+        txid=lambda: "txid",
+        _show_broadcast_timeout=lambda: events.append("timeout_message"),
+        _on_broadcast_succeeded=lambda _tx: events.append("succeeded"),
+    )
+    tx = SimpleNamespace(compute_txid=lambda: "txid")
+
+    UITx_Viewer._on_broadcast_finished(viewer, tx, False)
+
     assert events == ["timeout_message"]
 
 
@@ -131,21 +140,19 @@ def test_broadcast_timeout_dialog_links_and_defaults_to_block_explorer(monkeypat
 
 
 @pytest.mark.parametrize(
-    ("locktime_valid", "dialog_response", "broadcast_success", "expected_events"),
+    ("locktime_valid", "dialog_response", "expected_events"),
     [
-        (False, False, True, []),
-        (True, True, False, ["broadcast"]),
-        (True, True, True, ["broadcast", "save_local"]),
+        (False, False, []),
+        (True, True, ["broadcast"]),
     ],
 )
-def test_broadcast_only_saves_local_tx_after_success(
+def test_broadcast_requests_only_when_locktime_and_dialog_allow(
     monkeypatch,
     locktime_valid: bool,
     dialog_response: bool,
-    broadcast_success: bool,
     expected_events: list[str],
 ) -> None:
-    """Local saves should happen only after a confirmed successful broadcast."""
+    """The broadcast request is only sent when nLocktime is valid or the user confirms."""
 
     class FakeTransaction:
         def lock_time(self) -> int:
@@ -166,28 +173,105 @@ def test_broadcast_only_saves_local_tx_after_success(
 
     events: list[str] = []
 
-    def save_local_tx() -> None:
-        events.append("save_local")
-
-    def broadcast(_tx: FakeTransaction) -> bool:
+    def broadcast(_tx: FakeTransaction) -> None:
         events.append("broadcast")
-        return broadcast_success
 
     viewer = SimpleNamespace(
         data=SimpleNamespace(data_type=DataType.Tx, data=FakeTransaction()),
-        hidden_tx_infos=HiddenTxUiInfos(save_local_on_send=True),
-        post_broadcast_action=PostBroadcastEnum.open_hist_list,
-        _post_broadcast_consumed_txid=None,
         client=object(),
-        save_local_tx=save_local_tx,
         _get_robust_height=lambda: 0,
         _set_blockchain=lambda: None,
         _broadcast=broadcast,
-        signals=SimpleNamespace(signal_open_history_for_tx=SimpleNamespace(emit=lambda _tx: None)),
-        txid=lambda: "txid",
         tr=lambda message: message,
     )
 
     UITx_Viewer.broadcast(viewer)
 
     assert events == expected_events
+
+
+def test_broadcast_success_saves_local_tx_and_opens_history() -> None:
+    """Local saves and history opening happen only after the broadcast is confirmed sent."""
+    events: list[str] = []
+    viewer = SimpleNamespace(
+        hidden_tx_infos=HiddenTxUiInfos(save_local_on_send=True),
+        save_local_tx=lambda: events.append("save_local"),
+        post_broadcast_action=PostBroadcastEnum.open_hist_list,
+        _post_broadcast_consumed_txid=None,
+        signals=SimpleNamespace(
+            signal_open_history_for_tx=SimpleNamespace(emit=lambda _tx: events.append("history"))
+        ),
+        txid=lambda: "txid",
+    )
+
+    UITx_Viewer._on_broadcast_succeeded(viewer, SimpleNamespace(compute_txid=lambda: "txid"))
+
+    assert events == ["save_local", "history"]
+
+
+def test_main_window_falls_back_to_p2p_on_timeout() -> None:
+    """On a CBF timeout the main window retries via p2p and reports success."""
+    from bitcoin_safe.gui.qt.main import MainWindow
+
+    class TimeoutClient:
+        def broadcast(self, _tx: object) -> None:
+            raise asyncio.TimeoutError
+
+    events: list[object] = []
+
+    async def p2p_broadcast(_tx: object) -> bool:
+        return True
+
+    window = SimpleNamespace(
+        p2p_listener=SimpleNamespace(broadcast_tx=p2p_broadcast),
+        signals=SimpleNamespace(
+            signal_broadcast_tx=SimpleNamespace(emit=lambda tx: events.append(("broadcast", tx))),
+            signal_broadcast_tx_finished=SimpleNamespace(
+                emit=lambda tx, sent: events.append(("finished", sent))
+            ),
+            signal_broadcast_tx_failed=SimpleNamespace(emit=lambda tx, e: events.append(("failed", e))),
+        ),
+        _broadcast_tx_via_p2p_peers=lambda tx: MainWindow._broadcast_tx_via_p2p_peers(window, tx),
+    )
+
+    tx = object()
+    asyncio.run(MainWindow._broadcast_tx_in_background(window, TimeoutClient(), tx))
+
+    assert events == [("broadcast", tx), ("finished", True)]
+
+
+def test_main_window_reports_non_timeout_error_without_p2p_fallback(monkeypatch) -> None:
+    """A non-timeout error is shown as an error and is not retried via p2p."""
+    from bitcoin_safe.gui.qt import main as main_module
+    from bitcoin_safe.gui.qt.main import MainWindow
+
+    error = RuntimeError("non-mandatory-script-verify-flag")
+    shown: list[Exception] = []
+    monkeypatch.setattr(main_module, "caught_exception_message", lambda e, **_kwargs: shown.append(e))
+
+    class FailingClient:
+        def broadcast(self, _tx: object) -> None:
+            raise error
+
+    events: list[object] = []
+
+    async def p2p_broadcast(_tx: object) -> bool:
+        events.append("p2p")
+        return True
+
+    window = SimpleNamespace(
+        p2p_listener=SimpleNamespace(broadcast_tx=p2p_broadcast),
+        signals=SimpleNamespace(
+            signal_broadcast_tx=SimpleNamespace(emit=lambda tx: events.append("broadcast")),
+            signal_broadcast_tx_finished=SimpleNamespace(
+                emit=lambda tx, sent: events.append(("finished", sent))
+            ),
+        ),
+        tr=lambda message: message,
+        _broadcast_tx_via_p2p_peers=lambda tx: MainWindow._broadcast_tx_via_p2p_peers(window, tx),
+    )
+
+    asyncio.run(MainWindow._broadcast_tx_in_background(window, FailingClient(), object()))
+
+    assert shown == [error]
+    assert events == [("finished", False)]

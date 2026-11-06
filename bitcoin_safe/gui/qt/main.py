@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import logging
 import os
@@ -310,6 +311,7 @@ class MainWindow(UnlockableMainWindow):
         self.signals.open_wallet.connect(self.open_wallet)
         self.signals.any_wallet_updated.connect(self.on_any_wallet_updated)
         self.signals.signal_broadcast_tx.connect(self.on_signal_broadcast_tx)
+        self.signals.signal_do_broadcast_tx.connect(self.broadcast_tx)
         self.signals.signal_open_history_for_tx.connect(self.on_signal_open_history_for_tx)
         self.signals.language_switch.connect(self.updateUI)
         self.signal_recently_open_wallet_changed.connect(self.populate_recent_wallets_menu)
@@ -380,6 +382,47 @@ class MainWindow(UnlockableMainWindow):
     def get_network(self) -> bdk.Network:
         """Get network."""
         return self.config.network
+
+    def broadcast_tx(self, client: Client, tx: bdk.Transaction) -> None:
+        """Broadcast tx without blocking the GUI thread.
+
+        Tries the wallet client first. On a timeout, falls back to the connected p2p peers.
+        The outcome is reported via `signal_broadcast_tx_finished`.
+        """
+        self.loop_in_thread.run_background(self._broadcast_tx_in_background(client, tx))
+
+    async def _broadcast_tx_in_background(self, client: Client, tx: bdk.Transaction) -> None:
+        """Send tx via the client, falling back to p2p peers on timeout."""
+        try:
+            await asyncio.to_thread(client.broadcast, tx)
+        except (asyncio.TimeoutError, TimeoutError):
+            logger.info("Broadcast timed out, retrying via connected p2p peers")
+            sent = await self._broadcast_tx_via_p2p_peers(tx)
+        except Exception as e:
+            caught_exception_message(
+                e,
+                title=(
+                    self.tr("Invalid Signatures") if "non-mandatory-script-verify-flag" in str(e) else None
+                ),
+                parent=self,
+            )
+            self.signals.signal_broadcast_tx_finished.emit(tx, False)
+            return
+        else:
+            sent = True
+        if sent:
+            self.signals.signal_broadcast_tx.emit(tx)
+        self.signals.signal_broadcast_tx_finished.emit(tx, sent)
+
+    async def _broadcast_tx_via_p2p_peers(self, tx: bdk.Transaction) -> bool:
+        """Send tx via connected p2p peers. Returns False if none accepted it."""
+        if not self.p2p_listener:
+            return False
+        try:
+            return await self.p2p_listener.broadcast_tx(tx)
+        except Exception:
+            logger.exception("Broadcast via p2p peers failed")
+            return False
 
     def load_last_state(self) -> None:
         """Load last state."""

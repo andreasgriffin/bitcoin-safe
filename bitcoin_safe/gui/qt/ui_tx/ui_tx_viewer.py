@@ -29,7 +29,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import enum
 import logging
 from functools import partial
@@ -123,7 +122,6 @@ from ..util import (
     Message,
     MessageType,
     add_to_buttonbox,
-    caught_exception_message,
     clear_layout,
     set_margins,
     set_no_margins,
@@ -222,6 +220,7 @@ class UITx_Viewer(UITx_Base):
         self.hidden_tx_infos = hidden_tx_infos
         self.post_broadcast_action = PostBroadcastEnum.open_hist_list
         self._post_broadcast_consumed_txid: str | None = None
+        self.signal_tracker.connect(self.signals.signal_broadcast_tx_finished, self._on_broadcast_finished)
         self.presentation = ViewerPresentation.standalone_tab
         ##################
         self.searchable_list = widget_utxo_with_toolbar.utxo_list
@@ -896,25 +895,10 @@ class UITx_Viewer(UITx_Base):
             return wallet.get_height()
         return None
 
-    def _broadcast(self, tx: bdk.Transaction) -> bool:
-        """Broadcast."""
+    def _broadcast(self, tx: bdk.Transaction) -> None:
+        """Request the broadcast. The outcome arrives via `_on_broadcast_finished`."""
         if self.client:
-            try:
-                self.client.broadcast(tx)
-                self.signals.signal_broadcast_tx.emit(tx)
-                return True
-            except (asyncio.TimeoutError, TimeoutError):
-                self._show_broadcast_timeout()
-            except Exception as e:
-                caught_exception_message(
-                    e,
-                    title=(
-                        self.tr("Invalid Signatures")
-                        if "non-mandatory-script-verify-flag" in str(e)
-                        else None
-                    ),
-                    parent=self,
-                )
+            self.signals.signal_do_broadcast_tx.emit(self.client, tx)
         else:
             Message(
                 self.tr(
@@ -924,7 +908,14 @@ class UITx_Viewer(UITx_Base):
                 parent=self,
             )
 
-        return False
+    def _on_broadcast_finished(self, tx: bdk.Transaction, sent: bool) -> None:
+        """Handle the outcome of the broadcast requested via `signal_do_broadcast_tx`."""
+        if str(tx.compute_txid()) != self.txid():
+            return
+        if sent:
+            self._on_broadcast_succeeded(tx)
+        else:
+            self._show_broadcast_timeout()
 
     def _show_broadcast_timeout(self) -> None:
         tx_url = self.txid_label.get_tx_url()
@@ -989,17 +980,19 @@ class UITx_Viewer(UITx_Base):
             self._set_blockchain()
 
         logger.debug(f"broadcasting tx {str(tx.compute_txid())[:4]=}")
-        success = self._broadcast(tx)
-        if success:
-            if self.hidden_tx_infos and self.hidden_tx_infos.save_local_on_send:
-                self.save_local_tx()
-            if (
-                self.post_broadcast_action == PostBroadcastEnum.open_hist_list
-                and self._post_broadcast_consumed_txid != self.txid()
-            ):
-                self.signals.signal_open_history_for_tx.emit(tx)
-                self._post_broadcast_consumed_txid = self.txid()
-            logger.info(f"Successfully broadcasted tx {str(tx.compute_txid())[:4]=}")
+        self._broadcast(tx)
+
+    def _on_broadcast_succeeded(self, tx: bdk.Transaction) -> None:
+        """Run the post-broadcast actions once the tx is known to be in the network."""
+        if self.hidden_tx_infos and self.hidden_tx_infos.save_local_on_send:
+            self.save_local_tx()
+        if (
+            self.post_broadcast_action == PostBroadcastEnum.open_hist_list
+            and self._post_broadcast_consumed_txid != self.txid()
+        ):
+            self.signals.signal_open_history_for_tx.emit(tx)
+            self._post_broadcast_consumed_txid = self.txid()
+        logger.info(f"Successfully broadcasted tx {str(tx.compute_txid())[:4]=}")
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
         """Enrich simple psbt with wallet data."""

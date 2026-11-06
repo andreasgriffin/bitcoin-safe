@@ -707,14 +707,18 @@ class P2PClient(QObject):
         """
         await self._send_raw("getaddr", b"")  # ← nothing else here
 
-    async def broadcast_tx(self, raw_hex: str) -> None:
-        """Broadcast tx."""
+    async def broadcast_tx(self, raw: bytes) -> bool:
+        """Send a raw transaction to the peer. Returns True if it was written to the socket.
+
+        Peers ignore transactions sent before the handshake is complete, so this refuses to send then.
+        """
+        if self._handshake_stage != "verack_received":
+            return False
         try:
-            raw = bytes.fromhex(raw_hex)
-        except ValueError:
-            logger.debug(f"Invalid hex in broadcast_tx: {raw_hex!r}")
-            return
-        await self._send_raw("tx", raw)
+            return await self._send_raw("tx", raw)
+        except OSError as exc:
+            logger.debug(f"Failed to broadcast tx to {self._current_peer}: {exc}")
+            return False
 
     async def getdata(self, inventory: Inventory) -> None:
         """Request data for the given inventory, *preferring witness* encodings (BIP144)
@@ -761,11 +765,11 @@ class P2PClient(QObject):
     # ------------------------------------------------------------------
     # Low‑level framing
     # ------------------------------------------------------------------
-    async def _send_raw(self, cmd: str, payload: bytes) -> None:
+    async def _send_raw(self, cmd: str, payload: bytes) -> bool:
         """Send a raw Bitcoin P2P message **with a timeout applied to the drain()
-        call**."""
+        call**. Returns True if the message was flushed to the socket."""
         if not self.writer:
-            return
+            return False
 
         magic = MAGIC_VALUES[self.network]
         header = (
@@ -785,9 +789,10 @@ class P2PClient(QObject):
             except asyncio.TimeoutError:
                 logger.debug(f"-> {cmd} timed-out after {self.timeout} s during drain()")
                 await self.disconnect(reason=f"Timed out while sending {cmd}")
-                return
+                return False
 
         # logger.debug(f"-> {cmd} ({len(payload)} bytes)")
+        return True
 
     async def _read_exact(self, n: int) -> bytes:
         """Read *exactly* ``n`` bytes from the peer, timing-out (and disconnecting) if
