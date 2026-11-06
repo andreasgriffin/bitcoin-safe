@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import datetime, timedelta, timezone
 from functools import lru_cache
@@ -36,7 +37,7 @@ from typing import Any, cast
 
 import bdkpython as bdk
 import requests
-from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QLocale, QObject, pyqtSignal
 
@@ -48,8 +49,14 @@ from bitcoin_safe.util import SATOSHIS_PER_BTC, default_timeout
 
 logger = logging.getLogger(__name__)
 
+FX_RETRY_SECONDS = 30.0
 COINGECKO_HISTORICAL_RATE_URL = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range"
 COINGECKO_HISTORICAL_RATE_TIMEOUT_SECONDS = 8.0
+# name and value (= units of this denomination per 1 BTC); always available, even offline
+FIXED_BTC_UNITS: dict[str, tuple[str, float]] = {
+    "BITS": ("Bits", 1_000_000.0),
+    "SATS": ("Satoshis", float(SATOSHIS_PER_BTC)),
+}
 
 
 class FX(QObject):
@@ -64,6 +71,7 @@ class FX(QObject):
         self.rates: dict[str, dict[str, Any]] = config.rates.copy()
         self.historical_rates: dict[float, dict[str, float]] = config.historical_rates
         self.sanitize_rates()
+        self.add_fixed_btc_units(self.rates)
         if update_rates:
             self.update()
         logger.debug(f"initialized {self.__class__.__name__}")
@@ -188,9 +196,13 @@ class FX(QObject):
             self.loop_in_thread.stop()
         logger.debug(f"{self.__class__.__name__} close")
 
+    def has_market_rates(self) -> bool:
+        """Return whether rates fetched from the market exist (fixed BTC units do not count)."""
+        return any(code not in FIXED_BTC_UNITS for code in self.rates)
+
     def update_if_needed(self) -> None:
         """Update if needed."""
-        if self.rates:
+        if self.has_market_rates():
             return
         self.update()
 
@@ -294,12 +306,24 @@ class FX(QObject):
 
     def update(self) -> None:
         """Update."""
-        self._task_set_data = self.loop_in_thread.run_background(self._update(), key=f"{id(self)}")
+        self._task_set_data = self.loop_in_thread.run_background(
+            self._update(),
+            key=f"{id(self)}",
+            multiple_strategy=MultipleStrategy.REJECT_NEW_TASK,
+        )
+
+    @staticmethod
+    def add_fixed_btc_units(rates: dict[str, dict[str, Any]]) -> None:
+        """Add fixed BTC denominations, independent of any fetched rates."""
+        for code, (name, units_per_btc) in FIXED_BTC_UNITS.items():
+            rates[code] = {"name": name, "unit": code, "value": units_per_btc, "type": "crypto"}
 
     def add_additional_rates(self, rates: dict):
         # gold entry: {'name': 'Gold - Troy Ounce', 'unit': 'XAU', 'value': 35.399, 'type': 'commodity'}
 
         """Add additional rates."""
+        self.add_fixed_btc_units(rates)
+
         xau = rates.get("xau")
         if xau:
             rates["xaug"] = {
@@ -339,8 +363,8 @@ class FX(QObject):
                 "type": "crypto",
             }
 
-    async def _update(self) -> None:
-        """Update."""
+    async def _fetch_rates(self) -> dict[str, dict[str, Any]]:
+        """Fetch rates once. Returns an empty dict on failure."""
         data = await fetch_from_url(
             "https://api.coingecko.com/api/v3/exchange_rates",
             proxies=(
@@ -351,12 +375,25 @@ class FX(QObject):
         )
         if not data:
             logger.debug("empty result of https://api.coingecko.com/api/v3/exchange_rates")
-            return
-        self.rates = data.get("rates", {})
+            return {}
+        return data.get("rates", {})
+
+    async def _update(self) -> None:
+        """Fetch rates, retrying while no rates are available at all."""
+        while True:
+            rates = await self._fetch_rates()
+            if rates:
+                break
+            if self.has_market_rates():
+                # keep the cached market rates, no need to retry
+                return
+            logger.warning(f"No FX rates available, retrying in {FX_RETRY_SECONDS} seconds")
+            await asyncio.sleep(FX_RETRY_SECONDS)
+
+        self.rates = rates
         self.add_additional_rates(self.rates)
         self.sanitize_rates()
-        if self.rates:
-            self.signal_data_updated.emit()
+        self.signal_data_updated.emit()
 
     @staticmethod
     def sanitize_key(key: str):
