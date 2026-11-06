@@ -278,7 +278,7 @@ class HardwareSigners:
         usb=FeatureLevel.not_capable,
         info_url=_signer_info_url("passport"),
         icon_filename="passport-icon.svg",
-        screenshot_name="passport",
+        screenshot_name="passport-core",
     )
     passport_prime = HardwareSigner(
         id="passport_prime",
