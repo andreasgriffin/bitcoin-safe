@@ -47,6 +47,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.execute_config import ENABLE_P2P_LISTENER_DIAGNOSTICS
+from bitcoin_safe.input_signature_verifier import has_signature_material
 from bitcoin_safe.network_config import ConnectionInfo
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.tx import short_tx_id
@@ -422,7 +423,8 @@ class P2pListener(QObject):
             return
 
         txid = str(tx.compute_txid())
-        if not self._seen_txids.add_if_new(txid):
+        if txid in self._seen_txids:
+            self._seen_txids.record_duplicate()
             if ENABLE_P2P_LISTENER_DIAGNOSTICS:
                 logger.info(
                     "P2P deduplicated tx [slot %s %s] txid=%s deduplicated_tx/s=%.2f",
@@ -432,6 +434,19 @@ class P2pListener(QObject):
                     self._seen_txids.duplicate_rate,
                 )
             return
+
+        relevant = (
+            self.address_filter is not None
+            and address_match(tx=tx, network=self.network, address_filter=self.address_filter)
+        ) or (
+            self.outpoint_filter is not None and outpoint_match(tx=tx, outpoint_filter=self.outpoint_filter)
+        )
+
+        # An unsigned relevant tx is a placeholder; leave its txid fetchable so a signed version can arrive.
+        if relevant and not has_signature_material(tx):
+            return
+
+        self._seen_txids.add(txid)
 
         now = time.monotonic()
         with self._state_lock:
@@ -450,14 +465,8 @@ class P2pListener(QObject):
                 rate,
             )
 
-        if (self.address_filter is not None) and address_match(
-            tx=tx, network=self.network, address_filter=self.address_filter
-        ):
+        if relevant:
             self.signal_relevant_tx.emit(tx)
-            return
-        if (self.outpoint_filter is not None) and outpoint_match(tx=tx, outpoint_filter=self.outpoint_filter):
-            self.signal_relevant_tx.emit(tx)
-            return
 
     async def random_select_peer(
         self,
