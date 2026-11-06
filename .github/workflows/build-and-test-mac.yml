@@ -44,7 +44,7 @@ jobs:
         # and building on macos-15-intel produces an x86 DMG.
         # see available: https://github.com/actions/runner-images?tab=readme-ov-file#available-images
         include:
-          - os: macos-14
+          - os: macos-15
             artifact_name: dmgs-arm64
             arch: arm64
           - os: macos-15-intel
