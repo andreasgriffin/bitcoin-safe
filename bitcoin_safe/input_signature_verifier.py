@@ -123,6 +123,27 @@ def _direct_pushes(script: bytes) -> list[bytes]:
     return pushes
 
 
+# Order n of the secp256k1 group, from SEC 2 (secp256k1 domain parameters), section 2.4.1:
+#   https://www.secg.org/sec2-v2.pdf
+# Also defined as CURVE_ORDER in libsecp256k1's src/group_impl.h:
+#   https://github.com/bitcoin-core/secp256k1/blob/master/src/group_impl.h
+_SECP256K1_ORDER = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+
+
+def _normalize_low_s(der: bytes) -> Signature:
+    """Parse a DER ECDSA signature into a low-S Signature using only embit's public API.
+
+    Serializes to compact r||s, replaces S with n-S when S > n/2, then parses back.
+    This is the same transform as secp256k1_ecdsa_signature_normalize, implemented in
+    Python so it works on every embit backend (ctypes, MicroPython, pure Python).
+    """
+    compact = secp256k1.ecdsa_signature_serialize_compact(secp256k1.ecdsa_signature_parse_der(der))
+    s = int.from_bytes(compact[32:], "big")
+    if s > _SECP256K1_ORDER // 2:
+        compact = compact[:32] + (_SECP256K1_ORDER - s).to_bytes(32, "big")
+    return Signature(secp256k1.ecdsa_signature_parse_compact(compact))
+
+
 def _parse_pubkey(pubkey: bytes) -> PublicKey | None:
     try:
         return PublicKey.parse(pubkey)
@@ -150,9 +171,13 @@ def _ecdsa_verdict(
     # standard sighash parser instead of maintaining a second implementation.
     sighash = sig_with_type[-1]
     try:
-        # libsecp256k1 rejects high-S signatures that consensus accepts, so normalize first.
-        compact = secp256k1.ecdsa_signature_parse_der(sig_with_type[:-1])
-        sig = Signature(secp256k1.ecdsa_signature_normalize(compact))
+        # libsecp256k1 verify rejects high-S, while consensus accepts it, so we normalize
+        # to low-S (via _normalize_low_s) before verifying.
+        # Reference links:
+        #   secp256k1 header: https://github.com/bitcoin-core/secp256k1/blob/master/include/secp256k1.h
+        #   Bitcoin Core CPubKey::Verify: https://github.com/bitcoin/bitcoin/blob/master/src/pubkey.cpp
+        #   BIP 146 (low-S is policy): https://github.com/bitcoin/bips/blob/master/bip-0146.mediawiki
+        sig = _normalize_low_s(sig_with_type[:-1])
     except Exception:
         return InputVerdict.invalid
     msg = (
