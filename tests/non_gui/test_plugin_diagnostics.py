@@ -222,7 +222,6 @@ def _write_plugin_pyproject(
                 'schema_version = "1"',
                 f'display_name = "{display_name}"',
                 f'provider = "{provider}"',
-                'plugin_api_version = "2"',
                 'entrypoint = "test_plugin/plugin_bundle.py"',
                 'bitcoin_safe_version = ">=0.0.0"',
                 "",

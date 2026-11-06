@@ -46,7 +46,6 @@ logger = logging.getLogger(__name__)
 
 SOURCE_MANIFEST_FILENAME = "source.toml"
 SOURCE_SIGNATURE_SUFFIX = ".asc"
-SUPPORTED_PLUGIN_API_VERSION = "2"
 
 
 @dataclass(frozen=True)
@@ -100,7 +99,6 @@ class ExternalPluginCatalogEntry(SaveAllClass):
     description: str
     provider: str
     entrypoint: str
-    plugin_api_version: str
     app_version_specifier: str
     folder_hash: str
     release_ref: str
