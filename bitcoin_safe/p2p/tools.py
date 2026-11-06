@@ -45,7 +45,7 @@ RATE_WINDOW_SECONDS = 60.0
 class BoundedTxidSet:
     """Thread-safe set of txids that evicts the oldest inserted entry when full.
 
-    Also tracks the rate of duplicate hits (`add_if_new` returning False) over a rolling window.
+    Also tracks the rate of duplicate hits (`record_duplicate`) over a rolling window.
     """
 
     def __init__(self, max_size: int) -> None:
@@ -56,23 +56,21 @@ class BoundedTxidSet:
         self._duplicate_times: list[float] = []
         self._lock = Lock()
 
-    def add_if_new(self, txid: str) -> bool:
-        """Atomically insert txid. Returns True if it was not present before.
-
-        A False return is counted as a duplicate hit for `duplicate_rate`.
-        """
-        now = time.monotonic()
+    def add(self, txid: str) -> None:
+        """Insert txid, evicting the oldest inserted entry when full. Existing entries are not reordered."""
         with self._lock:
             if txid in self._items:
-                self._duplicate_times[:] = [
-                    t for t in self._duplicate_times if t >= now - RATE_WINDOW_SECONDS
-                ]
-                self._duplicate_times.append(now)
-                return False
+                return
             self._items[txid] = None
             if len(self._items) > self.max_size:
                 self._items.popitem(last=False)
-            return True
+
+    def record_duplicate(self) -> None:
+        """Count a duplicate hit for `duplicate_rate`."""
+        now = time.monotonic()
+        with self._lock:
+            self._duplicate_times[:] = [t for t in self._duplicate_times if t >= now - RATE_WINDOW_SECONDS]
+            self._duplicate_times.append(now)
 
     @property
     def duplicate_rate(self) -> float:

@@ -383,6 +383,14 @@ def _verify_input(
     return InputVerdict.unchecked
 
 
+def has_signature_material(tx: bdk.Transaction) -> bool:
+    """Return True if every input carries a non-empty scriptSig or witness.
+
+    Presence only: no prevout lookup and no signature validation.
+    """
+    return all(bool(tx_input.script_sig.to_bytes()) or bool(tx_input.witness) for tx_input in tx.input())
+
+
 def verify_transaction(
     tx: bdk.Transaction,
     prevouts: list[Prevout | None],

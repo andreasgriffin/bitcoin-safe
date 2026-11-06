@@ -35,6 +35,7 @@ import time
 
 import bdkpython as bdk
 
+from bitcoin_safe.input_signature_verifier import has_signature_material
 from bitcoin_safe.network_config import ConnectionInfo, Peer
 from bitcoin_safe.p2p.p2p_client import (
     Inventory,
@@ -220,12 +221,12 @@ def test_p2p_listener_on_received_tx_updates_rate_and_emits_relevant_tx(monkeypa
         listener.stop()
 
 
-def test_bounded_txid_set_add_if_new_and_eviction() -> None:
+def test_bounded_txid_set_add_and_eviction() -> None:
     txids = BoundedTxidSet(max_size=2)
-    assert txids.add_if_new("a")
-    assert txids.add_if_new("b")
-    assert not txids.add_if_new("a")  # duplicate, no insert
-    assert txids.add_if_new("c")  # evicts oldest inserted "a"
+    txids.add("a")
+    txids.add("b")
+    txids.add("a")  # duplicate, no insert and no reorder
+    txids.add("c")  # evicts oldest inserted "a"
 
     assert "a" not in txids
     assert "b" in txids
@@ -236,31 +237,24 @@ def test_bounded_txid_set_add_if_new_and_eviction() -> None:
 def test_bounded_txid_set_duplicate_rate_counts_duplicate_hits() -> None:
     txids = BoundedTxidSet(max_size=10)
     assert txids.duplicate_rate == 0.0
-    assert txids.add_if_new("a")
-    assert not txids.add_if_new("a")
-    assert not txids.add_if_new("a")
+    txids.add("a")
+    txids.record_duplicate()
+    txids.record_duplicate()
     assert txids.duplicate_rate == 2 / 60.0
 
 
-def test_bounded_txid_set_add_if_new_is_thread_safe() -> None:
+def test_bounded_txid_set_add_is_thread_safe() -> None:
     txids = BoundedTxidSet(max_size=10_000)
-    wins: list[bool] = []
-    wins_lock = threading.Lock()
-
-    def worker() -> None:
-        local_wins = [txids.add_if_new(f"{i:064x}") for i in range(2_000)]
-        with wins_lock:
-            wins.append(sum(local_wins))
-
-    threads = [threading.Thread(target=worker) for _ in range(8)]
+    threads = [
+        threading.Thread(target=lambda: [txids.add(f"{i:064x}") for i in range(2_000)]) for _ in range(8)
+    ]
     for thread in threads:
         thread.start()
     for thread in threads:
         thread.join()
 
-    # Each txid must be "new" for exactly one thread.
-    assert sum(wins) == 2_000
     assert len(txids) == 2_000
+    assert all(f"{i:064x}" in txids for i in range(2_000))
 
 
 def test_p2p_listener_on_received_tx_ignores_duplicate_from_other_peer(monkeypatch) -> None:
@@ -287,6 +281,86 @@ def test_p2p_listener_on_received_tx_ignores_duplicate_from_other_peer(monkeypat
         assert seen_txs == [tx]
         assert [peer for peer, _ in seen_rates] == [first_peer]
         assert second_peer not in listener.tx_rates
+    finally:
+        listener.stop()
+
+
+UNSIGNED_TEST_TX = (
+    "020000000101d7eb881ab8cac7d6adc6a7f9aa13e694813d95330c7299cee3623e5d14bd590000000000fdffffff"
+    "02c5e6c1010000000016001407103a1cccf6a1ea654bee964a4020d20c41fb055c819725010000001600146337ec04"
+    "bf42015e5d077b90cae05c06925c491a00000000"
+)
+
+
+def test_has_signature_material() -> None:
+    assert has_signature_material(bdk.Transaction(bytes.fromhex(VALID_TEST_TX)))
+    assert not has_signature_material(bdk.Transaction(bytes.fromhex(UNSIGNED_TEST_TX)))
+
+
+def test_p2p_listener_relevant_unsigned_tx_is_not_cached_and_reprocessed(monkeypatch) -> None:
+    listener = P2pListener(
+        network=bdk.Network.REGTEST, loop_in_thread=None, autodiscover_additional_peers=False
+    )
+    peer = Peer(host="127.0.0.1", port=18444)
+    client = P2PClient(network=bdk.Network.REGTEST)
+    client._current_peer = peer
+    tx = bdk.Transaction(bytes.fromhex(UNSIGNED_TEST_TX))
+    seen_txs: list[bdk.Transaction] = []
+
+    listener.signal_relevant_tx.connect(seen_txs.append)
+    listener.set_outpoint_filter({"mock:0"})
+    monkeypatch.setattr("bitcoin_safe.p2p.p2p_listener.outpoint_match", _always_match_outpoint)
+    try:
+        listener.on_received_tx(slot_id=0, client=client, tx=tx)
+        listener.on_received_tx(slot_id=0, client=client, tx=tx)
+        assert seen_txs == []
+        assert str(tx.compute_txid()) not in listener._seen_txids
+        assert listener._seen_txids.duplicate_rate == 0.0
+    finally:
+        listener.stop()
+
+
+def test_p2p_listener_non_relevant_unsigned_tx_is_cached(monkeypatch) -> None:
+    listener = P2pListener(
+        network=bdk.Network.REGTEST, loop_in_thread=None, autodiscover_additional_peers=False
+    )
+    peer = Peer(host="127.0.0.1", port=18444)
+    client = P2PClient(network=bdk.Network.REGTEST)
+    client._current_peer = peer
+    tx = bdk.Transaction(bytes.fromhex(UNSIGNED_TEST_TX))
+    seen_txs: list[bdk.Transaction] = []
+
+    listener.signal_relevant_tx.connect(seen_txs.append)
+    listener.set_outpoint_filter({"other:0"})
+    monkeypatch.setattr("bitcoin_safe.p2p.p2p_listener.outpoint_match", lambda tx, outpoint_filter: False)
+    try:
+        listener.on_received_tx(slot_id=0, client=client, tx=tx)
+        listener.on_received_tx(slot_id=0, client=client, tx=tx)
+        assert seen_txs == []
+        assert str(tx.compute_txid()) in listener._seen_txids
+        assert listener._seen_txids.duplicate_rate > 0
+    finally:
+        listener.stop()
+
+
+def test_p2p_listener_relevant_signed_tx_is_cached_and_emitted_once(monkeypatch) -> None:
+    listener = P2pListener(
+        network=bdk.Network.REGTEST, loop_in_thread=None, autodiscover_additional_peers=False
+    )
+    peer = Peer(host="127.0.0.1", port=18444)
+    client = P2PClient(network=bdk.Network.REGTEST)
+    client._current_peer = peer
+    tx = bdk.Transaction(bytes.fromhex(VALID_TEST_TX))
+    seen_txs: list[bdk.Transaction] = []
+
+    listener.signal_relevant_tx.connect(seen_txs.append)
+    listener.set_outpoint_filter({"mock:0"})
+    monkeypatch.setattr("bitcoin_safe.p2p.p2p_listener.outpoint_match", _always_match_outpoint)
+    try:
+        listener.on_received_tx(slot_id=0, client=client, tx=tx)
+        listener.on_received_tx(slot_id=0, client=client, tx=tx)
+        assert seen_txs == [tx]
+        assert str(tx.compute_txid()) in listener._seen_txids
     finally:
         listener.stop()
 
@@ -355,7 +429,7 @@ def test_p2p_listener_do_fetch_txs_skips_already_seen_txids(monkeypatch) -> None
     client = P2PClient(network=bdk.Network.REGTEST)
     monkeypatch.setattr(client, "getdata", record_getdata)
     monkeypatch.setattr(listener.loop_in_thread, "run_background", lambda coro: asyncio.run(coro))
-    listener._seen_txids.add_if_new(seen_txid)
+    listener._seen_txids.add(seen_txid)
     inventory = Inventory(
         [
             InventoryItem(type=InventoryType.MSG_WITNESS_TX, payload=seen_txid),
