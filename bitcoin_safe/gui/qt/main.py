@@ -88,11 +88,13 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.broadcast_types import BroadcastCompletion, BroadcastOutcome, BroadcastRequest
 from bitcoin_safe.client import Client, ProgressInfo
 from bitcoin_safe.client_helpers import SyncStatus
 from bitcoin_safe.constants import APP_NAME, LOGO_NAME
 from bitcoin_safe.execute_config import DEMO_MODE, IS_PRODUCTION
 from bitcoin_safe.gui.qt.about_tab import UpdateStatus
+from bitcoin_safe.gui.qt.broadcast import BroadcastCoordinator, unique_wallet_routes
 from bitcoin_safe.gui.qt.btcpay_web_button import DonateDialog
 from bitcoin_safe.gui.qt.demo_testnet_wallet import copy_testnet_demo_wallet
 from bitcoin_safe.gui.qt.descriptor_edit import DescriptorExport
@@ -219,6 +221,7 @@ class MainWindow(UnlockableMainWindow):
         self.signals = Signals()
         self.wallet_functions = WalletFunctions(self.signals)
         self.loop_in_thread = LoopInThread()
+        self.broadcast_coordinator = BroadcastCoordinator(self.loop_in_thread, parent=self)
         self._p2p_listener_signals_connected = False
         self.signal_tracker = SignalTracker()
         self.global_network_map_widget: NetworkMapWidget | None = None
@@ -309,7 +312,9 @@ class MainWindow(UnlockableMainWindow):
         self.signals.request_manual_sync.connect(self.manual_sync)
         self.signals.open_wallet.connect(self.open_wallet)
         self.signals.any_wallet_updated.connect(self.on_any_wallet_updated)
-        self.signals.signal_broadcast_tx.connect(self.on_signal_broadcast_tx)
+        self.signals.signal_broadcast_request.connect(self.on_broadcast_request)
+        self.broadcast_coordinator.signal_complete.connect(self.signals.signal_broadcast_complete.emit)
+        self.signals.signal_broadcast_complete.connect(self.on_broadcast_complete)
         self.signals.signal_open_history_for_tx.connect(self.on_signal_open_history_for_tx)
         self.signals.language_switch.connect(self.updateUI)
         self.signal_recently_open_wallet_changed.connect(self.populate_recent_wallets_menu)
@@ -1646,8 +1651,17 @@ class MainWindow(UnlockableMainWindow):
 
         qt_wallet.change_password()
 
-    def on_signal_broadcast_tx(self, transaction: bdk.Transaction) -> None:
-        """On signal broadcast tx."""
+    def on_broadcast_request(self, request: BroadcastRequest) -> None:
+        """Submit a transaction broadcast using current wallet and P2P routes."""
+        routes = unique_wallet_routes(
+            (qt_wallet.wallet.id, qt_wallet.wallet.client) for qt_wallet in self.qt_wallets.values()
+        )
+        self.broadcast_coordinator.submit(request, routes, self.p2p_listener)
+
+    def on_broadcast_complete(self, completion: BroadcastCompletion) -> None:
+        """Schedule wallet sync after a successful route write."""
+        if completion.outcome is not BroadcastOutcome.success:
+            return
         # due to fulcrum delay,
         # syncing immediately after broadcast will not see the new tx.
         # So I have to wait until it is taken into the electrum server index

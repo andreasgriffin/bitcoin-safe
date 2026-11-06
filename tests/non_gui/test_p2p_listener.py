@@ -89,6 +89,42 @@ def test_p2p_listener_shared_state_accessors_return_snapshots() -> None:
         listener.stop()
 
 
+def test_p2p_listener_broadcasts_sequentially_to_active_peers(monkeypatch) -> None:
+    listener = P2pListener(
+        network=bdk.Network.REGTEST, loop_in_thread=None, autodiscover_additional_peers=False
+    )
+    first_peer = Peer(host="127.0.0.1", port=18444)
+    second_peer = Peer(host="127.0.0.2", port=18444)
+    first_client, second_client = listener.clients[:2]
+    first_client._current_peer = first_peer
+    second_client._current_peer = second_peer
+    first_client.is_running = _always_running  # type: ignore[method-assign]
+    second_client.is_running = _always_running  # type: ignore[method-assign]
+    listener._current_peers = {
+        0: ConnectionInfo(peer=first_peer, proxy_info=None),
+        1: ConnectionInfo(peer=second_peer, proxy_info=None),
+    }
+    monkeypatch.setattr("bitcoin_safe.p2p.p2p_listener.random.shuffle", lambda clients: None)
+    attempted: list[str] = []
+
+    async def first_send(_raw_hex: str) -> tuple[bool, str | None]:
+        attempted.append(str(first_peer))
+        return False, "drain failed"
+
+    async def second_send(_raw_hex: str) -> tuple[bool, str | None]:
+        attempted.append(str(second_peer))
+        return True, None
+
+    first_client.broadcast_tx = first_send  # type: ignore[method-assign]
+    second_client.broadcast_tx = second_send  # type: ignore[method-assign]
+    try:
+        attempts = asyncio.run(listener.broadcast_tx("00"))
+        assert attempted == [str(first_peer), str(second_peer)]
+        assert [attempt.success for attempt in attempts] == [False, True]
+    finally:
+        listener.stop()
+
+
 def test_p2p_listener_allowed_peers_filter_discovered_peers() -> None:
     allowed_peer = Peer(host="127.0.0.1", port=18444)
     rejected_peer = Peer(host="127.0.0.1", port=18445)
@@ -521,8 +557,9 @@ def test_p2p_client_idle_timeout_after_handshake_sends_ping_gracefully() -> None
 
     sent_messages: list[tuple[str, bytes]] = []
 
-    async def fake_send_raw(cmd: str, payload: bytes) -> None:
+    async def fake_send_raw(cmd: str, payload: bytes) -> tuple[bool, str | None]:
         sent_messages.append((cmd, payload))
+        return True, None
 
     client._send_raw = fake_send_raw  # type: ignore[method-assign]
     client.is_running = _always_running  # type: ignore[method-assign]
@@ -533,6 +570,34 @@ def test_p2p_client_idle_timeout_after_handshake_sends_ping_gracefully() -> None
     assert client._idle_timeout_probes_sent == 1
 
 
+def test_p2p_broadcast_reports_missing_writer() -> None:
+    client = P2PClient(network=bdk.Network.REGTEST)
+
+    assert asyncio.run(client.broadcast_tx("00")) == (False, "No active peer connection")
+
+
+def test_p2p_broadcast_reports_drain_timeout() -> None:
+    class FakeWriter:
+        def is_closing(self) -> bool:
+            return False
+
+        def write(self, _data: bytes) -> None:
+            pass
+
+        async def drain(self) -> None:
+            raise asyncio.TimeoutError
+
+    client = P2PClient(network=bdk.Network.REGTEST, timeout=1)
+    client.writer = FakeWriter()  # type: ignore[assignment]
+
+    async def fake_disconnect(reason: str | None = None) -> None:
+        client.writer = None
+
+    client.disconnect = fake_disconnect  # type: ignore[method-assign]
+
+    assert asyncio.run(client.broadcast_tx("00")) == (False, "Timed out while sending tx")
+
+
 def test_p2p_client_idle_timeout_before_handshake_disconnects() -> None:
     client = P2PClient(network=bdk.Network.REGTEST, timeout=1)
     client._handshake_stage = "version_sent"
@@ -540,8 +605,9 @@ def test_p2p_client_idle_timeout_before_handshake_disconnects() -> None:
 
     sent_messages: list[tuple[str, bytes]] = []
 
-    async def fake_send_raw(cmd: str, payload: bytes) -> None:
+    async def fake_send_raw(cmd: str, payload: bytes) -> tuple[bool, str | None]:
         sent_messages.append((cmd, payload))
+        return True, None
 
     client._send_raw = fake_send_raw  # type: ignore[method-assign]
     client.is_running = _always_running  # type: ignore[method-assign]

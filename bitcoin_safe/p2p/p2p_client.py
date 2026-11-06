@@ -707,14 +707,14 @@ class P2PClient(QObject):
         """
         await self._send_raw("getaddr", b"")  # ← nothing else here
 
-    async def broadcast_tx(self, raw_hex: str) -> None:
-        """Broadcast tx."""
+    async def broadcast_tx(self, raw_hex: str) -> tuple[bool, str | None]:
+        """Broadcast tx and report whether the socket write completed."""
         try:
             raw = bytes.fromhex(raw_hex)
-        except ValueError:
+        except ValueError as exc:
             logger.debug(f"Invalid hex in broadcast_tx: {raw_hex!r}")
-            return
-        await self._send_raw("tx", raw)
+            return False, str(exc) or "Invalid transaction hex"
+        return await self._send_raw("tx", raw)
 
     async def getdata(self, inventory: Inventory) -> None:
         """Request data for the given inventory, *preferring witness* encodings (BIP144)
@@ -761,11 +761,10 @@ class P2PClient(QObject):
     # ------------------------------------------------------------------
     # Low‑level framing
     # ------------------------------------------------------------------
-    async def _send_raw(self, cmd: str, payload: bytes) -> None:
-        """Send a raw Bitcoin P2P message **with a timeout applied to the drain()
-        call**."""
+    async def _send_raw(self, cmd: str, payload: bytes) -> tuple[bool, str | None]:
+        """Send a raw Bitcoin P2P message and report drain failures."""
         if not self.writer:
-            return
+            return False, "No active peer connection"
 
         magic = MAGIC_VALUES[self.network]
         header = (
@@ -776,8 +775,8 @@ class P2PClient(QObject):
         )
 
         async with self._send_lock:
-            self.writer.write(header + payload)
             try:
+                self.writer.write(header + payload)
                 # ──────────────────────────────────────────────────────────
                 # Enforce I/O-level timeout on the actual socket flush
                 # ──────────────────────────────────────────────────────────
@@ -785,9 +784,16 @@ class P2PClient(QObject):
             except asyncio.TimeoutError:
                 logger.debug(f"-> {cmd} timed-out after {self.timeout} s during drain()")
                 await self.disconnect(reason=f"Timed out while sending {cmd}")
-                return
+                return False, f"Timed out while sending {cmd}"
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:
+                logger.debug("-> %s failed during drain(): %s", cmd, exc)
+                await self.disconnect(reason=f"Failed while sending {cmd}: {exc}")
+                return False, str(exc) or type(exc).__name__
 
         # logger.debug(f"-> {cmd} ({len(payload)} bytes)")
+        return True, None
 
     async def _read_exact(self, n: int) -> bytes:
         """Read *exactly* ``n`` bytes from the peer, timing-out (and disconnecting) if

@@ -349,6 +349,21 @@ class Client:
         else:
             raise NotImplementedError(f"Client is of type {type(self.client)}")
 
+    async def broadcast_async(self, tx: bdk.Transaction):
+        """Broadcast without blocking the event loop used by the coordinator."""
+        if isinstance(self.client, CbfSync):
+            assert self.client.client, "Not initialized"
+            try:
+                return await asyncio.wait_for(
+                    self.client.client.broadcast(tx), timeout=self.BROADCAST_TIMEOUT
+                )
+            except asyncio.TimeoutError:
+                logger.error("Broadcast timed out after 3 seconds")
+                raise
+        if isinstance(self.client, (bdk.ElectrumClient, bdk.EsploraClient)):
+            return await asyncio.to_thread(self.broadcast, tx)
+        raise NotImplementedError(f"Client is of type {type(self.client)}")
+
     def get_min_broadcast_fee_rate(self) -> FeeRate | None:
         """Return the backend's minimum broadcast fee rate when available."""
         try:

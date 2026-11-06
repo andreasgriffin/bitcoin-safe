@@ -29,7 +29,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -37,33 +36,54 @@ import pytest
 from bitcoin_qr_tools.data import DataType
 from PyQt6.QtWidgets import QMessageBox
 
+from bitcoin_safe.broadcast_types import BroadcastCompletion, BroadcastOutcome, BroadcastRequest
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import MessageType
 from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum
 
 
-def test_broadcast_timeout_shows_explanation(monkeypatch) -> None:
-    """A timeout should use the dedicated explanation instead of a raw error."""
-
-    class TimeoutClient:
-        def broadcast(self, _tx: object) -> None:
-            raise asyncio.TimeoutError
-
-    events: list[str] = []
-    emitted_transactions: list[object] = []
+def test_broadcast_queues_request_without_blocking() -> None:
+    """The viewer submits a request and defers all UI results until completion."""
+    emitted_requests: list[BroadcastRequest] = []
+    spin_events: list[str] = []
     viewer = SimpleNamespace(
-        client=TimeoutClient(),
-        signals=SimpleNamespace(
-            signal_broadcast_tx=SimpleNamespace(emit=emitted_transactions.append),
-        ),
+        signals=SimpleNamespace(signal_broadcast_request=SimpleNamespace(emit=emitted_requests.append)),
+        button_send=SimpleNamespace(start_spin=lambda: spin_events.append("start")),
+        _broadcast_requests={},
+    )
+
+    assert UITx_Viewer._broadcast(viewer, object())
+    assert len(emitted_requests) == 1
+    assert spin_events == ["start"]
+    assert viewer._broadcast_requests == {emitted_requests[0].request_id: emitted_requests[0].tx}
+
+
+def test_broadcast_timeout_completion_shows_explanation() -> None:
+    """A timeout result retains the dedicated unknown-status explanation."""
+    tx = SimpleNamespace()
+    events: list[str] = []
+    viewer = SimpleNamespace(
+        _broadcast_requests={"request": tx},
+        signal_broadcast_finished=SimpleNamespace(emit=lambda: events.append("spinner_stop")),
         _show_broadcast_timeout=lambda: events.append("timeout_message"),
         tr=lambda message: message,
     )
 
-    assert not UITx_Viewer._broadcast(viewer, object())
-    assert not emitted_transactions
-    assert events == ["timeout_message"]
+    UITx_Viewer.on_broadcast_complete(
+        viewer,
+        BroadcastCompletion(
+            txid="txid",
+            request_ids=("request",),
+            outcome=BroadcastOutcome.failure,
+            successful_route=None,
+            attempts=(),
+            wallet_timeout=True,
+        ),
+    )
+
+    assert not viewer._broadcast_requests
+    assert events == ["spinner_stop", "timeout_message"]
 
 
 def test_broadcast_timeout_dialog_links_and_defaults_to_block_explorer(monkeypatch) -> None:
@@ -132,6 +152,25 @@ def test_broadcast_timeout_dialog_links_and_defaults_to_block_explorer(monkeypat
     assert opened_urls == [tx_url]
 
 
+def test_broadcast_ignores_repeat_send_while_in_flight(monkeypatch) -> None:
+    """A second send while a request is pending must not queue or save again."""
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.is_nlocktime_already_valid", lambda *_: True)
+    events: list[str] = []
+    tx = SimpleNamespace(lock_time=lambda: 0)
+    viewer = SimpleNamespace(
+        data=SimpleNamespace(data_type=DataType.Tx, data=tx),
+        _broadcast_requests={"pending": tx},
+        _get_robust_height=lambda: 0,
+        _set_blockchain=lambda: None,
+        client=object(),
+        _broadcast=lambda _tx: events.append("broadcast") or True,
+    )
+
+    UITx_Viewer.broadcast(viewer)
+
+    assert events == []
+
+
 @pytest.mark.parametrize(
     ("locktime_valid", "dialog_response", "broadcast_success", "expected_events"),
     [
@@ -168,11 +207,15 @@ def test_broadcast_only_saves_local_tx_after_success(
 
     events: list[str] = []
 
-    def save_local_tx() -> None:
+    def save_local_tx(_tx: FakeTransaction | None = None) -> None:
         events.append("save_local")
+
+    requests: list[BroadcastRequest] = []
 
     def broadcast(_tx: FakeTransaction) -> bool:
         events.append("broadcast")
+        request = BroadcastRequest.create(_tx)
+        requests.append(request)
         return broadcast_success
 
     viewer = SimpleNamespace(
@@ -180,6 +223,9 @@ def test_broadcast_only_saves_local_tx_after_success(
         hidden_tx_infos=HiddenTxUiInfos(save_local_on_send=True),
         post_broadcast_action=PostBroadcastEnum.open_hist_list,
         _post_broadcast_consumed_txid=None,
+        _broadcast_requests={},
+        signal_broadcast_finished=SimpleNamespace(emit=lambda: None),
+        _on_broadcast_success=lambda tx: UITx_Viewer._on_broadcast_success(viewer, tx),
         client=object(),
         save_local_tx=save_local_tx,
         _get_robust_height=lambda: 0,
@@ -191,6 +237,20 @@ def test_broadcast_only_saves_local_tx_after_success(
     )
 
     UITx_Viewer.broadcast(viewer)
+
+    if requests and broadcast_success:
+        request = requests[0]
+        viewer._broadcast_requests[request.request_id] = request.tx
+        UITx_Viewer.on_broadcast_complete(
+            viewer,
+            BroadcastCompletion(
+                txid="txid",
+                request_ids=(request.request_id,),
+                outcome=BroadcastOutcome.success,
+                successful_route=None,
+                attempts=(),
+            ),
+        )
 
     assert events == expected_events
 
