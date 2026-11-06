@@ -51,6 +51,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.gui.qt.icon_label import IconLabel
+from bitcoin_safe.gui.qt.util import configure_combobox_popup
 from bitcoin_safe.locktime_estimation import (
     LOCKTIME_THRESHOLD,
     MAX_NLOCKTIME,
@@ -90,6 +91,7 @@ class NLocktimeGroupBox(QGroupBox):
         self.group_layout.addWidget(self.readonly_label)
 
         self.mode_combo = QComboBox()
+        configure_combobox_popup(self.mode_combo)
         self.mode_combo.addItem("", NLocktimeMode.BLOCK_HEIGHT)
         self.mode_combo.addItem("", NLocktimeMode.DATE_TIME)
         self.mode_combo.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed))

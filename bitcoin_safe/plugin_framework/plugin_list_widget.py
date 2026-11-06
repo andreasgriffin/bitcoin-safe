@@ -54,6 +54,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.card_base import CardBase, CardExpansionMode
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.util import (
+    configure_combobox_popup,
     delayed_execution,
     get_neutral_surface_colors,
     should_process_theme_change,
@@ -556,6 +557,7 @@ class PaidPluginWidget(PluginWidget):
         plan_selector_layout.addWidget(plan_selector_title_label)
 
         plan_selector_combo = QComboBox(plan_selector_container)
+        configure_combobox_popup(plan_selector_combo)
         plan_selector_combo.setMinimumContentsLength(12)
         plan_selector_combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         plan_selector_combo.setMaximumWidth(250)

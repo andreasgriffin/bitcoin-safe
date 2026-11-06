@@ -76,6 +76,7 @@ from PyQt6.QtSvg import QSvgRenderer
 from PyQt6.QtWidgets import (
     QApplication,
     QBoxLayout,
+    QComboBox,
     QDialog,
     QDialogButtonBox,
     QFileDialog,
@@ -105,6 +106,11 @@ logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
+
+
+def configure_combobox_popup(combo: QComboBox) -> None:
+    combo.setStyleSheet("QComboBox { combobox-popup: 0; }")
+    combo.setMaxVisibleItems(20)
 
 
 @dataclass

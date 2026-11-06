@@ -119,6 +119,7 @@ from .util import (
     MessageType,
     block_explorer_URL,
     category_color,
+    configure_combobox_popup,
     create_color_circle,
     do_copy,
     sort_id_to_icon,
@@ -1043,11 +1044,13 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.category_core = category_core
         self.address_list: AddressList = address_list
         self.change_button = QComboBox(self)
+        configure_combobox_popup(self.change_button)
         self.change_button.currentIndexChanged.connect(self.address_list.set_filter_change)
         for addr_type in AddressTypeFilter:
             self.change_button.addItem(addr_type.ui_text(), addr_type)
 
         self.used_button = QComboBox(self)
+        configure_combobox_popup(self.used_button)
         self.used_button.currentIndexChanged.connect(self.address_list.set_filter_used)
         for addr_usage_state in AddressUsageStateFilter:
             self.used_button.addItem(addr_usage_state.ui_text(), addr_usage_state)

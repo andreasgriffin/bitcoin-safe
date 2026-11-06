@@ -43,6 +43,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe.gui.qt.util import configure_combobox_popup
 from bitcoin_safe.wallet import Wallet
 from bitcoin_safe.wallet_util import get_default_categories
 
@@ -129,6 +130,7 @@ def prompt_merge_category(categories: list[str], parent: QWidget | None = None) 
     layout = QVBoxLayout(dialog)
     label = QLabel(translate("category", "Resulting category:"))
     combo = QComboBox()
+    configure_combobox_popup(combo)
     combo.addItems(categories)
 
     layout.addWidget(label)

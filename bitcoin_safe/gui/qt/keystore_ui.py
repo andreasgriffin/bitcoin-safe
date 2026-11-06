@@ -83,7 +83,12 @@ from bitcoin_safe.gui.qt.custom_edits import (
 )
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.tutorial_screenshots import ScreenshotsExportXpub
-from bitcoin_safe.gui.qt.util import set_pixmap_if_changed, svg_tools, svg_tools_hardware_signer
+from bitcoin_safe.gui.qt.util import (
+    configure_combobox_popup,
+    set_pixmap_if_changed,
+    svg_tools,
+    svg_tools_hardware_signer,
+)
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 
@@ -259,7 +264,9 @@ class KeyStoreUI(CardBase):
         self.add_controls_layout.addWidget(self.device_type_help_label, stretch=1)
 
         self.combo_brand = QComboBox(self.header_widget)
+        configure_combobox_popup(self.combo_brand)
         self.combo_model = QComboBox(self.header_widget)
+        configure_combobox_popup(self.combo_model)
         self.button_confirm_signer = QPushButton(self.header_widget)
         self.button_confirm_signer.setEnabled(False)
         self.button_confirm_signer.setDefault(True)

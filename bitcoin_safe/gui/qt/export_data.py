@@ -66,7 +66,7 @@ from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.descriptor_export_tools import DescriptorExportTools, shorten_filename
 from bitcoin_safe.gui.qt.recipient_csv import export_recipients_csv, get_recipients_from_data
 from bitcoin_safe.gui.qt.signer_ui import SignerUI
-from bitcoin_safe.gui.qt.util import should_process_theme_change, svg_tools
+from bitcoin_safe.gui.qt.util import configure_combobox_popup, should_process_theme_change, svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import DataExportPDF
@@ -654,6 +654,7 @@ class QrComboBox(QComboBox):
     def __init__(self, data: Data, network: bdk.Network, parent: QWidget | None = None) -> None:
         """Initialize instance."""
         super().__init__(parent)
+        configure_combobox_popup(self)
         self.data = data
         self.network = network
         self.setMaximumWidth(150)

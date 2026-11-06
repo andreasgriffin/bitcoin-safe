@@ -40,7 +40,7 @@ from bitcoin_safe.gui.qt.category_manager.category_core import (
     CategoryCore,
     prompt_new_category,
 )
-from bitcoin_safe.gui.qt.util import category_color, create_color_circle, svg_tools
+from bitcoin_safe.gui.qt.util import category_color, configure_combobox_popup, create_color_circle, svg_tools
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 
 logger = logging.getLogger(__name__)
@@ -52,6 +52,7 @@ class CategoryComboBox(QComboBox):
     def __init__(self, category_core: CategoryCore | None = None, parent=None):
         """Initialize instance."""
         super().__init__(parent=parent)
+        configure_combobox_popup(self)
         self._last_valid_index = -1
         self.signnal_tracker = SignalTracker()
         self.set_category_core(category_core=category_core)

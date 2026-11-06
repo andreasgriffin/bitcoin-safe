@@ -60,7 +60,7 @@ from bitcoin_safe.gui.qt.descriptor_edit import DescriptorEdit
 from bitcoin_safe.gui.qt.icon_label import IconLabel
 from bitcoin_safe.gui.qt.keystore_uis import KeyStoreUIs
 from bitcoin_safe.gui.qt.register_multisig import RegisterMultisigInteractionWidget
-from bitcoin_safe.gui.qt.util import Message, MessageType, set_margins, svg_tools
+from bitcoin_safe.gui.qt.util import Message, MessageType, configure_combobox_popup, set_margins, svg_tools
 from bitcoin_safe.hardware_signers import HardwareSigner
 from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.wallet import ProtoWallet, Wallet
@@ -496,6 +496,7 @@ class DescriptorUI(QWidget):
         self.label_address_type.setObjectName("this label")
 
         self.comboBox_address_type = QComboBox()
+        configure_combobox_popup(self.comboBox_address_type)
         self.comboBox_address_type.setObjectName("this QComboBox")
         self.comboBox_address_type.currentIndexChanged.connect(self.on_wallet_ui_changes)
         form_wallet_type.addWidget(self.label_address_type, row + 1, 0)

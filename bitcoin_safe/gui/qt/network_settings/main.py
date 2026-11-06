@@ -73,6 +73,7 @@ from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.notification_bar_cbf import get_p2p_tooltip_text
 from bitcoin_safe.gui.qt.util import (
     Message,
+    configure_combobox_popup,
     ensure_scheme,
     get_host_and_port,
     remove_scheme,
@@ -270,6 +271,7 @@ class NetworkSettingsUI(QWidget):
         self.groupbox_connection_layout = QVBoxLayout(self.groupbox_connection)
 
         self.server_type_comboBox = QComboBox(self)
+        configure_combobox_popup(self.server_type_comboBox)
         for blockchain_type in BlockchainType.active_types(network=network):
             self.server_type_comboBox.addItem(BlockchainType.to_text(blockchain_type))
 
@@ -416,6 +418,7 @@ class NetworkSettingsUI(QWidget):
         self.groupbox_peers_layout = QGridLayout(self.groupbox_peers)
 
         self.peer_selection_mode_combo = QComboBox()
+        configure_combobox_popup(self.peer_selection_mode_combo)
         self.peer_selection_mode_combo.addItem(self.tr("Preferred peers"), PeerSelectionMode.additional)
         self.peer_selection_mode_combo.addItem(
             self.tr("Configured peers only"), PeerSelectionMode.only_configured
@@ -443,6 +446,7 @@ class NetworkSettingsUI(QWidget):
         self.groupbox_p2p_layout.setColumnMinimumWidth(2, FORM_LABEL_FIELD_SPACING)
 
         self.p2p_typeComboBox = QComboBox()
+        configure_combobox_popup(self.p2p_typeComboBox)
         self.p2p_typeComboBox.addItem(self.tr("Automatic"), P2pListenerType.automatic)
         self.p2p_typeComboBox.addItem(self.tr("Deactive"), P2pListenerType.deactive)
         self.p2p_typeComboBox.setCurrentIndex(0)

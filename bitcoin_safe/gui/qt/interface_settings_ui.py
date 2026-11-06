@@ -52,6 +52,7 @@ from bitcoin_safe.gui.qt.language_chooser import (
     LanguageChooser,
     create_language_combobox,
 )
+from bitcoin_safe.gui.qt.util import configure_combobox_popup
 from bitcoin_safe.theme import ThemeMode, apply_theme_mode
 
 from ...fx import FX
@@ -97,6 +98,7 @@ class InterfaceSettingsUi(QWidget):
 
         # 2b) Bitcoin symbol
         self.bitcoin_symbol_combo = QComboBox(self)
+        configure_combobox_popup(self.bitcoin_symbol_combo)
         self.bitcoin_symbol_combo.addItem(BitcoinSymbol.ISO.value, BitcoinSymbol.ISO)
         self.bitcoin_symbol_combo.addItem(BitcoinSymbol.UNICODE.value, BitcoinSymbol.UNICODE)
         idx = self.bitcoin_symbol_combo.findData(self.config.bitcoin_symbol)
@@ -104,6 +106,7 @@ class InterfaceSettingsUi(QWidget):
 
         self.theme_combo: QComboBox | None = None
         self.theme_combo = QComboBox(self)
+        configure_combobox_popup(self.theme_combo)
         self.theme_combo.addItem("", ThemeMode.SYSTEM)
         self.theme_combo.addItem("", ThemeMode.LIGHT)
         self.theme_combo.addItem("", ThemeMode.DARK)
