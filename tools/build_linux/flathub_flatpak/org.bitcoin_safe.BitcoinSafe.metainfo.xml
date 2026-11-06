@@ -53,14 +53,14 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="2.2.2" date="2026-11-03">
+    <release version="2.3.0" date="2026-11-05">
       <description>
         <ul>
-          <li>Subscriptions and the Business Plan now use the public subscription service (subscription.bitcoin-safe.org). Plans, status, management links and the store are read from the service.</li>
-          <li>Plugins declare the subscription product they sell in their manifest (btcpay.product_id, e.g. schedule). Plugins built for the previous subscription format need an update.</li>
-          <li>Subscriptions follow the subscription product, not the plan. When the service moves a product to a new plan, existing subscriptions keep their access and management link.</li>
-          <li>Donation invoices take their store from the subscription service.</li>
-          <li>Removed the unused BTCPay pay-button address fetcher.</li>
+          <li>Added new plugins:</li>
+        </ul>
+        <ul>
+          <li>Schedule plugin - Get notified about wallet activity through the channels that work for you.</li>
+          <li>Notifications plugin – Receive alerts about wallet transactions, scheduled payments, and other wallet activity through webhooks, Nostr, Telegram, email, and calendars.</li>
         </ul>
       </description>
     </release>

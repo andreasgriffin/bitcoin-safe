@@ -44,7 +44,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import PageBreak, Paragraph, Table, TableStyle
 
-from bitcoin_safe.constants import APP_NAME
+from bitcoin_safe.constants import APP_NAME, APP_WEBSITE
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.pdfrecovery import BasePDF, pilimage_to_reportlab, white_space, write_and_open_temp_pdf
 
@@ -267,7 +267,7 @@ class PdfStatement(BasePDF):
                 translate("pdf", "Created at {date} with", no_translate=self.no_translate).format(
                     date=localized_date
                 )
-                + f" {APP_NAME}: {white_space * 2} www.bitcoin-safe.org",
+                + f" {APP_NAME}: {white_space * 2} {APP_WEBSITE}",
                 self.style_paragraph,
             )
         )

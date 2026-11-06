@@ -59,7 +59,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from bitcoin_safe.constants import APP_NAME
+from bitcoin_safe.constants import APP_NAME, APP_WEBSITE
 from bitcoin_safe.gui.qt.util import svg_tools, svg_tools_hardware_signer
 from bitcoin_safe.hardware_signers import HardwareSigner, HardwareSigners
 from bitcoin_safe.i18n import translate
@@ -284,7 +284,7 @@ class DataExportPDF(BasePDF):
         self.elements.append(
             Paragraph(
                 translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" {APP_NAME}: {white_space * 5} www.bitcoin-safe.org",
+                + f" {APP_NAME}: {white_space * 5} {APP_WEBSITE}",
                 self.style_paragraph,
             )
         )
@@ -612,7 +612,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         self.elements.append(
             Paragraph(
                 translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" {APP_NAME}: {white_space * 5} www.bitcoin-safe.org",
+                + f" {APP_NAME}: {white_space * 5} {APP_WEBSITE}",
                 self.style_paragraph,
             )
         )

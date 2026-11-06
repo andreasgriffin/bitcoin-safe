@@ -32,6 +32,7 @@ from __future__ import annotations
 import json
 import logging
 from collections.abc import Callable, Sequence
+from concurrent.futures import Future
 from functools import partial
 from typing import Any, cast
 
@@ -438,6 +439,7 @@ class PluginManager(BaseSaveableClass):
         self.signal_tracker.connect(self.wallet_functions.signals.language_switch, self._on_language_switch)
         self.client_signal_tracker = SignalTracker()
         self._startup_source_refresh_timer: QTimer | None = None
+        self._startup_source_refresh_future: Future[Sequence[VerifiedPluginSourceManifest]] | None = None
         self._failed_restore_class_names: set[str] = set()
         self._deferred_subscription_refresh_timer: QTimer | None = None
         self._deferred_subscription_refresh_clients: list[PaidPluginClient] = []
@@ -1228,10 +1230,13 @@ class PluginManager(BaseSaveableClass):
         self._startup_source_refresh_timer = QTimer(self.widget)
         self._startup_source_refresh_timer.setSingleShot(True)
         self._startup_source_refresh_timer.timeout.connect(self._refresh_plugin_sources_after_startup)
-        self._startup_source_refresh_timer.start(60_000)
+        self._startup_source_refresh_timer.start(5_000)
 
     def _refresh_plugin_sources_after_startup(self) -> None:
-        self.refresh_plugin_sources(show_errors=False)
+        self._run_plugin_source_refresh(source_id=None, show_errors=False, startup=True)
+
+    def _clear_startup_source_refresh_future(self) -> None:
+        self._startup_source_refresh_future = None
 
     def _render_async_registry_error(self, error_info: ExcInfo | Exception | None) -> str:
         """Convert loop-thread and synchronous exceptions into a user-facing error string."""
@@ -1323,6 +1328,9 @@ class PluginManager(BaseSaveableClass):
         logger.warning("Plugin source refresh failed: %s", self._render_async_registry_error(error_info))
 
     def refresh_plugin_sources(self, source_id: str | None = None, show_errors: bool = True) -> None:
+        self._run_plugin_source_refresh(source_id=source_id, show_errors=show_errors, startup=False)
+
+    def _run_plugin_source_refresh(self, source_id: str | None, show_errors: bool, startup: bool) -> None:
         if not self.loop_in_thread:
             return
 
@@ -1341,14 +1349,17 @@ class PluginManager(BaseSaveableClass):
                 source_id=source_id, raise_on_error=show_errors
             )
 
-        self.loop_in_thread.run_task(
+        future = self.loop_in_thread.run_task(
             do(),
             on_done=lambda result: None,
             on_success=on_success,
             on_error=self._show_async_registry_error if show_errors else self._log_async_registry_error,
+            cancel=self._clear_startup_source_refresh_future if startup else None,
             key="plugin_source_refresh_all" if source_id is None else f"plugin_source_refresh:{source_id}",
             multiple_strategy=MultipleStrategy.REJECT_NEW_TASK,
         )
+        if startup:
+            self._startup_source_refresh_future = future
 
     def recheck_installed_plugins(self) -> None:
         results = self.external_registry.recheck_installed_plugins()
@@ -1592,6 +1603,8 @@ class PluginManager(BaseSaveableClass):
         self.signal_tracker.disconnect_all()
         if self._startup_source_refresh_timer is not None:
             self._startup_source_refresh_timer.stop()
+        if self._startup_source_refresh_future is not None and self.loop_in_thread:
+            self.loop_in_thread.cancel_task(self._startup_source_refresh_future)
         for client in self.clients:
             client.close()
         if self.business_plan:

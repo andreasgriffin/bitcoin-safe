@@ -32,6 +32,7 @@ from __future__ import annotations
 from typing import Literal
 
 APP_NAME = "Bitcoin-Safe"
+APP_WEBSITE = "www.Bitcoin-Safe.org"
 # Keep the historical app bundle filename so Finder replaces existing installs
 # when users drag the rebranded application into the Applications folder.
 MACOS_BUNDLE_NAME = "Bitcoin Safe.app"

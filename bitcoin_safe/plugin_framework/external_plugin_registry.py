@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import importlib
 import importlib.abc
 import importlib.machinery
@@ -97,6 +98,10 @@ from bitcoin_safe.plugin_framework.plugin_source_models import (
 from bitcoin_safe.signature_manager import KnownGPGKeys, SignatureVerifyer
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_PLUGIN_SOURCE_URL = "https://github.com/andreasgriffin/plugins.git"
+DEFAULT_PLUGIN_SOURCE_ID = "plugin-repository"
+DEFAULT_PLUGIN_SOURCE_DISPLAY_NAME = f"{APP_NAME} official plugins"
 _ORIGINAL_FETCH_BYTES = fetch_bytes
 
 
@@ -402,13 +407,43 @@ class ExternalPluginRegistry(BaseSaveableClass):
 
     @classmethod
     def from_config(cls, config: UserConfig) -> ExternalPluginRegistry:
+        repository_path = cls.get_repository_path(config)
+        if not repository_path.exists():
+            registry = ExternalPluginRegistry(config=config)
+            registry._add_default_source_if_missing()
+            registry.save()
+            return registry
+
         try:
-            return ExternalPluginRegistry._from_file(
-                filename=str(cls.get_repository_path(config)),
+            registry = ExternalPluginRegistry._from_file(
+                filename=str(repository_path),
                 class_kwargs={ExternalPluginRegistry.__name__: {"config": config}},
             )
-        except Exception:
-            return ExternalPluginRegistry(config=config)
+        except Exception as exc:
+            backup_path = repository_path.with_name(repository_path.name + ".bak")
+            logger.warning("Could not load %s (%s); moving it to %s", repository_path, exc, backup_path)
+            repository_path.replace(backup_path)
+            return cls.from_config(config)
+
+        if registry._add_default_source_if_missing():
+            registry.save()
+        return registry
+
+    def _add_default_source_if_missing(self) -> bool:
+        if DEFAULT_PLUGIN_SOURCE_ID in self.sources:
+            return False
+        self._write_source(self._default_source())
+        return True
+
+    @classmethod
+    def _default_source(cls) -> PluginSource:
+        return PluginSource(
+            source_id=DEFAULT_PLUGIN_SOURCE_ID,
+            display_name=DEFAULT_PLUGIN_SOURCE_DISPLAY_NAME,
+            manifest_url=cls._normalize_manifest_url(DEFAULT_PLUGIN_SOURCE_URL),
+            pinned_source_public_key=KnownGPGKeys.andreasgriffin.key.strip(),
+            auth_config=PluginSourceAuthConfig(),
+        )
 
     def dump(self) -> dict[str, Any]:
         d = super().dump()
@@ -488,17 +523,16 @@ class ExternalPluginRegistry(BaseSaveableClass):
         errors: list[str] = []
         sources = self.load_sources() if source_id is None else [self._require_source(source_id)]
         enabled_sources = [source for source in sources if source.enabled]
-        if enabled_sources:
-            self.last_download_time = datetime.now(timezone.utc)
         for source in enabled_sources:
             try:
-                manifest, _manifest_bytes, _signature_bytes, _plugin_metadata_texts = (
-                    self._fetch_and_verify_manifest(
-                        manifest_url=source.manifest_url,
-                        pinned_source_public_key=source.pinned_source_public_key,
-                        auth_config=source.auth_config,
-                        last_seen_source_serial=source.last_seen_source_serial,
-                    )
+                # Blocking network, parsing and signature verification run in a worker thread,
+                # so this coroutine stays cancellable. Only this coroutine writes state.
+                manifest, _manifest_bytes, _signature_bytes, _plugin_metadata_texts = await asyncio.to_thread(
+                    self._fetch_and_verify_manifest,
+                    source.manifest_url,
+                    source.pinned_source_public_key,
+                    source.auth_config,
+                    source.last_seen_source_serial,
                 )
                 updated_source = PluginSource(
                     source_id=source.source_id,
@@ -533,6 +567,9 @@ class ExternalPluginRegistry(BaseSaveableClass):
                 errors.append(f"{source.display_name}: {exc}")
                 logger.warning("Failed to refresh plugin source %s: %s", source.source_id, exc)
 
+        # Set only after the loop completes: a cancelled refresh must not start the startup cooldown.
+        if enabled_sources:
+            self.last_download_time = datetime.now(timezone.utc)
         if recheck_installed:
             self.recheck_installed_plugins()
         if errors and raise_on_error:

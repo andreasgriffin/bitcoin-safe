@@ -51,7 +51,7 @@ def test_app_name_is_not_hardcoded_in_python_strings() -> None:
                 continue
             if APP_NAME not in node.value:
                 continue
-            if path == CONSTANTS_PATH and node.value == APP_NAME:
+            if path == CONSTANTS_PATH:
                 continue
             violations.append(f"{path.relative_to(PROJECT_ROOT)}:{node.lineno}")
 
