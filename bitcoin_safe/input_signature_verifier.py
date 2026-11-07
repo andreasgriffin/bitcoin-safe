@@ -42,6 +42,10 @@ Full script validation is out of scope.
 
 
 This entire file should be removed once BDK has implemented signature checks for wallet-owned inputs.
+
+
+
+
 """
 
 from __future__ import annotations
@@ -128,6 +132,14 @@ def _direct_pushes(script: bytes) -> list[bytes]:
 # Also defined as CURVE_ORDER in libsecp256k1's src/group_impl.h:
 #   https://github.com/bitcoin-core/secp256k1/blob/master/src/group_impl.h
 _SECP256K1_ORDER = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+
+
+# Avoid embit's ecdsa_signature_normalize() on the ctypes backend, as its
+# libsecp256k1 binding may mishandle the native context pointer (missing argtypes).
+# This caused valid low-S signatures to fail verification (see PR #898).
+# Instead, serialize to compact r||s, normalize S manually, and parse back
+# into libsecp256k1's internal signature representation.
+# see https://github.com/diybitcoinhardware/embit/issues/177
 
 
 def _normalize_low_s(der: bytes) -> Signature:
