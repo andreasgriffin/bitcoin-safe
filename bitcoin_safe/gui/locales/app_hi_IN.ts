@@ -3294,8 +3294,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>हाल ही में प्रसारित संदेश इन पीयर्स से बिटकॉइन नेटवर्क के माध्यम से प्राप्त होते हैं।</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>हाल ही में प्रसारित संदेश बिटकॉइन नेटवर्क के माध्यम से&lt;br&gt;इन पीयर नोड्स से प्राप्त होते हैं।&lt;br&gt;वर्तमान कुल प्राप्ति दर: {rate:.2f} लेनदेन/सेकंड</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3780,13 +3781,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>मासिक</translation>
+			<source>Check subscription</source>
+			<translation>सदस्यता जाँचें</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>मुफ़्त ट्रायल शुरू करें / मौजूदा सब्सक्रिप्शन प्राप्त करें</translation>
+			<source>Start free trial</source>
+			<translation>मुफ़्त परीक्षण शुरू करें</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3795,13 +3796,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>वार्षिक</translation>
+			<source>month</source>
+			<translation>महीना</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>वर्ष</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4001,6 +4007,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>यह प्लगइन हटाया नहीं जा सकता।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>इस स्रोत का प्रकाशक (कुंजी {fingerprint}) ऐसे प्लगइन वितरित कर सकता है जो इस वॉलेट तक पूर्ण पहुँच के साथ चलते हैं, जिसमें इसके लेबल, पते और लेनदेन शामिल हैं। भविष्य के अपडेट के माध्यम से भी यह पहुँच जारी रह सकती है। केवल उन्हीं प्रकाशकों पर भरोसा करें जिन्हें आप जानते हैं।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>भरोसा करें और जोड़ें</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>क्या इस प्लगइन स्रोत पर भरोसा करें?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>अज्ञात</translation>
 		</message>
 	</context>
 	<context>
@@ -5782,13 +5808,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>फाइल आयात करें</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>लेनदेन प्रसारित नहीं किया जा सका</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>अमान्य हस्ताक्षर</translation>
+			<source>Import file</source>
+			<translation>फाइल आयात करें</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6639,6 +6665,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;प्राप्त: {rate:.2f} लेनदेन/सेकंड</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>बिटकॉइन नोड</translation>
 		</message>
@@ -6676,10 +6708,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-देश: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;देश: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8181,53 +8211,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>अपने वॉलेट से नए प्राप्ति पते बनाएँ।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>इस वॉलेट और श्रेणियों तक पूर्ण पढ़ने और लिखने की पहुँच।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>इस वॉलेट के लिए पूर्ण पढ़ने और लिखने की पहुँच, जिसमें बैलेंस, लेनदेन और UTXO शामिल हैं।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>अपने वॉलेट के लेबल और श्रेणियाँ पढ़ें और अपडेट करें।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>वॉलेट का डिस्क्रिप्टर पढ़ें (सार्वजनिक कुंजी संरचना, पथ)।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>नए लेन-देन या ब्लॉकचेन सिंक जैसे वॉलेट गतिविधि इवेंट की सदस्यता लें।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>नए लेनदेन या ब्लॉकचेन सिंक जैसी वॉलेट गतिविधि घटनाओं की सदस्यता लें। यह लेनदेन और PSBT खोलने को भी सक्षम करता है।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>अज्ञात विवरण</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>वॉलेट की मल्टीसिग थ्रेशोल्ड (m-of-n) कॉन्फ़िगरेशन देखें।</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8379,13 +8362,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>मुफ़्त परीक्षण खरीद ने प्रबंधन पेलोड वापस नहीं किया।</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>मुफ़्त परीक्षण खरीद ने सत्र वापस नहीं किया।</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>मुफ़्त परीक्षण की खरीद से प्रबंधन URL प्राप्त नहीं हुआ।</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8404,23 +8382,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>सदस्यता प्रबंधित करें</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>प्रबंधन URL</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>प्रबंधन URL सहेजा गया।</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>अभी तक कोई सदस्यता सक्रिय नहीं की गई है।</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>अभी तक कोई सदस्यता सक्रिय नहीं की गई है।</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>इस वॉलेट के लिए कोई सदस्यता नहीं मिली।</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8459,6 +8432,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>सदस्यता की जाँच विफल रही।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>सदस्यता स्थानांतरण विफल रहा।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>सदस्यता रिमाइंडर</translation>
 		</message>
@@ -8486,16 +8469,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>मुफ़्त परीक्षण सक्रियण का समय समाप्त हो गया।</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>प्रबंधन URL किसी अन्य सदस्यता ID से संबंधित है और सहेजा नहीं गया।</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>प्रबंधन पृष्ठ किसी सदस्यता ID को प्रदर्शित नहीं करता। प्रबंधन URL सहेजा नहीं गया।</translation>
 		</message>
 		<name>subscription</name>
 		<message>

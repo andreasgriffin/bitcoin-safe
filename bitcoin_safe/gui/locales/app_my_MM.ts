@@ -3292,8 +3292,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>မကြာသေးမီက broadcast လုပ်ထားသော message များကို bitcoin network မှတဆင့် ဤ peer များထံမှ လက်ခံရရှိသည်။</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>မကြာသေးမီက ထုတ်လွှင့်ထားသော မက်ဆေ့ချ်များကို Bitcoin ကွန်ရက်မှတစ်ဆင့်&lt;br&gt;ဤချိတ်ဆက်ဖက် node များထံမှ လက်ခံရရှိပါသည်။&lt;br&gt;လက်ရှိ စုစုပေါင်းလက်ခံမှုနှုန်း: {rate:.2f} ငွေလွှဲမှု/စက္ကန့်</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3777,13 +3778,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>လစဉ်</translation>
+			<source>Check subscription</source>
+			<translation>စာရင်းသွင်းမှုကို စစ်ဆေးရန်</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>အခမဲ့စမ်းသုံးမှု စတင်ရန် / ရှိပြီးသား စာရင်းသွင်းမှုကို ရယူရန်</translation>
+			<source>Start free trial</source>
+			<translation>အခမဲ့အစမ်းသုံးကာလ စတင်ရန်</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3792,13 +3793,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>နှစ်စဉ်</translation>
+			<source>month</source>
+			<translation>လ</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>နှစ်</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -3998,6 +4004,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>ဤ plugin ကို ဖျက်၍မရပါ။</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>ဤရင်းမြစ်၏ ထုတ်ဝေသူ (သော့ {fingerprint}) သည် ဤဝေါလက်၏ အညွှန်းများ၊ လိပ်စာများနှင့် ငွေလွှဲမှတ်တမ်းများ အပါအဝင် ဝေါလက်တစ်ခုလုံးကို အပြည့်အဝ ဝင်ရောက်အသုံးပြုနိုင်သော plugin များကို ဖြန့်ဝေနိုင်ပြီး အနာဂတ် အပ်ဒိတ်များမှတစ်ဆင့်လည်း ထိုသို့ ဆက်လက်လုပ်ဆောင်နိုင်ပါသည်။ သင်သိရှိသော ထုတ်ဝေသူများကိုသာ ယုံကြည်ပါ။</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>ယုံကြည်ပြီး ထည့်သွင်းရန်</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>ဤ plugin ရင်းမြစ်ကို ယုံကြည်ပါသလား။</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>မသိ</translation>
 		</message>
 	</context>
 	<context>
@@ -5778,13 +5804,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>ဖိုင်တင်သွင်းပါ</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>ငွေလွှဲမှုကို ကွန်ရက်သို့ ထုတ်လွှင့်၍ မရပါ</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>မှားယွင်းသောလက်မှတ်များ</translation>
+			<source>Import file</source>
+			<translation>ဖိုင်တင်သွင်းပါ</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6635,6 +6661,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;လက်ခံရရှိမှု: {rate:.2f} ငွေလွှဲမှု/စက္ကန့်</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>Bitcoin node</translation>
 		</message>
@@ -6672,10 +6704,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-နိုင်ငံ: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;နိုင်ငံ: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8177,53 +8207,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>လက်ကျန်ငွေများ၊ လွှဲပြောင်းမှုများနှင့် UTXO များ အပါအဝင် ဤ wallet ကို အပြည့်အဝ ဖတ်ရှုရေးသားခွင့် ရရှိပါသည်။</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>ဤ wallet နှင့် အမျိုးအစားများအတွက် အပြည့်အဝ ဖတ်ရှုနှင့် ရေးသားခွင့်။</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>သင့် wallet ၏ အညွှန်းများနှင့် အမျိုးအစားများကို ဖတ်ရှု၍ ပြင်ဆင်ပါ။</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>wallet ၏ ဖော်ပြချက် (အများပြည်သူ သော့ဖွဲ့စည်းပုံ၊ လမ်းကြောင်းများ) ကို ဖတ်ရှုပါ။</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>လွှဲပြောင်းမှုအသစ်များ သို့မဟုတ် blockchain ချိတ်ဆက်မှုကဲ့သို့ wallet လုပ်ဆောင်မှု ဖြစ်ရပ်များကို စာရင်းသွင်းပါ။ လွှဲပြောင်းမှုများနှင့် PSBT များကို ဖွင့်နိုင်စေပါသည်။</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>ငွေလွှဲအသစ်များ သို့မဟုတ် blockchain sync ကဲ့သို့သော wallet လှုပ်ရှားမှုဖြစ်ရပ်များကို စာရင်းသွင်းပါ။</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>wallet ၏ multisig အနိမ့်အမြင့် (m-of-n) ပြင်ဆင်မှုကို ကြည့်ရှုပါ။</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>မသိသော ဖော်ပြချက်</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>BIP-0137 block တွင် စာတိုအကြောင်းအရာ မပါရှိပါ။</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8375,13 +8358,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>အခမဲ့စမ်းသပ်မှု ဝယ်ယူမှုက စီမံခန့်ခွဲမှု payload ကို ပြန်မပေးခဲ့ပါ။</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>အခမဲ့စမ်းသပ်မှု ဝယ်ယူမှုက session ကို ပြန်မပေးခဲ့ပါ။</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>အခမဲ့အစမ်းသုံးကာလ ဝယ်ယူမှုမှ စီမံခန့်ခွဲရန် URL ကို ပြန်လည်မပေးပို့ခဲ့ပါ။</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8400,23 +8378,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>စာရင်းသွင်းမှုကို စီမံပါ</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>စီမံခန့်ခွဲမှု URL</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>စီမံခန့်ခွဲမှု URL သိမ်းပြီးပါပြီ။</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>စာရင်းသွင်းမှု မည်သည့်အရာမျှ မအသက်သွင်းရသေးပါ။</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>စာရင်းသွင်းမှု မည်သည့်အရာမျှ မအသက်သွင်းရသေးပါ။</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>ဤဝေါလက်အတွက် စာရင်းသွင်းမှု မတွေ့ရှိပါ။</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8455,6 +8428,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>စာရင်းသွင်းမှု စစ်ဆေးခြင်း မအောင်မြင်ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>စာရင်းသွင်းမှု လွှဲပြောင်းခြင်း မအောင်မြင်ပါ။</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>စာရင်းသွင်းမှု သတိပေးချက်များ</translation>
 		</message>
@@ -8482,16 +8465,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>အခမဲ့စမ်းသပ်မှု အသက်သွင်းခြင်း အချိန်ကုန်သွားသည်။</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>စီမံခန့်ခွဲမှု URL သည် အခြားစာရင်းသွင်းမှု ID တစ်ခုနှင့် သက်ဆိုင်သောကြောင့် မသိမ်းဆည်းခဲ့ပါ။</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>စီမံခန့်ခွဲမှုစာမျက်နှာတွင် စာရင်းသွင်းမှု ID ကို မဖော်ပြထားပါ။ စီမံခန့်ခွဲမှု URL ကို မသိမ်းဆည်းခဲ့ပါ။</translation>
 		</message>
 		<name>subscription</name>
 		<message>

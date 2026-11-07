@@ -3303,8 +3303,9 @@ Konum kullanılamıyor.</translation>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Son yayınlanan mesajlar bu eşlerden bitcoin ağı üzerinden alınır.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>Son yayınlanan mesajlar Bitcoin ağı üzerinden&lt;br&gt;bu eşlerden alınır.&lt;br&gt;Mevcut toplam alma hızı: {rate:.2f} işlem/sn</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3792,13 +3793,13 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>Aylık</translation>
+			<source>Check subscription</source>
+			<translation>Aboneliği kontrol et</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>Ücretsiz denemeyi başlat / Mevcut aboneliği getir</translation>
+			<source>Start free trial</source>
+			<translation>Ücretsiz denemeyi başlat</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3807,13 +3808,18 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>Yıllık</translation>
+			<source>month</source>
+			<translation>ay</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>yıl</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4013,6 +4019,26 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>Bu eklenti silinemez.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>Bu kaynağın yayıncısı (anahtar: {fingerprint}), etiketleri, adresleri ve işlemleri dahil olmak üzere bu cüzdana tam erişimle çalışan eklentiler sağlayabilir ve gelecekteki güncellemeler aracılığıyla bunu yapmaya devam edebilir. Yalnızca tanıdığınız yayıncılara güvenin.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>Güven ve ekle</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>Bu eklenti kaynağına güveniyor musunuz?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>bilinmiyor</translation>
 		</message>
 	</context>
 	<context>
@@ -5800,13 +5826,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>Dosya içe aktar</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>İşlem yayınlanamadı</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>Geçersiz İmzalar</translation>
+			<source>Import file</source>
+			<translation>Dosya içe aktar</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6659,6 +6685,12 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;Alınan: {rate:.2f} işlem/sn</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>Bitcoin düğümü</translation>
 		</message>
@@ -6696,10 +6728,8 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-Ülke: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;Ülke: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8205,53 +8235,6 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>Cüzdanınızdan yeni alım adresleri oluşturun.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>Bu cüzdana ve kategorilere tam okuma ve yazma erişimi.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>Bakiyeler, işlemler ve UTXO’lar dahil bu cüzdana tam okuma ve yazma erişimi.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>Cüzdanınızın etiketlerini ve kategorilerini okuyun ve güncelleyin.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>Cüzdanın tanımlayıcısını okuyun (açık anahtar yapısı, yollar).</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>Yeni işlemler veya blok zinciri senkronizasyonu gibi cüzdan etkinliği olaylarına abone olun.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>Yeni işlemler veya blok zinciri senkronizasyonu gibi cüzdan etkinliklerine abone olun. Ayrıca işlemleri ve PSBT’leri açmayı etkinleştirir.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>Bilinmeyen açıklama</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>Cüzdanın çoklu imza eşik (m-of-n) yapılandırmasını görüntüleyin.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8403,13 +8386,8 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>Ücretsiz deneme satın alımı bir yönetim yükü döndürmedi.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>Ücretsiz deneme satın alımı bir oturum döndürmedi.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>Ücretsiz deneme satın alma işlemi bir yönetim URL'si döndürmedi.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8428,23 +8406,18 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>Aboneliği Yönet</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>Yönetim URL’si</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>Yönetim URL’si kaydedildi.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>Henüz hiçbir abonelik etkinleştirilmedi.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>Henüz hiçbir abonelik etkinleştirilmedi.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>Bu cüzdan için abonelik bulunamadı.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8483,6 +8456,16 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>Abonelik kontrolü başarısız oldu.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>Abonelik taşıma işlemi başarısız oldu.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>Abonelik hatırlatmaları</translation>
 		</message>
@@ -8510,16 +8493,6 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>Ücretsiz deneme etkinleştirmesi zaman aşımına uğradı.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>Yönetim URL’si farklı bir abonelik kimliğine ait olduğundan kaydedilmedi.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>Yönetim sayfasında abonelik kimliği bulunmadığından yönetim URL’si kaydedilmedi.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

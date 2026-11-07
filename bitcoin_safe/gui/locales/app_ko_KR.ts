@@ -3299,8 +3299,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>최근 브로드캐스트된 메시지는 비트코인 네트워크를 통해 이 피어들로부터 수신됩니다.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>최근 브로드캐스트된 메시지는 비트코인 네트워크를 통해&lt;br&gt;이 피어들로부터 수신됩니다.&lt;br&gt;현재 총 수신 속도: {rate:.2f} 트랜잭션/초</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3788,13 +3789,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>월간</translation>
+			<source>Check subscription</source>
+			<translation>구독 확인</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>무료 체험 시작 / 기존 구독 정보 가져오기</translation>
+			<source>Start free trial</source>
+			<translation>무료 체험 시작</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3803,13 +3804,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>연간</translation>
+			<source>month</source>
+			<translation>월</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>년</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4009,6 +4015,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>이 플러그인은 삭제할 수 없습니다.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>이 소스의 게시자(키 {fingerprint})는 라벨, 주소 및 트랜잭션을 포함하여 이 지갑에 대한 전체 접근 권한으로 실행되는 플러그인을 배포할 수 있으며, 향후 업데이트를 통해서도 계속 접근할 수 있습니다. 신뢰할 수 있는 게시자만 허용하세요.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>신뢰하고 추가</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>이 플러그인 소스를 신뢰하시겠습니까?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>알 수 없음</translation>
 		</message>
 	</context>
 	<context>
@@ -5794,13 +5820,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>파일 가져오기</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>트랜잭션을 브로드캐스트할 수 없습니다</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>잘못된 서명</translation>
+			<source>Import file</source>
+			<translation>파일 가져오기</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6653,6 +6679,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;수신: {rate:.2f} 트랜잭션/초</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>비트코인 노드</translation>
 		</message>
@@ -6690,10 +6722,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-국가: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;국가: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8197,53 +8227,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>지갑에서 새 수신 주소를 생성합니다.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>이 지갑 및 카테고리에 대한 전체 읽기 및 쓰기 권한.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>잔액, 거래 및 UTXO를 포함한 이 지갑에 대한 전체 읽기 및 쓰기 권한.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>지갑의 레이블과 카테고리를 읽고 업데이트합니다.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>지갑의 디스크립터(공개 키 구조, 경로)를 읽습니다.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>새 트랜잭션 또는 블록체인 동기화와 같은 지갑 활동 이벤트를 구독하세요.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>새 거래 또는 블록체인 동기화와 같은 지갑 활동 이벤트를 구독합니다. 또한 거래 및 PSBT 열기를 활성화합니다.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>알 수 없는 설명</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>지갑의 멀티시그 임계값(m-of-n) 구성을 확인합니다.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8395,13 +8378,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>무료 체험 구매가 관리 페이로드를 반환하지 않았습니다.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>무료 체험 구매가 세션을 반환하지 않았습니다.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>무료 체험 구매에서 관리 URL이 반환되지 않았습니다.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8420,23 +8398,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>구독 관리</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>관리 URL</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>관리 URL이 저장되었습니다.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>아직 활성화된 구독이 없습니다.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>아직 활성화된 구독이 없습니다.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>이 지갑에 대한 구독을 찾을 수 없습니다.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8475,6 +8448,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>구독 확인에 실패했습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>구독 이전에 실패했습니다.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>구독 알림</translation>
 		</message>
@@ -8502,16 +8485,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>무료 체험 활성화 시간이 초과되었습니다.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>관리 URL이 다른 구독 ID에 속해 있어 저장되지 않았습니다.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>관리 페이지에 구독 ID가 표시되지 않습니다. 관리 URL이 저장되지 않았습니다.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

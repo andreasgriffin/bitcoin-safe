@@ -3302,8 +3302,9 @@ Lokasi tidak tersedia.</translation>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Pesan yang baru disiarkan diterima dari peer ini melalui jaringan bitcoin.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>Pesan yang baru disiarkan diterima&lt;br&gt;dari peer ini melalui jaringan Bitcoin.&lt;br&gt;Total laju penerimaan saat ini: {rate:.2f} transaksi/dtk</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3791,13 +3792,13 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>Bulanan</translation>
+			<source>Check subscription</source>
+			<translation>Periksa langganan</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>Mulai uji coba gratis / Ambil langganan yang sudah ada</translation>
+			<source>Start free trial</source>
+			<translation>Mulai uji coba gratis</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3806,13 +3807,18 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>Tahunan</translation>
+			<source>month</source>
+			<translation>bulan</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>tahun</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4012,6 +4018,26 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>Plugin ini tidak dapat dihapus.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>Penerbit sumber ini (kunci {fingerprint}) dapat mendistribusikan plugin yang berjalan dengan akses penuh ke dompet ini, termasuk label, alamat, dan transaksinya, serta dapat terus melakukannya melalui pembaruan mendatang. Hanya percayai penerbit yang Anda kenal.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>Percayai dan tambahkan</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>Percayai sumber plugin ini?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>tidak diketahui</translation>
 		</message>
 	</context>
 	<context>
@@ -5799,13 +5825,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>Impor file</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>Tidak dapat menyiarkan transaksi</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>Tanda tangan tidak valid</translation>
+			<source>Import file</source>
+			<translation>Impor file</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6658,6 +6684,12 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;Diterima: {rate:.2f} transaksi/dtk</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>Node Bitcoin</translation>
 		</message>
@@ -6695,10 +6727,8 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-Negara: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;Negara: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8204,53 +8234,6 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>Buat alamat penerimaan baru dari dompet Anda.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>Akses baca dan tulis penuh ke dompet ini dan kategori.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>Akses baca dan tulis penuh ke dompet ini, termasuk saldo, transaksi, dan UTXO.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>Baca dan perbarui label serta kategori dompet Anda.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>Baca deskriptor dompet (struktur kunci publik, jalur).</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>Berlangganan peristiwa aktivitas dompet seperti transaksi baru atau sinkronisasi blockchain.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>Berlangganan peristiwa aktivitas dompet seperti transaksi baru atau sinkronisasi blockchain. Juga memungkinkan membuka transaksi dan PSBT.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>Deskripsi tidak dikenal</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>Lihat konfigurasi ambang multisig (m-of-n) dompet.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8402,13 +8385,8 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>Pembelian uji coba gratis tidak mengembalikan payload pengelolaan.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>Pembelian uji coba gratis tidak mengembalikan sesi.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>Pembelian uji coba gratis tidak menghasilkan URL pengelolaan.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8427,23 +8405,18 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>Kelola Langganan</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>URL pengelolaan</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>URL pengelolaan disimpan.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>Belum ada langganan yang diaktifkan.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>Belum ada langganan yang diaktifkan.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>Tidak ditemukan langganan untuk dompet ini.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8482,6 +8455,16 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>Pemeriksaan langganan gagal.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>Pemindahan langganan gagal.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>Pengingat langganan</translation>
 		</message>
@@ -8509,16 +8492,6 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>Aktivasi uji coba gratis kehabisan waktu.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>URL pengelolaan terkait dengan ID langganan yang berbeda dan tidak disimpan.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>Halaman pengelolaan tidak menampilkan ID langganan. URL pengelolaan tidak disimpan.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

@@ -3291,8 +3291,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>最近ブロードキャストされたメッセージは、ビットコインネットワークを通じてこれらのピアから受信されます。</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>最近ブロードキャストされたメッセージは、Bitcoinネットワーク経由で&lt;br&gt;これらのピアから受信されます。&lt;br&gt;現在の合計受信レート: {rate:.2f} 件/秒</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3777,13 +3778,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>月額</translation>
+			<source>Check subscription</source>
+			<translation>サブスクリプションを確認</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>無料トライアルを開始 / 既存のサブスクリプションを取得</translation>
+			<source>Start free trial</source>
+			<translation>無料トライアルを開始</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3792,13 +3793,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>年額</translation>
+			<source>month</source>
+			<translation>月</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>年</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -3998,6 +4004,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>このプラグインは削除できません。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>このソースの発行元（キー {fingerprint}）は、ラベル、アドレス、取引履歴を含むこのウォレット全体へのアクセス権を持つプラグインを配布でき、今後のアップデート後もそのアクセスを継続できます。信頼できる発行元のみを許可してください。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>信頼して追加</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>このプラグインソースを信頼しますか？</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>不明</translation>
 		</message>
 	</context>
 	<context>
@@ -5778,13 +5804,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>ファイルをインポート</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>トランザクションをブロードキャストできませんでした</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>無効な署名</translation>
+			<source>Import file</source>
+			<translation>ファイルをインポート</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6635,6 +6661,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;受信: {rate:.2f} 件/秒</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>ビットコインノード</translation>
 		</message>
@@ -6672,10 +6704,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-国: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;国: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8176,53 +8206,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>ウォレットから新しい受信アドレスを作成します。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>このウォレットとカテゴリへの完全な読み取りおよび書き込みアクセス。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>残高、取引、UTXO を含む、このウォレットへの完全な読み取りおよび書き込みアクセス。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>ウォレットのラベルとカテゴリを読み取り、更新します。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>ウォレットのディスクリプタ（公開鍵構造、パス）を読み取ります。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>新しいトランザクションやブロックチェーン同期などのウォレットアクティビティイベントを購読します。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>新しい取引やブロックチェーン同期などのウォレット活動イベントを購読します。取引や PSBT を開くことも可能になります。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>不明な説明</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>ウォレットのマルチシグしきい値（m-of-n）構成を表示します。</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8374,13 +8357,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>無料トライアルの購入で管理ペイロードが返されませんでした。</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>無料トライアルの購入でセッションが返されませんでした。</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>無料トライアルの購入処理で管理用URLが返されませんでした。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8399,23 +8377,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>サブスクリプションを管理</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>管理URL</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>管理URLが保存されました。</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>まだ有効化されたサブスクリプションはありません。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>まだ有効化されたサブスクリプションはありません。</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>このウォレットのサブスクリプションが見つかりませんでした。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8454,6 +8427,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>サブスクリプションの確認に失敗しました。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>サブスクリプションの移行に失敗しました。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>サブスクリプションのリマインダー</translation>
 		</message>
@@ -8481,16 +8464,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>無料トライアルの有効化がタイムアウトしました。</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>管理URLは別のサブスクリプションIDに属しているため、保存されませんでした。</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>管理ページにサブスクリプションIDが表示されていません。管理URLは保存されませんでした。</translation>
 		</message>
 		<name>subscription</name>
 		<message>

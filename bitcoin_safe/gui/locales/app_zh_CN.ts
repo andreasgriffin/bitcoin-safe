@@ -3307,9 +3307,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>最近广播的消息
-是通过比特币网络从这些对等节点接收到的。</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>最近广播的消息通过比特币网络&lt;br&gt;从这些对等节点接收。&lt;br&gt;当前总接收速率：{rate:.2f} 笔交易/秒</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3798,13 +3798,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>每月</translation>
+			<source>Check subscription</source>
+			<translation>检查订阅</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>开始免费试用 / 获取现有订阅</translation>
+			<source>Start free trial</source>
+			<translation>开始免费试用</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3813,13 +3813,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>每年</translation>
+			<source>month</source>
+			<translation>月</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>年</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4019,6 +4024,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>此插件无法删除。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>此来源的发布者（密钥 {fingerprint}）可以分发拥有此钱包完整访问权限的插件，包括访问其标签、地址和交易，并且可以通过未来的更新持续保留这些权限。请仅信任您认识的发布者。</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>信任并添加</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>是否信任此插件来源？</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>未知</translation>
 		</message>
 	</context>
 	<context>
@@ -5816,13 +5841,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>导入文件</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>无法广播交易</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>无效的签名</translation>
+			<source>Import file</source>
+			<translation>导入文件</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6674,6 +6699,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;已接收：{rate:.2f} 笔交易/秒</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>比特币节点</translation>
 		</message>
@@ -6711,10 +6742,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}：{ip}
-国家/地区：{country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}：{ip}&lt;br&gt;国家/地区：{country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8227,53 +8256,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>从您的钱包创建新的接收地址。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>对该钱包和类别拥有完整读写权限。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>对该钱包具有完全的读写访问权限，包括余额、交易和 UTXO。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>读取并更新钱包的标签和类别。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>读取钱包的描述符（公钥结构、路径）。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>订阅钱包活动事件，例如新交易或区块链同步。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>订阅钱包活动事件，例如新交易或区块链同步。也可启用打开交易和 PSBT。</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>未知描述</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>查看钱包的多重签名阈值（n/m）配置。</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8425,13 +8407,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>免费试用购买未返回管理载荷。</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>免费试用购买未返回会话。</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>免费试用购买未返回管理 URL。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8450,23 +8427,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>管理订阅</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>管理 URL</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>管理网址已保存。</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>尚未激活任何订阅。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>尚未激活任何订阅。</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>未找到此钱包的订阅。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8505,6 +8477,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>订阅检查失败。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>订阅转移失败。</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>订阅提醒</translation>
 		</message>
@@ -8532,16 +8514,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>免费试用激活超时。</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>该管理 URL 属于其他订阅 ID，因此未保存。</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>管理页面未提供订阅 ID。管理网址未被保存。</translation>
 		</message>
 		<name>subscription</name>
 		<message>
