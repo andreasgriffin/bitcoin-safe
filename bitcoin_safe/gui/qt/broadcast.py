@@ -34,6 +34,7 @@ import logging
 import random
 import threading
 from collections.abc import Iterable
+from concurrent.futures import Future
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
@@ -75,6 +76,7 @@ def unique_wallet_routes(
 class _BroadcastFlight:
     request: BroadcastRequest
     request_ids: list[str] = field(default_factory=list)
+    task: Future[None] | None = None
 
 
 class BroadcastCoordinator(QObject):
@@ -87,6 +89,15 @@ class BroadcastCoordinator(QObject):
         self.loop_in_thread = loop_in_thread
         self._lock = threading.Lock()
         self._in_flight: dict[str, _BroadcastFlight] = {}
+
+    def close(self) -> None:
+        """Cancel every pending broadcast so no send runs after shutdown begins."""
+        with self._lock:
+            flights = list(self._in_flight.values())
+            self._in_flight.clear()
+        for flight in flights:
+            if flight.task is not None:
+                flight.task.cancel()
 
     def submit(
         self,
@@ -103,7 +114,7 @@ class BroadcastCoordinator(QObject):
                 return
             flight = _BroadcastFlight(request=request, request_ids=[request.request_id])
             self._in_flight[txid] = flight
-        self.loop_in_thread.run_background(self._run(flight, wallet_routes, listener))
+            flight.task = self.loop_in_thread.run_background(self._run(flight, wallet_routes, listener))
 
     async def _run(
         self,
@@ -203,7 +214,8 @@ class BroadcastCoordinator(QObject):
     ) -> None:
         """Remove the in-flight entry and emit one completion with all requesters."""
         with self._lock:
-            self._in_flight.pop(flight.request.txid, None)
+            if self._in_flight.pop(flight.request.txid, None) is None:
+                return  # already cancelled by close()
             request_ids = tuple(flight.request_ids)
         self.signal_complete.emit(
             BroadcastCompletion(

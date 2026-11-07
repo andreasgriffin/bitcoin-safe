@@ -3147,6 +3147,7 @@ class MainWindow(UnlockableMainWindow):
         self.write_current_open_txs_to_config()
         self.config.save()
 
+        self.broadcast_coordinator.close()
         if self.p2p_listener:
             self.p2p_listener.stop()
         self.remove_all_qt_wallet()

@@ -61,6 +61,7 @@
         <ul>
           <li>Schedule plugin - Get notified about wallet activity through the channels that work for you.</li>
           <li>Notifications plugin – Receive alerts about wallet transactions, scheduled payments, and other wallet activity through webhooks, Nostr, Telegram, email, and calendars.</li>
+          <li>Transaction broadcasting made more robust, by broadcasting via other peers if the first broadcast timed out</li>
         </ul>
       </description>
     </release>

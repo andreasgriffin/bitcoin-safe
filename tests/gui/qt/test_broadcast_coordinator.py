@@ -165,3 +165,35 @@ def test_no_available_routes_report_no_routes() -> None:
 
     assert completions[0].outcome is BroadcastOutcome.no_routes
     assert completions[0].attempts == ()
+
+
+def test_close_cancels_pending_broadcast_without_completion(monkeypatch) -> None:
+    """Closing the coordinator cancels in-flight work and emits no completion."""
+
+    class PendingFuture:
+        def __init__(self) -> None:
+            self.cancelled = False
+
+        def cancel(self) -> bool:
+            self.cancelled = True
+            return True
+
+    class FakeLoopCapturingTask:
+        def run_background(self, coroutine):
+            self.coroutine = coroutine
+            self.future = PendingFuture()
+            return self.future
+
+    loop = FakeLoopCapturingTask()
+    coordinator = BroadcastCoordinator(loop)
+    completions = []
+    coordinator.signal_complete.connect(completions.append)
+    request = BroadcastRequest.create(FakeTransaction())
+
+    coordinator.submit(request, (WalletBroadcastRoute(FakeClient(), ("wallet",)),), None)
+    coordinator.close()
+    loop.coroutine.close()
+
+    assert loop.future.cancelled
+    assert completions == []
+    assert coordinator._in_flight == {}
