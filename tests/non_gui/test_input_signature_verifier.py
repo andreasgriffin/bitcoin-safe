@@ -29,19 +29,76 @@
 
 from __future__ import annotations
 
+import io
+
 import bdkpython as bdk
 import pytest
 from embit import hashes
-from embit.ec import PrivateKey
+from embit.ec import PrivateKey, Signature
 from embit.script import Script
 from embit.transaction import SIGHASH, Transaction, TransactionInput, TransactionOutput
+from embit.util import secp256k1
 
-from bitcoin_safe.input_signature_verifier import InputVerdict, Prevout, verify_transaction
+from bitcoin_safe.input_signature_verifier import (
+    InputVerdict,
+    Prevout,
+    _normalize_low_s,
+    verify_transaction,
+)
 
 KEY = PrivateKey(b"\x11" * 32)
 OTHER_KEY = PrivateKey(b"\x22" * 32)
 VALUE = 100_000
 PARENT_TXID = b"\xab" * 32
+
+
+# Order n of secp256k1, written independently of the implementation under test.
+SECP256K1_N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+
+
+def _der_signature(r: int, s: int) -> bytes:
+    compact = r.to_bytes(32, "big") + s.to_bytes(32, "big")
+    return secp256k1.ecdsa_signature_serialize_der(secp256k1.ecdsa_signature_parse_compact(compact))
+
+
+def _signature_parts(signature: Signature) -> tuple[int, int]:
+    """Read signature scalars without embit's DER parser."""
+    stream = io.BytesIO()
+    signature.write_to(stream)
+
+    der = stream.getvalue()
+
+    assert der[0] == 0x30
+    assert der[1] == len(der) - 2
+
+    r_len = der[3]
+    r = int.from_bytes(
+        der[4 : 4 + r_len],
+        "big",
+    )
+
+    s_len = der[5 + r_len]
+    s = int.from_bytes(
+        der[6 + r_len : 6 + r_len + s_len],
+        "big",
+    )
+
+    return r, s
+
+
+def test_high_s_signature_is_normalized_to_low_s() -> None:
+    r, high_s = 12345, SECP256K1_N - 1
+    assert _signature_parts(_normalize_low_s(_der_signature(r, high_s))) == (r, 1)
+
+
+def test_low_s_signature_is_unchanged() -> None:
+    r, s = 12345, SECP256K1_N // 2
+    assert _signature_parts(_normalize_low_s(_der_signature(r, s))) == (r, s)
+
+
+def test_s_just_above_half_order_is_normalized() -> None:
+    r, s = 12345, SECP256K1_N // 2 + 1
+    assert _signature_parts(_normalize_low_s(_der_signature(r, s))) == (r, SECP256K1_N // 2)
 
 
 def _p2pkh_spk(key: PrivateKey) -> Script:
@@ -363,3 +420,143 @@ def test_malformed_multisig_witness_is_invalid() -> None:
     tx, prevouts = _spend_p2wsh([KEY, OTHER_KEY])
     tx.vin[0].witness.items.insert(1, b"unexpected")
     assert verify_transaction(_to_bdk(tx), prevouts).is_invalid
+
+
+# secp256k1 group order, independent of the implementation under test.
+SECP256K1_N_TEST = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+
+
+def _test_der_integer(value: int) -> bytes:
+    """Encode a nonnegative integer as a DER INTEGER."""
+    raw = value.to_bytes(
+        max(1, (value.bit_length() + 7) // 8),
+        "big",
+    )
+
+    # DER integers are signed, so prefix positive values when necessary.
+    if raw[0] & 0x80:
+        raw = b"\x00" + raw
+
+    return b"\x02" + bytes([len(raw)]) + raw
+
+
+def _test_der_signature(r: int, s: int) -> bytes:
+    """Build a DER signature without using embit's DER parser."""
+    body = _test_der_integer(r) + _test_der_integer(s)
+    return b"\x30" + bytes([len(body)]) + body
+
+
+def _test_signature_parts(der: bytes) -> tuple[int, int]:
+    """Extract R and S from test-generated DER without using embit."""
+    assert der[0] == 0x30
+    assert der[1] == len(der) - 2
+
+    r_len = der[3]
+    r = int.from_bytes(der[4 : 4 + r_len], "big")
+
+    s_len = der[5 + r_len]
+    s = int.from_bytes(
+        der[6 + r_len : 6 + r_len + s_len],
+        "big",
+    )
+
+    return r, s
+
+
+def _test_make_high_s(sig_with_type: bytes) -> bytes:
+    """Convert a low-S transaction signature to equivalent high-S."""
+    der = sig_with_type[:-1]
+    sighash = sig_with_type[-1:]
+
+    r, s = _test_signature_parts(der)
+
+    assert 1 <= r < SECP256K1_N_TEST
+    assert 1 <= s <= SECP256K1_N_TEST // 2
+
+    high_s = SECP256K1_N_TEST - s
+
+    assert high_s > SECP256K1_N_TEST // 2
+
+    return _test_der_signature(r, high_s) + sighash
+
+
+@pytest.mark.parametrize(
+    ("s", "expected_s"),
+    [
+        (1, 1),
+        (SECP256K1_N_TEST // 2, SECP256K1_N_TEST // 2),
+        (
+            SECP256K1_N_TEST // 2 + 1,
+            SECP256K1_N_TEST // 2,
+        ),
+        (SECP256K1_N_TEST - 1, 1),
+    ],
+)
+def test_low_s_normalization_boundaries(
+    s: int,
+    expected_s: int,
+) -> None:
+    """Check low-S normalization at important boundaries."""
+    r = 12345
+
+    der = _test_der_signature(r, s)
+
+    normalized = _normalize_low_s(der)
+
+    actual_r, actual_s = _test_signature_parts(normalized.serialize())
+
+    assert actual_r == r
+    assert actual_s == expected_s
+
+
+@pytest.mark.parametrize(
+    "bad_der",
+    [
+        b"",
+        # Incorrect sequence tag.
+        b"\x31\x06\x02\x01\x01\x02\x01\x01",
+        # Incorrect sequence length.
+        b"\x30\x05\x02\x01\x01\x02\x01\x01",
+        # Zero R.
+        b"\x30\x06\x02\x01\x00\x02\x01\x01",
+        # Zero S.
+        b"\x30\x06\x02\x01\x01\x02\x01\x00",
+        # Negative R.
+        b"\x30\x06\x02\x01\x80\x02\x01\x01",
+        # Negative S.
+        b"\x30\x06\x02\x01\x01\x02\x01\x80",
+        # Non-minimal R.
+        b"\x30\x07\x02\x02\x00\x01\x02\x01\x01",
+        # Non-minimal S.
+        b"\x30\x07\x02\x01\x01\x02\x02\x00\x01",
+        # Trailing garbage.
+        b"\x30\x06\x02\x01\x01\x02\x01\x01\x00",
+        # R outside secp256k1 range.
+        _test_der_signature(SECP256K1_N_TEST, 1),
+        # S outside secp256k1 range.
+        _test_der_signature(1, SECP256K1_N_TEST),
+    ],
+)
+def test_low_s_normalization_rejects_invalid_der(
+    bad_der: bytes,
+) -> None:
+    """Invalid ECDSA signatures must not pass transaction verification."""
+
+    # Create a valid signed P2WPKH transaction.
+    tx, prevouts = _spend(
+        _p2wpkh_spk(KEY),
+        KEY,
+        "p2wpkh",
+    )
+
+    # Replace its valid signature with the invalid DER encoding.
+    # Append SIGHASH_ALL, as required by Bitcoin transactions.
+    tx.vin[0].witness.items[0] = bad_der + b"\x01"
+
+    # Verify the complete transaction.
+    result = verify_transaction(
+        _to_bdk(tx),
+        prevouts,
+    )
+
+    assert result.verdicts == [InputVerdict.invalid]
