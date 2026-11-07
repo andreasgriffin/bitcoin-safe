@@ -148,6 +148,7 @@ def test_tx_viewer_refresh_action_button_icons_updates_all_buttons(qapp: QApplic
         button_back=QPushButton(),
         button_save_local_tx=QPushButton(),
         button_send=QPushButton(),
+        _broadcast_requests={},
     )
 
     UITx_Viewer._refresh_action_button_icons(viewer)

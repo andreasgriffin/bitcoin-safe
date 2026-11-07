@@ -59,6 +59,7 @@ from bitcoin_nostr_chat.signals_min import SignalsMin as NostrSignalsMin
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import pyqtSignal
 
+from bitcoin_safe.broadcast_types import BroadcastCompletion, BroadcastRequest
 from bitcoin_safe.category_info import CategoryInfo
 from bitcoin_safe.pythonbdk_types import OutPoint
 
@@ -293,7 +294,8 @@ class Signals(SignalsMin):
     )  # tab:QWidget, wallet_id, icon: icon_name, tooltip: str | None
 
     request_manual_sync = cast(SignalProtocol[[]], pyqtSignal())
-    signal_broadcast_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
+    signal_broadcast_request = cast(SignalProtocol[[BroadcastRequest]], pyqtSignal(object))
+    signal_broadcast_complete = cast(SignalProtocol[[BroadcastCompletion]], pyqtSignal(object))
     signal_open_history_for_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(object))
     apply_txs_to_wallets = cast(SignalProtocol[[list[bdk.Transaction], int]], pyqtSignal(object, int))
     evict_txs_from_wallet_id = cast(SignalProtocol[[list[str], str, int]], pyqtSignal(object, str, int))

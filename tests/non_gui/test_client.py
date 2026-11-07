@@ -31,6 +31,7 @@
 from __future__ import annotations
 
 import asyncio
+import threading
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
@@ -54,6 +55,49 @@ def test_relay_fee_btc_per_kb_to_fee_rate() -> None:
     """Electrum relay fee conversion should preserve sub-sat precision."""
     assert FeeRate.from_btc_per_kb(1e-5).to_sat_per_kwu() == 250
     assert FeeRate.from_btc_per_kb(1e-6).to_sat_per_kwu() == 25
+
+
+def test_broadcast_cbf_does_not_use_foreground_loop(monkeypatch) -> None:
+    """CBF broadcast awaits directly on the coordinator's event loop."""
+
+    class FakeCbfSync:
+        def __init__(self) -> None:
+            self.client = SimpleNamespace(broadcast=self.broadcast)
+
+        async def broadcast(self, _tx: object) -> str:
+            return "sent"
+
+    monkeypatch.setattr("bitcoin_safe.client.CbfSync", FakeCbfSync)
+    loop_in_thread = MagicMock()
+    client = Client(
+        client=FakeCbfSync(),
+        electrum_config=None,
+        proxy_info=None,
+        loop_in_thread=loop_in_thread,
+    )
+
+    assert asyncio.run(client.broadcast(object())) == "sent"
+    loop_in_thread.run_foreground.assert_not_called()
+
+
+def test_broadcast_electrum_offloads_blocking_backend_call(monkeypatch) -> None:
+    """Synchronous Electrum broadcast runs outside the coordinator event loop."""
+
+    event_loop_thread = threading.get_ident()
+
+    class FakeElectrumClient:
+        def transaction_broadcast(self, _tx: object) -> int:
+            return threading.get_ident()
+
+    monkeypatch.setattr("bitcoin_safe.client.bdk.ElectrumClient", FakeElectrumClient)
+    client = Client(
+        client=FakeElectrumClient(),
+        electrum_config=None,
+        proxy_info=None,
+        loop_in_thread=MagicMock(),
+    )
+
+    assert asyncio.run(client.broadcast(object())) != event_loop_thread
 
 
 def test_get_min_broadcast_fee_rate_electrum(monkeypatch) -> None:

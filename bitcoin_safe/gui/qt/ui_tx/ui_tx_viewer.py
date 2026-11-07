@@ -29,7 +29,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import enum
 import logging
 from functools import partial
@@ -41,6 +40,7 @@ import bdkpython as bdk
 from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
+from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
 from bitcoin_safe_lib.tx_util import serialized_to_hex
 from PyQt6.QtCore import QEvent, Qt, pyqtSignal
@@ -58,6 +58,7 @@ from PyQt6.QtWidgets import (
 )
 
 from bitcoin_safe.address_comparer import AddressComparer, FuzzyMatch
+from bitcoin_safe.broadcast_types import BroadcastCompletion, BroadcastOutcome, BroadcastRequest
 from bitcoin_safe.client import Client
 from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.execute_config import DEMO_MODE
@@ -182,9 +183,13 @@ class PSBTAlreadyBroadcastedBar(NotificationBar):
         self.icon_label.setText("")
 
 
+BROADCAST_SPINNER_TIMEOUT_SECONDS = 20
+
+
 class UITx_Viewer(UITx_Base):
     signal_updated_content: SignalProtocol[Data] = cast(Any, pyqtSignal(Data))
     signal_edit_tx = cast(SignalProtocol[[]], pyqtSignal())
+    signal_broadcast_finished = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(
         self,
@@ -222,6 +227,7 @@ class UITx_Viewer(UITx_Base):
         self.hidden_tx_infos = hidden_tx_infos
         self.post_broadcast_action = PostBroadcastEnum.open_hist_list
         self._post_broadcast_consumed_txid: str | None = None
+        self._broadcast_requests: dict[str, bdk.Transaction] = {}
         self.presentation = ViewerPresentation.standalone_tab
         ##################
         self.searchable_list = widget_utxo_with_toolbar.utxo_list
@@ -405,13 +411,15 @@ class UITx_Viewer(UITx_Base):
             on_clicked=self.save_local_tx,
             role=QDialogButtonBox.ButtonRole.NoRole,
         )
-        self.button_send = add_to_buttonbox(
-            self.buttonBox,
+        self.button_send = SpinningButton(
             "",
-            "bi--send.svg",
-            on_clicked=self.broadcast,
-            role=QDialogButtonBox.ButtonRole.AcceptRole,
+            signal_stop_spinning=self.signal_broadcast_finished,
+            enabled_icon=svg_tools.get_QIcon("bi--send.svg"),
+            timeout=BROADCAST_SPINNER_TIMEOUT_SECONDS,
+            svg_tools=svg_tools,
         )
+        self.button_send.clicked.connect(self.broadcast)
+        self.buttonBox.addButton(self.button_send, QDialogButtonBox.ButtonRole.AcceptRole)
 
         self._layout.addWidget(self.buttonBox)
         ##################
@@ -428,6 +436,7 @@ class UITx_Viewer(UITx_Base):
         # after the wallet loads the transactions, then i have to reload again to
         # ensure that the linking warning bar appears (needs all tx loaded)
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.on_any_wallet_update)
+        self.signal_tracker.connect(self.signals.signal_broadcast_complete, self.on_broadcast_complete)
         self.signals.currency_switch.connect(self.update_all_totals)
         self.utxo_list.signal_finished_update.connect(self.update_all_totals)
         self.column_fee.fee_group.mempool_buttons.signal_rbf_icon.connect(self._on_rbf_icon)
@@ -594,10 +603,12 @@ class UITx_Viewer(UITx_Base):
             (self.button_rbf, button_info(ButtonInfoType.rbf).icon_name),
             (self.button_back, "bi--arrow-left-short.svg"),
             (self.button_save_local_tx, "offline_tx.svg"),
-            (self.button_send, "bi--send.svg"),
         ]
         for button, icon_name in button_icons:
             button.setIcon(svg_tools.get_QIcon(icon_name))
+        if not self._broadcast_requests:
+            self.button_send.enabled_icon = svg_tools.get_QIcon("bi--send.svg")
+            self.button_send.setIcon(self.button_send.enabled_icon)
 
     def _refresh_theme_icons(self) -> None:
         """Refresh icons that depend on the current palette."""
@@ -655,9 +666,10 @@ class UITx_Viewer(UITx_Base):
         self.update_all_totals()
         self._refresh_action_button_icons()
 
-    def save_local_tx(self):
+    def save_local_tx(self, tx: bdk.Transaction | bool | None = None):
         """Save local tx."""
-        self.signals.apply_txs_to_wallets.emit([self.extract_tx()], LOCAL_TX_LAST_SEEN)
+        transaction = tx if isinstance(tx, bdk.Transaction) else self.extract_tx()
+        self.signals.apply_txs_to_wallets.emit([transaction], LOCAL_TX_LAST_SEEN)
 
     def extract_tx(self) -> bdk.Transaction:
         """Extract tx."""
@@ -897,34 +909,59 @@ class UITx_Viewer(UITx_Base):
         return None
 
     def _broadcast(self, tx: bdk.Transaction) -> bool:
-        """Broadcast."""
-        if self.client:
-            try:
-                self.client.broadcast(tx)
-                self.signals.signal_broadcast_tx.emit(tx)
-                return True
-            except (asyncio.TimeoutError, TimeoutError):
-                self._show_broadcast_timeout()
-            except Exception as e:
-                caught_exception_message(
-                    e,
-                    title=(
-                        self.tr("Invalid Signatures")
-                        if "non-mandatory-script-verify-flag" in str(e)
-                        else None
-                    ),
-                    parent=self,
-                )
-        else:
-            Message(
-                self.tr(
-                    "Please open a wallet first to broadcast the transaction.\nOr you can broadcast via {url}"
-                ).format(url="https://blockstream.info/tx/push"),
-                type=MessageType.Error,
-                parent=self,
-            )
+        """Queue a broadcast request without blocking the GUI thread."""
+        request = BroadcastRequest.create(tx)
+        self._broadcast_requests[request.request_id] = tx
+        self.button_send.start_spin()
+        self.signals.signal_broadcast_request.emit(request)
+        return True
 
-        return False
+    def on_broadcast_complete(self, completion: BroadcastCompletion) -> None:
+        """Handle completion only for requests initiated by this viewer."""
+        owned_ids = [
+            request_id for request_id in completion.request_ids if request_id in self._broadcast_requests
+        ]
+        if not owned_ids:
+            return
+        transactions = [self._broadcast_requests.pop(request_id) for request_id in owned_ids]
+        self.signal_broadcast_finished.emit()
+
+        if completion.outcome is not BroadcastOutcome.success:
+            if completion.wallet_timeout:
+                self._show_broadcast_timeout()
+            elif completion.outcome is BroadcastOutcome.no_routes:
+                self._show_no_broadcast_routes()
+            else:
+                caught_exception_message(
+                    RuntimeError(self.tr("Could not broadcast transaction")), parent=self
+                )
+            return
+
+        for tx in transactions:
+            self._on_broadcast_success(tx)
+
+    def _on_broadcast_success(self, tx: bdk.Transaction) -> None:
+        """Run local actions owned by one successful broadcast request."""
+        if self.hidden_tx_infos and self.hidden_tx_infos.save_local_on_send:
+            self.save_local_tx(tx)
+        txid = str(tx.compute_txid())
+        if (
+            self.post_broadcast_action == PostBroadcastEnum.open_hist_list
+            and self._post_broadcast_consumed_txid != txid
+        ):
+            self.signals.signal_open_history_for_tx.emit(tx)
+            self._post_broadcast_consumed_txid = txid
+        logger.info(f"Successfully broadcasted tx {short_tx_id(txid)}")
+
+    def _show_no_broadcast_routes(self) -> None:
+        """Show the existing guidance when no broadcast routes are available."""
+        Message(
+            self.tr(
+                "Please open a wallet first to broadcast the transaction.\nOr you can broadcast via {url}"
+            ).format(url="https://blockstream.info/tx/push"),
+            type=MessageType.Error,
+            parent=self,
+        )
 
     def _show_broadcast_timeout(self) -> None:
         tx_url = self.txid_label.get_tx_url()
@@ -976,6 +1013,9 @@ class UITx_Viewer(UITx_Base):
             logger.error("data is not of type bdk.Transaction and cannot be broadcastet")
             return
         tx = self.data.data
+        if self._broadcast_requests:
+            logger.info("Broadcast already in progress for this transaction, ignoring repeated send")
+            return
 
         if not is_nlocktime_already_valid(tx.lock_time(), self._get_robust_height()) and not question_dialog(
             self.tr(
@@ -988,18 +1028,8 @@ class UITx_Viewer(UITx_Base):
         if not self.client:
             self._set_blockchain()
 
-        logger.debug(f"broadcasting tx {str(tx.compute_txid())[:4]=}")
-        success = self._broadcast(tx)
-        if success:
-            if self.hidden_tx_infos and self.hidden_tx_infos.save_local_on_send:
-                self.save_local_tx()
-            if (
-                self.post_broadcast_action == PostBroadcastEnum.open_hist_list
-                and self._post_broadcast_consumed_txid != self.txid()
-            ):
-                self.signals.signal_open_history_for_tx.emit(tx)
-                self._post_broadcast_consumed_txid = self.txid()
-            logger.info(f"Successfully broadcasted tx {str(tx.compute_txid())[:4]=}")
+        logger.debug(f"queuing broadcast tx {short_tx_id(tx.compute_txid())}")
+        self._broadcast(tx)
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
         """Enrich simple psbt with wallet data."""

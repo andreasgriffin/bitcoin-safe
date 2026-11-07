@@ -78,6 +78,13 @@ class PeerQuality:
     last_failure_reason: str | None = None
 
 
+@dataclass(frozen=True)
+class P2PBroadcastAttempt:
+    peer: str
+    success: bool
+    error: str | None = None
+
+
 class P2pListener(QObject):
     signal_relevant_tx = cast(SignalProtocol[[bdk.Transaction]], pyqtSignal(bdk.Transaction))
     signal_block = cast(SignalProtocol[[str]], pyqtSignal(str))
@@ -403,6 +410,22 @@ class P2pListener(QObject):
 
     def get_current_peers(self):
         return self._snapshot_current_connections()
+
+    async def broadcast_tx(self, raw_hex: str) -> tuple[P2PBroadcastAttempt, ...]:
+        """Try connected peers sequentially until a transaction write succeeds."""
+        with self._state_lock:
+            connected = [client for client in self.clients if client.is_running()]
+        random.shuffle(connected)
+
+        attempts: list[P2PBroadcastAttempt] = []
+        for client in connected:
+            success, error = await client.broadcast_tx(raw_hex)
+            attempts.append(
+                P2PBroadcastAttempt(peer=str(client.current_peer()), success=success, error=error)
+            )
+            if success:
+                break
+        return tuple(attempts)
 
     @property
     def tx_rates(self) -> dict[Peer, float]:

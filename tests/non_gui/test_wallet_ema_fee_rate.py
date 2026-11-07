@@ -29,6 +29,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import math
 from collections.abc import Generator
@@ -167,7 +168,7 @@ def test_ema_fee_rate_weights_recent_heavier(
         signed_psbt = signer.sign_psbt(psbt_for_signing)
 
         tx = signed_psbt.extract_tx()
-        wallet.client.broadcast(tx)
+        asyncio.run(wallet.client.broadcast(tx))
         faucet.mine(qtbot=qtbot)
 
         txid = str(tx.compute_txid())
