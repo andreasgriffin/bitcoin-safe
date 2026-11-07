@@ -48,6 +48,7 @@ from bitcoin_safe.broadcast_types import (
     BroadcastRequest,
     WalletBroadcastRoute,
 )
+from bitcoin_safe.tx import short_tx_id
 
 if TYPE_CHECKING:
     from bitcoin_safe.client import Client
@@ -129,7 +130,7 @@ class BroadcastCoordinator(QObject):
         try:
             routes = list(wallet_routes)
             random.shuffle(routes)
-            logger.info("Broadcasting %s: %d wallet route(s) to try", txid[:8], len(routes))
+            logger.info(f"Broadcasting {short_tx_id(txid)}: {len(routes)} wallet route(s) to try")
             for route in routes:
                 backend = type(route.client.client).__name__
                 try:
@@ -137,12 +138,9 @@ class BroadcastCoordinator(QObject):
                 except Exception as exc:
                     wallet_timeout |= isinstance(exc, (asyncio.TimeoutError, TimeoutError))
                     error = str(exc) or type(exc).__name__
+                    wallets = ", ".join(route.wallet_ids)
                     logger.info(
-                        "Broadcast %s via %s wallets %s failed: %s",
-                        txid[:8],
-                        backend,
-                        ", ".join(route.wallet_ids),
-                        error,
+                        f"Broadcast {short_tx_id(txid)} via {backend} wallets {wallets} failed: {error}"
                     )
                     attempts.append(
                         BroadcastAttempt(
@@ -154,12 +152,8 @@ class BroadcastCoordinator(QObject):
                         )
                     )
                     continue
-                logger.info(
-                    "Broadcast %s succeeded via %s wallets %s",
-                    txid[:8],
-                    backend,
-                    ", ".join(route.wallet_ids),
-                )
+                wallets = ", ".join(route.wallet_ids)
+                logger.info(f"Broadcast {short_tx_id(txid)} succeeded via {backend} wallets {wallets}")
                 successful_route = BroadcastAttempt(
                     route_type="wallet", backend=backend, wallet_ids=route.wallet_ids, success=True
                 )
@@ -167,7 +161,7 @@ class BroadcastCoordinator(QObject):
                 break
 
             if successful_route is None and listener is not None:
-                logger.info("Broadcast %s: no wallet route succeeded, trying P2P peers", txid[:8])
+                logger.info(f"Broadcast {short_tx_id(txid)}: no wallet route succeeded, trying P2P peers")
                 for p2p_attempt in await listener.broadcast_tx(flight.request.tx.serialize().hex()):
                     attempt = BroadcastAttempt(
                         route_type="p2p",
@@ -177,11 +171,11 @@ class BroadcastCoordinator(QObject):
                     )
                     attempts.append(attempt)
                     if attempt.success:
-                        logger.info("Broadcast %s written to P2P peer %s", txid[:8], attempt.peer)
+                        logger.info(f"Broadcast {short_tx_id(txid)} written to P2P peer {attempt.peer}")
                         successful_route = attempt
                         break
                     logger.info(
-                        "Broadcast %s to P2P peer %s failed: %s", txid[:8], attempt.peer, attempt.error
+                        f"Broadcast {short_tx_id(txid)} to P2P peer {attempt.peer} failed: {attempt.error}"
                     )
 
             outcome = (
@@ -192,7 +186,7 @@ class BroadcastCoordinator(QObject):
                 else BroadcastOutcome.no_routes
             )
             logger.info(
-                "Broadcast %s finished: %s after %d attempt(s)", txid[:8], outcome.value, len(attempts)
+                f"Broadcast {short_tx_id(txid)} finished: {outcome.value} after {len(attempts)} attempt(s)"
             )
         except asyncio.CancelledError:
             self._complete(flight, BroadcastOutcome.failure, None, attempts, wallet_timeout)
