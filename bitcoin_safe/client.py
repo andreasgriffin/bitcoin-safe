@@ -331,26 +331,11 @@ class Client:
             cbf_known_peers=peers,
         )
 
-    def broadcast(self, tx: bdk.Transaction):
-        """Broadcast."""
-        if isinstance(self.client, bdk.ElectrumClient):
-            return self.client.transaction_broadcast(tx)
-        elif isinstance(self.client, bdk.EsploraClient):
-            return self.client.broadcast(tx)
-        elif isinstance(self.client, CbfSync):
-            assert self.client.client, "Not initialized"
-            try:
-                return self.loop_in_thread.run_foreground(
-                    asyncio.wait_for(self.client.client.broadcast(tx), timeout=self.BROADCAST_TIMEOUT)
-                )
-            except asyncio.TimeoutError:
-                logger.error("Broadcast timed out after 3 seconds")
-                raise
-        else:
-            raise NotImplementedError(f"Client is of type {type(self.client)}")
+    async def broadcast(self, tx: bdk.Transaction):
+        """Broadcast without blocking the event loop.
 
-    async def broadcast_async(self, tx: bdk.Transaction):
-        """Broadcast without blocking the event loop used by the coordinator."""
+        CBF is awaited directly on the loop. Electrum and Esplora are blocking, so they run in a worker thread.
+        """
         if isinstance(self.client, CbfSync):
             assert self.client.client, "Not initialized"
             try:
@@ -358,10 +343,12 @@ class Client:
                     self.client.client.broadcast(tx), timeout=self.BROADCAST_TIMEOUT
                 )
             except asyncio.TimeoutError:
-                logger.error("Broadcast timed out after 3 seconds")
+                logger.error(f"Broadcast timed out after {self.BROADCAST_TIMEOUT} seconds")
                 raise
-        if isinstance(self.client, (bdk.ElectrumClient, bdk.EsploraClient)):
-            return await asyncio.to_thread(self.broadcast, tx)
+        if isinstance(self.client, bdk.ElectrumClient):
+            return await asyncio.to_thread(self.client.transaction_broadcast, tx)
+        if isinstance(self.client, bdk.EsploraClient):
+            return await asyncio.to_thread(self.client.broadcast, tx)
         raise NotImplementedError(f"Client is of type {type(self.client)}")
 
     def get_min_broadcast_fee_rate(self) -> FeeRate | None:

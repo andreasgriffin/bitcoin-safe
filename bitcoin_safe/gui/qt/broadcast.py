@@ -134,7 +134,7 @@ class BroadcastCoordinator(QObject):
             for route in routes:
                 backend = type(route.client.client).__name__
                 try:
-                    await route.client.broadcast_async(flight.request.tx)
+                    await route.client.broadcast(flight.request.tx)
                 except Exception as exc:
                     wallet_timeout |= isinstance(exc, (asyncio.TimeoutError, TimeoutError))
                     error = str(exc) or type(exc).__name__

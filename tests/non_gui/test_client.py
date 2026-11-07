@@ -57,7 +57,7 @@ def test_relay_fee_btc_per_kb_to_fee_rate() -> None:
     assert FeeRate.from_btc_per_kb(1e-6).to_sat_per_kwu() == 25
 
 
-def test_broadcast_async_cbf_does_not_use_foreground_loop(monkeypatch) -> None:
+def test_broadcast_cbf_does_not_use_foreground_loop(monkeypatch) -> None:
     """CBF broadcast awaits directly on the coordinator's event loop."""
 
     class FakeCbfSync:
@@ -76,11 +76,11 @@ def test_broadcast_async_cbf_does_not_use_foreground_loop(monkeypatch) -> None:
         loop_in_thread=loop_in_thread,
     )
 
-    assert asyncio.run(client.broadcast_async(object())) == "sent"
+    assert asyncio.run(client.broadcast(object())) == "sent"
     loop_in_thread.run_foreground.assert_not_called()
 
 
-def test_broadcast_async_electrum_offloads_blocking_backend_call(monkeypatch) -> None:
+def test_broadcast_electrum_offloads_blocking_backend_call(monkeypatch) -> None:
     """Synchronous Electrum broadcast runs outside the coordinator event loop."""
 
     event_loop_thread = threading.get_ident()
@@ -97,7 +97,7 @@ def test_broadcast_async_electrum_offloads_blocking_backend_call(monkeypatch) ->
         loop_in_thread=MagicMock(),
     )
 
-    assert asyncio.run(client.broadcast_async(object())) != event_loop_thread
+    assert asyncio.run(client.broadcast(object())) != event_loop_thread
 
 
 def test_get_min_broadcast_fee_rate_electrum(monkeypatch) -> None:

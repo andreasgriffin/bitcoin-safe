@@ -56,13 +56,10 @@ class FakeClient:
         self.response = response
         self.calls = 0
 
-    def broadcast(self, _tx: FakeTransaction) -> None:
+    async def broadcast(self, _tx: FakeTransaction) -> None:
         self.calls += 1
         if self.response:
             raise self.response
-
-    async def broadcast_async(self, tx: FakeTransaction) -> None:
-        self.broadcast(tx)
 
 
 class FakeListener:
