@@ -788,7 +788,7 @@ class P2PClient(QObject):
             except asyncio.CancelledError:
                 raise
             except Exception as exc:
-                logger.debug("-> %s failed during drain(): %s", cmd, exc)
+                logger.debug(f"-> {cmd} failed during drain(): {exc}")
                 await self.disconnect(reason=f"Failed while sending {cmd}: {exc}")
                 return False, str(exc) or type(exc).__name__
 

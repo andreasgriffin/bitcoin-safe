@@ -951,7 +951,7 @@ class UITx_Viewer(UITx_Base):
         ):
             self.signals.signal_open_history_for_tx.emit(tx)
             self._post_broadcast_consumed_txid = txid
-        logger.info("Successfully broadcasted tx %s", txid[:4])
+        logger.info(f"Successfully broadcasted tx {short_tx_id(txid)}")
 
     def _show_no_broadcast_routes(self) -> None:
         """Show the existing guidance when no broadcast routes are available."""
@@ -1028,7 +1028,7 @@ class UITx_Viewer(UITx_Base):
         if not self.client:
             self._set_blockchain()
 
-        logger.debug("queuing broadcast tx %s", str(tx.compute_txid())[:4])
+        logger.debug(f"queuing broadcast tx {short_tx_id(tx.compute_txid())}")
         self._broadcast(tx)
 
     def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
