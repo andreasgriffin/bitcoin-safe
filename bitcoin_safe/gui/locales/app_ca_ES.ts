@@ -3303,8 +3303,9 @@ Ubicació no disponible.</translation>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Els missatges recentment emesos es reben d’aquests peers a través de la xarxa bitcoin.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>Els missatges difosos recentment es reben&lt;br&gt;d'aquests parells a través de la xarxa Bitcoin.&lt;br&gt;Taxa total de recepció actual: {rate:.2f} transaccions/s</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3792,13 +3793,13 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>Mensual</translation>
+			<source>Check subscription</source>
+			<translation>Comprova la subscripció</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>Inicia la prova gratuïta / Recupera la subscripció existent</translation>
+			<source>Start free trial</source>
+			<translation>Inicia la prova gratuïta</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3807,13 +3808,18 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>Anual</translation>
+			<source>month</source>
+			<translation>mes</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>any</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4013,6 +4019,26 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>Aquest connector no es pot suprimir.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>L'editor d'aquesta font (clau {fingerprint}) pot distribuir connectors que s'executen amb accés complet a aquest moneder, incloses les seves etiquetes, adreces i transaccions, i mantenir aquest accés mitjançant futures actualitzacions. Confia només en els editors que coneguis.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>Confia-hi i afegeix</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>Confies en aquesta font de connectors?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>desconegut</translation>
 		</message>
 	</context>
 	<context>
@@ -5800,13 +5826,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>Importa fitxer</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>No s'ha pogut difondre la transacció</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>Signatures no vàlides</translation>
+			<source>Import file</source>
+			<translation>Importa fitxer</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6659,6 +6685,12 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;Rebudes: {rate:.2f} transaccions/s</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>Node Bitcoin</translation>
 		</message>
@@ -6696,10 +6728,8 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-País: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;País: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8205,53 +8235,6 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>Creeu noves adreces de recepció des de la vostra cartera.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>Accés complet de lectura i escriptura a aquesta cartera i categories.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>Accés complet de lectura i escriptura a aquesta cartera, incloent saldos, transaccions i UTXO.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>Llegiu i actualitzeu les etiquetes i categories de la vostra cartera.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>Llegiu el descriptor de la cartera (estructura de clau pública, camins).</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>Subscriviu-vos als esdeveniments d’activitat de la cartera, com ara noves transaccions o sincronització de la blockchain.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>Subscriviu-vos als esdeveniments d’activitat de la cartera, com ara noves transaccions o sincronització de la cadena de blocs. També permet obrir transaccions i PSBT.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>Descripció desconeguda</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>Visualitzeu la configuració del llindar multisig (m-of-n) de la cartera.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8403,13 +8386,8 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>La compra de la prova gratuïta no ha retornat cap càrrega útil de gestió.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>La compra de la prova gratuïta no ha retornat cap sessió.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>La compra de la prova gratuïta no ha retornat cap URL de gestió.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8428,23 +8406,18 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>Gestiona la subscripció</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>URL de gestió</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>URL de gestió desada.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>Encara no s’ha activat cap subscripció.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>Encara no s’ha activat cap subscripció.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>No s'ha trobat cap subscripció per a aquest moneder.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8483,6 +8456,16 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>La comprovació de la subscripció ha fallat.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>La transferència de la subscripció ha fallat.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>Recordatoris de subscripció</translation>
 		</message>
@@ -8510,16 +8493,6 @@ Fes clic aquí per saber-ne més.</translation>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>L’activació de la prova gratuïta ha superat el temps d’espera.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>L’URL de gestió pertany a un ID de subscripció diferent i no s’ha desat.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>La pàgina de gestió no mostra cap ID de subscripció. L’URL de gestió no s’ha desat.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

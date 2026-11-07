@@ -3304,8 +3304,9 @@ Không có vị trí.</translation>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Các thông điệp vừa phát sóng được nhận từ các peer này qua mạng bitcoin.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>Các thông điệp vừa được phát đi được nhận&lt;br&gt;từ các nút ngang hàng này qua mạng Bitcoin.&lt;br&gt;Tổng tốc độ nhận hiện tại: {rate:.2f} giao dịch/giây</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3793,13 +3794,13 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>Hàng tháng</translation>
+			<source>Check subscription</source>
+			<translation>Kiểm tra gói đăng ký</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>Bắt đầu dùng thử miễn phí / Lấy gói đăng ký hiện có</translation>
+			<source>Start free trial</source>
+			<translation>Bắt đầu dùng thử miễn phí</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3808,13 +3809,18 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>Hàng năm</translation>
+			<source>month</source>
+			<translation>tháng</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>năm</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4014,6 +4020,26 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>Không thể xóa plugin này.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>Nhà phát hành của nguồn này (khóa {fingerprint}) có thể phân phối các plugin chạy với quyền truy cập đầy đủ vào ví này, bao gồm nhãn, địa chỉ và giao dịch, đồng thời tiếp tục duy trì quyền truy cập đó qua các bản cập nhật trong tương lai. Chỉ tin tưởng những nhà phát hành mà bạn biết.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>Tin tưởng và thêm</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>Bạn có tin tưởng nguồn plugin này không?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>không rõ</translation>
 		</message>
 	</context>
 	<context>
@@ -5801,13 +5827,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>Nhập tệp</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>Không thể phát giao dịch lên mạng</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>Chữ ký không hợp lệ</translation>
+			<source>Import file</source>
+			<translation>Nhập tệp</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6660,6 +6686,12 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;Đã nhận: {rate:.2f} giao dịch/giây</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>Nút Bitcoin</translation>
 		</message>
@@ -6697,10 +6729,8 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-Quốc gia: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;Quốc gia: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8204,53 +8234,6 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>Tạo địa chỉ nhận mới từ ví của bạn.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>Quyền truy cập đọc và ghi đầy đủ vào ví này và các danh mục.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>Quyền đọc và ghi đầy đủ đối với ví này, bao gồm số dư, giao dịch và UTXO.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>Đọc và cập nhật nhãn và danh mục của ví.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>Đọc descriptor của ví (cấu trúc khóa công khai, đường dẫn).</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>Đăng ký các sự kiện hoạt động của ví như giao dịch mới hoặc đồng bộ blockchain.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>Đăng ký nhận sự kiện hoạt động của ví như giao dịch mới hoặc đồng bộ blockchain. Cũng cho phép mở giao dịch và PSBT.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>Mô tả không xác định</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>Xem ngưỡng multisig (m-trên-n) của ví.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8402,13 +8385,8 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>Giao dịch mua bản dùng thử miễn phí không trả về payload quản lý.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>Giao dịch mua bản dùng thử miễn phí không trả về phiên.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>Giao dịch mua gói dùng thử miễn phí không trả về URL quản lý.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8427,23 +8405,18 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>Quản lý Đăng ký</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>URL quản lý</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>URL quản lý đã được lưu.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>Chưa có đăng ký nào được kích hoạt.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>Chưa có đăng ký nào được kích hoạt.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>Không tìm thấy gói đăng ký nào cho ví này.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8482,6 +8455,16 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>Kiểm tra gói đăng ký thất bại.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>Chuyển gói đăng ký thất bại.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>Lời nhắc đăng ký</translation>
 		</message>
@@ -8509,16 +8492,6 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>Kích hoạt bản dùng thử miễn phí đã hết thời gian chờ.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>URL quản lý thuộc về một ID gói đăng ký khác và chưa được lưu.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>Trang quản lý không cung cấp ID gói đăng ký. URL quản lý chưa được lưu.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

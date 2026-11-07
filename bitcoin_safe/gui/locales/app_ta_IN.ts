@@ -3310,9 +3310,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>அண்மைக் காலத்தில் ஒளிபரப்பப்பட்ட செய்திகள் பெறப்படுகின்றன 
-பிட்காயின் பிணையம் வழியாக இந்த சகாக்களிடமிருந்து.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>சமீபத்தில் ஒளிபரப்பப்பட்ட செய்திகள் பிட்காயின் நெட்வொர்க் வழியாக&lt;br&gt;இந்த இணை முனைகளிலிருந்து பெறப்படுகின்றன.&lt;br&gt;தற்போதைய மொத்த பெறுதல் விகிதம்: {rate:.2f} பரிவர்த்தனைகள்/வினாடி</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3802,13 +3802,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>மாதாந்திர</translation>
+			<source>Check subscription</source>
+			<translation>சந்தாவைச் சரிபார்க்கவும்</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>இலவச சோதனையைத் தொடங்கு / ஏற்கெனவே உள்ள சந்தாவைப் பெறு</translation>
+			<source>Start free trial</source>
+			<translation>இலவச சோதனையைத் தொடங்கவும்</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3817,13 +3817,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
+			<source>month</source>
+			<translation>மாதம்</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>year</source>
 			<translation>ஆண்டு</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4023,6 +4028,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>இந்த செருகுநிரலை நீக்க முடியாது.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>இந்த மூலத்தின் வெளியீட்டாளர் (விசை {fingerprint}), இந்த வாலட்டின் லேபிள்கள், முகவரிகள் மற்றும் பரிவர்த்தனைகள் உட்பட அனைத்தையும் முழுமையாக அணுகும் அனுமதியுடன் இயங்கும் செருகுநிரல்களை விநியோகிக்க முடியும். எதிர்கால புதுப்பிப்புகளிலும் இந்த அணுகலைத் தொடர முடியும். உங்களுக்குத் தெரிந்த வெளியீட்டாளர்களை மட்டுமே நம்புங்கள்.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>நம்பி சேர்க்கவும்</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>இந்தச் செருகுநிரல் மூலத்தை நம்புகிறீர்களா?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>தெரியவில்லை</translation>
 		</message>
 	</context>
 	<context>
@@ -5820,13 +5845,13 @@ txid:அவுட்பாயிண்ட்</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>கோப்பை இறக்குமதி செய்யவும்</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>பரிவர்த்தனையை ஒளிபரப்ப முடியவில்லை</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>தவறான கையொப்பங்கள்</translation>
+			<source>Import file</source>
+			<translation>கோப்பை இறக்குமதி செய்யவும்</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6679,6 +6704,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;பெறப்பட்டவை: {rate:.2f} பரிவர்த்தனைகள்/வினாடி</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>பிட்காயின் முனை</translation>
 		</message>
@@ -6716,10 +6747,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-நாடு: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;நாடு: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8232,53 +8261,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>உங்கள் பணப்பையிலிருந்து புதிய பெறுதல் முகவரிகளை உருவாக்கவும்.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>இந்த பணப்பை மற்றும் வகைகளுக்கான முழு வாசிப்பு மற்றும் எழுத அணுகல்.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>நிலுவைகள், பரிவர்த்தனைகள் மற்றும் UTXOகள் உட்பட, இந்த வாலட்டை முழுமையாகப் படிக்கவும் எழுதவும் அணுகலாம்.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>உங்கள் வாலட்டின் லேபிள்களையும் வகைகளையும் படித்துப் புதுப்பிக்கவும்.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>பணப்பையின் விளக்கத்தை (பொது விசை அமைப்பு, பாதைகள்) படிக்கவும்.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>புதிய பரிவர்த்தனைகள் அல்லது பிளாக்செயின் ஒத்திசைவு போன்ற வாலட் செயல்பாட்டு நிகழ்வுகளுக்கு குழுசேரவும்.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>புதிய பரிவர்த்தனைகள் அல்லது பிளாக்செயின் ஒத்திசைவு போன்ற வாலட் செயல்பாட்டு நிகழ்வுகளுக்கு குழுசேரவும். பரிவர்த்தனைகள் மற்றும் PSBTகளைத் திறக்கவும் உதவுகிறது.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>தெரியாத விளக்கம்</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>வாலட்டின் மல்டிசிக் த்ரெசோல்ட் (m-of-n) உள்ளமைவைப் பார்க்கவும்.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8430,13 +8412,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>இலவச-சோதனை வாங்குதல் மேலாண்மை பேலோடைத் தரவில்லை.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>இலவச-சோதனை வாங்குதல் ஒரு அமர்வை வழங்கவில்லை.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>இலவச சோதனை வாங்குதல் நிர்வகிப்பதற்கான URL-ஐ வழங்கவில்லை.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8455,23 +8432,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>சந்தாவை நிர்வகிக்கவும்</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>நிர்வாக URL</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>மேலாண்மை முகவரி சேமிக்கப்பட்டது.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>சந்தா எதுவும் இன்னும் செயல்படுத்தப்படவில்லை.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>சந்தா எதுவும் இன்னும் செயல்படுத்தப்படவில்லை.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>இந்த வாலட்டிற்கான சந்தா எதுவும் கிடைக்கவில்லை.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8510,6 +8482,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>சந்தா சரிபார்ப்பு தோல்வியடைந்தது.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>சந்தா மாற்றம் தோல்வியடைந்தது.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>சந்தா நினைவூட்டல்கள்</translation>
 		</message>
@@ -8537,16 +8519,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>இலவச சோதனைச் செயலாக்கம் காலாவதியானது.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>நிர்வாக URL வேறொரு சந்தா ID-க்கு உரியது, எனவே அது சேமிக்கப்படவில்லை.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>நிர்வாகப் பக்கம் சந்தா ID-ஐக் காட்டவில்லை. நிர்வாக URL சேமிக்கப்படவில்லை.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

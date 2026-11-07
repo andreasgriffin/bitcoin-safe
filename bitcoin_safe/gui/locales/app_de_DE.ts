@@ -3312,9 +3312,9 @@ Standort nicht verfügbar.</translation>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Die zuletzt gesendeten Nachrichten werden
-von diesen Peers über das Bitcoin-Netzwerk empfangen.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>Kürzlich gesendete Nachrichten werden&lt;br&gt;von diesen Peers über das Bitcoin-Netzwerk empfangen.&lt;br&gt;Aktuelle Gesamtempfangsrate: {rate:.2f} Transaktionen/s</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3804,13 +3804,13 @@ Sie können zu Testnet wechseln, um {app_name} zu testen, ohne echte Bitcoin zu 
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>Monatlich</translation>
+			<source>Check subscription</source>
+			<translation>Abonnement prüfen</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>Kostenlose Testphase starten / Bestehendes Abonnement abrufen</translation>
+			<source>Start free trial</source>
+			<translation>Kostenlose Testphase starten</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3819,13 +3819,18 @@ Sie können zu Testnet wechseln, um {app_name} zu testen, ohne echte Bitcoin zu 
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>Jährlich</translation>
+			<source>month</source>
+			<translation>Monat</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>Jahr</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4025,6 +4030,26 @@ Sie können zu Testnet wechseln, um {app_name} zu testen, ohne echte Bitcoin zu 
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>Dieses Plugin kann nicht gelöscht werden.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>Der Herausgeber dieser Quelle (Schlüssel {fingerprint}) kann Plugins bereitstellen, die mit vollständigem Zugriff auf diese Wallet ausgeführt werden, einschließlich ihrer Labels, Adressen und Transaktionen. Dieser Zugriff kann auch durch zukünftige Updates bestehen bleiben. Vertraue nur Herausgebern, die du kennst.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>Vertrauen und hinzufügen</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>Dieser Plugin-Quelle vertrauen?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>unbekannt</translation>
 		</message>
 	</context>
 	<context>
@@ -5821,13 +5846,13 @@ txid:outpoint ein</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>Datei importieren</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>Transaktion konnte nicht gesendet werden</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>Ungültige Signaturen</translation>
+			<source>Import file</source>
+			<translation>Datei importieren</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6681,6 +6706,12 @@ Möchten Sie trotzdem senden?</translation>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;Empfangen: {rate:.2f} Transaktionen/s</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>Bitcoin-Knoten</translation>
 		</message>
@@ -6718,10 +6749,8 @@ Möchten Sie trotzdem senden?</translation>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-Land: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;Land: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8234,53 +8263,6 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>Neue Empfangsadressen aus Ihrem Wallet erstellen.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>Vollständiger Lese- und Schreibzugriff auf diese Wallet und Kategorien.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>Voller Lese- und Schreibzugriff auf dieses Wallet, einschließlich Salden, Transaktionen und UTXOs.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>Lesen und Aktualisieren der Labels und Kategorien Ihres Wallets.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>Lesen des Wallet-Deskriptors (öffentliche Schlüsselstruktur, Pfade).</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>Abonnieren Sie Wallet-Aktivitätsereignisse wie neue Transaktionen oder Blockchain-Synchronisierung.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>Abonnieren von Wallet-Aktivitätsereignissen wie neuen Transaktionen oder Blockchain-Synchronisation. Ermöglicht außerdem das Öffnen von Transaktionen und PSBTs.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>Unbekannte Beschreibung</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>Anzeigen der Multisig-Schwellenwertkonfiguration (m-of-n) des Wallets.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8432,13 +8414,8 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>Der Kauf der kostenlosen Testversion hat keine Verwaltungs-Nutzdaten zurückgegeben.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>Der Kauf der kostenlosen Testversion hat keine Sitzung zurückgegeben.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>Beim Kauf der kostenlosen Testphase wurde keine Verwaltungs-URL zurückgegeben.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8457,23 +8434,18 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>Abonnement verwalten</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>Verwaltungs-URL</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>Verwaltungs-URL gespeichert.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>Es wurde noch kein Abonnement aktiviert.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>Es wurde noch kein Abonnement aktiviert.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>Für diese Wallet wurde kein Abonnement gefunden.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8512,6 +8484,16 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>Abonnementprüfung fehlgeschlagen.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>Übertragung des Abonnements fehlgeschlagen.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>Abonnementerinnerungen</translation>
 		</message>
@@ -8539,16 +8521,6 @@ Klicken Sie hier, um mehr zu erfahren.</translation>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>Zeitüberschreitung bei der Aktivierung der kostenlosen Testversion.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>Die Verwaltungs-URL gehört zu einer anderen Abonnement-ID und wurde nicht gespeichert.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>Die Verwaltungsseite stellt keine Abonnement-ID bereit. Die Verwaltungs-URL wurde nicht gespeichert.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

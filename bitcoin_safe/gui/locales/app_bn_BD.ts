@@ -3296,8 +3296,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>সম্প্রতি সম্প্রচারিত বার্তাগুলি Bitcoin নেটওয়ার্কের মাধ্যমে এই পিয়ারগুলো থেকে গ্রহণ করা হয়।</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>সম্প্রতি সম্প্রচারিত বার্তাগুলো বিটকয়েন নেটওয়ার্কের মাধ্যমে&lt;br&gt;এই পিয়ারগুলো থেকে গ্রহণ করা হয়।&lt;br&gt;বর্তমান মোট গ্রহণের হার: {rate:.2f} লেনদেন/সেকেন্ড</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3781,13 +3782,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>মাসিক</translation>
+			<source>Check subscription</source>
+			<translation>সাবস্ক্রিপশন যাচাই করুন</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>বিনামূল্যে ট্রায়াল শুরু করুন / বিদ্যমান সাবস্ক্রিপশন পুনরুদ্ধার করুন</translation>
+			<source>Start free trial</source>
+			<translation>বিনামূল্যে ট্রায়াল শুরু করুন</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3796,13 +3797,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>বার্ষিক</translation>
+			<source>month</source>
+			<translation>মাস</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>বছর</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4002,6 +4008,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>এই প্লাগইনটি মুছে ফেলা যাবে না।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>এই উৎসের প্রকাশক (কী {fingerprint}) এমন প্লাগইন সরবরাহ করতে পারে, যা এই ওয়ালেটের লেবেল, ঠিকানা ও লেনদেনসহ সবকিছুতে পূর্ণ প্রবেশাধিকার নিয়ে কাজ করে এবং ভবিষ্যতের আপডেটের মাধ্যমেও এই প্রবেশাধিকার বজায় রাখতে পারে। শুধুমাত্র আপনার পরিচিত প্রকাশকদের বিশ্বাস করুন।</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>বিশ্বাস করুন এবং যোগ করুন</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>এই প্লাগইন উৎসকে কি বিশ্বাস করবেন?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>অজানা</translation>
 		</message>
 	</context>
 	<context>
@@ -5784,13 +5810,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>ফাইল ইম্পোর্ট করুন</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>লেনদেন সম্প্রচার করা যায়নি</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>অবৈধ স্বাক্ষরসমূহ</translation>
+			<source>Import file</source>
+			<translation>ফাইল ইম্পোর্ট করুন</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6641,6 +6667,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;গৃহীত: {rate:.2f} লেনদেন/সেকেন্ড</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>Bitcoin নোড</translation>
 		</message>
@@ -6678,10 +6710,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-দেশ: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;দেশ: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8182,53 +8212,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>আপনার wallet থেকে নতুন receiving address তৈরি করুন।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>এই ওয়ালেট এবং ক্যাটাগরিগুলিতে পূর্ণ পড়া ও লেখার অ্যাক্সেস।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>এই wallet-এর পূর্ণ read এবং write access, যার মধ্যে balance, transaction, এবং UTXO অন্তর্ভুক্ত।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>আপনার wallet-এর label এবং category পড়ুন ও আপডেট করুন।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>wallet-এর descriptor (public key structure, paths) পড়ুন।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>নতুন লেনদেন বা ব্লকচেইন সিঙ্কের মতো ওয়ালেট কার্যকলাপের ইভেন্টে সাবস্ক্রাইব করুন।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>wallet activity event-এ subscribe করুন, যেমন নতুন transaction বা blockchain sync। এছাড়াও transaction এবং PSBT খোলার সুবিধা সক্রিয় করে।</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>অজানা বিবরণ</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>wallet-এর multisig threshold (m-of-n) configuration দেখুন।</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8380,13 +8363,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>ফ্রি-ট্রায়াল ক্রয় কোনো ব্যবস্থাপনা payload ফেরত দেয়নি।</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>ফ্রি-ট্রায়াল ক্রয় কোনো সেশন ফেরত দেয়নি।</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>বিনামূল্যে ট্রায়াল কেনার পর ব্যবস্থাপনার URL পাওয়া যায়নি।</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8405,23 +8383,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>সাবস্ক্রিপশন পরিচালনা করুন</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>ব্যবস্থাপনা URL</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>ব্যবস্থাপনা URL সংরক্ষিত হয়েছে।</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>এখনও কোনো সাবস্ক্রিপশন সক্রিয় করা হয়নি।</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>এখনও কোনো সাবস্ক্রিপশন সক্রিয় করা হয়নি।</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>এই ওয়ালেটের জন্য কোনো সাবস্ক্রিপশন পাওয়া যায়নি।</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8460,6 +8433,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>সাবস্ক্রিপশন যাচাই ব্যর্থ হয়েছে।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>সাবস্ক্রিপশন স্থানান্তর ব্যর্থ হয়েছে।</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>সাবস্ক্রিপশন রিমাইন্ডার</translation>
 		</message>
@@ -8487,16 +8470,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>ফ্রি ট্রায়াল সক্রিয়করণের সময় শেষ হয়েছে।</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>ব্যবস্থাপনা URL-টি একটি ভিন্ন সাবস্ক্রিপশন ID-এর অন্তর্ভুক্ত এবং সংরক্ষণ করা হয়নি।</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>ব্যবস্থাপনা পৃষ্ঠায় কোনো সাবস্ক্রিপশন ID দেখানো হয় না। ব্যবস্থাপনা URL সংরক্ষণ করা হয়নি।</translation>
 		</message>
 		<name>subscription</name>
 		<message>

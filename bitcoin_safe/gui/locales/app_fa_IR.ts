@@ -3301,8 +3301,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>پیام‌های اخیراً پخش‌شده از طریق شبکه بیت‌کوین از این همتایان دریافت می‌شوند.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>پیام‌های اخیراً منتشرشده از طریق شبکه بیت‌کوین&lt;br&gt;از این همتایان دریافت می‌شوند.&lt;br&gt;نرخ کل دریافت فعلی: {rate:.2f} تراکنش/ثانیه</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3790,13 +3791,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>ماهانه</translation>
+			<source>Check subscription</source>
+			<translation>بررسی اشتراک</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>شروع دوره آزمایشی رایگان / بازیابی اشتراک موجود</translation>
+			<source>Start free trial</source>
+			<translation>شروع دوره آزمایشی رایگان</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3805,13 +3806,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>سالانه</translation>
+			<source>month</source>
+			<translation>ماه</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>سال</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4011,6 +4017,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>این افزونه قابل حذف نیست.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>ناشر این منبع (کلید {fingerprint}) می‌تواند افزونه‌هایی ارائه کند که با دسترسی کامل به این کیف پول، از جمله برچسب‌ها، آدرس‌ها و تراکنش‌های آن، اجرا می‌شوند و می‌تواند این دسترسی را از طریق به‌روزرسانی‌های آینده نیز حفظ کند. فقط به ناشرانی که می‌شناسید اعتماد کنید.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>اعتماد و افزودن</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>آیا به این منبع افزونه اعتماد دارید؟</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>نامشخص</translation>
 		</message>
 	</context>
 	<context>
@@ -5797,13 +5823,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>وارد کردن فایل</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>امکان انتشار تراکنش در شبکه وجود نداشت</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>امضاهای نامعتبر</translation>
+			<source>Import file</source>
+			<translation>وارد کردن فایل</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6656,6 +6682,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;دریافت‌شده: {rate:.2f} تراکنش/ثانیه</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>نود بیت‌کوین</translation>
 		</message>
@@ -6693,10 +6725,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-کشور: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;کشور: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8202,53 +8232,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>ایجاد آدرس‌های دریافت جدید از کیف پول شما.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>دسترسی کامل خواندن و نوشتن به این کیف پول و دسته‌ها.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>دسترسی کامل خواندن و نوشتن به این کیف پول، شامل موجودی‌ها، تراکنش‌ها و UTXOها.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>خواندن و به‌روزرسانی برچسب‌ها و دسته‌بندی‌های کیف پول شما.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>خواندن توصیف‌گر کیف پول (ساختار کلید عمومی، مسیرها).</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>برای رویدادهای فعالیت کیف پول مانند تراکنش‌های جدید یا همگام‌سازی بلاکچین مشترک شوید.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>اشتراک در رویدادهای فعالیت کیف پول مانند تراکنش‌های جدید یا همگام‌سازی بلاکچین. همچنین امکان باز کردن تراکنش‌ها و PSBTها را فراهم می‌کند.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>توضیح ناشناخته</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>مشاهده پیکربندی آستانه چندامضایی (m-of-n) کیف پول.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8400,13 +8383,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>خرید آزمایش رایگان payload مدیریتی برنگرداند.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>خرید آزمایش رایگان جلسه‌ای برنگرداند.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>خرید دوره آزمایشی رایگان، نشانی URL مدیریت را برنگرداند.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8425,23 +8403,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>مدیریت اشتراک</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>نشانی اینترنتی مدیریت</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>URL مدیریت ذخیره شد.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>هنوز هیچ اشتراکی فعال نشده است.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>هنوز هیچ اشتراکی فعال نشده است.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>هیچ اشتراکی برای این کیف پول یافت نشد.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8480,6 +8453,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>بررسی اشتراک ناموفق بود.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>انتقال اشتراک ناموفق بود.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>یادآوری‌های اشتراک</translation>
 		</message>
@@ -8507,16 +8490,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>فعال‌سازی آزمایش رایگان به پایان زمان مجاز رسید.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>نشانی اینترنتی مدیریت متعلق به شناسه اشتراک دیگری است و ذخیره نشد.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>صفحه مدیریت هیچ شناسه اشتراکی ارائه نمی‌دهد. نشانی اینترنتی مدیریت ذخیره نشد.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

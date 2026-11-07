@@ -3303,8 +3303,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>Нещодавно трансльовані повідомлення отримуються від цих пірів через мережу bitcoin.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>Нещодавно передані повідомлення надходять&lt;br&gt;від цих вузлів через мережу Біткоїн.&lt;br&gt;Поточна загальна швидкість отримання: {rate:.2f} транз./с</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3792,13 +3793,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>Щомісяця</translation>
+			<source>Check subscription</source>
+			<translation>Перевірити підписку</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>Почати безкоштовний пробний період / Отримати наявну підписку</translation>
+			<source>Start free trial</source>
+			<translation>Розпочати безкоштовний пробний період</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3807,13 +3808,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>Щороку</translation>
+			<source>month</source>
+			<translation>місяць</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>рік</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4013,6 +4019,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>Цей плагін не можна видалити.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>Видавець цього джерела (ключ {fingerprint}) може поширювати плагіни, які працюють із повним доступом до цього гаманця, включно з його мітками, адресами та транзакціями, і зберігати цей доступ після майбутніх оновлень. Довіряйте лише відомим вам видавцям.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>Довіряти та додати</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>Довіряти цьому джерелу плагінів?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>невідомо</translation>
 		</message>
 	</context>
 	<context>
@@ -5800,13 +5826,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>Імпортувати файл</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>Не вдалося передати транзакцію в мережу</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>Некоректні підписи</translation>
+			<source>Import file</source>
+			<translation>Імпортувати файл</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6659,6 +6685,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;Отримано: {rate:.2f} транз./с</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>Вузол Bitcoin</translation>
 		</message>
@@ -6696,10 +6728,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-Країна: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;Країна: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8205,53 +8235,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>Створити нові адреси отримання з вашого гаманця.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>Повний доступ на читання і запис до цього гаманця та категорій.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>Повний доступ на читання та запис до цього гаманця, включно з балансами, транзакціями та UTXO.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>Читання та оновлення міток і категорій вашого гаманця.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>Читання дескриптора гаманця (структура публічного ключа, шляхи).</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>Підпишіться на події активності гаманця, як-от нові транзакції або синхронізація блокчейну.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>Підписка на події активності гаманця, такі як нові транзакції або синхронізація блокчейна. Також дозволяє відкривати транзакції та PSBT.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>Невідомий опис</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>Перегляд конфігурації порогу мультипідпису (m-of-n) гаманця.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8403,13 +8386,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>Покупка безкоштовної пробної версії не повернула керівне корисне навантаження.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>Покупка безкоштовної пробної версії не повернула сеанс.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>Під час придбання безкоштовного пробного періоду не було повернуто URL для керування підпискою.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8428,23 +8406,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>Керувати підпискою</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>URL-адреса керування</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>URL керування збережено.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>Ще не активовано жодної підписки.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>Ще не активовано жодної підписки.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>Для цього гаманця не знайдено підписки.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8483,6 +8456,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>Не вдалося перевірити підписку.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>Не вдалося перенести підписку.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>Нагадування про підписку</translation>
 		</message>
@@ -8510,16 +8493,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>Час активації безкоштовної пробної версії вичерпано.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>URL-адреса керування належить іншому ідентифікатору підписки й не була збережена.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>На сторінці керування не вказано ідентифікатор підписки. URL-адресу керування не було збережено.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

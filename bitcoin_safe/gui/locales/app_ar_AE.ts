@@ -3301,8 +3301,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>يتم استلام الرسائل التي تم بثها مؤخرًا من هؤلاء الأقران عبر شبكة البيتكوين.</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>يتم استلام الرسائل التي تم بثها مؤخرًا&lt;br&gt;من هذه العقد النظيرة عبر شبكة بيتكوين.&lt;br&gt;إجمالي معدل الاستلام الحالي: {rate:.2f} معاملة/ثانية</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3792,13 +3793,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>شهري</translation>
+			<source>Check subscription</source>
+			<translation>التحقق من الاشتراك</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>بدء الفترة التجريبية المجانية / استرداد الاشتراك الحالي</translation>
+			<source>Start free trial</source>
+			<translation>بدء التجربة المجانية</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3807,13 +3808,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>سنوي</translation>
+			<source>month</source>
+			<translation>شهر</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>سنة</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -4013,6 +4019,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>لا يمكن حذف هذا المكون الإضافي.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>يمكن لناشر هذا المصدر (المفتاح {fingerprint}) توزيع إضافات تعمل بصلاحية وصول كاملة إلى هذه المحفظة، بما في ذلك تسمياتها وعناوينها ومعاملاتها، ويمكنه الاستمرار في ذلك عبر التحديثات المستقبلية. لا تثق إلا بالناشرين الذين تعرفهم.</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>الوثوق والإضافة</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>هل تثق بمصدر الإضافات هذا؟</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>غير معروف</translation>
 		</message>
 	</context>
 	<context>
@@ -5799,13 +5825,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>استيراد ملف</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>تعذر بث المعاملة</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>التوقيعات غير صالحة</translation>
+			<source>Import file</source>
+			<translation>استيراد ملف</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6658,6 +6684,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;تم الاستلام: {rate:.2f} معاملة/ثانية</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>عقدة بيتكوين</translation>
 		</message>
@@ -6695,10 +6727,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-الدولة: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;الدولة: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8202,53 +8232,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>إنشاء عناوين استقبال جديدة من محفظتك.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>وصول كامل للقراءة والكتابة إلى هذه المحفظة والفئات.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>وصول كامل للقراءة والكتابة إلى هذه المحفظة، بما في ذلك الأرصدة والمعاملات وUTXO.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>قراءة وتحديث تسميات وفئات محفظتك.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>قراءة واصف المحفظة (بنية المفتاح العام، المسارات).</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>اشترك في أحداث نشاط المحفظة مثل المعاملات الجديدة أو مزامنة سلسلة الكتل.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>الاشتراك في أحداث نشاط المحفظة مثل المعاملات الجديدة أو مزامنة البلوكشين. كما يتيح فتح المعاملات وPSBT.</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>وصف غير معروف</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>عرض إعداد عتبة التوقيع المتعدد (m-of-n) للمحفظة.</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8400,13 +8383,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>لم تُرجع عملية شراء التجربة المجانية حمولة إدارة.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>لم تُرجع عملية شراء التجربة المجانية جلسة.</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>لم تُرجع عملية شراء التجربة المجانية رابط URL لإدارة الاشتراك.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8425,23 +8403,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>إدارة الاشتراك</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>عنوان URL للإدارة</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>تم حفظ عنوان URL للإدارة.</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>لم يتم تفعيل أي اشتراك بعد.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>لم يتم تفعيل أي اشتراك بعد.</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>لم يتم العثور على اشتراك لهذه المحفظة.</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8480,6 +8453,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>فشل التحقق من الاشتراك.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>فشل نقل الاشتراك.</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>تذكيرات الاشتراك</translation>
 		</message>
@@ -8507,16 +8490,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>انتهت مهلة تفعيل التجربة المجانية.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>ينتمي عنوان URL للإدارة إلى معرّف اشتراك مختلف ولم يتم حفظه.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>لا تعرض صفحة الإدارة معرّف اشتراك. لم يتم حفظ عنوان URL للإدارة.</translation>
 		</message>
 		<name>subscription</name>
 		<message>

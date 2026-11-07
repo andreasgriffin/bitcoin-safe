@@ -3292,8 +3292,9 @@ Location unavailable.</source>
 		<name>NetworkMapWidget</name>
 		<message>
 			<source>Recently broadcasted messages are received
-from these peers via the bitcoin network.</source>
-			<translation>ข้อความที่เพิ่งถูกเผยแพร่จะได้รับจากเพียร์เหล่านี้ผ่านเครือข่าย bitcoin</translation>
+from these peers via the bitcoin network.
+Current total receive rate: {rate:.2f} txs/s</source>
+			<translation>ข้อความที่เพิ่งเผยแพร่จะได้รับ&lt;br&gt;จากเพียร์เหล่านี้ผ่านเครือข่าย Bitcoin&lt;br&gt;อัตราการรับรวมปัจจุบัน: {rate:.2f} ธุรกรรม/วินาที</translation>
 		</message>
 		<name>NetworkMapWidget</name>
 		<message>
@@ -3777,13 +3778,13 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 	<context>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Monthly</source>
-			<translation>รายเดือน</translation>
+			<source>Check subscription</source>
+			<translation>ตรวจสอบการสมัครสมาชิก</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Start free trial / Fetch existing subscription</source>
-			<translation>เริ่มทดลองใช้ฟรี / ดึงข้อมูลการสมัครสมาชิกที่มีอยู่</translation>
+			<source>Start free trial</source>
+			<translation>เริ่มทดลองใช้ฟรี</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
@@ -3792,13 +3793,18 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>Yearly</source>
-			<translation>รายปี</translation>
+			<source>month</source>
+			<translation>เดือน</translation>
 		</message>
 		<name>PaidPluginClient</name>
 		<message>
-			<source>{price} / {duration}</source>
-			<translation>{price} / {duration}</translation>
+			<source>year</source>
+			<translation>ปี</translation>
+		</message>
+		<name>PaidPluginClient</name>
+		<message>
+			<source>{price} {currency} / {period}</source>
+			<translation>{price} {currency} / {period}</translation>
 		</message>
 	</context>
 	<context>
@@ -3998,6 +4004,26 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>This plugin cannot be deleted.</source>
 			<translation>ไม่สามารถลบปลั๊กอินนี้ได้</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+			<translation>ผู้เผยแพร่แหล่งที่มานี้ (คีย์ {fingerprint}) สามารถเผยแพร่ปลั๊กอินที่ทำงานโดยมีสิทธิ์เข้าถึงกระเป๋าเงินนี้อย่างเต็มรูปแบบ รวมถึงป้ายกำกับ ที่อยู่ และธุรกรรม และสามารถคงสิทธิ์การเข้าถึงดังกล่าวไว้ผ่านการอัปเดตในอนาคตได้ โปรดเชื่อถือเฉพาะผู้เผยแพร่ที่คุณรู้จักเท่านั้น</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust and add</source>
+			<translation>เชื่อถือและเพิ่ม</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>Trust this plugin source?</source>
+			<translation>คุณเชื่อถือแหล่งปลั๊กอินนี้หรือไม่?</translation>
+		</message>
+		<name>PluginManager</name>
+		<message>
+			<source>unknown</source>
+			<translation>ไม่ทราบ</translation>
 		</message>
 	</context>
 	<context>
@@ -5778,13 +5804,13 @@ txid:outpoint</source>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Import file</source>
-			<translation>นำเข้าไฟล์</translation>
+			<source>Could not broadcast transaction</source>
+			<translation>ไม่สามารถเผยแพร่ธุรกรรมได้</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
-			<source>Invalid Signatures</source>
-			<translation>ลายเซ็นไม่ถูกต้อง</translation>
+			<source>Import file</source>
+			<translation>นำเข้าไฟล์</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6635,6 +6661,12 @@ Do you want to broadcast anyway?</source>
 	<context>
 		<name>WorldPeerMapWidget</name>
 		<message>
+			<source>
+Received: {rate:.2f} txs/s</source>
+			<translation>&lt;br&gt;ได้รับ: {rate:.2f} ธุรกรรม/วินาที</translation>
+		</message>
+		<name>WorldPeerMapWidget</name>
+		<message>
 			<source>Bitcoin node</source>
 			<translation>โหนด Bitcoin</translation>
 		</message>
@@ -6672,10 +6704,8 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>{source}
 {endpoint_label}: {ip}
-Country: {country}</source>
-			<translation>{source}
-{endpoint_label}: {ip}
-ประเทศ: {country}</translation>
+Country: {country}{tx_rate}</source>
+			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;ประเทศ: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
@@ -8177,53 +8207,6 @@ Click here to learn more.</source>
 		</message>
 	</context>
 	<context>
-		<name>plugins</name>
-		<message>
-			<source>Create new receiving addresses from your wallet.</source>
-			<translation>สร้างที่อยู่รับใหม่จากกระเป๋าเงินของคุณ</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet and categories.</source>
-			<translation>สิทธิ์อ่านและเขียนเต็มรูปแบบสำหรับกระเป๋าเงินนี้และหมวดหมู่</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Full read and write access to this wallet, including balances, transactions, and UTXOs.</source>
-			<translation>การเข้าถึงแบบอ่านและเขียนเต็มรูปแบบสำหรับกระเป๋าเงินนี้ รวมถึงยอดคงเหลือ ธุรกรรม และ UTXO</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read and update your wallet's labels and categories.</source>
-			<translation>อ่านและอัปเดตป้ายกำกับและหมวดหมู่ของกระเป๋าเงินของคุณ</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Read the wallet's descriptor (public key structure, paths).</source>
-			<translation>อ่านตัวอธิบายกระเป๋าเงิน (โครงสร้างกุญแจสาธารณะ เส้นทาง)</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync.</source>
-			<translation>สมัครรับเหตุการณ์กิจกรรมของกระเป๋าเงิน เช่น ธุรกรรมใหม่หรือการซิงค์บล็อกเชน</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Subscribe to wallet activity events such as new transactions or blockchain sync. Also enables opening of transactions and PSBTs.</source>
-			<translation>สมัครรับเหตุการณ์กิจกรรมของกระเป๋าเงิน เช่น ธุรกรรมใหม่หรือการซิงค์บล็อกเชน รวมถึงเปิดธุรกรรมและ PSBT</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>Unknown description</source>
-			<translation>คำอธิบายที่ไม่รู้จัก</translation>
-		</message>
-		<name>plugins</name>
-		<message>
-			<source>View the wallet's multisig threshold (m-of-n) configuration.</source>
-			<translation>ดูการกำหนดค่าเกณฑ์มัลติซิก (m-of-n) ของกระเป๋าเงิน</translation>
-		</message>
-	</context>
-	<context>
 		<name>recipients</name>
 		<message>
 			<source>Address Already Used</source>
@@ -8375,13 +8358,8 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Free-trial purchase did not return a management payload.</source>
-			<translation>การซื้อทดลองใช้ฟรีไม่ได้ส่งคืนเพย์โหลดการจัดการ</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a session.</source>
-			<translation>การซื้อทดลองใช้ฟรีไม่ได้ส่งคืนเซสชัน</translation>
+			<source>Free-trial purchase did not return a management URL.</source>
+			<translation>การซื้อช่วงทดลองใช้ฟรีไม่ได้ส่งคืน URL สำหรับจัดการ</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8400,23 +8378,18 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Manage Subscription</source>
-			<translation>จัดการการสมัครสมาชิก</translation>
-		</message>
-		<name>subscription</name>
-		<message>
 			<source>Management URL</source>
 			<translation>URL การจัดการ</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>Management URL saved.</source>
-			<translation>บันทึก URL การจัดการแล้ว</translation>
+			<source>No subscription has been activated yet.</source>
+			<translation>ยังไม่มีการเปิดใช้งานการสมัครสมาชิก</translation>
 		</message>
 		<name>subscription</name>
 		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>ยังไม่มีการเปิดใช้งานการสมัครสมาชิก</translation>
+			<source>No subscription was found for this wallet.</source>
+			<translation>ไม่พบการสมัครสมาชิกสำหรับกระเป๋าเงินนี้</translation>
 		</message>
 		<name>subscription</name>
 		<message>
@@ -8455,6 +8428,16 @@ Click here to learn more.</source>
 		</message>
 		<name>subscription</name>
 		<message>
+			<source>Subscription check failed.</source>
+			<translation>การตรวจสอบการสมัครสมาชิกล้มเหลว</translation>
+		</message>
+		<name>subscription</name>
+		<message>
+			<source>Subscription move failed.</source>
+			<translation>การย้ายการสมัครสมาชิกล้มเหลว</translation>
+		</message>
+		<name>subscription</name>
+		<message>
 			<source>Subscription reminders</source>
 			<translation>การแจ้งเตือนการสมัครสมาชิก</translation>
 		</message>
@@ -8482,16 +8465,6 @@ Click here to learn more.</source>
 		<message>
 			<source>The free trial activation timed out.</source>
 			<translation>การเปิดใช้งานทดลองใช้ฟรีหมดเวลา</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management URL belongs to a different subscription ID and was not saved.</source>
-			<translation>URL การจัดการเป็นของรหัสการสมัครสมาชิกอื่นและไม่ได้รับการบันทึก</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The management page does not expose a subscription ID. The management URL was not saved.</source>
-			<translation>หน้าการจัดการไม่แสดงรหัสการสมัครสมาชิก URL การจัดการจึงไม่ได้รับการบันทึก</translation>
 		</message>
 		<name>subscription</name>
 		<message>
