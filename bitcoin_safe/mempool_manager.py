@@ -45,6 +45,7 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe.constants import MAX_FEE_RATE, MIN_RELAY_FEE
+from bitcoin_safe.mempool_data import RECOMMENDED_FEE_KEYS
 from bitcoin_safe.network_config import NetworkConfig
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.util import default_timeout
@@ -52,14 +53,6 @@ from bitcoin_safe.util import default_timeout
 from .network_utils import ProxyInfo
 
 logger = logging.getLogger(__name__)
-
-RECOMMENDED_FEE_KEYS = (
-    "fastestFee",
-    "halfHourFee",
-    "hourFee",
-    "economyFee",
-    "minimumFee",
-)
 
 feeLevels = [
     0,
