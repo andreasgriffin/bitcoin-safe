@@ -862,3 +862,11 @@ def test_send_refresh_cards_uses_shared_tx_card_helpers() -> None:
 
     history_card = fake_self.history_cards[0]
     assert history_card.header_subtitle.text() == pending_tx_subtitle(history_card, pending_txid)
+
+
+def test_send_test_second_card_explains_the_signer_combination_check() -> None:
+    fake_self = SimpleNamespace(tr=lambda text: text)
+
+    assert SendTest._card_title(fake_self, 1) == (
+        "Self-Send Test 2: Verify another combination of signing devices"
+    )
