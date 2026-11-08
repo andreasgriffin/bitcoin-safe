@@ -37,6 +37,7 @@ from urllib.parse import urljoin
 import bdkpython as bdk
 
 from bitcoin_safe.constants import MIN_RELAY_FEE
+from bitcoin_safe.mempool_data import MempoolData
 from bitcoin_safe.mempool_manager import MempoolManager, TxPrio
 from bitcoin_safe.network_config import NetworkConfig, get_mempool_url
 from bitcoin_safe.signals import SignalsMin
@@ -265,3 +266,53 @@ def test_mempool_defaults_are_normalized_and_legacy_slashless_values_still_work(
         urljoin(f"{legacy_signet_url.rstrip('/')}/", "api/v1/fees/recommended")
         == "https://mempool.space/signet/api/v1/fees/recommended"
     )
+
+
+def test_mempool_manager_handles_blockstream_testnet4_responses(monkeypatch) -> None:
+    """Blockstream testnet4 returns 404 plain-text bodies for the fee endpoints.
+
+    The fetch must keep the default fee rates and not crash ``get_prio_fee_rates``.
+    """
+    manager = MempoolManager(
+        network_config=NetworkConfig(network=bdk.Network.TESTNET4),
+        signals_min=SignalsMin(),
+        loop_in_thread=FakeLoopInThread(),
+    )
+    manager.network_config.mempool_url = "https://blockstream.info/testnet4/"
+
+    async def fake_fetch(url: str, proxies=None, timeout="default"):
+        del proxies, timeout
+        payloads = {
+            "https://blockstream.info/testnet4/api/v1/fees/mempool-blocks": 'endpoint does not exist "/mempool-blocks"',
+            "https://blockstream.info/testnet4/api/v1/fees/recommended": 'endpoint does not exist "/recommended"',
+            "https://blockstream.info/testnet4/api/mempool": {
+                "count": 5,
+                "vsize": 3873,
+                "total_fee": 6510,
+                "fee_histogram": [[1.0000855066267635, 3873]],
+            },
+        }
+        return payloads[url]
+
+    monkeypatch.setattr("bitcoin_safe.mempool_manager.fetch_from_url", fake_fetch)
+
+    asyncio.run(manager._set_data_from_mempoolspace())
+
+    assert isinstance(manager.data.recommended, dict)
+    assert manager.get_prio_fee_rates()[TxPrio.low] == float(MIN_RELAY_FEE)
+    assert manager.data.mempool_dict["count"] == 5
+
+
+def test_persisted_non_dict_recommended_fees_fall_back_to_defaults() -> None:
+    """Regression: a non-dict ``recommended`` restored from saved state crashed
+    ``get_prio_fee_rates`` with ``TypeError: string indices must be integers``.
+    """
+    data = MempoolData.from_dump({"__class__": "MempoolData", "VERSION": "0.0.0", "recommended": "<html>"})
+    manager = MempoolManager(
+        network_config=NetworkConfig(network=bdk.Network.TESTNET4, mempool_data=data),
+        signals_min=SignalsMin(),
+        loop_in_thread=FakeLoopInThread(),
+    )
+
+    assert manager.get_prio_fee_rates()[TxPrio.high] == float(MIN_RELAY_FEE)
+    assert manager.get_min_relay_fee_rate() == float(MIN_RELAY_FEE)

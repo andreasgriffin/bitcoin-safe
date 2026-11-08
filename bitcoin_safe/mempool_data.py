@@ -38,6 +38,14 @@ from bitcoin_safe.constants import MIN_RELAY_FEE
 
 logger = logging.getLogger(__name__)
 
+RECOMMENDED_FEE_KEYS = (
+    "fastestFee",
+    "halfHourFee",
+    "hourFee",
+    "economyFee",
+    "minimumFee",
+)
+
 
 class MempoolData(BaseSaveableClass):
     VERSION = "0.0.0"
@@ -54,17 +62,10 @@ class MempoolData(BaseSaveableClass):
         """Initialize instance."""
         super().__init__()
         self.mempool_blocks = mempool_blocks if mempool_blocks else self._empty_mempool_blocks()
-        self.recommended: dict[str, float] = (
-            recommended
-            if recommended
-            else {
-                "fastestFee": MIN_RELAY_FEE,
-                "halfHourFee": MIN_RELAY_FEE,
-                "hourFee": MIN_RELAY_FEE,
-                "economyFee": MIN_RELAY_FEE,
-                "minimumFee": MIN_RELAY_FEE,
-            }
-        )
+        # Persisted data may be malformed (e.g. a non-dict), so fall back to defaults unless all keys exist
+        self.recommended: dict[str, float] = {key: MIN_RELAY_FEE for key in RECOMMENDED_FEE_KEYS}
+        if isinstance(recommended, dict) and all(key in recommended for key in RECOMMENDED_FEE_KEYS):
+            self.recommended = recommended
         self.mempool_dict: dict[str, Any] = (
             mempool_dict
             if mempool_dict
