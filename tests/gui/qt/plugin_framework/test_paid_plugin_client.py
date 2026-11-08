@@ -1058,12 +1058,13 @@ def test_demo_paid_plugin_requires_active_subscription_on_mainnet(
 
 def test_management_url_fallback_dialog_shows_subscription_id(
     qapp: QApplication,
-    test_config_main_chain: UserConfig,
 ) -> None:
+    # Pure dialog test: it needs no blockchain backend, so it must not depend on the
+    # backend fixtures (which download Fulcrum from github.com when missing).
     management_url = "https://pay.bitcoin-safe.org/subscriber-portal/token"
     subscription_id = "descriptor-hash@v0.bitcoin-safe.org"
     subscription_manager = SubscriptionManager(
-        config=test_config_main_chain,
+        config=UserConfig(),
         loop_in_thread=None,
         plan_id=TEST_MONTHLY_PLAN_ID,
         subscriber_email=subscription_id,
