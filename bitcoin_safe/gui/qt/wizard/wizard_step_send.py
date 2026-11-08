@@ -209,7 +209,7 @@ class SendTest(BaseTab):
         self.refresh_cards(status_text=text)
 
     def _card_title(self, test_number: int) -> str:
-        if test_number == 1:
+        if test_number > 0:
             return self.tr("Self-Send Test {number}: Verify another combination of signing devices").format(
                 number=test_number + 1
             )
