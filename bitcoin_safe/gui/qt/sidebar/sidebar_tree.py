@@ -37,7 +37,7 @@ from pathlib import Path
 from typing import Generic, TypeAlias, TypeVar, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
-from PyQt6.QtCore import QEvent, QPoint, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QFocusEvent, QIcon, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import (
     QApplication,
@@ -73,6 +73,10 @@ logger = logging.getLogger(__name__)
 
 ColorSpec: TypeAlias = str | QColor | QPalette.ColorRole
 
+# Matches the notification bar close button: 22px square, 4px from the right edge.
+TOGGLE_BUTTON_SIZE = QSize(22, 22)
+ROW_RIGHT_MARGIN = 4
+
 
 class SidebarRow(QWidget):
     """Holds the wide sidebar button + optional square trailing buttons."""
@@ -98,7 +102,7 @@ class SidebarRow(QWidget):
 
         self.style_widget(self)
         self._layout = QHBoxLayout(self)
-        self._layout.setContentsMargins(0, 0, 0, 0)
+        self._layout.setContentsMargins(0, 0, ROW_RIGHT_MARGIN, 0)
         self._layout.setSpacing(0)
 
         # --- keep trailing buttons always visible; let main button shrink
@@ -634,6 +638,7 @@ class SidebarNode(QFrame, Generic[TT]):
             return
         self.toggle_btn = FlatSquareButton(
             (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_ArrowDown),
+            size=TOGGLE_BUTTON_SIZE,
             parent=self.header_row,
         )
         self.toggle_btn.setChecked(not self.initially_collapsed)
