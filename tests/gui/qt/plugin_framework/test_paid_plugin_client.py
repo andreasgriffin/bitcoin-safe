@@ -1097,11 +1097,12 @@ def test_management_url_fallback_dialog_shows_subscription_id(
 
 def test_candidate_management_url_is_rejected_for_different_subscriber(
     qapp: QApplication,
-    test_config_main_chain: UserConfig,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    # Mocked status check only: needs no blockchain backend, so do not depend on the
+    # backend fixtures (which download Fulcrum from github.com when missing).
     subscription_manager = SubscriptionManager(
-        config=test_config_main_chain,
+        config=UserConfig(),
         loop_in_thread=None,
         plan_id=TEST_MONTHLY_PLAN_ID,
         subscriber_email="expected@v0.bitcoin-safe.org",
