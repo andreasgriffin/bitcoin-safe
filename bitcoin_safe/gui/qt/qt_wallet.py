@@ -305,6 +305,29 @@ class ProgressSignal:
         self.signal_settext_balance_label.emit(f"Syncing wallet: {round(progress)}%  {message}")
 
 
+async def convert_to_signal(
+    coro: Callable[[], Coroutine[Any, Any, T | None]],
+    signal: SignalProtocol[[T]],
+) -> None:
+    """Forward results of coro to signal.
+
+    Module-level on purpose: a bound method would keep the QTWallet alive while the
+    bridge task runs or is cancelled on the loop thread.
+    """
+    try:
+        while True:
+            result = await coro()
+            if result is None:
+                await asyncio.sleep(0)
+                continue
+            signal.emit(result)
+            await asyncio.sleep(0)
+    except asyncio.CancelledError:
+        logger.debug(f"Cancelled bridge for {coro}")
+    except Exception:
+        logger.exception(f"Error while bridging coroutine {coro}")
+
+
 class QTWallet(QtWalletBase, BaseSaveableClass):
     VERSION = "0.3.0"
     known_classes = {
@@ -2152,26 +2175,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         loop: LoopInThread,
     ) -> None:
         """Add bridge tasks."""
-        self._client_bridge_tasks.append(loop.run_background(self._convert_to_signal(coro, signal)))
-
-    async def _convert_to_signal(
-        self,
-        coro: Callable[[], Coroutine[Any, Any, T | None]],
-        signal: SignalProtocol[[T]],
-    ) -> None:
-        """Convert to signal."""
-        try:
-            while True:
-                result = await coro()
-                if result is None:
-                    await asyncio.sleep(0)
-                    continue
-                signal.emit(result)
-                await asyncio.sleep(0)
-        except asyncio.CancelledError:
-            logger.debug(f"Cancelled bridge for {coro}")
-        except Exception:
-            logger.exception(f"Error while bridging coroutine {coro}")
+        self._client_bridge_tasks.append(loop.run_background(convert_to_signal(coro, signal)))
 
     def init_blockchain(self):
         """Init blockchain."""

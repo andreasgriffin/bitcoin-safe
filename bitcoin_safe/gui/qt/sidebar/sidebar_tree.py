@@ -37,7 +37,7 @@ from pathlib import Path
 from typing import Generic, TypeAlias, TypeVar, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
-from PyQt6.QtCore import QEvent, QPoint, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QPoint, QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QColor, QFocusEvent, QIcon, QKeySequence, QPalette, QShortcut
 from PyQt6.QtWidgets import (
     QApplication,
@@ -73,6 +73,10 @@ logger = logging.getLogger(__name__)
 
 ColorSpec: TypeAlias = str | QColor | QPalette.ColorRole
 
+# Matches the notification bar close button: 22px square, 4px from the right edge.
+TOGGLE_BUTTON_SIZE = QSize(22, 22)
+ROW_RIGHT_MARGIN = 4
+
 
 class SidebarRow(QWidget):
     """Holds the wide sidebar button + optional square trailing buttons."""
@@ -98,7 +102,7 @@ class SidebarRow(QWidget):
 
         self.style_widget(self)
         self._layout = QHBoxLayout(self)
-        self._layout.setContentsMargins(0, 0, 0, 0)
+        self._layout.setContentsMargins(0, 0, ROW_RIGHT_MARGIN, 0)
         self._layout.setSpacing(0)
 
         # --- keep trailing buttons always visible; let main button shrink
@@ -553,6 +557,7 @@ class SidebarNode(QFrame, Generic[TT]):
 
         if self.toggle_btn:
             self.toggle_btn.setChecked(self.expanded)
+            self.toggle_btn.setIcon(self._arrow_icon(expanded=self.expanded))
 
         if self.parent_node and self.auto_collapse_siblings and self.expanded:
             for sibling in self.parent_node.child_nodes:
@@ -633,12 +638,18 @@ class SidebarNode(QFrame, Generic[TT]):
         if self.toggle_btn:
             return
         self.toggle_btn = FlatSquareButton(
-            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_ArrowDown),
+            self._arrow_icon(expanded=not self.initially_collapsed),
+            size=TOGGLE_BUTTON_SIZE,
             parent=self.header_row,
         )
         self.toggle_btn.setChecked(not self.initially_collapsed)
         self.toggle_btn.clicked.connect(self._toggle_children)
         self.header_row.add_square_button(self.toggle_btn)
+
+    def _arrow_icon(self, expanded: bool) -> QIcon:
+        """Down arrow when expanded, right arrow when collapsed."""
+        pixmap = QStyle.StandardPixmap.SP_ArrowDown if expanded else QStyle.StandardPixmap.SP_ArrowRight
+        return (self.style() or QStyle()).standardIcon(pixmap)
 
     def _sync_toggle_button_visibility(self) -> None:
         """Sync toggle button visibility."""
@@ -670,6 +681,8 @@ class SidebarNode(QFrame, Generic[TT]):
         self.header_row.style_widget(self.header_row)
         self.header_btn.refresh_icon()
         self.header_btn.update()
+        if self.toggle_btn:
+            self.toggle_btn.setIcon(self._arrow_icon(expanded=self.expanded))
 
         for child in self.child_nodes:
             child.refresh_style()
