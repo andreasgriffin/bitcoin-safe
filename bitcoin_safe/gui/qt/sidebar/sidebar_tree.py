@@ -557,6 +557,7 @@ class SidebarNode(QFrame, Generic[TT]):
 
         if self.toggle_btn:
             self.toggle_btn.setChecked(self.expanded)
+            self.toggle_btn.setIcon(self._arrow_icon(expanded=self.expanded))
 
         if self.parent_node and self.auto_collapse_siblings and self.expanded:
             for sibling in self.parent_node.child_nodes:
@@ -637,13 +638,18 @@ class SidebarNode(QFrame, Generic[TT]):
         if self.toggle_btn:
             return
         self.toggle_btn = FlatSquareButton(
-            (self.style() or QStyle()).standardIcon(QStyle.StandardPixmap.SP_ArrowDown),
+            self._arrow_icon(expanded=not self.initially_collapsed),
             size=TOGGLE_BUTTON_SIZE,
             parent=self.header_row,
         )
         self.toggle_btn.setChecked(not self.initially_collapsed)
         self.toggle_btn.clicked.connect(self._toggle_children)
         self.header_row.add_square_button(self.toggle_btn)
+
+    def _arrow_icon(self, expanded: bool) -> QIcon:
+        """Down arrow when expanded, right arrow when collapsed."""
+        pixmap = QStyle.StandardPixmap.SP_ArrowDown if expanded else QStyle.StandardPixmap.SP_ArrowRight
+        return (self.style() or QStyle()).standardIcon(pixmap)
 
     def _sync_toggle_button_visibility(self) -> None:
         """Sync toggle button visibility."""
@@ -675,6 +681,8 @@ class SidebarNode(QFrame, Generic[TT]):
         self.header_row.style_widget(self.header_row)
         self.header_btn.refresh_icon()
         self.header_btn.update()
+        if self.toggle_btn:
+            self.toggle_btn.setIcon(self._arrow_icon(expanded=self.expanded))
 
         for child in self.child_nodes:
             child.refresh_style()
