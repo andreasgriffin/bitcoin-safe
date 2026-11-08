@@ -53,16 +53,29 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="2.3.0" date="2026-11-05">
+    <release version="2.3.0" date="2026-11-07">
       <description>
+        <p>📅 Schedule plugin</p>
+        <p>For businesses and organizations: pay employees or manage any regular or future obligation with a fixed amount, in any currency.</p>
         <ul>
-          <li>Added new plugins:</li>
+          <li>📊 Keep track of future payouts</li>
+          <li>⏰ Get notified when a payment is overdue</li>
+          <li>⚡ Batch payouts with a single click</li>
+          <li>💾 Save and manage recipient addresses (with optional PGP-signed messages)</li>
         </ul>
+        <p>🔔 Notifications plugin</p>
+        <p>Stay in the loop on wallet activity through the channels that work for you. Get alerts about wallet transactions, scheduled payments, and more via:</p>
         <ul>
-          <li>Schedule plugin - Get notified about wallet activity through the channels that work for you.</li>
-          <li>Notifications plugin – Receive alerts about wallet transactions, scheduled payments, and other wallet activity through webhooks, Nostr, Telegram, email, and calendars.</li>
-          <li>Transaction broadcasting made more robust, by broadcasting via other peers if the first broadcast timed out</li>
+          <li>🔗 Webhook</li>
+          <li>🟣 Nostr</li>
+          <li>💬 Telegram</li>
+          <li>📆 Calendars (CalDAV)</li>
+          <li>✉️ Email</li>
         </ul>
+        <p>🛡️ More Robust Transaction Broadcasting</p>
+        <p>Broadcasting is now more resilient — if the first broadcast times out, your transaction is automatically relayed through other peers, so your payments get through.</p>
+        <p>🔄 Faster and More Reliable Plugin Source Refresh</p>
+        <p>Plugin sources now refresh about 1 second after startup instead of much later, and downloads use a timeout scaled for proxy connections, so they no longer fail as often on slow networks.</p>
       </description>
     </release>
     <release version="2.2.1" date="2026-11-01">

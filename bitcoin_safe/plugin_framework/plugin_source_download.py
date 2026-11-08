@@ -35,7 +35,7 @@ from zipfile import ZipInfo
 
 import requests
 
-from bitcoin_safe.network_utils import ProxyInfo, RequestsGetException, default_timeout
+from bitcoin_safe.network_utils import ProxyInfo, RequestsGetException
 from bitcoin_safe.plugin_framework.external_plugin_registry_dataclasses import ExternalPluginError
 
 MAX_MANIFEST_BYTES = 1 * 1024 * 1024
@@ -46,6 +46,9 @@ MAX_ARCHIVE_MEMBERS = 10_000
 MAX_ARCHIVE_MEMBER_UNCOMPRESSED_BYTES = 100 * 1024 * 1024
 MAX_ARCHIVE_UNCOMPRESSED_BYTES = 500 * 1024 * 1024
 _DOWNLOAD_CHUNK_SIZE = 64 * 1024
+# requests applies the timeout per socket operation (connect, TLS, each read), not to the whole download.
+_DOWNLOAD_TIMEOUT_WITHOUT_PROXY_SECONDS = 30.0
+_DOWNLOAD_TIMEOUT_WITH_PROXY_SECONDS = 60.0
 
 
 def require_safe_plugin_source_url(url: str) -> None:
@@ -103,7 +106,9 @@ def _fetch_https_bytes(
         with requests.get(
             url,
             headers=headers,
-            timeout=default_timeout(proxy_info),
+            timeout=_DOWNLOAD_TIMEOUT_WITH_PROXY_SECONDS
+            if proxy_info
+            else _DOWNLOAD_TIMEOUT_WITHOUT_PROXY_SECONDS,
             proxies=proxy_info.get_requests_proxy_dict() if proxy_info else None,
             stream=True,
         ) as response:
