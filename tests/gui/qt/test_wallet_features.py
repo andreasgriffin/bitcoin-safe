@@ -733,6 +733,7 @@ def test_wallet_features_multisig(
                 qtbot=qtbot,
                 main_window=main_window,
             )
+            assert wallet_id not in main_window.wallet_functions.wallet_signals
             shutter.save(main_window)
 
         # Final screenshot after assertions.
