@@ -167,7 +167,7 @@ class DescriptorUI(QWidget):
         self.label_gap.textLabel.setText(self.tr("Scan Addresses ahead"))
         self.label_gap.set_icon_as_help(
             tooltip=self.tr(
-                "While scanning the blockchain the wallet will create additional addresses to discover transactions\nDefault 20"
+                "While scanning the blockchain the wallet will create additional addresses to discover transactions\nThe bigger the gap limit value is, the more time it will take to initial sync to complete.\nA reasonable minimum value is 20"
             )
         )
         self.box_wallet_type.setTitle(self.tr("Wallet Properties"))
