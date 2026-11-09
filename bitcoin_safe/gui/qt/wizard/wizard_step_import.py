@@ -162,20 +162,15 @@ class ImportXpubs(BaseTab):
 
     def _on_keystore_ui_changed(self) -> None:
         """Advance to the next signer when one is newly completed."""
+        completed_signers_before_update = self._completed_signers
         self.updateUi()
         if not self.keystore_uis:
             return
 
-        completed_signers = {
-            index
-            for index, keystore_ui in enumerate(self.keystore_uis.getAllTabData().values())
-            if keystore_ui.state == KeyStoreUiState.Filled
-        }
-        if not completed_signers - self._completed_signers:
-            self._completed_signers = completed_signers
+        completed_signers = self._completed_signers
+        if not completed_signers - completed_signers_before_update:
             return
 
-        self._completed_signers = completed_signers
         self.keystore_uis.collapse_all()
         next_signer = next(
             (index for index in range(self.keystore_uis.count()) if index not in completed_signers),
@@ -210,17 +205,22 @@ class ImportXpubs(BaseTab):
                 self.button_create_wallet.setFocus()
             self.button_previous.setVisible(True)
 
+        self._completed_signers = (
+            {
+                index
+                for index, keystore_ui in enumerate(self.keystore_uis.getAllTabData().values())
+                if keystore_ui.state == KeyStoreUiState.Filled
+            }
+            if self.keystore_uis
+            else set()
+        )
+
     def set_visibilities(self, should_be_visible: bool) -> None:
         """Refresh the signer cards when the step becomes active."""
         if should_be_visible:
             self._ensure_keystore_uis()
         if should_be_visible and self.keystore_uis:
             self.keystore_uis.set_keystore_ui_from_protowallet()
-            self._completed_signers = {
-                index
-                for index, keystore_ui in enumerate(self.keystore_uis.getAllTabData().values())
-                if keystore_ui.state == KeyStoreUiState.Filled
-            }
             self.set_current_signer(min(self.keystore_uis.currentIndex(), self.keystore_uis.count() - 1))
             self.keystore_uis.focus_first_unselected_brand_selector()
 
