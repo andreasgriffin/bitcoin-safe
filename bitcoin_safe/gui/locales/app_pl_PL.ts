@@ -1106,9 +1106,9 @@ Zrób kopię zapasową tego deskryptora, aby móc odzyskać środki!</translatio
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>Podczas skanowania blockchain portfel utworzy dodatkowe adresy, aby wykryć transakcje
-Domyślnie 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>Podczas skanowania łańcucha bloków portfel będzie tworzyć dodatkowe adresy w celu wykrycia transakcjinIm większa wartość limitu odstępu, tym więcej czasu zajmie ukończenie początkowej synchronizacji.nRozsądna minimalna wartość to 20</translation>
 		</message>
 	</context>
 	<context>

@@ -1103,8 +1103,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>هنگام اسکن بلاکچین، کیف پول آدرس‌های اضافی برای یافتن تراکنش‌ها ایجاد می‌کند پیش‌فرض 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>هنگام اسکن بلاک‌چین، کیف پول آدرس‌های بیشتری برای شناسایی تراکنش‌ها ایجاد می‌کندnهرچه مقدار محدودیت فاصله بیشتر باشد، تکمیل همگام‌سازی اولیه زمان بیشتری می‌برد.nحداقل مقدار منطقی 20 است</translation>
 		</message>
 	</context>
 	<context>

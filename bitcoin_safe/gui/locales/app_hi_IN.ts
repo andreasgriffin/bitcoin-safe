@@ -1101,8 +1101,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>ब्लॉकचेन को स्कैन करते समय वॉलेट लेनदेन खोजने के लिए अतिरिक्त पते बनाएगा डिफ़ॉल्ट 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>ब्लॉकचेन को स्कैन करते समय वॉलेट लेनदेन खोजने के लिए अतिरिक्त पते बनाएगाnगैप लिमिट का मान जितना अधिक होगा, प्रारंभिक सिंक्रोनाइज़ेशन पूरा होने में उतना ही अधिक समय लगेगा।nएक उचित न्यूनतम मान 20 है</translation>
 		</message>
 	</context>
 	<context>

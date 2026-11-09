@@ -1101,8 +1101,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>Blockchain ကို စကန်ဖ်လုပ်စဉ်တွင် လ財布သည် ငွေလွှဲများကို ရှာဖွေရန် နောက်ထပ်လိပ်စာများကို ဖန်တီးမည် မူလသတ်မှတ် 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>ဘလော့ခ်ချိန်းကို စကင်ဖတ်နေစဉ် Wallet သည် ငွေလွှဲမှုများကို ရှာဖွေရန် လိပ်စာအသစ်များ ထပ်မံဖန်တီးပါမည်nGap Limit တန်ဖိုး မြင့်မားလေလေ ကနဦး ထပ်တူပြုခြင်း ပြီးစီးရန် အချိန်ပိုကြာလေလေ ဖြစ်ပါသည်။nသင့်လျော်သော အနည်းဆုံးတန်ဖိုးမှာ 20 ဖြစ်ပါသည်</translation>
 		</message>
 	</context>
 	<context>

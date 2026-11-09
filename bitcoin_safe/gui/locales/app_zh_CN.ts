@@ -1105,9 +1105,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>在扫描区块链时，钱包将创建额外的地址以发现交易
-默认：20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>在扫描区块链时，钱包将创建额外的地址以发现交易n地址间隔限制值越大，完成初始同步所需的时间就越长。n建议的最小值为 20</translation>
 		</message>
 	</context>
 	<context>

@@ -1104,9 +1104,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>பிளாக்செயினை வருடு செய்யும் போது பணப்பையானது பரிவர்த்தனைகளைக் கண்டறிய கூடுதல் முகவரிகளை உருவாக்கும் 
-இயல்புநிலை 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>பிளாக்செயினை ஸ்கேன் செய்யும்போது, பரிவர்த்தனைகளைக் கண்டறிய வாலட் கூடுதல் முகவரிகளை உருவாக்கும்nஇடைவெளி வரம்பு மதிப்பு அதிகமாக இருந்தால், ஆரம்ப ஒத்திசைவு முடிவடைய அதிக நேரம் எடுக்கும்.nநியாயமான குறைந்தபட்ச மதிப்பு 20 ஆகும்</translation>
 		</message>
 	</context>
 	<context>

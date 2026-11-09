@@ -1103,8 +1103,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>Ao escanear a blockchain, a carteira criará endereços adicionais para descobrir transações. Padrão: 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>Durante a varredura da blockchain, a carteira criará endereços adicionais para descobrir transaçõesnQuanto maior o valor do limite de intervalo, mais tempo levará para concluir a sincronização inicial.nUm valor mínimo razoável é 20</translation>
 		</message>
 	</context>
 	<context>

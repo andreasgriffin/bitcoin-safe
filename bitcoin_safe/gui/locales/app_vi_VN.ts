@@ -1103,9 +1103,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>Trong khi quét blockchain, ví sẽ tạo thêm địa chỉ để phát hiện giao dịch
-Mặc định 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>Trong quá trình quét blockchain, ví sẽ tạo thêm các địa chỉ để tìm kiếm giao dịchnGiá trị giới hạn khoảng trống càng lớn thì quá trình đồng bộ hóa ban đầu càng mất nhiều thời gian để hoàn tất.nGiá trị tối thiểu hợp lý là 20</translation>
 		</message>
 	</context>
 	<context>
