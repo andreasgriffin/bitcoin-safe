@@ -96,6 +96,31 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_QR_SIZE = 50
+MAX_QR_SIZE = 177
+QR_VERSION_SIZE_STEP = 4
+BBQR_CAPACITY_ERROR = "Cannot make it fit"
+
+
+def generate_fragments_for_qr(data: Data, qr_export_type: QrExportType) -> list[str]:
+    """Generate QR fragments, increasing BBQR density only when required."""
+    qr_sizes = [DEFAULT_QR_SIZE]
+    if qr_export_type.name == QrExportTypes.bbqr.name:
+        qr_sizes.extend(range(53, MAX_QR_SIZE + 1, QR_VERSION_SIZE_STEP))
+
+    for max_qr_size in qr_sizes:
+        try:
+            return UnifiedEncoder.generate_fragments_for_qr(
+                data=data,
+                qr_export_type=qr_export_type,
+                max_qr_size=max_qr_size,
+            )
+        except ValueError as error:
+            if str(error) != BBQR_CAPACITY_ERROR or max_qr_size == qr_sizes[-1]:
+                raise
+
+    raise RuntimeError("QR fragment generation exhausted all supported sizes")
+
 
 class DataGroupBox(QGroupBox):
     def __init__(self, title: str | None = None, parent: QWidget | None = None, data=None) -> None:
@@ -323,14 +348,10 @@ class FileToolButton(QToolButton):
 
         filepath = filepath if filepath else Path.home() / default_filename
 
-        qr_fragments = UnifiedEncoder.generate_fragments_for_qr(
-            data=self.data, qr_export_type=QrExportTypes.bbqr
-        )
+        qr_fragments = generate_fragments_for_qr(data=self.data, qr_export_type=QrExportTypes.bbqr)
         qr_images = [QRGenerator.create_qr_PILimage(fragment) for fragment in qr_fragments]
 
-        ur_fragments = UnifiedEncoder.generate_fragments_for_qr(
-            data=self.data, qr_export_type=QrExportTypes.ur
-        )
+        ur_fragments = generate_fragments_for_qr(data=self.data, qr_export_type=QrExportTypes.ur)
         ur_qr_images = [QRGenerator.create_qr_PILimage(fragment) for fragment in ur_fragments]
 
         pdf = DataExportPDF(lang_code=QLocale().name())
@@ -988,9 +1009,9 @@ class ExportDataSimple(HorizontalImportExportGroups):
         elif qr_export_type.name in [SignMessageRequestQrExportTypes.bbqr.name]:
             # this is necessary, because SignMessageRequestQrExportTypes.bbqr != QrExportTypes.bbqr
             assert data.data_type in [DataType.SignMessageRequest], "Wrong datatype"
-            return UnifiedEncoder.generate_fragments_for_qr(data=data, qr_export_type=QrExportTypes.bbqr)
+            return generate_fragments_for_qr(data=data, qr_export_type=QrExportTypes.bbqr)
         else:
-            return UnifiedEncoder.generate_fragments_for_qr(data=data, qr_export_type=qr_export_type)
+            return generate_fragments_for_qr(data=data, qr_export_type=qr_export_type)
 
     def lazy_load_qr(self, data: Data) -> None:
         """Lazy load qr."""
