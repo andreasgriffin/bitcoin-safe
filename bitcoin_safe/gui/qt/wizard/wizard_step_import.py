@@ -42,6 +42,7 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.gui.qt.descriptor_ui import KeyStoreUIs
+from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUiState
 from bitcoin_safe.gui.qt.step_progress_bar import TutorialWidget
 
 from ..util import MessageType, caught_exception_message
@@ -57,6 +58,7 @@ class ImportXpubs(BaseTab):
             refs=refs, loop_in_thread=loop_in_thread, show_previous_step_button=show_previous_step_button
         )
         self.keystore_uis: KeyStoreUIs | None = None
+        self._completed_signers: set[int] = set()
 
     def _ensure_keystore_uis(self) -> None:
         """Create the signer UI only when the import step is actually needed."""
@@ -69,7 +71,7 @@ class ImportXpubs(BaseTab):
             signals_min=self.refs.qtwalletbase.signals,
             loop_in_thread=self.loop_in_thread,
         )
-        self.keystore_uis.signal_ui_changed.connect(self.updateUi)
+        self.keystore_uis.signal_ui_changed.connect(self._on_keystore_ui_changed)
         self.keystore_uis.signal_on_tab_change.connect(self.updateUi)
         self.widget_layout.addWidget(self.keystore_uis)
         self.set_current_signer(0)
@@ -158,6 +160,31 @@ class ImportXpubs(BaseTab):
             return False
         return not self.keystore_uis.has_blocking_messages()
 
+    def _on_keystore_ui_changed(self) -> None:
+        """Advance to the next signer when one is newly completed."""
+        completed_signers_before_update = self._completed_signers
+        self.updateUi()
+        if not self.keystore_uis:
+            return
+
+        completed_signers = self._completed_signers
+        if not completed_signers - completed_signers_before_update:
+            return
+
+        self.keystore_uis.collapse_all()
+        next_signer = next(
+            (index for index in range(self.keystore_uis.count()) if index not in completed_signers),
+            None,
+        )
+        if next_signer is None:
+            self.button_create_wallet.setFocus()
+            return
+
+        self.set_current_signer(next_signer)
+        next_keystore_ui = self.keystore_uis.getCurrentTabData()
+        if next_keystore_ui:
+            next_keystore_ui.combo_brand.setFocus()
+
     def updateUi(self) -> None:
         """UpdateUi."""
         if self.is_closed:
@@ -177,6 +204,16 @@ class ImportXpubs(BaseTab):
             if self.can_go_to_next_step():
                 self.button_create_wallet.setFocus()
             self.button_previous.setVisible(True)
+
+        self._completed_signers = (
+            {
+                index
+                for index, keystore_ui in enumerate(self.keystore_uis.getAllTabData().values())
+                if keystore_ui.state == KeyStoreUiState.Filled
+            }
+            if self.keystore_uis
+            else set()
+        )
 
     def set_visibilities(self, should_be_visible: bool) -> None:
         """Refresh the signer cards when the step becomes active."""

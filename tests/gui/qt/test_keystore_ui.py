@@ -575,3 +575,34 @@ def test_expanded_keystore_ui_collapses_on_header_click(qtbot: QtBot, loop_in_th
 
     assert not widget.is_expanded
     assert not widget.left_widget.isVisible()
+
+
+def test_keystore_ui_details_menu_toggles_card(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+
+    assert widget.action_toggle_details.text() == "Hide details"
+
+    widget.action_toggle_details.trigger()
+
+    assert not widget.is_expanded
+    assert widget.action_toggle_details.text() == "Show details"
+
+    widget.action_toggle_details.trigger()
+
+    assert widget.is_expanded
+    assert widget.action_toggle_details.text() == "Hide details"
+
+
+def test_keystore_ui_learn_more_menu_opens_signer_guide(
+    qtbot: QtBot, loop_in_thread: LoopInThread, monkeypatch
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+    opened_urls: list[str] = []
+    monkeypatch.setattr("bitcoin_safe.gui.qt.keystore_ui.webopen", opened_urls.append)
+
+    widget.action_learn_more_about_signer.trigger()
+
+    assert HardwareSigners.krux_diy.info_url
+    assert opened_urls == [HardwareSigners.krux_diy.info_url]

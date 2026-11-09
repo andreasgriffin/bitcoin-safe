@@ -41,6 +41,7 @@ from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
 from bitcoin_safe_lib.gui.qt.util import question_dialog
+from bitcoin_safe_lib.util_os import webopen
 from bitcoin_usb.address_types import AddressType, SimplePubKeyProvider
 from bitcoin_usb.dialogs import AutoScanMode
 from bitcoin_usb.seed_tools import derive
@@ -291,6 +292,10 @@ class KeyStoreUI(CardBase):
         self.button_menu.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
         self.menu_button_menu = Menu(self.button_menu)
         self.button_menu.setMenu(self.menu_button_menu)
+        self.action_toggle_details = self.menu_button_menu.add_action(slot=self.toggle_details)
+        self.action_learn_more_about_signer = self.menu_button_menu.add_action(
+            slot=self.learn_more_about_signer
+        )
         self.action_device_instructions = self.menu_button_menu.add_action(slot=self.show_device_instructions)
         self.action_set_account_number = self.menu_button_menu.add_action(
             slot=self.show_set_account_number_dialog
@@ -760,6 +765,18 @@ class KeyStoreUI(CardBase):
             return
         super().collapse()
         self.updateUi()
+
+    def toggle_details(self) -> None:
+        """Toggle the visibility of the signer details."""
+        if self.is_expanded:
+            self.collapse()
+        else:
+            self.expand()
+
+    def learn_more_about_signer(self) -> None:
+        """Open the selected signer's guide."""
+        _, url = self._device_type_help_target()
+        webopen(url)
 
     def _update_header_clickability(self) -> None:
         self._update_header_cursor()
@@ -1253,6 +1270,10 @@ class KeyStoreUI(CardBase):
             self.combo_model.setItemText(0, self.tr("Select Model"))
         self.button_confirm_signer.setText(self.tr("OK"))
         self.button_device_instructions.setText(self.tr("Device instructions"))
+        self.action_toggle_details.setText(
+            self.tr("Hide details") if self.is_expanded else self.tr("Show details")
+        )
+        self.action_learn_more_about_signer.setText(self.tr("Learn more about this signer"))
         self.action_device_instructions.setText(self.tr("Device instructions"))
         self.button_register.setText(self.tr("Register"))
         self.action_set_account_number.setText(self.tr("Set account number..."))
