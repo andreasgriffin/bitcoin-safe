@@ -1988,6 +1988,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>ซ่อนรายละเอียด</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>ไม่สนใจคำเตือนและดำเนินการต่อ</translation>
 		</message>
@@ -2015,6 +2020,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>เรียนรู้เพิ่มเติมเกี่ยวกับ &lt;a href="{url}"&gt;{device}&lt;/a&gt;</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>เรียนรู้เพิ่มเติมเกี่ยวกับอุปกรณ์ลงลายมือชื่อนี้</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2115,6 +2125,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set account number...</source>
 			<translation>ตั้งค่าหมายเลขบัญชี...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>แสดงรายละเอียด</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4853,6 +4868,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>การทดสอบส่งให้ตัวเอง {number}: ตรวจสอบการใช้อุปกรณ์ลงลายมือชื่อร่วมกันในรูปแบบอื่น</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>ลงนามและเผยแพร่ธุรกรรมด้านล่าง</translation>
 		</message>
@@ -6705,7 +6725,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;ประเทศ: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;ประเทศ: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>

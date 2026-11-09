@@ -1996,6 +1996,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>விவரங்களை மறை</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>எச்சரிக்கையைப் புறக்கணித்து தொடரவும்</translation>
 		</message>
@@ -2023,6 +2028,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>&lt;a href="{url}"&gt;{device}&lt;/a&gt; பற்றி மேலும் அறிக.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>இந்தக் கையொப்பமிடும் சாதனத்தைப் பற்றி மேலும் அறிக</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2123,6 +2133,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set account number...</source>
 			<translation>கணக்கு எண்ணை அமைக்கவும்...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>விவரங்களைக் காட்டு</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4888,6 +4903,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>சுய அனுப்புதல் சோதனை {number}: கையொப்பமிடும் சாதனங்களின் மற்றொரு சேர்க்கையைச் சரிபார்க்கவும்</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>கீழே பரிவர்த்தனையில் கையொப்பமிட்டு ஒளிபரப்பவும்.</translation>
 		</message>
@@ -6748,7 +6768,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;நாடு: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;நாடு: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>

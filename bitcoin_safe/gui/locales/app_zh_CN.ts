@@ -1997,6 +1997,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>隐藏详情</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>忽略警告并继续</translation>
 		</message>
@@ -2024,6 +2029,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>了解有关 &lt;a href="{url}"&gt;{device}&lt;/a&gt; 详情。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>了解有关此签名设备的更多信息</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2124,6 +2134,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set account number...</source>
 			<translation>设置账户编号...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>显示详情</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4881,6 +4896,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Self-Send Test {number}</source>
 			<translation>自发送测试 {number}</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>自发送测试 {number}：验证另一种签名设备组合</translation>
 		</message>
 		<name>SendTest</name>
 		<message>

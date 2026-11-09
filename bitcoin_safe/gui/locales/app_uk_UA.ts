@@ -1991,6 +1991,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>Приховати подробиці</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>Ігнорувати попередження та продовжити</translation>
 		</message>
@@ -2018,6 +2023,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>Дізнайтеся більше про &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>Дізнатися більше про цей пристрій підпису</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2118,6 +2128,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set account number...</source>
 			<translation>Установити номер облікового запису...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>Показати подробиці</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4873,6 +4888,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>Тест надсилання самому собі {number}: Перевірити іншу комбінацію пристроїв підпису</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>Підпишіть і транслюйте транзакцію нижче.</translation>
 		</message>
@@ -6729,7 +6749,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;Країна: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;Країна: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>

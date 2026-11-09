@@ -1992,6 +1992,11 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>Ẩn chi tiết</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>Bỏ qua cảnh báo và tiếp tục</translation>
 		</message>
@@ -2019,6 +2024,11 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>Tìm hiểu thêm về &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>Tìm hiểu thêm về thiết bị ký này</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2119,6 +2129,11 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		<message>
 			<source>Set account number...</source>
 			<translation>Đặt số tài khoản...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>Hiển thị chi tiết</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4873,6 +4888,11 @@ Nếu bạn sai ở đây, tiền của bạn sẽ mất!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>Kiểm tra tự gửi {number}: Xác minh tổ hợp thiết bị ký khác</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>Ký và phát giao dịch bên dưới.</translation>
 		</message>
@@ -6730,7 +6750,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;Quốc gia: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;Quốc gia: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
