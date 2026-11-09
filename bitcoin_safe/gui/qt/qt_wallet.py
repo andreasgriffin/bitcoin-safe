@@ -2456,6 +2456,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     def close(self) -> bool:
         # crucial is to explicitly close everything that has a wallet attached
         """Close."""
+        wallet_signals = self.wallet_signals
         self.stop_sync_timer()
         self._cancel_sync_task()
         self._cancel_client_tasks()
@@ -2475,6 +2476,8 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.tabs.clearChildren()
         self.tabs.close()
         self.wallet.close()
-        SignalTools.disconnect_all_signals_from(self.wallet_signals)
+        SignalTools.disconnect_all_signals_from(wallet_signals)
         self.setParent(None)  #  THIS made it that the qt wallet is destroyed
-        return super().close()
+        close_result = super().close()
+        self.wallet_functions.remove_wallet_signals(self.wallet.id, wallet_signals)
+        return close_result

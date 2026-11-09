@@ -332,3 +332,8 @@ class WalletFunctions:
             self.wallet_signals[new_id] = wallet_signals
         self.get_wallets.rename_slot(old_id, new_id)
         self.get_qt_wallets.rename_slot(old_id, new_id)
+
+    def remove_wallet_signals(self, wallet_id: str, wallet_signals: WalletSignals) -> None:
+        """Remove the signal collection owned by a closed wallet."""
+        if self.wallet_signals.get(wallet_id) is wallet_signals:
+            del self.wallet_signals[wallet_id]
