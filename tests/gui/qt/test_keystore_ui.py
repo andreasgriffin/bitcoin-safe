@@ -217,6 +217,22 @@ def test_keystore_ui_filled_state(qtbot: QtBot, loop_in_thread: LoopInThread) ->
     assert widget.header_status_icon.isVisible()
 
 
+def test_set_using_signer_info_emits_one_completed_change(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+    keystore = create_test_seed_keystores(
+        signers=1,
+        key_origins=[AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)],
+        network=bdk.Network.REGTEST,
+    )[0]
+    states: list[KeyStoreUiState] = []
+    widget.signal_ui_changed.connect(lambda: states.append(widget.state))
+
+    widget.set_using_signer_info(SignerInfo(keystore.fingerprint, keystore.key_origin, keystore.xpub))
+
+    assert states == [KeyStoreUiState.Filled]
+
+
 def test_keystore_ui_imports_singlesig_descriptor(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread, address_type=AddressTypes.p2wpkh)
     _select_signer(widget, HardwareSigners.krux_diy.id)
