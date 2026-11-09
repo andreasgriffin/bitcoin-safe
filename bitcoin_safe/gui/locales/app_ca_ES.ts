@@ -1991,6 +1991,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>Amaga els detalls</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>Ignora l'avís i continua</translation>
 		</message>
@@ -2018,6 +2023,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>Més informació sobre &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>Més informació sobre aquest dispositiu de signatura</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2118,6 +2128,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Set account number...</source>
 			<translation>Defineix el número de compte...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>Mostra els detalls</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4873,6 +4888,11 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>Prova d'autoenviament {number}: Verifica una altra combinació de dispositius de signatura</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>Signeu i difoneu la transacció següent.</translation>
 		</message>
@@ -6729,7 +6749,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;País: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;País: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>

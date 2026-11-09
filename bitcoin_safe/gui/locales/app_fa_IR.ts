@@ -1990,6 +1990,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>پنهان کردن جزئیات</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>نادیده گرفتن هشدار و ادامه</translation>
 		</message>
@@ -2017,6 +2022,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>درباره &lt;a href="{url}"&gt;{device}&lt;/a&gt; بیشتر بدانید.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>درباره این دستگاه امضاکننده بیشتر بدانید</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2117,6 +2127,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set account number...</source>
 			<translation>تنظیم شماره حساب...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>نمایش جزئیات</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4871,6 +4886,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>آزمایش ارسال به خود {number}: تأیید ترکیب دیگری از دستگاه‌های امضاکننده</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>تراکنش زیر را امضا و پخش کنید.</translation>
 		</message>
@@ -6726,7 +6746,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;کشور: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;کشور: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>

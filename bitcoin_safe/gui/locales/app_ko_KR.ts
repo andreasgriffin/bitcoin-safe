@@ -1988,6 +1988,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>세부 정보 숨기기</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>경고를 무시하고 계속</translation>
 		</message>
@@ -2015,6 +2020,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>&lt;a href="{url}"&gt;{device}&lt;/a&gt;에 대해 자세히 알아보세요.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>이 서명 장치에 대해 자세히 알아보기</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2115,6 +2125,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set account number...</source>
 			<translation>계정 번호 설정...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>세부 정보 표시</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4868,6 +4883,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>자체 전송 테스트 {number}: 다른 서명 장치 조합 확인</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>아래 거래에 서명하고 브로드캐스트하세요.</translation>
 		</message>
@@ -6723,7 +6743,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;국가: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;국가: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>

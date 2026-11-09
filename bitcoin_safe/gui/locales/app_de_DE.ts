@@ -1998,6 +1998,11 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>Details ausblenden</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>Warnung ignorieren und fortfahren</translation>
 		</message>
@@ -2025,6 +2030,11 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>Erfahre mehr über &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>Mehr über dieses Signiergerät erfahren</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2125,6 +2135,11 @@ da die endgültige Transaktionsgröße unbekannt ist.</translation>
 		<message>
 			<source>Set account number...</source>
 			<translation>Kontonummer festlegen...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>Details anzeigen</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4889,6 +4904,11 @@ Wenn Sie hier einen Fehler machen, ist Ihr Geld verloren!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>Selbstsende-Test {number}: Eine andere Kombination von Signiergeräten überprüfen</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>Signieren und senden Sie die untenstehende Transaktion.</translation>
 		</message>
@@ -6750,7 +6770,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;Land: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;Land: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>

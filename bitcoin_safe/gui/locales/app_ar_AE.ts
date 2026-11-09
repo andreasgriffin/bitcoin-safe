@@ -1990,6 +1990,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>إخفاء التفاصيل</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>تجاهل التحذير والمتابعة</translation>
 		</message>
@@ -2017,6 +2022,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>تعرّف على المزيد حول &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>تعرّف على المزيد حول جهاز التوقيع هذا</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2117,6 +2127,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set account number...</source>
 			<translation>تعيين رقم الحساب...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>عرض التفاصيل</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4873,6 +4888,11 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>اختبار الإرسال إلى الذات {number}: التحقق من مجموعة أخرى من أجهزة التوقيع</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>وقّع المعاملة أدناه وابثّها.</translation>
 		</message>
@@ -6728,7 +6748,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;الدولة: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;الدولة: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>

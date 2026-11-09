@@ -1990,6 +1990,11 @@ since the final size of the transaction is unknown.</source>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
+			<source>Hide details</source>
+			<translation>Sembunyikan detail</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
 			<source>Ignore warning and proceed</source>
 			<translation>Abaikan peringatan dan lanjutkan</translation>
 		</message>
@@ -2017,6 +2022,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
 			<translation>Pelajari lebih lanjut tentang &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Learn more about this signer</source>
+			<translation>Pelajari lebih lanjut tentang penanda tangan ini</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2117,6 +2127,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Set account number...</source>
 			<translation>Atur nomor akun...</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>Show details</source>
+			<translation>Tampilkan detail</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -4872,6 +4887,11 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		</message>
 		<name>SendTest</name>
 		<message>
+			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
+			<translation>Tes Kirim ke Diri Sendiri {number}: Verifikasi kombinasi lain dari perangkat penandatanganan</translation>
+		</message>
+		<name>SendTest</name>
+		<message>
 			<source>Sign and broadcast the transaction below.</source>
 			<translation>Tandatangani dan siarkan transaksi di bawah ini.</translation>
 		</message>
@@ -6728,7 +6748,8 @@ Received: {rate:.2f} txs/s</source>
 			<source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}: {ip}&lt;br&gt;Negara: {country}{tx_rate}</translation>
+			<translation>{source}&lt;br&gt;{endpoint_label}:
+{ip}&lt;br&gt;Negara: {country}{tx_rate}</translation>
 		</message>
 	</context>
 	<context>
