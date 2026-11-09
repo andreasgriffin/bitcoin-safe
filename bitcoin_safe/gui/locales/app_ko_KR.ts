@@ -1101,8 +1101,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>블록체인을 스캔하는 동안 지갑은 거래를 찾기 위해 추가 주소를 생성합니다 기본값 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>블록체인을 스캔하는 동안 지갑은 거래를 찾기 위해 추가 주소를 생성합니다n갭 한도 값이 클수록 초기 동기화를 완료하는 데 더 많은 시간이 걸립니다.n적절한 최솟값은 20입니다</translation>
 		</message>
 	</context>
 	<context>

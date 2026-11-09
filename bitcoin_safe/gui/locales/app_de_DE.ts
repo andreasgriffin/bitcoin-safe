@@ -1106,9 +1106,9 @@ Bitte sichern Sie diesen Deskriptor, um die Mittel wiederherstellen zu können!<
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>Während der Blockchain durchsucht wird, erstellt die Wallet zusätzliche Adressen, um Transaktionen zu finden
-Standardwert 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>Beim Scannen der Blockchain erstellt die Wallet zusätzliche Adressen, um Transaktionen zu findennJe höher der Wert des Gap-Limits ist, desto länger dauert es, bis die anfängliche Synchronisierung abgeschlossen ist.nEin sinnvoller Mindestwert ist 20</translation>
 		</message>
 	</context>
 	<context>

@@ -1103,8 +1103,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>Під час сканування блокчейну гаманець створюватиме додаткові адреси для виявлення транзакцій. Типово 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>Під час сканування блокчейну гаманець створюватиме додаткові адреси для виявлення транзакційnЩо більше значення ліміту пропуску, то більше часу знадобиться для завершення початкової синхронізації.nРозумне мінімальне значення — 20</translation>
 		</message>
 	</context>
 	<context>

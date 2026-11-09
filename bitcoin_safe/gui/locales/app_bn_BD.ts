@@ -1101,8 +1101,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>ব্লকচেইন স্ক্যান করার সময় ওয়ালেট অতিরিক্ত ঠিকানা তৈরি করবে লেনদেন আবিষ্কারের জন্য ডিফল্ট 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>ব্লকচেইন স্ক্যান করার সময় ওয়ালেট লেনদেন খুঁজে পেতে অতিরিক্ত ঠিকানা তৈরি করবেnগ্যাপ লিমিটের মান যত বেশি হবে, প্রাথমিক সিঙ্ক সম্পূর্ণ হতে তত বেশি সময় লাগবে।nএকটি যুক্তিসংগত সর্বনিম্ন মান হলো 20</translation>
 		</message>
 	</context>
 	<context>

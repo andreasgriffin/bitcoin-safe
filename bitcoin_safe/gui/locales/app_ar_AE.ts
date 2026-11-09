@@ -1103,8 +1103,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>أثناء فحص البلوكشين، سيقوم المحفظة بإنشاء عناوين إضافية لاكتشاف المعاملات الافتراضي 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>أثناء فحص سلسلة الكتل، ستُنشئ المحفظة عناوين إضافية لاكتشاف المعاملاتnكلما زادت قيمة حد الفجوة، زاد الوقت اللازم لإكمال المزامنة الأولية.nالحد الأدنى المعقول هو 20</translation>
 		</message>
 	</context>
 	<context>

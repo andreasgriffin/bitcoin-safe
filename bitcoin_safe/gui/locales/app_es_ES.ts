@@ -1106,8 +1106,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>Al escanear la blockchain, la cartera creará direcciones adicionales para descubrir transacciones Por defecto 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>Durante el escaneo de la cadena de bloques, el monedero creará direcciones adicionales para detectar transaccionesnCuanto mayor sea el valor del límite de separación, más tiempo tardará en completarse la sincronización inicial.nUn valor mínimo razonable es 20</translation>
 		</message>
 	</context>
 	<context>

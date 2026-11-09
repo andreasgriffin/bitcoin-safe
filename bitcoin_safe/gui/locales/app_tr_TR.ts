@@ -1103,8 +1103,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>Blockchain taranırken cüzdan, işlemleri keşfetmek için ek adresler oluşturacak. Varsayılan 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>Blok zinciri taranırken cüzdan, işlemleri keşfetmek için ek adresler oluşturacaktırnBoşluk limiti değeri ne kadar büyük olursa ilk senkronizasyonun tamamlanması o kadar uzun sürer.nMakul bir minimum değer 20'dir</translation>
 		</message>
 	</context>
 	<context>

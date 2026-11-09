@@ -1103,8 +1103,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>Saat memindai blockchain dompet akan membuat alamat tambahan untuk menemukan transaksi Default 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>Saat memindai blockchain, dompet akan membuat alamat tambahan untuk menemukan transaksinSemakin besar nilai batas celah, semakin lama waktu yang dibutuhkan untuk menyelesaikan sinkronisasi awal.nNilai minimum yang wajar adalah 20</translation>
 		</message>
 	</context>
 	<context>

@@ -1101,8 +1101,9 @@ Please back up this descriptor to be able to recover the funds!</source>
 		<name>DescriptorUI</name>
 		<message>
 			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
-Default 20</source>
-			<translation>ブロックチェーンをスキャンする際、ウォレットは取引を発見するために追加のアドレスを作成します デフォルト 20</translation>
+The bigger the gap limit value is, the more time it will take to initial sync to complete.
+A reasonable minimum value is 20</source>
+			<translation>ブロックチェーンのスキャン中、ウォレットは取引を検出するために追加のアドレスを生成しますnギャップリミットの値が大きいほど、初回の同期が完了するまでに時間がかかります。n妥当な最小値は20です</translation>
 		</message>
 	</context>
 	<context>
