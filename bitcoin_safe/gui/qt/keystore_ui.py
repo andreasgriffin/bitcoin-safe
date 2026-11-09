@@ -985,9 +985,7 @@ class KeyStoreUI(CardBase):
             logger.debug(f"{self.__class__.__name__}: {exc}")
             Message(str(exc), type=MessageType.Error, parent=self)
             return
-        self.edit_fingerprint.setText(keystore.fingerprint)
-        self.edit_xpub.setText(keystore.xpub)
-        self.key_origin = keystore.key_origin
+        self._set_signer_fields(keystore.fingerprint, keystore.key_origin, keystore.xpub)
 
     def seed_visibility(self, visible: bool = False) -> None:
         """Seed visibility."""
@@ -1123,10 +1121,16 @@ class KeyStoreUI(CardBase):
         ):
             return
 
-        self.edit_xpub.setText(signer_info.xpub)
-        self.key_origin = signer_info.key_origin
-        self.edit_fingerprint.setText(signer_info.fingerprint)
+        self._set_signer_fields(signer_info.fingerprint, signer_info.key_origin, signer_info.xpub)
+
+    def _set_signer_fields(self, fingerprint: str, key_origin: str, xpub: str) -> None:
+        """Apply complete signer data as one UI change."""
+        with BlockChangesSignals([self]):
+            self.edit_xpub.setText(xpub)
+            self.key_origin = key_origin
+            self.edit_fingerprint.setText(fingerprint)
         self.updateUi()
+        self.signal_ui_changed.emit()
 
     def _get_signer_info_from_descriptor(self, data: Data) -> SignerInfo | None:
         """Decode descriptor-like data into signer info when possible."""

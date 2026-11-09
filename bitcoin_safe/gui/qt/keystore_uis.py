@@ -393,14 +393,14 @@ class KeyStoreUIs(QWidget):
                 keystore.from_other_keystore(ui_keystore)
 
     def _set_keystore_cards(self) -> None:
-        keep_all_collapsed = bool(self._keystore_uis) and all(
-            not keystore_ui.is_expanded for keystore_ui in self._keystore_uis
-        )
+        had_cards = bool(self._keystore_uis)
 
         while self.count() < len(self.protowallet.keystores):
             keystore_ui = self._create_keystore_ui(self.count())
             self._keystore_uis.append(keystore_ui)
             self.card_list.add_card(keystore_ui)
+            if had_cards:
+                keystore_ui.collapse()
 
         while self.count() > len(self.protowallet.keystores):
             self.removeTab(self.count() - 1)
@@ -413,11 +413,8 @@ class KeyStoreUIs(QWidget):
                 keystore_ui.set_ui_from_keystore(keystore)
             keystore_ui.updateUi()
 
-        if self.count():
-            if keep_all_collapsed:
-                self.collapse_all()
-            else:
-                self.setCurrentIndex(self._current_index)
+        if self.count() and not had_cards:
+            self.setCurrentIndex(self._current_index)
 
     def set_keystore_ui_from_protowallet(self) -> None:
         """Set keystore ui from protowallet."""

@@ -171,6 +171,14 @@ class ImportXpubs(BaseTab):
         if not completed_signers - completed_signers_before_update:
             return
 
+        self._advance_to_next_signer()
+
+    def _advance_to_next_signer(self) -> None:
+        """Collapse completed cards and select the next signer."""
+        if not self.keystore_uis:
+            return
+
+        completed_signers = self._completed_signers
         self.keystore_uis.collapse_all()
         next_signer = next(
             (index for index in range(self.keystore_uis.count()) if index not in completed_signers),

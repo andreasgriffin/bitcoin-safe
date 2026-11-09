@@ -168,6 +168,40 @@ def test_keystore_uis_expand_only_collapses_other_cards(qtbot: QtBot, loop_in_th
     assert second.is_expanded
 
 
+def test_keystore_uis_refresh_does_not_trigger_expansion_actions(
+    qtbot: QtBot, loop_in_thread: LoopInThread, monkeypatch
+) -> None:
+    protowallet = ProtoWallet(
+        wallet_id="wallet",
+        threshold=2,
+        network=bdk.Network.REGTEST,
+        keystores=[None, None],
+        address_type=AddressTypes.p2wsh,
+    )
+    widget = KeyStoreUIs(
+        get_editable_protowallet=lambda: protowallet,
+        get_address_type=lambda: AddressTypes.p2wsh,
+        signals_min=SignalsMin(),
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+    widget.show()
+    first, second = list(widget.getAllTabData().values())
+
+    widget.expand_only(1)
+    expansion_actions: list[str] = []
+    monkeypatch.setattr(first, "expand", lambda: expansion_actions.append("expand first"))
+    monkeypatch.setattr(first, "collapse", lambda: expansion_actions.append("collapse first"))
+    monkeypatch.setattr(second, "expand", lambda: expansion_actions.append("expand second"))
+    monkeypatch.setattr(second, "collapse", lambda: expansion_actions.append("collapse second"))
+
+    widget.set_keystore_ui_from_protowallet()
+
+    assert expansion_actions == []
+    assert not first.is_expanded
+    assert second.is_expanded
+
+
 def test_keystore_uis_show_device_instructions_label_after_signer_selection(
     qtbot: QtBot, loop_in_thread: LoopInThread
 ) -> None:
