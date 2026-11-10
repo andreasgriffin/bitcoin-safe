@@ -10,6 +10,17 @@ on:
         required: false
         default: ''
         type: string
+  workflow_call:
+    inputs:
+      commit:
+        description: 'Full 40-character commit SHA to generate files from'
+        required: true
+        type: string
+      allow-non-main-commit:
+        description: 'Allow generation from a commit that is not on main'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   generate:
@@ -24,6 +35,7 @@ jobs:
           persist-credentials: false
 
       - name: Verify requested commit is on main
+        if: ${{ !inputs.allow-non-main-commit }}
         env:
           REQUESTED_COMMIT: ${{ inputs.commit }}
         run: |
@@ -37,6 +49,18 @@ jobs:
           fi
           git merge-base --is-ancestor "$REQUESTED_COMMIT" origin/main \
             || { echo "Commit $REQUESTED_COMMIT is not on main" >&2; exit 1; }
+
+      - name: Checkout requested commit
+        if: ${{ inputs.commit != '' }}
+        env:
+          REQUESTED_COMMIT: ${{ inputs.commit }}
+        run: |
+          set -euo pipefail
+          if ! [[ "$REQUESTED_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Commit must be a full lowercase 40-character SHA" >&2
+            exit 1
+          fi
+          git fetch origin "$REQUESTED_COMMIT"
           git checkout --detach "$REQUESTED_COMMIT"
 
       - name: Set up Python environment

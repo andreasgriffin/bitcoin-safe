@@ -37,6 +37,13 @@ jobs:
     uses: ./.github/workflows/build-flatpak-and-test.yml
     secrets: inherit
 
+  flathub-files:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Build-Relevant')) }}
+    uses: ./.github/workflows/generate-flathub-files.yml
+    with:
+      commit: ${{ github.sha }}
+      allow-non-main-commit: true
+
   windows:
     if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Build-Relevant')) }}
     uses: ./.github/workflows/build-windows-and-test.yml
