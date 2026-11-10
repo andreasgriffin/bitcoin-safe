@@ -53,7 +53,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="2.3.0" date="2026-11-07">
+    <release version="2.3.0" date="2026-11-10">
       <description>
         <p>📅 Schedule plugin</p>
         <p>For businesses and organizations: pay employees or manage any regular or future obligation with a fixed amount, in any currency.</p>
@@ -74,8 +74,6 @@
         </ul>
         <p>🛡️ More Robust Transaction Broadcasting</p>
         <p>Broadcasting is now more resilient — if the first broadcast times out, your transaction is automatically relayed through other peers, so your payments get through.</p>
-        <p>🔄 Faster and More Reliable Plugin Source Refresh</p>
-        <p>Plugin sources now refresh about 1 second after startup instead of much later, and downloads use a timeout scaled for proxy connections, so they no longer fail as often on slow networks.</p>
       </description>
     </release>
     <release version="2.2.1" date="2026-11-01">
