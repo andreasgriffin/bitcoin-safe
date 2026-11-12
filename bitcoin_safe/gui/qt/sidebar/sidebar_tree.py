@@ -428,6 +428,10 @@ class SidebarNode(QFrame, Generic[TT]):
         # Insert into layout/list
         self.child_nodes.insert(index, node)
         self.content_layout.insertWidget(index, node)
+        # Qt's layout shows inserted children asynchronously; show them now so that
+        # visibility checks (e.g. during synchronous removal) see the real state.
+        if self.isVisible():
+            node.show()
 
         # NEW: make sure the entire inserted branch reflects the new depth
         node._recompute_indents_from_here()
@@ -1368,7 +1372,12 @@ class SidebarTree(QWidget, Generic[TT]):
             for i, leaf in enumerate(leaves)
             if not leaf._is_within(removed) and leaf._can_be_revealed_in_sidebar()
         ]
-        for _, leaf in sorted(survivors, key=lambda item: abs(item[0] - anchor)):
+        # Prefer pages already visible; expand collapsed groups only as a last resort.
+        ranked = sorted(
+            survivors,
+            key=lambda item: (not item[1]._is_reachable_in_sidebar(), abs(item[0] - anchor)),
+        )
+        for _, leaf in ranked:
             if leaf.select():
                 return True
         return False

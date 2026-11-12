@@ -4456,6 +4456,44 @@ def test_sidebar_tree_close_skips_unreachable_history_node(qapp: QApplication) -
     assert tree.currentNode() is fallback_leaf
 
 
+def test_sidebar_tree_close_prefers_visible_fallback_over_collapsed_neighbor(
+    qapp: QApplication,
+) -> None:
+    del qapp
+    host = QWidget()
+    layout = QVBoxLayout(host)
+    tree = SidebarTree[str]()
+    layout.addWidget(tree)
+    host.show()
+    QApplication.processEvents()
+
+    group_closing = SidebarNode(data="group-closing", title="Group closing")
+    closing_leaf = SidebarNode(data="closing-leaf", title="Closing leaf", widget=QWidget())
+    group_closing.addChildNode(closing_leaf, focus=False)
+
+    group_hidden = SidebarNode(data="group-hidden", title="Group hidden")
+    hidden_leaf = SidebarNode(data="hidden-leaf", title="Hidden leaf", widget=QWidget())
+    group_hidden.addChildNode(hidden_leaf, focus=False)
+
+    group_visible = SidebarNode(data="group-visible", title="Group visible")
+    fallback_leaf = SidebarNode(data="fallback-leaf", title="Fallback leaf", widget=QWidget())
+    group_visible.addChildNode(fallback_leaf, focus=False)
+
+    tree.root.addChildNode(group_closing, focus=False)
+    tree.root.addChildNode(group_hidden, focus=False)
+    tree.root.addChildNode(group_visible, focus=False)
+
+    group_hidden.set_collapsed(True)
+    closing_leaf.select()
+
+    # The collapsed neighbor is nearer in sidebar order, but the visible fallback must win.
+    closing_leaf.removeNode()
+    QApplication.processEvents()
+
+    assert tree.currentNode() is fallback_leaf
+    assert group_hidden.expanded is False
+
+
 def test_sidebar_tree_close_top_level_tab_skips_hidden_wizard_widget(qapp: QApplication) -> None:
     del qapp
     host = QWidget()
