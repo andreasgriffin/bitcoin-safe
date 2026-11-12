@@ -427,6 +427,11 @@ class UITx_Viewer(UITx_Base):
         self.button_send.setEnabled(self.data.data_type == DataType.Tx)
 
         self.updateUi()
+        # connect before the first reload: reload may start a block tip fetch that completes
+        # before the remaining connections below, and the signal is only emitted on a change
+        self.signal_tracker.connect(
+            self.mempool_manager.signal_block_tip_height_changed, self._on_block_tip_height_changed
+        )
         self.reload(UpdateFilter(refresh_all=True))
         self.fill_button_group()
         self.utxo_list.update_content()
@@ -1676,6 +1681,10 @@ class UITx_Viewer(UITx_Base):
         """Set psbt already broadcasted bar."""
         tx, wallet = get_tx_details(self.txid(), wallet_functions=self.wallet_functions)
         self.psbt_already_broadcasted_bar.set(wallet_tx_details=tx, wallet=wallet, data=self.data)
+
+    def _on_block_tip_height_changed(self, _height: int) -> None:
+        """Re-evaluate the nlocktime warning once a fresh mempool block tip height arrived."""
+        self._set_nlocktime_from_tx(self.extract_tx())
 
     def _set_nlocktime_from_tx(self, tx: bdk.Transaction) -> None:
         """Set nlocktime info from transaction."""

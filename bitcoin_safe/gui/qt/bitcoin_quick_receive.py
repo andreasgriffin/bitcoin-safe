@@ -119,6 +119,9 @@ class BitcoinQuickReceive(
 
     def update_content(self, update_filter: UpdateFilter) -> None:
         """Update content."""
+        # refresh_all updates must not be deferred: during the cbf initial sync the
+        # dashboard content is hidden behind the initial sync overlay, so the receive
+        # addresses have to be built even while this widget is not visible.
         if self.maybe_defer_update() and not update_filter.refresh_all:
             return
 

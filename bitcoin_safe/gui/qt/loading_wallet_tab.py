@@ -88,3 +88,7 @@ class LoadingWalletTab(QWidget):
         """Exit context manager."""
         if node := self.tabs.root.findNodeByWidget(self):
             node.removeNode()
+        # removeNode only unregisters the page from the stack; hide it and drop the C++ parent so
+        # the widget is released once the last Python reference goes away
+        self.hide()
+        self.setParent(None)

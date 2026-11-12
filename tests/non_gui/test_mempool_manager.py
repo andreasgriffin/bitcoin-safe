@@ -30,8 +30,10 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import urljoin
 
 import bdkpython as bdk
@@ -316,3 +318,95 @@ def test_persisted_non_dict_recommended_fees_fall_back_to_defaults() -> None:
 
     assert manager.get_prio_fee_rates()[TxPrio.high] == float(MIN_RELAY_FEE)
     assert manager.get_min_relay_fee_rate() == float(MIN_RELAY_FEE)
+
+
+def test_block_tip_height_is_non_blocking_and_refreshed_in_background(monkeypatch) -> None:
+    """block_tip_height never waits on the network, emits only its own signal, and is throttled."""
+    from concurrent.futures import Future
+
+    from bitcoin_safe.mempool_manager import MempoolManager as Manager
+
+    manager = Manager.__new__(Manager)
+    manager.network_config = SimpleNamespace(mempool_url="https://mempool.example/", proxy_url=None)
+    manager._block_tip_height = 0
+    manager._block_tip_height_fetched_at = None
+    manager._task_block_tip_height = None
+    fee_emitted: list[bool] = []
+    height_emitted: list[int] = []
+    manager.signal_data_updated = type("Sig", (), {"emit": lambda self: fee_emitted.append(True)})()
+    manager.signal_block_tip_height_changed = type(
+        "Sig", (), {"emit": lambda self, h: height_emitted.append(h)}
+    )()
+
+    scheduled: list[object] = []
+
+    class LoopStub:
+        _loop = object()
+
+        def run_background(self, coro, key=None, multiple_strategy=None):
+            scheduled.append(coro)
+            coro.close()
+            return Future()
+
+    manager.loop_in_thread = LoopStub()
+    monkeypatch.setattr(Manager, "_loop_is_running", lambda self: True)
+
+    assert manager.block_tip_height() == 0  # nothing known yet, returns immediately
+    assert len(scheduled) == 1
+    # a fetch that is still pending must not schedule another one
+    assert manager.block_tip_height() == 0
+    assert len(scheduled) == 1
+    assert fee_emitted == [] and height_emitted == []
+
+    # a completed fetch updates the height and emits only the block tip signal
+    async def fake_fetch(url, proxies=None):
+        return "850000"
+
+    monkeypatch.setattr("bitcoin_safe.mempool_manager.fetch_from_url", fake_fetch)
+    asyncio.run(manager._fetch_block_tip_height())
+    assert manager._block_tip_height == 850000
+    assert height_emitted == [850000]
+    assert fee_emitted == []
+
+    # within the throttle window no new request is started, even though no fetch is pending
+    manager._task_block_tip_height = Future()
+    manager._task_block_tip_height.set_result(None)
+    assert manager.block_tip_height() == 850000
+    assert len(scheduled) == 1
+
+    # once the window has passed a new request starts; a forced refresh always starts one
+    manager._block_tip_height_fetched_at = datetime.datetime.now() - datetime.timedelta(seconds=11)
+    manager.block_tip_height()
+    assert len(scheduled) == 2
+    manager._task_block_tip_height = Future()
+    manager._task_block_tip_height.set_result(None)
+    manager.refresh_block_tip_height(force=True)
+    assert len(scheduled) == 3
+
+
+def test_block_tip_change_does_not_emit_fee_data_signal(monkeypatch) -> None:
+    """A block tip height change must not trigger signal_data_updated, which consumers use to
+    initialize the fee rate once after the fee data arrived."""
+    from concurrent.futures import Future
+
+    manager = MempoolManager.__new__(MempoolManager)
+    manager.network_config = SimpleNamespace(mempool_url="https://mempool.example/", proxy_url=None)
+    manager._block_tip_height = 0
+    manager._block_tip_height_fetched_at = None
+    manager._task_block_tip_height = Future()
+    manager._task_block_tip_height.set_result(None)
+    fee_emitted: list[bool] = []
+    height_emitted: list[int] = []
+    manager.signal_data_updated = type("Sig", (), {"emit": lambda self: fee_emitted.append(True)})()
+    manager.signal_block_tip_height_changed = type(
+        "Sig", (), {"emit": lambda self, h: height_emitted.append(h)}
+    )()
+
+    async def fake_fetch(url, proxies=None):
+        return "123"
+
+    monkeypatch.setattr("bitcoin_safe.mempool_manager.fetch_from_url", fake_fetch)
+    asyncio.run(manager._fetch_block_tip_height())
+
+    assert height_emitted == [123]
+    assert fee_emitted == []

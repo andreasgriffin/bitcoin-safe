@@ -33,6 +33,7 @@ import asyncio
 import datetime
 import enum
 import logging
+from concurrent.futures import Future
 from dataclasses import dataclass
 from math import ceil, isfinite
 from typing import Any, Literal, cast
@@ -289,7 +290,9 @@ class BlockInfo:
 
 
 class MempoolManager(QObject):
-    signal_data_updated = cast(SignalProtocol[[]], pyqtSignal())
+    signal_data_updated = cast(SignalProtocol[[]], pyqtSignal())  # fee / mempool data only
+    signal_block_tip_height_changed = cast(SignalProtocol[[int]], pyqtSignal(int))
+    BLOCK_TIP_HEIGHT_MIN_REFRESH = datetime.timedelta(seconds=10)
 
     def __init__(
         self,
@@ -306,6 +309,9 @@ class MempoolManager(QObject):
         self.network_config = network_config
         self.data = network_config.mempool_data
         self.time_of_data = datetime.datetime.fromtimestamp(0)
+        self._block_tip_height = 0
+        self._block_tip_height_fetched_at: datetime.datetime | None = None
+        self._task_block_tip_height: Future[Any] | None = None
         logger.debug(f"initialized {self.__class__.__name__}")
 
     def _fallback_mempool_block(self) -> dict[str, Any]:
@@ -455,28 +461,56 @@ class MempoolManager(QObject):
         loop = self.loop_in_thread._loop
         return loop is not None and loop.is_running()
 
-    def fetch_block_tip_height(self, fallback_height=0) -> int:
-        """Fetch block tip height."""
+    def block_tip_height(self) -> int:
+        """Return the last known mempool block tip height without blocking.
+
+        The value is refreshed in the background (see refresh_block_tip_height), so this
+        is safe to call from the gui thread. Returns 0 while no height is known yet.
+        """
+        self.refresh_block_tip_height()
+        return self._block_tip_height
+
+    def refresh_block_tip_height(self, force: bool = False) -> None:
+        """Fetch the block tip height in the background and emit signal_block_tip_height_changed when it changed.
+
+        Unless forced, a fetch is skipped while one is pending or while the cached height is
+        younger than BLOCK_TIP_HEIGHT_MIN_REFRESH.
+        """
+        if self._task_block_tip_height and not self._task_block_tip_height.done():
+            return
+        if (
+            not force
+            and self._block_tip_height_fetched_at is not None
+            and datetime.datetime.now() - self._block_tip_height_fetched_at
+            < self.BLOCK_TIP_HEIGHT_MIN_REFRESH
+        ):
+            return
         if not self._loop_is_running():
             logger.warning("Loop is not running; skipping mempool tip height fetch.")
-            return 0
-        mempool_url = f"{self.network_config.mempool_url.rstrip('/')}/"
-        response = self.loop_in_thread.run_foreground(
-            fetch_from_url(
-                urljoin(mempool_url, "api/blocks/tip/height"),
-                proxies=(
-                    ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
-                    if self.network_config.proxy_url
-                    else None
-                ),
-            )
+            return
+        self._task_block_tip_height = self.loop_in_thread.run_background(
+            self._fetch_block_tip_height(), key=f"{id(self)}-tip-height"
         )
-        if not response:
-            return fallback_height
+
+    async def _fetch_block_tip_height(self) -> None:
+        """Fetch the block tip height from the mempool server and store it."""
+        mempool_url = f"{self.network_config.mempool_url.rstrip('/')}/"
+        response = await fetch_from_url(
+            urljoin(mempool_url, "api/blocks/tip/height"),
+            proxies=(
+                ProxyInfo.parse(self.network_config.proxy_url).get_requests_proxy_dict()
+                if self.network_config.proxy_url
+                else None
+            ),
+        )
         try:
-            return int(response)
+            height = int(response) if response else self._block_tip_height
         except Exception:
-            return fallback_height
+            return
+        self._block_tip_height_fetched_at = datetime.datetime.now()
+        if height != self._block_tip_height:
+            self._block_tip_height = height
+            self.signal_block_tip_height_changed.emit(height)
 
     def fee_rate_to_projected_block_index(self, fee_rate: float) -> int:
         """Fee rate to projected block index."""

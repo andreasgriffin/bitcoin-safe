@@ -277,6 +277,7 @@ class SidebarNode(QFrame, Generic[TT]):
     hideClicked = cast(SignalProtocol[[object]], pyqtSignal(object))
     nodeSelected = cast(SignalProtocol[[object]], pyqtSignal(object))
     nodeUnSelected = cast(SignalProtocol[[object]], pyqtSignal(object))
+    nodeRemoved = cast(SignalProtocol[[object]], pyqtSignal(object))
     nodeToggled = cast(SignalProtocol[[object, bool]], pyqtSignal(object, bool))
 
     def __init__(
@@ -333,6 +334,9 @@ class SidebarNode(QFrame, Generic[TT]):
         self.child_nodes: list[SidebarNode[TT]] = []
         self._parent_signal_tracker = SignalTracker()
         self.stack: QStackedWidget | None = None  # wired by SidebarTree
+        # Explicit visibility intent set via setVisible/show/hide. Qt may hide a widget
+        # on reparenting, so isHidden() alone cannot tell "hidden by app" from "hidden by Qt".
+        self._wants_visible = True
 
         self.setObjectName(str(id(self)))
 
@@ -347,6 +351,7 @@ class SidebarNode(QFrame, Generic[TT]):
 
     def setVisible(self, visible: bool) -> None:
         """SetVisible."""
+        self._wants_visible = visible
         self.header_row.setVisible(not self.hide_header and visible)
         super().setVisible(visible)
         if not visible and self.header_row.is_selected():
@@ -427,6 +432,11 @@ class SidebarNode(QFrame, Generic[TT]):
         # Insert into layout/list
         self.child_nodes.insert(index, node)
         self.content_layout.insertWidget(index, node)
+        # Qt's layout shows inserted children asynchronously; restore the node's intended
+        # visibility now so that visibility checks (e.g. during synchronous removal) see
+        # the real state. Nodes explicitly hidden by the application stay hidden.
+        if self.isVisible() and node._wants_visible:
+            node.show()
 
         # NEW: make sure the entire inserted branch reflects the new depth
         node._recompute_indents_from_here()
@@ -451,6 +461,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self._parent_signal_tracker.connect(self.closeClicked, parent_node.closeClicked)
         self._parent_signal_tracker.connect(self.nodeSelected, parent_node._bubble_selected)
         self._parent_signal_tracker.connect(self.nodeUnSelected, parent_node._bubble_unselected)
+        self._parent_signal_tracker.connect(self.nodeRemoved, parent_node._bubble_removed)
         self._parent_signal_tracker.connect(self.nodeToggled, parent_node._bubble_toggled)
 
     def _disconnect_from_parent_signals(self) -> None:
@@ -464,6 +475,8 @@ class SidebarNode(QFrame, Generic[TT]):
         except ValueError:
             return
 
+        # emitted while the parent chain is still intact, so listeners can match descendants
+        node.nodeRemoved.emit(node)
         node._disconnect_from_parent_signals()
         node._detach_from_stack()
 
@@ -728,6 +741,21 @@ class SidebarNode(QFrame, Generic[TT]):
         # REMOVE checked sync
         self.nodeUnSelected.emit(entry)
 
+    def _bubble_removed(self, entry: object) -> None:
+        """Bubble removed."""
+        if not isinstance(entry, SidebarNode):
+            return
+        self.nodeRemoved.emit(entry)
+
+    def _is_within(self, ancestor: SidebarNode[TT]) -> bool:
+        """Whether ancestor is this node or one of its ancestors."""
+        node: SidebarNode[TT] | None = self
+        while node is not None:
+            if node is ancestor:
+                return True
+            node = node.parent_node
+        return False
+
     def _bubble_toggled(self, entry: object, expanded: bool) -> None:
         """Bubble toggled."""
         if not isinstance(entry, SidebarNode):
@@ -822,21 +850,19 @@ class SidebarNode(QFrame, Generic[TT]):
         return node.select() if node else False
 
     def removeNode(self) -> None:
-        """Remove this node from its parent and, if possible, select a neighboring
-        node's page."""
-        self.clearChildren()
+        """Remove this node and its subtree from its parent.
 
+        The parent's ``removeChildNode`` emits ``nodeRemoved`` once for the whole subtree while it
+        is still attached, which lets the tree restore the selection before Qt picks a page itself.
+        """
         # Root nodes aren't closed here (match the example semantics).
         if self.parent_node is None:
+            self.clearChildren()
             return
 
-        parent = self.parent_node
-
-        # Remove the node from the UI tree
-        parent.removeChildNode(self)
-
-        if self.header_row.is_selected():
-            self.nodeUnSelected.emit(self)
+        self.parent_node.removeChildNode(self)
+        # The subtree is detached now, so emptying it cannot touch the tree's selection.
+        self.clearChildren()
 
     def _iter_selectable_leaves(self, must_be_visible: bool = True):
         """Yield leaves that have a widget (and are visible, unless disabled)."""
@@ -1024,7 +1050,7 @@ class SidebarTree(QWidget, Generic[TT]):
 
         if vp := self.scroll_area.viewport():
             vp.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-            vp.customContextMenuRequested.connect(self._on_context_menu_requested)
+            vp.customContextMenuRequested.connect(self._on_viewport_context_menu_requested)
 
         self.container = QWidget()  # holds the sidebar nodes
         self.v_layout = QVBoxLayout(self.container)
@@ -1035,7 +1061,7 @@ class SidebarTree(QWidget, Generic[TT]):
 
         # make the container itself emit customContextMenuRequested
         self.container.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.container.customContextMenuRequested.connect(self._on_context_menu_requested)
+        self.container.customContextMenuRequested.connect(self._on_container_context_menu_requested)
         self.scroll_area.setWidget(self.container)
 
         # --- NEW: Wrap the left side in a QWidget with a QVBoxLayout
@@ -1080,6 +1106,7 @@ class SidebarTree(QWidget, Generic[TT]):
         self.root.hideClicked.connect(self._on_hide_clicked)
         self.root.nodeSelected.connect(self._on_node_selected)
         self.root.nodeUnSelected.connect(self._on_node_unselected)
+        self.root.nodeRemoved.connect(self._on_node_removed)
         self.root.nodeToggled.connect(self._on_node_toggled)
 
         # Put the hidden root into the container
@@ -1155,36 +1182,44 @@ class SidebarTree(QWidget, Generic[TT]):
             self.currentChanged.emit(node)
 
     def _select_previous_from_history(self, excluding: SidebarNode[TT] | None = None) -> bool:
-        """Select the most recent valid node from history, ignoring exclusions."""
+        """Select the most recent valid node from history, ignoring exclusions.
 
-        # Walk the history from newest to oldest, pruning hidden/invalid entries as we go.
-        idx = len(self._selection_history) - 1
-        while idx >= 0:
-            candidate = self._selection_history[idx]
-            if candidate is excluding:
+        Pass 1 prefers pages that are reachable right now. Pass 2 falls back to pages inside
+        collapsed groups, which ``select()`` reveals by expanding their ancestors. Entries that
+        can never be revealed (hidden, widgetless, or removed) are pruned during the walk.
+        """
+        for require_reachable in (True, False):
+            idx = len(self._selection_history) - 1
+            while idx >= 0:
+                candidate = self._selection_history[idx]
+                if candidate is excluding:
+                    idx -= 1
+                    continue
+
+                if candidate.widget is None or not candidate._can_be_revealed_in_sidebar():
+                    # Drop stale entries and shift the navigation index left when we remove
+                    # an element at or before the current navigation position.
+                    self._selection_history.pop(idx)
+                    if idx <= self._navigation_index:
+                        self._navigation_index -= 1
+                    idx -= 1
+                    continue
+
+                if require_reachable and not candidate._is_reachable_in_sidebar():
+                    idx -= 1
+                    continue
+
+                # Keep the navigation index aligned with the candidate we select and avoid
+                # adding new history entries while we revisit past selections.
+                self._navigating_history = True
+                try:
+                    if candidate.select():
+                        self._navigation_index = idx
+                        return True
+                finally:
+                    self._navigating_history = False
+
                 idx -= 1
-                continue
-
-            if candidate.widget is None or not candidate._is_reachable_in_sidebar():
-                # Drop stale entries and shift the navigation index left when we remove
-                # an element at or before the current navigation position.
-                self._selection_history.pop(idx)
-                if idx <= self._navigation_index:
-                    self._navigation_index -= 1
-                idx -= 1
-                continue
-
-            # Keep the navigation index aligned with the candidate we select and avoid
-            # adding new history entries while we revisit past selections.
-            self._navigating_history = True
-            try:
-                if candidate.select():
-                    self._navigation_index = idx
-                    return True
-            finally:
-                self._navigating_history = False
-
-            idx -= 1
 
         self._navigation_index = len(self._selection_history) - 1
         return False
@@ -1265,13 +1300,19 @@ class SidebarTree(QWidget, Generic[TT]):
         elif bottom > vp.height() - margin:
             bar.setValue(bar.value() + bottom - vp.height() + margin)
 
-    def _on_context_menu_requested(self, pos: QPoint) -> None:
-        """On context menu requested."""
+    def _on_viewport_context_menu_requested(self, pos: QPoint) -> None:
+        """Handle context menu requests on the scroll viewport (pos in viewport coordinates)."""
         vp = self.scroll_area.viewport()
         if not vp:
             return
-        global_pos = vp.mapToGlobal(pos)
+        self._emit_context_menu(vp.mapToGlobal(pos))
 
+    def _on_container_context_menu_requested(self, pos: QPoint) -> None:
+        """Handle context menu requests on the scrolled content (pos in container coordinates)."""
+        self._emit_context_menu(self.container.mapToGlobal(pos))
+
+    def _emit_context_menu(self, global_pos: QPoint) -> None:
+        """Emit the node or empty-area context menu signal for a global position."""
         node = self.nodeAtGlobalPos(global_pos)
         if node:
             self.nodeContextMenuRequested.emit(node, global_pos)
@@ -1316,6 +1357,49 @@ class SidebarTree(QWidget, Generic[TT]):
             current_node.select()
 
         self.nodeUnSelected.emit(node)
+
+    def _on_node_removed(self, node: object) -> None:
+        """Drop the removed subtree from the selection history and, if it contained the selected
+        page, restore a surviving page before Qt picks one on its own."""
+        if not isinstance(node, SidebarNode):
+            return
+        selected = self.currentNode()
+        selection_removed = selected is not None and selected._is_within(node)
+
+        kept: list[SidebarNode[TT]] = []
+        new_index = -1
+        for idx, entry in enumerate(self._selection_history):
+            if entry._is_within(node):
+                continue
+            kept.append(entry)
+            if idx <= self._navigation_index:
+                new_index = len(kept) - 1
+        self._selection_history = kept
+        self._navigation_index = new_index
+        if self._current_node is not None and self._current_node._is_within(node):
+            self._current_node = None
+
+        if selection_removed and not self._select_previous_from_history():
+            self._select_nearest_surviving_page(node)
+
+    def _select_nearest_surviving_page(self, removed: SidebarNode[TT]) -> bool:
+        """Select the selectable page closest to the removed subtree in sidebar order."""
+        leaves = list(self.root._iter_selectable_leaves(must_be_visible=False))
+        anchor = next((i for i, leaf in enumerate(leaves) if leaf._is_within(removed)), len(leaves))
+        survivors = [
+            (i, leaf)
+            for i, leaf in enumerate(leaves)
+            if not leaf._is_within(removed) and leaf._can_be_revealed_in_sidebar()
+        ]
+        # Prefer pages already visible; expand collapsed groups only as a last resort.
+        ranked = sorted(
+            survivors,
+            key=lambda item: (not item[1]._is_reachable_in_sidebar(), abs(item[0] - anchor)),
+        )
+        for _, leaf in ranked:
+            if leaf.select():
+                return True
+        return False
 
     def _append_to_selection_history(self, node: SidebarNode):
         """Append to slection history."""

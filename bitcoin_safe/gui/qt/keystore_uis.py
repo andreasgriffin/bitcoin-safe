@@ -419,11 +419,10 @@ class KeyStoreUIs(QWidget):
     def set_keystore_ui_from_protowallet(self) -> None:
         """Set keystore ui from protowallet."""
         logger.debug("set_keystore_ui_from_protowallet")
+        # _set_keystore_cards already fills every card via set_ui_from_keystore,
+        # so only the formatting is left to do here
         self._set_keystore_cards()
-        for keystore, keystore_ui in zip(self.protowallet.keystores, self._keystore_uis, strict=False):
-            if not keystore:
-                continue
-            keystore_ui.set_ui_from_keystore(keystore)
+        for keystore_ui in self._keystore_uis:
             keystore_ui.format_all_fields()
         self._update_duplicate_xpub_messages()
         assert len(self.protowallet.keystores) == self.count()
