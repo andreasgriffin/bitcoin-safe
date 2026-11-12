@@ -427,6 +427,11 @@ class UITx_Viewer(UITx_Base):
         self.button_send.setEnabled(self.data.data_type == DataType.Tx)
 
         self.updateUi()
+        # connect before the first reload: reload may start a block tip fetch that completes
+        # before the remaining connections below, and the signal is only emitted on a change
+        self.signal_tracker.connect(
+            self.mempool_manager.signal_block_tip_height_changed, self._on_block_tip_height_changed
+        )
         self.reload(UpdateFilter(refresh_all=True))
         self.fill_button_group()
         self.utxo_list.update_content()
@@ -437,9 +442,6 @@ class UITx_Viewer(UITx_Base):
         # ensure that the linking warning bar appears (needs all tx loaded)
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.on_any_wallet_update)
         self.signal_tracker.connect(self.signals.signal_broadcast_complete, self.on_broadcast_complete)
-        self.signal_tracker.connect(
-            self.mempool_manager.signal_block_tip_height_changed, self._on_block_tip_height_changed
-        )
         self.signals.currency_switch.connect(self.update_all_totals)
         self.utxo_list.signal_finished_update.connect(self.update_all_totals)
         self.column_fee.fee_group.mempool_buttons.signal_rbf_icon.connect(self._on_rbf_icon)
