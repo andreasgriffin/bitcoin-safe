@@ -62,3 +62,35 @@ def test_closing_wallet_selects_page_from_collapsed_wallet(qapp: QApplication) -
     assert first_wallet.expanded
     assert tree.currentNode() is first_page
     assert tree.currentWidget() is first_page.widget
+
+
+def test_removed_subtree_is_purged_from_selection_history(qapp: QApplication) -> None:
+    del qapp
+    host = QWidget()
+    layout = QVBoxLayout(host)
+    tree = SidebarTree[str]()
+    layout.addWidget(tree)
+    host.show()
+
+    kept_wallet = SidebarNode(data="kept-wallet", title="Kept wallet")
+    kept_page = SidebarNode(data="kept-page", title="Kept page", widget=QWidget())
+    kept_wallet.addChildNode(kept_page, focus=False)
+
+    removed_wallet = SidebarNode(data="removed-wallet", title="Removed wallet")
+    removed_page = SidebarNode(data="removed-page", title="Removed page", widget=QWidget())
+    removed_wallet.addChildNode(removed_page, focus=False)
+
+    tree.root.addChildNode(kept_wallet, focus=False)
+    tree.root.addChildNode(removed_wallet, focus=False)
+
+    kept_page.select()
+    removed_page.select()
+    assert tree._selection_history[-1] is removed_page
+
+    removed_wallet.removeNode()
+    QApplication.processEvents()
+
+    assert all(not n._is_within(removed_wallet) for n in tree._selection_history)
+    assert tree._selection_history == [kept_page]
+    assert tree._navigation_index == 0
+    assert tree._navigate_history(step=-1) is False

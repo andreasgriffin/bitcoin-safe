@@ -277,6 +277,7 @@ class SidebarNode(QFrame, Generic[TT]):
     hideClicked = cast(SignalProtocol[[object]], pyqtSignal(object))
     nodeSelected = cast(SignalProtocol[[object]], pyqtSignal(object))
     nodeUnSelected = cast(SignalProtocol[[object]], pyqtSignal(object))
+    nodeRemoved = cast(SignalProtocol[[object]], pyqtSignal(object))
     nodeToggled = cast(SignalProtocol[[object, bool]], pyqtSignal(object, bool))
 
     def __init__(
@@ -451,6 +452,7 @@ class SidebarNode(QFrame, Generic[TT]):
         self._parent_signal_tracker.connect(self.closeClicked, parent_node.closeClicked)
         self._parent_signal_tracker.connect(self.nodeSelected, parent_node._bubble_selected)
         self._parent_signal_tracker.connect(self.nodeUnSelected, parent_node._bubble_unselected)
+        self._parent_signal_tracker.connect(self.nodeRemoved, parent_node._bubble_removed)
         self._parent_signal_tracker.connect(self.nodeToggled, parent_node._bubble_toggled)
 
     def _disconnect_from_parent_signals(self) -> None:
@@ -464,6 +466,8 @@ class SidebarNode(QFrame, Generic[TT]):
         except ValueError:
             return
 
+        # emitted while the parent chain is still intact, so listeners can match descendants
+        node.nodeRemoved.emit(node)
         node._disconnect_from_parent_signals()
         node._detach_from_stack()
 
@@ -727,6 +731,21 @@ class SidebarNode(QFrame, Generic[TT]):
             return
         # REMOVE checked sync
         self.nodeUnSelected.emit(entry)
+
+    def _bubble_removed(self, entry: object) -> None:
+        """Bubble removed."""
+        if not isinstance(entry, SidebarNode):
+            return
+        self.nodeRemoved.emit(entry)
+
+    def _is_within(self, ancestor: SidebarNode[TT]) -> bool:
+        """Whether ancestor is this node or one of its ancestors."""
+        node: SidebarNode[TT] | None = self
+        while node is not None:
+            if node is ancestor:
+                return True
+            node = node.parent_node
+        return False
 
     def _bubble_toggled(self, entry: object, expanded: bool) -> None:
         """Bubble toggled."""
@@ -1080,6 +1099,7 @@ class SidebarTree(QWidget, Generic[TT]):
         self.root.hideClicked.connect(self._on_hide_clicked)
         self.root.nodeSelected.connect(self._on_node_selected)
         self.root.nodeUnSelected.connect(self._on_node_unselected)
+        self.root.nodeRemoved.connect(self._on_node_removed)
         self.root.nodeToggled.connect(self._on_node_toggled)
 
         # Put the hidden root into the container
@@ -1316,6 +1336,24 @@ class SidebarTree(QWidget, Generic[TT]):
             current_node.select()
 
         self.nodeUnSelected.emit(node)
+
+    def _on_node_removed(self, node: object) -> None:
+        """Drop the removed subtree from the selection history and keep the navigation index on
+        the same surviving entry."""
+        if not isinstance(node, SidebarNode):
+            return
+        kept: list[SidebarNode[TT]] = []
+        new_index = -1
+        for idx, entry in enumerate(self._selection_history):
+            if entry._is_within(node):
+                continue
+            kept.append(entry)
+            if idx <= self._navigation_index:
+                new_index = len(kept) - 1
+        self._selection_history = kept
+        self._navigation_index = new_index
+        if self._current_node is not None and self._current_node._is_within(node):
+            self._current_node = None
 
     def _append_to_selection_history(self, node: SidebarNode):
         """Append to slection history."""

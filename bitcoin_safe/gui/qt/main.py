@@ -2375,14 +2375,14 @@ class MainWindow(UnlockableMainWindow):
             )
             return None
 
-        # show a visible loading state while the file is decrypted and parsed
-        # and the wallet ui is built (all of it blocks the gui thread)
+        # one loading state for the whole operation: decrypting, parsing and building the wallet ui
+        # all block the gui thread
         with LoadingWalletTab(self.tab_wallets, Path(file_path).stem, focus=focus):
             qt_wallet, password = try_load(file_path=file_path)
             if not qt_wallet:
                 return None
 
-            if qt_wallet and password:
+            if password:
                 # successfuly load, then cache the password
                 self.password_cache.set_password("wallet", password)
 
@@ -2391,11 +2391,10 @@ class MainWindow(UnlockableMainWindow):
                     f"Could not create lock file {wallet_lockfile_path} after loading wallet {file_path}"
                 )
 
-        # add_qt_wallet shows its own LoadingWalletTab while inserting the wallet ui
-        qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password, focus=focus)
-        QApplication.processEvents()
-        qt_wallet.restore_last_selected_tab()
-        qt_wallet.sync()
+            qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password, focus=focus)
+            QApplication.processEvents()
+            qt_wallet.restore_last_selected_tab()
+            qt_wallet.sync()
 
         self.add_recently_open_wallet(qt_wallet.file_path)
         return qt_wallet
@@ -2631,7 +2630,8 @@ class MainWindow(UnlockableMainWindow):
             external_registry=self.external_registry,
         )
 
-        qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password)
+        with LoadingWalletTab(self.tab_wallets, qt_wallet.wallet.id, focus=True):
+            qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password)
         # adding these should only be done at wallet creation
         qt_wallet.category_core.add_default_categories()
         qt_wallet.uitx_creator.clear_ui()  # after the categories are updtaed, this selected the default category in the send tab
@@ -2842,14 +2842,13 @@ class MainWindow(UnlockableMainWindow):
         qt_wallet.tabs.setIcon("status_waiting.svg")
         qt_wallet.tabs.setTitle(qt_wallet.wallet.id)
 
-        with LoadingWalletTab(self.tab_wallets, qt_wallet.wallet.id, focus=True):
-            self._remove_create_screens()
-            # tutorial
-            wizard = Wizard(
-                qtwalletbase=qt_wallet,
-                qt_wallet=qt_wallet,
-            )
-            qt_wallet.wizard = wizard
+        self._remove_create_screens()
+        # tutorial
+        wizard = Wizard(
+            qtwalletbase=qt_wallet,
+            qt_wallet=qt_wallet,
+        )
+        qt_wallet.wizard = wizard
 
         self.tab_wallets.root.addChildNode(qt_wallet.tabs, focus=focus)
 

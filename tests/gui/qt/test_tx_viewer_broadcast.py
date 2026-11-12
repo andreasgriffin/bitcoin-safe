@@ -269,7 +269,7 @@ def test_robust_height_uses_chain_tip(wallet_heights: list[int], mempool_height:
     wallets = [SimpleNamespace(id=f"w{i}", get_height=lambda h=h: h) for i, h in enumerate(wallet_heights)]
     viewer = SimpleNamespace(
         wallet_functions=object(),
-        mempool_manager=SimpleNamespace(fetch_block_tip_height=lambda: mempool_height),
+        mempool_manager=SimpleNamespace(block_tip_height=lambda: mempool_height),
     )
     with patch("bitcoin_safe.gui.qt.ui_tx.ui_tx_base.get_wallets", return_value=wallets):
         assert UITx_Base._get_robust_height(viewer) == expected

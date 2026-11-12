@@ -31,7 +31,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import time
 from concurrent.futures import Future
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -299,14 +298,6 @@ class Client:
                 network=bdkwallet.network(),
                 loop_in_thread=loop_in_thread,
             )
-            try:
-                discovered_peers = loop_in_thread.run_foreground(
-                    cls._get_cbf_peers(p2p_discovery, proxy_info, timeout=0.2)
-                )
-            except Exception:
-                logger.exception("Failed to discover peers for initial CBF connection")
-                discovered_peers = set()
-            peers = peers.union(discovered_peers)
 
         client = CbfSync(
             wallet_id=wallet_id,
@@ -321,8 +312,7 @@ class Client:
         )
 
         client.build_node()
-        time.sleep(0.1)  # this prevents an ifinite loop of getting info messages from cbf client
-        return cls(
+        cbf_client = cls(
             client=client,
             proxy_info=proxy_info,
             electrum_config=None,
@@ -330,6 +320,10 @@ class Client:
             cbf_peer_discovery=p2p_discovery,
             cbf_known_peers=peers,
         )
+        # discover additional peers right away in the background (never blocks opening the wallet);
+        # NEED_CONNECTIONS triggers it again later, throttled by CBF_PEER_DISCOVERY_MIN_INTERVAL
+        cbf_client._discover_cbf_peers()
+        return cbf_client
 
     async def broadcast(self, tx: bdk.Transaction):
         """Broadcast without blocking the event loop.

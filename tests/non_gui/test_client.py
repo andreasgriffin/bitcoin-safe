@@ -377,6 +377,31 @@ def test_discover_and_connect_cbf_peers_adds_only_new_peers(monkeypatch) -> None
     assert client._cbf_known_peers == {peer}
 
 
+def test_from_cbf_schedules_background_peer_discovery_without_warning(monkeypatch) -> None:
+    """Opening a CBF wallet starts peer discovery in the background, without waiting for NEED_CONNECTIONS."""
+    loop_in_thread = MagicMock()
+    loop_in_thread.run_background.side_effect = lambda coroutine: (coroutine.close(), MagicMock())[1]
+    monkeypatch.setattr(client_module, "PeerDiscovery", MagicMock())
+    monkeypatch.setattr(client_module.CbfSync, "build_node", MagicMock())
+
+    client = Client.from_cbf(
+        configured_peers=None,
+        only_configured_peers=False,
+        bdkwallet=MagicMock(),
+        proxy_info=None,
+        data_dir=MagicMock(),
+        cbf_connections=1,
+        wallet_id="test-wallet",
+        gap=20,
+        loop_in_thread=loop_in_thread,
+    )
+
+    scheduled = [call.args[0].cr_code.co_name for call in loop_in_thread.run_background.call_args_list]
+    assert "_discover_and_connect_cbf_peers" in scheduled
+    assert client._cbf_peer_discovery is not None
+    assert client._cbf_peer_discovery_task is not None
+
+
 def test_need_connections_coalesces_peer_discovery() -> None:
     """Repeated NEED_CONNECTIONS warnings schedule only one discovery task."""
     loop_in_thread = MagicMock()

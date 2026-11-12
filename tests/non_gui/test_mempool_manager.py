@@ -32,6 +32,7 @@ from __future__ import annotations
 import asyncio
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import urljoin
 
 import bdkpython as bdk
@@ -316,3 +317,37 @@ def test_persisted_non_dict_recommended_fees_fall_back_to_defaults() -> None:
 
     assert manager.get_prio_fee_rates()[TxPrio.high] == float(MIN_RELAY_FEE)
     assert manager.get_min_relay_fee_rate() == float(MIN_RELAY_FEE)
+
+
+def test_block_tip_height_is_non_blocking_and_refreshed_in_background(monkeypatch) -> None:
+    """block_tip_height never waits on the network; the fetched value shows up on the next call."""
+    from concurrent.futures import Future
+
+    from bitcoin_safe.mempool_manager import MempoolManager as Manager
+
+    manager = Manager.__new__(Manager)
+    manager.network_config = SimpleNamespace(mempool_url="https://mempool.example/", proxy_url=None)
+    manager._block_tip_height = 0
+    manager._task_block_tip_height = None
+    emitted: list[bool] = []
+    manager.signal_data_updated = type("Sig", (), {"emit": lambda self: emitted.append(True)})()
+
+    scheduled: list[object] = []
+
+    class LoopStub:
+        _loop = object()
+
+        def run_background(self, coro, key=None, multiple_strategy=None):
+            scheduled.append(coro)
+            coro.close()
+            return Future()
+
+    manager.loop_in_thread = LoopStub()
+    monkeypatch.setattr(Manager, "_loop_is_running", lambda self: True)
+
+    assert manager.block_tip_height() == 0  # nothing known yet, returns immediately
+    assert len(scheduled) == 1
+    # a fetch that is still pending must not schedule another one
+    assert manager.block_tip_height() == 0
+    assert len(scheduled) == 1
+    assert emitted == []

@@ -304,7 +304,8 @@ class UITx_Base(SearchableTab):
             logger.debug(f"_get_robust_height {height=} from wallets")
             return height
 
-        height = self.mempool_manager.fetch_block_tip_height()
+        # non-blocking: the cached mempool tip height is refreshed in the background
+        height = self.mempool_manager.block_tip_height()
         logger.debug(f"_get_robust_height {height=} from mempool_manager")
         return height
 
