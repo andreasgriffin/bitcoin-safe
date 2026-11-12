@@ -88,7 +88,8 @@ def test_loading_widgets_do_not_accumulate_across_open_close_cycles(
 
             node = main_window.tab_wallets.root.findNodeByTitle(qt_wallet.wallet.id)
             assert node
-            main_window.close_tab(node)
+            with patch("bitcoin_safe.gui.qt.main.question_dialog", return_value=True):
+                main_window.close_tab(node)
             QApplication.processEvents()
             assert _count_loading_tabs(main_window) == 0
 

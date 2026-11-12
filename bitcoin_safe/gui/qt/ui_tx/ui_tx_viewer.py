@@ -437,7 +437,9 @@ class UITx_Viewer(UITx_Base):
         # ensure that the linking warning bar appears (needs all tx loaded)
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.on_any_wallet_update)
         self.signal_tracker.connect(self.signals.signal_broadcast_complete, self.on_broadcast_complete)
-        self.signal_tracker.connect(self.mempool_manager.signal_data_updated, self._on_mempool_data_updated)
+        self.signal_tracker.connect(
+            self.mempool_manager.signal_block_tip_height_changed, self._on_block_tip_height_changed
+        )
         self.signals.currency_switch.connect(self.update_all_totals)
         self.utxo_list.signal_finished_update.connect(self.update_all_totals)
         self.column_fee.fee_group.mempool_buttons.signal_rbf_icon.connect(self._on_rbf_icon)
@@ -1678,7 +1680,7 @@ class UITx_Viewer(UITx_Base):
         tx, wallet = get_tx_details(self.txid(), wallet_functions=self.wallet_functions)
         self.psbt_already_broadcasted_bar.set(wallet_tx_details=tx, wallet=wallet, data=self.data)
 
-    def _on_mempool_data_updated(self) -> None:
+    def _on_block_tip_height_changed(self, _height: int) -> None:
         """Re-evaluate the nlocktime warning once a fresh mempool block tip height arrived."""
         self._set_nlocktime_from_tx(self.extract_tx())
 
