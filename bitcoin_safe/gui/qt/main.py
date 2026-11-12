@@ -2375,19 +2375,23 @@ class MainWindow(UnlockableMainWindow):
             )
             return None
 
-        qt_wallet, password = try_load(file_path=file_path)
-        if not qt_wallet:
-            return None
+        # show a visible loading state while the file is decrypted and parsed
+        # and the wallet ui is built (all of it blocks the gui thread)
+        with LoadingWalletTab(self.tab_wallets, Path(file_path).stem, focus=focus):
+            qt_wallet, password = try_load(file_path=file_path)
+            if not qt_wallet:
+                return None
 
-        if qt_wallet and password:
-            # successfuly load, then cache the password
-            self.password_cache.set_password("wallet", password)
+            if qt_wallet and password:
+                # successfuly load, then cache the password
+                self.password_cache.set_password("wallet", password)
 
-        if not QTWallet.get_wallet_lockfile(wallet_file_path):
-            logger.warning(
-                f"Could not create lock file {wallet_lockfile_path} after loading wallet {file_path}"
-            )
+            if not QTWallet.get_wallet_lockfile(wallet_file_path):
+                logger.warning(
+                    f"Could not create lock file {wallet_lockfile_path} after loading wallet {file_path}"
+                )
 
+        # add_qt_wallet shows its own LoadingWalletTab while inserting the wallet ui
         qt_wallet = self.add_qt_wallet(qt_wallet, file_path=file_path, password=password, focus=focus)
         QApplication.processEvents()
         qt_wallet.restore_last_selected_tab()
