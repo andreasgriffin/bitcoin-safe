@@ -841,21 +841,19 @@ class SidebarNode(QFrame, Generic[TT]):
         return node.select() if node else False
 
     def removeNode(self) -> None:
-        """Remove this node from its parent and, if possible, select a neighboring
-        node's page."""
-        self.clearChildren()
+        """Remove this node and its subtree from its parent.
 
+        The parent's ``removeChildNode`` emits ``nodeRemoved`` once for the whole subtree while it
+        is still attached, which lets the tree restore the selection before Qt picks a page itself.
+        """
         # Root nodes aren't closed here (match the example semantics).
         if self.parent_node is None:
+            self.clearChildren()
             return
 
-        parent = self.parent_node
-
-        # Remove the node from the UI tree
-        parent.removeChildNode(self)
-
-        if self.header_row.is_selected():
-            self.nodeUnSelected.emit(self)
+        self.parent_node.removeChildNode(self)
+        # The subtree is detached now, so emptying it cannot touch the tree's selection.
+        self.clearChildren()
 
     def _iter_selectable_leaves(self, must_be_visible: bool = True):
         """Yield leaves that have a widget (and are visible, unless disabled)."""
@@ -1338,10 +1336,13 @@ class SidebarTree(QWidget, Generic[TT]):
         self.nodeUnSelected.emit(node)
 
     def _on_node_removed(self, node: object) -> None:
-        """Drop the removed subtree from the selection history and keep the navigation index on
-        the same surviving entry."""
+        """Drop the removed subtree from the selection history and, if it contained the selected
+        page, restore a surviving page before Qt picks one on its own."""
         if not isinstance(node, SidebarNode):
             return
+        selected = self.currentNode()
+        selection_removed = selected is not None and selected._is_within(node)
+
         kept: list[SidebarNode[TT]] = []
         new_index = -1
         for idx, entry in enumerate(self._selection_history):
@@ -1354,6 +1355,23 @@ class SidebarTree(QWidget, Generic[TT]):
         self._navigation_index = new_index
         if self._current_node is not None and self._current_node._is_within(node):
             self._current_node = None
+
+        if selection_removed and not self._select_previous_from_history():
+            self._select_nearest_surviving_page(node)
+
+    def _select_nearest_surviving_page(self, removed: SidebarNode[TT]) -> bool:
+        """Select the selectable page closest to the removed subtree in sidebar order."""
+        leaves = list(self.root._iter_selectable_leaves(must_be_visible=False))
+        anchor = next((i for i, leaf in enumerate(leaves) if leaf._is_within(removed)), len(leaves))
+        survivors = [
+            (i, leaf)
+            for i, leaf in enumerate(leaves)
+            if not leaf._is_within(removed) and leaf._can_be_revealed_in_sidebar()
+        ]
+        for _, leaf in sorted(survivors, key=lambda item: abs(item[0] - anchor)):
+            if leaf.select():
+                return True
+        return False
 
     def _append_to_selection_history(self, node: SidebarNode):
         """Append to slection history."""
