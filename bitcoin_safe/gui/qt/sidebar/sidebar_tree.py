@@ -334,6 +334,9 @@ class SidebarNode(QFrame, Generic[TT]):
         self.child_nodes: list[SidebarNode[TT]] = []
         self._parent_signal_tracker = SignalTracker()
         self.stack: QStackedWidget | None = None  # wired by SidebarTree
+        # Explicit visibility intent set via setVisible/show/hide. Qt may hide a widget
+        # on reparenting, so isHidden() alone cannot tell "hidden by app" from "hidden by Qt".
+        self._wants_visible = True
 
         self.setObjectName(str(id(self)))
 
@@ -348,6 +351,7 @@ class SidebarNode(QFrame, Generic[TT]):
 
     def setVisible(self, visible: bool) -> None:
         """SetVisible."""
+        self._wants_visible = visible
         self.header_row.setVisible(not self.hide_header and visible)
         super().setVisible(visible)
         if not visible and self.header_row.is_selected():
@@ -428,9 +432,10 @@ class SidebarNode(QFrame, Generic[TT]):
         # Insert into layout/list
         self.child_nodes.insert(index, node)
         self.content_layout.insertWidget(index, node)
-        # Qt's layout shows inserted children asynchronously; show them now so that
-        # visibility checks (e.g. during synchronous removal) see the real state.
-        if self.isVisible():
+        # Qt's layout shows inserted children asynchronously; restore the node's intended
+        # visibility now so that visibility checks (e.g. during synchronous removal) see
+        # the real state. Nodes explicitly hidden by the application stay hidden.
+        if self.isVisible() and node._wants_visible:
             node.show()
 
         # NEW: make sure the entire inserted branch reflects the new depth

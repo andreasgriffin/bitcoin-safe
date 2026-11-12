@@ -237,3 +237,17 @@ def test_navigation_history_skips_removed_node_after_selected_removal(qapp: QApp
     assert tree.currentNode() is page_b
     assert tree.navigate_history_forward() is False
     assert all(n is not page_c for n in tree._selection_history)
+
+
+def test_reinserting_explicitly_hidden_node_keeps_it_hidden(qapp: QApplication) -> None:
+    del qapp
+    tree = _make_tree()
+    tree.show()
+    node = _page("hidden")
+    node.hide()
+    tree.root.addChildNode(node, focus=False)
+    assert node.isHidden()
+
+    tree.root.removeChildNode(node)
+    tree.root.addChildNode(node, focus=False)
+    assert node.isHidden()
