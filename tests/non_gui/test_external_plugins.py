@@ -4422,7 +4422,7 @@ def test_sidebar_node_remove_child_preserves_subtree(qapp: QApplication) -> None
     assert not plugin_node.isHidden()
 
 
-def test_sidebar_tree_close_skips_unreachable_history_node(qapp: QApplication) -> None:
+def test_sidebar_tree_close_restores_collapsed_history_node(qapp: QApplication) -> None:
     del qapp
     host = QWidget()
     layout = QVBoxLayout(host)
@@ -4453,7 +4453,9 @@ def test_sidebar_tree_close_skips_unreachable_history_node(qapp: QApplication) -
     closing_leaf.removeNode()
     QApplication.processEvents()
 
-    assert tree.currentNode() is fallback_leaf
+    # Pass 2 of history restore revives the collapsed-group page and expands its group.
+    assert tree.currentNode() is hidden_leaf
+    assert group_hidden.expanded is True
 
 
 def test_sidebar_tree_close_prefers_visible_fallback_over_collapsed_neighbor(
