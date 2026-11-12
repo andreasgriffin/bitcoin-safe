@@ -251,3 +251,66 @@ def test_reinserting_explicitly_hidden_node_keeps_it_hidden(qapp: QApplication) 
     tree.root.removeChildNode(node)
     tree.root.addChildNode(node, focus=False)
     assert node.isHidden()
+
+
+def test_removing_selected_node_restores_last_used_page_from_collapsed_groups(qapp: QApplication) -> None:
+    del qapp
+    tree = _make_tree()
+
+    wallet_b = SidebarNode(data="wallet-b", title="Wallet B")
+    page_b = _page("B")
+    wallet_b.addChildNode(page_b, focus=False)
+
+    wallet_a = SidebarNode(data="wallet-a", title="Wallet A")
+    page_a = _page("A")
+    wallet_a.addChildNode(page_a, focus=False)
+
+    wallet_c = SidebarNode(data="wallet-c", title="Wallet C")
+    page_c = _page("C")
+    wallet_c.addChildNode(page_c, focus=False)
+
+    tree.root.addChildNode(wallet_b, focus=False)
+    tree.root.addChildNode(wallet_a, focus=False)
+    tree.root.addChildNode(wallet_c, focus=False)
+
+    page_a.select()
+    page_b.select()
+    page_c.select()
+
+    tree.show()
+
+    wallet_a.set_collapsed(True)
+    wallet_b.set_collapsed(True)
+    assert not wallet_a.expanded
+    assert not wallet_b.expanded
+
+    wallet_c.removeNode()
+    QApplication.processEvents()
+
+    assert tree.currentNode() is page_b
+    assert tree.currentWidget() is page_b.widget
+    assert wallet_b.expanded is True
+    assert wallet_a.expanded is False
+    assert all(not n._is_within(wallet_c) for n in tree._selection_history)
+    assert page_b in tree._selection_history
+    assert page_a in tree._selection_history
+
+
+def test_explicitly_hidden_page_is_not_restored_from_history(qapp: QApplication) -> None:
+    del qapp
+    tree = _make_tree()
+    page_a, page_b, page_c = _page("A"), _page("B"), _page("C")
+    for page in (page_a, page_b, page_c):
+        tree.root.addChildNode(page, focus=False)
+
+    page_a.select()
+    page_b.select()
+    page_c.select()
+    tree.show()
+
+    page_b.hide()
+    page_c.removeNode()
+    QApplication.processEvents()
+
+    assert tree.currentNode() is page_a
+    assert all(n is not page_b for n in tree._selection_history)

@@ -1182,36 +1182,44 @@ class SidebarTree(QWidget, Generic[TT]):
             self.currentChanged.emit(node)
 
     def _select_previous_from_history(self, excluding: SidebarNode[TT] | None = None) -> bool:
-        """Select the most recent valid node from history, ignoring exclusions."""
+        """Select the most recent valid node from history, ignoring exclusions.
 
-        # Walk the history from newest to oldest, pruning hidden/invalid entries as we go.
-        idx = len(self._selection_history) - 1
-        while idx >= 0:
-            candidate = self._selection_history[idx]
-            if candidate is excluding:
+        Pass 1 prefers pages that are reachable right now. Pass 2 falls back to pages inside
+        collapsed groups, which ``select()`` reveals by expanding their ancestors. Entries that
+        can never be revealed (hidden, widgetless, or removed) are pruned during the walk.
+        """
+        for require_reachable in (True, False):
+            idx = len(self._selection_history) - 1
+            while idx >= 0:
+                candidate = self._selection_history[idx]
+                if candidate is excluding:
+                    idx -= 1
+                    continue
+
+                if candidate.widget is None or not candidate._can_be_revealed_in_sidebar():
+                    # Drop stale entries and shift the navigation index left when we remove
+                    # an element at or before the current navigation position.
+                    self._selection_history.pop(idx)
+                    if idx <= self._navigation_index:
+                        self._navigation_index -= 1
+                    idx -= 1
+                    continue
+
+                if require_reachable and not candidate._is_reachable_in_sidebar():
+                    idx -= 1
+                    continue
+
+                # Keep the navigation index aligned with the candidate we select and avoid
+                # adding new history entries while we revisit past selections.
+                self._navigating_history = True
+                try:
+                    if candidate.select():
+                        self._navigation_index = idx
+                        return True
+                finally:
+                    self._navigating_history = False
+
                 idx -= 1
-                continue
-
-            if candidate.widget is None or not candidate._is_reachable_in_sidebar():
-                # Drop stale entries and shift the navigation index left when we remove
-                # an element at or before the current navigation position.
-                self._selection_history.pop(idx)
-                if idx <= self._navigation_index:
-                    self._navigation_index -= 1
-                idx -= 1
-                continue
-
-            # Keep the navigation index aligned with the candidate we select and avoid
-            # adding new history entries while we revisit past selections.
-            self._navigating_history = True
-            try:
-                if candidate.select():
-                    self._navigation_index = idx
-                    return True
-            finally:
-                self._navigating_history = False
-
-            idx -= 1
 
         self._navigation_index = len(self._selection_history) - 1
         return False
