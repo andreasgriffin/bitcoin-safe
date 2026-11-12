@@ -1045,7 +1045,7 @@ class SidebarTree(QWidget, Generic[TT]):
 
         if vp := self.scroll_area.viewport():
             vp.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-            vp.customContextMenuRequested.connect(self._on_context_menu_requested)
+            vp.customContextMenuRequested.connect(self._on_viewport_context_menu_requested)
 
         self.container = QWidget()  # holds the sidebar nodes
         self.v_layout = QVBoxLayout(self.container)
@@ -1056,7 +1056,7 @@ class SidebarTree(QWidget, Generic[TT]):
 
         # make the container itself emit customContextMenuRequested
         self.container.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.container.customContextMenuRequested.connect(self._on_context_menu_requested)
+        self.container.customContextMenuRequested.connect(self._on_container_context_menu_requested)
         self.scroll_area.setWidget(self.container)
 
         # --- NEW: Wrap the left side in a QWidget with a QVBoxLayout
@@ -1287,13 +1287,19 @@ class SidebarTree(QWidget, Generic[TT]):
         elif bottom > vp.height() - margin:
             bar.setValue(bar.value() + bottom - vp.height() + margin)
 
-    def _on_context_menu_requested(self, pos: QPoint) -> None:
-        """On context menu requested."""
+    def _on_viewport_context_menu_requested(self, pos: QPoint) -> None:
+        """Handle context menu requests on the scroll viewport (pos in viewport coordinates)."""
         vp = self.scroll_area.viewport()
         if not vp:
             return
-        global_pos = vp.mapToGlobal(pos)
+        self._emit_context_menu(vp.mapToGlobal(pos))
 
+    def _on_container_context_menu_requested(self, pos: QPoint) -> None:
+        """Handle context menu requests on the scrolled content (pos in container coordinates)."""
+        self._emit_context_menu(self.container.mapToGlobal(pos))
+
+    def _emit_context_menu(self, global_pos: QPoint) -> None:
+        """Emit the node or empty-area context menu signal for a global position."""
         node = self.nodeAtGlobalPos(global_pos)
         if node:
             self.nodeContextMenuRequested.emit(node, global_pos)
