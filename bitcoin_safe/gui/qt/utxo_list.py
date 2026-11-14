@@ -117,7 +117,7 @@ def tooltip_text_of_utxo(is_spent_by_txid: str | None, chain_position: bdk.Chain
 
 
 class UTXOList(MyTreeView[OutPoint]):
-    VERSION = "0.0.1"
+    VERSION = "0.0.2"
     known_classes = {
         **BaseSaveableClass.known_classes,
     }
@@ -129,6 +129,7 @@ class UTXOList(MyTreeView[OutPoint]):
         ADDRESS = enum.auto()
         CATEGORY = enum.auto()
         LABEL = enum.auto()
+        SIGNED_BY = enum.auto()
         AMOUNT = enum.auto()
         # PARENTS = enum.auto()
         FIAT_BALANCE = enum.auto()
@@ -151,6 +152,7 @@ class UTXOList(MyTreeView[OutPoint]):
         Columns.AMOUNT: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
         # Columns.PARENTS: Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter,
         Columns.FIAT_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+        Columns.SIGNED_BY: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
     }
 
     column_widths: dict[MyTreeView.Columns, int] = {
@@ -160,6 +162,7 @@ class UTXOList(MyTreeView[OutPoint]):
         Columns.WALLET_ID: 100,
         Columns.OUTPOINT: 100,
         Columns.FIAT_BALANCE: 110,
+        Columns.SIGNED_BY: 120,
     }
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT
@@ -214,6 +217,7 @@ class UTXOList(MyTreeView[OutPoint]):
                 self.Columns.OUTPOINT,
                 self.Columns.WALLET_ID,
                 self.Columns.FIAT_BALANCE,
+                self.Columns.SIGNED_BY,
             ],
             selected_ids=selected_ids,
             _scroll_position=_scroll_position,
@@ -225,6 +229,7 @@ class UTXOList(MyTreeView[OutPoint]):
         self._pythonutxo_dict: dict[str, PythonUtxo] = {}  # outpoint --> txdetails
         self._wallet_dict: dict[str, Wallet] = {}  # outpoint --> wallet
         self.current_categories_filter: set[str] | None = None
+        self._signers_by_outpoint: dict[OutPoint, dict[str, str]] = {}
 
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
         self._source_model = MyStandardItemModel(
@@ -261,6 +266,9 @@ class UTXOList(MyTreeView[OutPoint]):
         if fast_version(str(dct["VERSION"])) < fast_version("0.0.1"):
             cls._do_hidden_column_migration(dct)
 
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.2"):
+            dct["hidden_columns_enum"] = (dct.get("hidden_columns_enum") or []) + [cls.Columns.SIGNED_BY.name]
+
         return super().from_dump_migration(dct=dct)
 
     def on_update_fx_rates(self):
@@ -271,6 +279,19 @@ class UTXOList(MyTreeView[OutPoint]):
         """Set outpoints."""
         self.outpoints = outpoints
         self.update_content()
+
+    def set_signers_by_outpoint(self, signers_by_outpoint: dict[OutPoint, dict[str, str]]):
+        """Set the signers per outpoint, shown in the "Signed by" column."""
+        self._signers_by_outpoint = signers_by_outpoint
+        self.update_content()
+
+    @staticmethod
+    def _format_signers(names_by_fingerprint: dict[str, str]) -> str:
+        """Format signers as comma-separated "Name (FP)" entries, or the bare fingerprint when unnamed."""
+        return ", ".join(
+            f"{name} ({fingerprint})" if name != fingerprint else fingerprint
+            for fingerprint, name in names_by_fingerprint.items()
+        )
 
     def create_menu(self, position: QPoint) -> Menu:
         """Create menu."""
@@ -380,6 +401,7 @@ class UTXOList(MyTreeView[OutPoint]):
             self.Columns.ADDRESS: header_item(self.tr("Address")),
             self.Columns.CATEGORY: header_item(self.tr("Category")),
             self.Columns.LABEL: header_item(self.tr("Label")),
+            self.Columns.SIGNED_BY: header_item(self.tr("Signed by")),
             self.Columns.AMOUNT: header_item(self.tr("Amount")),
             # self.Columns.PARENTS: self.tr("Parents"),
             self.Columns.FIAT_BALANCE: header_item(currency_symbol + " " + self.tr("Value")),
@@ -546,6 +568,11 @@ class UTXOList(MyTreeView[OutPoint]):
                     else ColorScheme.GREEN.as_color(background=True)
                 )
                 items[self.Columns.ADDRESS].setBackground(color)
+
+        signed_by = self._format_signers(self._signers_by_outpoint.get(outpoint, {}))
+        items[self.Columns.SIGNED_BY].setText(signed_by)
+        items[self.Columns.SIGNED_BY].setData(signed_by, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.SIGNED_BY].setData(signed_by, MyItemDataRole.ROLE_SORT_ORDER)
 
         balance = satoshis.value if satoshis else (python_utxo.value if python_utxo else None)
         if balance is not None:

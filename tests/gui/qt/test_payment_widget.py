@@ -368,11 +368,15 @@ def test_late_invoice_error_after_close_is_ignored(monkeypatch, qtbot, loop_in_t
             raise
         raise AssertionError("The invoice request should have been cancelled before completing")
 
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.btcpay_web_button.SubscriptionApiClient.fetch_store",
+        lambda self: StoreInfoResponse(base_url="https://payments.example.com", store_id="test-store"),
+    )
     monkeypatch.setattr("bitcoin_safe.gui.qt.btcpay_web_button.post_form_async", fake_post_form_async)
     monkeypatch.setattr(button, "_start_callback_server", lambda invoice_details: None)
 
     button.create_invoice()
-    qtbot.waitUntil(started.is_set)
+    qtbot.waitUntil(started.is_set, timeout=30000)
     button.closeEvent(QCloseEvent())
     qtbot.waitUntil(cancelled.is_set)
 

@@ -177,7 +177,7 @@ def create_tx_viewer(
         txout_dict=txout_dict,
         sort_column=UTXOList.Columns.ADDRESS,
         sort_order=Qt.SortOrder.AscendingOrder,
-        hidden_columns_enum=[UTXOList.Columns.OUTPOINT],
+        hidden_columns_enum=[UTXOList.Columns.OUTPOINT, UTXOList.Columns.SIGNED_BY],
     )
     widget_utxo_with_toolbar = UtxoListWithToolbar(utxo_list, config, parent=parent)
 

@@ -89,6 +89,7 @@ from .descriptors import (
 )
 from .i18n import translate
 from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
+from .input_signer_attribution import signers_per_input
 from .keystore import KeyStore
 from .labels import Labels, LabelType
 from .pythonbdk_types import (
@@ -1370,7 +1371,14 @@ class Wallet(BaseSaveableClass, CacheManager):
         transaction: bdk.Transaction,
         candidate_outputs: Mapping[tuple[str, int], Prevout] | None = None,
     ) -> tuple[list[Prevout | None], list[bool]]:
-        """Return known prevouts and independent wallet ownership flags in input order."""
+        """Return known prevouts and independent wallet ownership flags in input order.
+
+        ``candidate_outputs`` maps an outpoint ``(txid_hex, vout)`` to the output it spends
+        (``Prevout``: scriptPubKey bytes and value in satoshis). It supplies prevouts that the
+        wallet cannot look up itself, such as the outputs of unconfirmed parents in a PSBT.
+        Outpoints missing from it are looked up in the wallet's transactions. Pass None when
+        the wallet's own transactions are the only source.
+        """
         prevouts: list[Prevout | None] = []
         wallet_owned_inputs: list[bool] = []
         for tx_in in transaction.input():
@@ -1396,6 +1404,29 @@ class Wallet(BaseSaveableClass, CacheManager):
             prevouts.append(known_prevout)
             wallet_owned_inputs.append(self.bdkwallet.is_mine(script_pubkey))
         return prevouts, wallet_owned_inputs
+
+    def signers_of_tx_inputs(
+        self,
+        transaction: bdk.Transaction,
+        candidate_outputs: Mapping[tuple[str, int], Prevout] | None = None,
+    ) -> list[tuple[str, ...]]:
+        """Return, per input, the keystore fingerprints whose keys produced valid signatures.
+
+        The result is in input order; each entry is a tuple of fingerprints, empty when no
+        valid signature of a wallet keystore was found for that input. ``candidate_outputs``
+        has the same meaning as in ``_prevouts_of_tx``: it maps an outpoint ``(txid_hex, vout)``
+        to the spent ``Prevout``, and outpoints missing from it are looked up in the wallet.
+        """
+        prevouts, wallet_owned_inputs = self._prevouts_of_tx(transaction, candidate_outputs)
+        verification = verify_transaction(transaction, prevouts, wallet_owned_inputs)
+        keychain_indices = [
+            self.bdkwallet.derivation_of_spk(bdk.Script(prevout.script_pubkey))
+            if prevout is not None and owned
+            else None
+            for prevout, owned in zip(prevouts, wallet_owned_inputs, strict=True)
+        ]
+        keystores = [keystore for keystore in self.keystores if keystore is not None]
+        return signers_per_input(verification.results, keychain_indices, keystores, self.network)
 
     def _verify_tx_signatures(
         self,
