@@ -129,12 +129,15 @@ def _spend(
     input_kind: str,
     output_value: int = VALUE - 1000,
     sighash_type: int = SIGHASH_ALL,
+    input_count: int = 1,
 ) -> tuple[Tx, list[Prevout]]:
-    """Build a one-input transaction that spends ``spk`` and sign it with ``key``.
+    """Build a transaction that spends ``spk`` in input 0 and sign it with ``key``.
 
     Returns the signed transaction and the prevout list the wallet would know.
+    Inputs after 0 are unsigned; they must exist before signing because BIP143 and
+    legacy sighashes commit to every input's outpoint and sequence.
     """
-    tx = _new_tx(output_value=output_value)
+    tx = _new_tx(input_count=input_count, output_value=output_value)
     prevouts = [Prevout(script_pubkey=spk, value=VALUE)]
     sec = _sec(key)
     if input_kind == "p2pkh":
@@ -159,11 +162,11 @@ def _spend(
     return tx, prevouts
 
 
-def _spend_p2wsh(keys: list[int], nested: bool = False) -> tuple[Tx, list[Prevout]]:
+def _spend_p2wsh(keys: list[int], nested: bool = False, input_count: int = 1) -> tuple[Tx, list[Prevout]]:
     witness_script = _multisig_script(keys)
     witness_program = _p2wsh_spk(witness_script)
     spk = b"\xa9\x14" + hash160(witness_program) + b"\x87" if nested else witness_program
-    tx = _new_tx()
+    tx = _new_tx(input_count=input_count)
     if nested:
         tx.vin[0].script_sig = bytes([len(witness_program)]) + witness_program
     sigs = [
@@ -472,3 +475,47 @@ def test_malformed_der_signature_is_invalid(bad_der: bytes) -> None:
     # Replace the valid signature with the malformed DER, keeping SIGHASH_ALL.
     tx.vin[0].script_witness = Witness([bad_der + b"\x01", tx.vin[0].script_witness.stack[1]])
     assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.invalid]
+
+
+def test_valid_p2wpkh_with_unknown_external_sibling() -> None:
+    """Legacy and SegWit v0 sighashes read only their own prevout, so an unknown sibling is fine."""
+    tx, prevouts = _spend(_p2wpkh_spk(KEY), KEY, "p2wpkh", input_count=2)
+    assert verify_transaction(_to_bdk(tx), [prevouts[0], None], [True, False]).verdicts == [
+        InputVerdict.valid,
+        InputVerdict.unchecked,
+    ]
+
+
+def test_valid_p2pkh_with_unknown_external_sibling() -> None:
+    tx, prevouts = _spend(_p2pkh_spk(KEY), KEY, "p2pkh", input_count=2)
+    assert verify_transaction(_to_bdk(tx), [prevouts[0], None], [True, False]).verdicts == [
+        InputVerdict.valid,
+        InputVerdict.unchecked,
+    ]
+
+
+def test_valid_p2wsh_multisig_with_unknown_external_sibling() -> None:
+    tx, prevouts = _spend_p2wsh([KEY, OTHER_KEY], input_count=2)
+    assert verify_transaction(_to_bdk(tx), [prevouts[0], None], [True, False]).verdicts == [
+        InputVerdict.valid,
+        InputVerdict.unchecked,
+    ]
+
+
+def test_invalid_p2wpkh_with_unknown_external_sibling() -> None:
+    """A wallet signature over different outputs is rejected even when a sibling prevout is unknown."""
+    tx, prevouts = _spend(_p2wpkh_spk(KEY), KEY, "p2wpkh", input_count=2)
+    tx.vout = [TxOut(tx.vout[0].value - 1, tx.vout[0].script_pub_key)]
+    assert verify_transaction(_to_bdk(tx), [prevouts[0], None], [True, False]).verdicts == [
+        InputVerdict.invalid,
+        InputVerdict.unchecked,
+    ]
+
+
+def test_invalid_p2wsh_multisig_with_unknown_external_sibling() -> None:
+    tx, prevouts = _spend_p2wsh([KEY, OTHER_KEY], input_count=2)
+    tx.vout = [TxOut(tx.vout[0].value - 1, tx.vout[0].script_pub_key)]
+    assert verify_transaction(_to_bdk(tx), [prevouts[0], None], [True, False]).verdicts == [
+        InputVerdict.invalid,
+        InputVerdict.unchecked,
+    ]

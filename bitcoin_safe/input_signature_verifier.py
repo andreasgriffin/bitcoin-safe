@@ -109,6 +109,10 @@ def _is_native_witness(script_pubkey: bytes) -> bool:
     )
 
 
+def _is_taproot_program(script_pubkey: bytes) -> bool:
+    return len(script_pubkey) == 34 and script_pubkey[:2] == b"\x51\x20"
+
+
 def _verify_external_input(tx: Tx, index: int, prevout: Prevout | None) -> InputVerdict:
     """Enforce the native-witness scriptSig rule only, never a participant's signature."""
     if prevout is None:
@@ -135,11 +139,16 @@ def _taproot_keypath_allows_unknown_siblings(tx: Tx, index: int) -> bool:
 
 def _verify_wallet_input(tx: Tx, index: int, prevouts: list[Prevout | None]) -> InputResult:
     """Run the consensus engine on one wallet-owned input and map the outcome to a result."""
-    if prevouts[index] is None:
+    prevout = prevouts[index]
+    if prevout is None:
         return InputResult(InputVerdict.unchecked)
     # The engine needs one TxOut per input. Unknown siblings are only replaced by
-    # placeholders when no other input's data can reach this input's sighash.
-    sibling_placeholders_allowed = _taproot_keypath_allows_unknown_siblings(tx, index)
+    # placeholders when no other input's data can reach this input's sighash: legacy
+    # and SegWit v0 sighashes read only this input's prevout, and so do Taproot
+    # ANYONECANPAY key-path sighashes. Other Taproot sighashes commit to every prevout.
+    sibling_placeholders_allowed = not _is_taproot_program(
+        prevout.script_pubkey
+    ) or _taproot_keypath_allows_unknown_siblings(tx, index)
     tx_outs: list[TxOut] = []
     for other in prevouts:
         if other is not None:
