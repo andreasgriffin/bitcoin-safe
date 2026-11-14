@@ -263,8 +263,11 @@ class UTXOList(MyTreeView[OutPoint]):
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
         """From dump migration."""
-        if fast_version(str(dct["VERSION"])) < fast_version("0.0.2"):
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.1"):
             cls._do_hidden_column_migration(dct)
+
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.2"):
+            dct["hidden_columns_enum"] = (dct.get("hidden_columns_enum") or []) + [cls.Columns.SIGNED_BY.name]
 
         return super().from_dump_migration(dct=dct)
 
