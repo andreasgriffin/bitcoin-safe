@@ -355,6 +355,18 @@ jobs:
 
           Write-Log "Portable executable launch verification completed successfully."
 
+      - name: Copy application log for upload
+        if: always()  # The app log is copied even when earlier steps failed
+        shell: pwsh
+        run: |
+          $logSource = Join-Path $env:LOCALAPPDATA 'bitcoin_safe\bitcoin_safe\bitcoin_safe.log'
+          if (Test-Path $logSource) {
+            Copy-Item -Path $logSource -Destination 'bitcoin_safe.log' -Force
+            Write-Host "Copied application log from $logSource"
+          } else {
+            Write-Host "Application log not found at $logSource"
+          }
+
       - name: Upload Windows portable test artifacts
         if: always()  # This ensures the step runs regardless of previous failures    
         uses: actions/upload-artifact@v7
