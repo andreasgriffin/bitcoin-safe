@@ -35,7 +35,11 @@ import ecc.ssa as ssa
 import pytest
 from btclib.hashes import hash160, sha256
 from btclib.script import sig_hash as sighash
-from btclib.script.taproot import output_prvkey_from_merkle_root
+from btclib.script.taproot import (
+    leaf_hash,
+    output_prvkey_from_merkle_root,
+    output_pubkey_from_merkle_root_var,
+)
 from btclib.script.witness import Witness
 from btclib.tx import OutPoint, Tx, TxIn, TxOut
 
@@ -519,3 +523,45 @@ def test_invalid_p2wsh_multisig_with_unknown_external_sibling() -> None:
         InputVerdict.invalid,
         InputVerdict.unchecked,
     ]
+
+
+def test_valid_p2wpkh_reports_verified_pubkey() -> None:
+    tx, prevouts = _spend(_p2wpkh_spk(KEY), KEY, "p2wpkh")
+    result = verify_transaction(_to_bdk(tx), prevouts)
+    assert result.verdicts == [InputVerdict.valid]
+    assert result.results[0].signer_pubkeys == (_sec(KEY),)
+
+
+def test_failed_ecdsa_check_in_successful_script_is_unchecked() -> None:
+    """``<pubkey> OP_CHECKSIG OP_NOT`` succeeds although the signature is wrong."""
+    witness_script = bytes([33]) + _sec(KEY) + b"\xac\x91"  # OP_CHECKSIG OP_NOT
+    spk = _p2wsh_spk(witness_script)
+    tx = _new_tx()
+    sighash_msg = sighash.segwit_v0(witness_script, tx, 0, SIGHASH_ALL, VALUE)
+    wrong_sig = _ecdsa_sig(sighash_msg, OTHER_KEY, SIGHASH_ALL)
+    tx.vin[0].script_witness = Witness([wrong_sig, witness_script])
+    result = verify_transaction(_to_bdk(tx), [Prevout(spk, VALUE)])
+    assert result.verdicts == [InputVerdict.unchecked]
+    assert result.results[0].signer_pubkeys == ()
+
+
+def test_valid_taproot_keypath_is_valid_without_ecdsa_signatures() -> None:
+    tx, prevouts = _spend(_p2tr_spk(KEY), KEY, "p2tr")
+    assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.valid]
+
+
+def test_valid_taproot_scriptpath_is_valid() -> None:
+    """A script-path spend with a valid Schnorr signature over its tapleaf is valid."""
+    leaf_script = bytes([32]) + _xonly(KEY) + b"\xac"  # <xonly> OP_CHECKSIG
+    leaf = leaf_hash(0xC0, leaf_script)
+    internal_key = _xonly(OTHER_KEY)
+    output_key, parity = output_pubkey_from_merkle_root_var(internal_key, leaf)
+    spk = b"\x51\x20" + output_key
+    tx, prevouts = _new_tx(), [Prevout(spk, VALUE)]
+    control_block = bytes([0xC0 | parity]) + internal_key
+    tx.vin[0].script_witness = Witness([b"", leaf_script, control_block])
+    # BIP342 message extension: tapleaf hash, key version 0, no OP_CODESEPARATOR.
+    extension = sighash.taproot_annex_and_ext(tx, 0)[1]
+    msg = sighash.taproot(tx, 0, [TxOut(VALUE, spk)], SIGHASH_DEFAULT, 1, b"", extension)
+    tx.vin[0].script_witness = Witness([ssa.sign_(msg, KEY).serialize(), leaf_script, control_block])
+    assert verify_transaction(_to_bdk(tx), prevouts).verdicts == [InputVerdict.valid]

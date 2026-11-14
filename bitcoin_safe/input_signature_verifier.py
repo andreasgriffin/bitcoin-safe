@@ -163,12 +163,14 @@ def _verify_wallet_input(tx: Tx, index: int, prevouts: list[Prevout | None]) -> 
         verify_input(tx_outs, tx, index, hash_types=hash_types, signatures=signatures)
     except ScriptError:
         return InputResult(InputVerdict.invalid)
-    # A signature was checked when the engine recorded a hash type. Scripts that ran
-    # without a signature check are not proof of anything, so they stay unchecked.
-    if not hash_types:
+    # hash_types also records failed ECDSA checks, so only verified ECDSA pairs count.
+    # btclib does not collect successful Schnorr signatures, so for Taproot any recorded
+    # check is the signal. Scripts that ran without a verified signature stay unchecked.
+    has_verified_signature = bool(signatures) or (
+        _is_taproot_program(prevout.script_pubkey) and bool(hash_types)
+    )
+    if not has_verified_signature:
         return InputResult(InputVerdict.unchecked)
-    # Signing pairs are reported as the engine ran them, so they are only attributable
-    # once the whole input has verified.
     return InputResult(InputVerdict.valid, tuple(pub_key for pub_key, _ in signatures))
 
 
