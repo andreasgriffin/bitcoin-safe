@@ -85,9 +85,9 @@ datas = [
 # slip10 reads its version from importlib.metadata at import time, so the
 # bundled app also needs the distribution metadata.
 datas += copy_metadata("slip10")
-# ecc loads curve parameters from JSON files at import time.
-datas += collect_data_files("ecc", includes=["curves/_data/*.json"])
-
+# Dependencies load JSON resources using paths relative to __file__.
+datas += collect_data_files("ecc")
+datas += collect_data_files("btclib")
 
 ##### data of included modules 
 # Get the site-packages directory
