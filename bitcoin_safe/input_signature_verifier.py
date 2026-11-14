@@ -71,10 +71,22 @@ class Prevout:
 
 
 @dataclass(frozen=True)
-class TxVerification:
-    """Per-input verdicts. A transaction is invalid if any of its inputs is invalid."""
+class InputResult:
+    """Verdict for one input, plus the public keys whose signatures the engine confirmed."""
 
-    verdicts: list[InputVerdict]
+    verdict: InputVerdict
+    signer_pubkeys: tuple[bytes, ...] = ()
+
+
+@dataclass(frozen=True)
+class TxVerification:
+    """Per-input results. A transaction is invalid if any of its inputs is invalid."""
+
+    results: list[InputResult]
+
+    @property
+    def verdicts(self) -> list[InputVerdict]:
+        return [result.verdict for result in self.results]
 
     @property
     def is_invalid(self) -> bool:
@@ -121,10 +133,10 @@ def _taproot_keypath_allows_unknown_siblings(tx: Tx, index: int) -> bool:
     return len(witness[0]) == 65 and bool(witness[0][64] & ANYONECANPAY)
 
 
-def _verify_wallet_input(tx: Tx, index: int, prevouts: list[Prevout | None]) -> InputVerdict:
-    """Run the consensus engine on one wallet-owned input and map the outcome to a verdict."""
+def _verify_wallet_input(tx: Tx, index: int, prevouts: list[Prevout | None]) -> InputResult:
+    """Run the consensus engine on one wallet-owned input and map the outcome to a result."""
     if prevouts[index] is None:
-        return InputVerdict.unchecked
+        return InputResult(InputVerdict.unchecked)
     # The engine needs one TxOut per input. Unknown siblings are only replaced by
     # placeholders when no other input's data can reach this input's sighash.
     sibling_placeholders_allowed = _taproot_keypath_allows_unknown_siblings(tx, index)
@@ -135,15 +147,20 @@ def _verify_wallet_input(tx: Tx, index: int, prevouts: list[Prevout | None]) -> 
         elif sibling_placeholders_allowed:
             tx_outs.append(TxOut(0, b"", check_validity=False))
         else:
-            return InputVerdict.unchecked
+            return InputResult(InputVerdict.unchecked)
     hash_types: list[int] = []
+    signatures: list[tuple[bytes, bytes]] = []
     try:
-        verify_input(tx_outs, tx, index, hash_types=hash_types)
+        verify_input(tx_outs, tx, index, hash_types=hash_types, signatures=signatures)
     except ScriptError:
-        return InputVerdict.invalid
+        return InputResult(InputVerdict.invalid)
     # A signature was checked when the engine recorded a hash type. Scripts that ran
     # without a signature check are not proof of anything, so they stay unchecked.
-    return InputVerdict.valid if hash_types else InputVerdict.unchecked
+    if not hash_types:
+        return InputResult(InputVerdict.unchecked)
+    # Signing pairs are reported as the engine ran them, so they are only attributable
+    # once the whole input has verified.
+    return InputResult(InputVerdict.valid, tuple(pub_key for pub_key, _ in signatures))
 
 
 def verify_transaction(
@@ -167,9 +184,9 @@ def verify_transaction(
         # pass explicit ownership flags so external participant signatures are skipped.
         wallet_owned_inputs = [True] * input_count
     if len(prevouts) != input_count or len(wallet_owned_inputs) != input_count:
-        return TxVerification(verdicts=[InputVerdict.invalid] * input_count)
+        return TxVerification(results=[InputResult(InputVerdict.invalid)] * input_count)
     return TxVerification(
-        verdicts=[
+        results=[
             _verify_input_safely(consensus_tx, index, prevouts, wallet_owned_inputs[index])
             for index in range(input_count)
         ],
@@ -178,11 +195,11 @@ def verify_transaction(
 
 def _verify_input_safely(
     tx: Tx, index: int, prevouts: list[Prevout | None], wallet_owned: bool
-) -> InputVerdict:
+) -> InputResult:
     """Treat malformed input encodings as invalid instead of aborting transaction processing."""
     try:
         if not wallet_owned:
-            return _verify_external_input(tx, index, prevouts[index])
+            return InputResult(_verify_external_input(tx, index, prevouts[index]))
         return _verify_wallet_input(tx, index, prevouts)
     except Exception:
-        return InputVerdict.invalid
+        return InputResult(InputVerdict.invalid)

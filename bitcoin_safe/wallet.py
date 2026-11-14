@@ -89,6 +89,7 @@ from .descriptors import (
 )
 from .i18n import translate
 from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
+from .input_signer_attribution import InputSigners, KeystoreRef, signers_per_input
 from .keystore import KeyStore
 from .labels import Labels, LabelType
 from .pythonbdk_types import (
@@ -1396,6 +1397,27 @@ class Wallet(BaseSaveableClass, CacheManager):
             prevouts.append(known_prevout)
             wallet_owned_inputs.append(self.bdkwallet.is_mine(script_pubkey))
         return prevouts, wallet_owned_inputs
+
+    def signers_of_tx_inputs(
+        self,
+        transaction: bdk.Transaction,
+        candidate_outputs: Mapping[tuple[str, int], Prevout] | None = None,
+    ) -> list[InputSigners]:
+        """Return, per input, the keystore fingerprints whose keys produced valid signatures."""
+        prevouts, wallet_owned_inputs = self._prevouts_of_tx(transaction, candidate_outputs)
+        verification = verify_transaction(transaction, prevouts, wallet_owned_inputs)
+        keychain_indices = [
+            self.bdkwallet.derivation_of_spk(bdk.Script(prevout.script_pubkey))
+            if prevout is not None and owned
+            else None
+            for prevout, owned in zip(prevouts, wallet_owned_inputs, strict=True)
+        ]
+        keystores = [
+            KeystoreRef(fingerprint=keystore.fingerprint, xpub=keystore.xpub)
+            for keystore in self.keystores
+            if keystore is not None
+        ]
+        return signers_per_input(verification.results, keychain_indices, keystores, self.network)
 
     def _verify_tx_signatures(
         self,

@@ -408,3 +408,16 @@ def test_sync_evicts_and_returns_invalid_unconfirmed_transaction(monkeypatch) ->
     finally:
         wallet.close()
         assert str(invalid_tx.compute_txid()) in evicted[0]
+
+
+def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> None:
+    wallet, outpoint = _wallet_with_funded_unconfirmed_output()
+    try:
+        spend = _create_signed_spend(wallet, outpoint)
+
+        signers = wallet.signers_of_tx_inputs(spend)
+
+        assert len(signers) == 1
+        assert signers[0].fingerprints == (wallet.keystores[0].fingerprint.upper(),)
+    finally:
+        wallet.close()
