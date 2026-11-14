@@ -205,6 +205,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
             self.utxo_list_with_toolbar = UtxoListWithToolbar(self.utxo_list, self.config, parent=self)
 
+        # the creator has no signed transaction, so "Signed by" never applies (saved state may not hide it)
+        self.utxo_list.set_column_hidden(UTXOList.Columns.SIGNED_BY, True)
         self.additional_outpoints: list[OutPoint] = []
         self.utxo_list.outpoints = self.get_outpoints()
         self.hidden_tx_infos = HiddenTxUiInfos()

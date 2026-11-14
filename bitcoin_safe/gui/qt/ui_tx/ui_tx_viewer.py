@@ -1495,10 +1495,30 @@ class UITx_Viewer(UITx_Base):
             nlocktime=tx.lock_time(),
         )
         self.set_sankey(tx, fee_info=fee_info, txo_dict=self._get_python_txos())
+        self._update_signed_by_column(tx)
         self.label_line_edit.updateUi()
         self.label_line_edit.autofill_label_and_category()
         self.container_label.setHidden(True)
         self.signal_updated_content.emit(self.data)
+
+    def _update_signed_by_column(self, tx: bdk.Transaction) -> None:
+        """Show per input the keystore fingerprints whose keys produced valid signatures."""
+        fingerprints_per_input: list[tuple[str, ...]] = [() for _ in tx.input()]
+        for wallet_ in get_wallets(self.wallet_functions):
+            try:
+                signers_per_input = wallet_.signers_of_tx_inputs(tx)
+            except Exception:
+                logger.exception(f"Failed to attribute signers of transaction {tx.compute_txid()}")
+                continue
+            for index, signers in enumerate(signers_per_input):
+                if signers.fingerprints and not fingerprints_per_input[index]:
+                    fingerprints_per_input[index] = signers.fingerprints
+        signers_by_outpoint = {
+            str(OutPoint.from_bdk(tx_in.previous_output)): ", ".join(fingerprints)
+            for tx_in, fingerprints in zip(tx.input(), fingerprints_per_input, strict=True)
+            if fingerprints
+        }
+        self.utxo_list.set_signers_by_outpoint(signers_by_outpoint)
 
     def _get_python_txos(self):
         """Get python txos."""
@@ -1674,6 +1694,7 @@ class UITx_Viewer(UITx_Base):
         txo_dict = SimplePSBT.from_psbt(psbt).outpoints_as_python_utxo_dict(self.network)
         txo_dict.update(self._get_python_txos())
         self.set_sankey(tx, fee_info=fee_info, txo_dict=txo_dict)
+        self._update_signed_by_column(tx)
         self.container_label.setHidden(True)
         self.signal_updated_content.emit(self.data)
 

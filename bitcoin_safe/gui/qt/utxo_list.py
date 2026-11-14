@@ -132,6 +132,7 @@ class UTXOList(MyTreeView[OutPoint]):
         AMOUNT = enum.auto()
         # PARENTS = enum.auto()
         FIAT_BALANCE = enum.auto()
+        SIGNED_BY = enum.auto()
 
     filter_columns = [
         Columns.WALLET_ID,
@@ -151,6 +152,7 @@ class UTXOList(MyTreeView[OutPoint]):
         Columns.AMOUNT: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
         # Columns.PARENTS: Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter,
         Columns.FIAT_BALANCE: Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
+        Columns.SIGNED_BY: Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
     }
 
     column_widths: dict[MyTreeView.Columns, int] = {
@@ -160,6 +162,7 @@ class UTXOList(MyTreeView[OutPoint]):
         Columns.WALLET_ID: 100,
         Columns.OUTPOINT: 100,
         Columns.FIAT_BALANCE: 110,
+        Columns.SIGNED_BY: 120,
     }
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT
@@ -214,6 +217,7 @@ class UTXOList(MyTreeView[OutPoint]):
                 self.Columns.OUTPOINT,
                 self.Columns.WALLET_ID,
                 self.Columns.FIAT_BALANCE,
+                self.Columns.SIGNED_BY,
             ],
             selected_ids=selected_ids,
             _scroll_position=_scroll_position,
@@ -225,6 +229,7 @@ class UTXOList(MyTreeView[OutPoint]):
         self._pythonutxo_dict: dict[str, PythonUtxo] = {}  # outpoint --> txdetails
         self._wallet_dict: dict[str, Wallet] = {}  # outpoint --> wallet
         self.current_categories_filter: set[str] | None = None
+        self._signers_by_outpoint: dict[str, str] = {}  # outpoint_str --> comma-separated fingerprints
 
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
         self._source_model = MyStandardItemModel(
@@ -270,6 +275,11 @@ class UTXOList(MyTreeView[OutPoint]):
     def set_outpoints(self, outpoints: list[OutPoint]):
         """Set outpoints."""
         self.outpoints = outpoints
+        self.update_content()
+
+    def set_signers_by_outpoint(self, signers_by_outpoint: dict[str, str]):
+        """Set the comma-separated signing fingerprints per outpoint, shown in the "Signed by" column."""
+        self._signers_by_outpoint = signers_by_outpoint
         self.update_content()
 
     def create_menu(self, position: QPoint) -> Menu:
@@ -383,6 +393,7 @@ class UTXOList(MyTreeView[OutPoint]):
             self.Columns.AMOUNT: header_item(self.tr("Amount")),
             # self.Columns.PARENTS: self.tr("Parents"),
             self.Columns.FIAT_BALANCE: header_item(currency_symbol + " " + self.tr("Value")),
+            self.Columns.SIGNED_BY: header_item(self.tr("Signed by")),
         }
 
     @time_logger
@@ -546,6 +557,11 @@ class UTXOList(MyTreeView[OutPoint]):
                     else ColorScheme.GREEN.as_color(background=True)
                 )
                 items[self.Columns.ADDRESS].setBackground(color)
+
+        signed_by = self._signers_by_outpoint.get(str(outpoint), "")
+        items[self.Columns.SIGNED_BY].setText(signed_by)
+        items[self.Columns.SIGNED_BY].setData(signed_by, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+        items[self.Columns.SIGNED_BY].setData(signed_by, MyItemDataRole.ROLE_SORT_ORDER)
 
         balance = satoshis.value if satoshis else (python_utxo.value if python_utxo else None)
         if balance is not None:
