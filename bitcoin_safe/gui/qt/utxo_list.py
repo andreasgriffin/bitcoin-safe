@@ -162,6 +162,7 @@ class UTXOList(MyTreeView[OutPoint]):
         Columns.WALLET_ID: 100,
         Columns.OUTPOINT: 100,
         Columns.FIAT_BALANCE: 110,
+        Columns.SIGNED_BY: 120,
     }
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT

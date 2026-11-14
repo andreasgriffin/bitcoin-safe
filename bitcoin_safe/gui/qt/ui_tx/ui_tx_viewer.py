@@ -1504,7 +1504,13 @@ class UITx_Viewer(UITx_Base):
     def _update_signed_by_column(self, tx: bdk.Transaction) -> None:
         """Show per input the keystore fingerprints whose keys produced valid signatures."""
         fingerprints_per_input: list[tuple[str, ...]] = [() for _ in tx.input()]
+        names_by_fingerprint: dict[str, str] = {}
         for wallet_ in get_wallets(self.wallet_functions):
+            for index, keystore in enumerate(wallet_.keystores):
+                names_by_fingerprint.setdefault(
+                    keystore.fingerprint,
+                    keystore.hardware_signer_label(fallback_name=wallet_.signer_fallback_name(index)),
+                )
             try:
                 signers_per_input = wallet_.signers_of_tx_inputs(tx)
             except Exception:
@@ -1514,7 +1520,12 @@ class UITx_Viewer(UITx_Base):
                 if signers.fingerprints and not fingerprints_per_input[index]:
                     fingerprints_per_input[index] = signers.fingerprints
         signers_by_outpoint = {
-            str(OutPoint.from_bdk(tx_in.previous_output)): ", ".join(fingerprints)
+            str(OutPoint.from_bdk(tx_in.previous_output)): ", ".join(
+                f"{names_by_fingerprint[fingerprint]} ({fingerprint})"
+                if fingerprint in names_by_fingerprint
+                else fingerprint
+                for fingerprint in fingerprints
+            )
             for tx_in, fingerprints in zip(tx.input(), fingerprints_per_input, strict=True)
             if fingerprints
         }
