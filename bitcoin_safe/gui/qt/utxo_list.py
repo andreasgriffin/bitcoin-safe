@@ -229,7 +229,7 @@ class UTXOList(MyTreeView[OutPoint]):
         self._pythonutxo_dict: dict[str, PythonUtxo] = {}  # outpoint --> txdetails
         self._wallet_dict: dict[str, Wallet] = {}  # outpoint --> wallet
         self.current_categories_filter: set[str] | None = None
-        self._signers_by_outpoint: dict[str, str] = {}  # outpoint_str --> comma-separated fingerprints
+        self._signers_by_outpoint: dict[OutPoint, dict[str, str]] = {}
 
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
         self._source_model = MyStandardItemModel(
@@ -280,10 +280,18 @@ class UTXOList(MyTreeView[OutPoint]):
         self.outpoints = outpoints
         self.update_content()
 
-    def set_signers_by_outpoint(self, signers_by_outpoint: dict[str, str]):
-        """Set the comma-separated signing fingerprints per outpoint, shown in the "Signed by" column."""
+    def set_signers_by_outpoint(self, signers_by_outpoint: dict[OutPoint, dict[str, str]]):
+        """Set the signers per outpoint, shown in the "Signed by" column."""
         self._signers_by_outpoint = signers_by_outpoint
         self.update_content()
+
+    @staticmethod
+    def _format_signers(names_by_fingerprint: dict[str, str]) -> str:
+        """Format signers as comma-separated "Name (FP)" entries, or the bare fingerprint when unnamed."""
+        return ", ".join(
+            f"{name} ({fingerprint})" if name != fingerprint else fingerprint
+            for fingerprint, name in names_by_fingerprint.items()
+        )
 
     def create_menu(self, position: QPoint) -> Menu:
         """Create menu."""
@@ -561,7 +569,7 @@ class UTXOList(MyTreeView[OutPoint]):
                 )
                 items[self.Columns.ADDRESS].setBackground(color)
 
-        signed_by = self._signers_by_outpoint.get(str(outpoint), "")
+        signed_by = self._format_signers(self._signers_by_outpoint.get(outpoint, {}))
         items[self.Columns.SIGNED_BY].setText(signed_by)
         items[self.Columns.SIGNED_BY].setData(signed_by, MyItemDataRole.ROLE_CLIPBOARD_DATA)
         items[self.Columns.SIGNED_BY].setData(signed_by, MyItemDataRole.ROLE_SORT_ORDER)

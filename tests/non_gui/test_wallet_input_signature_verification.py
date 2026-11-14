@@ -418,6 +418,6 @@ def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> 
         signers = wallet.signers_of_tx_inputs(spend)
 
         assert len(signers) == 1
-        assert signers[0].fingerprints == (wallet.keystores[0].fingerprint.upper(),)
+        assert signers[0] == (wallet.keystores[0].fingerprint.upper(),)
     finally:
         wallet.close()

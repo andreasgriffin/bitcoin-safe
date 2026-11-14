@@ -37,33 +37,16 @@ signing key's hash. bdk performs the derivation, so no separate BIP32 implementa
 from __future__ import annotations
 
 from collections.abc import Sequence
-from dataclasses import dataclass
 
 import bdkpython as bdk
 from bitcoin_safe_lib.util import network_kind
 from btclib.hashes import hash160
 
 from bitcoin_safe.input_signature_verifier import InputResult
+from bitcoin_safe.keystore import KeyStore
 
 
-@dataclass(frozen=True)
-class KeystoreRef:
-    """A keystore identified by its master fingerprint and its public extended key."""
-
-    fingerprint: str
-    xpub: str
-
-
-@dataclass(frozen=True)
-class InputSigners:
-    """Fingerprints whose keys produced the valid signatures of one input."""
-
-    fingerprints: tuple[str, ...]
-
-
-def derived_key_hash(
-    keystore: KeystoreRef, keychain_index: bdk.KeychainAndIndex, network: bdk.Network
-) -> bytes:
+def derived_key_hash(keystore: KeyStore, keychain_index: bdk.KeychainAndIndex, network: bdk.Network) -> bytes:
     """Return the HASH160 of a keystore's compressed child public key at ``/<keychain>/<index>``."""
     keychain_number = 0 if keychain_index.keychain == bdk.KeychainKind.EXTERNAL else 1
     descriptor = bdk.Descriptor(
@@ -77,16 +60,16 @@ def derived_key_hash(
 def attribute_input_signers(
     result: InputResult,
     keychain_index: bdk.KeychainAndIndex | None,
-    keystores: Sequence[KeystoreRef],
+    keystores: Sequence[KeyStore],
     network: bdk.Network,
-) -> InputSigners:
+) -> tuple[str, ...]:
     """Map an input's valid signing pubkeys to keystore fingerprints.
 
     Only wallet-owned inputs have a known derivation, so ``keychain_index`` is None
     for inputs the wallet does not own, which yields no fingerprints.
     """
     if keychain_index is None or not result.signer_pubkeys:
-        return InputSigners(fingerprints=())
+        return ()
     fingerprints: list[str] = []
     for signer_pubkey in result.signer_pubkeys:
         signer_hash = hash160(signer_pubkey)
@@ -94,15 +77,15 @@ def attribute_input_signers(
             if derived_key_hash(keystore, keychain_index, network) == signer_hash:
                 fingerprints.append(keystore.fingerprint)
                 break
-    return InputSigners(fingerprints=tuple(fingerprints))
+    return tuple(fingerprints)
 
 
 def signers_per_input(
     results: Sequence[InputResult],
     keychain_indices: Sequence[bdk.KeychainAndIndex | None],
-    keystores: Sequence[KeystoreRef],
+    keystores: Sequence[KeyStore],
     network: bdk.Network,
-) -> list[InputSigners]:
+) -> list[tuple[str, ...]]:
     """Attribute every input in transaction order."""
     return [
         attribute_input_signers(result, keychain_index, keystores, network)
