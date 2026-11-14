@@ -117,7 +117,7 @@ def tooltip_text_of_utxo(is_spent_by_txid: str | None, chain_position: bdk.Chain
 
 
 class UTXOList(MyTreeView[OutPoint]):
-    VERSION = "0.0.1"
+    VERSION = "0.0.2"
     known_classes = {
         **BaseSaveableClass.known_classes,
     }
@@ -129,10 +129,10 @@ class UTXOList(MyTreeView[OutPoint]):
         ADDRESS = enum.auto()
         CATEGORY = enum.auto()
         LABEL = enum.auto()
+        SIGNED_BY = enum.auto()
         AMOUNT = enum.auto()
         # PARENTS = enum.auto()
         FIAT_BALANCE = enum.auto()
-        SIGNED_BY = enum.auto()
 
     filter_columns = [
         Columns.WALLET_ID,
@@ -162,7 +162,6 @@ class UTXOList(MyTreeView[OutPoint]):
         Columns.WALLET_ID: 100,
         Columns.OUTPOINT: 100,
         Columns.FIAT_BALANCE: 110,
-        Columns.SIGNED_BY: 120,
     }
     stretch_column = Columns.LABEL
     key_column = Columns.OUTPOINT
@@ -263,7 +262,7 @@ class UTXOList(MyTreeView[OutPoint]):
     @classmethod
     def from_dump_migration(cls, dct: dict[str, Any]) -> dict[str, Any]:
         """From dump migration."""
-        if fast_version(str(dct["VERSION"])) < fast_version("0.0.1"):
+        if fast_version(str(dct["VERSION"])) < fast_version("0.0.2"):
             cls._do_hidden_column_migration(dct)
 
         return super().from_dump_migration(dct=dct)
@@ -390,10 +389,10 @@ class UTXOList(MyTreeView[OutPoint]):
             self.Columns.ADDRESS: header_item(self.tr("Address")),
             self.Columns.CATEGORY: header_item(self.tr("Category")),
             self.Columns.LABEL: header_item(self.tr("Label")),
+            self.Columns.SIGNED_BY: header_item(self.tr("Signed by")),
             self.Columns.AMOUNT: header_item(self.tr("Amount")),
             # self.Columns.PARENTS: self.tr("Parents"),
             self.Columns.FIAT_BALANCE: header_item(currency_symbol + " " + self.tr("Value")),
-            self.Columns.SIGNED_BY: header_item(self.tr("Signed by")),
         }
 
     @time_logger
