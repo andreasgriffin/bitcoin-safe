@@ -45,9 +45,11 @@ from PyQt6.QtWidgets import (
     QGridLayout,
     QLabel,
     QLineEdit,
+    QMenu,
     QPlainTextEdit,
     QPushButton,
     QTabWidget,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
@@ -63,9 +65,12 @@ from bitcoin_safe.i18n import translate
 from bitcoin_safe.keystore import KeyStoreImporterTypes
 
 from ...message_signature_verifyer import MessageSignatureVerifyer
+from ...pythonbdk_types import AddressInfoMin
 from ...signals import SignalsMin, WalletFunctions
+from ...signer import SeedSignOption, seed_sign_options
+from ...wallet import Wallet
 from .gpg_verify import verify_gpg_signed_message
-from .util import Message, delayed_execution, do_copy
+from .util import Message, caught_exception_message, delayed_execution, do_copy
 
 logger = logging.getLogger(__name__)
 
@@ -90,6 +95,7 @@ class SignMessageBase(QWidget):
         loop_in_thread: LoopInThread,
         parent: QWidget | None,
         grid_layout: QGridLayout | None = None,
+        seed_sign_options: list[SeedSignOption] | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
@@ -119,6 +125,14 @@ class SignMessageBase(QWidget):
         )
         self.sign_usb_button.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.hwi.icon_filename))
         self.sign_usb_button.clicked.connect(self.on_sign_usb_message_button)
+
+        self.seed_menu = QMenu(self)
+        self.sign_seed_button = QToolButton()
+        self.sign_seed_button.setIcon(svg_tools.get_QIcon(KeyStoreImporterTypes.seed.icon_filename))
+        self.sign_seed_button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.sign_seed_button.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.sign_seed_button.setMenu(self.seed_menu)
+        self.set_seed_sign_options(seed_sign_options or [])
 
         # qr
         qr_follow_up_group = self._build_qr_scan_follow_up_group()
@@ -214,10 +228,38 @@ class SignMessageBase(QWidget):
         if signed_message:
             self.signal_signed_message.emit(signed_message)
 
+    def set_seed_sign_options(self, options: list[SeedSignOption]) -> None:
+        """Rebuild the seed menu with one entry per option. The button is shown only if there are options."""
+        self.seed_menu.clear()
+        for option in options:
+            action = self.seed_menu.addAction(option.label)
+            assert action
+            action.triggered.connect(lambda _checked=False, o=option: self.sign_with_option(o))
+        self.sign_seed_button.setVisible(bool(options))
+
+    def sign_with_option(self, option: SeedSignOption) -> None:
+        """Sign the message in software with the seed keystore of the chosen option."""
+        msg = self.get_message()
+        if len(msg) < 2:
+            Message(self.tr("Message too short."), parent=self)
+            return
+
+        try:
+            signed_message = option.signer.sign_message(message=msg, bip32_path=option.bip32_path)
+        except Exception as e:
+            caught_exception_message(e, parent=self)
+            return
+
+        self.signal_signed_message.emit(signed_message)
+
     def updateUI(self) -> None:
         """Update translatable strings."""
 
         self.sign_usb_button.setText(self.tr("Sign"))
+        self.sign_seed_button.setText(self.tr("Sign"))
+        self.sign_seed_button.setToolTip(
+            self.tr("The signature proves control of one key only, not of a multisig address.")
+        )
         self.sign_qr_button.setText(self.tr("Sign"))
 
 
@@ -231,6 +273,7 @@ class SignMessage(SignMessageBase):
         loop_in_thread: LoopInThread,
         parent: QWidget | None,
         grid_layout: QGridLayout | None = None,
+        seed_sign_options: list[SeedSignOption] | None = None,
     ) -> None:
         """Initialize instance."""
 
@@ -246,11 +289,13 @@ class SignMessage(SignMessageBase):
             loop_in_thread=loop_in_thread,
             parent=parent,
             grid_layout=grid_layout,
+            seed_sign_options=seed_sign_options,
         )
         self.grid_layout.addWidget(self.sign_label, 1, 0)
         self.grid_layout.addWidget(self.sign_edit, 1, 2)
         self.grid_layout.addWidget(self.sign_usb_button, 1, 3)
-        self.grid_layout.addWidget(self.sign_qr_button, 1, 4)
+        self.grid_layout.addWidget(self.sign_seed_button, 1, 4)
+        self.grid_layout.addWidget(self.sign_qr_button, 1, 5)
 
         self.updateUI()
 
@@ -313,29 +358,42 @@ class _SignTab(SignMessageBase):
         self.grid_layout.addWidget(QLabel(self.tr("Address")), 1, 0)
         self.grid_layout.addWidget(self.sign_address_edit, 1, 2, 1, 3)
         self.sign_button_box.addButton(self.sign_usb_button, QDialogButtonBox.ButtonRole.ActionRole)
+        self.sign_button_box.addButton(self.sign_seed_button, QDialogButtonBox.ButtonRole.ActionRole)
         self.sign_button_box.addButton(self.sign_qr_button, QDialogButtonBox.ButtonRole.ActionRole)
         self.grid_layout.addWidget(self.sign_button_box, 2, 2, 1, 3)
 
+        self.sign_address_edit.signal_text_change.connect(self._refresh_seed_signer)
         self.signals_min.language_switch.connect(self.updateUI)
         self.updateUI()
+        # addButton() may re-show the seed button, so hide it again until an address is entered
+        self.set_seed_sign_options([])
+
+    def _address_info_of_wallet(self) -> tuple[Wallet, AddressInfoMin] | None:
+        """Return the wallet and address info for the entered address, if it belongs to an open wallet."""
+        address = self.sign_address_edit.text().strip()
+        if not address:
+            return None
+        for qt_wallet in self.wallet_functions.get_qt_wallets.emit().values():
+            if address_info := qt_wallet.wallet.get_address_info_min(address):
+                return qt_wallet.wallet, address_info
+        return None
+
+    def _refresh_seed_signer(self, _address: str) -> None:
+        """Rebuild the seed menu for the entered address; hidden if no seed key belongs to it."""
+        owner = self._address_info_of_wallet()
+        self.set_seed_sign_options(seed_sign_options(*owner) if owner else [])
 
     def get_bip32_path(self) -> str:
         """Return the BIP32 path for the entered address if it is in an open wallet."""
-
-        address = self.sign_address_edit.text().strip()
-        if not address:
+        owner = self._address_info_of_wallet()
+        if not owner:
             return ""
-
-        qt_wallets = self.wallet_functions.get_qt_wallets.emit()
-        for qt_wallet in qt_wallets.values():
-            if address_info := qt_wallet.wallet.get_address_info_min(address):
-                return get_address_bip32_path(
-                    descriptor_str=str(qt_wallet.wallet.multipath_descriptor),
-                    kind=address_info.keychain,
-                    index=address_info.index,
-                )
-
-        return ""
+        wallet, address_info = owner
+        return get_address_bip32_path(
+            descriptor_str=str(wallet.multipath_descriptor),
+            kind=address_info.keychain,
+            index=address_info.index,
+        )
 
     def get_message(self) -> str:
         """Return the user-entered message."""

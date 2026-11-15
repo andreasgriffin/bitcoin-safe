@@ -51,15 +51,65 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QWidget
 
 from bitcoin_safe.constants import LOGO_NAME
+from bitcoin_safe.descriptors import get_simple_pubkey_providers
 from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message, svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.psbt_util import PartialSig
 
 from .gui.qt.dialog_import import ImportDialog
 from .keystore import KeyStoreImporterTypes
+from .pythonbdk_types import AddressInfoMin
 from .wallet import Wallet
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class SeedSignOption:
+    label: str
+    signer: SoftwareSigner
+    bip32_path: str
+
+
+def seed_sign_options(wallet: Wallet, address_info: AddressInfoMin) -> list[SeedSignOption]:
+    """One option per seed keystore whose fingerprint is a pubkey of the wallet descriptor.
+
+    Each option signs with the key at the address's BIP32 path for that keystore's pubkey.
+    A seed imported into several keystores is listed once, using the first keystore.
+    """
+    receive_descriptor, change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
+    options: list[SeedSignOption] = []
+    seen_fingerprints: set[str] = set()
+    for provider in get_simple_pubkey_providers(str(wallet.multipath_descriptor)):
+        fingerprint = provider.fingerprint.lower()
+        if fingerprint in seen_fingerprints:
+            continue
+        keystore = next(
+            (
+                keystore
+                for keystore in wallet.keystores
+                if keystore and keystore.mnemonic and keystore.fingerprint.lower() == fingerprint
+            ),
+            None,
+        )
+        if not keystore or not keystore.mnemonic:
+            continue
+        seen_fingerprints.add(fingerprint)
+        options.append(
+            SeedSignOption(
+                label=keystore.description or provider.fingerprint,
+                signer=SoftwareSigner(
+                    mnemonic=keystore.mnemonic,
+                    network=wallet.network,
+                    receive_descriptor=receive_descriptor.to_string_with_secret(),
+                    change_descriptor=change_descriptor.to_string_with_secret(),
+                ),
+                bip32_path=provider.get_address_bip32_path(
+                    kind=address_info.keychain, index=address_info.index
+                ),
+            )
+        )
+    return options
 
 
 @dataclass(frozen=True)

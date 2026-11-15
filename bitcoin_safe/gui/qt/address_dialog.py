@@ -62,6 +62,7 @@ from bitcoin_safe.wallet import Wallet
 
 from ...descriptors import get_address_bip32_path
 from ...signals import SignalsMin, WalletFunctions
+from ...signer import SeedSignOption, seed_sign_options
 from .hist_list import HistList
 from .util import do_copy
 
@@ -80,6 +81,7 @@ class AddressDetailsAdvanced(QWidget):
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
         parent: QWidget | None,
+        seed_sign_options: list[SeedSignOption] | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
@@ -127,6 +129,7 @@ class AddressDetailsAdvanced(QWidget):
             grid_layout=form_layout,
             loop_in_thread=loop_in_thread,
             signals_min=signals_min,
+            seed_sign_options=seed_sign_options,
         )
         self.sign_message.signal_signed_message.connect(self.on_signed_message)
 
@@ -248,6 +251,7 @@ class AddressDialog(QWidget):
                 address_index=address_info.index,
                 signals_min=self.wallet_functions.signals,
                 loop_in_thread=loop_in_thread,
+                seed_sign_options=seed_sign_options(self.wallet, address_info),
             )
             if address_info
             else None
