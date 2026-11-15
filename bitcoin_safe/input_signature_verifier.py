@@ -26,26 +26,20 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-"""Verify signatures of transaction inputs that spend wallet-owned outputs.
+"""Verify the consensus script rules of transaction inputs that spend wallet-owned outputs.
 
 A backend can serve an unconfirmed transaction that spends the same outputs as a
 wallet transaction but pays to different addresses. Such a transaction cannot carry
-valid signatures for the wallet's own record of the spent output. This module checks
-the signatures of the supported script types against that prevout data.
+valid signatures for the wallet's own record of the spent output. This module runs
+btclib's consensus script engine on each wallet-owned input against that prevout data.
 
-Checked: P2PKH, P2WPKH, P2SH-wrapped P2WPKH/P2WSH multisig, native P2WSH
-multisig (ECDSA), and P2TR key-path (BIP340). Reported as ``unchecked``: other
-P2WSH scripts, P2TR script-path, unknown scripts, and inputs whose prevout the
-wallet does not know.
-Full script validation is out of scope.
-
-
+An input is ``invalid`` when the engine refuses it, ``valid`` when the engine runs and
+checks at least one signature, and ``unchecked`` when the input's prevout is unknown
+or the script ran without checking a signature.
+Participant inputs that are not wallet-owned are never executed; only the native
+witness scriptSig rule is enforced for them.
 
 This entire file should be removed once BDK has implemented signature checks for wallet-owned inputs.
-
-
-
-
 """
 
 from __future__ import annotations
@@ -54,11 +48,10 @@ from dataclasses import dataclass
 from enum import Enum
 
 import bdkpython as bdk
-from embit.ec import PublicKey, SchnorrSig, Signature
-from embit.hashes import hash160, sha256
-from embit.script import Script
-from embit.transaction import SIGHASH, Transaction
-from embit.util import secp256k1
+from btclib.exceptions import ScriptError
+from btclib.script.engine import verify_input
+from btclib.script.sig_hash import ANYONECANPAY
+from btclib.tx import Tx, TxOut
 
 
 class InputVerdict(Enum):
@@ -78,346 +71,26 @@ class Prevout:
 
 
 @dataclass(frozen=True)
-class TxVerification:
-    """Per-input verdicts. A transaction is invalid if any of its inputs is invalid."""
+class InputResult:
+    """Verdict for one input, plus the public keys whose signatures the engine confirmed."""
 
-    verdicts: list[InputVerdict]
+    verdict: InputVerdict
+    signer_pubkeys: tuple[bytes, ...] = ()
+
+
+@dataclass(frozen=True)
+class TxVerification:
+    """Per-input results. A transaction is invalid if any of its inputs is invalid."""
+
+    results: list[InputResult]
+
+    @property
+    def verdicts(self) -> list[InputVerdict]:
+        return [result.verdict for result in self.results]
 
     @property
     def is_invalid(self) -> bool:
         return InputVerdict.invalid in self.verdicts
-
-
-def _is_p2pkh(spk: bytes) -> bool:
-    # P2PKH is: OP_DUP OP_HASH160 PUSH20 <key hash> OP_EQUALVERIFY OP_CHECKSIG.
-    return len(spk) == 25 and spk[:3] == b"\x76\xa9\x14" and spk[23:] == b"\x88\xac"
-
-
-def _is_p2sh(spk: bytes) -> bool:
-    # P2SH commits to a redeem script with HASH160: OP_HASH160 PUSH20 <hash> OP_EQUAL.
-    return len(spk) == 23 and spk[:2] == b"\xa9\x14" and spk[22] == 0x87
-
-
-def _is_p2wpkh(spk: bytes) -> bool:
-    # A v0 witness program is OP_0 followed by a 20-byte public-key hash.
-    return len(spk) == 22 and spk[:2] == b"\x00\x14"
-
-
-def _is_p2tr(spk: bytes) -> bool:
-    # A v1 witness program is OP_1 followed by a 32-byte x-only output key.
-    return len(spk) == 34 and spk[:2] == b"\x51\x20"
-
-
-def _direct_pushes(script: bytes) -> list[bytes]:
-    """Return the data pushed by a script made only of direct pushes (1..75 bytes).
-
-    Returns an empty list if the script contains any other opcode.
-    """
-    pushes: list[bytes] = []
-    i = 0
-    while i < len(script):
-        # In the supported P2PKH templates, each item fits in one direct-push
-        # opcode (for example, 0x47 <71-byte signature>). Other opcodes require
-        # full script execution, so do not interpret them as simple data pushes.
-        length = script[i]
-        if not 1 <= length <= 75 or i + 1 + length > len(script):
-            return []
-        pushes.append(script[i + 1 : i + 1 + length])
-        i += 1 + length
-    return pushes
-
-
-# Order n of the secp256k1 group, from SEC 2 (secp256k1 domain parameters), section 2.4.1:
-#   https://www.secg.org/sec2-v2.pdf
-# Also defined as CURVE_ORDER in libsecp256k1's src/group_impl.h:
-#   https://github.com/bitcoin-core/secp256k1/blob/master/src/group_impl.h
-_SECP256K1_ORDER = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
-
-
-# Avoid embit's ecdsa_signature_normalize() on the ctypes backend, as its
-# libsecp256k1 binding may mishandle the native context pointer (missing argtypes).
-# This caused valid low-S signatures to fail verification (see PR #898).
-# Instead, serialize to compact r||s, normalize S manually, and parse back
-# into libsecp256k1's internal signature representation.
-# see https://github.com/diybitcoinhardware/embit/issues/177
-
-
-def _normalize_low_s(der: bytes) -> Signature:
-    """Parse a DER ECDSA signature into a low-S Signature using only embit's public API.
-
-    Serializes to compact r||s, replaces S with n-S when S > n/2, then parses back.
-    This is the same transform as secp256k1_ecdsa_signature_normalize, implemented in
-    Python so it works on every embit backend (ctypes, MicroPython, pure Python).
-    """
-    compact = secp256k1.ecdsa_signature_serialize_compact(secp256k1.ecdsa_signature_parse_der(der))
-    s = int.from_bytes(compact[32:], "big")
-    if s > _SECP256K1_ORDER // 2:
-        compact = compact[:32] + (_SECP256K1_ORDER - s).to_bytes(32, "big")
-    return Signature(secp256k1.ecdsa_signature_parse_compact(compact))
-
-
-def _parse_pubkey(pubkey: bytes) -> PublicKey | None:
-    try:
-        return PublicKey.parse(pubkey)
-    except Exception:
-        return None
-
-
-def _ecdsa_verdict(
-    tx: Transaction,
-    index: int,
-    script_code: Script,
-    value: int,
-    sig_with_type: bytes,
-    pubkey: bytes,
-    legacy: bool,
-) -> InputVerdict:
-    """Verify an ECDSA signature. A malformed signature or key is consensus-invalid."""
-    pub = _parse_pubkey(pubkey)
-    if pub is None or not sig_with_type:
-        return InputVerdict.invalid
-    # Bitcoin appends the sighash flag to the DER-encoded ECDSA signature, e.g.
-    # DER(r, s) || 0x01 for SIGHASH_ALL. embit rejects undefined ECDSA base modes
-    # such as 0x04, although consensus treats them as SIGHASH_ALL. This verifier
-    # intentionally accepts that narrow false-negative edge case to use embit's
-    # standard sighash parser instead of maintaining a second implementation.
-    sighash = sig_with_type[-1]
-    try:
-        # libsecp256k1 verify rejects high-S, while consensus accepts it, so we normalize
-        # to low-S (via _normalize_low_s) before verifying.
-        # Reference links:
-        #   secp256k1 header: https://github.com/bitcoin-core/secp256k1/blob/master/include/secp256k1.h
-        #   Bitcoin Core CPubKey::Verify: https://github.com/bitcoin/bitcoin/blob/master/src/pubkey.cpp
-        #   BIP 146 (low-S is policy): https://github.com/bitcoin/bips/blob/master/bip-0146.mediawiki
-        sig = _normalize_low_s(sig_with_type[:-1])
-    except Exception:
-        return InputVerdict.invalid
-    msg = (
-        tx.sighash_legacy(index, script_code, sighash)
-        if legacy
-        else tx.sighash_segwit(index, script_code, value, sighash)
-    )
-    return InputVerdict.valid if pub.verify(sig, msg) else InputVerdict.invalid
-
-
-def _verify_p2pkh(tx: Transaction, index: int, prevout: Prevout, script_sig: bytes) -> InputVerdict:
-    # The standard unlocking script is exactly: <signature+sighash> <public key>.
-    pushes = _direct_pushes(script_sig)
-    if len(pushes) != 2:
-        return InputVerdict.invalid
-    sig_with_type, pubkey = pushes
-    if hash160(pubkey) != prevout.script_pubkey[3:23]:
-        return InputVerdict.invalid
-    return _ecdsa_verdict(
-        tx, index, Script(prevout.script_pubkey), prevout.value, sig_with_type, pubkey, legacy=True
-    )
-
-
-def _verify_p2wpkh(
-    tx: Transaction, index: int, prevout: Prevout, witness: list[bytes], pubkey_hash: bytes
-) -> InputVerdict:
-    # Witness items have the same logical pair as P2PKH's scriptSig, but are
-    # serialized separately: [signature+sighash, public key].
-    if len(witness) != 2:
-        return InputVerdict.invalid
-    sig_with_type, pubkey = witness
-    if hash160(pubkey) != pubkey_hash:
-        return InputVerdict.invalid
-    # BIP143 scriptCode for P2WPKH is the P2PKH script of the key hash.
-    script_code = Script(b"\x76\xa9\x14" + pubkey_hash + b"\x88\xac")
-    return _ecdsa_verdict(tx, index, script_code, prevout.value, sig_with_type, pubkey, legacy=False)
-
-
-def _verify_p2sh_p2wpkh(
-    tx: Transaction, index: int, prevout: Prevout, script_sig: bytes, witness: list[bytes]
-) -> InputVerdict:
-    # Nested SegWit keeps the P2SH commitment in the prevout and pushes its
-    # witness program in scriptSig, e.g. <0x00 0x14 <20-byte key hash>>.
-    # A 0x00 0x20 program means nested P2WSH and is routed to its multisig checker.
-    pushes = _direct_pushes(script_sig)
-    if not pushes:
-        return InputVerdict.unchecked
-    redeem_script = pushes[-1]
-    is_nested_witness = (len(redeem_script) == 22 and redeem_script[:2] == b"\x00\x14") or (
-        len(redeem_script) == 34 and redeem_script[:2] == b"\x00\x20"
-    )
-    if not is_nested_witness:
-        return InputVerdict.unchecked
-    if hash160(redeem_script) != prevout.script_pubkey[2:22]:
-        return InputVerdict.invalid
-    if len(redeem_script) != 22 or redeem_script[:2] != b"\x00\x14":
-        if len(pushes) != 1:
-            return InputVerdict.invalid
-        return _verify_p2wsh(tx, index, prevout, witness, redeem_script[2:])
-    if len(pushes) != 1:
-        return InputVerdict.invalid
-    return _verify_p2wpkh(tx, index, prevout, witness, redeem_script[2:])
-
-
-def _parse_multisig_script(script: bytes) -> tuple[int, list[bytes]] | None:
-    """Parse standard OP_m <pubkeys...> OP_n OP_CHECKMULTISIG, e.g. 2-of-3."""
-    if len(script) < 3 or not 0x51 <= script[0] <= 0x60 or script[-1] != 0xAE:
-        return None
-    required = script[0] - 0x50
-    count_opcode = script[-2]
-    if not 0x51 <= count_opcode <= 0x60:
-        return None
-    key_count = count_opcode - 0x50
-    if not 1 <= required <= key_count:
-        return None
-
-    pubkeys: list[bytes] = []
-    cursor = 1
-    while cursor < len(script) - 2:
-        length = script[cursor]
-        if length not in (33, 65) or cursor + 1 + length > len(script) - 2:
-            return None
-        pubkey = script[cursor + 1 : cursor + 1 + length]
-        if _parse_pubkey(pubkey) is None:
-            return None
-        pubkeys.append(pubkey)
-        cursor += 1 + length
-    if cursor != len(script) - 2 or len(pubkeys) != key_count:
-        return None
-    return required, pubkeys
-
-
-def _verify_p2wsh(
-    tx: Transaction, index: int, prevout: Prevout, witness: list[bytes], witness_script_hash: bytes
-) -> InputVerdict:
-    # The last witness item is the script itself; the witness program commits to
-    # SHA256(script). Only the standard multisig form is interpreted below.
-    if not witness:
-        return InputVerdict.invalid
-    witness_script = witness[-1]
-    if sha256(witness_script) != witness_script_hash:
-        return InputVerdict.invalid
-    parsed_script = _parse_multisig_script(witness_script)
-    if parsed_script is None:
-        return InputVerdict.unchecked
-    required, pubkeys = parsed_script
-    stack = witness[:-1]
-    if len(stack) != required + 1 or stack[0] != b"":
-        return InputVerdict.invalid
-
-    # CHECKMULTISIG matches signatures to pubkeys in script order. For a 2-of-3
-    # script with keys [A, B, C], signatures for A and C match while B is skipped.
-    script_code = Script(witness_script)
-    key_index = 0
-    for sig_with_type in stack[1:]:
-        matched = False
-        while key_index < len(pubkeys):
-            verdict = _ecdsa_verdict(
-                tx, index, script_code, prevout.value, sig_with_type, pubkeys[key_index], legacy=False
-            )
-            key_index += 1
-            if verdict is InputVerdict.valid:
-                matched = True
-                break
-        if not matched:
-            return InputVerdict.invalid
-    return InputVerdict.valid
-
-
-def _verify_p2tr_keypath(
-    tx: Transaction, index: int, prevouts: list[Prevout | None], witness: list[bytes]
-) -> InputVerdict:
-    """Verify a BIP341 key-path spend using its committed prevouts."""
-    # BIP341 annexes are optional and, when present, are the final item beginning
-    # with 0x50. Remove it before deciding whether this is key-path or script-path.
-    annex = None
-    if len(witness) == 2 and witness[-1].startswith(b"\x50"):
-        annex = witness[-1]
-        witness = witness[:1]
-    if len(witness) > 1:
-        return InputVerdict.unchecked  # taproot script-path spend
-    if not witness or len(witness[0]) not in (64, 65):
-        return InputVerdict.invalid
-    sig_bytes = witness[0]
-    # A 64-byte Schnorr signature implies DEFAULT; a 65-byte form appends an
-    # explicit sighash flag (which may not be DEFAULT/zero).
-    if len(sig_bytes) == 64:
-        sighash = SIGHASH.DEFAULT
-    else:
-        sighash = sig_bytes[64]
-        if sighash not in (0x01, 0x02, 0x03, 0x81, 0x82, 0x83):
-            # BIP341 permits DEFAULT only when implied by a 64-byte signature. In
-            # particular, embit masks ANYONECANPAY before checking the base type,
-            # which would otherwise incorrectly accept the forbidden 0x80 value.
-            return InputVerdict.invalid
-    anyonecanpay = bool(sighash & SIGHASH.ANYONECANPAY)
-    if prevouts[index] is None:
-        return InputVerdict.unchecked
-    if not anyonecanpay and any(prevout is None for prevout in prevouts):
-        return InputVerdict.unchecked
-    current_prevout = prevouts[index]
-    assert current_prevout is not None
-    try:
-        output_key = PublicKey.from_xonly(current_prevout.script_pubkey[2:34])
-    except Exception:
-        return InputVerdict.invalid
-    # embit requires arrays matching the input count even for ANYONECANPAY, but
-    # its implementation reads only this input's entry on that path. Keep unknown
-    # entries as None rather than inventing data that might affect another hash mode.
-    msg = tx.sighash_taproot(
-        index,
-        [Script(p.script_pubkey) if p is not None else None for p in prevouts],  # type: ignore[list-item]
-        [p.value if p is not None else None for p in prevouts],  # type: ignore[list-item]
-        sighash,
-        annex=annex,
-    )
-    return (
-        InputVerdict.valid
-        if output_key.schnorr_verify(SchnorrSig(sig_bytes[:64]), msg)
-        else InputVerdict.invalid
-    )
-
-
-def _verify_input(
-    tx: Transaction, index: int, prevouts: list[Prevout | None], wallet_owned: bool
-) -> InputVerdict:
-    # A prevout is the exact output being spent. Its script selects the
-    # verification template; without it, there is no trustworthy sighash context.
-    prevout = prevouts[index]
-    if prevout is None:
-        return InputVerdict.unchecked
-    tx_input = tx.vin[index]
-    witness = list(tx_input.witness.items)
-    script_sig = tx_input.script_sig.data
-
-    if not wallet_owned:
-        # We still enforce the native-witness scriptSig consensus constraint
-        # below, but never interpret or verify a participant's signature.
-        if (_is_p2wpkh(prevout.script_pubkey) or _is_p2tr(prevout.script_pubkey)) and script_sig:
-            return InputVerdict.invalid
-        if len(prevout.script_pubkey) == 34 and prevout.script_pubkey[:2] == b"\x00\x20" and script_sig:
-            return InputVerdict.invalid
-        return InputVerdict.unchecked
-
-    if _is_p2pkh(prevout.script_pubkey):
-        return _verify_p2pkh(tx, index, prevout, script_sig)
-    if _is_p2wpkh(prevout.script_pubkey):
-        if script_sig:
-            # Native witness programs require an empty scriptSig under Bitcoin
-            # consensus rules; a valid witness signature alone cannot make a
-            # transaction with a modified scriptSig valid.
-            return InputVerdict.invalid
-        return _verify_p2wpkh(tx, index, prevout, witness, prevout.script_pubkey[2:22])
-    if _is_p2sh(prevout.script_pubkey):
-        return _verify_p2sh_p2wpkh(tx, index, prevout, script_sig, witness)
-    if len(prevout.script_pubkey) == 34 and prevout.script_pubkey[:2] == b"\x00\x20":
-        if script_sig:
-            # Native witness programs require an empty scriptSig under Bitcoin
-            # consensus rules; a valid witness signature alone is insufficient.
-            return InputVerdict.invalid
-        return _verify_p2wsh(tx, index, prevout, witness, prevout.script_pubkey[2:])
-    if _is_p2tr(prevout.script_pubkey):
-        if script_sig:
-            # Native witness programs require an empty scriptSig under Bitcoin
-            # consensus rules, including script-path spends that this verifier skips.
-            return InputVerdict.invalid
-        return _verify_p2tr_keypath(tx, index, prevouts, witness)
-    return InputVerdict.unchecked
 
 
 def has_signature_material(tx: bdk.Transaction) -> bool:
@@ -426,6 +99,79 @@ def has_signature_material(tx: bdk.Transaction) -> bool:
     Presence only: no prevout lookup and no signature validation.
     """
     return all(bool(tx_input.script_sig.to_bytes()) or bool(tx_input.witness) for tx_input in tx.input())
+
+
+def _is_native_witness(script_pubkey: bytes) -> bool:
+    # Witness v0 (P2WPKH/P2WSH) and v1 (P2TR) programs are OP_n followed by a push of
+    # 20 or 32 bytes. Their scriptSig must be empty under consensus.
+    return (len(script_pubkey) == 22 and script_pubkey[:2] == b"\x00\x14") or (
+        len(script_pubkey) == 34 and script_pubkey[:2] in (b"\x00\x20", b"\x51\x20")
+    )
+
+
+def _is_taproot_program(script_pubkey: bytes) -> bool:
+    return len(script_pubkey) == 34 and script_pubkey[:2] == b"\x51\x20"
+
+
+def _verify_external_input(tx: Tx, index: int, prevout: Prevout | None) -> InputVerdict:
+    """Enforce the native-witness scriptSig rule only, never a participant's signature."""
+    if prevout is None:
+        return InputVerdict.unchecked
+    if _is_native_witness(prevout.script_pubkey) and tx.vin[index].scriptSig:
+        return InputVerdict.invalid
+    return InputVerdict.unchecked
+
+
+def _taproot_keypath_allows_unknown_siblings(tx: Tx, index: int) -> bool:
+    """Return True if the input is a key-path spend whose sighash commits only to its own prevout.
+
+    Only ANYONECANPAY taproot key-path sighashes skip the other inputs' prevouts. Those
+    placeholders are never read, as btclib's sig_hash reads only the signed input's prevout
+    under ANYONECANPAY. Other hash types commit to every prevout and stay unchecked.
+    """
+    witness = list(tx.vin[index].script_witness.stack)
+    if len(witness) == 2 and witness[-1].startswith(b"\x50"):
+        witness = witness[:1]  # drop the BIP341 annex
+    if len(witness) != 1 or len(witness[0]) not in (64, 65):
+        return False
+    return len(witness[0]) == 65 and bool(witness[0][64] & ANYONECANPAY)
+
+
+def _verify_wallet_input(tx: Tx, index: int, prevouts: list[Prevout | None]) -> InputResult:
+    """Run the consensus engine on one wallet-owned input and map the outcome to a result."""
+    prevout = prevouts[index]
+    if prevout is None:
+        return InputResult(InputVerdict.unchecked)
+    # The engine needs one TxOut per input. Unknown siblings are only replaced by
+    # placeholders when no other input's data can reach this input's sighash: legacy
+    # and SegWit v0 sighashes read only this input's prevout, and so do Taproot
+    # ANYONECANPAY key-path sighashes. Other Taproot sighashes commit to every prevout.
+    sibling_placeholders_allowed = not _is_taproot_program(
+        prevout.script_pubkey
+    ) or _taproot_keypath_allows_unknown_siblings(tx, index)
+    tx_outs: list[TxOut] = []
+    for other in prevouts:
+        if other is not None:
+            tx_outs.append(TxOut(other.value, other.script_pubkey, check_validity=False))
+        elif sibling_placeholders_allowed:
+            tx_outs.append(TxOut(0, b"", check_validity=False))
+        else:
+            return InputResult(InputVerdict.unchecked)
+    hash_types: list[int] = []
+    signatures: list[tuple[bytes, bytes]] = []
+    try:
+        verify_input(tx_outs, tx, index, hash_types=hash_types, signatures=signatures)
+    except ScriptError:
+        return InputResult(InputVerdict.invalid)
+    # hash_types also records failed ECDSA checks, so only verified ECDSA pairs count.
+    # btclib does not collect successful Schnorr signatures, so for Taproot any recorded
+    # check is the signal. Scripts that ran without a verified signature stay unchecked.
+    has_verified_signature = bool(signatures) or (
+        _is_taproot_program(prevout.script_pubkey) and bool(hash_types)
+    )
+    if not has_verified_signature:
+        return InputResult(InputVerdict.unchecked)
+    return InputResult(InputVerdict.valid, tuple(pub_key for pub_key, _ in signatures))
 
 
 def verify_transaction(
@@ -439,28 +185,32 @@ def verify_transaction(
     separate because external prevouts still contribute to non-ANYONECANPAY Taproot
     sighashes, while only wallet-owned input signatures are checked.
     """
-    # embit provides the sighash and secp256k1 helpers used here; round-trip the
-    # BDK transaction bytes so verification uses the same inputs and outputs.
-    embit_tx = Transaction.parse(tx.serialize())
+    # check_validity=False: the verifier checks scripts and signatures, not the
+    # transaction-level rules (BIP68 sequence locks, coinbase maturity, BIP54).
+    # Rejecting such transactions here would hide a signature verdict from the wallet.
+    consensus_tx = Tx.parse(tx.serialize(), check_validity=False)
+    input_count = len(consensus_tx.vin)
     if wallet_owned_inputs is None:
         # Standalone callers historically ask to verify every input; wallet callers
         # pass explicit ownership flags so external participant signatures are skipped.
-        wallet_owned_inputs = [True] * len(embit_tx.vin)
-    if len(prevouts) != len(embit_tx.vin) or len(wallet_owned_inputs) != len(embit_tx.vin):
-        return TxVerification(verdicts=[InputVerdict.invalid] * len(embit_tx.vin))
+        wallet_owned_inputs = [True] * input_count
+    if len(prevouts) != input_count or len(wallet_owned_inputs) != input_count:
+        return TxVerification(results=[InputResult(InputVerdict.invalid)] * input_count)
     return TxVerification(
-        verdicts=[
-            _verify_input_safely(embit_tx, index, prevouts, wallet_owned_inputs[index])
-            for index in range(len(embit_tx.vin))
+        results=[
+            _verify_input_safely(consensus_tx, index, prevouts, wallet_owned_inputs[index])
+            for index in range(input_count)
         ],
     )
 
 
 def _verify_input_safely(
-    tx: Transaction, index: int, prevouts: list[Prevout | None], wallet_owned: bool
-) -> InputVerdict:
+    tx: Tx, index: int, prevouts: list[Prevout | None], wallet_owned: bool
+) -> InputResult:
     """Treat malformed input encodings as invalid instead of aborting transaction processing."""
     try:
-        return _verify_input(tx, index, prevouts, wallet_owned)
+        if not wallet_owned:
+            return InputResult(_verify_external_input(tx, index, prevouts[index]))
+        return _verify_wallet_input(tx, index, prevouts)
     except Exception:
-        return InputVerdict.invalid
+        return InputResult(InputVerdict.invalid)

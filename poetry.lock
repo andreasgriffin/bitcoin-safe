@@ -426,6 +426,18 @@ files = [
 tests = ["PyHamcrest (>=2.0.2)", "mypy", "pytest (>=4.6)", "pytest-benchmark", "pytest-cov", "pytest-flake8"]
 
 [[package]]
+name = "base58-bech32"
+version = "2026.11.14"
+description = "Base58, Base58Check, bech32, bech32m, SS58, CashAddr and strkey codecs, on the standard library alone"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "base58_bech32-2026.11.14-py3-none-any.whl", hash = "sha256:352a968c77fc284ec9698fb70c8447294a5c5203a4a756109f1f9a2056360bf0"},
+    {file = "base58_bech32-2026.11.14.tar.gz", hash = "sha256:246b9ec93b4e3c4305f8e21752a1b68e88b2deaa9895d553180dd0e1abc8970f"},
+]
+
+[[package]]
 name = "bdkpython"
 version = "3.1.1"
 description = "The Python language bindings for the Bitcoin Development Kit"
@@ -580,6 +592,28 @@ winrt-runtime = {version = ">=2,<3", markers = "platform_system == \"Windows\" a
 "winrt-Windows.Foundation" = {version = ">=2,<3", markers = "platform_system == \"Windows\" and python_version >= \"3.12\""}
 "winrt-Windows.Foundation.Collections" = {version = ">=2,<3", markers = "platform_system == \"Windows\" and python_version >= \"3.12\""}
 "winrt-Windows.Storage.Streams" = {version = ">=2,<3", markers = "platform_system == \"Windows\" and python_version >= \"3.12\""}
+
+[[package]]
+name = "btclib"
+version = "2026.11.13"
+description = "A library for 'bitcoin cryptography'"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "btclib-2026.11.13-py3-none-any.whl", hash = "sha256:2c6788949cb40f6907d580f6b093f24db68a89840355972dfeac84581dce0f17"},
+    {file = "btclib-2026.11.13.tar.gz", hash = "sha256:4cee03a6cdb24e1b1d2c52c13b431322e206dbf37398aabfce8db8db8d307f93"},
+]
+
+[package.dependencies]
+base58-bech32 = ">=2026.10.23"
+ecc = ">=2026.11.11"
+typing-extensions = ">=4.10"
+
+[package.extras]
+bip324 = ["cryptography (>=42.0.0)"]
+secp256k1 = ["ecc[secp256k1] (>=2026.11.11)"]
+testing = ["hypothesis (>=6.168.0)"]
 
 [[package]]
 name = "btcpay-tools"
@@ -1399,6 +1433,25 @@ sequoia = ["pysequoia (>=0.1.35)"]
 sha1dc = ["sha1dc"]
 
 [[package]]
+name = "ecc"
+version = "2026.11.12"
+description = "Elliptic-curve arithmetic and the schemes built on it, multi-curve, accelerated by libsecp256k1 on secp256k1"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "ecc-2026.11.12-py3-none-any.whl", hash = "sha256:cfb115c41b08e96e1d4a9501c469096c750afa796d58321da3949217ccca8700"},
+    {file = "ecc-2026.11.12.tar.gz", hash = "sha256:86b861a568ca048d01f13209932f006c5ae9590c713e8bcc154fbcc617154aff"},
+]
+
+[package.dependencies]
+typing-extensions = ">=4.10"
+
+[package.extras]
+gmpy2 = ["gmpy2 (>=2.3.2) ; implementation_name == \"cpython\""]
+secp256k1 = ["btclib-secp256k1 (>=0.8.0.14)"]
+
+[[package]]
 name = "ecdsa"
 version = "0.19.2"
 description = "ECDSA cryptographic signature library (pure python)"
@@ -1416,20 +1469,6 @@ six = ">=1.9.0"
 [package.extras]
 gmpy = ["gmpy"]
 gmpy2 = ["gmpy2"]
-
-[[package]]
-name = "embit"
-version = "0.8.0"
-description = "A minimal bitcoin library for MicroPython and Python3 with a focus on embedded systems."
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "embit-0.8.0.tar.gz", hash = "sha256:8bf4b10073c67400370ce523fb16f035fe759f6fdd987c579bdcc268d75ed770"},
-]
-
-[package.extras]
-dev = ["black", "mkdocs", "mkdocs-material", "mkdocstrings[python]", "mypy", "pre-commit", "pytest", "pytest-cov", "requests"]
 
 [[package]]
 name = "fastjsonschema"
@@ -5465,4 +5504,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "a6e4b742b6a5f9d44b1233d36abb1e934df532963a2c9f4878ad5f78ccb3dfd7"
+content-hash = "6ba9c1b16da4b15c8f5ac356bfacd2cabef0fbe78046f32894ea91f1bcc8a86b"

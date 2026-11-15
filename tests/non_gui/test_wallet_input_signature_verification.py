@@ -34,15 +34,8 @@ from unittest.mock import Mock
 
 import bdkpython as bdk
 from bitcoin_usb.software_signer import SoftwareSigner
-from embit.script import Script
-from embit.transaction import (
-    Transaction,
-    TransactionInput,
-    TransactionOutput,
-)
-from embit.transaction import (
-    Transaction as EmbitTransaction,
-)
+from btclib.script.witness import Witness
+from btclib.tx import OutPoint, Tx, TxIn, TxOut
 
 from bitcoin_safe.input_signature_verifier import Prevout
 from bitcoin_safe.wallet import Wallet
@@ -51,23 +44,22 @@ from tests.non_gui.utils import create_multisig_protowallet
 
 
 def _taproot_script_path_tx() -> bdk.Transaction:
-    tx = Transaction(
-        vin=[TransactionInput(b"\xab" * 32, 0)],
-        vout=[TransactionOutput(1_000, Script(b"\x51"))],
-    )
+    tx = _build_tx([(b"\xab" * 32, 0)], [(1_000, b"\x51")])
     # More than one witness item is a Taproot script-path spend, which this
     # lightweight verifier deliberately reports as unchecked.
-    tx.vin[0].witness.items = [b"script", b"control block"]
-    return bdk.Transaction(tx.serialize())
+    tx.vin[0].script_witness = Witness([b"script", b"control block"])
+    return bdk.Transaction(tx.serialize(include_witness=True))
 
 
 def _fund_wallet_with_unconfirmed_tx(wallet: Wallet) -> bdk.OutPoint:
     address = wallet.bdkwallet.peek_address(keychain=bdk.KeychainKind.EXTERNAL, index=0)
-    funding_tx = Transaction(
-        vin=[TransactionInput(b"\x42" * 32, 0)],
-        vout=[TransactionOutput(1_000_000, Script(bytes(address.address.script_pubkey().to_bytes())))],
+    funding_tx = _build_tx(
+        [(b"\x42" * 32, 0)],
+        [(1_000_000, bytes(address.address.script_pubkey().to_bytes()))],
     )
-    applied = wallet.apply_unconfirmed_txs([bdk.Transaction(funding_tx.serialize())], last_seen=1)
+    applied = wallet.apply_unconfirmed_txs(
+        [bdk.Transaction(funding_tx.serialize(include_witness=True))], last_seen=1
+    )
     assert len(applied) == 1
 
     outputs = wallet.bdkwallet.list_output()
@@ -129,10 +121,7 @@ def test_unchecked_unknown_input_does_not_reject_transaction() -> None:
 def test_known_external_parent_output_is_preserved_without_wallet_ownership() -> None:
     transaction = _taproot_script_path_tx()
     parent = bdk.Transaction(
-        Transaction(
-            vin=[TransactionInput(b"\xcd" * 32, 0)],
-            vout=[TransactionOutput(2_000, Script(b"\x51\x20" + b"\x00" * 32))],
-        ).serialize()
+        _build_tx([(b"\xcd" * 32, 0)], [(2_000, b"\x51\x20" + b"\x00" * 32)]).serialize(include_witness=True)
     )
     wallet = SimpleNamespace(
         get_tx=lambda _txid: SimpleNamespace(transaction=parent),
@@ -144,12 +133,15 @@ def test_known_external_parent_output_is_preserved_without_wallet_ownership() ->
     assert wallet_owned == [False]
 
 
-def _raw_tx(inputs: list[tuple[bytes, int]], outputs: list[tuple[int, bytes]]) -> bdk.Transaction:
-    tx = Transaction(
-        vin=[TransactionInput(txid, vout) for txid, vout in inputs],
-        vout=[TransactionOutput(value, Script(script)) for value, script in outputs],
+def _build_tx(inputs: list[tuple[bytes, int]], outputs: list[tuple[int, bytes]]) -> Tx:
+    return Tx(
+        vin=[TxIn(OutPoint(txid, vout), b"", 0xFFFFFFFF) for txid, vout in inputs],
+        vout=[TxOut(value, script) for value, script in outputs],
     )
-    return bdk.Transaction(tx.serialize())
+
+
+def _raw_tx(inputs: list[tuple[bytes, int]], outputs: list[tuple[int, bytes]]) -> bdk.Transaction:
+    return bdk.Transaction(_build_tx(inputs, outputs).serialize(include_witness=True))
 
 
 def _txid_bytes(tx: bdk.Transaction) -> bytes:
@@ -347,11 +339,13 @@ def test_apply_unconfirmed_rejects_tampered_signature() -> None:
     wallet, outpoint = _wallet_with_funded_unconfirmed_output()
     try:
         spend = _create_signed_spend(wallet, outpoint)
-        tampered = EmbitTransaction.parse(spend.serialize())
-        signature = bytearray(tampered.vin[0].witness.items[0])
+        tampered = Tx.parse(bytes(spend.serialize()))
+        signature = bytearray(tampered.vin[0].script_witness.stack[0])
         signature[5] ^= 1
-        tampered.vin[0].witness.items[0] = bytes(signature)
-        tampered_spend = bdk.Transaction(tampered.serialize())
+        tampered.vin[0].script_witness = Witness(
+            [bytes(signature), *tampered.vin[0].script_witness.stack[1:]]
+        )
+        tampered_spend = bdk.Transaction(tampered.serialize(include_witness=True))
 
         assert tampered_spend.compute_txid() == spend.compute_txid()
         assert wallet.apply_unconfirmed_txs([tampered_spend], last_seen=2) == []
@@ -386,11 +380,13 @@ def test_sync_evicts_and_returns_invalid_unconfirmed_transaction(monkeypatch) ->
     wallet, outpoint = _wallet_with_funded_unconfirmed_output()
     try:
         spend = _create_signed_spend(wallet, outpoint)
-        tampered = EmbitTransaction.parse(spend.serialize())
-        signature = bytearray(tampered.vin[0].witness.items[0])
+        tampered = Tx.parse(bytes(spend.serialize()))
+        signature = bytearray(tampered.vin[0].script_witness.stack[0])
         signature[5] ^= 1
-        tampered.vin[0].witness.items[0] = bytes(signature)
-        invalid_tx = bdk.Transaction(tampered.serialize())
+        tampered.vin[0].script_witness = Witness(
+            [bytes(signature), *tampered.vin[0].script_witness.stack[1:]]
+        )
+        invalid_tx = bdk.Transaction(tampered.serialize(include_witness=True))
         event = bdk.WalletEvent.TX_UNCONFIRMED(
             txid=invalid_tx.compute_txid(), tx=invalid_tx, old_block_time=None
         )
@@ -412,3 +408,16 @@ def test_sync_evicts_and_returns_invalid_unconfirmed_transaction(monkeypatch) ->
     finally:
         wallet.close()
         assert str(invalid_tx.compute_txid()) in evicted[0]
+
+
+def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> None:
+    wallet, outpoint = _wallet_with_funded_unconfirmed_output()
+    try:
+        spend = _create_signed_spend(wallet, outpoint)
+
+        signers = wallet.signers_of_tx_inputs(spend)
+
+        assert len(signers) == 1
+        assert signers[0] == (wallet.keystores[0].fingerprint.upper(),)
+    finally:
+        wallet.close()
