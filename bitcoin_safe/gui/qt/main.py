@@ -1255,7 +1255,6 @@ class MainWindow(UnlockableMainWindow):
         center_on_screen(dialog)
         dialog.show()
         dialog.raise_()
-        self._message_signature_dialog = dialog
 
     def on_signed_message_created(self, signed_message: str) -> None:
         """Display and copy a newly signed message."""
@@ -2991,6 +2990,7 @@ class MainWindow(UnlockableMainWindow):
 
         if self.last_qtwallet == qt_wallet:
             self.last_qtwallet = None
+        self.close_address_dialogs_of_wallet(wallet_id=qt_wallet.wallet.id)
         qt_wallet.save()
         qt_wallet.close()
         QTWallet.remove_lockfile(wallet_file_path=Path(qt_wallet.file_path))
@@ -2998,6 +2998,12 @@ class MainWindow(UnlockableMainWindow):
         self.signals.any_wallet_updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletClosed))
         self.refresh_plugin_notification_bars()
         self.refresh_plugin_update_notification_bar()
+
+    def close_address_dialogs_of_wallet(self, wallet_id: str) -> None:
+        """Close the address dialogs of a wallet, so no seed-signing action outlives the wallet."""
+        for widget in list(self.attached_widgets):
+            if isinstance(widget, address_dialog.AddressDialog) and widget.wallet.id == wallet_id:
+                widget.close()
 
     def add_recently_open_wallet(self, file_path: str) -> None:
         """Add recently open wallet."""

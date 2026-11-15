@@ -542,10 +542,10 @@ resolved_reference = "5cda0427ded13aeb105b9bb02ab44b65ec73607c"
 
 [[package]]
 name = "bitcoin-usb"
-version = "6.0.0"
+version = "6.1.0"
 description = "Wrapper around hwi, such that one can sign bdk PSBTs directly"
 optional = false
-python-versions = ">=3.10,<3.14"
+python-versions = ">=3.12,<3.14"
 groups = ["main"]
 files = []
 develop = false
@@ -554,6 +554,7 @@ develop = false
 aioitertools = "^0.13.0"
 bitcoin-safe-lib = {git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main"}
 bleak = "^0.22.3"
+btclib = "^2026.11.14"
 hwi = {git = "https://github.com/bitcoin-core/HWI.git", branch = "master"}
 jade-client = {git = "https://github.com/Blockstream/Jade.git", rev = "fb2642397ed7afdda08f3d1380ac6ee21164e7e6"}
 mnemonic = "^0.21"
@@ -565,7 +566,7 @@ trezor = "^0.20.0"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-usb.git"
 reference = "main"
-resolved_reference = "de8ba944b680876109beb97a25d7cae81ea2afc4"
+resolved_reference = "5a3cf071ff7412b82a431eba71b5418e7ab6796a"
 
 [[package]]
 name = "bleak"
@@ -595,18 +596,18 @@ winrt-runtime = {version = ">=2,<3", markers = "platform_system == \"Windows\" a
 
 [[package]]
 name = "btclib"
-version = "2026.11.13"
+version = "2026.11.14"
 description = "A library for 'bitcoin cryptography'"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
 files = [
-    {file = "btclib-2026.11.13-py3-none-any.whl", hash = "sha256:2c6788949cb40f6907d580f6b093f24db68a89840355972dfeac84581dce0f17"},
-    {file = "btclib-2026.11.13.tar.gz", hash = "sha256:4cee03a6cdb24e1b1d2c52c13b431322e206dbf37398aabfce8db8db8d307f93"},
+    {file = "btclib-2026.11.14-py3-none-any.whl", hash = "sha256:989cb76118931c2164e2c8e703d990af1de4ceabdc128359f24f39d9b8e72ad9"},
+    {file = "btclib-2026.11.14.tar.gz", hash = "sha256:7d810f048e2d9d8b62152b6156454ec0f766b3d5e1059999bfc2f76edaf88767"},
 ]
 
 [package.dependencies]
-base58-bech32 = ">=2026.10.23"
+base58-bech32 = ">=2026.11.12"
 ecc = ">=2026.11.11"
 typing-extensions = ">=4.10"
 

@@ -60,17 +60,22 @@ def get_default_address_type(is_multisig) -> AddressType:
     return AddressTypes.p2wsh if is_multisig else AddressTypes.p2wpkh
 
 
+def get_simple_pubkey_providers(descriptor_str: str) -> list[SimplePubKeyProvider]:
+    """Return the pubkey providers of a descriptor, in descriptor order."""
+    return [
+        SimplePubKeyProvider.from_hwi(pubkey_provider=pubkey_provider)
+        for pubkey_provider in get_all_pubkey_providers(parse_descriptor(descriptor_str))
+    ]
+
+
 def get_address_bip32_path(descriptor_str: str, kind: bdk.KeychainKind, index: int):
     """Get address bip32 path."""
-    hwi_descriptor = parse_descriptor(descriptor_str)
-    pubkey_providers = get_all_pubkey_providers(hwi_descriptor)
+    pubkey_providers = get_simple_pubkey_providers(descriptor_str)
 
     if not len(pubkey_providers) > 1:
         logger.warning("Multiple pubkey_providers present. Choosing 1. one")
 
-    spkp = SimplePubKeyProvider.from_hwi(pubkey_provider=pubkey_providers[0])
-
-    return spkp.get_address_bip32_path(kind=kind, index=index)
+    return pubkey_providers[0].get_address_bip32_path(kind=kind, index=index)
 
 
 def descriptor_from_keystores(
