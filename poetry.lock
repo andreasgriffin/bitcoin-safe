@@ -542,7 +542,7 @@ resolved_reference = "5cda0427ded13aeb105b9bb02ab44b65ec73607c"
 
 [[package]]
 name = "bitcoin-usb"
-version = "6.0.0"
+version = "6.1.0"
 description = "Wrapper around hwi, such that one can sign bdk PSBTs directly"
 optional = false
 python-versions = ">=3.12,<3.14"
@@ -566,7 +566,7 @@ trezor = "^0.20.0"
 type = "git"
 url = "https://github.com/andreasgriffin/bitcoin-usb.git"
 reference = "main"
-resolved_reference = "72b5718d75f99960f7666a6f20c6fe085a5733a8"
+resolved_reference = "5a3cf071ff7412b82a431eba71b5418e7ab6796a"
 
 [[package]]
 name = "bleak"

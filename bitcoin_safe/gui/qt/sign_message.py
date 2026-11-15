@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import logging
 from abc import abstractmethod
+from functools import partial
 from typing import cast
 
 import bdkpython as bdk
@@ -234,7 +235,7 @@ class SignMessageBase(QWidget):
         for option in options:
             action = self.seed_menu.addAction(option.label)
             assert action
-            action.triggered.connect(lambda _checked=False, o=option: self.sign_with_option(o))
+            action.triggered.connect(partial(self.sign_with_option, option))
         self.sign_seed_button.setVisible(bool(options))
 
     def sign_with_option(self, option: SeedSignOption) -> None:
