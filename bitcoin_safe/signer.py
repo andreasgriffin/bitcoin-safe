@@ -97,7 +97,7 @@ def seed_sign_options(wallet: Wallet, address_info: AddressInfoMin) -> list[Seed
         seen_fingerprints.add(fingerprint)
         options.append(
             SeedSignOption(
-                label=keystore.description or provider.fingerprint,
+                label=f"{keystore.hardware_signer_label()} - {provider.fingerprint}",
                 signer=SoftwareSigner(
                     mnemonic=keystore.mnemonic,
                     network=wallet.network,
