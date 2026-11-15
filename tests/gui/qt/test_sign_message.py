@@ -34,7 +34,7 @@ from PyQt6.QtWidgets import QPushButton
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.sign_message import SignMessageBase, _SignTab
-from bitcoin_safe.signals import Signals, WalletFunctions
+from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason, WalletFunctions
 from bitcoin_safe.signer import SeedSignOption
 
 from ...non_gui.test_seed_sign_message import _wallet
@@ -203,5 +203,33 @@ def test_sign_tab_seed_button_follows_entered_address(qtbot: QtBot, test_config,
     assert len(tab.seed_menu.actions()) == 1
 
     tab.sign_address_edit.setText("")
+    assert tab.sign_seed_button.isHidden()
+    assert tab.seed_menu.actions() == []
+
+
+def test_closing_wallet_clears_seed_menu_of_open_sign_tab(qtbot: QtBot, test_config, loop_in_thread) -> None:
+    wallet = _wallet(signers=1, test_config=test_config)
+    address = str(wallet.get_force_new_address(is_change=False).address)
+
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    open_wallets: dict[str, SimpleNamespace] = {"wallet": SimpleNamespace(wallet=wallet)}
+    wallet_functions.get_qt_wallets.connect(lambda: open_wallets["wallet"])
+
+    tab = _SignTab(
+        network=bdk.Network.REGTEST,
+        signals_min=signals,
+        close_all_video_widgets=signals.close_all_video_widgets,
+        loop_in_thread=loop_in_thread,
+        wallet_functions=wallet_functions,
+    )
+    qtbot.addWidget(tab)
+    tab.show()
+    tab.sign_address_edit.setText(address)
+    assert len(tab.seed_menu.actions()) == 1
+
+    open_wallets.clear()
+    signals.any_wallet_updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletClosed))
+
     assert tab.sign_seed_button.isHidden()
     assert tab.seed_menu.actions() == []

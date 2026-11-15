@@ -67,7 +67,7 @@ from bitcoin_safe.keystore import KeyStoreImporterTypes
 
 from ...message_signature_verifyer import MessageSignatureVerifyer
 from ...pythonbdk_types import AddressInfoMin
-from ...signals import SignalsMin, WalletFunctions
+from ...signals import SignalsMin, UpdateFilter, UpdateFilterReason, WalletFunctions
 from ...signer import SeedSignOption, seed_sign_options
 from ...wallet import Wallet
 from .gpg_verify import verify_gpg_signed_message
@@ -364,10 +364,16 @@ class _SignTab(SignMessageBase):
         self.grid_layout.addWidget(self.sign_button_box, 2, 2, 1, 3)
 
         self.sign_address_edit.signal_text_change.connect(self._refresh_seed_signer)
+        self.wallet_functions.signals.any_wallet_updated.connect(self._on_any_wallet_updated)
         self.signals_min.language_switch.connect(self.updateUI)
         self.updateUI()
         # addButton() may re-show the seed button, so hide it again until an address is entered
         self.set_seed_sign_options([])
+
+    def _on_any_wallet_updated(self, update_filter: UpdateFilter) -> None:
+        """Rebuild the seed menu when a wallet closes, so its seed options are dropped."""
+        if update_filter.reason == UpdateFilterReason.WalletClosed:
+            self._refresh_seed_signer(self.sign_address_edit.text())
 
     def _address_info_of_wallet(self) -> tuple[Wallet, AddressInfoMin] | None:
         """Return the wallet and address info for the entered address, if it belongs to an open wallet."""
