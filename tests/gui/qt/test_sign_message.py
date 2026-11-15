@@ -142,8 +142,13 @@ class _FakeSeedSigner:
         return self.signature
 
 
-def _option(label: str, signer: _FakeSeedSigner, bip32_path: str = "m/84h/1h/0h/0/0") -> SeedSignOption:
-    return SeedSignOption(label=label, signer=signer, bip32_path=bip32_path)  # type: ignore[arg-type]
+def _option(name: str, signer: _FakeSeedSigner, bip32_path: str = "m/84h/1h/0h/0/0") -> SeedSignOption:
+    return SeedSignOption(
+        signer_label=name,
+        fingerprint="00000000",
+        signer=signer,  # type: ignore[arg-type]
+        bip32_path=bip32_path,
+    )
 
 
 def test_seed_menu_has_one_entry_per_option(qtbot: QtBot, loop_in_thread) -> None:
@@ -151,11 +156,11 @@ def test_seed_menu_has_one_entry_per_option(qtbot: QtBot, loop_in_thread) -> Non
 
     widget.set_seed_sign_options([_option("A", _FakeSeedSigner()), _option("B", _FakeSeedSigner())])
     assert widget.sign_seed_button.isVisibleTo(widget)
-    assert [action.text() for action in widget.seed_menu.actions()] == ["A", "B"]
+    assert [action.text() for action in widget.seed_menu.actions()] == ["A - 00000000", "B - 00000000"]
 
     widget.set_seed_sign_options([_option("C", _FakeSeedSigner())])
     assert widget.sign_seed_button.isVisibleTo(widget)
-    assert [action.text() for action in widget.seed_menu.actions()] == ["C"]
+    assert [action.text() for action in widget.seed_menu.actions()] == ["C - 00000000"]
 
     widget.set_seed_sign_options([])
     assert not widget.sign_seed_button.isVisibleTo(widget)
