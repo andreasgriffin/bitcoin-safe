@@ -141,14 +141,12 @@ class _FakeSeedSigner:
         self.calls.append((message, bip32_path))
         return self.signature
 
+    def get_fingerprint(self) -> str:
+        return "00000000"
+
 
 def _option(name: str, signer: _FakeSeedSigner, bip32_path: str = "m/84h/1h/0h/0/0") -> SeedSignOption:
-    return SeedSignOption(
-        signer_label=name,
-        fingerprint="00000000",
-        signer=signer,  # type: ignore[arg-type]
-        bip32_path=bip32_path,
-    )
+    return SeedSignOption(signer_label=name, signer=signer, bip32_path=bip32_path)  # type: ignore[arg-type]
 
 
 def test_seed_menu_has_one_entry_per_option(qtbot: QtBot, loop_in_thread) -> None:
