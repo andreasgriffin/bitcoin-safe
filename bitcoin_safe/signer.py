@@ -72,7 +72,7 @@ class SeedSignOption:
 
     @property
     def label(self) -> str:
-        return f"{self.signer_label} - {self.signer.get_fingerprint()}"
+        return f"{self.signer_label} - {self.signer.get_fingerprint().upper()}"
 
 
 def seed_sign_options(wallet: Wallet, address_info: AddressInfoMin) -> list[SeedSignOption]:

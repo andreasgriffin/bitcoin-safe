@@ -125,7 +125,7 @@ def test_seed_sign_options_match_fingerprint_case_insensitively(test_config) -> 
     assert len(seed_sign_options(wallet, _address_info(wallet))) == 2
 
 
-def test_seed_sign_option_labels_use_keystore_description(test_config) -> None:  # type: ignore[no-untyped-def]
+def test_seed_sign_option_label_is_signer_label_and_uppercase_fingerprint(test_config) -> None:  # type: ignore[no-untyped-def]
     wallet = _wallet(signers=1, test_config=test_config)
     keystore = wallet.keystores[0]
     assert keystore
@@ -133,7 +133,9 @@ def test_seed_sign_option_labels_use_keystore_description(test_config) -> None: 
 
     options = seed_sign_options(wallet, _address_info(wallet))
 
-    assert [option.label for option in options] == ["My seed"]
+    assert [option.label for option in options] == [
+        f"{keystore.hardware_signer_label()} - {keystore.fingerprint.upper()}"
+    ]
 
 
 def test_seed_signature_verifies_against_wallet_address(test_config) -> None:  # type: ignore[no-untyped-def]
