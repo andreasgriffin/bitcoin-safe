@@ -74,6 +74,8 @@ from bitcoin_safe.plugin_framework.builtin_plugins import (
 from bitcoin_safe.plugin_framework.external_plugin_registry import (
     DEFAULT_PLUGIN_SOURCE_ID,
     ExternalPluginRegistry,
+    _PluginArtifactLayout,
+    _SignedPluginArtifactFinder,
     is_builtin_publisher_key,
     publisher_key_fingerprint,
     suggested_plugin_source_display_name,
@@ -84,6 +86,7 @@ from bitcoin_safe.plugin_framework.external_plugin_registry_dataclasses import (
     InstalledSourcePluginMetadata,
     PluginSource,
     PluginSourceAuthConfig,
+    VerifiedExternalPluginBundle,
     VerifiedPluginSourceManifest,
 )
 from bitcoin_safe.plugin_framework.external_plugin_resources import (
@@ -4546,3 +4549,168 @@ def test_sidebar_node_trailing_buttons_are_parented_before_insertion(
 
     assert parent_widgets
     assert all(parent is node.header_row for parent in parent_widgets)
+
+
+def _external_bundle_for_test(
+    bundle_id: str,
+    folder_hash: str,
+    client_cls: type[PluginClient],
+) -> VerifiedExternalPluginBundle:
+    return VerifiedExternalPluginBundle(
+        bundle_id=bundle_id,
+        source_id="test-source",
+        version="1.0.0",
+        plugin_dir=Path("/tmp") / bundle_id,
+        folder_hash=folder_hash,
+        verified_signer_fingerprint="fingerprint",
+        runtime_bundle=RuntimePluginBundle(
+            client_classes=(client_cls,),
+            class_kwargs={client_cls.__name__: {}},
+            create_plugin_clients=None,
+        ),
+    )
+
+
+def test_registry_change_reconciles_enabled_external_client_in_every_open_wallet(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "shared-plugin"
+
+    class _SharedPluginClient(_LoadTrackingPluginClient):
+        pass
+
+    current_hash = {"value": "hash-v1"}
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        return [_external_bundle_for_test(bundle_id, current_hash["value"], _SharedPluginClient)]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+
+    def _make_manager() -> PluginManager:
+        return PluginManager(
+            wallet_functions=WalletFunctions(Signals()),
+            config=config,
+            fx=_DummyFX(),
+            loop_in_thread=None,
+            external_registry=registry,
+            parent=None,
+        )
+
+    first = _make_manager()
+    second = _make_manager()
+    descriptor = _test_descriptor()
+    for manager in (first, second):
+        manager.create_and_connect_clients(
+            descriptor=descriptor, wallet_id="wallet", category_core=SimpleNamespace()
+        )
+    first_old = next(client for client in first.clients if client.plugin_bundle_id == bundle_id)
+    second_old = next(client for client in second.clients if client.plugin_bundle_id == bundle_id)
+    first_old.set_enabled(True)
+    second_old.set_enabled(True)
+
+    try:
+        current_hash["value"] = "hash-v2"
+        first._refresh_external_registry_state()
+
+        second_new = next(client for client in second.clients if client.plugin_bundle_id == bundle_id)
+        assert second_new is not second_old
+        assert second_old not in second.clients
+        assert second_new.enabled
+        assert second_new.load_calls == 1
+        first_new = next(client for client in first.clients if client.plugin_bundle_id == bundle_id)
+        assert first_new.enabled
+        assert len(registry.lifecycle._wallet_plugins) == 2
+    finally:
+        first.close()
+        second.close()
+        assert registry.lifecycle._wallet_plugins == []
+
+
+def test_reconcile_keeps_unrelated_external_client_running(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    changed_bundle_id = "changed-plugin"
+    untouched_bundle_id = "untouched-plugin"
+
+    class _ChangedPluginClient(_LoadTrackingPluginClient):
+        pass
+
+    class _UntouchedPluginClient(_LoadTrackingPluginClient):
+        pass
+
+    current_hash = {"value": "hash-v1"}
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        return [
+            _external_bundle_for_test(changed_bundle_id, current_hash["value"], _ChangedPluginClient),
+            _external_bundle_for_test(untouched_bundle_id, "stable-hash", _UntouchedPluginClient),
+        ]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=None,
+        external_registry=registry,
+        parent=None,
+    )
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
+    )
+    untouched_client = next(
+        client for client in manager.clients if client.plugin_bundle_id == untouched_bundle_id
+    )
+    untouched_client.set_enabled(True)
+    untouched_loads = untouched_client.load_calls
+
+    try:
+        current_hash["value"] = "hash-v2"
+        manager.reconcile_external_runtime()
+
+        assert untouched_client in manager.clients
+        assert untouched_client.load_calls == untouched_loads
+        assert all(
+            client.enabled for client in manager.clients if client.plugin_bundle_id == untouched_bundle_id
+        )
+    finally:
+        manager.close()
+
+
+def test_external_registry_load_module_reuses_same_version_across_wallets(tmp_path: Path) -> None:
+    plugin_dir = tmp_path / "bundle"
+    package_dir = plugin_dir / "test_plugin"
+    package_dir.mkdir(parents=True)
+    (package_dir / "__init__.py").write_text("", encoding="utf-8")
+    (package_dir / "plugin_bundle.py").write_text('VALUE = "v1"\n', encoding="utf-8")
+    layout = _PluginArtifactLayout(
+        package_name="test_plugin",
+        entrypoint_relative_path=Path("plugin_bundle.py"),
+        bytecode_cache_tag=None,
+    )
+    namespace = "bitcoin_safe_external_plugin_reuse_test_hash_v1"
+    module_name = f"{namespace}.test_plugin.plugin_bundle"
+    first_registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    second_registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+
+    try:
+        first_module = first_registry._load_module(namespace, module_name, plugin_dir, layout)
+        second_module = second_registry._load_module(namespace, module_name, plugin_dir, layout)
+
+        assert second_module is first_module
+        installed_finders = [
+            finder
+            for finder in sys.meta_path
+            if isinstance(finder, _SignedPluginArtifactFinder) and finder.namespace == namespace
+        ]
+        assert len(installed_finders) == 1
+    finally:
+        first_registry._unload_plugin_namespace(namespace)

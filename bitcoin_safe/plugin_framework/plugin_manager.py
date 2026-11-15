@@ -409,6 +409,7 @@ class PluginManager(BaseSaveableClass):
         self._current_wallet_id: str | None = None
         self._current_category_core: CategoryCore | None = None
         self.external_registry = external_registry
+        self.external_registry.lifecycle.register(self)
         # `external_bundles` is the current runtime view of installed external plugin bundles.
         # It contains the loaded bundle metadata plus the client classes exported by each bundle.
         # During wallet deserialization `class_kwargs()` can inject the already-discovered
@@ -1084,7 +1085,6 @@ class PluginManager(BaseSaveableClass):
         self._current_category_core = category_core
         self._ensure_external_state_loaded()
         self.client_signal_tracker.disconnect_all()
-        self.signal_tracker = SignalTracker()
         self._restore_or_create_clients(descriptor=descriptor)
 
         for client in self.clients:
@@ -1185,6 +1185,15 @@ class PluginManager(BaseSaveableClass):
         )
 
     def _refresh_external_registry_state(self) -> bool:
+        """Refresh this wallet after a registry mutation and fan the change out to other wallets."""
+        runtime_changed = self._reload_external_registry_state()
+        if runtime_changed:
+            self.external_registry.lifecycle.reconcile_all(origin=self)
+        self.wallet_functions.signals.plugin_updates_changed.emit()
+        return runtime_changed
+
+    def _reload_external_registry_state(self) -> bool:
+        """Reload this wallet's external view from the shared registry without broadcasting."""
         previous_signature = self._external_bundle_state_signature(self.external_bundles)
         self.external_bundles = self._refresh_external_state(
             self._plugin_runtime_context(
@@ -1207,9 +1216,85 @@ class PluginManager(BaseSaveableClass):
             self._sync_external_client_state(client)
         if self._source_management_dialog is not None:
             self._source_management_dialog.reload_sources()
-        runtime_changed = previous_signature != self._external_bundle_state_signature(self.external_bundles)
-        self.wallet_functions.signals.plugin_updates_changed.emit()
-        return runtime_changed
+        return previous_signature != self._external_bundle_state_signature(self.external_bundles)
+
+    def reconcile_external_runtime(self) -> None:
+        """Replace only the external clients whose installed bundle changed in this wallet.
+
+        Unchanged external bundles and built-in clients keep their running instances. Each replaced
+        client's enabled state is restored on its replacement.
+        """
+        if (
+            self._current_descriptor is None
+            or self._current_wallet_id is None
+            or self._current_category_core is None
+        ):
+            return
+        fresh_bundles = self._discover_external_bundles()
+        changed_bundle_ids = self._changed_external_bundle_ids(self.external_bundles, fresh_bundles)
+        if not changed_bundle_ids:
+            return
+
+        previously_enabled_plugin_ids = {
+            client.plugin_id
+            for client in self.clients
+            if client.is_external_plugin()
+            and client.plugin_bundle_id in changed_bundle_ids
+            and client.enabled
+        }
+        for client in [
+            client
+            for client in self.clients
+            if client.is_external_plugin() and client.plugin_bundle_id in changed_bundle_ids
+        ]:
+            if client.enabled:
+                client.set_enabled(False)
+            self.clients.remove(client)
+            client.close()
+        self._reload_external_registry_state()
+        self.create_and_connect_clients(
+            descriptor=self._current_descriptor,
+            wallet_id=self._current_wallet_id,
+            category_core=self._current_category_core,
+        )
+        for client in self.clients:
+            if client.plugin_id in previously_enabled_plugin_ids:
+                client.set_enabled(True)
+
+    @classmethod
+    def _changed_external_bundle_ids(
+        cls,
+        current: dict[str, VerifiedExternalPluginBundle],
+        fresh: dict[str, VerifiedExternalPluginBundle],
+    ) -> set[str]:
+        """Bundle ids whose verified folder hash or exported client set differs, or were removed."""
+        changed: set[str] = set()
+        for bundle_id in current.keys() | fresh.keys():
+            before = current.get(bundle_id)
+            after = fresh.get(bundle_id)
+            if cls._external_bundle_state_signature({bundle_id: before} if before else {}) != (
+                cls._external_bundle_state_signature({bundle_id: after} if after else {})
+            ):
+                changed.add(bundle_id)
+        return changed
+
+    def _discover_external_bundles(self) -> dict[str, VerifiedExternalPluginBundle]:
+        """Read installed bundles without mutating the class-wide ``known_classes`` mapping."""
+        return {
+            bundle.bundle_id: bundle
+            for bundle in self._filter_valid_external_bundles(
+                self.external_registry.discover_verified_bundles(
+                    self._plugin_runtime_context(
+                        wallet_functions=self.wallet_functions,
+                        config=self.config,
+                        fx=self.fx,
+                        loop_in_thread=self.loop_in_thread,
+                        subscription_price_lookup=self.subscription_price_lookup,
+                        parent=self.parent,
+                    )
+                )
+            ).values()
+        }
 
     def _refresh_plugin_list_only(self) -> None:
         self.widget.set_plugins(self.listable_items, rebuild_sidebar=False)
@@ -1595,6 +1680,7 @@ class PluginManager(BaseSaveableClass):
         return dct
 
     def close(self) -> None:
+        self.external_registry.lifecycle.unregister(self)
         if self._deferred_subscription_refresh_timer is not None:
             self._deferred_subscription_refresh_timer.stop()
         self._deferred_subscription_refresh_clients.clear()

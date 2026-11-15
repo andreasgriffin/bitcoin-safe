@@ -44,7 +44,7 @@ from dataclasses import dataclass, replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import ModuleType
-from typing import Any, cast
+from typing import Any, Protocol, cast
 from urllib.parse import ParseResult, unquote, urljoin, urlparse
 
 import tomllib  # pyright: ignore[reportMissingImports]
@@ -371,6 +371,37 @@ def suggested_plugin_source_display_name(source_url: str) -> str | None:
     return f"{provider} {repo_name}"
 
 
+class ReconcilableWalletPlugins(Protocol):
+    def reconcile_external_runtime(self) -> None: ...
+
+
+class PluginLifecycleCoordinator:
+    """Fan out installed external plugin changes to every open wallet's plugin manager.
+
+    Each wallet owns its own plugin manager and client instances, but they share one installed
+    plugin set. After a registry change, every open manager is asked to re-read that set and
+    replace only its own external clients whose implementation changed.
+    """
+
+    def __init__(self) -> None:
+        self._wallet_plugins: list[ReconcilableWalletPlugins] = []
+
+    def register(self, wallet_plugins: ReconcilableWalletPlugins) -> None:
+        if wallet_plugins not in self._wallet_plugins:
+            self._wallet_plugins.append(wallet_plugins)
+
+    def unregister(self, wallet_plugins: ReconcilableWalletPlugins) -> None:
+        if wallet_plugins in self._wallet_plugins:
+            self._wallet_plugins.remove(wallet_plugins)
+
+    def reconcile_all(self, origin: ReconcilableWalletPlugins | None = None) -> None:
+        """Reconcile every open wallet, skipping the origin that already applied the change."""
+        for wallet_plugins in list(self._wallet_plugins):
+            if wallet_plugins is origin:
+                continue
+            wallet_plugins.reconcile_external_runtime()
+
+
 class ExternalPluginRegistry(BaseSaveableClass):
     VERSION = "0.0.1"
     REPOSITORY_FILENAME = "plugin-repository.json"
@@ -397,6 +428,8 @@ class ExternalPluginRegistry(BaseSaveableClass):
         self.source_catalogs = source_catalogs or {}
         self.installed_plugins = installed_plugins or {}
         self._plugin_finders: dict[str, _SignedPluginArtifactFinder] = {}
+        # Runtime-only: the open-wallet fan-out for this shared registry. Not part of dump().
+        self.lifecycle = PluginLifecycleCoordinator()
 
     @classmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
@@ -1357,6 +1390,10 @@ class ExternalPluginRegistry(BaseSaveableClass):
         plugin_dir: Path,
         layout: _PluginArtifactLayout,
     ) -> ModuleType:
+        # The namespace embeds the verified folder hash, so an existing import of it is the
+        # same verified plugin version. Reusing it keeps class identity shared across wallets.
+        if module_name in sys.modules:
+            return sys.modules[module_name]
         self._unload_plugin_namespace(namespace)
         finder = _SignedPluginArtifactFinder(namespace, plugin_dir, layout)
         sys.meta_path.insert(0, finder)
