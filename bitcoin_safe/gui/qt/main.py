@@ -215,6 +215,7 @@ class MainWindow(UnlockableMainWindow):
         # to the mainwindow to avoid memory issues
         # however I need to clear them again with signal_remove_attached_widget
         self.attached_widgets = AttachedWidgets(maxlen=10000)
+        self._message_signature_dialog: QDialog | None = None
         self.log_color_palette()
         self.password_cache = PasswordCache()
 
@@ -1256,6 +1257,7 @@ class MainWindow(UnlockableMainWindow):
         dialog.show()
         dialog.raise_()
         self._message_signature_dialog = dialog
+        dialog.finished.connect(self._on_message_signature_dialog_finished)
 
     def on_signed_message_created(self, signed_message: str) -> None:
         """Display and copy a newly signed message."""
@@ -2991,6 +2993,7 @@ class MainWindow(UnlockableMainWindow):
 
         if self.last_qtwallet == qt_wallet:
             self.last_qtwallet = None
+        self._close_widgets_with_seed_access(wallet_id=qt_wallet.wallet.id)
         qt_wallet.save()
         qt_wallet.close()
         QTWallet.remove_lockfile(wallet_file_path=Path(qt_wallet.file_path))
@@ -2998,6 +3001,17 @@ class MainWindow(UnlockableMainWindow):
         self.signals.any_wallet_updated.emit(UpdateFilter(reason=UpdateFilterReason.WalletClosed))
         self.refresh_plugin_notification_bars()
         self.refresh_plugin_update_notification_bar()
+
+    def _on_message_signature_dialog_finished(self, _result: int) -> None:
+        self._message_signature_dialog = None
+
+    def _close_widgets_with_seed_access(self, wallet_id: str) -> None:
+        """Close the widgets that can sign with the seed of the given wallet, so its signing actions end with it."""
+        for widget in list(self.attached_widgets):
+            if isinstance(widget, address_dialog.AddressDialog) and widget.wallet.id == wallet_id:
+                widget.close()
+        if self._message_signature_dialog:
+            self._message_signature_dialog.close()
 
     def add_recently_open_wallet(self, file_path: str) -> None:
         """Add recently open wallet."""
