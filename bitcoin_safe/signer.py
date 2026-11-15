@@ -66,9 +66,13 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class SeedSignOption:
-    label: str
+    signer_label: str
     signer: SoftwareSigner
     bip32_path: str
+
+    @property
+    def label(self) -> str:
+        return f"{self.signer_label} - {self.signer.get_fingerprint().upper()}"
 
 
 def seed_sign_options(wallet: Wallet, address_info: AddressInfoMin) -> list[SeedSignOption]:
@@ -97,7 +101,7 @@ def seed_sign_options(wallet: Wallet, address_info: AddressInfoMin) -> list[Seed
         seen_fingerprints.add(fingerprint)
         options.append(
             SeedSignOption(
-                label=keystore.description or provider.fingerprint,
+                signer_label=keystore.hardware_signer_label(),
                 signer=SoftwareSigner(
                     mnemonic=keystore.mnemonic,
                     network=wallet.network,

@@ -1026,6 +1026,9 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             if rename_requested and not self.change_wallet_id(requested_wallet_id):
                 return
             self._apply_no_impact_setting_changes(updated_protowallet)
+            self.wallet_signals.updated.emit(
+                UpdateFilter(refresh_all=True, reason=UpdateFilterReason.UserInput)
+            )
             self.save()
             Message(self.tr("Changes applied."), parent=self)
             return
