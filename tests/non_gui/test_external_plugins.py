@@ -5027,7 +5027,7 @@ def test_paid_plugin_update_schedules_subscription_refresh(
         assert isinstance(new_client, PaidPluginClient)
         assert new_client.enabled
         assert isinstance(new_client, _PaidStateTrackingPluginClient)
-        assert new_client.load_calls == old_client.load_calls + 1
+        assert new_client.load_calls == 1
         assert new_client._defer_subscription_refresh is False
         assert new_client in manager._deferred_subscription_refresh_clients
         assert manager._deferred_subscription_refresh_timer is not None

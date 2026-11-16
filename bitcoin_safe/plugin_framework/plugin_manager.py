@@ -1096,7 +1096,13 @@ class PluginManager(BaseSaveableClass):
 
         for client in self.clients:
             client.set_wallet_context(self._wallet_context(wallet_id=wallet_id))
-
+            if (
+                client.is_external_plugin()
+                and client.plugin_bundle_id in self.external_registry.mutating_bundle_ids
+                and client.enabled
+            ):
+                self._paused_clients.add(client)
+                client.suspend()
             if isinstance(client, PaidPluginClient):
                 client.defer_subscription_refresh(True)
                 client.set_business_plan(business_plan=self.business_plan)
