@@ -73,6 +73,7 @@ jobs:
         id: patch
         if: steps.author.outputs.authorized == 'true'
         run: |
+          git add -N -- 'bitcoin_safe/gui/locales/*.ts' 'bitcoin_safe/gui/locales/*.qm'
           git diff --binary -- 'bitcoin_safe/gui/locales/*.ts' 'bitcoin_safe/gui/locales/*.qm' > "$RUNNER_TEMP/corrections.patch"
           if [ -s "$RUNNER_TEMP/corrections.patch" ]; then
             echo 'changed=true' >> "$GITHUB_OUTPUT"
@@ -117,10 +118,10 @@ jobs:
       - name: Apply and validate corrections
         run: |
           set -euo pipefail
-          git apply "$RUNNER_TEMP/corrections/corrections.patch"
+          git apply --index "$RUNNER_TEMP/corrections/corrections.patch"
           python - <<'PY'
           import pathlib, subprocess
-          paths = subprocess.check_output(['git', 'diff', '--name-only', '-z']).split(b'\0')
+          paths = subprocess.check_output(['git', 'diff', '--cached', '--name-only', '-z']).split(b'\0')
           paths = [p.decode() for p in paths if p]
           if not paths:
               raise SystemExit('No corrections to push')
@@ -128,13 +129,12 @@ jobs:
               path = pathlib.PurePosixPath(name)
               if path.parent != pathlib.PurePosixPath('bitcoin_safe/gui/locales') or path.suffix not in {'.ts', '.qm'}:
                   raise SystemExit(f'Unexpected correction path: {name}')
-              mode = subprocess.check_output(['git', 'ls-files', '-s', '--', name], text=True).split()[0]
-              if mode != '100644' or pathlib.Path(name).is_symlink() or not pathlib.Path(name).is_file():
+              entry = subprocess.check_output(['git', '--literal-pathspecs', 'ls-files', '-s', '--', name], text=True).split()
+              if not entry or entry[0] != '100644' or pathlib.Path(name).is_symlink() or not pathlib.Path(name).is_file():
                   raise SystemExit(f'Unexpected correction file type: {name}')
           PY
           git config user.name 'weblate-correct[bot]'
           git config user.email 'weblate-correct[bot]@users.noreply.github.com'
-          git add -- 'bitcoin_safe/gui/locales/*.ts' 'bitcoin_safe/gui/locales/*.qm'
           git diff --cached --quiet || git commit -m 'chore: run Weblate correct'
 
       - name: Push corrections
