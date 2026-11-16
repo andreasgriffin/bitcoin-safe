@@ -48,7 +48,7 @@ from typing import Any, cast
 from urllib.parse import ParseResult, unquote, urljoin, urlparse
 
 import tomllib  # pyright: ignore[reportMissingImports]
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from packaging.specifiers import InvalidSpecifier, SpecifierSet
 from packaging.version import InvalidVersion, Version
@@ -378,6 +378,9 @@ class ExternalPluginRegistrySignals(QObject):
     # listens and reconciles its own external clients.
     plugin_bundles_changed = cast(SignalProtocol[[]], pyqtSignal())
 
+    def close(self) -> None:
+        SignalTools.disconnect_all_signals_from(self)
+
 
 class ExternalPluginRegistry(BaseSaveableClass):
     VERSION = "0.0.1"
@@ -407,6 +410,9 @@ class ExternalPluginRegistry(BaseSaveableClass):
         self._plugin_finders: dict[str, _SignedPluginArtifactFinder] = {}
         # Runtime-only notifier shared by all open wallets. Not part of dump().
         self.signals = ExternalPluginRegistrySignals()
+
+    def close(self) -> None:
+        self.signals.close()
 
     @classmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):

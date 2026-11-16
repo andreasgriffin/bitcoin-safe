@@ -4712,3 +4712,31 @@ def test_external_registry_load_module_reuses_same_version_across_wallets(tmp_pa
         assert len(installed_finders) == 1
     finally:
         first_registry._unload_plugin_namespace(namespace)
+
+
+def test_registry_signals_close_disconnects_plugin_managers(qapp: QApplication, tmp_path: Path) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=None,
+        external_registry=registry,
+        parent=None,
+    )
+    reconciled: list[bool] = []
+    manager.reconcile_external_runtime = lambda: reconciled.append(True)  # type: ignore[method-assign]
+    manager.signal_tracker.disconnect_all()
+    manager.signal_tracker.connect(
+        registry.signals.plugin_bundles_changed, manager.reconcile_external_runtime
+    )
+
+    registry.signals.plugin_bundles_changed.emit()
+    assert reconciled == [True]
+
+    registry.close()
+    registry.signals.plugin_bundles_changed.emit()
+    assert reconciled == [True]
+    manager.close()

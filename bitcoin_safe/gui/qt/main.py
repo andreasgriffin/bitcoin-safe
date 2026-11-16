@@ -3160,6 +3160,7 @@ class MainWindow(UnlockableMainWindow):
         if self.p2p_listener:
             self.p2p_listener.stop()
         self.remove_all_qt_wallet()
+        self.external_registry.close()
         self.mempool_manager.close()
         if self.global_network_map_widget:
             self.global_network_map_widget.close()
