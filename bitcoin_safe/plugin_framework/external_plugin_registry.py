@@ -48,9 +48,11 @@ from typing import Any, cast
 from urllib.parse import ParseResult, unquote, urljoin, urlparse
 
 import tomllib  # pyright: ignore[reportMissingImports]
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from packaging.specifiers import InvalidSpecifier, SpecifierSet
 from packaging.version import InvalidVersion, Version
+from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe import __version__
 from bitcoin_safe.config import UserConfig
@@ -371,6 +373,18 @@ def suggested_plugin_source_display_name(source_url: str) -> str | None:
     return f"{provider} {repo_name}"
 
 
+class ExternalPluginRegistrySignals(QObject):
+    # Emitted after any successful registry mutation (sources, catalog, installs, verification).
+    # Every open plugin manager listens, reloads its catalog view, and reconciles its own
+    # external clients only where the installed bundle actually changed.
+    registry_changed = cast(SignalProtocol[[]], pyqtSignal())
+    mutation_started = cast(SignalProtocol[[str]], pyqtSignal(str))
+    mutation_finished = cast(SignalProtocol[[str]], pyqtSignal(str))
+
+    def close(self) -> None:
+        SignalTools.disconnect_all_signals_from(self)
+
+
 class ExternalPluginRegistry(BaseSaveableClass):
     VERSION = "0.0.1"
     REPOSITORY_FILENAME = "plugin-repository.json"
@@ -397,6 +411,12 @@ class ExternalPluginRegistry(BaseSaveableClass):
         self.source_catalogs = source_catalogs or {}
         self.installed_plugins = installed_plugins or {}
         self._plugin_finders: dict[str, _SignedPluginArtifactFinder] = {}
+        # Runtime-only notifier shared by all open wallets. Not part of dump().
+        self.signals = ExternalPluginRegistrySignals()
+        self.mutating_bundle_ids: set[str] = set()
+
+    def close(self) -> None:
+        self.signals.close()
 
     @classmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):
@@ -1357,6 +1377,10 @@ class ExternalPluginRegistry(BaseSaveableClass):
         plugin_dir: Path,
         layout: _PluginArtifactLayout,
     ) -> ModuleType:
+        # The namespace embeds the verified folder hash, so an existing import of it is the
+        # same verified plugin version. Reusing it keeps class identity shared across wallets.
+        if module_name in sys.modules:
+            return sys.modules[module_name]
         self._unload_plugin_namespace(namespace)
         finder = _SignedPluginArtifactFinder(namespace, plugin_dir, layout)
         sys.meta_path.insert(0, finder)

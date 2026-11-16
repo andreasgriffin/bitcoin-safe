@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import asyncio
+import importlib
 import py_compile
 import shutil
 import sys
@@ -74,6 +75,8 @@ from bitcoin_safe.plugin_framework.builtin_plugins import (
 from bitcoin_safe.plugin_framework.external_plugin_registry import (
     DEFAULT_PLUGIN_SOURCE_ID,
     ExternalPluginRegistry,
+    _PluginArtifactLayout,
+    _SignedPluginArtifactFinder,
     is_builtin_publisher_key,
     publisher_key_fingerprint,
     suggested_plugin_source_display_name,
@@ -84,6 +87,7 @@ from bitcoin_safe.plugin_framework.external_plugin_registry_dataclasses import (
     InstalledSourcePluginMetadata,
     PluginSource,
     PluginSourceAuthConfig,
+    VerifiedExternalPluginBundle,
     VerifiedPluginSourceManifest,
 )
 from bitcoin_safe.plugin_framework.external_plugin_resources import (
@@ -151,6 +155,9 @@ class _DummyFX:
 class _ImmediateLoopInThread:
     def __init__(self) -> None:
         self.calls: list[dict[str, object]] = []
+
+    def run_background(self, coro: Coroutine[Any, Any, object]) -> None:
+        asyncio.run(coro)
 
     def run_task(self, coro: Coroutine[Any, Any, object], **kwargs: object) -> None:
         self.calls.append(kwargs)
@@ -2935,97 +2942,232 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:
     del qapp
-
-    def _empty_external_state(cls, context, external_registry):
-        del cls, context, external_registry
-        return {}
-
-    monkeypatch.setattr(PluginManager, "_refresh_external_state", classmethod(_empty_external_state))
-
     config = _make_config(tmp_path)
-    signals = Signals()
-    wallet_functions = WalletFunctions(signals)
-    loop_in_thread = _ImmediateLoopInThread()
-    current_client = _LoadTrackingPluginClient(enabled=True)
-    current_client.set_plugin_identity(
-        plugin_source=PluginClientSource.EXTERNAL,
-        plugin_bundle_id="test-plugin",
-    )
-    replacement_client = _LoadTrackingPluginClient(enabled=False)
-    replacement_client.set_plugin_identity(
-        plugin_source=PluginClientSource.EXTERNAL,
-        plugin_bundle_id="test-plugin",
-    )
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "test-plugin"
+    current_hash = {"value": "hash-v1"}
+
+    class _UpdatedPluginClient(_LoadTrackingPluginClient):
+        def __init__(self, enabled: bool = True, setting: str = "default") -> None:
+            super().__init__(enabled=enabled)
+            self.setting = setting
+
+        def dump(self) -> dict[str, Any]:
+            data = super().dump()
+            data["setting"] = self.setting
+            return data
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        return [_external_bundle_for_test(bundle_id, current_hash["value"], _UpdatedPluginClient)]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
     manager = PluginManager(
-        wallet_functions=wallet_functions,
+        wallet_functions=WalletFunctions(Signals()),
         config=config,
         fx=_DummyFX(),
-        loop_in_thread=loop_in_thread,
-        external_registry=ExternalPluginRegistry.from_config(config),
-        clients=[current_client],
+        loop_in_thread=_ImmediateLoopInThread(),
+        external_registry=registry,
         parent=None,
     )
-    current_client.set_plugin_identity(
-        plugin_source=PluginClientSource.EXTERNAL,
-        plugin_bundle_id="test-plugin",
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
     )
-    replacement_client.set_plugin_identity(
-        plugin_source=PluginClientSource.EXTERNAL,
-        plugin_bundle_id="test-plugin",
-        plugin_id=current_client.plugin_id,
+    current_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+    current_client.set_enabled(True)
+    other_manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=_ImmediateLoopInThread(),
+        external_registry=registry,
+        parent=None,
     )
+    other_manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="other-wallet", category_core=SimpleNamespace()
+    )
+    other_client = next(client for client in other_manager.clients if client.plugin_bundle_id == bundle_id)
+    other_client.set_enabled(True)
+    assert isinstance(other_client, _UpdatedPluginClient)
+    other_client.setting = "wallet B custom setting"
     entry = ExternalPluginCatalogEntry(
         source_id="test-source",
         source_display_name="Test Source",
-        bundle_id="test-plugin",
+        bundle_id=bundle_id,
         version="2.0.0",
         display_name="Test Plugin",
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
         app_version_specifier=">=0.0.0",
-        folder_hash="new-hash",
+        folder_hash="hash-v2",
         release_ref="main",
         update_available=True,
         installed_version="1.0.0",
     )
     install_calls: list[tuple[str, str]] = []
 
+    async def _install_plugin(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+        assert current_client.unload_calls == 2
+        assert other_client.unload_calls == 2
+        payload = other_manager._parse_client_payload(other_manager._serialize_client_payload(other_client))
+        assert payload is not None and payload["enabled"] is True
+        install_calls.append((source_id, bundle_id))
+        current_hash["value"] = "hash-v2"
+        return _installed_source_plugin_metadata(
+            source_id=source_id,
+            bundle_id=bundle_id,
+            version=entry.version,
+            folder_hash=entry.folder_hash,
+        )
+
+    monkeypatch.setattr(manager.external_registry, "install_plugin", _install_plugin)
+
     try:
 
-        async def _install_plugin(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
-            install_calls.append((source_id, bundle_id))
-            return _installed_source_plugin_metadata(
-                source_id=source_id,
-                bundle_id=bundle_id,
-                version=entry.version,
-                folder_hash=entry.folder_hash,
-            )
+        async def _failed_install(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+            assert current_client.unload_calls == 1
+            assert other_client.unload_calls == 1
+            raise RuntimeError("installation failed")
 
-        monkeypatch.setattr(
-            manager.external_registry,
-            "install_plugin",
-            _install_plugin,
-        )
-        monkeypatch.setattr(manager, "_refresh_external_registry_state", lambda: True)
-
-        def _refresh_after_registry_change(runtime_changed: bool) -> None:
-            assert runtime_changed is True
-            manager.clients = [replacement_client]
-
-        monkeypatch.setattr(manager, "_refresh_after_registry_change", _refresh_after_registry_change)
-
+        monkeypatch.setattr(manager.external_registry, "install_plugin", _failed_install)
+        monkeypatch.setattr(manager, "_show_async_registry_error", lambda error: None)
+        manager.update_installed_source_plugin(current_client, entry)
+        assert current_client.enabled and other_client.enabled
+        assert current_client.load_calls == 2 and other_client.load_calls == 2
+        monkeypatch.setattr(manager.external_registry, "install_plugin", _install_plugin)
         manager.update_installed_source_plugin(current_client, entry)
 
-        assert install_calls == [("test-source", "test-plugin")]
-        assert current_client.unload_calls == 1
-        assert current_client.load_calls == 0
-        assert replacement_client.enabled
-        assert replacement_client.load_calls == 1
-        assert loop_in_thread.calls[0]["key"] == "plugin_source_install:test-plugin"
-        assert loop_in_thread.calls[0]["multiple_strategy"] == MultipleStrategy.REJECT_NEW_TASK
+        assert install_calls == [("test-source", bundle_id)]
+        replacement = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+        assert replacement is not current_client
+        assert replacement.enabled
+        assert replacement.load_calls == 1
+        assert current_client.unload_calls == 2
+        other_replacement = next(
+            client for client in other_manager.clients if client.plugin_bundle_id == bundle_id
+        )
+        assert other_replacement is not other_client
+        assert other_replacement.enabled
+        assert isinstance(other_replacement, _UpdatedPluginClient)
+        assert other_replacement.setting == "wallet B custom setting"
+        assert other_replacement.load_calls == 1
+    finally:
+        other_manager.close()
+        manager.close()
+
+
+def test_paid_plugin_business_plan_cannot_restart_during_update(
+    qapp: QApplication, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    client = _PaidStateTrackingPluginClient(
+        config=config, fx=_DummyFX(), loop_in_thread=None, additional_access_providers=[lambda: True]
+    )
+    client.set_plugin_identity(PluginClientSource.EXTERNAL, "paid-plugin")
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=_ImmediateLoopInThread(),
+        external_registry=registry,
+        clients=[client],
+    )
+    client.set_enabled(True)
+    entry = ExternalPluginCatalogEntry(
+        source_id="source",
+        source_display_name="Source",
+        bundle_id="paid-plugin",
+        version="2.0",
+        display_name="Paid",
+        description="",
+        provider="Tests",
+        entrypoint="plugin.py",
+        app_version_specifier=">=0",
+        folder_hash="hash",
+        release_ref="main",
+    )
+
+    async def install(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+        assert client.unload_calls == 1
+        client.on_business_plan_changed()
+        client.load(refresh_subscription_status=False)
+        client.set_enabled(True)
+        assert not client.enabled
+        assert client.load_calls == 1
+        raise ExternalPluginError("failed")
+
+    monkeypatch.setattr(registry, "install_plugin", install)
+    monkeypatch.setattr(manager, "_show_async_registry_error", lambda error: None)
+    try:
+        manager.update_installed_source_plugin(client, entry)
+        assert client.enabled
+        assert client.load_calls == 2
     finally:
         manager.close()
+
+
+def test_uninstall_unloads_both_wallets_before_removing_lazy_imports(
+    qapp: QApplication, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "lazy-plugin"
+    plugin_dir = registry.installed_dir / bundle_id
+    package = plugin_dir / "test_plugin"
+    package.mkdir(parents=True)
+    (package / "__init__.py").write_text("", encoding="utf-8")
+    (package / "plugin_bundle.py").write_text("", encoding="utf-8")
+    (package / "lazy.py").write_text("VALUE = 42\n", encoding="utf-8")
+    namespace = "bitcoin_safe_external_plugin_uninstall_lazy_test"
+    layout = _PluginArtifactLayout("test_plugin", Path("plugin_bundle.py"), None)
+    registry._load_module(namespace, f"{namespace}.test_plugin.plugin_bundle", plugin_dir, layout)
+    registry.installed_plugins[bundle_id] = _installed_source_plugin_metadata("source", bundle_id)
+    unload_results: list[int] = []
+
+    class _LazyClient(_LoadTrackingPluginClient):
+        def unload(self) -> None:
+            super().unload()
+            if self.wallet_context and self.wallet_context.wallet_id == "wallet-b":
+                module = importlib.import_module(f"{namespace}.test_plugin.lazy")
+                unload_results.append(module.VALUE)
+
+    def discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        return [_external_bundle_for_test(bundle_id, "hash", _LazyClient)] if plugin_dir.exists() else []
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", discover)
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_manager.question_dialog", lambda **kwargs: True)
+    managers = [
+        PluginManager(
+            wallet_functions=WalletFunctions(Signals()),
+            config=config,
+            fx=_DummyFX(),
+            loop_in_thread=None,
+            external_registry=registry,
+        )
+        for _ in range(2)
+    ]
+    try:
+        for manager, wallet_id in zip(managers, ("wallet-a", "wallet-b"), strict=True):
+            manager.create_and_connect_clients(
+                descriptor=_test_descriptor(), wallet_id=wallet_id, category_core=SimpleNamespace()
+            )
+            client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+            client.set_enabled(True)
+        managers[0].delete_installed_source_plugin_by_bundle_id(bundle_id)
+        assert unload_results == [42]
+        assert not plugin_dir.exists()
+        assert all(
+            not any(client.plugin_bundle_id == bundle_id for client in manager.clients)
+            for manager in managers
+        )
+    finally:
+        for manager in managers:
+            manager.close()
+        registry._unload_plugin_namespace(namespace)
 
 
 def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
@@ -4546,3 +4688,397 @@ def test_sidebar_node_trailing_buttons_are_parented_before_insertion(
 
     assert parent_widgets
     assert all(parent is node.header_row for parent in parent_widgets)
+
+
+def _external_bundle_for_test(
+    bundle_id: str,
+    folder_hash: str,
+    client_cls: type[PluginClient],
+) -> VerifiedExternalPluginBundle:
+    return VerifiedExternalPluginBundle(
+        bundle_id=bundle_id,
+        source_id="test-source",
+        version="1.0.0",
+        plugin_dir=Path("/tmp") / bundle_id,
+        folder_hash=folder_hash,
+        verified_signer_fingerprint="fingerprint",
+        runtime_bundle=RuntimePluginBundle(
+            client_classes=(client_cls,),
+            class_kwargs={client_cls.__name__: {}},
+            create_plugin_clients=None,
+        ),
+    )
+
+
+def test_registry_change_reconciles_enabled_external_client_in_every_open_wallet(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "shared-plugin"
+
+    class _SharedPluginClient(_LoadTrackingPluginClient):
+        pass
+
+    current_hash = {"value": "hash-v1"}
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        return [_external_bundle_for_test(bundle_id, current_hash["value"], _SharedPluginClient)]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+
+    def _make_manager() -> PluginManager:
+        return PluginManager(
+            wallet_functions=WalletFunctions(Signals()),
+            config=config,
+            fx=_DummyFX(),
+            loop_in_thread=None,
+            external_registry=registry,
+            parent=None,
+        )
+
+    first = _make_manager()
+    second = _make_manager()
+    descriptor = _test_descriptor()
+    for manager in (first, second):
+        manager.create_and_connect_clients(
+            descriptor=descriptor, wallet_id="wallet", category_core=SimpleNamespace()
+        )
+    first_old = next(client for client in first.clients if client.plugin_bundle_id == bundle_id)
+    second_old = next(client for client in second.clients if client.plugin_bundle_id == bundle_id)
+    first_old.set_enabled(True)
+    second_old.set_enabled(True)
+
+    try:
+        current_hash["value"] = "hash-v2"
+        first._refresh_external_registry_state()
+
+        second_new = next(client for client in second.clients if client.plugin_bundle_id == bundle_id)
+        assert second_new is not second_old
+        assert second_old not in second.clients
+        assert second_new.enabled
+        assert second_new.load_calls == 1
+        first_new = next(client for client in first.clients if client.plugin_bundle_id == bundle_id)
+        assert first_new.enabled
+    finally:
+        first.close()
+        second.close()
+
+
+def test_reconcile_keeps_unrelated_external_client_running(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    changed_bundle_id = "changed-plugin"
+    untouched_bundle_id = "untouched-plugin"
+
+    class _ChangedPluginClient(_LoadTrackingPluginClient):
+        pass
+
+    class _UntouchedPluginClient(_LoadTrackingPluginClient):
+        pass
+
+    current_hash = {"value": "hash-v1"}
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        return [
+            _external_bundle_for_test(changed_bundle_id, current_hash["value"], _ChangedPluginClient),
+            _external_bundle_for_test(untouched_bundle_id, "stable-hash", _UntouchedPluginClient),
+        ]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=None,
+        external_registry=registry,
+        parent=None,
+    )
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
+    )
+    untouched_client = next(
+        client for client in manager.clients if client.plugin_bundle_id == untouched_bundle_id
+    )
+    untouched_client.set_enabled(True)
+    untouched_loads = untouched_client.load_calls
+
+    try:
+        current_hash["value"] = "hash-v2"
+        manager.reconcile_external_runtime()
+
+        assert untouched_client in manager.clients
+        assert untouched_client.load_calls == untouched_loads
+        assert all(
+            client.enabled for client in manager.clients if client.plugin_bundle_id == untouched_bundle_id
+        )
+    finally:
+        manager.close()
+
+
+def test_external_registry_load_module_reuses_same_version_across_wallets(tmp_path: Path) -> None:
+    plugin_dir = tmp_path / "bundle"
+    package_dir = plugin_dir / "test_plugin"
+    package_dir.mkdir(parents=True)
+    (package_dir / "__init__.py").write_text("", encoding="utf-8")
+    (package_dir / "plugin_bundle.py").write_text('VALUE = "v1"\n', encoding="utf-8")
+    layout = _PluginArtifactLayout(
+        package_name="test_plugin",
+        entrypoint_relative_path=Path("plugin_bundle.py"),
+        bytecode_cache_tag=None,
+    )
+    namespace = "bitcoin_safe_external_plugin_reuse_test_hash_v1"
+    module_name = f"{namespace}.test_plugin.plugin_bundle"
+    first_registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+    second_registry = ExternalPluginRegistry(_make_runtime_context(tmp_path))
+
+    try:
+        first_module = first_registry._load_module(namespace, module_name, plugin_dir, layout)
+        second_module = second_registry._load_module(namespace, module_name, plugin_dir, layout)
+
+        assert second_module is first_module
+        installed_finders = [
+            finder
+            for finder in sys.meta_path
+            if isinstance(finder, _SignedPluginArtifactFinder) and finder.namespace == namespace
+        ]
+        assert len(installed_finders) == 1
+    finally:
+        first_registry._unload_plugin_namespace(namespace)
+
+
+def test_registry_signals_close_disconnects_plugin_managers(qapp: QApplication, tmp_path: Path) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=None,
+        external_registry=registry,
+        parent=None,
+    )
+    reconciled: list[bool] = []
+    manager.reconcile_external_runtime = lambda: reconciled.append(True)  # type: ignore[method-assign]
+    manager.signal_tracker.disconnect_all()
+    manager.signal_tracker.connect(registry.signals.registry_changed, manager.reconcile_external_runtime)
+
+    registry.signals.registry_changed.emit()
+    assert reconciled == [True]
+
+    registry.close()
+    registry.signals.registry_changed.emit()
+    assert reconciled == [True]
+    manager.close()
+
+
+def test_reconcile_enabled_paid_client_reenables_subscription_refresh(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "paid-plugin"
+    current_hash = {"value": "hash-v1"}
+
+    fx = _DummyFX()
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        bundle = _external_bundle_for_test(bundle_id, current_hash["value"], _PaidStateTrackingPluginClient)
+        paid_kwargs = _PaidStateTrackingPluginClient.cls_kwargs(
+            config=config,
+            fx=fx,
+            loop_in_thread=None,
+            additional_access_providers=[lambda: True],
+        )
+        return [
+            VerifiedExternalPluginBundle(
+                bundle_id=bundle.bundle_id,
+                source_id=bundle.source_id,
+                version=bundle.version,
+                plugin_dir=bundle.plugin_dir,
+                folder_hash=bundle.folder_hash,
+                verified_signer_fingerprint=bundle.verified_signer_fingerprint,
+                runtime_bundle=RuntimePluginBundle(
+                    client_classes=bundle.runtime_bundle.client_classes,
+                    class_kwargs={_PaidStateTrackingPluginClient.__name__: paid_kwargs},
+                    create_plugin_clients=None,
+                ),
+            )
+        ]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        external_registry=registry,
+        parent=None,
+    )
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
+    )
+    old_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+    assert isinstance(old_client, PaidPluginClient)
+    old_client.set_enabled(True)
+
+    try:
+        current_hash["value"] = "hash-v2"
+        manager.reconcile_external_runtime()
+
+        new_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+        assert new_client is not old_client
+        assert isinstance(new_client, PaidPluginClient)
+        assert new_client.enabled
+        assert new_client._defer_subscription_refresh is False
+        assert new_client in manager._deferred_subscription_refresh_clients
+        assert manager._deferred_subscription_refresh_timer is not None
+        assert manager._deferred_subscription_refresh_timer.isActive()
+    finally:
+        manager.close()
+
+
+def test_paid_plugin_update_schedules_subscription_refresh(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "paid-plugin"
+    current_hash = {"value": "hash-v1"}
+
+    fx = _DummyFX()
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        bundle = _external_bundle_for_test(bundle_id, current_hash["value"], _PaidStateTrackingPluginClient)
+        paid_kwargs = _PaidStateTrackingPluginClient.cls_kwargs(
+            config=config,
+            fx=fx,
+            loop_in_thread=None,
+            additional_access_providers=[lambda: True],
+        )
+        return [
+            VerifiedExternalPluginBundle(
+                bundle_id=bundle.bundle_id,
+                source_id=bundle.source_id,
+                version=bundle.version,
+                plugin_dir=bundle.plugin_dir,
+                folder_hash=bundle.folder_hash,
+                verified_signer_fingerprint=bundle.verified_signer_fingerprint,
+                runtime_bundle=RuntimePluginBundle(
+                    client_classes=bundle.runtime_bundle.client_classes,
+                    class_kwargs={_PaidStateTrackingPluginClient.__name__: paid_kwargs},
+                    create_plugin_clients=None,
+                ),
+            )
+        ]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=fx,
+        loop_in_thread=_ImmediateLoopInThread(),
+        external_registry=registry,
+        parent=None,
+    )
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
+    )
+    old_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+    assert isinstance(old_client, PaidPluginClient)
+    old_client.set_enabled(True)
+
+    entry = ExternalPluginCatalogEntry(
+        source_id="test-source",
+        source_display_name="Test Source",
+        bundle_id=bundle_id,
+        version="2.0.0",
+        display_name="Paid Plugin",
+        description="",
+        provider="Tests",
+        entrypoint="test_plugin/plugin_bundle.py",
+        app_version_specifier=">=0",
+        folder_hash="hash-v2",
+        release_ref="main",
+        update_available=True,
+    )
+
+    async def install(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+        current_hash["value"] = "hash-v2"
+        return _installed_source_plugin_metadata(source_id, bundle_id, folder_hash="hash-v2")
+
+    monkeypatch.setattr(registry, "install_plugin", install)
+    try:
+        manager.update_installed_source_plugin(old_client, entry)
+
+        new_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+        assert new_client is not old_client
+        assert isinstance(new_client, PaidPluginClient)
+        assert new_client.enabled
+        assert isinstance(new_client, _PaidStateTrackingPluginClient)
+        assert new_client.load_calls == 1
+        assert new_client._defer_subscription_refresh is False
+        assert new_client in manager._deferred_subscription_refresh_clients
+        assert manager._deferred_subscription_refresh_timer is not None
+        assert manager._deferred_subscription_refresh_timer.isActive()
+        refreshes: list[bool] = []
+        monkeypatch.setattr(new_client, "refresh_subscription_status", lambda: refreshes.append(True))
+        manager._refresh_deferred_subscription_status()
+        assert refreshes == [True]
+    finally:
+        manager.close()
+
+
+def test_reconcile_restores_disabled_external_client_from_payload(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "disabled-plugin"
+    current_hash = {"value": "hash-v1"}
+
+    class _DisabledPluginClient(_LoadTrackingPluginClient):
+        pass
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        return [_external_bundle_for_test(bundle_id, current_hash["value"], _DisabledPluginClient)]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=None,
+        external_registry=registry,
+        parent=None,
+    )
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
+    )
+    old_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+    old_client.set_enabled(False)
+
+    try:
+        current_hash["value"] = "hash-v2"
+        manager.reconcile_external_runtime()
+
+        new_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+        assert new_client is not old_client
+        assert old_client not in manager.clients
+        assert not new_client.enabled
+        assert new_client.load_calls == 0
+    finally:
+        manager.close()

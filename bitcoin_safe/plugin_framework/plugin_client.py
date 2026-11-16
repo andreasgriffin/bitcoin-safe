@@ -99,6 +99,7 @@ class PluginClient(QWidget, BaseSaveableClass):
             data=self, widget=self, title=self.title, icon=icon, indent_factor=0, parent=self
         )
         self.enabled = enabled
+        self._suspended = False
         self.set_base_infos()
         self.node.setTitle(self.title)
         self.node.setIcon(self.icon)
@@ -191,7 +192,7 @@ class PluginClient(QWidget, BaseSaveableClass):
 
     def set_enabled(self, value: bool):
         """On set enabled."""
-        if self.enabled == value:
+        if (value and self._suspended) or self.enabled == value:
             return
 
         self.node.setVisible(value)
@@ -205,6 +206,15 @@ class PluginClient(QWidget, BaseSaveableClass):
 
         self.signal_enabled_changed.emit(value)
         self.signal_needs_persist.emit()
+
+    def suspend(self) -> None:
+        """Stop the client and prevent lifecycle callbacks from enabling it."""
+        self._suspended = True
+        self.set_enabled(False)
+
+    def resume(self) -> None:
+        self._suspended = False
+        self.set_enabled(True)
 
     @abstractmethod
     def load(self):

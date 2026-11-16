@@ -53,6 +53,15 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.4.0" date="2026-11-16">
+      <description>
+        <p>📅 Key health plugin</p>
+        <ul>
+          <li>📊 Keep track of when you last signed with a hardware signer</li>
+          <li>💾 Sign messages with the hardware signer</li>
+        </ul>
+      </description>
+    </release>
     <release version="2.3.0" date="2026-11-10">
       <description>
         <p>📅 Schedule plugin</p>
