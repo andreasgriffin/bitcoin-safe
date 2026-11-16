@@ -91,6 +91,8 @@ def main() -> None:
     repo_builder.log_step(f"Output directory: {output_dir}")
     if tag_name:
         repo_builder.log_step(f"Requested source ref: {tag_name}")
+    elif args.app_source_mode == "local-dir" and local_source_checkout:
+        repo_builder.log_step("Requested source ref: local checkout")
     else:
         repo_builder.log_step("Requested source ref: latest published release")
 
@@ -116,11 +118,14 @@ def main() -> None:
     if args.run_flatpak and args.skip_build:
         raise RuntimeError("--run-flatpak cannot be used together with --skip-build")
 
-    context = repo_builder.build_source_context(
-        repo_url=repo_url,
-        local_source_checkout=str(local_source_checkout) if local_source_checkout else None,
-        release_tag=tag_name,
-    )
+    if args.app_source_mode == "local-dir" and local_source_checkout and not tag_name:
+        context = tracked_repo_files.build_local_refresh_context(repo_url, local_source_checkout)
+    else:
+        context = repo_builder.build_source_context(
+            repo_url=repo_url,
+            local_source_checkout=str(local_source_checkout) if local_source_checkout else None,
+            release_tag=tag_name,
+        )
     if local_source_checkout:
         tracked_repo_files.refresh_tracked_files_for_context(context)
 
