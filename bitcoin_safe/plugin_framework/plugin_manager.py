@@ -1137,19 +1137,28 @@ class PluginManager(BaseSaveableClass):
     def load_all_enabled(self) -> None:
         for client in self.clients:
             if client.enabled:
-                if isinstance(client, PaidPluginClient):
-                    client.load(refresh_subscription_status=False)
-                    self._deferred_subscription_refresh_clients.append(client)
-                    client.defer_subscription_refresh(False)
-                else:
-                    client.load()
-        if self._deferred_subscription_refresh_clients:
+                self._start_client(client)
+        self._schedule_deferred_subscription_refresh()
+
+    def _start_client(self, client: PluginClient) -> None:
+        """Load a client; paid clients load from their stored status and queue a deferred refresh."""
+        if isinstance(client, PaidPluginClient):
+            client.load(refresh_subscription_status=False)
+            self._deferred_subscription_refresh_clients.append(client)
+            client.defer_subscription_refresh(False)
+        else:
+            client.load()
+
+    def _schedule_deferred_subscription_refresh(self) -> None:
+        if not self._deferred_subscription_refresh_clients:
+            return
+        if self._deferred_subscription_refresh_timer is None:
             self._deferred_subscription_refresh_timer = QTimer(self.widget)
             self._deferred_subscription_refresh_timer.setSingleShot(True)
             self._deferred_subscription_refresh_timer.timeout.connect(
                 self._refresh_deferred_subscription_status
             )
-            self._deferred_subscription_refresh_timer.start(1_000)
+        self._deferred_subscription_refresh_timer.start(1_000)
 
     def _refresh_deferred_subscription_status(self) -> None:
         clients = self._deferred_subscription_refresh_clients
@@ -1282,7 +1291,8 @@ class PluginManager(BaseSaveableClass):
                 and client.is_external_plugin()
                 and client.enabled
             ):
-                client.load()
+                self._start_client(client)
+        self._schedule_deferred_subscription_refresh()
 
     @classmethod
     def _changed_external_bundle_ids(

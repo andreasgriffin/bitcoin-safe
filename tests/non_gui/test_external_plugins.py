@@ -4718,6 +4718,74 @@ def test_registry_signals_close_disconnects_plugin_managers(qapp: QApplication, 
     manager.close()
 
 
+def test_reconcile_enabled_paid_client_reenables_subscription_refresh(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "paid-plugin"
+    current_hash = {"value": "hash-v1"}
+
+    fx = _DummyFX()
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        bundle = _external_bundle_for_test(bundle_id, current_hash["value"], _PaidStateTrackingPluginClient)
+        paid_kwargs = _PaidStateTrackingPluginClient.cls_kwargs(
+            config=config,
+            fx=fx,
+            loop_in_thread=None,
+            additional_access_providers=[lambda: True],
+        )
+        return [
+            VerifiedExternalPluginBundle(
+                bundle_id=bundle.bundle_id,
+                source_id=bundle.source_id,
+                version=bundle.version,
+                plugin_dir=bundle.plugin_dir,
+                folder_hash=bundle.folder_hash,
+                verified_signer_fingerprint=bundle.verified_signer_fingerprint,
+                runtime_bundle=RuntimePluginBundle(
+                    client_classes=bundle.runtime_bundle.client_classes,
+                    class_kwargs={_PaidStateTrackingPluginClient.__name__: paid_kwargs},
+                    create_plugin_clients=None,
+                ),
+            )
+        ]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=fx,
+        loop_in_thread=None,
+        external_registry=registry,
+        parent=None,
+    )
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
+    )
+    old_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+    assert isinstance(old_client, PaidPluginClient)
+    old_client.set_enabled(True)
+
+    try:
+        current_hash["value"] = "hash-v2"
+        manager.reconcile_external_runtime()
+
+        new_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+        assert new_client is not old_client
+        assert isinstance(new_client, PaidPluginClient)
+        assert new_client.enabled
+        assert new_client._defer_subscription_refresh is False
+        assert new_client in manager._deferred_subscription_refresh_clients
+        assert manager._deferred_subscription_refresh_timer is not None
+        assert manager._deferred_subscription_refresh_timer.isActive()
+    finally:
+        manager.close()
+
+
 def test_reconcile_restores_disabled_external_client_from_payload(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:
