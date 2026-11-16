@@ -440,6 +440,9 @@ class PluginManager(BaseSaveableClass):
         self.signal_tracker.connect(
             self.external_registry.signals.registry_changed, self.on_external_registry_changed
         )
+        self.signal_tracker.connect(self.external_registry.signals.installation_started, self._pause_bundle)
+        self.signal_tracker.connect(self.external_registry.signals.installation_finished, self._resume_bundle)
+        self._paused_clients: set[PluginClient] = set()
         self.client_signal_tracker = SignalTracker()
         self._startup_source_refresh_timer: QTimer | None = None
         self._startup_source_refresh_future: Future[Sequence[VerifiedPluginSourceManifest]] | None = None
@@ -1114,6 +1117,8 @@ class PluginManager(BaseSaveableClass):
         return None
 
     def _on_client_enabled_changed(self, client: PluginClient, enabled: bool) -> None:
+        if client.plugin_bundle_id in self.external_registry.installing_bundle_ids:
+            return
         if not enabled:
             client.set_enabled(False)
             return
@@ -1142,6 +1147,12 @@ class PluginManager(BaseSaveableClass):
 
     def _start_client(self, client: PluginClient) -> None:
         """Load a client; paid clients load from their stored status and queue a deferred refresh."""
+        if (
+            client.is_external_plugin()
+            and client.plugin_bundle_id in self.external_registry.installing_bundle_ids
+        ):
+            self._paused_clients.add(client)
+            return
         if isinstance(client, PaidPluginClient):
             client.load(refresh_subscription_status=False)
             self._deferred_subscription_refresh_clients.append(client)
@@ -1166,6 +1177,20 @@ class PluginManager(BaseSaveableClass):
         for client in clients:
             if client in self.clients and client.enabled:
                 client.refresh_subscription_status()
+
+    def _pause_bundle(self, bundle_id: str) -> None:
+        for client in self.clients:
+            if client.is_external_plugin() and client.plugin_bundle_id == bundle_id and client.enabled:
+                client.unload()
+                self._paused_clients.add(client)
+
+    def _resume_bundle(self, bundle_id: str) -> None:
+        for client in list(self._paused_clients):
+            if client.plugin_bundle_id == bundle_id:
+                self._paused_clients.remove(client)
+                if client in self.clients and client.enabled:
+                    self._start_client(client)
+        self._schedule_deferred_subscription_refresh()
 
     def disconnect_all(self) -> None:
         for client in self.clients:
@@ -1276,7 +1301,10 @@ class PluginManager(BaseSaveableClass):
         )
         for client in replaced_clients:
             self.clients.remove(client)
-            if client.enabled:
+            if client in self._paused_clients:
+                self._paused_clients.remove(client)
+                client.enabled = False
+            elif client.enabled:
                 client.set_enabled(False)
             client.close()
         self._reload_external_registry_state()
@@ -1500,40 +1528,41 @@ class PluginManager(BaseSaveableClass):
         logger.info(rendered_message)
 
     def install_source_plugin(self, entry: ExternalPluginCatalogEntry) -> None:
-        if not self.loop_in_thread:
-            return
+        self._install_source_plugin(entry, refresh_clients=True)
 
-        def on_success(_result: InstalledSourcePluginMetadata) -> None:
-            runtime_changed = self._refresh_external_registry_state()
-            self._refresh_after_registry_change(runtime_changed)
-            logger.info("Installed plugin %s.", entry.display_name)
+    def update_installed_source_plugin(self, client: PluginClient, entry: ExternalPluginCatalogEntry) -> None:
+        self._install_source_plugin(entry)
 
-        async def do() -> InstalledSourcePluginMetadata:
-            return await self.external_registry.install_plugin(entry.source_id, entry.bundle_id)
-
-        self.loop_in_thread.run_task(
-            do(),
-            on_done=lambda result: None,
-            on_success=on_success,
-            on_error=self._show_async_registry_error,
-            key=f"plugin_source_install:{entry.bundle_id}",
-            multiple_strategy=MultipleStrategy.REJECT_NEW_TASK,
-        )
-
-    def update_installed_source_plugin(
-        self,
-        client: PluginClient,
-        entry: ExternalPluginCatalogEntry,
+    def _install_source_plugin(
+        self, entry: ExternalPluginCatalogEntry, refresh_clients: bool = False
     ) -> None:
-        if self.loop_in_thread is None:
+        if self.loop_in_thread is None or entry.bundle_id in self.external_registry.installing_bundle_ids:
             return
 
+        self.external_registry.installing_bundle_ids.add(entry.bundle_id)
+        self.external_registry.signals.installation_started.emit(entry.bundle_id)
+
+        finished = False
+
+        def finish() -> None:
+            nonlocal finished
+            if finished:
+                return
+            finished = True
+            self.external_registry.installing_bundle_ids.discard(entry.bundle_id)
+            self.external_registry.signals.installation_finished.emit(entry.bundle_id)
+
         def on_success(_result: InstalledSourcePluginMetadata) -> None:
-            # Reconciling replaces the changed bundle's clients and restores their enabled state.
-            self._refresh_external_registry_state()
-            logger.info("Updated plugin %s to version %s.", entry.display_name, entry.version)
+            try:
+                runtime_changed = self._refresh_external_registry_state()
+                if refresh_clients:
+                    self._refresh_after_registry_change(runtime_changed)
+                logger.info("Installed plugin %s version %s.", entry.display_name, entry.version)
+            finally:
+                finish()
 
         def on_error(error_info: ExcInfo | Exception | None) -> None:
+            finish()
             self._show_async_registry_error(error_info)
 
         async def do() -> InstalledSourcePluginMetadata:
@@ -1544,6 +1573,7 @@ class PluginManager(BaseSaveableClass):
             on_done=lambda result: None,
             on_success=on_success,
             on_error=on_error,
+            cancel=finish,
             key=f"plugin_source_install:{entry.bundle_id}",
             multiple_strategy=MultipleStrategy.REJECT_NEW_TASK,
         )

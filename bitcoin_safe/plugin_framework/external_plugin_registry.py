@@ -378,6 +378,8 @@ class ExternalPluginRegistrySignals(QObject):
     # Every open plugin manager listens, reloads its catalog view, and reconciles its own
     # external clients only where the installed bundle actually changed.
     registry_changed = cast(SignalProtocol[[]], pyqtSignal())
+    installation_started = cast(SignalProtocol[[str]], pyqtSignal(str))
+    installation_finished = cast(SignalProtocol[[str]], pyqtSignal(str))
 
     def close(self) -> None:
         SignalTools.disconnect_all_signals_from(self)
@@ -411,6 +413,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
         self._plugin_finders: dict[str, _SignedPluginArtifactFinder] = {}
         # Runtime-only notifier shared by all open wallets. Not part of dump().
         self.signals = ExternalPluginRegistrySignals()
+        self.installing_bundle_ids: set[str] = set()
 
     def close(self) -> None:
         self.signals.close()

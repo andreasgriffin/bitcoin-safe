@@ -2967,6 +2967,19 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
     )
     current_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
     current_client.set_enabled(True)
+    other_manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=_ImmediateLoopInThread(),
+        external_registry=registry,
+        parent=None,
+    )
+    other_manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="other-wallet", category_core=SimpleNamespace()
+    )
+    other_client = next(client for client in other_manager.clients if client.plugin_bundle_id == bundle_id)
+    other_client.set_enabled(True)
     entry = ExternalPluginCatalogEntry(
         source_id="test-source",
         source_display_name="Test Source",
@@ -2985,6 +2998,8 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
     install_calls: list[tuple[str, str]] = []
 
     async def _install_plugin(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+        assert current_client.unload_calls == 2
+        assert other_client.unload_calls == 2
         install_calls.append((source_id, bundle_id))
         current_hash["value"] = "hash-v2"
         return _installed_source_plugin_metadata(
@@ -2997,6 +3012,18 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
     monkeypatch.setattr(manager.external_registry, "install_plugin", _install_plugin)
 
     try:
+
+        async def _failed_install(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+            assert current_client.unload_calls == 1
+            assert other_client.unload_calls == 1
+            raise RuntimeError("installation failed")
+
+        monkeypatch.setattr(manager.external_registry, "install_plugin", _failed_install)
+        monkeypatch.setattr(manager, "_show_async_registry_error", lambda error: None)
+        manager.update_installed_source_plugin(current_client, entry)
+        assert current_client.enabled and other_client.enabled
+        assert current_client.load_calls == 2 and other_client.load_calls == 2
+        monkeypatch.setattr(manager.external_registry, "install_plugin", _install_plugin)
         manager.update_installed_source_plugin(current_client, entry)
 
         assert install_calls == [("test-source", bundle_id)]
@@ -3004,8 +3031,15 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
         assert replacement is not current_client
         assert replacement.enabled
         assert replacement.load_calls == 1
-        assert current_client.unload_calls == 1
+        assert current_client.unload_calls == 2
+        other_replacement = next(
+            client for client in other_manager.clients if client.plugin_bundle_id == bundle_id
+        )
+        assert other_replacement is not other_client
+        assert other_replacement.enabled
+        assert other_replacement.load_calls == 1
     finally:
+        other_manager.close()
         manager.close()
 
 
