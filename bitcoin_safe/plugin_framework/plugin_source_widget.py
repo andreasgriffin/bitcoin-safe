@@ -161,6 +161,7 @@ class PluginSourceWidget(BasePluginWidget):
         self.provider_label.setVisible(False)
         self.version_label.setTextFormat(Qt.TextFormat.PlainText)
         self.status_label.setTextFormat(Qt.TextFormat.PlainText)
+        self.status_label.setWordWrap(True)
 
         self.refresh_button = self.add_spinning_management_button()
         self.delete_button = self.add_management_button()
