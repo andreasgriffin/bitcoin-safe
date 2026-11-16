@@ -1147,8 +1147,8 @@ class PluginManager(BaseSaveableClass):
                 self._start_client(client)
         self._schedule_deferred_subscription_refresh()
 
-    def _start_client(self, client: PluginClient) -> None:
-        """Load a client; paid clients load from their stored status and queue a deferred refresh."""
+    def _start_client(self, client: PluginClient, resume: bool = False) -> None:
+        """Load or resume a client, scheduling subscription refresh for paid clients."""
         if (
             client.is_external_plugin()
             and client.plugin_bundle_id in self.external_registry.mutating_bundle_ids
@@ -1157,9 +1157,15 @@ class PluginManager(BaseSaveableClass):
             client.suspend()
             return
         if isinstance(client, PaidPluginClient):
-            client.load(refresh_subscription_status=False)
+            if resume:
+                client.defer_subscription_refresh(True)
+                client.resume()
+            else:
+                client.load(refresh_subscription_status=False)
             self._deferred_subscription_refresh_clients.append(client)
             client.defer_subscription_refresh(False)
+        elif resume:
+            client.resume()
         else:
             client.load()
 
@@ -1192,7 +1198,7 @@ class PluginManager(BaseSaveableClass):
             if client.plugin_bundle_id == bundle_id:
                 self._paused_clients.remove(client)
                 if client in self.clients:
-                    client.resume()
+                    self._start_client(client, resume=True)
         self._schedule_deferred_subscription_refresh()
 
     def disconnect_all(self) -> None:

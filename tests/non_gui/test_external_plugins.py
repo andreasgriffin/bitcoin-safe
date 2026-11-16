@@ -4947,6 +4947,99 @@ def test_reconcile_enabled_paid_client_reenables_subscription_refresh(
         manager.close()
 
 
+def test_paid_plugin_update_schedules_subscription_refresh(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "paid-plugin"
+    current_hash = {"value": "hash-v1"}
+
+    fx = _DummyFX()
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        bundle = _external_bundle_for_test(bundle_id, current_hash["value"], _PaidStateTrackingPluginClient)
+        paid_kwargs = _PaidStateTrackingPluginClient.cls_kwargs(
+            config=config,
+            fx=fx,
+            loop_in_thread=None,
+            additional_access_providers=[lambda: True],
+        )
+        return [
+            VerifiedExternalPluginBundle(
+                bundle_id=bundle.bundle_id,
+                source_id=bundle.source_id,
+                version=bundle.version,
+                plugin_dir=bundle.plugin_dir,
+                folder_hash=bundle.folder_hash,
+                verified_signer_fingerprint=bundle.verified_signer_fingerprint,
+                runtime_bundle=RuntimePluginBundle(
+                    client_classes=bundle.runtime_bundle.client_classes,
+                    class_kwargs={_PaidStateTrackingPluginClient.__name__: paid_kwargs},
+                    create_plugin_clients=None,
+                ),
+            )
+        ]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=fx,
+        loop_in_thread=_ImmediateLoopInThread(),
+        external_registry=registry,
+        parent=None,
+    )
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
+    )
+    old_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+    assert isinstance(old_client, PaidPluginClient)
+    old_client.set_enabled(True)
+
+    entry = ExternalPluginCatalogEntry(
+        source_id="test-source",
+        source_display_name="Test Source",
+        bundle_id=bundle_id,
+        version="2.0.0",
+        display_name="Paid Plugin",
+        description="",
+        provider="Tests",
+        entrypoint="test_plugin/plugin_bundle.py",
+        app_version_specifier=">=0",
+        folder_hash="hash-v2",
+        release_ref="main",
+        update_available=True,
+    )
+
+    async def install(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+        current_hash["value"] = "hash-v2"
+        return _installed_source_plugin_metadata(source_id, bundle_id, folder_hash="hash-v2")
+
+    monkeypatch.setattr(registry, "install_plugin", install)
+    try:
+        manager.update_installed_source_plugin(old_client, entry)
+
+        new_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+        assert new_client is not old_client
+        assert isinstance(new_client, PaidPluginClient)
+        assert new_client.enabled
+        assert isinstance(new_client, _PaidStateTrackingPluginClient)
+        assert new_client.load_calls == old_client.load_calls + 1
+        assert new_client._defer_subscription_refresh is False
+        assert new_client in manager._deferred_subscription_refresh_clients
+        assert manager._deferred_subscription_refresh_timer is not None
+        assert manager._deferred_subscription_refresh_timer.isActive()
+        refreshes: list[bool] = []
+        monkeypatch.setattr(new_client, "refresh_subscription_status", lambda: refreshes.append(True))
+        manager._refresh_deferred_subscription_status()
+        assert refreshes == [True]
+    finally:
+        manager.close()
+
+
 def test_reconcile_restores_disabled_external_client_from_payload(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:
