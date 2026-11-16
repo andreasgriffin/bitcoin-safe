@@ -30,9 +30,12 @@
 from __future__ import annotations
 
 import json
+import socket
+import subprocess
+import time
 from pathlib import Path
 
-from .setup_bitcoin_core import bitcoin_cli
+from .setup_bitcoin_core import BITCOIN_executable, bitcoin_cli, stop_bitcoind
 
 
 # Assuming the bitcoin_core fixture sets up Bitcoin Core and yields the binary directory
@@ -83,3 +86,61 @@ def test_core_psbt_versions(bitcoin_core: Path) -> None:
     compatible = bitcoin_cli("-named createpsbt inputs=[] outputs={} psbt_version=0", bitcoin_core)
     assert compatible is not None
     bdk.Psbt(compatible)
+
+
+def test_stop_bitcoind_only_stops_matching_port(bitcoin_core: Path, tmp_path: Path) -> None:
+    sockets = [socket.socket(), socket.socket()]
+    for listener in sockets:
+        listener.bind(("127.0.0.1", 0))
+    ports = [listener.getsockname()[1] for listener in sockets]
+    for listener in sockets:
+        listener.close()
+
+    processes: list[subprocess.Popen[bytes]] = []
+    try:
+        for port in ports:
+            data_dir = tmp_path / str(port)
+            data_dir.mkdir()
+            processes.append(
+                subprocess.Popen(
+                    [
+                        str(bitcoin_core / BITCOIN_executable),
+                        f"-datadir={data_dir}",
+                        "-regtest",
+                        "-server=0",
+                        "-listen=1",
+                        f"-bind=127.0.0.1:{port}",
+                    ],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+            )
+        deadline = time.monotonic() + 15
+        for process, port in zip(processes, ports, strict=True):
+            while True:
+                assert process.poll() is None
+                with socket.socket() as probe:
+                    if probe.connect_ex(("127.0.0.1", port)) == 0:
+                        break
+                assert time.monotonic() < deadline, f"bitcoind did not listen on {port}"
+                time.sleep(0.1)
+
+        stop_bitcoind((ports[0],))
+        assert processes[0].wait(timeout=10) is not None
+        assert processes[1].poll() is None
+        assert bitcoin_cli("getblockchaininfo", bitcoin_core) is not None
+    finally:
+        for process in processes:
+            if process.poll() is None:
+                process.terminate()
+                process.wait(timeout=10)
+
+
+def test_stop_bitcoind_leaves_other_listeners_alone() -> None:
+    with socket.socket() as listener:
+        listener.bind(("127.0.0.1", 0))
+        listener.listen()
+        port = listener.getsockname()[1]
+        stop_bitcoind((port,))
+        with socket.create_connection(("127.0.0.1", port), timeout=1):
+            pass

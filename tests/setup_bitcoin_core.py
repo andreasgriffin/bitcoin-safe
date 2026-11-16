@@ -35,12 +35,14 @@ import os
 import platform
 import shlex
 import shutil
+import socket
 import subprocess
 import tempfile
 import time
 from collections.abc import Generator
 from pathlib import Path
 
+import psutil
 import pytest
 
 from .release_archive import download_verified, extract_verified
@@ -253,77 +255,50 @@ def download_bitcoin():
     logger.info(f"Bitcoin Core {BITCOIN_VERSION} is ready to use.")
 
 
-def is_bitcoind_running(bitcoin_bin_dir: Path) -> bool:
-    system = platform.system()
-    bitcoind_path = bitcoin_bin_dir / BITCOIN_executable
-
-    if system == "Windows":
-        try:
-            result = subprocess.run(
-                ["tasklist", "/FI", f"IMAGENAME eq {bitcoind_path.name}"],
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-            return bitcoind_path.name.lower() in result.stdout.lower()
-        except FileNotFoundError:
-            return False
-
-    result = subprocess.run(
-        ["pgrep", "-f", str(bitcoind_path)],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        check=False,
-    )
-    return result.returncode == 0
-
-
 def stop_bitcoind(
-    bitcoin_bin_dir: Path,
-    timeout: float = 10.0,
-    poll_interval: float = 0.2,
+    ports: tuple[int, ...] = (BITCOIN_RPC_PORT, BITCOIN_LISTEN_PORT), timeout: float = 10.0
 ) -> None:
-    """
-    Stop bitcoind gracefully and force-kill if it does not exit.
+    """Stop bitcoind processes listening on the fixture's ports."""
+    for process in psutil.process_iter(["name"]):
+        try:
+            if (process.info["name"] or "").lower() not in {"bitcoind", "bitcoind.exe"}:
+                continue
+            connections = process.net_connections(kind="tcp")
+            if not any(
+                connection.status == psutil.CONN_LISTEN and connection.laddr.port in ports
+                for connection in connections
+            ):
+                continue
+            logger.info("Stopping bitcoind on a fixture port (pid %s)", process.pid)
+            rpc_listening = any(
+                connection.status == psutil.CONN_LISTEN
+                and connection.laddr.port == BITCOIN_RPC_PORT
+                and connection.laddr.ip in {BITCOIN_HOST, "0.0.0.0"}
+                for connection in connections
+            )
+            if rpc_listening and bitcoin_cli("stop", BITCOIN_BIN_DIR) is not None:
+                try:
+                    process.wait(timeout=timeout)
+                    continue
+                except psutil.TimeoutExpired:
+                    pass
+            process.terminate()
+            try:
+                process.wait(timeout=timeout)
+            except psutil.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=timeout)
+        except (psutil.NoSuchProcess, psutil.ZombieProcess, psutil.AccessDenied):
+            continue
 
-    :param bitcoin_bin_dir: Directory containing bitcoind / bitcoin-cli
-    :param timeout: Seconds to wait before force-killing
-    :param poll_interval: How often to poll process state
-    """
-    system = platform.system()
 
-    bitcoind_path = bitcoin_bin_dir / BITCOIN_executable
-    was_running = is_bitcoind_running(bitcoin_bin_dir)
-
-    # Ask bitcoind to shut down cleanly when it is already up enough to answer.
-    if was_running:
-        bitcoin_cli("stop", bitcoin_bin_dir)
-
-    start_time = time.monotonic()
-
-    while is_bitcoind_running(bitcoin_bin_dir):
-        if time.monotonic() - start_time >= timeout:
-            if system == "Windows":
-                subprocess.run(
-                    ["taskkill", "/IM", bitcoind_path.name, "/T", "/F"],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    check=False,
-                )
-            else:
-                subprocess.run(
-                    ["pkill", "-f", str(bitcoind_path)],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    check=False,
-                )
-            start_time = time.monotonic()
-
-        time.sleep(poll_interval)
-
-    # Windows can report the process as gone slightly before file handles are released.
-    if was_running and system == "Windows":
-        time.sleep(0.5)
+def ensure_fixture_ports_available() -> None:
+    """Fail before deleting data when a port is held by a process we could not stop."""
+    for port in (BITCOIN_RPC_PORT, BITCOIN_LISTEN_PORT):
+        with socket.socket() as probe:
+            probe.settimeout(1)
+            if probe.connect_ex((BITCOIN_HOST, port)) == 0:
+                raise RuntimeError(f"Bitcoin Core fixture port {port} is already in use")
 
 
 @pytest.fixture(scope="session")
@@ -333,12 +308,12 @@ def bitcoin_core() -> Generator[Path, None, None]:
     BITCOIN_DIR.mkdir(exist_ok=True)
     BITCOIN_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+    stop_bitcoind()
+    ensure_fixture_ports_available()
     download_bitcoin()
     # Create bdk.conf
     BITCOIN_CONF.write_text(BITCOIN_CONF_CONTENT)
 
-    # stop it if it is running
-    stop_bitcoind(BITCOIN_BIN_DIR)
     # remove the previous chain
     remove_bitcoin_regtest_folder(custom_datadir=BITCOIN_DATA_DIR)
 
@@ -377,7 +352,7 @@ def bitcoin_core() -> Generator[Path, None, None]:
         wait_for_rpc()
         yield BITCOIN_BIN_DIR
     finally:
-        stop_bitcoind(BITCOIN_BIN_DIR)
+        stop_bitcoind()
 
 
 # Assuming the bitcoin_core fixture sets up Bitcoin Core and yields the binary directory
