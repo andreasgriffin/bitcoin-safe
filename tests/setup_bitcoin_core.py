@@ -36,14 +36,14 @@ import platform
 import shlex
 import shutil
 import subprocess
-import tarfile
+import tempfile
 import time
-import zipfile
 from collections.abc import Generator
 from pathlib import Path
 
 import pytest
-import requests
+
+from .release_archive import download_verified, extract_verified
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +86,14 @@ blockfilterindex=1
 txindex=1
 """
 
-BITCOIN_VERSION = "29.2"
+BITCOIN_VERSION = "32.1"
+# SHA256SUMS signed by Ava Chow (152812300785C96444D3334D17565732E08E5E41).
+BITCOIN_CHECKSUMS = {
+    "x86_64-linux-gnu.tar.gz": "61545c17c3120fb7412f896d248b11993af04ec8817aad3649c55b2afb044963",
+    "x86_64-apple-darwin.tar.gz": "53b1e6ffd92843ca82ef4a737d7a53cb0a9fab15816a417a41f12fc954071447",
+    "arm64-apple-darwin.tar.gz": "cd3dcdacb4ff861e862b2d7df4786ecef66472e2468dca1673a70dd761e064e7",
+    "win64.zip": "b5b0c2cd007d69e96880907c79f9ae19ae82728f95fc8c923b4a07dab795b45d",
+}
 # Define the Bitcoin Core directory relative to the current test directory
 TEST_DIR = Path(__file__).parent  # If this script is in the tests directory
 BITCOIN_DIR = TEST_DIR / "bitcoin_core"
@@ -104,12 +111,14 @@ def bitcoin_release_artifact() -> str:
     system = platform.system()
     machine = platform.machine().lower()
 
-    if system == "Windows":
+    if system == "Windows" and machine in {"amd64", "x86_64"}:
         return f"bitcoin-{BITCOIN_VERSION}-win64.zip"
-    if system == "Darwin":
+    if system == "Darwin" and machine in {"arm64", "aarch64", "x86_64"}:
         architecture = "arm64" if machine in {"arm64", "aarch64"} else "x86_64"
         return f"bitcoin-{BITCOIN_VERSION}-{architecture}-apple-darwin.tar.gz"
-    return f"bitcoin-{BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz"
+    if system == "Linux" and machine in {"amd64", "x86_64"}:
+        return f"bitcoin-{BITCOIN_VERSION}-x86_64-linux-gnu.tar.gz"
+    raise NotImplementedError(f"Unsupported Bitcoin Core platform: {system} {machine}")
 
 
 def runcmd(cmd, background: bool = False):
@@ -140,7 +149,7 @@ def runcmd(cmd, background: bool = False):
         return None
 
 
-def bitcoind():
+def bitcoind() -> None:
     """"""
     system = platform.system()
     cmd = f"{BITCOIN_BIN_DIR / BITCOIN_executable}    -conf={BITCOIN_CONF}"
@@ -217,59 +226,28 @@ def get_default_bitcoin_data_dir():
         return Path.home() / ".bitcoin"
 
 
-def remove_bitcoin_regtest_folder(custom_datadir=None):
-    """Remove the regtest folder from the Bitcoin data directory.
-
-    Parameters:
-    - custom_datadir: Optional custom Bitcoin data directory.
-    """
-    try:
-        if custom_datadir:
-            bitcoin_data_dir = Path(custom_datadir)
-        else:
-            bitcoin_data_dir = get_default_bitcoin_data_dir()
-
-        regtest_dir = bitcoin_data_dir / "regtest"
-
-        if regtest_dir.exists() and regtest_dir.is_dir():
-            _remove_tree_with_retries(regtest_dir)
-            print(f"Removed {regtest_dir}")
-        else:
-            print(f"{regtest_dir} does not exist or is not a directory")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+def remove_bitcoin_regtest_folder(custom_datadir: Path | None = None) -> None:
+    """Remove the fixture's regtest chain, raising if cleanup fails."""
+    bitcoin_data_dir = custom_datadir or get_default_bitcoin_data_dir()
+    _remove_tree_with_retries(bitcoin_data_dir / "regtest")
 
 
 def download_bitcoin():
     """Download bitcoin."""
     artifact_name = bitcoin_release_artifact()
-    archive_extension = "zip" if artifact_name.endswith(".zip") else "tar.gz"
+    suffix = artifact_name.removeprefix(f"bitcoin-{BITCOIN_VERSION}-")
     url = f"https://bitcoincore.org/bin/bitcoin-core-{BITCOIN_VERSION}/{artifact_name}"
     bitcoin_archive = BITCOIN_DIR / artifact_name
+    download_verified(url, bitcoin_archive, BITCOIN_CHECKSUMS[suffix])
 
-    if BITCOIN_ARTIFACT_STAMP.exists():
-        previous_artifact = BITCOIN_ARTIFACT_STAMP.read_text().strip()
-        if previous_artifact != artifact_name and BITCOIN_EXTRACT_DIR.exists():
-            shutil.rmtree(BITCOIN_EXTRACT_DIR)
-
-    # Download Bitcoin Core if necessary
-    if not bitcoin_archive.exists():
-        logger.info(f"Downloading Bitcoin Core {BITCOIN_VERSION}...")
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        bitcoin_archive.write_bytes(response.content)
-
-    # Extract Bitcoin Core if necessary
+    if BITCOIN_ARTIFACT_STAMP.exists() and BITCOIN_ARTIFACT_STAMP.read_text().strip() != artifact_name:
+        shutil.rmtree(BITCOIN_EXTRACT_DIR, ignore_errors=True)
     if not BITCOIN_BIN_DIR.exists():
-        logger.info(f"Extracting Bitcoin Core {BITCOIN_VERSION}...")
-        if archive_extension == "tar.gz":
-            with tarfile.open(bitcoin_archive, "r:gz") as tar:
-                tar.extractall(path=BITCOIN_DIR)
-        elif archive_extension == "zip":
-            with zipfile.ZipFile(bitcoin_archive, "r") as zip_ref:
-                zip_ref.extractall(path=BITCOIN_DIR)
-        else:
-            raise ValueError(f"Unsupported archive extension: {archive_extension}")
+        shutil.rmtree(BITCOIN_EXTRACT_DIR, ignore_errors=True)
+        # A failed extraction cannot leave a directory that looks like a complete cache.
+        with tempfile.TemporaryDirectory(dir=BITCOIN_DIR) as temporary:
+            extract_verified(bitcoin_archive, Path(temporary))
+            shutil.move(str(Path(temporary) / BITCOIN_EXTRACT_DIR.name), str(BITCOIN_EXTRACT_DIR))
 
     BITCOIN_ARTIFACT_STAMP.write_text(artifact_name)
     logger.info(f"Bitcoin Core {BITCOIN_VERSION} is ready to use.")
@@ -395,12 +373,11 @@ def bitcoin_core() -> Generator[Path, None, None]:
                 raise TimeoutError(f"bitcoind did not become ready in time: {proc.stderr.strip()}")
             time.sleep(interval)
 
-    wait_for_rpc()
-
-    yield BITCOIN_BIN_DIR
-
-    # Stop Bitcoin Core
-    stop_bitcoind(BITCOIN_BIN_DIR)
+    try:
+        wait_for_rpc()
+        yield BITCOIN_BIN_DIR
+    finally:
+        stop_bitcoind(BITCOIN_BIN_DIR)
 
 
 # Assuming the bitcoin_core fixture sets up Bitcoin Core and yields the binary directory

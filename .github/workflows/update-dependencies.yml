@@ -18,19 +18,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
       - name: Set up Python environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7.1.0
         with:
           python-version: "3.12"
 
       - name: Install poetry and pre-commit
         run: |
           python -m pip install --upgrade pip
-          pip install poetry pre-commit
+          pip install poetry==2.5.1 pre-commit==4.7.0
 
       - name: Update poetry lock file
         run: poetry update
@@ -41,6 +41,9 @@ jobs:
       - name: Recompile deterministic build requirements
         run: bash tools/deterministic-build/compile.sh
 
+      - name: Refresh tracked Flatpak dependency files
+        run: poetry run python -m tools.build_linux.flathub_flatpak.populate_cli --local-source-checkout . --refresh-tracked-only
+
       - name: Run pre-commit hooks
         # Hooks like ruff-format modify files and exit non-zero; the second run verifies the fixed state.
         run: |
@@ -49,7 +52,7 @@ jobs:
 
       - name: Create signed commit and pull request
         # sign-commits uses the GitHub API, so commits are signed by GitHub and show as verified.
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8.1.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: deps-update-${{ github.run_id }}

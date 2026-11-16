@@ -31,11 +31,11 @@ from __future__ import annotations
 
 import json
 import logging
+import tomllib  # pyright: ignore[reportMissingImports]
 from dataclasses import dataclass
 from pathlib import Path
 
 import appdirs
-import tomllib  # pyright: ignore[reportMissingImports]
 
 from bitcoin_safe.plugin_framework.plugin_source_models import (
     parse_plugin_pyproject,

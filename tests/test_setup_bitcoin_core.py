@@ -68,3 +68,18 @@ def test_mine_blocks(bitcoin_core: Path) -> None:
     # Mining should return at least one block hash.
     block_hashes = mine_blocks(bitcoin_core, 10)
     assert len(block_hashes) > 0
+
+
+def test_core_psbt_versions(bitcoin_core: Path) -> None:
+    """Core 32 defaults to v2; explicitly request v0 for BDK consumers."""
+    import bdkpython as bdk
+
+    default = bitcoin_cli("-named createpsbt inputs=[] outputs={}", bitcoin_core)
+    assert default is not None
+    decoded = bitcoin_cli(f"decodepsbt {default}", bitcoin_core)
+    assert decoded is not None
+    assert json.loads(decoded)["psbt_version"] == 2
+
+    compatible = bitcoin_cli("-named createpsbt inputs=[] outputs={} psbt_version=0", bitcoin_core)
+    assert compatible is not None
+    bdk.Psbt(compatible)

@@ -4,152 +4,157 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened]
 
-permissions:
-  contents: write
-  pull-requests: write
-  actions: write
+permissions: {}
 
 jobs:
-  run-weblate-correct:
-    # Hard gate at job level: PR author + head repo + event sender must be exactly "weblate"
-    if: >
+  correct:
+    if: >-
       github.event.pull_request.user.login == 'weblate' &&
       github.event.pull_request.head.repo.full_name == 'weblate/bitcoin-safe' &&
       github.actor == 'weblate'
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     outputs:
-      changed: ${{ steps.diff.outputs.changed }}
-      head_repo: ${{ github.event.pull_request.head.repo.full_name }}
-      head_ref: ${{ github.event.pull_request.head.ref }}
-
+      authorized: ${{ steps.author.outputs.authorized }}
+      changed: ${{ steps.patch.outputs.changed }}
     steps:
-      - name: Check last commit author (hard enforcement)
-        id: last_commit
-        uses: actions/github-script@v8
+      - name: Verify last commit author
+        id: author
+        uses: actions/github-script@v9.0.0
         with:
-          result-encoding: string
           script: |
             const pr = context.payload.pull_request;
+            const commit = await github.rest.repos.getCommit({
+              owner: pr.head.repo.owner.login, repo: pr.head.repo.name, ref: pr.head.sha
+            });
+            core.setOutput('authorized', String(commit.data.author?.login?.toLowerCase() === 'weblate'));
 
-            // Hard-enforce expected head repo (fail closed)
-            const allowedHeadRepo = 'weblate/bitcoin-safe';
-            if (pr.head.repo.full_name !== allowedHeadRepo) {
-              core.info(`Skipping: head repo is ${pr.head.repo.full_name}, expected ${allowedHeadRepo}`);
-              core.setOutput('login', '');
-              core.setOutput('should_run', 'false');
-              return;
-            }
-
-            // Hard-enforce PR author + sender identity
-            const prAuthor = (pr.user?.login || '').toLowerCase();
-            const sender = (context.payload.sender?.login || '').toLowerCase();
-            if (prAuthor !== 'weblate' || sender !== 'weblate') {
-              core.info(`Skipping: prAuthor=${prAuthor || 'unknown'} sender=${sender || 'unknown'} (expected weblate/weblate)`);
-              core.setOutput('login', '');
-              core.setOutput('should_run', 'false');
-              return;
-            }
-
-            // Hard-enforce last commit GitHub-linked author is exactly "weblate"
-            const owner = pr.head.repo.owner.login;
-            const repo = pr.head.repo.name;
-            const sha = pr.head.sha;
-
-            const commit = await github.rest.repos.getCommit({ owner, repo, ref: sha });
-
-            // IMPORTANT: commit.data.author is the GitHub user attribution. If null -> fail closed.
-            const login = (commit.data.author && commit.data.author.login)
-              ? String(commit.data.author.login).toLowerCase()
-              : '';
-
-            const shouldRun = login === 'weblate';
-
-            core.info(`Last commit GitHub author login: ${login || 'null'}`);
-            core.setOutput('login', login || '');
-            core.setOutput('should_run', shouldRun ? 'true' : 'false');
-
-      - name: Skip when last commit is not Weblate
-        if: steps.last_commit.outputs.should_run != 'true'
-        env:
-          LAST_LOGIN: ${{ steps.last_commit.outputs.login }}
-        run: |
-          echo "Last commit GitHub author (${LAST_LOGIN:-null}) is not exactly 'weblate'; skipping workflow."
-          exit 0
-
-      - name: Check out PR branch
-        uses: actions/checkout@v5
+      - name: Check out trusted base code
+        if: steps.author.outputs.authorized == 'true'
+        uses: actions/checkout@v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.base.sha }}
           fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
+
+      - name: Apply Weblate translations to trusted code
+        if: steps.author.outputs.authorized == 'true'
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags https://github.com/weblate/bitcoin-safe.git "$HEAD_SHA"
+          base=$(git merge-base HEAD "$HEAD_SHA")
+          git diff --binary "$base" "$HEAD_SHA" -- 'bitcoin_safe/gui/locales/*.ts' 'bitcoin_safe/gui/locales/*.qm' > "$RUNNER_TEMP/translations.patch"
+          if [ -s "$RUNNER_TEMP/translations.patch" ]; then
+            git apply --index --3way "$RUNNER_TEMP/translations.patch"
+          fi
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        if: steps.author.outputs.authorized == 'true'
+        uses: actions/setup-python@v7.1.0
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
-      - name: Install Qt tools
+      - name: Install tools and dependencies
+        if: steps.author.outputs.authorized == 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y qt6-base-dev qt6-tools-dev qt6-tools-dev-tools
+          python -m pip install poetry==2.5.1
+          poetry install --no-interaction --with=dev
 
-      - name: Install Poetry
+      - name: Correct translations using trusted base code
+        if: steps.author.outputs.authorized == 'true'
+        run: PYTHONPATH="$PWD" poetry run python tools/build.py --weblate_correct
+
+      - name: Prepare corrections
+        id: patch
+        if: steps.author.outputs.authorized == 'true'
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install poetry
-
-      - name: Install dependencies
-        run: poetry install --no-interaction --with=dev
-
-      - name: Add repo to PYTHONPATH
-        run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
-
-      - name: Run "Weblate correct"
-        run: poetry run python tools/build.py --weblate_correct
-
-      - name: Check for changes
-        id: diff
-        run: |
-          if git diff --quiet --ignore-submodules HEAD; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+          git diff --binary -- 'bitcoin_safe/gui/locales/*.ts' 'bitcoin_safe/gui/locales/*.qm' > "$RUNNER_TEMP/corrections.patch"
+          if [ -s "$RUNNER_TEMP/corrections.patch" ]; then
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
           else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit & push changes (PAT)
-        if: steps.diff.outputs.changed == 'true'
+      - name: Upload corrections
+        if: steps.patch.outputs.changed == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: weblate-corrections
+          path: ${{ runner.temp }}/corrections.patch
+          if-no-files-found: error
+
+  push:
+    needs: correct
+    if: needs.correct.outputs.authorized == 'true' && needs.correct.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check out trusted repository
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Fetch exact pull request head without running its code
         env:
-          PUSH_TOKEN: ${{ secrets.WEBLATE_PUSH_TOKEN }}
-          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          git fetch --no-tags https://github.com/weblate/bitcoin-safe.git "$HEAD_SHA"
+          git checkout --detach "$HEAD_SHA"
+
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: weblate-corrections
+          path: ${{ runner.temp }}/corrections
+
+      - name: Apply and validate corrections
         run: |
           set -euo pipefail
+          git apply "$RUNNER_TEMP/corrections/corrections.patch"
+          python - <<'PY'
+          import pathlib, subprocess
+          paths = subprocess.check_output(['git', 'diff', '--name-only', '-z']).split(b'\0')
+          paths = [p.decode() for p in paths if p]
+          if not paths:
+              raise SystemExit('No corrections to push')
+          for name in paths:
+              path = pathlib.PurePosixPath(name)
+              if path.parent != pathlib.PurePosixPath('bitcoin_safe/gui/locales') or path.suffix not in {'.ts', '.qm'}:
+                  raise SystemExit(f'Unexpected correction path: {name}')
+              mode = subprocess.check_output(['git', 'ls-files', '-s', '--', name], text=True).split()[0]
+              if mode != '100644' or pathlib.Path(name).is_symlink() or not pathlib.Path(name).is_file():
+                  raise SystemExit(f'Unexpected correction file type: {name}')
+          PY
+          git config user.name 'weblate-correct[bot]'
+          git config user.email 'weblate-correct[bot]@users.noreply.github.com'
+          git add -- 'bitcoin_safe/gui/locales/*.ts' 'bitcoin_safe/gui/locales/*.qm'
+          git diff --cached --quiet || git commit -m 'chore: run Weblate correct'
 
-          git config user.name  "weblate-correct[bot]"
-          git config user.email "weblate-correct[bot]@users.noreply.github.com"
+      - name: Push corrections
+        env:
+          PUSH_TOKEN: ${{ secrets.WEBLATE_PUSH_TOKEN }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          auth=$(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 -w0)
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push \
+            --force-with-lease="refs/heads/$HEAD_REF:$HEAD_SHA" \
+            https://github.com/weblate/bitcoin-safe.git "HEAD:refs/heads/$HEAD_REF"
 
-          git add -A
-          git commit -m "chore: run Weblate correct"
-
-          # Push back to the PR head repo/branch using HTTPS + token
-          git remote set-url origin "https://x-access-token:${PUSH_TOKEN}@github.com/${HEAD_REPO}.git"
-          git push origin "HEAD:${HEAD_REF}"
-
-
-
-      - name: Comment on PR
-        if: steps.diff.outputs.changed == 'true'
-        uses: actions/github-script@v8
+      - name: Comment on pull request
+        uses: actions/github-script@v9.0.0
         with:
           script: |
-            const pr = context.payload.pull_request;
-            const body = 'Ran `Weblate correct` in CI and pushed the resulting fixes to this PR.';
             await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              body,
+              owner: context.repo.owner, repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: 'Ran `Weblate correct` in CI and pushed the resulting fixes to this PR.'
             });
- 

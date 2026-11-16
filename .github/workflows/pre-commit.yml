@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0   # pre-commit sometimes needs full history
 
 
       - name: Set up Python environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7.1.0
         with:
           python-version: '3.12'
 
@@ -25,21 +25,21 @@ jobs:
       - name: Install Python dependencies for pyright
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
+          pip install poetry==2.5.1
           poetry install  
 
 
       - name: Set up Node.js for pyright
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7.1.0
         with:
           node-version: '24'
 
       - name: Install pyright
         run: |
-          npm install -g pyright
+          npm install -g pyright@1.1.414
 
 
       - name: Install pre-commit
-        run: pip install pre-commit
+        run: pip install pre-commit==4.7.0
       - name: Run pre-commit hooks
         run: pre-commit run --all-files --show-diff-on-failure
