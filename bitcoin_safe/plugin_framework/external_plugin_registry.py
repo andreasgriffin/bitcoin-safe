@@ -374,9 +374,10 @@ def suggested_plugin_source_display_name(source_url: str) -> str | None:
 
 
 class ExternalPluginRegistrySignals(QObject):
-    # Emitted after the installed external plugin set changed. Every open plugin manager
-    # listens and reconciles its own external clients.
-    plugin_bundles_changed = cast(SignalProtocol[[]], pyqtSignal())
+    # Emitted after any successful registry mutation (sources, catalog, installs, verification).
+    # Every open plugin manager listens, reloads its catalog view, and reconciles its own
+    # external clients only where the installed bundle actually changed.
+    registry_changed = cast(SignalProtocol[[]], pyqtSignal())
 
     def close(self) -> None:
         SignalTools.disconnect_all_signals_from(self)

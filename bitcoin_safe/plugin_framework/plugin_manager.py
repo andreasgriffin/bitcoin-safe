@@ -438,7 +438,7 @@ class PluginManager(BaseSaveableClass):
         self.signal_tracker = SignalTracker()
         self.signal_tracker.connect(self.wallet_functions.signals.language_switch, self._on_language_switch)
         self.signal_tracker.connect(
-            self.external_registry.signals.plugin_bundles_changed, self.reconcile_external_runtime
+            self.external_registry.signals.registry_changed, self.on_external_registry_changed
         )
         self.client_signal_tracker = SignalTracker()
         self._startup_source_refresh_timer: QTimer | None = None
@@ -1187,12 +1187,27 @@ class PluginManager(BaseSaveableClass):
         )
 
     def _refresh_external_registry_state(self) -> bool:
-        """Refresh this wallet after a registry mutation and fan the change out to other wallets."""
+        """Apply a registry mutation to this wallet and notify every open wallet.
+
+        This wallet reconciles before its snapshot is reloaded, so the bundle diff is taken
+        against the bundles its clients were built from. Other wallets get the same treatment
+        through the registry signal. Returns True when the installed bundle set changed.
+        """
+        self.reconcile_external_runtime()
         runtime_changed = self._reload_external_registry_state()
-        if runtime_changed:
-            self.external_registry.signals.plugin_bundles_changed.emit()
+        self.external_registry.signals.registry_changed.emit()
         self.wallet_functions.signals.plugin_updates_changed.emit()
         return runtime_changed
+
+    def on_external_registry_changed(self) -> None:
+        """Handle a shared registry change for this wallet.
+
+        Every wallet always refreshes its catalog view, so update availability stays current.
+        Only wallets whose installed bundles differ rebuild their clients.
+        """
+        self.reconcile_external_runtime()
+        self._reload_external_registry_state()
+        self._refresh_plugin_list_only()
 
     def _reload_external_registry_state(self) -> bool:
         """Reload this wallet's external view from the shared registry without broadcasting."""
@@ -1223,8 +1238,9 @@ class PluginManager(BaseSaveableClass):
     def reconcile_external_runtime(self) -> None:
         """Replace only the external clients whose installed bundle changed in this wallet.
 
-        Unchanged external bundles and built-in clients keep their running instances. Each replaced
-        client's enabled state is restored on its replacement.
+        Must run before this wallet's bundle snapshot is refreshed, because the changed set is
+        computed against the bundles its clients were built from. Replaced clients are serialized
+        first, so their settings and enabled state are restored by the normal payload path.
         """
         if (
             self._current_descriptor is None
@@ -1232,26 +1248,27 @@ class PluginManager(BaseSaveableClass):
             or self._current_category_core is None
         ):
             return
-        fresh_bundles = self._discover_external_bundles()
-        changed_bundle_ids = self._changed_external_bundle_ids(self.external_bundles, fresh_bundles)
+        changed_bundle_ids = self._changed_external_bundle_ids(
+            self.external_bundles, self._discover_external_bundles()
+        )
         if not changed_bundle_ids:
             return
 
-        previously_enabled_plugin_ids = {
-            client.plugin_id
-            for client in self.clients
-            if client.is_external_plugin()
-            and client.plugin_bundle_id in changed_bundle_ids
-            and client.enabled
-        }
-        for client in [
+        replaced_clients = [
             client
             for client in self.clients
             if client.is_external_plugin() and client.plugin_bundle_id in changed_bundle_ids
-        ]:
+        ]
+        self.serialized_client_dumps = self._merge_serialized_client_payloads(
+            [
+                *self.serialized_client_dumps,
+                *(self._serialize_client_payload(client) for client in replaced_clients),
+            ]
+        )
+        for client in replaced_clients:
+            self.clients.remove(client)
             if client.enabled:
                 client.set_enabled(False)
-            self.clients.remove(client)
             client.close()
         self._reload_external_registry_state()
         self.create_and_connect_clients(
@@ -1260,8 +1277,12 @@ class PluginManager(BaseSaveableClass):
             category_core=self._current_category_core,
         )
         for client in self.clients:
-            if client.plugin_id in previously_enabled_plugin_ids:
-                client.set_enabled(True)
+            if (
+                client.plugin_bundle_id in changed_bundle_ids
+                and client.is_external_plugin()
+                and client.enabled
+            ):
+                client.load()
 
     @classmethod
     def _changed_external_bundle_ids(
@@ -1497,50 +1518,12 @@ class PluginManager(BaseSaveableClass):
         if self.loop_in_thread is None:
             return
 
-        external_clients = [
-            existing_client for existing_client in self.clients if existing_client.is_external_plugin()
-        ]
-        updated_client_was_enabled = client.enabled
-        if updated_client_was_enabled:
-            client.set_enabled(False)
-
         def on_success(_result: InstalledSourcePluginMetadata) -> None:
-            enabled_clients = [
-                existing_client for existing_client in external_clients if existing_client.enabled
-            ]
-            if updated_client_was_enabled:
-                enabled_clients.append(client)
-            for enabled_client in enabled_clients:
-                if enabled_client.enabled:
-                    enabled_client.set_enabled(False)
-            replacement_payloads = [
-                self._serialize_client_payload(existing_client) for existing_client in external_clients
-            ]
-            runtime_changed = self._refresh_external_registry_state()
-            if runtime_changed:
-                self.serialized_client_dumps = self._merge_serialized_client_payloads(
-                    [*self.serialized_client_dumps, *replacement_payloads]
-                )
-            self._refresh_after_registry_change(runtime_changed)
-            if runtime_changed:
-                for enabled_client in enabled_clients:
-                    replacement_client = self._client_for_plugin_id(enabled_client.plugin_id)
-                    if replacement_client is None:
-                        logger.warning(
-                            "Could not restore updated plugin %s after refresh.",
-                            enabled_client.plugin_id,
-                        )
-                        continue
-                    replacement_client.set_enabled(True)
-            else:
-                for enabled_client in enabled_clients:
-                    enabled_client.set_enabled(True)
-            self._refresh_plugin_list_only()
+            # Reconciling replaces the changed bundle's clients and restores their enabled state.
+            self._refresh_external_registry_state()
             logger.info("Updated plugin %s to version %s.", entry.display_name, entry.version)
 
         def on_error(error_info: ExcInfo | Exception | None) -> None:
-            if updated_client_was_enabled:
-                client.set_enabled(True)
             self._show_async_registry_error(error_info)
 
         async def do() -> InstalledSourcePluginMetadata:

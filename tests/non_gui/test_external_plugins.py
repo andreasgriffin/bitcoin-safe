@@ -155,6 +155,9 @@ class _ImmediateLoopInThread:
     def __init__(self) -> None:
         self.calls: list[dict[str, object]] = []
 
+    def run_background(self, coro: Coroutine[Any, Any, object]) -> None:
+        asyncio.run(coro)
+
     def run_task(self, coro: Coroutine[Any, Any, object], **kwargs: object) -> None:
         self.calls.append(kwargs)
         result: object = None
@@ -2938,95 +2941,70 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
     qapp: QApplication, tmp_path: Path, monkeypatch
 ) -> None:
     del qapp
-
-    def _empty_external_state(cls, context, external_registry):
-        del cls, context, external_registry
-        return {}
-
-    monkeypatch.setattr(PluginManager, "_refresh_external_state", classmethod(_empty_external_state))
-
     config = _make_config(tmp_path)
-    signals = Signals()
-    wallet_functions = WalletFunctions(signals)
-    loop_in_thread = _ImmediateLoopInThread()
-    current_client = _LoadTrackingPluginClient(enabled=True)
-    current_client.set_plugin_identity(
-        plugin_source=PluginClientSource.EXTERNAL,
-        plugin_bundle_id="test-plugin",
-    )
-    replacement_client = _LoadTrackingPluginClient(enabled=False)
-    replacement_client.set_plugin_identity(
-        plugin_source=PluginClientSource.EXTERNAL,
-        plugin_bundle_id="test-plugin",
-    )
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "test-plugin"
+    current_hash = {"value": "hash-v1"}
+
+    class _UpdatedPluginClient(_LoadTrackingPluginClient):
+        pass
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        return [_external_bundle_for_test(bundle_id, current_hash["value"], _UpdatedPluginClient)]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
     manager = PluginManager(
-        wallet_functions=wallet_functions,
+        wallet_functions=WalletFunctions(Signals()),
         config=config,
         fx=_DummyFX(),
-        loop_in_thread=loop_in_thread,
-        external_registry=ExternalPluginRegistry.from_config(config),
-        clients=[current_client],
+        loop_in_thread=_ImmediateLoopInThread(),
+        external_registry=registry,
         parent=None,
     )
-    current_client.set_plugin_identity(
-        plugin_source=PluginClientSource.EXTERNAL,
-        plugin_bundle_id="test-plugin",
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
     )
-    replacement_client.set_plugin_identity(
-        plugin_source=PluginClientSource.EXTERNAL,
-        plugin_bundle_id="test-plugin",
-        plugin_id=current_client.plugin_id,
-    )
+    current_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+    current_client.set_enabled(True)
     entry = ExternalPluginCatalogEntry(
         source_id="test-source",
         source_display_name="Test Source",
-        bundle_id="test-plugin",
+        bundle_id=bundle_id,
         version="2.0.0",
         display_name="Test Plugin",
         description="Test description",
         provider="Tests",
         entrypoint="test_plugin/plugin_bundle.py",
         app_version_specifier=">=0.0.0",
-        folder_hash="new-hash",
+        folder_hash="hash-v2",
         release_ref="main",
         update_available=True,
         installed_version="1.0.0",
     )
     install_calls: list[tuple[str, str]] = []
 
-    try:
-
-        async def _install_plugin(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
-            install_calls.append((source_id, bundle_id))
-            return _installed_source_plugin_metadata(
-                source_id=source_id,
-                bundle_id=bundle_id,
-                version=entry.version,
-                folder_hash=entry.folder_hash,
-            )
-
-        monkeypatch.setattr(
-            manager.external_registry,
-            "install_plugin",
-            _install_plugin,
+    async def _install_plugin(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+        install_calls.append((source_id, bundle_id))
+        current_hash["value"] = "hash-v2"
+        return _installed_source_plugin_metadata(
+            source_id=source_id,
+            bundle_id=bundle_id,
+            version=entry.version,
+            folder_hash=entry.folder_hash,
         )
-        monkeypatch.setattr(manager, "_refresh_external_registry_state", lambda: True)
 
-        def _refresh_after_registry_change(runtime_changed: bool) -> None:
-            assert runtime_changed is True
-            manager.clients = [replacement_client]
+    monkeypatch.setattr(manager.external_registry, "install_plugin", _install_plugin)
 
-        monkeypatch.setattr(manager, "_refresh_after_registry_change", _refresh_after_registry_change)
-
+    try:
         manager.update_installed_source_plugin(current_client, entry)
 
-        assert install_calls == [("test-source", "test-plugin")]
+        assert install_calls == [("test-source", bundle_id)]
+        replacement = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+        assert replacement is not current_client
+        assert replacement.enabled
+        assert replacement.load_calls == 1
         assert current_client.unload_calls == 1
-        assert current_client.load_calls == 0
-        assert replacement_client.enabled
-        assert replacement_client.load_calls == 1
-        assert loop_in_thread.calls[0]["key"] == "plugin_source_install:test-plugin"
-        assert loop_in_thread.calls[0]["multiple_strategy"] == MultipleStrategy.REJECT_NEW_TASK
     finally:
         manager.close()
 
@@ -4729,14 +4707,56 @@ def test_registry_signals_close_disconnects_plugin_managers(qapp: QApplication, 
     reconciled: list[bool] = []
     manager.reconcile_external_runtime = lambda: reconciled.append(True)  # type: ignore[method-assign]
     manager.signal_tracker.disconnect_all()
-    manager.signal_tracker.connect(
-        registry.signals.plugin_bundles_changed, manager.reconcile_external_runtime
-    )
+    manager.signal_tracker.connect(registry.signals.registry_changed, manager.reconcile_external_runtime)
 
-    registry.signals.plugin_bundles_changed.emit()
+    registry.signals.registry_changed.emit()
     assert reconciled == [True]
 
     registry.close()
-    registry.signals.plugin_bundles_changed.emit()
+    registry.signals.registry_changed.emit()
     assert reconciled == [True]
     manager.close()
+
+
+def test_reconcile_restores_disabled_external_client_from_payload(
+    qapp: QApplication, tmp_path: Path, monkeypatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "disabled-plugin"
+    current_hash = {"value": "hash-v1"}
+
+    class _DisabledPluginClient(_LoadTrackingPluginClient):
+        pass
+
+    def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        del self, context
+        return [_external_bundle_for_test(bundle_id, current_hash["value"], _DisabledPluginClient)]
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", _discover)
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=None,
+        external_registry=registry,
+        parent=None,
+    )
+    manager.create_and_connect_clients(
+        descriptor=_test_descriptor(), wallet_id="wallet", category_core=SimpleNamespace()
+    )
+    old_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+    old_client.set_enabled(False)
+
+    try:
+        current_hash["value"] = "hash-v2"
+        manager.reconcile_external_runtime()
+
+        new_client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+        assert new_client is not old_client
+        assert old_client not in manager.clients
+        assert not new_client.enabled
+        assert new_client.load_calls == 0
+    finally:
+        manager.close()
