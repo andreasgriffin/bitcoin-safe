@@ -44,13 +44,15 @@ from dataclasses import dataclass, replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Protocol, cast
+from typing import Any, cast
 from urllib.parse import ParseResult, unquote, urljoin, urlparse
 
 import tomllib  # pyright: ignore[reportMissingImports]
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from packaging.specifiers import InvalidSpecifier, SpecifierSet
 from packaging.version import InvalidVersion, Version
+from PyQt6.QtCore import QObject, pyqtSignal
 
 from bitcoin_safe import __version__
 from bitcoin_safe.config import UserConfig
@@ -371,35 +373,10 @@ def suggested_plugin_source_display_name(source_url: str) -> str | None:
     return f"{provider} {repo_name}"
 
 
-class ReconcilableWalletPlugins(Protocol):
-    def reconcile_external_runtime(self) -> None: ...
-
-
-class PluginLifecycleCoordinator:
-    """Fan out installed external plugin changes to every open wallet's plugin manager.
-
-    Each wallet owns its own plugin manager and client instances, but they share one installed
-    plugin set. After a registry change, every open manager is asked to re-read that set and
-    replace only its own external clients whose implementation changed.
-    """
-
-    def __init__(self) -> None:
-        self._wallet_plugins: list[ReconcilableWalletPlugins] = []
-
-    def register(self, wallet_plugins: ReconcilableWalletPlugins) -> None:
-        if wallet_plugins not in self._wallet_plugins:
-            self._wallet_plugins.append(wallet_plugins)
-
-    def unregister(self, wallet_plugins: ReconcilableWalletPlugins) -> None:
-        if wallet_plugins in self._wallet_plugins:
-            self._wallet_plugins.remove(wallet_plugins)
-
-    def reconcile_all(self, origin: ReconcilableWalletPlugins | None = None) -> None:
-        """Reconcile every open wallet, skipping the origin that already applied the change."""
-        for wallet_plugins in list(self._wallet_plugins):
-            if wallet_plugins is origin:
-                continue
-            wallet_plugins.reconcile_external_runtime()
+class ExternalPluginRegistrySignals(QObject):
+    # Emitted after the installed external plugin set changed. Every open plugin manager
+    # listens and reconciles its own external clients.
+    plugin_bundles_changed = cast(SignalProtocol[[]], pyqtSignal())
 
 
 class ExternalPluginRegistry(BaseSaveableClass):
@@ -428,8 +405,8 @@ class ExternalPluginRegistry(BaseSaveableClass):
         self.source_catalogs = source_catalogs or {}
         self.installed_plugins = installed_plugins or {}
         self._plugin_finders: dict[str, _SignedPluginArtifactFinder] = {}
-        # Runtime-only: the open-wallet fan-out for this shared registry. Not part of dump().
-        self.lifecycle = PluginLifecycleCoordinator()
+        # Runtime-only notifier shared by all open wallets. Not part of dump().
+        self.signals = ExternalPluginRegistrySignals()
 
     @classmethod
     def from_dump(cls, dct: dict[str, Any], class_kwargs: dict | None = None):

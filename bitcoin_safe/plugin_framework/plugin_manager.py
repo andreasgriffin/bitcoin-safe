@@ -409,7 +409,6 @@ class PluginManager(BaseSaveableClass):
         self._current_wallet_id: str | None = None
         self._current_category_core: CategoryCore | None = None
         self.external_registry = external_registry
-        self.external_registry.lifecycle.register(self)
         # `external_bundles` is the current runtime view of installed external plugin bundles.
         # It contains the loaded bundle metadata plus the client classes exported by each bundle.
         # During wallet deserialization `class_kwargs()` can inject the already-discovered
@@ -438,6 +437,9 @@ class PluginManager(BaseSaveableClass):
         self._source_management_dialog: SourceManagementDialog | None = None
         self.signal_tracker = SignalTracker()
         self.signal_tracker.connect(self.wallet_functions.signals.language_switch, self._on_language_switch)
+        self.signal_tracker.connect(
+            self.external_registry.signals.plugin_bundles_changed, self.reconcile_external_runtime
+        )
         self.client_signal_tracker = SignalTracker()
         self._startup_source_refresh_timer: QTimer | None = None
         self._startup_source_refresh_future: Future[Sequence[VerifiedPluginSourceManifest]] | None = None
@@ -1188,7 +1190,7 @@ class PluginManager(BaseSaveableClass):
         """Refresh this wallet after a registry mutation and fan the change out to other wallets."""
         runtime_changed = self._reload_external_registry_state()
         if runtime_changed:
-            self.external_registry.lifecycle.reconcile_all(origin=self)
+            self.external_registry.signals.plugin_bundles_changed.emit()
         self.wallet_functions.signals.plugin_updates_changed.emit()
         return runtime_changed
 
@@ -1680,7 +1682,6 @@ class PluginManager(BaseSaveableClass):
         return dct
 
     def close(self) -> None:
-        self.external_registry.lifecycle.unregister(self)
         if self._deferred_subscription_refresh_timer is not None:
             self._deferred_subscription_refresh_timer.stop()
         self._deferred_subscription_refresh_clients.clear()

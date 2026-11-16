@@ -4623,11 +4623,9 @@ def test_registry_change_reconciles_enabled_external_client_in_every_open_wallet
         assert second_new.load_calls == 1
         first_new = next(client for client in first.clients if client.plugin_bundle_id == bundle_id)
         assert first_new.enabled
-        assert len(registry.lifecycle._wallet_plugins) == 2
     finally:
         first.close()
         second.close()
-        assert registry.lifecycle._wallet_plugins == []
 
 
 def test_reconcile_keeps_unrelated_external_client_running(
