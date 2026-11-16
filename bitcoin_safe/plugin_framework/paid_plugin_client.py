@@ -272,6 +272,8 @@ class PaidPluginClient(PluginClient):
             self.subscription_price_lookup.ensure_prices(subscription_manager)
 
     def load(self, refresh_subscription_status: bool = True) -> None:
+        if self._suspended:
+            return
         if refresh_subscription_status and not self._defer_subscription_refresh:
             for subscription_manager in self.subscription_managers:
                 subscription_manager.refresh_subscription_status(

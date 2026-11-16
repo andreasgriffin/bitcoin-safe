@@ -440,8 +440,8 @@ class PluginManager(BaseSaveableClass):
         self.signal_tracker.connect(
             self.external_registry.signals.registry_changed, self.on_external_registry_changed
         )
-        self.signal_tracker.connect(self.external_registry.signals.installation_started, self._pause_bundle)
-        self.signal_tracker.connect(self.external_registry.signals.installation_finished, self._resume_bundle)
+        self.signal_tracker.connect(self.external_registry.signals.mutation_started, self._pause_bundle)
+        self.signal_tracker.connect(self.external_registry.signals.mutation_finished, self._resume_bundle)
         self._paused_clients: set[PluginClient] = set()
         self.client_signal_tracker = SignalTracker()
         self._startup_source_refresh_timer: QTimer | None = None
@@ -465,10 +465,12 @@ class PluginManager(BaseSaveableClass):
         """Serialize one plugin client dump dict into a raw JSON payload string."""
         return BaseSaveableClass.dumps_object(dct)
 
-    @classmethod
-    def _serialize_client_payload(cls, client: PluginClient) -> str:
-        """Serialize a live plugin client into the raw payload format used for persistence."""
-        return cls._serialize_client_dump_dict(client.dump())
+    def _serialize_client_payload(self, client: PluginClient) -> str:
+        """Serialize a client with its enabled state from before any temporary suspension."""
+        data = client.dump()
+        if client in self._paused_clients:
+            data["enabled"] = True
+        return self._serialize_client_dump_dict(data)
 
     @staticmethod
     def _parse_client_payload(payload: str) -> dict[str, Any] | None:
@@ -1117,7 +1119,7 @@ class PluginManager(BaseSaveableClass):
         return None
 
     def _on_client_enabled_changed(self, client: PluginClient, enabled: bool) -> None:
-        if client.plugin_bundle_id in self.external_registry.installing_bundle_ids:
+        if client.plugin_bundle_id in self.external_registry.mutating_bundle_ids:
             return
         if not enabled:
             client.set_enabled(False)
@@ -1149,9 +1151,10 @@ class PluginManager(BaseSaveableClass):
         """Load a client; paid clients load from their stored status and queue a deferred refresh."""
         if (
             client.is_external_plugin()
-            and client.plugin_bundle_id in self.external_registry.installing_bundle_ids
+            and client.plugin_bundle_id in self.external_registry.mutating_bundle_ids
         ):
             self._paused_clients.add(client)
+            client.suspend()
             return
         if isinstance(client, PaidPluginClient):
             client.load(refresh_subscription_status=False)
@@ -1181,15 +1184,15 @@ class PluginManager(BaseSaveableClass):
     def _pause_bundle(self, bundle_id: str) -> None:
         for client in self.clients:
             if client.is_external_plugin() and client.plugin_bundle_id == bundle_id and client.enabled:
-                client.unload()
                 self._paused_clients.add(client)
+                client.suspend()
 
     def _resume_bundle(self, bundle_id: str) -> None:
         for client in list(self._paused_clients):
             if client.plugin_bundle_id == bundle_id:
                 self._paused_clients.remove(client)
-                if client in self.clients and client.enabled:
-                    self._start_client(client)
+                if client in self.clients:
+                    client.resume()
         self._schedule_deferred_subscription_refresh()
 
     def disconnect_all(self) -> None:
@@ -1303,7 +1306,6 @@ class PluginManager(BaseSaveableClass):
             self.clients.remove(client)
             if client in self._paused_clients:
                 self._paused_clients.remove(client)
-                client.enabled = False
             elif client.enabled:
                 client.set_enabled(False)
             client.close()
@@ -1536,11 +1538,11 @@ class PluginManager(BaseSaveableClass):
     def _install_source_plugin(
         self, entry: ExternalPluginCatalogEntry, refresh_clients: bool = False
     ) -> None:
-        if self.loop_in_thread is None or entry.bundle_id in self.external_registry.installing_bundle_ids:
+        if self.loop_in_thread is None or entry.bundle_id in self.external_registry.mutating_bundle_ids:
             return
 
-        self.external_registry.installing_bundle_ids.add(entry.bundle_id)
-        self.external_registry.signals.installation_started.emit(entry.bundle_id)
+        self.external_registry.mutating_bundle_ids.add(entry.bundle_id)
+        self.external_registry.signals.mutation_started.emit(entry.bundle_id)
 
         finished = False
 
@@ -1549,8 +1551,8 @@ class PluginManager(BaseSaveableClass):
             if finished:
                 return
             finished = True
-            self.external_registry.installing_bundle_ids.discard(entry.bundle_id)
-            self.external_registry.signals.installation_finished.emit(entry.bundle_id)
+            self.external_registry.mutating_bundle_ids.discard(entry.bundle_id)
+            self.external_registry.signals.mutation_finished.emit(entry.bundle_id)
 
         def on_success(_result: InstalledSourcePluginMetadata) -> None:
             try:
@@ -1634,13 +1636,11 @@ class PluginManager(BaseSaveableClass):
         ):
             return
 
-        reenable_clients: list[PluginClient] = []
+        if bundle_id in self.external_registry.mutating_bundle_ids:
+            return
+        self.external_registry.mutating_bundle_ids.add(bundle_id)
+        self.external_registry.signals.mutation_started.emit(bundle_id)
         try:
-            for removed_client in removed_clients:
-                if not removed_client.enabled:
-                    continue
-                removed_client.set_enabled(False)
-                reenable_clients.append(removed_client)
             self.external_registry.remove_installed_plugin(bundle_id)
             self.serialized_client_dumps = self._merge_serialized_client_payloads(
                 [
@@ -1652,20 +1652,17 @@ class PluginManager(BaseSaveableClass):
                 existing_client for existing_client in self.clients if existing_client not in removed_clients
             ]
             for removed_client in removed_clients:
+                self._paused_clients.discard(removed_client)
                 removed_client.close()
             self._reconnect_client_signals()
             runtime_changed = self._refresh_external_registry_state()
             self._refresh_after_registry_change(runtime_changed)
             logger.info("Deleted plugin %s.", plugin_name)
         except ExternalPluginError as exc:
-            for removed_client in reenable_clients:
-                try:
-                    removed_client.set_enabled(True)
-                except Exception:
-                    logger.exception(
-                        "Could not restore plugin %s after failed deletion.", removed_client.plugin_id
-                    )
             Message(str(exc), type=MessageType.Error, parent=self.parent or self.widget)
+        finally:
+            self.external_registry.mutating_bundle_ids.discard(bundle_id)
+            self.external_registry.signals.mutation_finished.emit(bundle_id)
 
     def clone(self, class_kwargs: dict | None = None):
         class_kwargs = class_kwargs if class_kwargs else {}

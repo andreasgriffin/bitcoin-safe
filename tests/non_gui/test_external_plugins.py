@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import asyncio
+import importlib
 import py_compile
 import shutil
 import sys
@@ -2947,7 +2948,14 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
     current_hash = {"value": "hash-v1"}
 
     class _UpdatedPluginClient(_LoadTrackingPluginClient):
-        pass
+        def __init__(self, enabled: bool = True, setting: str = "default") -> None:
+            super().__init__(enabled=enabled)
+            self.setting = setting
+
+        def dump(self) -> dict[str, Any]:
+            data = super().dump()
+            data["setting"] = self.setting
+            return data
 
     def _discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
         del self, context
@@ -2980,6 +2988,8 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
     )
     other_client = next(client for client in other_manager.clients if client.plugin_bundle_id == bundle_id)
     other_client.set_enabled(True)
+    assert isinstance(other_client, _UpdatedPluginClient)
+    other_client.setting = "wallet B custom setting"
     entry = ExternalPluginCatalogEntry(
         source_id="test-source",
         source_display_name="Test Source",
@@ -3000,6 +3010,8 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
     async def _install_plugin(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
         assert current_client.unload_calls == 2
         assert other_client.unload_calls == 2
+        payload = other_manager._parse_client_payload(other_manager._serialize_client_payload(other_client))
+        assert payload is not None and payload["enabled"] is True
         install_calls.append((source_id, bundle_id))
         current_hash["value"] = "hash-v2"
         return _installed_source_plugin_metadata(
@@ -3037,10 +3049,125 @@ def test_plugin_manager_updates_enabled_plugin_by_reloading_replacement(
         )
         assert other_replacement is not other_client
         assert other_replacement.enabled
+        assert isinstance(other_replacement, _UpdatedPluginClient)
+        assert other_replacement.setting == "wallet B custom setting"
         assert other_replacement.load_calls == 1
     finally:
         other_manager.close()
         manager.close()
+
+
+def test_paid_plugin_business_plan_cannot_restart_during_update(
+    qapp: QApplication, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    client = _PaidStateTrackingPluginClient(
+        config=config, fx=_DummyFX(), loop_in_thread=None, additional_access_providers=[lambda: True]
+    )
+    client.set_plugin_identity(PluginClientSource.EXTERNAL, "paid-plugin")
+    manager = PluginManager(
+        wallet_functions=WalletFunctions(Signals()),
+        config=config,
+        fx=_DummyFX(),
+        loop_in_thread=_ImmediateLoopInThread(),
+        external_registry=registry,
+        clients=[client],
+    )
+    client.set_enabled(True)
+    entry = ExternalPluginCatalogEntry(
+        source_id="source",
+        source_display_name="Source",
+        bundle_id="paid-plugin",
+        version="2.0",
+        display_name="Paid",
+        description="",
+        provider="Tests",
+        entrypoint="plugin.py",
+        app_version_specifier=">=0",
+        folder_hash="hash",
+        release_ref="main",
+    )
+
+    async def install(source_id: str, bundle_id: str) -> InstalledSourcePluginMetadata:
+        assert client.unload_calls == 1
+        client.on_business_plan_changed()
+        client.load(refresh_subscription_status=False)
+        client.set_enabled(True)
+        assert not client.enabled
+        assert client.load_calls == 1
+        raise ExternalPluginError("failed")
+
+    monkeypatch.setattr(registry, "install_plugin", install)
+    monkeypatch.setattr(manager, "_show_async_registry_error", lambda error: None)
+    try:
+        manager.update_installed_source_plugin(client, entry)
+        assert client.enabled
+        assert client.load_calls == 2
+    finally:
+        manager.close()
+
+
+def test_uninstall_unloads_both_wallets_before_removing_lazy_imports(
+    qapp: QApplication, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    del qapp
+    config = _make_config(tmp_path)
+    registry = ExternalPluginRegistry.from_config(config)
+    bundle_id = "lazy-plugin"
+    plugin_dir = registry.installed_dir / bundle_id
+    package = plugin_dir / "test_plugin"
+    package.mkdir(parents=True)
+    (package / "__init__.py").write_text("", encoding="utf-8")
+    (package / "plugin_bundle.py").write_text("", encoding="utf-8")
+    (package / "lazy.py").write_text("VALUE = 42\n", encoding="utf-8")
+    namespace = "bitcoin_safe_external_plugin_uninstall_lazy_test"
+    layout = _PluginArtifactLayout("test_plugin", Path("plugin_bundle.py"), None)
+    registry._load_module(namespace, f"{namespace}.test_plugin.plugin_bundle", plugin_dir, layout)
+    registry.installed_plugins[bundle_id] = _installed_source_plugin_metadata("source", bundle_id)
+    unload_results: list[int] = []
+
+    class _LazyClient(_LoadTrackingPluginClient):
+        def unload(self) -> None:
+            super().unload()
+            if self.wallet_context and self.wallet_context.wallet_id == "wallet-b":
+                module = importlib.import_module(f"{namespace}.test_plugin.lazy")
+                unload_results.append(module.VALUE)
+
+    def discover(self: ExternalPluginRegistry, context: PluginRuntimeContext):
+        return [_external_bundle_for_test(bundle_id, "hash", _LazyClient)] if plugin_dir.exists() else []
+
+    monkeypatch.setattr(ExternalPluginRegistry, "discover_verified_bundles", discover)
+    monkeypatch.setattr("bitcoin_safe.plugin_framework.plugin_manager.question_dialog", lambda **kwargs: True)
+    managers = [
+        PluginManager(
+            wallet_functions=WalletFunctions(Signals()),
+            config=config,
+            fx=_DummyFX(),
+            loop_in_thread=None,
+            external_registry=registry,
+        )
+        for _ in range(2)
+    ]
+    try:
+        for manager, wallet_id in zip(managers, ("wallet-a", "wallet-b"), strict=True):
+            manager.create_and_connect_clients(
+                descriptor=_test_descriptor(), wallet_id=wallet_id, category_core=SimpleNamespace()
+            )
+            client = next(client for client in manager.clients if client.plugin_bundle_id == bundle_id)
+            client.set_enabled(True)
+        managers[0].delete_installed_source_plugin_by_bundle_id(bundle_id)
+        assert unload_results == [42]
+        assert not plugin_dir.exists()
+        assert all(
+            not any(client.plugin_bundle_id == bundle_id for client in manager.clients)
+            for manager in managers
+        )
+    finally:
+        for manager in managers:
+            manager.close()
+        registry._unload_plugin_namespace(namespace)
 
 
 def test_plugin_manager_update_restores_all_paid_plugin_subscription_states(
