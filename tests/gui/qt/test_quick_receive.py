@@ -49,6 +49,7 @@ from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.theme import create_dark_palette, create_light_palette
 
 from ...helpers import TestConfig
+from ...setup_bitcoin_core import mine_blocks
 from .helpers import Shutter, main_window_context
 
 logger = logging.getLogger(__name__)
@@ -104,6 +105,7 @@ def test_quick_receive_copy_and_next_address(
     qtbot: QtBot,
     mytest_start_time: datetime,
     test_config: TestConfig,
+    bitcoin_core: Path,
     wallet_file: str = "0.2.0.wallet",
 ) -> None:
     """Test quick receive renders QR, copies address, and advances to next address."""
@@ -112,6 +114,7 @@ def test_quick_receive_copy_and_next_address(
     shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_{inspect.getframeinfo(frame).function}")
 
     shutter.create_symlink(test_config=test_config)
+    mine_blocks(bitcoin_core)
     with main_window_context(test_config=test_config) as main_window:
         # Wait for the main window to render before interacting.
         QTest.qWaitForWindowExposed(main_window, timeout=10_000)  # type: ignore
@@ -132,7 +135,16 @@ def test_quick_receive_copy_and_next_address(
         qtbot.waitUntil(lambda: qt_wallet.tabs.currentWidget() is qt_wallet.history_tab, timeout=5_000)
 
         quick_receive = qt_wallet.quick_receive
-        qtbot.waitUntil(lambda: len(quick_receive.group_boxes) > 0, timeout=10_000)
+        # The initial-sync overlay can hide the receive panel while its boxes are
+        # already populated. Wait until the controls can actually be used.
+        qtbot.waitUntil(
+            lambda: (
+                bool(quick_receive.group_boxes)
+                and quick_receive.isVisible()
+                and quick_receive.group_boxes[0].copy_button.isVisible()
+            ),
+            timeout=30_000,
+        )
 
         group_box = quick_receive.group_boxes[0]
         assert isinstance(group_box, ReceiveGroup)
@@ -161,14 +173,17 @@ def test_quick_receive_copy_and_next_address(
         assert group_box.qr_code.svg_renderers
         assert group_box.qr_code.svg_renderers[0].isValid()
 
+        # Sync updates can replace the box while the event loop is running.
+        group_box = quick_receive.group_boxes[0]
+
         # Copy button should place the address on the clipboard.
         clipboard = QApplication.clipboard()
         assert clipboard
         group_box.copy_button.click()
-        qtbot.wait(200)
-        assert clipboard.text() == group_box.address
+        qtbot.waitUntil(lambda: clipboard.text() == group_box.address, timeout=5_000)
 
         # "Force new" should advance to a different unused address.
+        group_box = quick_receive.group_boxes[0]
         previous_address = group_box.address
         group_box.force_new_button.click()
 
