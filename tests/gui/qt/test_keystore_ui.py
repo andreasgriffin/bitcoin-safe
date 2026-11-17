@@ -227,10 +227,14 @@ def test_set_using_signer_info_emits_one_completed_change(qtbot: QtBot, loop_in_
     )[0]
     states: list[KeyStoreUiState] = []
     widget.signal_ui_changed.connect(lambda: states.append(widget.state))
+    widget.format_all_fields()
+    assert "Missing Key origin" in widget.edit_key_origin.toolTip()
 
     widget.set_using_signer_info(SignerInfo(keystore.fingerprint, keystore.key_origin, keystore.xpub))
 
     assert states == [KeyStoreUiState.Filled]
+    assert widget.edit_key_origin.toolTip() == ""
+    assert widget.edit_xpub.toolTip() == ""
 
 
 def test_keystore_ui_imports_singlesig_descriptor(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:

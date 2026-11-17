@@ -1129,6 +1129,7 @@ class KeyStoreUI(CardBase):
             self.edit_xpub.setText(xpub)
             self.key_origin = key_origin
             self.edit_fingerprint.setText(fingerprint)
+        self.format_all_fields()
         self.updateUi()
         self.signal_ui_changed.emit()
 
