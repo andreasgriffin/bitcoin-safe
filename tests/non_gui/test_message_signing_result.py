@@ -27,6 +27,8 @@
 # SOFTWARE.
 #
 
+from unittest.mock import patch
+
 from bitcoin_safe.message_signature_verifyer import MessageSignatureVerifyer
 from bitcoin_safe.message_signing_result import MessageSigningInfo, verify_signing_result
 from bitcoin_safe.signer import seed_sign_options
@@ -61,3 +63,18 @@ def test_different_account_path_is_not_attributed(test_config) -> None:
     assert not verify_signing_result(
         message, MessageSigningInfo(options[0].bip32_path, wallet.network, tuple(wallet.keystores)), signature
     ).signer
+
+
+def test_signer_verification_without_openssl_ripemd160(test_config) -> None:
+    wallet = _wallet(signers=1, test_config=test_config)
+    option = seed_sign_options(wallet, _address_info(wallet))[0]
+    message = "signed message"
+    signature = option.signer.sign_message(message=message, bip32_path=option.bip32_path)
+    signing_info = MessageSigningInfo(option.bip32_path, wallet.network, tuple(wallet.keystores))
+
+    with patch("hwilib.key.hash160", side_effect=ValueError("unsupported hash type ripemd160")):
+        result = verify_signing_result(message, signing_info, signature)
+
+    assert result.signer
+    assert result.signer.fingerprint.lower() == option.signer.get_fingerprint().lower()
+    assert result.armored

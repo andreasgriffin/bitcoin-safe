@@ -103,10 +103,13 @@ def verify_signing_result(
             origin = parse_path(signer.key_origin)
             if path[: len(origin)] != origin:
                 continue
-            derived = ExtendedKey.deserialize(signer.xpub)
-            for index in path[len(origin) :]:
-                derived = derived.derive_pub(index)
-            if derived.pubkey == public_key:
+            relative_path = path[len(origin) :]
+            if any(index >= 2**31 for index in relative_path):
+                continue
+            derivation = bdk.DerivationPath("m" + "".join(f"/{index}" for index in relative_path))
+            derived = bdk.DescriptorPublicKey.from_string(signer.xpub).derive(derivation)
+            derived_xpub = str(derived).rsplit("]", 1)[-1]
+            if ExtendedKey.deserialize(derived_xpub).pubkey == public_key:
                 matches.append(signer)
         except Exception:
             continue
