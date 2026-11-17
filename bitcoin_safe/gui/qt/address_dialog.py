@@ -52,19 +52,18 @@ from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.custom_edits import AnalyzerTextEdit
-from bitcoin_safe.gui.qt.dialogs import show_textedit_message
 from bitcoin_safe.gui.qt.sign_message import SignMessage
 from bitcoin_safe.gui.qt.ui_tx.recipients import RecipientBox
 from bitcoin_safe.gui.qt.usb_register_multisig import USBValidateAddressWidget
 from bitcoin_safe.gui.qt.util import center_on_screen, set_no_margins, svg_tools
 from bitcoin_safe.mempool_manager import MempoolManager
+from bitcoin_safe.message_signing_result import MessageSigningInfo
 from bitcoin_safe.wallet import Wallet
 
 from ...descriptors import get_address_bip32_path
 from ...signals import SignalsMin, WalletFunctions
 from ...signer import SeedSignOption, seed_sign_options
 from .hist_list import HistList
-from .util import do_copy
 
 logger = logging.getLogger(__name__)
 
@@ -72,16 +71,13 @@ logger = logging.getLogger(__name__)
 class AddressDetailsAdvanced(QWidget):
     def __init__(
         self,
-        wallet_descriptor: bdk.Descriptor,
-        kind: bdk.KeychainKind,
-        address_index: int,
-        network: bdk.Network,
         address_path_str: str,
+        signing_info: MessageSigningInfo,
+        seed_options: list[SeedSignOption],
         close_all_video_widgets: SignalProtocol[[]],
         signals_min: SignalsMin,
         loop_in_thread: LoopInThread,
         parent: QWidget | None,
-        seed_sign_options: list[SeedSignOption] | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent)
@@ -120,25 +116,14 @@ class AddressDetailsAdvanced(QWidget):
 
         # sign message row
         self.sign_message = SignMessage(
-            bip32_path=get_address_bip32_path(
-                descriptor_str=str(wallet_descriptor), kind=kind, index=address_index
-            ),
-            network=network,
+            signing_info=signing_info,
             close_all_video_widgets=close_all_video_widgets,
             parent=self,
             grid_layout=form_layout,
             loop_in_thread=loop_in_thread,
             signals_min=signals_min,
-            seed_sign_options=seed_sign_options,
+            seed_sign_options=seed_options,
         )
-        self.sign_message.signal_signed_message.connect(self.on_signed_message)
-
-    def on_signed_message(self, signed_message: str):
-        """On signed message."""
-        self.sign_message.close()
-        title = self.tr("Signed Message")
-        do_copy(signed_message, title=title)
-        show_textedit_message(text=signed_message, label_description="", title=title)
 
 
 class AddressValidateTab(QWidget):
@@ -242,16 +227,21 @@ class AddressDialog(QWidget):
         address_info = self.wallet.get_address_info_min(address)
         self.tab_advanced = (
             AddressDetailsAdvanced(
-                address_path_str=self.wallet.get_address_path_str(address),
                 parent=self,
                 close_all_video_widgets=self.wallet_functions.signals.close_all_video_widgets,
-                network=config.network,
-                wallet_descriptor=self.wallet.multipath_descriptor,
-                kind=address_info.keychain,
-                address_index=address_info.index,
+                address_path_str=self.wallet.get_address_path_str(address),
+                signing_info=MessageSigningInfo(
+                    bip32_path=get_address_bip32_path(
+                        descriptor_str=str(self.wallet.multipath_descriptor),
+                        kind=address_info.keychain,
+                        index=address_info.index,
+                    ),
+                    network=self.wallet.network,
+                    keystores=tuple(self.wallet.keystores),
+                ),
+                seed_options=seed_sign_options(self.wallet, address_info),
                 signals_min=self.wallet_functions.signals,
                 loop_in_thread=loop_in_thread,
-                seed_sign_options=seed_sign_options(self.wallet, address_info),
             )
             if address_info
             else None

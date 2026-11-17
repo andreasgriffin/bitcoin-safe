@@ -41,7 +41,7 @@ from PyQt6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 from bitcoin_safe.gui.qt.util import set_pixmap_if_changed, svg_tools
 
-from .util import set_no_margins, should_process_theme_change
+from .util import SvgTools, set_no_margins, should_process_theme_change
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +76,7 @@ class IconLabel(QWidget):
         self.click_url: str | None = None
         self._icon_name: str | Path | None = None
         self._icon_sizes: tuple[int | None, int | None] = (None, None)
+        self._icon_svg_tools: SvgTools = svg_tools
 
         # Icon Label
         self.icon_label = ClickableLabel()
@@ -116,17 +117,24 @@ class IconLabel(QWidget):
         a0 = a0.replace("\n", "<br>")
         self.textLabel.setText(a0)
 
-    def set_icon(self, icon: str | Path | None, sizes: tuple[int | None, int | None] = (None, None)) -> None:
-        """Set icon."""
-        if icon == self._icon_name and sizes == self._icon_sizes:
+    def set_icon(
+        self,
+        icon: str | Path | None,
+        sizes: tuple[int | None, int | None] = (None, None),
+        svg_tools_custom: SvgTools | None = None,
+    ) -> None:
+        """Set icon and its themed asset source."""
+        icon_tools = svg_tools_custom or svg_tools
+        if icon == self._icon_name and sizes == self._icon_sizes and icon_tools is self._icon_svg_tools:
             return
         self._icon_name = icon
         self._icon_sizes = sizes
+        self._icon_svg_tools = icon_tools
         self._apply_icon()
 
     def _apply_icon(self) -> None:
         icon_name = str(self._icon_name) if self._icon_name else None
-        icon = svg_tools.get_QIcon(icon_name) if icon_name else None
+        icon = self._icon_svg_tools.get_QIcon(icon_name) if icon_name else None
         self.icon_label.setVisible(bool(icon))
         if not icon:
             self.icon_label.clear()

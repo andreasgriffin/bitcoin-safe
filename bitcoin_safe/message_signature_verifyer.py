@@ -239,7 +239,7 @@ ILoOBJK9kVKsdUOnJPPoDtrDtRSQw2pyMo+2r5bdUlNkSLDZLqMs8h9mfDm/alZo3DK6rKvTO0xRPrl6
 
         # Strip leading/trailing whitespace so callers can pass multi-line strings
         # that include incidental indentation or newlines from source formatting.
-        lines = [line.strip() for line in armored_block.strip().splitlines()]
+        lines = armored_block.strip("\r\n").splitlines()
 
         begin_messages = ["-----BEGIN BITCOIN SIGNED MESSAGE-----"]
         begin_signatures = ["-----BEGIN BITCOIN SIGNATURE-----", "-----BEGIN SIGNATURE-----"]

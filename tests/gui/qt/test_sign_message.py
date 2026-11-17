@@ -236,3 +236,130 @@ def test_closing_wallet_clears_seed_menu_of_open_sign_tab(qtbot: QtBot, test_con
 
     assert tab.sign_seed_button.isHidden()
     assert tab.seed_menu.actions() == []
+
+
+def test_result_dialog_used_for_usb_qr_and_seed(
+    qtbot: QtBot, test_config, loop_in_thread, monkeypatch
+) -> None:
+    wallet = _wallet(signers=1, test_config=test_config)
+    address = str(wallet.get_force_new_address(is_change=False).address)
+    info = wallet.get_address_info_min(address)
+    assert info
+    from bitcoin_safe.signer import seed_sign_options
+
+    option = seed_sign_options(wallet, info)[0]
+    message = "signed message"
+    signature = option.signer.sign_message(message=message, bip32_path=option.bip32_path)
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    wallet_functions.get_qt_wallets.connect(lambda: SimpleNamespace(wallet=wallet))
+    tab = _SignTab(
+        network=bdk.Network.REGTEST,
+        signals_min=signals,
+        close_all_video_widgets=signals.close_all_video_widgets,
+        loop_in_thread=loop_in_thread,
+        wallet_functions=wallet_functions,
+    )
+    qtbot.addWidget(tab)
+    tab.sign_address_edit.setText(address)
+    tab.sign_message_edit.setPlainText(message)
+    tab.usb_gui.sign_message = lambda message, bip32_path: signature  # type: ignore[method-assign]
+    tab.on_sign_usb_message_button()
+    assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText()
+    tab.result_dialog.close()
+    tab.on_show_export_widget()
+    assert tab.qr_signing_info
+    assert tab.qr_signing_info.keystores[0].mnemonic is None
+    fingerprint = tab.qr_signing_info.keystores[0].fingerprint
+    wallet.keystores[0].fingerprint = "00000000"
+    assert tab.qr_signing_info.keystores[0].fingerprint == fingerprint
+    wallet.keystores[0].fingerprint = fingerprint
+    tab.sign_message_edit.setPlainText("changed while waiting")
+    tab.on_raw_content(signature)
+    assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText()
+    tab.result_dialog.close()
+    tab.sign_message_edit.setPlainText(message)
+    tab.sign_with_option(option)
+    assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText()
+
+
+def test_address_details_signs_with_explicit_keystores(qtbot: QtBot, test_config, loop_in_thread) -> None:
+    from bitcoin_safe.descriptors import get_address_bip32_path
+    from bitcoin_safe.gui.qt.address_dialog import AddressDetailsAdvanced
+    from bitcoin_safe.message_signing_result import MessageSigningInfo
+    from bitcoin_safe.signer import seed_sign_options
+
+    wallet = _wallet(signers=1, test_config=test_config)
+    address = str(wallet.get_force_new_address(is_change=False).address)
+    info = wallet.get_address_info_min(address)
+    assert info
+    signals = Signals()
+    widget = AddressDetailsAdvanced(
+        address_path_str=wallet.get_address_path_str(address),
+        signing_info=MessageSigningInfo(
+            get_address_bip32_path(str(wallet.multipath_descriptor), info.keychain, info.index),
+            wallet.network,
+            tuple(wallet.keystores),
+        ),
+        seed_options=seed_sign_options(wallet, info),
+        close_all_video_widgets=signals.close_all_video_widgets,
+        signals_min=signals,
+        loop_in_thread=loop_in_thread,
+        parent=None,
+    )
+    qtbot.addWidget(widget)
+    widget.sign_message.sign_edit.setText("hello bitcoin")
+    widget.sign_message.sign_with_option(seed_sign_options(wallet, info)[0])
+    assert "BEGIN BITCOIN SIGNED MESSAGE" in widget.sign_message.result_dialog.signature_edit.toPlainText()
+
+
+def test_message_signature_dialog_shows_verified_signer_address_and_status(
+    qtbot: QtBot, test_config, loop_in_thread
+) -> None:
+    from bitcoin_safe.gui.qt.message_signature_dialog import MessageSignatureDialog
+    from bitcoin_safe.message_signing_result import MessageSigningInfo
+    from bitcoin_safe.signer import seed_sign_options
+
+    wallet = _wallet(signers=2, test_config=test_config, threshold=2)
+    address = str(wallet.get_force_new_address(is_change=False).address)
+    info = wallet.get_address_info_min(address)
+    assert info
+    option = seed_sign_options(wallet, info)[0]
+    message = "hello bitcoin"
+    signature = option.signer.sign_message(message=message, bip32_path=option.bip32_path)
+    signing_info = MessageSigningInfo(option.bip32_path, wallet.network, tuple(wallet.keystores)).snapshot()
+    signals = Signals()
+    dialog = MessageSignatureDialog(message, signing_info, signature, signals.close_all_video_widgets)
+    qtbot.addWidget(dialog)
+    dialog.show()
+    qtbot.waitExposed(dialog)
+
+    assert dialog.signer_label.textLabel.text() == option.label
+    signer_pixmap = dialog.signer_label.icon_label.pixmap()
+    assert signer_pixmap and not signer_pixmap.isNull()
+    assert dialog.signer_label.icon_label.isVisible()
+    from bitcoin_safe.gui.qt.util import svg_tools_hardware_signer
+    from bitcoin_safe.hardware_signers import HardwareSigners
+
+    hardware_signer = (
+        HardwareSigners.from_id(signing_info.keystores[0].hardware_signer_id) or HardwareSigners.generic
+    )
+    expected_icon = svg_tools_hardware_signer.get_QIcon(hardware_signer.icon_name).pixmap(24, 24)
+    assert signer_pixmap.toImage() == expected_icon.toImage()
+    assert "one key" in dialog.signer_label.toolTip()
+    assert dialog.address_edit.text() != address
+    assert dialog.address_edit.copy_button
+    assert dialog.address_edit.input_field.isReadOnly()
+    assert dialog.status_label.textLabel.text() == "Signature verified"
+    assert dialog.status_label.icon_label.pixmap()
+    assert dialog.layout().indexOf(dialog.status_label) > dialog.layout().indexOf(dialog.signature_edit)
+
+    unverified = MessageSignatureDialog(
+        message + "changed", signing_info, signature, signals.close_all_video_widgets
+    )
+    qtbot.addWidget(unverified)
+    assert "could not be verified" in unverified.status_label.textLabel.text()
+    assert unverified.signature_edit.toPlainText() == signature
+    assert unverified.layout().indexOf(unverified.status_label) > unverified.layout().indexOf(
+        unverified.signature_edit
+    )
