@@ -58,12 +58,12 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
 from bitcoin_safe.descriptors import get_address_bip32_path
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
-from bitcoin_safe.gui.qt.dialogs import show_textedit_message
 from bitcoin_safe.gui.qt.export_data import QrFollowUpActionGroup, QrToolButton
 from bitcoin_safe.gui.qt.simple_qr_scanner import SimpleQrScanner
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.keystore import KeyStoreImporterTypes
+from bitcoin_safe.message_signing_result import MessageSigningInfo
 
 from ...message_signature_verifyer import MessageSignatureVerifyer
 from ...pythonbdk_types import AddressInfoMin
@@ -71,7 +71,8 @@ from ...signals import SignalsMin, UpdateFilter, UpdateFilterReason, WalletFunct
 from ...signer import SeedSignOption, seed_sign_options
 from ...wallet import Wallet
 from .gpg_verify import verify_gpg_signed_message
-from .util import Message, caught_exception_message, delayed_execution, do_copy
+from .message_signature_dialog import MessageSignatureDialog
+from .util import Message, caught_exception_message, delayed_execution
 
 logger = logging.getLogger(__name__)
 
@@ -101,6 +102,8 @@ class SignMessageBase(QWidget):
         """Initialize instance."""
         super().__init__(parent)
         self.network = network
+        self.qr_message: str | None = None
+        self.qr_signing_info: MessageSigningInfo | None = None
         self.signals_min = signals_min
         self.close_all_video_widgets = close_all_video_widgets
         self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
@@ -199,18 +202,39 @@ class SignMessageBase(QWidget):
         export_widget.close()
         delayed_execution(self.dialog_open_qr_scanner, self, delay=0)
 
+    def get_signing_info(self) -> MessageSigningInfo:
+        return MessageSigningInfo(self.get_bip32_path(), self.network, ())
+
+    def show_signing_result(self, signature: str, message: str, signing_info: MessageSigningInfo) -> None:
+        self.result_dialog = MessageSignatureDialog(
+            message, signing_info, signature, self.close_all_video_widgets, self
+        )
+        self.result_dialog.show()
+        self.signal_signed_message.emit(signature)
+
     def on_raw_content(self, o: object):
-        """On raw content."""
-        self.signal_signed_message.emit(str(o))
+        """Handle the response to the captured QR request."""
+        message = self.qr_message if self.qr_message is not None else self.get_message()
+        signing_info = self.qr_signing_info or self.get_signing_info().snapshot()
+        self.show_signing_result(str(o), message, signing_info)
 
     def on_show_export_widget(self):
-        """On show export widget."""
-        self.sign_qr_button.set_data(self.get_data())
+        """Capture the request and signers before exporting the QR code."""
+        self.qr_message = self.get_message()
+        self.qr_signing_info = self.get_signing_info().snapshot()
+        self.sign_qr_button.set_data(
+            Data(
+                SignMessageRequest(msg=self.qr_message, subpath=self.qr_signing_info.bip32_path, addr_fmt=""),
+                data_type=DataType.SignMessageRequest,
+                network=self.qr_signing_info.network,
+            )
+        )
 
     def on_sign_usb_message_button(self):
         """On sign usb message button."""
         msg = self.get_message()
-        bip32_path = self.get_bip32_path()
+        signing_info = self.get_signing_info().snapshot()
+        bip32_path = signing_info.bip32_path
         if len(msg) < 2:
             Message(self.tr("Message too short."), parent=self)
             self.usb_gui.signal_end_hwi_blocker.emit()
@@ -227,7 +251,7 @@ class SignMessageBase(QWidget):
         signed_message = self.usb_gui.sign_message(message=msg, bip32_path=bip32_path)
 
         if signed_message:
-            self.signal_signed_message.emit(signed_message)
+            self.show_signing_result(signed_message, msg, signing_info)
 
     def set_seed_sign_options(self, options: list[SeedSignOption]) -> None:
         """Rebuild the seed menu with one entry per option. The button is shown only if there are options."""
@@ -245,13 +269,14 @@ class SignMessageBase(QWidget):
             Message(self.tr("Message too short."), parent=self)
             return
 
+        signing_info = self.get_signing_info().snapshot(option.bip32_path)
         try:
             signed_message = option.signer.sign_message(message=msg, bip32_path=option.bip32_path)
         except Exception as e:
             caught_exception_message(e, parent=self)
             return
 
-        self.signal_signed_message.emit(signed_message)
+        self.show_signing_result(signed_message, msg, signing_info)
 
     def updateUI(self) -> None:
         """Update translatable strings."""
@@ -267,8 +292,7 @@ class SignMessageBase(QWidget):
 class SignMessage(SignMessageBase):
     def __init__(
         self,
-        bip32_path: str,
-        network: bdk.Network,
+        signing_info: MessageSigningInfo,
         signals_min: SignalsMin,
         close_all_video_widgets: SignalProtocol[[]],
         loop_in_thread: LoopInThread,
@@ -278,13 +302,13 @@ class SignMessage(SignMessageBase):
     ) -> None:
         """Initialize instance."""
 
-        self.bip32_path = bip32_path
+        self.signing_info = signing_info
         self.sign_edit = QLineEdit()
         self.sign_label = QLabel()
 
         self.sign_edit.setPlaceholderText("")
         super().__init__(
-            network=network,
+            network=signing_info.network,
             signals_min=signals_min,
             close_all_video_widgets=close_all_video_widgets,
             loop_in_thread=loop_in_thread,
@@ -300,10 +324,13 @@ class SignMessage(SignMessageBase):
 
         self.updateUI()
 
+    def get_signing_info(self) -> MessageSigningInfo:
+        return self.signing_info
+
     def get_bip32_path(self) -> str:
         """Return the fixed BIP32 path for this widget."""
 
-        return self.bip32_path
+        return self.signing_info.bip32_path
 
     def get_message(self) -> str:
         """Return the message from the input field."""
@@ -316,7 +343,9 @@ class SignMessage(SignMessageBase):
         super().updateUI()
         self.sign_label.setText(self.tr("Sign message"))
         self.sign_edit.setPlaceholderText(
-            self.tr("Enter message to be signed at {bip32_path}").format(bip32_path=self.bip32_path)
+            self.tr("Enter message to be signed at {bip32_path}").format(
+                bip32_path=self.signing_info.bip32_path
+            )
         )
 
 
@@ -385,22 +414,23 @@ class _SignTab(SignMessageBase):
                 return qt_wallet.wallet, address_info
         return None
 
+    def get_signing_info(self) -> MessageSigningInfo:
+        owner = self._address_info_of_wallet()
+        if not owner:
+            return MessageSigningInfo("", self.network, ())
+        wallet, address_info = owner
+        path = get_address_bip32_path(
+            str(wallet.multipath_descriptor), address_info.keychain, address_info.index
+        )
+        return MessageSigningInfo(path, self.network, tuple(wallet.keystores))
+
     def _refresh_seed_signer(self, _address: str) -> None:
         """Rebuild the seed menu for the entered address; hidden if no seed key belongs to it."""
         owner = self._address_info_of_wallet()
         self.set_seed_sign_options(seed_sign_options(*owner) if owner else [])
 
     def get_bip32_path(self) -> str:
-        """Return the BIP32 path for the entered address if it is in an open wallet."""
-        owner = self._address_info_of_wallet()
-        if not owner:
-            return ""
-        wallet, address_info = owner
-        return get_address_bip32_path(
-            descriptor_str=str(wallet.multipath_descriptor),
-            kind=address_info.keychain,
-            index=address_info.index,
-        )
+        return self.get_signing_info().bip32_path
 
     def get_message(self) -> str:
         """Return the user-entered message."""
@@ -507,7 +537,6 @@ class SignAndVerifyMessage(QWidget):
         self.verify_button.clicked.connect(self.on_verify_clicked)
         self.verify_armored_button.clicked.connect(self.on_verify_armored_clicked)
         self.verify_gpg_tab.signal_verify_gpg_message.connect(self.on_verify_gpg_clicked)
-        self.sign_tab.signal_signed_message.connect(self.on_signed_message)
 
         self.verify_tab = QWidget()
         verify_layout = QGridLayout(self.verify_tab)
@@ -574,13 +603,6 @@ class SignAndVerifyMessage(QWidget):
         if warnings:
             error_message += f"\n{warnings}"
         self._set_result(error_message, success=False)
-
-    def on_signed_message(self, signed_message: str) -> None:
-        """Populate the signature field instead of opening a dialog."""
-
-        title = self.tr("Signed Message")
-        do_copy(signed_message, title=title)
-        show_textedit_message(text=signed_message, label_description="", title=title)
 
     def on_verify_armored_clicked(self) -> None:
         """Verify a BIP-0137 ASCII-armored message block."""

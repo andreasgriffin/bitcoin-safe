@@ -185,3 +185,38 @@ def test_set_pixmap_if_changed_skips_identical_pixmaps(qtbot: QtBot, monkeypatch
     set_pixmap_if_changed(label.icon_label, pixmap)
 
     assert calls == 1
+
+
+def test_icon_label_uses_hardware_signer_icons_across_theme_changes(qtbot: QtBot) -> None:
+    from bitcoin_safe.gui.qt.util import svg_tools_hardware_signer
+
+    app = QApplication.instance()
+    assert app is not None
+    original_palette = QPalette(app.palette())
+    label = IconLabel("Signer")
+    label.set_icon(
+        "generic-hardware-wallet-icon.svg", sizes=(24, 24), svg_tools_custom=svg_tools_hardware_signer
+    )
+    qtbot.addWidget(label)
+    label.show()
+    qtbot.waitExposed(label)
+    images = []
+    try:
+        for background, foreground in (("#ffffff", "#101010"), ("#101010", "#f5f5f5")):
+            palette = QPalette(original_palette)
+            palette.setColor(QPalette.ColorRole.Window, QColor(background))
+            for role in (
+                QPalette.ColorRole.WindowText,
+                QPalette.ColorRole.Text,
+                QPalette.ColorRole.ButtonText,
+                QPalette.ColorRole.Dark,
+            ):
+                palette.setColor(role, QColor(foreground))
+            app.setPalette(palette)
+            QApplication.sendEvent(label, QEvent(QEvent.Type.ApplicationPaletteChange))
+            pixmap = label.icon_label.pixmap()
+            assert pixmap and not pixmap.isNull()
+            images.append(pixmap.toImage())
+    finally:
+        app.setPalette(original_palette)
+    assert images[0] != images[1]
