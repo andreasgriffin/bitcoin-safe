@@ -35,9 +35,10 @@ from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QDialogButtonBox, QGridLayout, QPlainTextEdit, QWidget
 
-from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING
+from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING, LOGO_NAME
 from bitcoin_safe.gui.qt.buttonedit import ButtonEdit
 from bitcoin_safe.gui.qt.icon_label import IconLabel
+from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.message_signing_result import MessageSigningInfo, verify_signing_result
 
@@ -54,6 +55,7 @@ class MessageSignatureDialog(QDialog):
         parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
+        self.setWindowIcon(svg_tools.get_QIcon(LOGO_NAME))
         self.setWindowTitle(self.tr("Signed Message"))
         self.resize(560, 360)
         result = verify_signing_result(message, signing_info, signature)
