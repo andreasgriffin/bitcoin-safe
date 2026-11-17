@@ -265,8 +265,10 @@ class KeyStoreUI(CardBase):
         self.add_controls_layout.addWidget(self.device_type_help_label, stretch=1)
 
         self.combo_brand = QComboBox(self.header_widget)
+        self.combo_brand.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         configure_combobox_popup(self.combo_brand)
         self.combo_model = QComboBox(self.header_widget)
+        self.combo_model.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         configure_combobox_popup(self.combo_model)
         self.button_confirm_signer = QPushButton(self.header_widget)
         self.button_confirm_signer.setEnabled(False)
@@ -563,6 +565,9 @@ class KeyStoreUI(CardBase):
                     userData=hardware_signer.id,
                 )
             model_index = self.combo_model.findData(selected_name) if selected_name else -1
+            if model_index < 0:
+                latest_signer = HardwareSigners.latest_for_brand(brand_name)
+                model_index = self.combo_model.findData(latest_signer.id) if latest_signer else -1
             self.combo_model.setCurrentIndex(model_index if model_index >= 0 else 0)
         self.combo_model.blockSignals(False)
         self._update_confirm_button()
