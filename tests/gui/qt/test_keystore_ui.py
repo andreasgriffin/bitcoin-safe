@@ -179,14 +179,18 @@ def test_keystore_ui_empty_state_hides_seed_in_demo_mode(
     assert not widget.edit_seed.isVisible()
 
 
-def test_brand_selection_defaults_to_first_model(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+def test_brand_selection_defaults_to_latest_model(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
 
     widget.combo_brand.setCurrentText("Coinkite")
 
     assert widget.combo_model.count() == 3
-    assert widget.combo_model.currentData() == HardwareSigners.coldcard.id
+    assert widget.combo_model.currentData() == HardwareSigners.coldcard_mk5.id
     assert widget.button_confirm_signer.isEnabled()
+
+    widget.combo_model.setCurrentIndex(widget.combo_model.findData(HardwareSigners.coldcard.id))
+    widget._on_brand_changed()
+    assert widget.combo_model.currentData() == HardwareSigners.coldcard.id
 
 
 def test_model_selection_displays_signer_icons(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
