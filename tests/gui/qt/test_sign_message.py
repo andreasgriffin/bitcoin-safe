@@ -238,9 +238,7 @@ def test_closing_wallet_clears_seed_menu_of_open_sign_tab(qtbot: QtBot, test_con
     assert tab.seed_menu.actions() == []
 
 
-def test_result_dialog_used_for_usb_qr_and_seed(
-    qtbot: QtBot, test_config, loop_in_thread, monkeypatch
-) -> None:
+def test_result_dialog_used_for_usb_qr_and_seed(qtbot: QtBot, test_config, loop_in_thread) -> None:
     wallet = _wallet(signers=1, test_config=test_config)
     address = str(wallet.get_force_new_address(is_change=False).address)
     info = wallet.get_address_info_min(address)
@@ -249,7 +247,6 @@ def test_result_dialog_used_for_usb_qr_and_seed(
 
     option = seed_sign_options(wallet, info)[0]
     message = "signed message"
-    signature = option.signer.sign_message(message=message, bip32_path=option.bip32_path)
     signals = Signals()
     wallet_functions = WalletFunctions(signals)
     wallet_functions.get_qt_wallets.connect(lambda: SimpleNamespace(wallet=wallet))
@@ -263,19 +260,20 @@ def test_result_dialog_used_for_usb_qr_and_seed(
     qtbot.addWidget(tab)
     tab.sign_address_edit.setText(address)
     tab.sign_message_edit.setPlainText(message)
-    tab.usb_gui.sign_message = lambda message, bip32_path: signature  # type: ignore[method-assign]
+    tab.usb_gui.sign_message = option.signer.sign_message  # type: ignore[method-assign]
     tab.on_sign_usb_message_button()
     assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText()
     tab.result_dialog.close()
     tab.on_show_export_widget()
     assert tab.qr_signing_info
+    qr_signature = option.signer.sign_message(message=message, bip32_path=tab.qr_signing_info.bip32_path)
     assert tab.qr_signing_info.keystores[0].mnemonic is None
     fingerprint = tab.qr_signing_info.keystores[0].fingerprint
     wallet.keystores[0].fingerprint = "00000000"
     assert tab.qr_signing_info.keystores[0].fingerprint == fingerprint
     wallet.keystores[0].fingerprint = fingerprint
     tab.sign_message_edit.setPlainText("changed while waiting")
-    tab.on_raw_content(signature)
+    tab.on_raw_content(qr_signature)
     assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText()
     tab.result_dialog.close()
     tab.sign_message_edit.setPlainText(message)
