@@ -260,9 +260,16 @@ def test_result_dialog_used_for_usb_qr_and_seed(qtbot: QtBot, test_config, loop_
     qtbot.addWidget(tab)
     tab.sign_address_edit.setText(address)
     tab.sign_message_edit.setPlainText(message)
+    signing_info = tab.get_signing_info()
+    assert signing_info.bip32_path == option.bip32_path
+    assert [key.fingerprint for key in signing_info.keystores] == [
+        key.fingerprint for key in wallet.keystores
+    ]
     tab.usb_gui.sign_message = option.signer.sign_message  # type: ignore[method-assign]
     tab.on_sign_usb_message_button()
-    assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText()
+    assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText(), (
+        tab.result_dialog.status_label.textLabel.text()
+    )
     tab.result_dialog.close()
     tab.on_show_export_widget()
     assert tab.qr_signing_info
@@ -274,11 +281,15 @@ def test_result_dialog_used_for_usb_qr_and_seed(qtbot: QtBot, test_config, loop_
     wallet.keystores[0].fingerprint = fingerprint
     tab.sign_message_edit.setPlainText("changed while waiting")
     tab.on_raw_content(qr_signature)
-    assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText()
+    assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText(), (
+        tab.result_dialog.status_label.textLabel.text()
+    )
     tab.result_dialog.close()
     tab.sign_message_edit.setPlainText(message)
     tab.sign_with_option(option)
-    assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText()
+    assert "BEGIN BITCOIN SIGNED MESSAGE" in tab.result_dialog.signature_edit.toPlainText(), (
+        tab.result_dialog.status_label.textLabel.text()
+    )
 
 
 def test_address_details_signs_with_explicit_keystores(qtbot: QtBot, test_config, loop_in_thread) -> None:
