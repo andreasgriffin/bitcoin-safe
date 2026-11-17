@@ -41,6 +41,15 @@ def test_models_for_brand_returns_expected_signers() -> None:
     ]
 
 
+def test_latest_for_brand_uses_release_date() -> None:
+    assert HardwareSigners.latest_for_brand("Coinkite") == HardwareSigners.coldcard_mk5
+    assert HardwareSigners.latest_for_brand("Ledger") == HardwareSigners.ledger_flex
+    assert HardwareSigners.latest_for_brand("Trezor") == HardwareSigners.trezor7
+    assert HardwareSigners.latest_for_brand("Generic") == HardwareSigners.generic
+    assert HardwareSigners.latest_for_brand("Unknown") is None
+    assert all(signer.release_date is not None for signer in HardwareSigners.as_list(include_generic=False))
+
+
 def test_generic_signer_is_available() -> None:
     """Test the generic signer can be resolved and exposes broad capabilities."""
     generic = HardwareSigners.from_id(HardwareSigners.generic.id)
