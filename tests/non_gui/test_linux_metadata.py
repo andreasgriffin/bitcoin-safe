@@ -30,6 +30,8 @@
 from __future__ import annotations
 
 import datetime
+import os
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -468,3 +470,54 @@ def test_checked_in_metainfo_release_history_is_moved_to_local_markdown_files() 
         encoding="utf-8"
     )
     assert "Compact Block Filters by default" in checked_in_metainfo
+
+
+def test_flatpak_container_trusts_only_canonical_checkout(tmp_path: Path) -> None:
+    repository = tmp_path / "mounted checkout"
+    script_dir = repository / "tools/build_linux/flathub_flatpak"
+    script_dir.mkdir(parents=True)
+    shutil.copy(PROJECT_ROOT / "tools/build_linux/flathub_flatpak/run_in_docker.sh", script_dir)
+    (repository / "tools/build_tools_util.sh").write_text(
+        'fail() { echo "$*" >&2; exit 1; }\nlist_dirty_files() { :; }\n'
+    )
+    (script_dir / "build_and_test.sh").write_text(
+        "set -e\n"
+        'test "$1" = "$(git -C "$1" rev-parse --show-toplevel)"\n'
+        'test -n "$BITCOINSAFE_SOURCE_DATE_EPOCH"\n'
+        'touch "$1/build-called"\n'
+    )
+    subprocess.run(["git", "init", "-q", str(repository)], check=True)
+    subprocess.run(["git", "-C", str(repository), "add", "."], check=True)
+    subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repository),
+            "-c",
+            "user.name=Test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "-qm",
+            "initial",
+        ],
+        check=True,
+    )
+    env = os.environ.copy()
+    env.update(
+        GIT_CONFIG_GLOBAL=str(tmp_path / "gitconfig"),
+        GIT_CONFIG_NOSYSTEM="1",
+        GIT_TEST_ASSUME_DIFFERENT_OWNER="1",
+    )
+    assert (
+        subprocess.run(["git", "-C", str(repository), "rev-parse"], env=env, capture_output=True).returncode
+        != 0
+    )
+    subprocess.run(
+        ["bash", str(script_dir / "run_in_docker.sh")], env=env, check=True, capture_output=True, text=True
+    )
+    assert (repository / "build-called").exists()
+    trusted = subprocess.check_output(
+        ["git", "config", "--global", "--get-all", "safe.directory"], env=env, text=True
+    )
+    assert trusted.splitlines() == [str(repository.resolve())]

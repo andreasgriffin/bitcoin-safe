@@ -8,7 +8,7 @@ on:
       runner-id:
         description: 'runner-id  (e.g. mac-13 mac-14 ubuntu-22.04 )  see available: https://github.com/actions/runner-images?tab=readme-ov-file#available-images' 
         required: true
-        default: 'mac-13'
+        default: 'macos-15'
 
 jobs:
   debug:
@@ -16,7 +16,15 @@ jobs:
     steps:
       - name: Install tmate
         run: |
-          brew install tmate
+          if [ "$RUNNER_OS" = macOS ]; then
+            brew install tmate
+          elif [ "$RUNNER_OS" = Linux ]; then
+            sudo apt-get update
+            sudo apt-get install -y tmate
+          else
+            echo "Unsupported runner OS: $RUNNER_OS" >&2
+            exit 1
+          fi
 
       - name: Start SSH session
         run: |

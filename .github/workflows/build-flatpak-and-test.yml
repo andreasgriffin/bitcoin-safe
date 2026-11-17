@@ -40,7 +40,7 @@ jobs:
     timeout-minutes: 120
     steps:
       - name: Checkout default branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
@@ -51,7 +51,7 @@ jobs:
           git checkout ${{ inputs.commitHash }}
 
       - name: Set up Python environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7.1.0
         with:
           python-version: "3.12"
 
@@ -81,7 +81,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
+          pip install poetry==2.5.1
           poetry install
 
       - name: Build Flatpak bundle in Docker
@@ -117,7 +117,7 @@ jobs:
       LC_ALL: en_US.UTF-8
     steps:
       - name: Checkout default branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
@@ -128,7 +128,7 @@ jobs:
           git checkout ${{ inputs.commitHash }}
 
       - name: Download Flatpak artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8.0.2
         with:
           name: ${{ inputs.artifact_name_prefix }}flatpak-artifacts
           path: artifacts

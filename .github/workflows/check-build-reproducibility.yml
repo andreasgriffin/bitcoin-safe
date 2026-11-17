@@ -46,16 +46,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
 
       - name: Download first Linux artifact set
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8.0.2
         with:
           name: repro-linux-run-1-linux-artifacts
           path: artifacts/linux-run-1
 
       - name: Download second Linux artifact set
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8.0.2
         with:
           name: repro-linux-run-2-linux-artifacts
           path: artifacts/linux-run-2
@@ -156,16 +156,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
 
       - name: Download first Flatpak artifact set
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8.0.2
         with:
           name: repro-flatpak-run-1-flatpak-artifacts
           path: artifacts/flatpak-run-1
 
       - name: Download second Flatpak artifact set
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8.0.2
         with:
           name: repro-flatpak-run-2-flatpak-artifacts
           path: artifacts/flatpak-run-2
@@ -204,16 +204,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
 
       - name: Download first Windows artifact set
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8.0.2
         with:
           name: repro-windows-run-1-win-artifacts
           path: artifacts/windows-run-1
 
       - name: Download second Windows artifact set
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8.0.2
         with:
           name: repro-windows-run-2-win-artifacts
           path: artifacts/windows-run-2
@@ -242,7 +242,7 @@ jobs:
         if: ${{ steps.compare_windows_setup.outcome == 'failure' }}
         run: |
           python -m pip install --upgrade pip
-          pip install pefile
+          pip install pefile==2023.2.7
 
       - name: Run Windows setup diff report
         if: ${{ steps.compare_windows_setup.outcome == 'failure' }}

@@ -11,6 +11,10 @@ on:
       backend:
         required: true
         type: string
+      python-version:
+        required: false
+        type: string
+        default: "3.12"
       repository:
         required: false
         type: string
@@ -37,6 +41,11 @@ on:
         options:
           - fulcrum
           - cbf
+      python-version:
+        description: "Python version"
+        required: false
+        type: string
+        default: "3.12"
       repository:
         description: "Repository to checkout (owner/name). Leave empty for current repo."
         required: false
@@ -52,16 +61,13 @@ jobs:
   test:
     runs-on: ${{ inputs.os }}
     timeout-minutes: 20
-    strategy:
-      matrix:
-        python-version: ['3.12']
     env:
       DISPLAY: ":99.0"  # Display setting for Xvfb on Linux
       QT_SELECT: "qt6"  # Environment variable to select Qt6
 
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7.0.1
       with:
         repository: ${{ inputs.repository != '' && inputs.repository || github.repository }}
         ref: ${{ inputs.ref != '' && inputs.ref || github.ref }}
@@ -74,10 +80,10 @@ jobs:
         echo "LANGUAGE=en_US:en" >> "$GITHUB_ENV"
         echo "LC_ALL=en_US.UTF-8" >> "$GITHUB_ENV"
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v6
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v7.1.0
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: ${{ inputs.python-version }}
 
     - name: Setup xvfb (Linux)
       if: runner.os == 'Linux'
@@ -107,18 +113,10 @@ jobs:
                                libpulse0
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
 
-    - name: Start Xvfb
-      if: runner.os == 'Linux'
-      run: |
-        export DISPLAY=:99.0
-        /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX +render -noreset
-        sleep 3
-        sleep 1
-
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install poetry
+        pip install poetry==2.5.1
         poetry install  
 
     - name: Run General Tests
@@ -127,19 +125,19 @@ jobs:
 
     - name: Run Tests for marker_qt_1
       run: |
-        poetry run pytest -m 'marker_qt_1' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ inputs.backend }}
+        poetry run pytest -m 'marker_qt_1 and not integration' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ inputs.backend }}
 
     - name: Run Tests for marker_qt_2
       run: |
-        poetry run pytest -m 'marker_qt_2' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ inputs.backend }}
+        poetry run pytest -m 'marker_qt_2 and not integration' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ inputs.backend }}
 
     - name: Run Tests for marker_qt_3
       run: |
-        poetry run pytest -m 'marker_qt_3' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ inputs.backend }}
+        poetry run pytest -m 'marker_qt_3 and not integration' -vvv --log-cli-level=DEBUG --setup-show --maxfail=1 --${{ inputs.backend }}
 
     - name: Upload output Files from tests/output
       if: always()  # This ensures the step runs regardless of previous failures    
       uses: actions/upload-artifact@v7
       with:
-        name: pytest-output-${{ matrix.python-version }}-${{ inputs.os }}-${{ inputs.backend }}
+        name: pytest-output-${{ inputs.python-version }}-${{ inputs.os }}-${{ inputs.backend }}
         path: tests/output

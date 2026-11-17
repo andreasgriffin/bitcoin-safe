@@ -39,6 +39,7 @@ import marshal
 import shutil
 import sys
 import tempfile
+import tomllib  # pyright: ignore[reportMissingImports]
 import zipfile
 from dataclasses import dataclass, replace
 from datetime import datetime, timedelta, timezone
@@ -47,7 +48,6 @@ from types import ModuleType
 from typing import Any, cast
 from urllib.parse import ParseResult, unquote, urljoin, urlparse
 
-import tomllib  # pyright: ignore[reportMissingImports]
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools
 from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from packaging.specifiers import InvalidSpecifier, SpecifierSet

@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout main with full history
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7.0.1
         with:
           ref: main
           fetch-depth: 0
@@ -64,7 +64,7 @@ jobs:
           git checkout --detach "$REQUESTED_COMMIT"
 
       - name: Set up Python environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7.1.0
         with:
           python-version: "3.12"
 
@@ -78,7 +78,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install poetry
+          pip install poetry==2.5.1
           poetry install
 
       - name: Generate Flathub manifest repo

@@ -2,14 +2,13 @@
 
 set -eo pipefail
 
-PROJECT_ROOT="$(dirname "$(readlink -e "$0")")/../../.."
+PROJECT_ROOT="$(readlink -e "$(dirname "$(readlink -e "$0")")/../../..")"
 CONTRIB="$PROJECT_ROOT/tools"
 CONTRIB_FLATPAK="$PROJECT_ROOT/tools/build_linux/flathub_flatpak"
 DISTDIR="$CONTRIB_FLATPAK/dist"
 
 # The container may run as root while the bind-mounted checkout is owned by the
 # host user. Mark it as safe before any sourced helpers invoke git.
-git config --global --add safe.directory '*'
 git config --global --add safe.directory "$PROJECT_ROOT"
 
 . "$CONTRIB"/build_tools_util.sh

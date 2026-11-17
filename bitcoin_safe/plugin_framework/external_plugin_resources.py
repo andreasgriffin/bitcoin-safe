@@ -29,10 +29,10 @@
 
 from __future__ import annotations
 
+import tomllib  # pyright: ignore[reportMissingImports]
 from pathlib import Path
 from typing import Any
 
-import tomllib  # pyright: ignore[reportMissingImports]
 import yaml
 from PyQt6.QtCore import QTranslator
 from PyQt6.QtWidgets import QApplication
