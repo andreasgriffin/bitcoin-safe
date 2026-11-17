@@ -34,6 +34,7 @@ import logging
 import re
 from collections.abc import Sequence
 from dataclasses import dataclass
+from datetime import date
 
 from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes
 
@@ -120,6 +121,8 @@ class HardwareSigner:
     icon_filename: str = ""
     info_url: str | None = None
     screenshot_name: str = ""
+    # The first day represents a release known only to the month. Generic has no release date.
+    release_date: date | None = None
 
     @property
     def supports_qr(self) -> bool:
@@ -179,6 +182,7 @@ class HardwareSigners:
         info_url=None,
         icon_filename="coldcard-icon.svg",
         screenshot_name="coldcard",
+        release_date=date(2022, 4, 1),
     )
     coldcard_mk5 = HardwareSigner(
         id="coldcard_mk5",
@@ -190,6 +194,7 @@ class HardwareSigners:
         info_url=None,
         icon_filename="coldcard-icon.svg",
         screenshot_name="coldcard",
+        release_date=date(2026, 3, 10),
     )
     q = HardwareSigner(
         id="q",
@@ -206,6 +211,7 @@ class HardwareSigners:
         info_url=_signer_info_url("coldcard-q"),
         icon_filename="q-icon.svg",
         screenshot_name="q",
+        release_date=date(2024, 3, 1),
     )
     bitbox02 = HardwareSigner(
         id="bitbox02",
@@ -217,6 +223,7 @@ class HardwareSigners:
         info_url=_signer_info_url("bitbox02"),
         icon_filename="bitbox02-icon.svg",
         screenshot_name="bitbox02",
+        release_date=date(2019, 9, 25),
     )
     bitbox02_nova = HardwareSigner(
         id="bitbox02_nova",
@@ -228,6 +235,7 @@ class HardwareSigners:
         info_url=_signer_info_url("bitbox02"),
         icon_filename="bitbox02-icon.svg",
         screenshot_name="bitbox02",
+        release_date=date(2025, 6, 20),
     )
     jade = HardwareSigner(
         id="jade",
@@ -240,6 +248,7 @@ class HardwareSigners:
         info_url=_signer_info_url("jade"),
         icon_filename="jade-icon.svg",
         screenshot_name="jade",
+        release_date=date(2021, 1, 3),
     )
     jade_plus = HardwareSigner(
         id="jade_plus",
@@ -252,6 +261,7 @@ class HardwareSigners:
         info_url=_signer_info_url("jade-plus"),
         icon_filename="jade-plus-icon.svg",
         screenshot_name="jade",
+        release_date=date(2025, 1, 3),
     )
     metrovault = HardwareSigner(
         id="metrovault",
@@ -268,6 +278,7 @@ class HardwareSigners:
         usb=FeatureLevel.not_capable,
         info_url=METROVAULT_REPOSITORY_URL,
         icon_filename="metrovault-icon.svg",
+        release_date=date(2025, 12, 7),
     )
     passport = HardwareSigner(
         id="passport",
@@ -279,6 +290,7 @@ class HardwareSigners:
         info_url=_signer_info_url("passport"),
         icon_filename="passport-icon.svg",
         screenshot_name="passport-core",
+        release_date=date(2022, 4, 1),
     )
     passport_prime = HardwareSigner(
         id="passport_prime",
@@ -290,6 +302,7 @@ class HardwareSigners:
         info_url=_signer_info_url("passport-prime"),
         icon_filename="passport-prime-icon.svg",
         screenshot_name="passport-prime",
+        release_date=date(2026, 3, 1),
     )
     keystone = HardwareSigner(
         id="keystone",
@@ -301,6 +314,7 @@ class HardwareSigners:
         info_url=_signer_info_url("keystone"),
         icon_filename="keystone-icon.svg",
         screenshot_name="keystone",
+        release_date=date(2021, 6, 1),
     )
     trezor5 = HardwareSigner(
         id="trezor_safe_5",
@@ -312,6 +326,7 @@ class HardwareSigners:
         info_url=_signer_info_url("trezor"),
         icon_filename="trezor-icon.svg",
         screenshot_name="trezor",
+        release_date=date(2024, 6, 14),
     )
     trezor3 = HardwareSigner(
         id="trezor_safe_3",
@@ -323,6 +338,7 @@ class HardwareSigners:
         info_url=_signer_info_url("trezor"),
         icon_filename="trezor-icon.svg",
         screenshot_name="trezor",
+        release_date=date(2023, 10, 12),
     )
     trezor7 = HardwareSigner(
         id="trezor_safe_7",
@@ -334,6 +350,7 @@ class HardwareSigners:
         info_url=_signer_info_url("trezor"),
         icon_filename="trezor-icon.svg",
         screenshot_name="trezor",
+        release_date=date(2025, 10, 21),
     )
     ledger = HardwareSigner(
         id="ledger",
@@ -345,6 +362,7 @@ class HardwareSigners:
         info_url=_signer_info_url("ledger"),
         icon_filename="ledgernano-icon.svg",
         screenshot_name="ledger",
+        release_date=date(2016, 6, 1),
     )
     ledger_nano_s_plus = HardwareSigner(
         id="ledger_nano_s_plus",
@@ -356,6 +374,7 @@ class HardwareSigners:
         info_url=_signer_info_url("ledger"),
         icon_filename="ledgernano-icon.svg",
         screenshot_name="ledger",
+        release_date=date(2022, 4, 1),
     )
     ledger_flex = HardwareSigner(
         id="ledger_flex",
@@ -367,6 +386,7 @@ class HardwareSigners:
         info_url=_signer_info_url("ledger"),
         icon_filename="ledgernano-icon.svg",
         screenshot_name="ledger",
+        release_date=date(2024, 7, 26),
     )
     ledger_x = HardwareSigner(
         id="ledger_x",
@@ -378,6 +398,7 @@ class HardwareSigners:
         info_url=_signer_info_url("ledger"),
         icon_filename="ledgernano-icon.svg",
         screenshot_name="ledger",
+        release_date=date(2019, 5, 15),
     )
     specterdiy = HardwareSigner(
         id="specterdiy",
@@ -389,6 +410,7 @@ class HardwareSigners:
         info_url=_signer_info_url("specter"),
         icon_filename="specterdiy-icon.svg",
         screenshot_name="specterdiy",
+        release_date=date(2020, 2, 27),
     )
     seedsigner = HardwareSigner(
         id="seedsigner",
@@ -402,6 +424,7 @@ class HardwareSigners:
         info_url=_signer_info_url("seedsigner"),
         icon_filename="seedsigner-icon.svg",
         screenshot_name="seedsigner",
+        release_date=date(2020, 12, 20),
     )
     krux_diy = HardwareSigner(
         id="krux",
@@ -421,6 +444,7 @@ class HardwareSigners:
         info_url=_signer_info_url("krux"),
         icon_filename="krux-icon.svg",
         screenshot_name="krux",
+        release_date=date(2022, 3, 31),
     )
     keycard_shell = HardwareSigner(
         id="keycard_shell",
@@ -431,6 +455,7 @@ class HardwareSigners:
         usb=FeatureLevel.supported,
         info_url=_signer_info_url("keycard"),
         icon_filename="keycard-icon.svg",
+        release_date=date(2025, 10, 1),
     )
 
     @classmethod
@@ -494,6 +519,15 @@ class HardwareSigners:
             for hardware_signer in cls.as_list(include_generic=include_generic)
             if hardware_signer.brand_name == brand_name
         ]
+
+    @classmethod
+    def latest_for_brand(cls, brand_name: str) -> HardwareSigner | None:
+        """Return the newest dated model, or the first model if dates are unknown."""
+        return max(
+            cls.models_for_brand(brand_name),
+            key=lambda signer: signer.release_date or date.min,
+            default=None,
+        )
 
     @classmethod
     def infer_from_text(cls, text: str | None) -> HardwareSigner:

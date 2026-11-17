@@ -189,6 +189,31 @@ def test_brand_selection_defaults_to_first_model(qtbot: QtBot, loop_in_thread: L
     assert widget.button_confirm_signer.isEnabled()
 
 
+def test_model_selection_displays_signer_icons(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+
+    for brand in HardwareSigners.list_brands():
+        widget.combo_brand.setCurrentText(brand)
+        for index, signer in enumerate(HardwareSigners.models_for_brand(brand)):
+            icon = widget.combo_model.itemIcon(index)
+            expected = svg_tools_hardware_signer.get_QIcon(signer.icon_name)
+            assert widget.combo_model.itemData(index) == signer.id
+            assert not icon.isNull()
+            assert icon.pixmap(24, 24).toImage() == expected.pixmap(24, 24).toImage()
+
+
+def test_brand_selection_displays_latest_device_icons(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+
+    for signer in (HardwareSigners.coldcard_mk5, HardwareSigners.jade_plus, HardwareSigners.passport_prime):
+        index = widget.combo_brand.findText(signer.brand_name)
+        assert index >= 0
+        icon = widget.combo_brand.itemIcon(index)
+        expected = svg_tools_hardware_signer.get_QIcon(signer.icon_name)
+        assert not icon.isNull()
+        assert icon.pixmap(24, 24).toImage() == expected.pixmap(24, 24).toImage()
+
+
 def test_device_selection_expands_collapsed_card(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
     widget = _make_widget(qtbot, loop_in_thread)
     widget.collapse()

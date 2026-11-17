@@ -540,7 +540,9 @@ class KeyStoreUI(CardBase):
         self.combo_model.clear()
         self.combo_brand.addItem("")
         for brand_name in HardwareSigners.list_brands():
-            self.combo_brand.addItem(brand_name)
+            signer = HardwareSigners.latest_for_brand(brand_name)
+            if signer:
+                self.combo_brand.addItem(svg_tools_hardware_signer.get_QIcon(signer.icon_name), brand_name)
         self.combo_model.addItem("", userData=None)
         self.combo_brand.blockSignals(False)
         self.combo_model.blockSignals(False)
@@ -555,7 +557,11 @@ class KeyStoreUI(CardBase):
             self.combo_model.addItem("", userData=None)
         else:
             for hardware_signer in HardwareSigners.models_for_brand(brand_name):
-                self.combo_model.addItem(hardware_signer.display_name, userData=hardware_signer.id)
+                self.combo_model.addItem(
+                    svg_tools_hardware_signer.get_QIcon(hardware_signer.icon_name),
+                    hardware_signer.display_name,
+                    userData=hardware_signer.id,
+                )
             model_index = self.combo_model.findData(selected_name) if selected_name else -1
             self.combo_model.setCurrentIndex(model_index if model_index >= 0 else 0)
         self.combo_model.blockSignals(False)
