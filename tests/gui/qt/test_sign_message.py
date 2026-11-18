@@ -34,6 +34,7 @@ from PyQt6.QtWidgets import QPushButton
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.sign_message import SignMessageBase, _SignTab
+from bitcoin_safe.hardware_signers import SignMessageRequestQrExportTypes
 from bitcoin_safe.signals import Signals, UpdateFilter, UpdateFilterReason, WalletFunctions
 from bitcoin_safe.signer import SeedSignOption
 
@@ -76,6 +77,8 @@ def test_sign_message_qr_popup_shows_follow_up_scan_group(qtbot: QtBot, loop_in_
     widget.sign_qr_button.show_export_widget()
     export_widget = widget.sign_qr_button.export_qr_widget
     qtbot.waitUntil(export_widget.isVisible)
+    assert export_widget.combo_qr_type.getCurrentExportType() == SignMessageRequestQrExportTypes.text
+    assert export_widget.combo_qr_type.getItemExportType(1) == SignMessageRequestQrExportTypes.bbqr
 
     follow_up_group = next(
         group
