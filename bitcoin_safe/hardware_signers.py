@@ -90,8 +90,8 @@ class DescriptorQrExportTypes:
 
 
 class SignMessageRequestQrExportTypes:
-    bbqr = QrExportType("bbqr_sign_message_request", "BBQr")
     text = QrExportType("text_sign_message_request", "Text")
+    bbqr = QrExportType("bbqr_sign_message_request", "BBQr")
 
     @classmethod
     def as_list(cls) -> list[QrExportType]:
