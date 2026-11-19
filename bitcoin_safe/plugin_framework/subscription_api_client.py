@@ -41,6 +41,8 @@ from btcpay_tools.btcpay_subscription_api.models import (
     SubscriptionStatusResponse,
 )
 
+from bitcoin_safe.network_utils import cached_get
+
 SUBSCRIPTION_API_BASE_URL = "https://subscription.bitcoin-safe.org"
 REQUEST_TIMEOUT_SECONDS = 20
 LIVE_SUBSCRIPTION_CODES = frozenset(
@@ -111,14 +113,26 @@ class SubscriptionApiClient:
 
     def _request(self, method: str, path: str, payload: dict[str, str] | None = None) -> Any:
         try:
-            response = requests.request(
-                method,
-                f"{self._base_url}{path}",
-                json=payload,
-                headers={"Accept": "application/json"},
-                timeout=REQUEST_TIMEOUT_SECONDS,
-                proxies=self._proxy_dict,
-            )
+            url = f"{self._base_url}{path}"
+            if method == "GET":
+                response = cached_get(
+                    url, {"Accept": "application/json"}, self._proxy_dict, REQUEST_TIMEOUT_SECONDS
+                )
+            else:
+                response = requests.request(
+                    method,
+                    url,
+                    json=payload,
+                    headers={"Accept": "application/json"},
+                    timeout=REQUEST_TIMEOUT_SECONDS,
+                    proxies=self._proxy_dict,
+                )
+        except requests.HTTPError as exc:
+            if exc.response is not None:
+                raise SubscriptionApiError(
+                    f"Subscription service returned HTTP {exc.response.status_code}."
+                ) from exc
+            raise SubscriptionApiError(f"Subscription service unreachable: {exc}") from exc
         except requests.RequestException as exc:
             raise SubscriptionApiError(f"Subscription service unreachable: {exc}") from exc
         if response.status_code >= 400:

@@ -36,6 +36,7 @@ from pathlib import Path
 import pysequoia
 import pytest
 
+from bitcoin_safe.network_utils import _cached_get
 from bitcoin_safe.signature_manager import (
     KnownGPGKeys,
     PGPDecodingError,
@@ -61,6 +62,7 @@ class _MockResponse:
 
 
 def _mock_sparrow_manifest_download(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    _cached_get.cache_clear()
     release_api_url = "https://api.github.com/repos/sparrowwallet/sparrow/releases/tags/1.8.4"
     manifest_url = (
         "https://github.com/sparrowwallet/sparrow/releases/download/1.8.4/sparrow-1.8.4-manifest.txt"
@@ -74,7 +76,7 @@ def _mock_sparrow_manifest_download(monkeypatch: pytest.MonkeyPatch) -> list[str
     sig_bytes = (fixture_dir / "sparrow-1.8.4-manifest.txt.asc").read_bytes()
     requested_urls: list[str] = []
 
-    def fake_get(url: str, timeout: int, proxies: dict | None) -> _MockResponse:
+    def fake_get(url: str, timeout: int, proxies: dict | None, **kwargs: object) -> _MockResponse:
         del timeout, proxies
         requested_urls.append(url)
         if url == release_api_url:

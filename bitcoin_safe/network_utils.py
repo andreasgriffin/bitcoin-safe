@@ -47,6 +47,7 @@ import bdkpython as bdk
 import requests
 import socks
 from aiohttp_socks import ProxyConnector
+from cachetools.func import ttl_cache
 
 from bitcoin_safe.util import default_timeout
 
@@ -356,6 +357,22 @@ def get_host_and_port(url) -> tuple[str | None, int | None]:
     return parsed_url.hostname, parsed_url.port
 
 
+@ttl_cache(maxsize=1000, ttl=300)
+def _cached_get(
+    url: str, headers: tuple[tuple[str, str], ...], proxies: tuple[tuple[str, str], ...], timeout: float
+) -> requests.Response:
+    response = requests.get(url, headers=dict(headers), proxies=dict(proxies) or None, timeout=timeout)
+    response.raise_for_status()
+    return response
+
+
+def cached_get(
+    url: str, headers: dict[str, str], proxies: dict[str, str] | None, timeout: float, caching: bool = True
+) -> requests.Response:
+    args = (url, tuple(sorted(headers.items())), tuple(sorted((proxies or {}).items())), timeout)
+    return _cached_get(*args) if caching else _cached_get.__wrapped__(*args)
+
+
 def fetch_bytes(
     url: str,
     headers: dict[str, str],
@@ -364,13 +381,12 @@ def fetch_bytes(
     parsed = urlparse(url)
     if parsed.scheme in ("http", "https"):
         try:
-            response = requests.get(
+            response = cached_get(
                 url,
                 headers=headers,
                 timeout=default_timeout(proxy_info),
                 proxies=proxy_info.get_requests_proxy_dict() if proxy_info else None,
             )
-            response.raise_for_status()
         except requests.RequestException as exc:
             raise RequestsGetException(f"Could not download plugin source URL {url}: {exc}") from exc
         return response.content

@@ -50,6 +50,7 @@ import requests
 from pysequoia.packet import Packet, PacketPile, Tag  # pyright: ignore[reportMissingModuleSource]
 
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.network_utils import cached_get
 from bitcoin_safe.util import default_timeout
 
 gnupg = None
@@ -201,8 +202,7 @@ class GitHubAssetDownloader:
         """Get a single release."""
         try:
             logger.debug(f"Get assets from {api_url}")
-            response = requests.get(api_url, timeout=default_timeout(self.proxies), proxies=self.proxies)
-            response.raise_for_status()
+            response = cached_get(api_url, {}, self.proxies, default_timeout(self.proxies))
             payload = response.json()
             if not isinstance(payload, dict):
                 return None
@@ -215,8 +215,7 @@ class GitHubAssetDownloader:
         """Get releases."""
         try:
             logger.debug(f"Get releases from {api_url}")
-            response = requests.get(api_url, timeout=default_timeout(self.proxies), proxies=self.proxies)
-            response.raise_for_status()
+            response = cached_get(api_url, {}, self.proxies, default_timeout(self.proxies))
             payload = response.json()
             if not isinstance(payload, list):
                 return []
