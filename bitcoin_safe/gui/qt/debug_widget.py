@@ -31,7 +31,6 @@ from __future__ import annotations
 
 import logging
 import random
-from typing import TypeVar
 
 from PyQt6.QtCore import QPoint, QRect, QSize, Qt
 from PyQt6.QtGui import QAction, QColor, QFont, QPainter, QPaintEvent
@@ -1857,10 +1856,7 @@ class DebugWidget(QWidget):
         )
 
 
-W = TypeVar("W", bound=QWidget)
-
-
-def generate_debug_class(BaseClass: type[W]) -> type[W]:
+def generate_debug_class[W: QWidget](BaseClass: type[W]) -> type[W]:
     """Generate debug class."""
 
     class DebugClass(BaseClass):  # type: ignore

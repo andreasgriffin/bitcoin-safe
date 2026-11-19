@@ -122,8 +122,8 @@ src = ["bitcoin_safe"]
 [tool.ruff.lint]
 # E+F are defaults; include I for isort-equivalent import sorting and a few handy extras.
 select = ["E", "F", "I", "B", "UP"] 
-# Preserve existing typing and datetime conventions until they can be migrated separately.
-ignore = ["E501", "UP017", "UP035", "UP040", "UP041", "UP046", "UP047"]
+# Allow long lines where wrapping would reduce readability.
+ignore = ["E501"]
 
 [tool.ruff.lint.isort]
 # Optionally tune first/third party detection:

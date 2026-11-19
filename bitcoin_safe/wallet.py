@@ -38,6 +38,7 @@ from time import time
 from typing import (
     Any,
     Final,
+    Self,
     cast,
 )
 from uuid import uuid4
@@ -64,7 +65,6 @@ from bitcoin_safe_lib.util import (
 )
 from bitcoin_usb.address_types import DescriptorInfo
 from bitcoin_usb.software_signer import derive as software_signer_derive
-from typing_extensions import Self
 
 from bitcoin_safe.client import Client
 from bitcoin_safe.client_helpers import UpdateInfo

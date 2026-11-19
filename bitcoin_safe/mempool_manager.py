@@ -29,7 +29,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import datetime
 import enum
 import logging
@@ -189,7 +188,7 @@ async def fetch_from_url(
                     logger.error(f"Request failed with status code: {resp.status}")
                     return None
 
-    except asyncio.TimeoutError:
+    except TimeoutError:
         logger.error(f"fetch_from_url {url} timed out")
         return None
     except Exception as e:

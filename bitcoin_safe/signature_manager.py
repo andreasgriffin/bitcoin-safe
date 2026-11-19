@@ -40,7 +40,7 @@ import subprocess
 from collections import Counter
 from collections.abc import Iterable
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from functools import partial
 from pathlib import Path
 from typing import Any, Protocol
@@ -280,7 +280,7 @@ class SignatureVerifyer:
 
     @staticmethod
     def _is_expired(expires_at: datetime | None) -> bool:
-        return expires_at is not None and expires_at <= datetime.now(timezone.utc)
+        return expires_at is not None and expires_at <= datetime.now(UTC)
 
     @classmethod
     def _signature_expiration(cls, signature: pysequoia.Sig | Packet) -> datetime | None:

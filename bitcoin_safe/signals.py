@@ -39,7 +39,6 @@ from enum import Enum
 from typing import (
     TYPE_CHECKING,
     Any,
-    Generic,
     TypeVar,
     cast,
 )
@@ -122,7 +121,7 @@ class UpdateFilter:
 T = TypeVar("T")
 
 
-class SignalFunction(Generic[T]):
+class SignalFunction[T]:
     def __init__(self, name: str | None = None) -> None:
         """Initialize instance."""
         self.name = name
@@ -200,7 +199,7 @@ class SignalFunction(Generic[T]):
         return responses
 
 
-class SingularSignalFunction(Generic[T]):
+class SingularSignalFunction[T]:
     def __init__(self, name: str | None = None) -> None:
         """Initialize instance."""
         self.signal_f = SignalFunction[T](name=name)

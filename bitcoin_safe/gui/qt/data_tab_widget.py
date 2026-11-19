@@ -30,7 +30,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Generic, TypeVar, cast
+from typing import TypeVar, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from PyQt6.QtCore import pyqtSignal
@@ -41,11 +41,10 @@ from bitcoin_safe.gui.qt.histtabwidget import HistTabWidget
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar("T")
 T2 = TypeVar("T2")
 
 
-class DataTabWidget(HistTabWidget, Generic[T]):
+class DataTabWidget[T](HistTabWidget):
     signal_on_tab_change = cast(SignalProtocol[[]], pyqtSignal())
 
     def __init__(self, parent=None) -> None:

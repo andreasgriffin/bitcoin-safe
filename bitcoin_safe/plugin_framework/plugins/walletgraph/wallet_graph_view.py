@@ -153,7 +153,7 @@ class WalletGraphView(TransformPanZoomMixin, QGraphicsView):
         timestamped: list[tuple[FullTxDetail, float]] = []
         fallback_base = time.time()
         current_height = wallet.get_height()
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.now(datetime.UTC)
         for index, detail in enumerate(details_list):
             fallback = fallback_base + index
             timestamped.append(

@@ -68,9 +68,7 @@ from decimal import Decimal
 from functools import partial
 from typing import (
     Any,
-    Generic,
     NamedTuple,
-    TypeVar,
     cast,
 )
 
@@ -139,9 +137,6 @@ from .color_corrected_treeview import ColorCorrectedTreeView
 from .util import do_copy, set_no_margins, should_process_theme_change
 
 logger = logging.getLogger(__name__)
-
-
-T = TypeVar("T")
 
 
 def needs_frequent_flag(status: TxStatus | None) -> bool:
@@ -558,7 +553,7 @@ class DropRule(NamedTuple):
     handler: Callable[[QTreeView, QDropEvent, QModelIndex], None]
 
 
-class MyTreeView(ColorCorrectedTreeView, BaseSaveableClass, Generic[T]):
+class MyTreeView[T](ColorCorrectedTreeView, BaseSaveableClass):
     signal_selection_changed = cast(SignalProtocol[[]], pyqtSignal())
     signal_update = cast(SignalProtocol[[]], pyqtSignal())
     signal_finished_update = cast(SignalProtocol[[]], pyqtSignal())

@@ -272,7 +272,7 @@ def test_get_min_broadcast_fee_rate_returns_none_on_cbf_timeout(monkeypatch) -> 
 
     def run_foreground(coroutine):
         coroutine.close()
-        raise asyncio.TimeoutError()
+        raise TimeoutError()
 
     loop_in_thread.run_foreground.side_effect = run_foreground
     cbf_sync = FakeCbfSync()
@@ -339,7 +339,7 @@ def test_get_connected_cbf_peer_hosts_returns_cached_hosts_on_timeout(monkeypatc
 
     def run_foreground(coroutine):
         _close_wait_for_coroutine(coroutine)
-        raise asyncio.TimeoutError()
+        raise TimeoutError()
 
     loop_in_thread.run_foreground.side_effect = run_foreground
 

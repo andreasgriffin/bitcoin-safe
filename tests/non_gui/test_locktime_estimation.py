@@ -29,7 +29,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from bitcoin_safe.locktime_estimation import (
     LOCKTIME_THRESHOLD,
@@ -38,34 +38,34 @@ from bitcoin_safe.locktime_estimation import (
 
 
 def test_estimate_locktime_datetime_zero_returns_now_without_height() -> None:
-    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
+    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=UTC)
     assert estimate_locktime_datetime(0, current_height=0, now=now) == now
 
 
 def test_estimate_locktime_datetime_past_timestamp_is_in_past() -> None:
-    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
-    past_timestamp_locktime = int(datetime(2020, 1, 1, tzinfo=timezone.utc).timestamp())
+    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=UTC)
+    past_timestamp_locktime = int(datetime(2020, 1, 1, tzinfo=UTC).timestamp())
 
     estimated = estimate_locktime_datetime(past_timestamp_locktime, current_height=900_000, now=now)
 
     assert estimated is not None
-    assert estimated.tzinfo == timezone.utc
+    assert estimated.tzinfo == UTC
     assert estimated < now
 
 
 def test_estimate_locktime_datetime_future_timestamp_is_in_future() -> None:
-    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
+    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=UTC)
     two_hours_ahead = int((now + timedelta(hours=2)).timestamp())
 
     estimated = estimate_locktime_datetime(two_hours_ahead, current_height=900_000, now=now)
 
     assert estimated is not None
-    assert estimated.tzinfo == timezone.utc
+    assert estimated.tzinfo == UTC
     assert estimated > now
 
 
 def test_estimate_locktime_datetime_timestamp_ignores_current_height() -> None:
-    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
+    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=UTC)
     timestamp_locktime = LOCKTIME_THRESHOLD + 123_456
 
     estimated_without_height = estimate_locktime_datetime(timestamp_locktime, current_height=0, now=now)
@@ -75,7 +75,7 @@ def test_estimate_locktime_datetime_timestamp_ignores_current_height() -> None:
 
 
 def test_estimate_locktime_datetime_block_height_at_tip_returns_now() -> None:
-    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
+    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=UTC)
     current_height = 840_000
 
     estimated = estimate_locktime_datetime(current_height, current_height=current_height, now=now)
@@ -84,7 +84,7 @@ def test_estimate_locktime_datetime_block_height_at_tip_returns_now() -> None:
 
 
 def test_estimate_locktime_datetime_block_height_in_past_returns_now() -> None:
-    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
+    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=UTC)
     current_height = 840_000
 
     estimated = estimate_locktime_datetime(current_height - 10, current_height=current_height, now=now)
@@ -93,7 +93,7 @@ def test_estimate_locktime_datetime_block_height_in_past_returns_now() -> None:
 
 
 def test_estimate_locktime_datetime_block_height_in_future_returns_future_time() -> None:
-    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
+    now = datetime(2025, 1, 2, 3, 4, 5, tzinfo=UTC)
     current_height = 840_000
 
     estimated = estimate_locktime_datetime(current_height + 1, current_height=current_height, now=now)

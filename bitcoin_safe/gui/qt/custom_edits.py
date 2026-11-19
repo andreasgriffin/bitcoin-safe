@@ -34,7 +34,7 @@ import logging
 from abc import abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Generic, Protocol, TypeVar, cast
+from typing import Protocol, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
@@ -125,10 +125,7 @@ class AnalyzerEditable(Protocol):
     def setStyleSheet(self, styleSheet: str, /) -> None: ...
 
 
-TEdit = TypeVar("TEdit", bound=AnalyzerEditable)
-
-
-class AnalyzerSupport(Generic[TEdit]):
+class AnalyzerSupport[TEdit: AnalyzerEditable]:
     """Analyzer behavior shared by different edit widgets."""
 
     def __init__(self, edit: TEdit) -> None:

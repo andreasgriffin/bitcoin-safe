@@ -43,7 +43,7 @@ from datetime import datetime
 from functools import partial
 from pathlib import Path
 from time import sleep
-from typing import Any, TypeVar
+from typing import Any
 from unittest.mock import patch
 
 import bdkpython as bdk
@@ -124,7 +124,6 @@ def main_window_context(test_config: UserConfig) -> Generator[MainWindow, None, 
 
 
 # Define a Type Variable
-T = TypeVar("T", bound=QWidget)  # This constrains T to be a subclass of QWidget
 
 
 class Shutter:
@@ -294,7 +293,7 @@ def broadcast_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet:
     shutter.save(viewer)
 
 
-def _get_widget_top_level(cls: type[T], title: str | None = None) -> T | None:
+def _get_widget_top_level[T: QWidget](cls: type[T], title: str | None = None) -> T | None:
     """Find the top-level widget of the specified class and title among the active
     widgets.
 
@@ -320,7 +319,7 @@ def _get_widget_top_level(cls: type[T], title: str | None = None) -> T | None:
     return None
 
 
-def get_widget_top_level(
+def get_widget_top_level[T: QWidget](
     cls: type[T], qtbot: QtBot, title: str | None = None, wait: bool = True, timeout: int = 10_000
 ) -> T | None:
     """Find the top-level widget of the specified class and title among the active
@@ -338,7 +337,7 @@ def get_widget_top_level(
     return _get_widget_top_level(cls=cls)
 
 
-def do_modal_click(
+def do_modal_click[T: QWidget](
     click_pushbutton: Callable | QWidget | QAction,
     on_open: Callable[[T], None],
     qtbot: QtBot,

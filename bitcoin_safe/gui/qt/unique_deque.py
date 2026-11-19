@@ -31,19 +31,12 @@ from __future__ import annotations
 
 import logging
 from collections import deque
-from typing import Generic, TypeVar
-
-_T = TypeVar("_T")
-
 
 logger = logging.getLogger(__name__)
 
 
-class UniqueDeque(
-    deque,
-    Generic[_T],
-):
-    def append(self, value: _T) -> None:
+class UniqueDeque[T](deque):
+    def append(self, value: T) -> None:
         # If the item is already in the deque, remove it
         """Append."""
         while value in self:

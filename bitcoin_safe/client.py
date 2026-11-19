@@ -336,7 +336,7 @@ class Client:
                 return await asyncio.wait_for(
                     self.client.client.broadcast(tx), timeout=self.BROADCAST_TIMEOUT
                 )
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 logger.error(f"Broadcast timed out after {self.BROADCAST_TIMEOUT} seconds")
                 raise
         if isinstance(self.client, bdk.ElectrumClient):
@@ -371,7 +371,7 @@ class Client:
                 )
 
             return fee_rate
-        except (asyncio.TimeoutError, TimeoutError) as exc:
+        except TimeoutError as exc:
             logger.warning(f"Could not determine backend min broadcast fee rate: {exc}")
             return None
         except Exception as exc:
@@ -389,7 +389,7 @@ class Client:
             return self.loop_in_thread.run_foreground(
                 asyncio.wait_for(self.client.peer_info(), timeout=self.CBF_PEER_INFO_TIMEOUT)
             )
-        except (asyncio.TimeoutError, TimeoutError) as exc:
+        except TimeoutError as exc:
             logger.debug(f"Could not refresh CBF peer info before timeout: {exc}")
             return self.client.connected_peer_hosts()
         except Exception as exc:

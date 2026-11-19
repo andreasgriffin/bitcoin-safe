@@ -355,7 +355,7 @@ class PeerDiscovery:
                 ),
                 timeout=timeout,
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             logger.warning(f"Peer discovery timed out after {timeout} seconds")
             return return_results(partial_results)
 
