@@ -77,7 +77,7 @@ class SignerDetails:
 
 
 def wallet_graph(wallets: list[Wallet]) -> nx.Graph:
-    """Connect wallets sharing the same xpub and device type, retaining distinct notes."""
+    """Connect wallets sharing a fingerprint and device type, retaining distinct notes."""
     graph = nx.Graph()
     for index, wallet in enumerate(wallets):
         wallet_node = ("wallet", index)
@@ -86,10 +86,9 @@ def wallet_graph(wallets: list[Wallet]) -> nx.Graph:
             fingerprint = signer.fingerprint.strip().lower()
             if fingerprint == "00000000":
                 fingerprint = ""
-            xpub = signer.xpub.strip()
-            # An absent xpub cannot identify a shared signer.
+            # An absent fingerprint cannot identify a shared signer.
             identity: tuple[str, str] | tuple[int, int] = (
-                (xpub, signer.hardware_signer_id) if xpub else (index, signer_index)
+                (fingerprint, signer.hardware_signer_id) if fingerprint else (index, signer_index)
             )
             signer_node = ("signer", identity)
             if signer_node not in graph:
@@ -100,8 +99,6 @@ def wallet_graph(wallets: list[Wallet]) -> nx.Graph:
                     ),
                 )
             details: SignerDetails = graph.nodes[signer_node]["signer"]
-            if not details.fingerprint and fingerprint:
-                details.fingerprint = fingerprint
             note = signer.description.strip()
             if note and note not in details.notes:
                 details.notes.add(note)

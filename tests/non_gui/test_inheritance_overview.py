@@ -86,11 +86,11 @@ def wallet(name: str, fingerprints: list[str]) -> Wallet:
     )
 
 
-def test_shared_and_missing_xpubs() -> None:
+def test_shared_and_missing_fingerprints() -> None:
     graph = wallet_graph([wallet("First", ["AABBCCDD", "00000000"]), wallet("Second", ["aabbccdd", ""])])
     assert len(graph) == 5
     assert set(graph.neighbors(("wallet", 0))) & set(graph.neighbors(("wallet", 1))) == {
-        ("signer", ("xpub-aabbccdd", "generic"))
+        ("signer", ("aabbccdd", "generic"))
     }
 
 
@@ -116,7 +116,7 @@ def test_shared_signer_keeps_notes_without_derivation_paths() -> None:
     first.keystores[0].description = "Stored securely"
     second.keystores[0].key_origin = "m/48h/1h/0h/2h"
     graph = wallet_graph([first, second])
-    details = graph.nodes[("signer", ("xpub-aabbccdd", "generic"))]["signer"].details
+    details = graph.nodes[("signer", ("aabbccdd", "generic"))]["signer"].notes
     assert details == [
         "First note: Stored securely",
     ]
@@ -386,7 +386,7 @@ def test_balance_statement_table_fits_page_with_long_labels_and_addresses(tmp_pa
     assert (tmp_path / "statement.pdf").read_bytes().startswith(b"%PDF-")
 
 
-def test_signers_are_deduplicated_by_xpub_not_fingerprint() -> None:
+def test_signers_are_deduplicated_by_fingerprint_not_xpub() -> None:
     first = wallet("First", ["aabbccdd", "aabbccdd"])
     first.keystores[0].xpub = "xpub-one"
     first.keystores[1].xpub = "xpub-two"
@@ -394,21 +394,18 @@ def test_signers_are_deduplicated_by_xpub_not_fingerprint() -> None:
     second.keystores[0].xpub = "xpub-one"
     graph = wallet_graph([first, second])
     assert len(graph) == 4
-    assert set(graph.neighbors(("wallet", 0))) == {
-        ("signer", ("xpub-one", "generic")),
-        ("signer", ("xpub-two", "generic")),
-    }
-    assert set(graph.neighbors(("wallet", 1))) == {("signer", ("xpub-one", "generic"))}
+    assert set(graph.neighbors(("wallet", 0))) == {("signer", ("aabbccdd", "generic"))}
+    assert set(graph.neighbors(("wallet", 1))) == {("signer", ("11223344", "generic"))}
 
 
-def test_shared_xpub_preserves_distinct_notes_and_omits_duplicates() -> None:
+def test_shared_fingerprint_preserves_distinct_notes_and_omits_duplicates() -> None:
     wallets = [wallet(name, ["aabbccdd"]) for name in ("First", "Second", "Third")]
     wallets[0].keystores[0].description = "Shared note"
     wallets[1].keystores[0].description = "Shared note"
     wallets[2].keystores[0].description = "Another note"
     graph = wallet_graph(wallets)
-    details = graph.nodes[("signer", ("xpub-aabbccdd", "generic"))]["signer"].details
-    assert details == ["First note: Shared note", "Third note: Another note"]
+    details = graph.nodes[("signer", ("aabbccdd", "generic"))]["signer"].notes
+    assert details == [("First", "Shared note"), ("Third", "Another note")]
 
 
 def test_two_multisig_wallets_are_placed_near_their_own_signers() -> None:
@@ -422,29 +419,29 @@ def test_two_multisig_wallets_are_placed_near_their_own_signers() -> None:
     assert len(_cross_page_connections(graph, pages)) == 1
 
 
-def test_distinct_xpubs_with_same_fingerprints_do_not_create_page_crossings() -> None:
+def test_same_fingerprints_merge_even_with_different_xpubs() -> None:
     first = wallet("First", ["00000001", "00000002", "00000003"])
     second = wallet("Second", ["00000001", "00000002", "00000003"])
     for signer in second.keystores:
         signer.xpub += "-different-account"
     graph = wallet_graph([first, second])
     pages = _graph_pages(graph, "Helvetica")
-    assert len(pages) == 2
-    assert pages[0].wallets == [("wallet", 0)]
-    assert pages[1].wallets == [("wallet", 1)]
-    assert _cross_page_connections(graph, pages) == []
+    assert len(pages) == 1
+    assert set(pages[0].wallets) == {("wallet", 0), ("wallet", 1)}
+    assert len(pages[0].signers) == 3
+    assert not _cross_page_connections(graph, pages)
 
 
-def test_matching_xpubs_merge_even_without_fingerprints() -> None:
+def test_missing_fingerprints_stay_separate_even_with_matching_xpubs() -> None:
     first = wallet("First", [""])
-    second = wallet("Second", [""])
+    second = wallet("Second", ["00000000"])
     first.keystores[0].xpub = second.keystores[0].xpub = "same-xpub"
     graph = wallet_graph([first, second])
-    assert len(graph) == 3
-    assert set(graph.neighbors(("wallet", 0))) == set(graph.neighbors(("wallet", 1)))
+    assert len(graph) == 4
+    assert set(graph.neighbors(("wallet", 0))).isdisjoint(graph.neighbors(("wallet", 1)))
 
 
-def test_same_xpub_on_different_devices_stays_separate() -> None:
+def test_same_fingerprint_on_different_devices_stays_separate() -> None:
     coldcard = wallet("Multisig 1", ["aabbccdd", "00000001", "00000002"])
     bitbox = wallet("Multisig 2", ["aabbccdd", "00000003", "00000004"])
     coldcard.keystores[0].hardware_signer_id = "coldcard"
@@ -452,8 +449,8 @@ def test_same_xpub_on_different_devices_stays_separate() -> None:
     bitbox.keystores[0].hardware_signer_id = "bitbox02"
     bitbox.keystores[0].description = "BitBox note"
     graph = wallet_graph([coldcard, bitbox])
-    coldcard_node = ("signer", ("xpub-aabbccdd", "coldcard"))
-    bitbox_node = ("signer", ("xpub-aabbccdd", "bitbox02"))
+    coldcard_node = ("signer", ("aabbccdd", "coldcard"))
+    bitbox_node = ("signer", ("aabbccdd", "bitbox02"))
     assert graph.has_edge(("wallet", 0), coldcard_node)
     assert not graph.has_edge(("wallet", 1), coldcard_node)
     assert graph.has_edge(("wallet", 1), bitbox_node)
@@ -465,12 +462,12 @@ def test_same_xpub_on_different_devices_stays_separate() -> None:
     assert graph.nodes[bitbox_node]["signer"].details == ["Multisig 2 note: BitBox note"]
 
 
-def test_matching_xpub_and_device_deduplicate() -> None:
+def test_matching_fingerprint_and_device_deduplicate() -> None:
     first = wallet("First", ["aabbccdd"])
     second = wallet("Second", ["aabbccdd"])
     first.keystores[0].hardware_signer_id = second.keystores[0].hardware_signer_id = "coldcard"
     graph = wallet_graph([first, second])
-    shared = ("signer", ("xpub-aabbccdd", "coldcard"))
+    shared = ("signer", ("aabbccdd", "coldcard"))
     assert set(graph.neighbors(("wallet", 0))) == {shared}
     assert set(graph.neighbors(("wallet", 1))) == {shared}
 
@@ -526,3 +523,20 @@ def test_three_signers_with_notes_fit_on_one_graph_page() -> None:
     assert len(pages[0].signers) == 3
     assert all(len(lines) == 5 for _, lines in pages[0].signers)
     assert _page_signer_height(pages[0]) <= 420
+
+
+def test_single_distinct_note_has_no_wallet_label() -> None:
+    first, second = [wallet(name, ["aabbccdd"]) for name in ("First", "Second")]
+    first.keystores[0].description = second.keystores[0].description = "Stored securely"
+    graph = wallet_graph([first, second])
+    details = graph.nodes[("signer", ("aabbccdd", "generic"))]["signer"]
+    assert _signer_note_lines(details, "Helvetica") == ["Stored securely"]
+
+
+def test_multiple_distinct_notes_keep_wallet_labels() -> None:
+    first, second = [wallet(name, ["aabbccdd"]) for name in ("First", "Second")]
+    first.keystores[0].description = "At home"
+    second.keystores[0].description = "At the office"
+    graph = wallet_graph([first, second])
+    details = graph.nodes[("signer", ("aabbccdd", "generic"))]["signer"]
+    assert _signer_note_lines(details, "Helvetica") == ["First note: At home", "Second note: At the office"]

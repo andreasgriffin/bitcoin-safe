@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# dependency-input-sha256: c2aa2f99894a7c6f1cda1a55e8bfbf0c93f7d9c5769903752685bab9fdb1733a
-=======
-# dependency-input-sha256: 5e2827afbac596ed9aa6e7601ee73b2bcb9f90e7af58806539eff765cbe3adb6
->>>>>>> 44dfba8ba (Export open wallet signer graph as PDF)
+# dependency-input-sha256: 86253082f4471ea1221d8844ccc176615d0b61fa3606f9831885a1fc614644d7
 packaging==26.3 --hash=sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c
 pyproject-hooks==1.3.3 --hash=sha256:5fc53fdac9f7bd63fbcdc868fb5f90b4784d78a53a3d3388cd738b807441a20b
 build==1.6.1 --hash=sha256:ecd351a4be9d35a9eaaba244a7687143c9c7d4aea6ac964e7e7ddab20cbcf4e7
@@ -48,7 +44,7 @@ tomlkit==0.15.2 --hash=sha256:05562412163a3037b94497385fb7f9204c637bc605af7a4819
 trove-classifiers==2026.9.21.13 --hash=sha256:8b1ff4f9c191b1040b71c37f1e445ab99732911e3cd91de52838453a854d7a17
 distlib==0.4.4 --hash=sha256:cf09d55b1e85a89576b036aeb71550bfd68320f3f21761ca329eadadad918638
 python-discovery==1.9.6 --hash=sha256:93b10b90363d4151964cdeee2ec6601f3041b17fc2b253a1c3da7d6e7ddd8337
-virtualenv==21.15.8 --hash=sha256:e4cb274633d6f3ddb19f535a3be7539ce8fe34fc7aa2b0c417ff6e96c3cf67dc
+virtualenv==21.15.9 --hash=sha256:c0fbae7de061402e31897d96cfbe7dc35ce93cd464fe05f9bdbecf61313447bf
 poetry==2.5.1 --hash=sha256:3f7910abc667ce0c33a67e306baf017acdec1c8eeec4aa64d176e530d8338a61
 setuptools==84.2.1 --hash=sha256:ca140b45d5325a9478f880e351484f62fef15f336462e449ca0c03c873d589c2
 wheel==0.48.0 --hash=sha256:3217dcc807155e45db462d7ef2431f5ddda0d7273b700d05a67b271ceb1287ab
