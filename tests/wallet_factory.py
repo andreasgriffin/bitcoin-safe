@@ -125,7 +125,7 @@ def _start_cbf_tasks(wallet: Wallet) -> tuple[list[asyncio.Future]]:
                 msg = await getter()
                 if msg:
                     logger.info("%s %s", label, msg)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 continue
             except asyncio.CancelledError:
                 break

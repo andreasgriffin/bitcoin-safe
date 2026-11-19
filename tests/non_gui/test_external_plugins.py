@@ -38,7 +38,7 @@ import threading
 import zipfile
 from collections.abc import Callable, Coroutine
 from dataclasses import replace
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace, TracebackType
 from typing import Any
@@ -461,7 +461,7 @@ def _mark_source_refresh_run(
     show_errors: bool,
 ) -> None:
     refresh_calls.append(show_errors)
-    manager.external_registry.last_download_time = datetime.now(timezone.utc)
+    manager.external_registry.last_download_time = datetime.now(UTC)
 
 
 def _serialized_client_payload(client: PluginClient) -> str:
@@ -3574,7 +3574,7 @@ def test_plugin_manager_skips_startup_source_refresh_when_last_download_is_recen
     )
     config = _make_config(tmp_path)
     external_registry = ExternalPluginRegistry.from_config(config)
-    external_registry.last_download_time = datetime.now(timezone.utc)
+    external_registry.last_download_time = datetime.now(UTC)
     external_registry.save()
 
     monkeypatch.setattr(ExternalPluginRegistry, "load_sources", lambda self: [source])

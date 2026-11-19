@@ -42,7 +42,7 @@ import tempfile
 import tomllib  # pyright: ignore[reportMissingImports]
 import zipfile
 from dataclasses import dataclass, replace
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import ModuleType
 from typing import Any, cast
@@ -588,7 +588,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
 
         # Set only after the loop completes: a cancelled refresh must not start the startup cooldown.
         if enabled_sources:
-            self.last_download_time = datetime.now(timezone.utc)
+            self.last_download_time = datetime.now(UTC)
         if recheck_installed:
             self.recheck_installed_plugins()
         if errors and raise_on_error:
@@ -598,7 +598,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
     def should_skip_startup_source_refresh(self) -> bool:
         if self.last_download_time is None:
             return False
-        return datetime.now(timezone.utc) - self.last_download_time < self.STARTUP_SOURCE_REFRESH_COOLDOWN
+        return datetime.now(UTC) - self.last_download_time < self.STARTUP_SOURCE_REFRESH_COOLDOWN
 
     def _require_source(self, source_id: str) -> PluginSource:
         source = self.load_source(source_id)
@@ -1393,7 +1393,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
 
     @staticmethod
     def _now_iso() -> str:
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now(UTC).isoformat()
 
     @staticmethod
     def _parse_datetime(value: Any) -> datetime | None:
@@ -1404,5 +1404,5 @@ class ExternalPluginRegistry(BaseSaveableClass):
         except ValueError:
             return None
         if parsed.tzinfo is None:
-            return parsed.replace(tzinfo=timezone.utc)
+            return parsed.replace(tzinfo=UTC)
         return parsed

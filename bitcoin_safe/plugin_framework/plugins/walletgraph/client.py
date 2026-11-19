@@ -331,7 +331,7 @@ class WalletGraphClient(PluginClient):
         fallback_base = time.time()
         wallet = self.graph_view.current_wallet
         current_height = wallet.get_height() if wallet else 0
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.datetime.now(datetime.UTC)
 
         timestamped_details = [
             (
@@ -351,7 +351,7 @@ class WalletGraphClient(PluginClient):
             self._set_data(tx_node, "d0", "transaction")
 
             # Use explicit UTC ISO-8601 with 'Z'
-            ts_iso = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc).isoformat()
+            ts_iso = datetime.datetime.fromtimestamp(timestamp, tz=datetime.UTC).isoformat()
             if ts_iso.endswith("+00:00"):
                 ts_iso = ts_iso[:-6] + "Z"
             self._set_data(tx_node, "d1", ts_iso)
@@ -472,7 +472,7 @@ class WalletGraphClient(PluginClient):
         """Format timestamp."""
         if timestamp is None:
             return None
-        dt = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
+        dt = datetime.datetime.fromtimestamp(timestamp, tz=datetime.UTC)
         iso = dt.isoformat()
         if iso.endswith("+00:00"):
             iso = iso[:-6] + "Z"

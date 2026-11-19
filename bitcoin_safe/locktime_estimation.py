@@ -29,7 +29,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 LOCKTIME_THRESHOLD = 500_000_000
 MEDIAN_TIME_PAST_LAG_MINUTES = 60
@@ -47,18 +47,16 @@ def estimate_locktime_datetime(
     - For timestamp locktimes (>= LOCKTIME_THRESHOLD), returns the UTC datetime.
     - For block-height locktimes, estimates using 10 minutes per block.
     """
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     if nlocktime == 0:
         return now
     if nlocktime >= LOCKTIME_THRESHOLD:
-        return datetime.fromtimestamp(nlocktime, tz=timezone.utc) + timedelta(
-            minutes=median_time_past_lag_minutes
-        )
+        return datetime.fromtimestamp(nlocktime, tz=UTC) + timedelta(minutes=median_time_past_lag_minutes)
     # see: https://en.bitcoin.it/wiki/NLockTime
     block_delta = nlocktime - current_height
     if block_delta <= 0:
         return now
-    max_datetime = datetime.max.replace(tzinfo=timezone.utc)
+    max_datetime = datetime.max.replace(tzinfo=UTC)
     max_minutes = int((max_datetime - now).total_seconds() // 60)
     estimated_minutes = 10 * block_delta
     if estimated_minutes >= max_minutes:
@@ -76,5 +74,5 @@ def is_nlocktime_already_valid(
     estimated_datetime = estimate_locktime_datetime(
         nlocktime, current_height, now=now, median_time_past_lag_minutes=median_time_past_lag_minutes
     )
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     return estimated_datetime <= now

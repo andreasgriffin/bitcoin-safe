@@ -32,7 +32,7 @@ from __future__ import annotations
 import logging
 from collections import defaultdict
 from collections.abc import Callable
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import bdkpython as bdk
@@ -158,11 +158,11 @@ class NLocktimeFutureWarningBar(NotificationBar):
 
     @staticmethod
     def _normalize_locktime_datetime(locktime_datetime: datetime) -> datetime:
-        max_datetime = datetime.fromtimestamp(MAX_NLOCKTIME, tz=timezone.utc)
+        max_datetime = datetime.fromtimestamp(MAX_NLOCKTIME, tz=UTC)
         return locktime_datetime if locktime_datetime <= max_datetime else max_datetime
 
     def _warn_far_future(self, locktime_datetime: datetime) -> None:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         future_limit = now + timedelta(days=365 * NLOCKTIME_FUTURE_YEARS)
         if locktime_datetime <= future_limit:
             self.setVisible(False)

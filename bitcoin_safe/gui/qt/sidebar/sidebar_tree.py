@@ -34,7 +34,7 @@ import sys
 from collections.abc import Callable
 from functools import partial
 from pathlib import Path
-from typing import Generic, TypeAlias, TypeVar, cast
+from typing import TypeVar, cast
 
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from PyQt6.QtCore import QEvent, QPoint, QSize, Qt, pyqtSignal
@@ -71,7 +71,7 @@ from bitcoin_safe.gui.qt.util import (
 
 logger = logging.getLogger(__name__)
 
-ColorSpec: TypeAlias = str | QColor | QPalette.ColorRole
+type ColorSpec = str | QColor | QPalette.ColorRole
 
 # Matches the notification bar close button: 22px square, 4px from the right edge.
 TOGGLE_BUTTON_SIZE = QSize(22, 22)
@@ -263,7 +263,7 @@ class HideButton(CloseButton):
     pass
 
 
-class SidebarNode(QFrame, Generic[TT]):
+class SidebarNode[TT](QFrame):
     """A single, mutable sidebar node: combines both data and UI.
 
     Signals (emit the SidebarNode instance):
@@ -995,7 +995,7 @@ class SidebarNode(QFrame, Generic[TT]):
         return node.widget if (node := self.currentChildNode()) else None
 
 
-class SidebarTree(QWidget, Generic[TT]):
+class SidebarTree[TT](QWidget):
     """Container with a left column (vertical layout) and a right shared stack.
 
     Left column (new):

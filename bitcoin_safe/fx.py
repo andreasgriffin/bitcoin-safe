@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from functools import lru_cache
 from typing import Any, cast
 
@@ -410,9 +410,9 @@ class FX(QObject):
     @staticmethod
     def historical_rate_datetime_utc(at_datetime: datetime) -> datetime:
         if at_datetime.tzinfo is None:
-            at_datetime = at_datetime.replace(tzinfo=timezone.utc)
-        normalized = at_datetime.astimezone(timezone.utc)
-        return datetime.combine(normalized.date(), datetime.min.time(), tzinfo=timezone.utc)
+            at_datetime = at_datetime.replace(tzinfo=UTC)
+        normalized = at_datetime.astimezone(UTC)
+        return datetime.combine(normalized.date(), datetime.min.time(), tzinfo=UTC)
 
     @classmethod
     def historical_rate_timestamp_key(cls, at_datetime: datetime) -> float:

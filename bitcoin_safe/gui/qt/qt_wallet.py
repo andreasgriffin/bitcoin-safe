@@ -305,7 +305,7 @@ class ProgressSignal:
         self.signal_settext_balance_label.emit(f"Syncing wallet: {round(progress)}%  {message}")
 
 
-async def convert_to_signal(
+async def convert_to_signal[T](
     coro: Callable[[], Coroutine[Any, Any, T | None]],
     signal: SignalProtocol[[T]],
 ) -> None:

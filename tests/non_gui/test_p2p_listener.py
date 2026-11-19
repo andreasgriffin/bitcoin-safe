@@ -585,7 +585,7 @@ def test_p2p_broadcast_reports_drain_timeout() -> None:
             pass
 
         async def drain(self) -> None:
-            raise asyncio.TimeoutError
+            raise TimeoutError
 
     client = P2PClient(network=bdk.Network.REGTEST, timeout=1)
     client.writer = FakeWriter()  # type: ignore[assignment]

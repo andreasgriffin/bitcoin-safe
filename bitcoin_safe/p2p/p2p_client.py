@@ -412,7 +412,7 @@ class P2PClient(QObject):
             self._connected_at = time.monotonic()
             self._handshake_stage = "tcp_connected"
             self._emit_diagnostic(event="tcp_connected", detail="TCP connection established")
-        except asyncio.TimeoutError:
+        except TimeoutError:
             logger.debug(f"Connection to {peer} timed-out")
             self._emit_diagnostic(
                 event="connect_timeout",
@@ -512,7 +512,7 @@ class P2PClient(QObject):
             self.writer.close()
             try:
                 await asyncio.wait_for(self.writer.wait_closed(), timeout=2.0)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 logger.debug("Timeout while waiting for writer to close")
             except Exception as e:
                 logger.debug(f"Error while closing writer: {e}")
@@ -781,7 +781,7 @@ class P2PClient(QObject):
                 # Enforce I/O-level timeout on the actual socket flush
                 # ──────────────────────────────────────────────────────────
                 await asyncio.wait_for(self.writer.drain(), timeout=self.timeout)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 logger.debug(f"-> {cmd} timed-out after {self.timeout} s during drain()")
                 await self.disconnect(reason=f"Timed out while sending {cmd}")
                 return False, f"Timed out while sending {cmd}"
@@ -808,7 +808,7 @@ class P2PClient(QObject):
                 # Apply the same per-operation timeout on reads
                 # ──────────────────────────────────────────────────────────
                 chunk = await asyncio.wait_for(self.reader.readexactly(n - len(data)), timeout=self.timeout)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 if await self._handle_idle_read_timeout(expected_bytes=n, received_bytes=len(data)):
                     continue
                 logger.debug(f"<- read timed-out after {self.timeout} s")

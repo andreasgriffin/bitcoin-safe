@@ -339,15 +339,15 @@ class TransactionDetails:
         now: datetime.datetime | None = None,
     ) -> datetime.datetime:
         """Return an aware UTC datetime for this transaction."""
-        now_utc = (now or datetime.datetime.now(datetime.timezone.utc)).astimezone(datetime.timezone.utc)
+        now_utc = (now or datetime.datetime.now(datetime.UTC)).astimezone(datetime.UTC)
         if isinstance(self.chain_position, bdk.ChainPosition.CONFIRMED):
             return datetime.datetime.fromtimestamp(
                 self.chain_position.confirmation_block_time.confirmation_time,
-                tz=datetime.timezone.utc,
+                tz=datetime.UTC,
             )
         if isinstance(self.chain_position, bdk.ChainPosition.UNCONFIRMED):
             timestamp = self.chain_position.timestamp or fallback_timestamp
-            base_datetime = datetime.datetime.fromtimestamp(timestamp, tz=datetime.timezone.utc)
+            base_datetime = datetime.datetime.fromtimestamp(timestamp, tz=datetime.UTC)
 
             # Local txs use timestamp=LOCAL_TX_LAST_SEEN; project future nLockTime.
             if is_local(self.chain_position):
@@ -357,7 +357,7 @@ class TransactionDetails:
                     current_height=current_height,
                     now=now_utc,
                 )
-                return max(estimated.astimezone(datetime.timezone.utc), now_utc)
+                return max(estimated.astimezone(datetime.UTC), now_utc)
             return base_datetime
 
         raise ValueError(f"self.chain_position has unnow type {type(self.chain_position)}")

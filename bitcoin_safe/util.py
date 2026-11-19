@@ -49,10 +49,6 @@ from typing import (
 
 import numpy as np
 
-K = TypeVar("K")
-V = TypeVar("V")
-
-
 OptExcInfo = tuple[type[BaseException] | None, BaseException | None, TracebackType | None]
 SATOSHIS_PER_BTC = 100_000_000
 
@@ -271,7 +267,7 @@ def default_timeout(proxies: Any, timeout: float | Literal["default"] = "default
     return timeout
 
 
-def dict_intersection(d: Mapping[K, V], keys: Iterable[K]) -> dict[K, V]:
+def dict_intersection[K, V](d: Mapping[K, V], keys: Iterable[K]) -> dict[K, V]:
     """
     Return a dictionary containing only items from `d`
     whose keys appear in `keys`.

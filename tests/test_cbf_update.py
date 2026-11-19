@@ -111,7 +111,7 @@ def test_cbf_update_against_local_bitcoind(bitcoin_core: Path, tmp_path: Path) -
             while update_info is None and asyncio.get_event_loop().time() < deadline:
                 try:
                     update_info = await asyncio.wait_for(cbf_sync.next_update_info(), timeout=10)
-                except asyncio.TimeoutError:
+                except TimeoutError:
                     update_info = None
         finally:
             cbf_sync.shutdown_node()
