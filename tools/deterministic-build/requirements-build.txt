@@ -965,9 +965,9 @@ urllib3==2.8.0 \
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   dulwich
     #   requests
-virtualenv==21.15.8 \
-    --hash=sha256:cfa97e12996373ea030ccbae8eda23cae9cfdbe74aa7b627621b6a0bd03cd7d4 \
-    --hash=sha256:e4cb274633d6f3ddb19f535a3be7539ce8fe34fc7aa2b0c417ff6e96c3cf67dc
+virtualenv==21.15.9 \
+    --hash=sha256:adc6799981f513ce852aea17ea592e0d342ce48e87f5d17a3d997966df582a67 \
+    --hash=sha256:c0fbae7de061402e31897d96cfbe7dc35ce93cd464fe05f9bdbecf61313447bf
     # via
     #   -c tools/deterministic-build/.locked-build-constraints.txt
     #   poetry

@@ -2444,13 +2444,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if wallet_id and wallet_id != self.wallet.id:
             logger.error(f"Cannot export for {wallet_id=}, since this is {self.wallet.id=}")
             return
-        if not self.plugin_manager:
-            return
-
-        sync_client = self.plugin_manager.get_instance(SyncClient)
-        if not sync_client:
-            return
-
         make_and_open_pdf_statement(
             self.wallet,
             lang_code=QLocale().name() or DEFAULT_LANG_CODE,

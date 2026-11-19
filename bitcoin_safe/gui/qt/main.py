@@ -118,6 +118,7 @@ from bitcoin_safe.gui.qt.update_notification_bar import UpdateNotificationBar
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wizard.wizard import ImportXpubs, TutorialStep, WalletSetupOptions, Wizard
 from bitcoin_safe.gui.qt.wrappers import Menu, MenuBar
+from bitcoin_safe.inheritance_overview import InheritanceOverviewPDF
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.logging_handlers import mail_feedback, mail_help_contact
 from bitcoin_safe.logging_setup import get_log_file
@@ -126,13 +127,13 @@ from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.p2p.p2p_client import ConnectionInfo
 from bitcoin_safe.p2p.p2p_listener import P2pListener
 from bitcoin_safe.p2p.tools import transaction_table
-from bitcoin_safe.pdfrecovery import make_and_open_pdf
+from bitcoin_safe.pdfrecovery import make_and_open_pdf, write_and_open_temp_pdf
 from bitcoin_safe.plugin_framework.external_plugin_registry import ExternalPluginRegistry
 from bitcoin_safe.pyqt6_restart import restart_application
 from bitcoin_safe.theme import apply_theme_mode
 from bitcoin_safe.tx import HiddenTxUiInfos, TxBuilderInfos, TxUiInfos, short_tx_id
 from bitcoin_safe.util import OptExcInfo, filename_clean
-from bitcoin_safe.wallet import ProtoWallet, ToolsTxUiInfo, Wallet
+from bitcoin_safe.wallet import ProtoWallet, ToolsTxUiInfo, Wallet, get_wallets
 from bitcoin_safe.wallet_util import get_default_categories
 
 from ...config import UserConfig
@@ -1005,6 +1006,12 @@ class MainWindow(UnlockableMainWindow):
         self.menu_action_export_pdf = self.menu_wallet_export.add_action(
             "", self.export_wallet_pdf, icon=svg_tools.get_QIcon("descriptor-backup.svg")
         )
+        self.menu_action_export_inheritance_overview = self.menu_wallet_export.add_action(
+            "", self.open_inheritance_overview, icon=svg_tools.get_QIcon("bi--filetype-pdf.svg")
+        )
+        self.menu_action_export_balance_statement = self.menu_wallet_export.add_action(
+            "", self.export_balance_statement, icon=svg_tools.get_QIcon("bi--filetype-pdf.svg")
+        )
         self.menu_action_export_descriptor = self.menu_wallet_export.add_action(
             "", self.show_descriptor_export_window
         )
@@ -1012,10 +1019,10 @@ class MainWindow(UnlockableMainWindow):
             "", self.show_register_multisig
         )
 
-        self.menu_action_open_pdf = self.menu_wallet.add_action(
-            "", self.open_pdf, icon=svg_tools.get_QIcon("bi--filetype-pdf.svg")
+        self.menu_action_print_overview = self.menu_wallet.add_action(
+            "", self.open_inheritance_overview, icon=svg_tools.get_QIcon("bi--filetype-pdf.svg")
         )
-        self.menu_action_open_pdf.setShortcut(QKeySequence("CTRL+P"))
+        self.menu_action_print_overview.setShortcut(QKeySequence("CTRL+P"))
 
         self.menu_action_close_wallet = self.menu_wallet.add_action("", self.close_current_tab)
         self.key_sequence_close_tab = "Ctrl+W"
@@ -1352,7 +1359,9 @@ class MainWindow(UnlockableMainWindow):
         self.menu_action_rename_wallet.setText(self.tr("&Wallet name"))
         self.menu_action_change_password.setText(self.tr("&Wallet password"))
         self.menu_action_export_pdf.setText(self.tr("&PDF Wallet"))
-        self.menu_action_open_pdf.setText(self.tr("Print"))
+        self.menu_action_export_inheritance_overview.setText(self.tr("Inheritance overview"))
+        self.menu_action_export_balance_statement.setText(self.tr("Balance statement"))
+        self.menu_action_print_overview.setText(self.tr("Print overview"))
         self.menu_action_close_wallet.setText(self.tr("&Close"))
         self.menu_action_export_descriptor.setText(self.tr("&Descriptor for hardware signers"))
         self.menu_action_register_multisig.setText(self.tr("&Register Multisig with hardware signers"))
@@ -1760,13 +1769,8 @@ class MainWindow(UnlockableMainWindow):
         if widget in self.attached_widgets:
             self.attached_widgets.remove(widget)
 
-    def open_pdf(self, wallet: Wallet | None = None) -> None:
-        """Open a PDF export for the active view."""
-        current_widget = self.tab_wallets.currentWidget()
-        if isinstance(current_widget, UITx_Viewer):
-            current_widget.export_data_simple.button_export_file.export_to_pdf()
-            return
-
+    def export_balance_statement(self) -> None:
+        """Export the selected wallet's balance statement."""
         qt_wallet = self.get_qt_wallet(if_none_serve_last_active=True)
         if not qt_wallet or not qt_wallet.wallet:
             Message(self.tr("Please select the wallet first."), type=MessageType.Warning, parent=self)
@@ -1781,6 +1785,23 @@ class MainWindow(UnlockableMainWindow):
             return
 
         make_and_open_pdf(qt_wallet.wallet, lang_code=QLocale().name())
+
+    def open_inheritance_overview(self) -> None:
+        """Export the relationships between all currently open wallets."""
+        wallets = get_wallets(self.wallet_functions)
+        if not wallets:
+            Message(self.tr("Please open a wallet first."), type=MessageType.Warning, parent=self)
+            return
+        try:
+            pdf = InheritanceOverviewPDF(wallets, QLocale().name())
+            write_and_open_temp_pdf(pdf, self.tr("Wallet graph"))
+        except Exception as exc:
+            logger.exception("Failed to export wallet graph")
+            Message(
+                self.tr("Could not export the wallet graph: {error}").format(error=str(exc)),
+                type=MessageType.Error,
+                parent=self,
+            )
 
     def open_tx_file(self, file_path: str | None = None) -> None:
         """Open tx file."""
