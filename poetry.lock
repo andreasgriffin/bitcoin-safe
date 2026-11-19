@@ -682,6 +682,18 @@ filecache = ["filelock (>=3.8.0)"]
 redis = ["redis (>=2.10.5)"]
 
 [[package]]
+name = "cachetools"
+version = "6.2.6"
+description = "Extensible memoizing collections and decorators"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "cachetools-6.2.6-py3-none-any.whl", hash = "sha256:8c9717235b3c651603fff0076db52d6acbfd1b338b8ed50256092f7ce9c85bda"},
+    {file = "cachetools-6.2.6.tar.gz", hash = "sha256:16c33e1f276b9a9c0b49ab5782d901e3ad3de0dd6da9bf9bcd29ac5672f2f9e6"},
+]
+
+[[package]]
 name = "cbor2"
 version = "5.9.0"
 description = "CBOR (de)serializer with extensive tag support"
@@ -5506,4 +5518,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "6ba9c1b16da4b15c8f5ac356bfacd2cabef0fbe78046f32894ea91f1bcc8a86b"
+content-hash = "e25e69a9e2b08f84b8e53b84fb2b352a9cae821d71ad081029b53d8eb4f3f9c6"

@@ -117,7 +117,7 @@ def test_select_newest_eligible_release_returns_none_without_eligible_update() -
 
 
 def test_get_releases_ignores_drafts(monkeypatch: pytest.MonkeyPatch) -> None:
-    def fake_get(url: str, timeout: int, proxies: dict | None) -> _MockResponse:
+    def fake_get(url: str, timeout: int, proxies: dict | None, **kwargs: object) -> _MockResponse:
         del url, timeout, proxies
         return _MockResponse(
             [
