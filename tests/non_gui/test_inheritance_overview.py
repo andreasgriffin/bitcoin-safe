@@ -106,8 +106,8 @@ def test_pdf_export_with_multiple_pages(tmp_path: Path) -> None:
     assert [call.args[0].id for call in create.call_args_list] == ["First", "Second"]
     pdf = path.read_bytes()
     assert pdf.startswith(b"%PDF-")
-    # Three graph pages and two balance statements.
-    assert pdf.count(b"/Type /Page\n") == 5
+    # Recovery guide, three graph pages, and two balance statements.
+    assert pdf.count(b"/Type /Page\n") == 6
 
 
 def test_wallet_name_with_markup_is_literal_in_combined_pdf(tmp_path: Path) -> None:
@@ -232,7 +232,7 @@ def test_cross_page_connection_draws_labeled_lines_on_both_pages(tmp_path: Path)
     crossings = [crossing for call in draw_crossings.call_args_list for crossing in call.args[1]]
     assert len(crossings) == 2
     assert {crossing.fingerprint for crossing in crossings} == {"00000004"}
-    assert {crossing.other_page for crossing in crossings} == {1, 2}
+    assert {crossing.other_page for crossing in crossings} == {2, 3}
     assert len({crossing.connection for crossing in crossings}) == 1
 
 
@@ -246,10 +246,9 @@ def test_seed_boxes_include_handwritten_backup_location(tmp_path: Path) -> None:
         export_inheritance_overview([first], tmp_path / "graph.pdf")
     labels = [call.args[3] for call in draw_string.call_args_list]
     assert labels.count("Seed backup location:") == 2
-    assert "Jade Plus location:" in labels
-    assert "Signer location:" in labels
+    assert labels.count("Signing device location:") == 2
     jade_y = next(
-        call.args[2] for call in draw_string.call_args_list if call.args[3] == "Jade Plus location:"
+        call.args[2] for call in draw_string.call_args_list if call.args[3] == "Signing device location:"
     )
     backup_y = next(
         call.args[2] for call in draw_string.call_args_list if call.args[3] == "Seed backup location:"
@@ -283,8 +282,8 @@ def test_datetime_and_page_numbers_on_graph_and_statement_pages(tmp_path: Path) 
         )
     dates = [call.args[3] for call in centered.call_args_list if call.args[3].startswith("Date: ")]
     pages = [call.args[3] for call in right.call_args_list if call.args[3].startswith("Page ")]
-    assert dates == [f"Date: {expected}"] * 3
-    assert pages == ["Page 1", "Page 2", "Page 3"]
+    assert dates == [f"Date: {expected}"] * 4
+    assert pages == ["Page 1", "Page 2", "Page 3", "Page 4"]
 
 
 def test_standalone_balance_statement_has_datetime_and_page_number(tmp_path: Path) -> None:
@@ -357,8 +356,39 @@ def test_wallet_cards_use_multisig_and_single_signature_labels(tmp_path: Path) -
     with patch.object(Canvas, "drawString", autospec=True, side_effect=Canvas.drawString) as draw_string:
         export_inheritance_overview(wallets, tmp_path / "graph.pdf")
     labels = [call.args[3] for call in draw_string.call_args_list]
-    assert any("2 of 3 Multisig" in label for label in labels)
-    assert any("Single signature" in label for label in labels)
+    assert "Requires any 2 of these 3 signers" in labels
+    assert "Requires 1 signer" in labels
+    assert labels.count("Balance: 0.00125000 BTC (test coins)") == 2
+
+
+def test_recovery_guide_and_shared_signer_are_shown(tmp_path: Path) -> None:
+    from reportlab.pdfgen.canvas import Canvas
+
+    from bitcoin_safe.inheritance_overview import _qr
+
+    first, second = [wallet(name, ["aabbccdd"]) for name in ("First", "Second")]
+    first.network = bdk.Network.BITCOIN
+    first.get_balance = lambda: SimpleNamespace(total=0)
+    with (
+        patch.object(Canvas, "drawString", autospec=True, side_effect=Canvas.drawString) as draw_string,
+        patch.object(
+            Canvas, "drawRightString", autospec=True, side_effect=Canvas.drawRightString
+        ) as draw_right,
+        patch("bitcoin_safe.inheritance_overview._qr", wraps=_qr) as draw_qr,
+    ):
+        export_inheritance_overview([first, second], tmp_path / "overview.pdf")
+
+    labels = [call.args[3] for call in draw_string.call_args_list]
+    right_labels = [call.args[3] for call in draw_right.call_args_list]
+    assert "HOW TO RECOVER A WALLET" in labels
+    assert "Never share seed words or passphrases, or enter them into a website." in labels
+    assert "Balance: 0.00000000 BTC" in labels
+    assert "Includes currently open wallets only. Other wallets may exist." in labels
+    assert right_labels.count("Used by 2 wallets") == 1
+    assert len(draw_qr.call_args_list) == 2
+    assert all(
+        call.args[1] == first.multipath_descriptor and call.args[4] == 125 for call in draw_qr.call_args_list
+    )
 
 
 def test_wallet_positions_follow_signers_instead_of_input_order() -> None:

@@ -37,7 +37,6 @@ from statistics import mean
 
 import bdkpython as bdk
 import networkx as nx
-from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol, Satoshis
 from PIL import Image
 from PyQt6.QtCore import QBuffer, QByteArray, QIODevice, QRectF
 from PyQt6.QtGui import QColor, QImage, QPainter
@@ -153,8 +152,14 @@ def _fit_title(text: str, font: str, width: float) -> str:
     return text + "..."
 
 
-def _card(pdf: Canvas, x: float, y: float, width: float, height: float) -> None:
-    pdf.setFillColor(HexColor("#fafafa"))
+def _draw_page_title(pdf: Canvas, title: str, font: str, width: float, y: float, font_size: float) -> None:
+    title_width = pdfmetrics.stringWidth(title, font, font_size)
+    pdf.setFont(font, min(font_size, font_size * (width - 72) / max(title_width, 1)))
+    pdf.drawCentredString(width / 2, y, title)
+
+
+def _card(pdf: Canvas, x: float, y: float, width: float, height: float, signer: bool = False) -> None:
+    pdf.setFillColor(HexColor("#f7f7f7") if signer else HexColor("#ffffff"))
     pdf.setStrokeColor(BORDER)
     pdf.setLineWidth(0.8)
     pdf.roundRect(x, y, width, height, 9, fill=1, stroke=1)
@@ -173,7 +178,7 @@ def _descriptor_lines(wallet: Wallet) -> list[str]:
 
 
 def _wallet_height(wallet: Wallet) -> float:
-    return 175 + 4.5 * len(_descriptor_lines(wallet))
+    return 191 + 4.5 * len(_descriptor_lines(wallet))
 
 
 def _page_wallet_height(graph: nx.Graph, page: "GraphPage") -> float:
@@ -333,11 +338,13 @@ class CrossPageConnection:
     wallet_page: int
 
 
-def _cross_page_connections(graph: nx.Graph, pages: list[GraphPage]) -> list[CrossPageConnection]:
+def _cross_page_connections(
+    graph: nx.Graph, pages: list[GraphPage], page_offset: int = 0
+) -> list[CrossPageConnection]:
     """Identify edges which need matching continuation markers on two sheets."""
     signer_pages: dict[object, list[tuple[int, int]]] = {}
     wallet_pages: dict[object, int] = {}
-    for number, page in enumerate(pages, 1):
+    for number, page in enumerate(pages, 1 + page_offset):
         for position, (signer, _) in enumerate(page.signers, 1):
             signer_pages.setdefault(signer, []).append((number, position))
         for wallet in page.wallets:
@@ -449,6 +456,59 @@ def _draw_page_crossings(
             pdf.restoreState()
 
 
+class RecoveryGuideSheet(Flowable):
+    """A short, printable guide for the person using the overview."""
+
+    def __init__(self, font: str, created_with: str, title: str, created_date: str) -> None:
+        super().__init__()
+        self.font, self.created_with, self.title, self.created_date = font, created_with, title, created_date
+        width, height = landscape(A4)
+        self.width, self.height = width - 72, height - 72
+
+    def draw(self) -> None:
+        pdf = self.canv
+        pdf.translate(-36, -36)
+        width, height = landscape(A4)
+        pdf.setFillColor(INK)
+        _draw_page_title(pdf, self.title, self.font, width, height - 46, 18)
+        pdf.setFillColor(MUTED)
+        pdf.setFont(self.font, 9)
+        pdf.drawCentredString(width / 2, height - 65, f"{self.created_with} {APP_NAME}:  {APP_WEBSITE}")
+        pdf.setStrokeColor(BORDER)
+        pdf.line(75, height - 82, width - 75, height - 82)
+        pdf.setFillColor(INK)
+        pdf.setFont(self.font, 14)
+        pdf.drawString(95, height - 125, "HOW TO RECOVER A WALLET")
+        pdf.setFont(self.font, 11)
+        steps = [
+            "1. Choose a wallet on the right of the following pages.",
+            "2. Find the required signers by following the lines to the left.",
+            "3. Locate the signing devices or seed backups using the location fields.",
+            "4. Restore the wallet using its QR code in compatible Bitcoin wallet software.",
+            "5. Use the required signers to authorize transactions.",
+        ]
+        for index, step in enumerate(steps):
+            pdf.drawString(105, height - 160 - index * 29, step)
+        pdf.setFillColor(MUTED)
+        pdf.setFont(self.font, 10)
+        clarification = (
+            "A signing device and its seed backup are two ways of accessing the same signer. "
+            "A seed backup can restore access if the original device is lost. "
+            "An additional passphrase may also be required."
+        )
+        for index, line in enumerate(_wrapped_lines(clarification, self.font, width - 210, 10)):
+            pdf.drawString(105, height - 334 - index * 15, line)
+        pdf.setFillColor(INK)
+        pdf.setFont(self.font, 11)
+        pdf.drawString(
+            105, height - 410, "Never share seed words or passphrases, or enter them into a website."
+        )
+        pdf.setFillColor(MUTED)
+        pdf.setFont(self.font, 8)
+        pdf.drawString(36, 24, "Includes currently open wallets only. Other wallets may exist.")
+        draw_pdf_footer(pdf, width, self.font, self.created_date)
+
+
 class GraphSheet(Flowable):
     """A full graph sheet that can share a document with statement flowables."""
 
@@ -483,11 +543,16 @@ class GraphSheet(Flowable):
         font, created_with = self.font, self.created_with
         connections = self.connections
         pdf.setFillColor(INK)
-        pdf.setFont(font, 15)
-        pdf.drawCentredString(width / 2, height - 39, self.title)
+        _draw_page_title(pdf, self.title, font, width, height - 32, 15)
         pdf.setFillColor(MUTED)
         pdf.setFont(font, 9)
-        pdf.drawCentredString(width / 2, height - 57, f"{created_with} {APP_NAME}:  {APP_WEBSITE}")
+        pdf.drawCentredString(width / 2, height - 48, f"{created_with} {APP_NAME}:  {APP_WEBSITE}")
+        pdf.setFont(font, 8)
+        pdf.drawCentredString(
+            width / 2,
+            height - 63,
+            "Follow the lines to see which signing devices or seed backups can be used for each wallet.",
+        )
         pdf.setStrokeColor(BORDER)
         pdf.line(36, height - 70, width - 36, height - 70)
         left_x, right_x = 36, width - 274
@@ -501,8 +566,8 @@ class GraphSheet(Flowable):
         right_y = [positions[node] for node in page.wallets]
         pdf.setFillColor(MUTED)
         pdf.setFont(font, 8)
-        pdf.drawString(left_x, height - 85, "SIGNERS / SEEDS")
-        pdf.drawString(right_x, height - 85, "WALLETS / DESCRIPTORS")
+        pdf.drawString(left_x, height - 85, "SIGNING DEVICES & SEED BACKUPS")
+        pdf.drawString(right_x, height - 85, "BITCOIN WALLETS")
         # Draw connections first so they remain behind the cards.
         pdf.setStrokeColor(MUTED)
         pdf.setLineWidth(1.1)
@@ -517,10 +582,10 @@ class GraphSheet(Flowable):
                     )
         crossings = _page_crossings(graph, page, page_number, connections, left_x, right_x, left_y, right_y)
         _draw_page_crossings(pdf, crossings, left_x, right_x, font, page_number)
-        for signer_number, ((node, lines), y) in enumerate(zip(page.signers, left_y, strict=True), 1):
+        for (node, lines), y in zip(page.signers, left_y, strict=True):
             signer = graph.nodes[node]["signer"]
             top = y + _signer_height(lines)
-            _card(pdf, left_x, y, 300, _signer_height(lines))
+            _card(pdf, left_x, y, 300, _signer_height(lines), signer=True)
             pdf.setFillColor(PALE)
             pdf.roundRect(left_x + 10, top - 32, 24, 24, 5, fill=1, stroke=0)
             icon = _signer_icon(signer.hardware_signer_id)
@@ -528,24 +593,21 @@ class GraphSheet(Flowable):
                 pdf.drawImage(icon, left_x + 12, top - 30, 20, 20, mask="auto")
             pdf.setFillColor(INK)
             pdf.setFont(font, 11)
-            title = _fit_title(signer.label, font, 205)
+            shared_count = graph.degree[node]
+            title = _fit_title(signer.label, font, 145 if shared_count > 1 else 240)
             pdf.drawString(left_x + 42, top - 17, title)
             pdf.setFillColor(MUTED)
-            pdf.setFont(font, 8)
-            pdf.drawRightString(left_x + 288, top - 17, f"#{signer_number}")
+            if shared_count > 1:
+                pdf.setFont(font, 7)
+                pdf.drawRightString(left_x + 288, top - 17, f"Used by {shared_count} wallets")
             pdf.setFont(font, 8.5)
             fingerprint = signer.fingerprint.upper() if signer.fingerprint else "Not available"
-            pdf.drawString(left_x + 42, top - 30, f"Fingerprint  {fingerprint}")
+            pdf.drawString(left_x + 42, top - 30, f"Fingerprint: {fingerprint}")
             pdf.setFont(font, 7.5)
-            for i, line in enumerate(lines or ["No notes recorded"]):
+            for i, line in enumerate(lines):
                 pdf.drawString(left_x + 12, top - 42 - i * 8.5, line)
             pdf.setFont(font, 7)
-            signer_name = signer.label
-            while pdfmetrics.stringWidth(f"{signer_name} location:", font, 7) > 140 and signer_name:
-                signer_name = signer_name[:-1]
-            if signer_name != signer.label:
-                signer_name += "..."
-            signer_location = f"{signer_name} location:"
+            signer_location = "Signing device location:"
             pdf.drawString(left_x + 12, y + 34, signer_location)
             pdf.drawString(left_x + 12, y + 10, "Seed backup location:")
             pdf.setStrokeColor(MUTED)
@@ -564,28 +626,29 @@ class GraphSheet(Flowable):
             pdf.drawString(right_x + 12, top - 17, _fit_title(wallet.id, font, 210))
             pdf.setFillColor(MUTED)
             pdf.setFont(font, 8.5)
-            balance = Satoshis(wallet.get_balance().total, wallet.network).format(
-                color_formatting=None,
-                show_unit=True,
-                unicode_space_character=False,
-                btc_symbol=BitcoinSymbol.ISO.value,
+            policy = (
+                f"Requires any {threshold} of these {count} signers" if count > 1 else "Requires 1 signer"
             )
-            policy = f"{threshold} of {count} Multisig" if count > 1 else "Single signature"
-            summary = f"{policy}  |  Balance: {balance}"
-            summary_width = pdfmetrics.stringWidth(summary, font, 8.5)
-            pdf.setFont(font, min(8.5, 8.5 * 214 / max(summary_width, 1)))
-            pdf.drawString(right_x + 12, top - 31, summary)
-            _qr(pdf, str(wallet.multipath_descriptor), right_x + 56, top - 164, 125)
+            pdf.drawString(right_x + 12, top - 30, policy)
+            amount = wallet.get_balance().total
+            whole, fraction = divmod(abs(amount), 100_000_000)
+            balance = f"{'-' if amount < 0 else ''}{whole}.{fraction:08d} BTC"
+            if wallet.network != bdk.Network.BITCOIN:
+                balance += " (test coins)"
+            pdf.drawString(right_x + 12, top - 42, f"Balance: {balance}")
+            _qr(pdf, str(wallet.multipath_descriptor), right_x + 56, top - 171, 125)
+            pdf.setFont(font, 7.5)
+            pdf.drawCentredString(right_x + 119, top - 181, "Scan to restore wallet information.")
             pdf.setFillColor(INK)
             pdf.setFont("Courier", 4)
             for i, line in enumerate(_descriptor_lines(wallet)):
-                pdf.drawString(right_x + 12, top - 169 - i * 4.5, line)
+                pdf.drawString(right_x + 12, top - 190 - i * 4.5, line)
         pdf.setFillColor(MUTED)
         pdf.setFont(font, 8)
-        pdf.drawString(36, 24, "NEVER share the seed (12/24 words ) with ANYONE.")
+        pdf.drawString(36, 24, "Includes currently open wallets only. Other wallets may exist.")
         draw_pdf_footer(pdf, width, font, self.created_date)
         if connections:
-            pdf.drawRightString(width - 80, 24, "Lines at page edges continue on the indicated page.")
+            pdf.drawRightString(width - 36, 38, "Lines at page edges continue on the indicated page.")
 
 
 class SignerNotesSheet(Flowable):
@@ -611,7 +674,7 @@ class SignerNotesSheet(Flowable):
         for i, line in enumerate(self.lines):
             pdf.drawString(36, height - 85 - i * 11, line)
         pdf.setFont(self.font, 8)
-        pdf.drawString(36, 24, "NEVER share the seed (12/24 words ) with ANYONE.")
+        pdf.drawString(36, 24, "Includes currently open wallets only. Other wallets may exist.")
         draw_pdf_footer(pdf, width, self.font, self.created_date)
 
 
@@ -633,13 +696,15 @@ def export_inheritance_overview(
     """Render the graph followed by the existing wallet balance statements."""
     graph = wallet_graph(wallets)
     pages = _graph_pages(graph, font)
-    connections = _cross_page_connections(graph, pages)
+    connections = _cross_page_connections(graph, pages, page_offset=1)
     width, height = landscape(A4)
     created_date = pdf_timestamp()
-    sheets: list[Flowable] = [
-        GraphSheet(graph, page, i, font, created_with, _graph_title(wallets), created_date, connections)
-        for i, page in enumerate(pages, 1)
-    ]
+    title = _graph_title(wallets)
+    sheets: list[Flowable] = [RecoveryGuideSheet(font, created_with, title, created_date)]
+    sheets.extend(
+        GraphSheet(graph, page, i, font, created_with, title, created_date, connections)
+        for i, page in enumerate(pages, 2)
+    )
     for node in graph:
         if node[0] != "signer":
             continue
