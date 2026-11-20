@@ -52,56 +52,6 @@ from .wallet import Wallet
 logger = logging.getLogger(__name__)
 
 
-class NumberedPageCanvas(Canvas):
-    """
-    http://code.activestate.com/recipes/546511-page-x-of-y-with-reportlab/
-    http://code.activestate.com/recipes/576832/
-    http://www.blog.pythonlibrary.org/2013/08/12/reportlab-how-to-add-page-numbers/
-    """
-
-    def __init__(self, *args, **kwargs):
-        """Constructor."""
-        super().__init__(*args, **kwargs)
-        self.pages = []
-
-    def showPage(self):
-        """On a page break, add information to the list."""
-        self.pages.append(dict(self.__dict__))
-        self._startPage()  # type: ignore
-
-    def save(self):
-        """Add the page number to each page (page x of y)"""
-        page_count = len(self.pages)
-
-        for page in self.pages:
-            self.__dict__.update(page)
-            self.draw_page_number(page_count)
-            super().showPage()
-
-        super().save()
-
-    def draw_page_number(self, page_count):
-        """Draw "Page X of Y" in bottom-right corner."""
-        # Format the text
-        page_label = f"{self._pageNumber}/{page_count}"  # type: ignore
-
-        # Set font (or any styling you'd like)
-        self.setFont("Helvetica", 9)
-
-        # Get the current page size (width, height) in points
-        width, height = self._pagesize  # type: ignore
-
-        # Convert how far from the edges you want it to appear
-        # For example: 20 mm from the bottom, 20 mm from the right
-        from reportlab.lib.units import mm
-
-        x_position = width - 20 * mm  # 20 mm from the right edge
-        y_position = 10 * mm  # 10 mm from the bottom edge
-
-        # Use drawRightString to align the text to the right
-        self.drawRightString(x_position, y_position, page_label)
-
-
 class PdfStatement(BasePDF):
     def __init__(self, network: bdk.Network, lang_code: str, created_at: str | None = None) -> None:
         """Initialize instance."""
@@ -142,19 +92,7 @@ class PdfStatement(BasePDF):
         widths = [68, 211, 149, 100]
 
         table = Table(data, colWidths=widths, repeatRows=1, splitInRow=1)
-        table.setStyle(
-            TableStyle(
-                [
-                    ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
-                    ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
-                    ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
-                    ("BACKGROUND", (0, -1), (-1, -1), colors.lightgrey),
-                    ("TEXTCOLOR", (0, -1), (-1, -1), colors.whitesmoke),
-                ]
-            )
-        )
+        table.setStyle(self.statement_table_style(include_total=True))
         return table
 
     @staticmethod
