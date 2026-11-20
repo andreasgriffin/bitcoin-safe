@@ -34,6 +34,7 @@ from unittest.mock import Mock, patch
 
 import bdkpython as bdk
 
+from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.inheritance_overview import (
     MAX_SIGNER_NOTE_LINES,
     CrossPageConnection,
@@ -382,7 +383,7 @@ def test_recovery_guide_and_shared_signer_are_shown(tmp_path: Path) -> None:
     right_labels = [call.args[3] for call in draw_right.call_args_list]
     assert "HOW TO RECOVER A WALLET" in labels
     assert "Never share seed words or passphrases, or enter them into a website." in labels
-    assert "4. Restore the wallet using its QR code in Bitcoin-Safe.org, or with a wallet from:" in labels
+    assert f"4. Restore the wallet using its QR code in {APP_NAME}, or with a wallet from:" in labels
     assert "https://bitcoin.org/en/choose-your-wallet" in labels
     assert "5. Use the required signers to authorize transactions." in labels
     assert "Enter seed words only into a signing device, never into a computer or cellphone." in labels

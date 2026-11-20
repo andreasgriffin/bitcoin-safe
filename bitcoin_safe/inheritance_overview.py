@@ -484,7 +484,7 @@ class RecoveryGuideSheet(Flowable):
             "1. Choose a wallet on the right of the following pages.",
             "2. Find the required signers by following the lines to the left.",
             "3. Locate the signing devices or seed backups using the location fields.",
-            "4. Restore the wallet using its QR code in Bitcoin-Safe.org, or with a wallet from:",
+            f"4. Restore the wallet using its QR code in {APP_NAME}, or with a wallet from:",
         ]
         for index, step in enumerate(steps):
             pdf.drawString(105, height - 160 - index * 29, step)
