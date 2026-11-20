@@ -382,8 +382,14 @@ def test_recovery_guide_and_shared_signer_are_shown(tmp_path: Path) -> None:
     right_labels = [call.args[3] for call in draw_right.call_args_list]
     assert "HOW TO RECOVER A WALLET" in labels
     assert "Never share seed words or passphrases, or enter them into a website." in labels
+    assert "4. Restore the wallet using its QR code in Bitcoin-Safe.org, or with a wallet from:" in labels
+    assert "https://bitcoin.org/en/choose-your-wallet" in labels
+    assert "5. Use the required signers to authorize transactions." in labels
+    assert "Enter seed words only into a signing device, never into a computer or cellphone." in labels
+    assert "Never take a picture of your seed words." in labels
     assert "Balance: 0.00000000 BTC" in labels
-    assert "Includes currently open wallets only. Other wallets may exist." in labels
+    assert "Includes currently open wallets only. Other wallets may exist." not in labels
+    assert not any("A signing device and its seed backup are two ways" in label for label in labels)
     assert right_labels.count("Used by 2 wallets") == 1
     assert len(draw_qr.call_args_list) == 2
     assert all(

@@ -484,28 +484,26 @@ class RecoveryGuideSheet(Flowable):
             "1. Choose a wallet on the right of the following pages.",
             "2. Find the required signers by following the lines to the left.",
             "3. Locate the signing devices or seed backups using the location fields.",
-            "4. Restore the wallet using its QR code in compatible Bitcoin wallet software.",
-            "5. Use the required signers to authorize transactions.",
+            "4. Restore the wallet using its QR code in Bitcoin-Safe.org, or with a wallet from:",
         ]
         for index, step in enumerate(steps):
             pdf.drawString(105, height - 160 - index * 29, step)
-        pdf.setFillColor(MUTED)
-        pdf.setFont(self.font, 10)
-        clarification = (
-            "A signing device and its seed backup are two ways of accessing the same signer. "
-            "A seed backup can restore access if the original device is lost. "
-            "An additional passphrase may also be required."
+        wallet_url = "https://bitcoin.org/en/choose-your-wallet"
+        pdf.drawString(120, height - 265, wallet_url)
+        pdf.linkURL(
+            wallet_url,
+            (120, height - 268, 120 + pdfmetrics.stringWidth(wallet_url, self.font, 11), height - 254),
         )
-        for index, line in enumerate(_wrapped_lines(clarification, self.font, width - 210, 10)):
-            pdf.drawString(105, height - 334 - index * 15, line)
-        pdf.setFillColor(INK)
-        pdf.setFont(self.font, 11)
+        pdf.drawString(105, height - 305, "5. Use the required signers to authorize transactions.")
         pdf.drawString(
-            105, height - 410, "Never share seed words or passphrases, or enter them into a website."
+            105,
+            height - 350,
+            "Enter seed words only into a signing device, never into a computer or cellphone.",
         )
-        pdf.setFillColor(MUTED)
-        pdf.setFont(self.font, 8)
-        pdf.drawString(36, 24, "Includes currently open wallets only. Other wallets may exist.")
+        pdf.drawString(105, height - 374, "Never take a picture of your seed words.")
+        pdf.drawString(
+            105, height - 398, "Never share seed words or passphrases, or enter them into a website."
+        )
         draw_pdf_footer(pdf, width, self.font, self.created_date)
 
 
@@ -643,11 +641,10 @@ class GraphSheet(Flowable):
             pdf.setFont("Courier", 4)
             for i, line in enumerate(_descriptor_lines(wallet)):
                 pdf.drawString(right_x + 12, top - 190 - i * 4.5, line)
-        pdf.setFillColor(MUTED)
-        pdf.setFont(font, 8)
-        pdf.drawString(36, 24, "Includes currently open wallets only. Other wallets may exist.")
         draw_pdf_footer(pdf, width, font, self.created_date)
         if connections:
+            pdf.setFillColor(MUTED)
+            pdf.setFont(font, 8)
             pdf.drawRightString(width - 36, 38, "Lines at page edges continue on the indicated page.")
 
 
@@ -673,8 +670,6 @@ class SignerNotesSheet(Flowable):
         pdf.setFont(self.font, 8.5)
         for i, line in enumerate(self.lines):
             pdf.drawString(36, height - 85 - i * 11, line)
-        pdf.setFont(self.font, 8)
-        pdf.drawString(36, 24, "Includes currently open wallets only. Other wallets may exist.")
         draw_pdf_footer(pdf, width, self.font, self.created_date)
 
 
