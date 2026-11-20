@@ -72,8 +72,7 @@ class SignerDetails:
     label: str
     fingerprint: str
     hardware_signer_id: str
-    details: list[str] = field(default_factory=list)
-    notes: set[str] = field(default_factory=set)
+    notes: list[tuple[str, str]] = field(default_factory=list)
 
 
 def wallet_graph(wallets: list[Wallet]) -> nx.Graph:
@@ -100,9 +99,8 @@ def wallet_graph(wallets: list[Wallet]) -> nx.Graph:
                 )
             details: SignerDetails = graph.nodes[signer_node]["signer"]
             note = signer.description.strip()
-            if note and note not in details.notes:
-                details.notes.add(note)
-                details.details.append(f"{wallet.id} note: {note}")
+            if note and all(existing != note for _, existing in details.notes):
+                details.notes.append((wallet.id, note))
             graph.add_edge(signer_node, wallet_node)
     return graph
 
@@ -186,7 +184,13 @@ MAX_SIGNER_NOTE_LINES = 5
 
 
 def _signer_note_lines(details: SignerDetails, font: str) -> list[str]:
-    return [line for note in details.details for line in _wrapped_lines(note, font, 260, 7.5)]
+    return [
+        line
+        for wallet_name, note in details.notes
+        for line in _wrapped_lines(
+            f"{wallet_name} note: {note}" if len(details.notes) > 1 else note, font, 260, 7.5
+        )
+    ]
 
 
 def _card_note_lines(details: SignerDetails, font: str) -> list[str]:

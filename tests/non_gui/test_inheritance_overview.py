@@ -117,9 +117,7 @@ def test_shared_signer_keeps_notes_without_derivation_paths() -> None:
     second.keystores[0].key_origin = "m/48h/1h/0h/2h"
     graph = wallet_graph([first, second])
     details = graph.nodes[("signer", ("aabbccdd", "generic"))]["signer"].notes
-    assert details == [
-        "First note: Stored securely",
-    ]
+    assert details == [("First", "Stored securely")]
 
 
 def test_long_note_continues_on_another_page(tmp_path: Path) -> None:
@@ -458,8 +456,8 @@ def test_same_fingerprint_on_different_devices_stays_separate() -> None:
     pages = _graph_pages(graph, "Helvetica")
     assert len(pages) == 2
     assert not _cross_page_connections(graph, pages)
-    assert graph.nodes[coldcard_node]["signer"].details == ["Multisig 1 note: Coldcard note"]
-    assert graph.nodes[bitbox_node]["signer"].details == ["Multisig 2 note: BitBox note"]
+    assert graph.nodes[coldcard_node]["signer"].notes == [("Multisig 1", "Coldcard note")]
+    assert graph.nodes[bitbox_node]["signer"].notes == [("Multisig 2", "BitBox note")]
 
 
 def test_matching_fingerprint_and_device_deduplicate() -> None:
