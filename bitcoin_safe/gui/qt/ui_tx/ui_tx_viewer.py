@@ -332,7 +332,6 @@ class UITx_Viewer(UITx_Base):
         self._place_header_controls(self.column_fee.header_widget)
         self.splitter.addWidget(self.column_fee)
 
-        self.splitter.setSizes([1, 10, 1, 1])
         self.splitter.setCollapsible(self.splitter.indexOf(self.column_inputs), True)
         self.splitter.setCollapsible(self.splitter.indexOf(self.column_recipients), False)
         self.splitter.setCollapsible(self.splitter.indexOf(self.column_sankey), True)
