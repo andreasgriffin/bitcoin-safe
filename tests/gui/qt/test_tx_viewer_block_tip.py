@@ -45,6 +45,28 @@ RAW_TX = "0200000000010130e2288abc2259145cbd255a0cc94fe7226d26130b216100a9d631d7
 
 
 @pytest.mark.marker_qt_2
+def test_locktime_viewer_fee_column_width(qapp: QApplication, qtbot: QtBot, test_config: TestConfig) -> None:
+    with main_window_context(test_config=test_config) as main_window:
+        widths = []
+        for raw_tx in (RAW_TX, RAW_TX[:-8] + "d700a570"):
+            main_window.signals.open_tx_like.emit(raw_tx)
+            viewer = main_window.tab_wallets.currentNode().data
+            assert isinstance(viewer, UITx_Viewer)
+            qtbot.waitUntil(viewer.isVisible)
+            QApplication.processEvents()
+            column = viewer.column_fee
+            widths.append(column.width())
+            assert column.width() == column.minimumSizeHint().width()
+            if viewer.extract_tx().lock_time():
+                assert column.nlocktime_group.isVisible()
+            else:
+                assert not column.nlocktime_group.isVisible()
+        assert widths[0] == widths[1]
+        viewer.splitter.setSizes([0, 300, 0, 240])
+        assert viewer.column_fee.width() > viewer.column_fee.minimumSizeHint().width()
+
+
+@pytest.mark.marker_qt_2
 def test_block_tip_height_arriving_during_initial_reload_is_not_missed(
     qapp: QApplication,
     qtbot: QtBot,
