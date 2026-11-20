@@ -248,7 +248,7 @@ class PdfStatement(BasePDF):
         label_sync_nsec: str | None = None,
     ) -> None:
         """Create pdf."""
-        self.elements.append(Paragraph(title, style=self.style_heading))
+        self.elements.append(Paragraph(escape(title), style=self.style_heading))
 
         # Small subtitle
         self.elements.append(

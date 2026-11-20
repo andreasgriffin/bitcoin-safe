@@ -110,6 +110,23 @@ def test_pdf_export_with_multiple_pages(tmp_path: Path) -> None:
     assert pdf.count(b"/Type /Page\n") == 5
 
 
+def test_wallet_name_with_markup_is_literal_in_combined_pdf(tmp_path: Path) -> None:
+    from reportlab.platypus import Paragraph
+
+    from bitcoin_safe.pdf_statement import create_pdf_statement
+
+    name = "Family <b> & <unclosed"
+    named_wallet = wallet(name, ["00000001"])
+    statement = create_pdf_statement(named_wallet, "en_US")
+    title = statement.elements[0]
+    assert isinstance(title, Paragraph)
+    assert name in title.getPlainText()
+
+    path = tmp_path / "overview.pdf"
+    export_inheritance_overview([named_wallet], path)
+    assert path.read_bytes().startswith(b"%PDF-")
+
+
 def test_shared_signer_keeps_notes_without_derivation_paths() -> None:
     first = wallet("First", ["AABBCCDD"])
     second = wallet("Second", ["AABBCCDD"])

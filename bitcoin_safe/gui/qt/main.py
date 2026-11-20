@@ -1020,7 +1020,7 @@ class MainWindow(UnlockableMainWindow):
         )
 
         self.menu_action_print_overview = self.menu_wallet.add_action(
-            "", self.open_inheritance_overview, icon=svg_tools.get_QIcon("bi--filetype-pdf.svg")
+            "", self.print_current_view, icon=svg_tools.get_QIcon("bi--filetype-pdf.svg")
         )
         self.menu_action_print_overview.setShortcut(QKeySequence("CTRL+P"))
 
@@ -1785,6 +1785,14 @@ class MainWindow(UnlockableMainWindow):
             return
 
         make_and_open_pdf(qt_wallet.wallet, lang_code=QLocale().name())
+
+    def print_current_view(self) -> None:
+        """Print the active transaction or the inheritance overview."""
+        current_widget = self.tab_wallets.currentWidget()
+        if isinstance(current_widget, UITx_Viewer):
+            current_widget.export_data_simple.button_export_file.export_to_pdf()
+            return
+        self.open_inheritance_overview()
 
     def open_inheritance_overview(self) -> None:
         """Export the relationships between all currently open wallets."""

@@ -36,6 +36,7 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
+from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 
 from .helpers import main_window_context
 
@@ -61,6 +62,25 @@ def test_print_and_export_menu_actions(qtbot: QtBot, test_config: UserConfig) ->
         assert pdf.call_count == 2
         assert open_pdf.call_count == 2
         selected.export_pdf_statement.assert_called_once_with()
+
+
+def test_print_action_exports_active_transaction(qtbot: QtBot, test_config: UserConfig) -> None:
+    viewer = Mock(spec=UITx_Viewer)
+    viewer.export_data_simple = SimpleNamespace(button_export_file=SimpleNamespace(export_to_pdf=Mock()))
+    with (
+        patch("bitcoin_safe.gui.qt.main.get_wallets", return_value=[object()]),
+        patch("bitcoin_safe.gui.qt.main.InheritanceOverviewPDF") as overview,
+        patch("bitcoin_safe.gui.qt.main.write_and_open_temp_pdf") as open_pdf,
+        main_window_context(test_config) as window,
+    ):
+        qtbot.addWidget(window)
+        with patch.object(window.tab_wallets, "currentWidget", return_value=viewer):
+            window.menu_action_print_overview.trigger()
+            viewer.export_data_simple.button_export_file.export_to_pdf.assert_called_once_with()
+            overview.assert_not_called()
+            window.menu_action_export_inheritance_overview.trigger()
+        overview.assert_called_once()
+        open_pdf.assert_called_once()
 
 
 def test_balance_statement_uses_selected_wallet() -> None:
