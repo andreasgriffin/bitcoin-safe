@@ -47,6 +47,7 @@ bitcoin-safe-lib = {  git = "https://github.com/andreasgriffin/bitcoin-safe-lib.
 btcpay-tools = { git = "https://github.com/andreasgriffin/btcpay-tools.git", branch = "main" }
 aiohttp = "^3.12.13"
 aiohttp-socks = "^0.10.1"
+argon2-cffi = ">=23.1.0"
 pycryptodome = ">=3.23.0"  # for hash160, since it is not in default openssl
 cryptography = [
     # macOS Intel / x86_64: keep the last version with compatible wheels
