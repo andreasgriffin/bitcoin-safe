@@ -665,6 +665,7 @@ def extract_sparrow_h2_rows_python(
     path: str | Path,
     password: str | None = None,
     bip39_passphrase: str | None = None,
+    bip39_passphrases: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     """Read public data and recover BIP39 metadata without Java or disk plaintext.
 
@@ -677,7 +678,13 @@ def extract_sparrow_h2_rows_python(
         data = store.public_rows()
         from .sparrow_seed_public import augment_public_rows_from_seeds
 
-        augment_public_rows_from_seeds(store, data, password, bip39_passphrase)
+        augment_public_rows_from_seeds(
+            store,
+            data,
+            password,
+            bip39_passphrase=bip39_passphrase,
+            bip39_passphrases=bip39_passphrases,
+        )
         return data
     except ExchangeError:
         raise

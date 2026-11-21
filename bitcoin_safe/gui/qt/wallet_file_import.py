@@ -94,12 +94,14 @@ class ImportWorker(QThread):
         trezor_account_key: str = "",
         trezor_metadata_version: int = 1,
         bip39_passphrase: str | None = None,
+        bip39_passphrases: dict[str, str] | None = None,
     ) -> None:
         super().__init__(parent)
         self.path = path
         self.format_id = format_id
         self.password = password
         self.bip39_passphrase = bip39_passphrase
+        self.bip39_passphrases = dict(bip39_passphrases or {})
         self.trezor_metadata = trezor_metadata
         self.trezor_account_key = trezor_account_key
         self.trezor_metadata_version = trezor_metadata_version
@@ -111,6 +113,7 @@ class ImportWorker(QThread):
                 hint=self.format_id,
                 password=self.password,
                 bip39_passphrase=self.bip39_passphrase,
+                bip39_passphrases=self.bip39_passphrases,
                 trezor_metadata=self.trezor_metadata or None,
                 trezor_account_key=self.trezor_account_key or None,
                 trezor_usb=bool(self.trezor_metadata),
@@ -135,6 +138,7 @@ class ImportWorker(QThread):
         finally:
             self.password = None
             self.bip39_passphrase = None
+            self.bip39_passphrases = {}
 
 
 class WalletFileImportScreen(QWidget):
@@ -143,7 +147,7 @@ class WalletFileImportScreen(QWidget):
     signal_import_ready = cast(SignalProtocol[[ProtoWallet, WalletExchange]], pyqtSignal(object, object))
     signal_cancel = cast(SignalProtocol[[]], pyqtSignal())
     signal_busy_changed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
-    formats_with_labels = frozenset({"electrum", "sparrow", "specter", "wasabi"})
+    formats_with_labels = frozenset({"electrum", "sparrow", "specter"})
 
     def __init__(self, wallet_id: str, network: bdk.Network, parent: QWidget | None = None) -> None:
         super().__init__(parent)
@@ -152,6 +156,9 @@ class WalletFileImportScreen(QWidget):
         self.wallets: list[WalletExchange] = []
         self.worker: ImportWorker | None = None
         self._pending_password_prompt = False
+        self._pending_signer_prompts: list[tuple[str, str]] = []
+        self._signer_passphrases: dict[str, str] = {}
+        self._source_wallet_password: str | None = None
         outer_layout = QVBoxLayout(self)
         outer_layout.setContentsMargins(28, 24, 28, 24)
         title = QLabel(self.tr("Import wallet file"), self)
@@ -196,10 +203,12 @@ class WalletFileImportScreen(QWidget):
         self.specter_path = self._file_row(
             form, self.tr("Specter address CSV (optional)"), self.tr("Choose address CSV")
         )
-        self.bip39_passphrase = QLineEdit(self)
-        self.bip39_passphrase.setEchoMode(QLineEdit.EchoMode.Password)
-        self.bip39_passphrase.setPlaceholderText(self.tr("Only if the signer uses a BIP39 passphrase"))
-        form.addRow(self.tr("BIP39 passphrase (optional)"), self.bip39_passphrase)
+        self.bip39_passphrase = QLabel(
+            self.tr("Passphrases are requested separately for each software signer after reading the file."),
+            self,
+        )
+        self.bip39_passphrase.setWordWrap(True)
+        form.addRow(self.tr("BIP39 signer passphrases"), self.bip39_passphrase)
         self.trezor_labels = self._file_row(
             form, self.tr("Legacy Trezor labels (optional)"), self.tr("Choose .mtdt file")
         )
@@ -243,7 +252,6 @@ class WalletFileImportScreen(QWidget):
         layout.addLayout(self.button_row)
         self.format.currentIndexChanged.connect(self.update_format)
         self.wallet_path.textChanged.connect(self.clear_accounts)
-        self.bip39_passphrase.textChanged.connect(self.clear_accounts)
         self.trezor_labels.textChanged.connect(self.clear_accounts)
         self.trezor_key.textChanged.connect(self.clear_accounts)
         self.trezor_version.currentIndexChanged.connect(self.clear_accounts)
@@ -267,6 +275,9 @@ class WalletFileImportScreen(QWidget):
             edit.setText(path)
 
     def clear_accounts(self) -> None:
+        self._signer_passphrases.clear()
+        self._source_wallet_password = None
+        self._pending_signer_prompts = []
         self.wallets = []
         self.accounts.clear()
         self.accounts.setEnabled(False)
@@ -289,7 +300,11 @@ class WalletFileImportScreen(QWidget):
                 "Ledger Live account exports and password-protected Desktop app.json files are supported. Use the Ledger Live application password, not the device PIN."
             )
         elif fmt == "wasabi":
-            info = self.tr("Wasabi public wallet data can be imported without a password.")
+            info = self.tr(
+                "Wasabi public wallet data is imported without a password. Supported native SegWit "
+                "labels are converted from verified key paths. You can also select a BIP-329 "
+                "labels file for labels that cannot be resolved."
+            )
         elif fmt == "green":
             info = self.tr(
                 "Green login files cannot be imported. To import a supported Bitcoin singlesig account, "
@@ -358,6 +373,10 @@ class WalletFileImportScreen(QWidget):
         self.start_import(password)
 
     def start_import(self, password: str | None) -> None:
+        self._source_wallet_password = password
+        self.wallets = []
+        self.accounts.clear()
+        self.import_button.setEnabled(False)
         path = str(Path(self.wallet_path.text().strip()).expanduser())
         fmt = str(self.format.currentData())
         self.worker = ImportWorker(
@@ -365,7 +384,7 @@ class WalletFileImportScreen(QWidget):
             fmt,
             password,
             self,
-            bip39_passphrase=(self.bip39_passphrase.text() or None) if fmt == "sparrow" else None,
+            bip39_passphrases=dict(self._signer_passphrases) if fmt == "sparrow" else None,
             trezor_metadata=self.trezor_labels.text().strip() if fmt == "trezor" else "",
             trezor_account_key=self.trezor_key.text().strip() if fmt == "trezor" else "",
             trezor_metadata_version=int(self.trezor_version.currentData()),
@@ -388,6 +407,18 @@ class WalletFileImportScreen(QWidget):
 
     def on_loaded(self, wallets: list[WalletExchange]) -> None:
         self.wallets = wallets
+        self._pending_signer_prompts = []
+        seen: set[str] = set()
+        for account in wallets:
+            for index, key in enumerate(account.keystores, 1):
+                ref = key.extra.get("signer_input_ref")
+                required = key.extra.get("signer_input_required")
+                if not required or not isinstance(ref, str) or not ref or ref in seen:
+                    continue
+                seen.add(ref)
+                if ref not in self._signer_passphrases:
+                    label = key.label or self.tr("Signer {index}").format(index=index)
+                    self._pending_signer_prompts.append((ref, f"{account.name} — {label}"))
         for account in wallets:
             state = self.tr("ready") if account.descriptor else self.tr("descriptor unavailable")
             self.accounts.addItem(f"{account.name} — {account.network} — {state}")
@@ -449,6 +480,22 @@ class WalletFileImportScreen(QWidget):
         self.worker = None
         self.update_account_state()
         self.signal_busy_changed.emit(False)
+        if self._pending_signer_prompts:
+            requests = self._pending_signer_prompts
+            self._pending_signer_prompts = []
+            for ref, label in requests:
+                phrase, accepted = QInputDialog.getText(
+                    self,
+                    self.tr("Sparrow signer BIP39 passphrase"),
+                    self.tr("BIP39 passphrase for {signer}:").format(signer=label),
+                    QLineEdit.EchoMode.Password,
+                )
+                if not accepted:
+                    self.status.setText(self.tr("Signer passphrase entry cancelled. No wallet was imported."))
+                    return
+                self._signer_passphrases[ref] = phrase
+            self.start_import(self._source_wallet_password)
+            return
         if self._pending_password_prompt:
             self._pending_password_prompt = False
             password = PasswordQuestion(
@@ -641,4 +688,6 @@ class WalletFileImportScreen(QWidget):
             != QMessageBox.StandardButton.Ok
         ):
             return
+        self._signer_passphrases.clear()
+        self._source_wallet_password = None
         self.signal_import_ready.emit(proto, exchange)

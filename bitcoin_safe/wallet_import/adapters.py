@@ -739,6 +739,7 @@ def load_file(
     trezor_usb: bool = False,
     trezor_metadata_version: int = 1,
     bip39_passphrase: str | None = None,
+    bip39_passphrases: dict[str, str] | None = None,
 ) -> list[WalletExchange]:
     if bool(trezor_metadata) != trezor_usb:
         raise ExchangeError("Trezor metadata and device access must be provided together")
@@ -761,6 +762,7 @@ def load_file(
             password=password,
             derive_public_from_seeds=derive_public_from_seeds,
             bip39_passphrase=bip39_passphrase,
+            bip39_passphrases=bip39_passphrases,
         )
         if specter_addresses:
             raise ExchangeError("--specter-addresses is for Specter, not Sparrow")
@@ -774,6 +776,8 @@ def load_file(
                 )
             import_bip329_jsonl(out[0], p.read_text(encoding="utf-8-sig"))
         return out
+    if bip39_passphrases:
+        raise ExchangeError("Individual BIP39 passphrases require a Sparrow H2 wallet")
     if file.stat().st_size > MAX_FILE:
         raise ExchangeError("Wallet file exceeds safe maximum size")
     raw = file.read_bytes()

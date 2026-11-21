@@ -290,6 +290,8 @@ def from_sparrow_h2_rows(data: dict[str, Any], filename: str = "Sparrow wallet")
                     {
                         "software_signer_present": row.get("seed") is not None,
                         "extended_signer_present": row.get("masterPrivateExtendedKey") is not None,
+                        "signer_input_ref": row.get("bip39PassphraseRef"),
+                        "signer_input_required": bool(row.get("bip39PassphraseRequired")),
                     }
                 )
                 source = _enum(KEY_SOURCE_NAMES, row.get("source"), "keystore source")
@@ -476,6 +478,7 @@ def load_sparrow_h2(
     password: str | None = None,
     derive_public_from_seeds: bool = True,
     bip39_passphrase: str | None = None,
+    bip39_passphrases: dict[str, str] | None = None,
 ) -> list[WalletExchange]:
     """Recover public metadata from a Sparrow database without modifying it."""
     if not derive_public_from_seeds:
@@ -492,6 +495,6 @@ def load_sparrow_h2(
     if not header.startswith(H2_MAGIC) and password is not None:
         raise ExchangeError("Unencrypted Sparrow H2 database: do not supply a password")
     return from_sparrow_h2_rows(
-        extract_sparrow_h2_rows_python(file, password, bip39_passphrase),
+        extract_sparrow_h2_rows_python(file, password, bip39_passphrase, bip39_passphrases),
         filename=file.name,
     )
