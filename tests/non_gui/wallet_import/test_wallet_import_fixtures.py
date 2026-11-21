@@ -56,7 +56,9 @@ def test_import_wasabi_wallet_fixture() -> None:
         assert key.xpub and key.xpub.startswith("tpub")
         assert key.recovery_material == "PRIVATE_KEY_REDACTED"
         assert "6PYTvTFQ" not in wallet.to_json()
+    assert not wallets[0].labels
     assert len(wallets[1].labels) == 2
+    assert all(not wallet.extra.get("unresolved_path_labels") for wallet in wallets)
 
 
 def test_private_extended_key_in_text_is_rejected() -> None:

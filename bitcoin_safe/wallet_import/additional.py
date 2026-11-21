@@ -158,6 +158,11 @@ def from_wasabi(
     }.get(str(state.get("Network", "")).lower(), "unknown")
     if net == "unknown":
         raise ExchangeError("Unsupported Wasabi network; cannot safely infer account")
+    account_paths = [
+        norm_path(value)
+        for value in (data.get("AccountKeyPath"), data.get("TaprootAccountKeyPath"))
+        if isinstance(value, str) and value
+    ]
     specs = [
         ("Segwit", "ExtPubKey", "AccountKeyPath", "P2WPKH", 84),
         ("Taproot", "TaprootExtPubKey", "TaprootAccountKeyPath", "P2TR", 86),
@@ -236,15 +241,12 @@ def from_wasabi(
             # for a *different* supported account is not an unresolved label
             # for this one, and must not be offered to the wrong wallet.
             if full_path and k.key_origin:
-                other_paths = (
-                    norm_path(data[p])
-                    for p in ("AccountKeyPath", "TaprootAccountKeyPath")
-                    if isinstance(data.get(p), str) and data[p]
-                )
                 if any(
-                    other != k.key_origin and full_path.startswith(other + "/")
-                    for other in other_paths
-                    if other
+                    [
+                        other != k.key_origin and full_path.startswith(other + "/")
+                        for other in account_paths
+                        if other
+                    ]
                 ):
                     continue
             # Associate a label only with this account's exact public
