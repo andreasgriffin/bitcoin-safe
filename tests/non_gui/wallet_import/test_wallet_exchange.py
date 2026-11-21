@@ -336,15 +336,15 @@ def test_exchange_roundtrip_and_non_mainnet_keystore_seed_guard():
         WalletExchange.from_dict(compromised)
 
 
-def test_multi_account_export_and_inconsistent_keys():
+def test_unsupported_multi_account_export_and_inconsistent_keys():
     src = {
         "accounts": [
             {"symbol": "btc", "accountType": "normal", "descriptor": xpub(), "path": "m/84h/0h/0h"},
             {"symbol": "btc", "accountType": "taproot", "descriptor": xpub(), "path": "m/86h/0h/0h"},
         ]
     }
-    wallets = load_json_obj(src)
-    assert len(wallets) == 2 and all(wallet.descriptor for wallet in wallets)
+    with pytest.raises(ExchangeError, match="Unknown wallet format"):
+        load_json_obj(src)
     mismatch = {
         "name": "Bad",
         "keys": [{"xpub": xpub(0x043587CF)}],

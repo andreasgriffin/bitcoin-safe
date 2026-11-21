@@ -198,18 +198,23 @@ def test_testnet_h2_seed_recovery_and_passphrase_guard(monkeypatch):
         return [(1, [7, None, None, sql])] if map_id == 1 else [(1, seed)]
 
     monkeypatch.setattr(_MVStore, "map_id", map_id)
-    key = {"seed": 42, "source": 2, "derivationPath": "m/84h/1h/0h"}
+    key = {"id": 7, "seed": 42, "source": 2, "derivationPath": "m/84h/1h/0h"}
     data = {"schemas": [{"schema": "wallet_test", "wallet": [{"network": 1}], "keystore": [key]}]}
     assert augment_public_rows_from_seeds(store, data, None) == 1
     assert key["bip39Mnemonic"] == SYNTHETIC_WORDS
     seed[3] = True
     key.clear()
-    key.update({"seed": 42, "source": 2, "derivationPath": "m/84h/1h/0h"})
+    key.update({"id": 7, "seed": 42, "source": 2, "derivationPath": "m/84h/1h/0h"})
     assert augment_public_rows_from_seeds(store, data, None) == 0
     assert key["bip39PassphraseRequired"]
+    assert key["bip39PassphraseRef"] == "wallet_test:7"
     assert "bip39Mnemonic" not in key
-    assert augment_public_rows_from_seeds(store, data, None, "hidden") == 1
+    expected = _derived_account_pub(SYNTHETIC_WORDS, "m/84h/1h/0h", False, "hidden")[0]
+    key["extendedPublicKey"] = expected
+    with pytest.raises(ExchangeError, match="does not match"):
+        augment_public_rows_from_seeds(store, data, None, bip39_passphrases={"wallet_test:7": "wrong"})
     assert (
-        key["extendedPublicKey"] == _derived_account_pub(SYNTHETIC_WORDS, "m/84h/1h/0h", False, "hidden")[0]
+        augment_public_rows_from_seeds(store, data, None, bip39_passphrases={"wallet_test:7": "hidden"}) == 1
     )
+    assert key["extendedPublicKey"] == expected
     assert "bip39Mnemonic" not in key
