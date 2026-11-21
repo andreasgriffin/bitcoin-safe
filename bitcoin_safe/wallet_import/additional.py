@@ -35,6 +35,7 @@ its depth and last child number, but not its complete hardened ancestry.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from typing import Any
 
@@ -42,6 +43,7 @@ from .adapters import _public_key, _resolve_network
 from .descriptors import (
     add_checksum,
     b58decode_check,
+    b58encode_check,
     descriptor_for_keys,
     norm_path,
     strip_checksum,
@@ -65,7 +67,10 @@ def _check_wasabi_origin(path: str, account_xpub: str, network: str, purpose: in
     # Wasabi's account xpub uses BIP84/86 purpose'/coin'/account'.
     if len(components) != 3 or components[0] != f"{purpose}h":
         raise ExchangeError("Wasabi account origin has an unexpected purpose or BIP32 depth")
-    coin = "0h" if network == "mainnet" else "1h"
+    # Wasabi intentionally uses Bitcoin coin type 0' on RegTest, unlike
+    # TestNet/TestNet4/Signet which use coin type 1'. This is documented by
+    # Wasabi itself and must not be "fixed" to BIP44's usual test coin type.
+    coin = "0h" if network in ("mainnet", "regtest") else "1h"
     if components[1] != coin or not components[2].endswith("h"):
         raise ExchangeError("Wasabi account origin disagrees with the wallet network or account level")
     try:
@@ -81,6 +86,53 @@ def _check_wasabi_origin(path: str, account_xpub: str, network: str, purpose: in
     if encoded_child != (account | 0x80000000):
         raise ExchangeError("Wasabi derivation path account number disagrees with the account xpub")
     return canonical
+
+
+def _canonical_regtest_xpub(keystore: Any, network: str) -> None:
+    """Re-serialize Wasabi's RegTest xpub as a tpub for Bitcoin Safe.
+
+    Wasabi's NBitcoin RegTest wallet export uses mainnet BIP32 public-version
+    bytes, even though its output addresses belong to regtest. The xpub / tpub
+    prefix is metadata, NOT part of the account key: rewrite ONLY its four
+    version bytes (preserve depth, child, chaincode and compressed public key).
+
+    This exception is limited to explicitly-declared RegTest exports; on
+    TestNet/Signet a mainnet xpub still fails the ordinary network check.
+    """
+    if network != "regtest" or not keystore.xpub:
+        return
+    payload = b58decode_check(keystore.xpub)
+    if payload[:4] != bytes.fromhex("0488b21e"):
+        return  # Existing tpub is already correct.
+    if keystore.raw_xpub_prefix != "xpub":
+        raise ExchangeError("Unexpected Wasabi RegTest extended public key format")
+    keystore.xpub = b58encode_check(bytes.fromhex("043587cf") + payload[4:])
+    keystore.extra["wasabi_regtest_xpub_version_normalized"] = True
+
+
+def _taproot_bip86_address(keystore: Any, network: str, branch: int, index: int) -> str:
+    """Calculate BIP86 P2TR address using only an account public key.
+
+    The internal key is lifted to even Y as defined by BIP341, then tweaked
+    with TapTweak. This is ONLY for deriving verified Wasabi BIP86 labels; no
+    seed or signing key is accessed. Bech32m is used for witness version 1.
+    """
+    from .sparrow_crypto import N, _point_add, _point_from_compressed, _scalar_mul
+    from .sparrow_h2 import _bech32_encode
+    from .verification import G, derive_pubkey
+
+    internal_compressed = derive_pubkey(keystore, branch, index)
+    internal_x = internal_compressed[1:]
+    internal_even = _point_from_compressed(b"\x02" + internal_x)
+    tag = hashlib.sha256(b"TapTweak").digest()
+    tweak = int.from_bytes(hashlib.sha256(tag + tag + internal_x).digest(), "big")
+    if tweak >= N:
+        raise ExchangeError("Invalid BIP86 output-key tweak")
+    output = _point_add(internal_even, _scalar_mul(tweak, G)) if tweak else internal_even
+    if output is None:
+        raise ExchangeError("Invalid BIP86 output key")
+    hrp = "bc" if network == "mainnet" else "bcrt" if network == "regtest" else "tb"
+    return _bech32_encode(hrp, 1, output[0].to_bytes(32, "big"))
 
 
 def from_wasabi(
@@ -136,6 +188,9 @@ def from_wasabi(
             k.key_origin = _check_wasabi_origin(k.key_origin, k.xpub or "", net, purpose)
         elif path is not None and path != "":
             raise ExchangeError("Wasabi account derivation path is malformed")
+        # Check against Wasabi's ORIGINAL key first. Only then adapt RegTest's
+        # xpub serialization to Bitcoin Safe's BDK-compatible test-network tpub.
+        _canonical_regtest_xpub(k, net)
         if data.get("EncryptedSecret") is not None:
             k.recovery_material = "PRIVATE_KEY_REDACTED"
             w.warnings.append(
@@ -177,11 +232,26 @@ def from_wasabi(
             ):
                 continue
             full_path = norm_path(r["FullKeyPath"])
-            # Only BIP84 can be independently converted with our existing
-            # xpub-only verification helper. Taproot and non-standard
-            # derivations remain unresolved; a BIP-329 file is supported in GUI.
+            # Wasabi's one file contains several independent accounts. A label
+            # for a *different* supported account is not an unresolved label
+            # for this one, and must not be offered to the wrong wallet.
+            if full_path and k.key_origin:
+                other_paths = (
+                    norm_path(data[p])
+                    for p in ("AccountKeyPath", "TaprootAccountKeyPath")
+                    if isinstance(data.get(p), str) and data[p]
+                )
+                if any(
+                    other != k.key_origin and full_path.startswith(other + "/")
+                    for other in other_paths
+                    if other
+                ):
+                    continue
+            # Associate a label only with this account's exact public
+            # derivation path. Verify the saved per-address compressed pubkey
+            # against our derived public key before creating an address label.
             match = None
-            if w.descriptor and script == "P2WPKH" and k.key_origin and full_path:
+            if w.descriptor and k.key_origin and full_path and script in ("P2WPKH", "P2TR"):
                 match = re.fullmatch(re.escape(k.key_origin) + r"/([01])/([0-9]+)", full_path)
             if match:
                 branch, index = map(int, match.groups())
@@ -190,12 +260,14 @@ def from_wasabi(
 
                     derived_pub = derive_pubkey(k, branch, index)
                     embedded_pub = r.get("PubKey")
-                    # If the source supplied a public key, it must agree.
-                    # Never derive a label address from a conflicting record.
                     if embedded_pub is None or (
                         isinstance(embedded_pub, str) and embedded_pub.lower() == derived_pub.hex()
                     ):
-                        address = address_from_public_keys([k], "wpkh", net, branch, index)
+                        address = (
+                            address_from_public_keys([k], "wpkh", net, branch, index)
+                            if script == "P2WPKH"
+                            else _taproot_bip86_address(k, net, branch, index)
+                        )
                         w.add_label(Label("addr", address, r["Label"]))
                         continue
             w.extra.setdefault("unresolved_path_labels", []).append(
