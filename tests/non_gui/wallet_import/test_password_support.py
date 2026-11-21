@@ -119,9 +119,15 @@ def test_wasabi_fingerprint_mismatch_fails_closed():
         )
 
 
-def test_wasabi_watch_only_rejects_unused_password():
+@pytest.mark.parametrize("account_path", [None, "m/84h/0h/0h"])
+def test_wasabi_watch_only_rejects_unused_password(account_path: str | None) -> None:
     data = {"ExtPubKey": xpub(), "BlockchainState": {"Network": "Main"}}
-    assert from_wasabi(data)[0].descriptor.startswith("wpkh(")
+    if account_path:
+        data["AccountKeyPath"] = account_path
+    descriptor = from_wasabi(data)[0].descriptor
+    assert bool(descriptor) == bool(account_path)
+    if descriptor:
+        assert descriptor.startswith("wpkh(")
     with pytest.raises(ExchangeError, match="watch-only"):
         from_wasabi(data, password="unused")
 
