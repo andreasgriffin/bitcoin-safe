@@ -70,6 +70,7 @@ class TransactionPDFContext:
     explorer_base_url: str | None = None
     current_block_height: int | None = None
     tx_label: str = ""
+    address_labels: Mapping[str, str] | None = None
     fee_amount: int | None = None
     fee_amount_is_estimated: bool = False
 
@@ -139,7 +140,11 @@ class TransactionPDFExporter:
             data_label=data_label,
             qr_images=images[0],
             ur_qr_images=images[1],
-            recipients=get_recipients_from_data(data, network, address_labels),
+            recipients=get_recipients_from_data(
+                data,
+                network,
+                context.address_labels if context.address_labels is not None else address_labels,
+            ),
             network=network,
             diagram=diagram,
         )
@@ -159,6 +164,7 @@ class ViewerTransactionPDFExporter(TransactionPDFExporter):
             explorer_base_url=self.viewer.config.network_config.mempool_url,
             current_block_height=self.viewer._get_robust_height() or None,
             tx_label=self.viewer.label_line_edit.label(),
+            address_labels=self.viewer.recipients.get_address_labels_dict(),
             fee_amount=fee_info.fee_amount if fee_info else None,
             fee_amount_is_estimated=fee_info.fee_amount_is_estimated if fee_info else False,
         )

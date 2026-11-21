@@ -388,6 +388,9 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
 
     def update_with_filter(self, update_filter: UpdateFilter) -> None:
         """Update with filter."""
+        if self.label_edit.text() == self.label_edit.originalText:
+            self.autofill_label(update_filter, overwrite_existing=True)
+            self.autofill_category(update_filter)
         self.updateUi()
 
     def updateUi(self) -> None:

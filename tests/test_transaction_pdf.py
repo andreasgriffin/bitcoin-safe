@@ -28,6 +28,7 @@
 #
 
 from pathlib import Path
+from unittest.mock import Mock, patch
 
 import bdkpython as bdk
 import pytest
@@ -243,3 +244,82 @@ def test_transaction_label_is_escaped_in_pdf() -> None:
         for element in pdf.elements
         if isinstance(element, Paragraph)
     )
+
+
+@pytest.mark.parametrize("data_type", ["tx", "psbt"])
+def test_viewer_pdf_uses_current_labels(qapp: object, tmp_path: Path, data_type: str) -> None:
+    from bitcoin_qr_tools.data import Data, DataType
+
+    from bitcoin_safe.gui.qt.export_data import FileToolButton
+    from bitcoin_safe.gui.qt.recipient_csv import get_recipients_from_data
+    from bitcoin_safe.gui.qt.transaction_pdf_export import ViewerTransactionPDFExporter
+    from tests.non_gui.test_psbt_util import p2wsh_psbt_0_1of1
+
+    data = (
+        Data(p2wsh_psbt_0_1of1.extract_tx(), DataType.Tx, bdk.Network.REGTEST)
+        if data_type == "tx"
+        else Data(p2wsh_psbt_0_1of1, DataType.PSBT, bdk.Network.REGTEST)
+    )
+    address = get_recipients_from_data(data, bdk.Network.REGTEST)[0].address
+    button = FileToolButton(data, bdk.Network.REGTEST)
+    button.add_meta_data({address: "stale label"})
+    viewer = Mock()
+    viewer.column_sankey.sankey_bitcoin = None
+    viewer.config.network_config.mempool_url = None
+    viewer._get_robust_height.return_value = 0
+    viewer.fee_info = None
+    viewer.recipients.get_address_labels_dict.return_value = {address: "first address"}
+    viewer.label_line_edit.label.return_value = "first transaction"
+    button.pdf_exporter = ViewerTransactionPDFExporter(viewer)
+
+    with (
+        patch.object(DataExportPDF, "create_pdf") as create_pdf,
+        patch.object(DataExportPDF, "save_pdf"),
+        patch.object(DataExportPDF, "open_pdf"),
+    ):
+        button.export_to_pdf(tmp_path / "first.pdf")
+        assert create_pdf.call_args.kwargs["recipients"][0].label == "first address"
+        assert create_pdf.call_args.kwargs["tx_label"] == "first transaction"
+
+        viewer.recipients.get_address_labels_dict.return_value = {address: "updated address"}
+        viewer.label_line_edit.label.return_value = "updated transaction"
+        button.export_to_pdf(tmp_path / "second.pdf")
+        assert create_pdf.call_args.kwargs["recipients"][0].label == "updated address"
+        assert create_pdf.call_args.kwargs["tx_label"] == "updated transaction"
+
+        viewer.recipients.get_address_labels_dict.return_value = {}
+        viewer.label_line_edit.label.return_value = ""
+        button.export_to_pdf(tmp_path / "third.pdf")
+        assert create_pdf.call_args.kwargs["recipients"][0].label is None
+        assert create_pdf.call_args.kwargs["tx_label"] == ""
+    button.close()
+
+
+@pytest.mark.parametrize("label_type", ["addr", "tx"])
+def test_label_editor_refreshes_external_changes_without_losing_edits(qapp: object, label_type: str) -> None:
+    from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
+    from bitcoin_safe.labels import LabelType
+    from bitcoin_safe.signals import UpdateFilter
+
+    kind = LabelType.addr if label_type == "addr" else LabelType.tx
+    editor = WalletLabelAndCategoryEdit(Mock(), lambda: "ref", kind)
+    editor.set_label("old label")
+    update = UpdateFilter(addresses=["ref"] if kind == LabelType.addr else [], txids=["ref"])
+    with (
+        patch("bitcoin_safe.gui.qt.labeledit.get_label_from_any_wallet", return_value="new label") as lookup,
+        patch("bitcoin_safe.gui.qt.labeledit.get_wallet_of_address", return_value=None),
+    ):
+        editor.update_with_filter(UpdateFilter(addresses=["other"], txids=["other"]))
+        assert editor.label() == "old label"
+        editor.update_with_filter(update)
+        assert editor.label() == "new label"
+
+        editor.label_edit.setText("unfinished edit")
+        editor.update_with_filter(update)
+        assert editor.label() == "unfinished edit"
+
+        editor.set_label("new label")
+        lookup.return_value = None
+        editor.update_with_filter(update)
+        assert editor.label() == ""
+    editor.close()
