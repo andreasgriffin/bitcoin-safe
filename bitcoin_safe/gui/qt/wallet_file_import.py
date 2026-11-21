@@ -78,6 +78,17 @@ from bitcoin_safe.wallet_import.model import PasswordRequired
 from bitcoin_safe.wallet_import.sparrow_crypto import is_sprw1
 from bitcoin_safe.wallet_import.sparrow_h2 import H2_MAGIC
 
+WALLET_FILE_FORMATS = (
+    ("Electrum", "electrum"),
+    ("Sparrow", "sparrow"),
+    ("Specter Desktop", "specter"),
+    ("Wasabi", "wasabi"),
+    ("BitBoxApp accounts", "bitbox"),
+    ("Trezor Suite account", "trezor"),
+    ("Ledger Live", "ledger"),
+    ("Blockstream Green", "green"),
+)
+
 
 class ImportWorker(QThread):
     loaded = pyqtSignal(object)
@@ -181,16 +192,17 @@ class WalletFileImportScreen(QWidget):
         self.form = form
         layout.addLayout(form)
         self.format = QComboBox(self)
-        for title, hint, icon in (
-            ("Electrum", "electrum", svg_tools.get_QIcon("bi--wallet2.svg")),
-            ("Sparrow", "sparrow", svg_tools.get_QIcon("bi--wallet2.svg")),
-            ("Specter Desktop", "specter", svg_tools.get_QIcon("bi--wallet2.svg")),
-            ("Wasabi", "wasabi", svg_tools.get_QIcon("bi--wallet2.svg")),
-            ("BitBoxApp accounts", "bitbox", svg_tools_hardware_signer.get_QIcon("bitbox02-icon.svg")),
-            ("Trezor Suite account", "trezor", svg_tools_hardware_signer.get_QIcon("trezor-icon.svg")),
-            ("Ledger Live", "ledger", svg_tools_hardware_signer.get_QIcon("ledgernano-icon.svg")),
-            ("Blockstream Green", "green", svg_tools.get_QIcon("bi--wallet2.svg")),
-        ):
+        hardware_icons = {
+            "bitbox": "bitbox02-icon.svg",
+            "trezor": "trezor-icon.svg",
+            "ledger": "ledgernano-icon.svg",
+        }
+        for title, hint in WALLET_FILE_FORMATS:
+            icon = (
+                svg_tools_hardware_signer.get_QIcon(hardware_icons[hint])
+                if hint in hardware_icons
+                else svg_tools.get_QIcon("bi--wallet2.svg")
+            )
             self.format.addItem(icon, title, hint)
         form.addRow(self.tr("Wallet format"), self.format)
         self.format_help = QLabel(self)

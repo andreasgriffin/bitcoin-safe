@@ -355,7 +355,5 @@ def _assert_no_secrets(obj: Any):
     elif isinstance(obj, (tuple, list)):
         for v in obj:
             _assert_no_secrets(v)
-    elif isinstance(obj, str) and re.search(
-        r"(?:[xyztuvUV]prv|\b(?:xprv|tprv))[1-9A-HJ-NP-Za-km-z]{20,}", obj
-    ):
+    elif isinstance(obj, str) and re.search(r"[xyztuvUV]prv[1-9A-HJ-NP-Za-km-z]{100,}", obj):
         raise ExchangeError("Private extended key in output data; refusing export")

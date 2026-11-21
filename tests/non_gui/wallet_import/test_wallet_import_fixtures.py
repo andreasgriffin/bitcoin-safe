@@ -33,9 +33,35 @@ from pathlib import Path
 import pytest
 
 from bitcoin_safe.wallet_import import ExchangeError, WalletExchange, load_file
+from bitcoin_safe.wallet_import.model import _assert_no_secrets
 from bitcoin_safe.wallet_import.verification import address_from_public_keys
 
 WALLET_DIR = Path(__file__).parents[2] / "data" / "wallet imports"
+
+
+def test_import_wasabi_wallet_fixture() -> None:
+    wallets = load_file(WALLET_DIR / "wasabi single sig.json")
+    assert len(wallets) == 2
+    for wallet, address_type, purpose, prefix in zip(
+        wallets, ("P2WPKH", "P2TR"), (84, 86), ("wpkh(", "tr("), strict=True
+    ):
+        assert wallet.source_wallet == "wasabi"
+        assert wallet.network == "regtest"
+        assert wallet.threshold == 1
+        assert wallet.address_type == address_type
+        assert wallet.descriptor and wallet.descriptor.startswith(prefix)
+        assert len(wallet.keystores) == 1
+        key = wallet.keystores[0]
+        assert key.key_origin == f"m/{purpose}h/0h/0h"
+        assert key.xpub and key.xpub.startswith("tpub")
+        assert key.recovery_material == "PRIVATE_KEY_REDACTED"
+        assert "6PYTvTFQ" not in wallet.to_json()
+    assert len(wallets[1].labels) == 2
+
+
+def test_private_extended_key_in_text_is_rejected() -> None:
+    with pytest.raises(ExchangeError, match="Private extended key"):
+        _assert_no_secrets("prefixxprv" + "1" * 107)
 
 
 @pytest.mark.parametrize(

@@ -64,6 +64,7 @@ from bitcoin_safe.gui.qt.util import (
     svg_tools,
     to_color_name,
 )
+from bitcoin_safe.gui.qt.wallet_file_import import WALLET_FILE_FORMATS
 from bitcoin_safe.hardware_signers import SUPPORTED_HARDWARE_SIGNERS_URL
 from bitcoin_safe.signals import Signals
 
@@ -665,7 +666,9 @@ class NewWalletWelcomeScreen(QWidget):
         )
         self.card_import_wallet.set_content(
             title=self.tr("Import from another wallet file"),
-            description=self.tr("Import public wallet data and labels from another wallet."),
+            description=self.tr("Import public wallet data and labels from {}.").format(
+                ", ".join(name for name, _ in WALLET_FILE_FORMATS)
+            ),
         )
         self.card_custom_wallet.set_content(
             title=self.tr("Custom / Recovery"),
