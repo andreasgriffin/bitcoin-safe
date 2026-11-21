@@ -38,17 +38,23 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any
+from xml.sax.saxutils import escape
 
+import bdkpython as bdk
 import platformdirs
 from bitcoin_qr_tools.qr_generator import QRGenerator
+from bitcoin_safe_lib.gui.qt.satoshis import format_number, unit_str
 from bitcoin_usb.address_types import DescriptorInfo
 from PIL.Image import Image as PilImage
+from PyQt6.QtCore import QDate, QDateTime, QLocale
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import (
     Image,
     PageBreak,
@@ -60,9 +66,12 @@ from reportlab.platypus import (
 )
 
 from bitcoin_safe.constants import APP_NAME, APP_WEBSITE
+from bitcoin_safe.gui.qt.recipient_csv import get_recipient_csv_header
 from bitcoin_safe.gui.qt.util import svg_tools, svg_tools_hardware_signer
 from bitcoin_safe.hardware_signers import HardwareSigner, HardwareSigners
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.locktime_estimation import LOCKTIME_THRESHOLD
+from bitcoin_safe.pythonbdk_types import Recipient
 
 from .gui.qt.util import qicon_to_pil
 from .util_os import xdg_open_file
@@ -106,7 +115,7 @@ def write_and_open_temp_pdf(pdf: BasePDF, filename: str) -> None:
     _TEMP_PDFS.add(Path(temp_file))
 
 
-def pilimage_to_reportlab(pilimage: PilImage, width=200, height=200) -> Image:
+def pilimage_to_reportlab(pilimage: PilImage, width: float = 200, height: float = 200) -> Image:
     """Pilimage to reportlab."""
     buffer = io.BytesIO()
     pilimage.save(buffer, format="PNG")
@@ -204,7 +213,54 @@ def register_font(lang_code: str) -> FontInfo:
 white_space = '<font color="white"> - </font>'
 
 
+class NumberedPageCanvas(Canvas):
+    """
+    http://code.activestate.com/recipes/546511-page-x-of-y-with-reportlab/
+    http://code.activestate.com/recipes/576832/
+    http://www.blog.pythonlibrary.org/2013/08/12/reportlab-how-to-add-page-numbers/
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Constructor."""
+        super().__init__(*args, **kwargs)
+        self.pages = []
+        self.created_date = QLocale().toString(QDate.currentDate(), QLocale.FormatType.ShortFormat)
+
+    def showPage(self):
+        """On a page break, add information to the list."""
+        self.pages.append(dict(self.__dict__))
+        self._startPage()  # type: ignore
+
+    def save(self):
+        """Add the page number to each page (page x of y)"""
+        page_count = len(self.pages)
+
+        for page in self.pages:
+            self.__dict__.update(page)
+            self.draw_page_number(page_count)
+            super().showPage()
+
+        super().save()
+
+    def draw_page_number(self, page_count: int) -> None:
+        """Draw the creation date, branding and page number below a blue rule."""
+        width, _ = self._pagesize  # type: ignore
+        left = 1.8 * cm
+        right = width - left
+        baseline = 0.8 * cm
+        self.setStrokeColor(colors.HexColor("#1F99E5"))
+        self.setLineWidth(0.75)
+        self.line(left, baseline + 8, right, baseline + 8)
+        self.setFillColor(colors.HexColor("#555555"))
+        self.setFont("Helvetica", 7.5)
+        self.drawString(left, baseline, f"{APP_NAME} | {APP_WEBSITE}")
+        self.drawCentredString(width / 2, baseline, self.created_date)
+        self.drawRightString(right, baseline, f"{self._pageNumber}/{page_count}")  # type: ignore
+
+
 class BasePDF:
+    canvas_class = Canvas
+
     def __init__(self, lang_code: str) -> None:
         """Initialize instance."""
         font_info = register_font(lang_code=lang_code)
@@ -242,6 +298,24 @@ class BasePDF:
         )
         self.elements: list[Any] = []
 
+    @staticmethod
+    def statement_table_style(include_total: bool = False) -> TableStyle:
+        """Style for tables in transaction and balance PDFs."""
+        style = TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ]
+        )
+        if include_total:
+            style.add("BACKGROUND", (0, -1), (-1, -1), colors.lightgrey)
+            style.add("TEXTCOLOR", (0, -1), (-1, -1), colors.whitesmoke)
+        return style
+
     def save_pdf(self, filename: str) -> None:
         # Adjust these values to set your desired margins (values are in points; 72 points = 1 inch)
         """Save pdf."""
@@ -258,7 +332,7 @@ class BasePDF:
             topMargin=TOP_MARGIN,
             bottomMargin=BOTTOM_MARGIN,
         )
-        document.build(self.elements)
+        document.build(self.elements, canvasmaker=self.canvas_class)
 
     def open_pdf(self, filename: str) -> None:
         """Open pdf."""
@@ -269,6 +343,8 @@ class BasePDF:
 
 
 class DataExportPDF(BasePDF):
+    canvas_class = NumberedPageCanvas
+
     def create_pdf(
         self,
         title: str,
@@ -277,6 +353,14 @@ class DataExportPDF(BasePDF):
         data_label: str,
         qr_images: list[PilImage],
         ur_qr_images: list[PilImage] | None = None,
+        recipients: list[Recipient] | None = None,
+        network: bdk.Network = bdk.Network.BITCOIN,
+        diagram: PilImage | None = None,
+        explorer_url: str | None = None,
+        nlocktime: int | None = None,
+        tx_label: str | None = None,
+        fee_amount: int | None = None,
+        fee_amount_is_estimated: bool = False,
     ) -> None:
         """Create a PDF that captures serialized data and its QR codes."""
 
@@ -291,15 +375,112 @@ class DataExportPDF(BasePDF):
         self.elements.append(Spacer(1, 12))
 
         if txid:
+            txid_text = Paragraph(
+                translate("pdf", "Transaction ID: {txid}", no_translate=self.no_translate).format(
+                    txid=escape(txid)
+                ),
+                self.style_paragraph_left,
+            )
+            if explorer_url:
+                qr_image = QRGenerator.create_qr_PILimage(explorer_url)
+                self.elements.append(
+                    Table(
+                        [
+                            [
+                                txid_text,
+                                [
+                                    pilimage_to_reportlab(qr_image, width=90, height=90),
+                                    Paragraph(
+                                        translate("pdf", "Block explorer", no_translate=self.no_translate),
+                                        self.style_paragraph,
+                                    ),
+                                ],
+                            ]
+                        ],
+                        colWidths=[420, 100],
+                        style=TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE")]),
+                    )
+                )
+            else:
+                self.elements.append(txid_text)
+            self.elements.append(Spacer(1, 6))
+
+        if tx_label:
+            label = translate("pdf", "Transaction label: {label}", no_translate=self.no_translate).format(
+                label=escape(tx_label).replace("\n", "<br/>")
+            )
+            self.elements.append(Paragraph(label, self.style_paragraph_left))
+            self.elements.append(Spacer(1, 6))
+
+        if nlocktime is not None:
+            if nlocktime >= LOCKTIME_THRESHOLD:
+                locktime_text = translate(
+                    "pdf", "nLocktime: {value} (local time)", no_translate=self.no_translate
+                ).format(value=QLocale().toString(QDateTime.fromSecsSinceEpoch(nlocktime)))
+            else:
+                locktime_text = translate(
+                    "pdf", "nLocktime: block height {height}", no_translate=self.no_translate
+                ).format(height=nlocktime)
+            self.elements.append(Paragraph(escape(locktime_text), self.style_paragraph_left))
+            self.elements.append(Spacer(1, 6))
+
+        if diagram:
             self.elements.append(
                 Paragraph(
-                    translate("pdf", "Transaction ID: {txid}", no_translate=self.no_translate).format(
-                        txid=txid
-                    ),
-                    self.style_paragraph_left,
+                    translate("pdf", "Diagram", no_translate=self.no_translate), self.style_paragraph_left
                 )
             )
-            self.elements.append(Spacer(1, 6))
+            scale = min(520 / diagram.width, 300 / diagram.height)
+            self.elements.append(
+                pilimage_to_reportlab(diagram, width=diagram.width * scale, height=diagram.height * scale)
+            )
+            self.elements.append(Spacer(1, 12))
+
+        if recipients or fee_amount is not None:
+            self.elements.append(
+                Paragraph(
+                    translate("pdf", "Outputs", no_translate=self.no_translate), self.style_paragraph_left
+                )
+            )
+            header = get_recipient_csv_header(network)
+            header[1] = translate("Recipients", "Amount [{unit}]").format(unit=unit_str(network))
+            rows = [header]
+            rows.extend(
+                [
+                    [r.address, format_number(r.amount, include_decimal_spaces=False), r.label or ""]
+                    for r in recipients or []
+                ]
+            )
+            if fee_amount is not None:
+                fee_label = (
+                    translate("pdf", "Fee (estimated)", no_translate=self.no_translate)
+                    if fee_amount_is_estimated
+                    else translate("pdf", "Fee", no_translate=self.no_translate)
+                )
+                rows.append([fee_label, format_number(fee_amount, include_decimal_spaces=False), ""])
+            table = Table(
+                [
+                    [
+                        Paragraph(escape(value), style)
+                        for value, style in zip(
+                            row,
+                            [
+                                self.style_paragraph_left,
+                                self.style_paragraph_right,
+                                self.style_paragraph_left,
+                            ],
+                            strict=True,
+                        )
+                    ]
+                    for row in rows
+                ],
+                colWidths=[240, 100, 180],
+                repeatRows=1,
+                splitInRow=1,
+            )
+            table.setStyle(self.statement_table_style())
+            self.elements.append(table)
+            self.elements.append(Spacer(1, 12))
 
         self.elements.append(
             Paragraph(
@@ -317,18 +498,23 @@ class DataExportPDF(BasePDF):
                 return
 
             self.elements.append(Paragraph(title, self.style_paragraph))
-            for idx, image in enumerate(images):
-                self.elements.append(
-                    Paragraph(
-                        translate(
-                            "pdf",
-                            "{title}: Fragment {index} of {total}",
-                            no_translate=self.no_translate,
-                        ).format(index=idx + 1, total=len(images), title=title),
-                        self.style_paragraph,
+            for start in range(0, len(images), 2):
+                cells = []
+                for idx in range(start, min(start + 2, len(images))):
+                    label = translate(
+                        "pdf",
+                        "{title}: Fragment {index} of {total}",
+                        no_translate=self.no_translate,
+                    ).format(index=idx + 1, total=len(images), title=title)
+                    cells.append(
+                        [
+                            Paragraph(label, self.style_paragraph),
+                            pilimage_to_reportlab(images[idx], width=200, height=200),
+                        ]
                     )
-                )
-                self.elements.append(pilimage_to_reportlab(image, width=200, height=200))
+                if len(cells) == 1:
+                    cells.append([])
+                self.elements.append(Table([cells], colWidths=[260, 260]))
                 self.elements.append(Spacer(1, 6))
 
         _append_qr_section(translate("pdf", "BBQr QR", no_translate=self.no_translate), qr_images)

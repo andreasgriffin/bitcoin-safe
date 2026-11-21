@@ -47,7 +47,7 @@ from bitcoin_qr_tools.unified_encoder import QrExportType, QrExportTypes, Unifie
 from bitcoin_safe_lib.async_tools.loop_in_thread import ExcInfo, LoopInThread, MultipleStrategy
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from nostr_sdk import PublicKey
-from PyQt6.QtCore import QEvent, QLocale, QSignalBlocker, Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QSignalBlocker, Qt, pyqtSignal
 from PyQt6.QtGui import QAction, QCloseEvent, QIcon, QShowEvent
 from PyQt6.QtWidgets import (
     QBoxLayout,
@@ -66,10 +66,14 @@ from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.descriptor_export_tools import DescriptorExportTools, shorten_filename
 from bitcoin_safe.gui.qt.recipient_csv import export_recipients_csv, get_recipients_from_data
 from bitcoin_safe.gui.qt.signer_ui import SignerUI
-from bitcoin_safe.gui.qt.util import configure_combobox_popup, should_process_theme_change, svg_tools
+from bitcoin_safe.gui.qt.transaction_pdf_export import TransactionPDFExporter
+from bitcoin_safe.gui.qt.util import (
+    configure_combobox_popup,
+    should_process_theme_change,
+    svg_tools,
+)
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.pdfrecovery import DataExportPDF
 from bitcoin_safe.plugin_framework.plugins.chat_sync.constants import SYNC_CHAT_ICON_NAME
 from bitcoin_safe.tx import short_tx_id, transaction_to_dict
 from bitcoin_safe.util import filename_clean
@@ -221,6 +225,7 @@ class FileToolButton(QToolButton):
         self.network = network
         self.button_prefix = button_prefix
         self.address_labels_dict: dict[str, str] = {}
+        self.pdf_exporter = TransactionPDFExporter()
         self.action_export_recipients_csv: QAction | None = None
 
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
@@ -306,46 +311,19 @@ class FileToolButton(QToolButton):
         return filename
 
     def export_to_pdf(self, filepath: Path | None = None) -> str | None:
-        """Export the serialized data into a PDF with BBQr codes."""
-        if self.data.data_type not in [DataType.Tx, DataType.PSBT]:
-            Message(self.tr("PDF export is only available for transactions or PSBTs."), parent=self)
-            return None
-
-        if not self.serialized:
-            Message(self.tr("Not available"), parent=self)
-            return None
-
-        default_filename = f"{short_tx_id(self.txid)}.pdf" if self.txid else None
-        if not default_filename:
-            default_filename = f"transaction_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-        elif not default_filename.lower().endswith(".pdf"):
-            default_filename = f"{default_filename}.pdf"
-
-        filepath = filepath if filepath else Path.home() / default_filename
-
-        qr_fragments = UnifiedEncoder.generate_fragments_for_qr(
-            data=self.data, qr_export_type=QrExportTypes.bbqr
+        """Export transaction data to PDF."""
+        path = self.pdf_exporter.export(
+            self.data,
+            self.network,
+            self.txid,
+            pretty_name(self.data.data_type),
+            self.address_labels_dict,
+            self,
+            filepath,
         )
-        qr_images = [QRGenerator.create_qr_PILimage(fragment) for fragment in qr_fragments]
-
-        ur_fragments = UnifiedEncoder.generate_fragments_for_qr(
-            data=self.data, qr_export_type=QrExportTypes.ur
-        )
-        ur_qr_images = [QRGenerator.create_qr_PILimage(fragment) for fragment in ur_fragments]
-
-        pdf = DataExportPDF(lang_code=QLocale().name())
-        pdf.create_pdf(
-            title=self.tr("Transaction export"),
-            txid=self.txid,
-            serialized=self.serialized,
-            data_label=pretty_name(self.data.data_type),
-            qr_images=qr_images,
-            ur_qr_images=ur_qr_images,
-        )
-        pdf.save_pdf(str(filepath))
-        pdf.open_pdf(str(filepath))
-        self.signal_exported.emit()
-        return str(filepath)
+        if path:
+            self.signal_exported.emit()
+        return path
 
     def export_recipients_csv(self) -> Path | None:
         """Export recipients as CSV for transaction-like data."""
