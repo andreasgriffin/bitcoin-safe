@@ -47,6 +47,7 @@ from PyQt6.QtWidgets import QWidget
 from bitcoin_safe.gui.qt.recipient_csv import get_recipients_from_data
 from bitcoin_safe.gui.qt.sankey_widget import SankeyWidget
 from bitcoin_safe.gui.qt.util import Message, block_explorer_URL
+from bitcoin_safe.i18n import translate
 from bitcoin_safe.locktime_estimation import LOCKTIME_THRESHOLD, is_nlocktime_already_valid
 from bitcoin_safe.pdfrecovery import DataExportPDF
 from bitcoin_safe.tx import short_tx_id
@@ -90,16 +91,21 @@ class TransactionPDFExporter:
         filepath: Path | None = None,
     ) -> str | None:
         if data.data_type not in [DataType.Tx, DataType.PSBT]:
-            Message(parent.tr("PDF export is only available for transactions or PSBTs."), parent=parent)
+            Message(
+                translate("FileToolButton", "PDF export is only available for transactions or PSBTs."),
+                parent=parent,
+            )
             return None
         serialized = data.data_as_string()
         if not serialized:
-            Message(parent.tr("Not available"), parent=parent)
+            Message(translate("FileToolButton", "Not available"), parent=parent)
             return None
+        export_name = translate("FileToolButton", "Transaction export")
+        safe_name = "".join(char if char.isalnum() or char in "-_" else "_" for char in export_name)
         default_filename = (
             f"{short_tx_id(txid)}.pdf"
             if txid
-            else f"transaction_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+            else f"{safe_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         )
         filepath = filepath or Path.home() / default_filename
         context = self.context()
@@ -129,7 +135,7 @@ class TransactionPDFExporter:
                 pass
         pdf = DataExportPDF(lang_code=QLocale().name())
         pdf.create_pdf(
-            title=parent.tr("Transaction export"),
+            title=translate("FileToolButton", "Transaction export", no_translate=pdf.no_translate),
             txid=txid,
             explorer_url=explorer_url,
             nlocktime=get_future_nlocktime(tx, context.current_block_height) if tx else None,

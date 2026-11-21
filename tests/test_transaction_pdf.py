@@ -323,3 +323,46 @@ def test_label_editor_refreshes_external_changes_without_losing_edits(qapp: obje
         editor.update_with_filter(update)
         assert editor.label() == ""
     editor.close()
+
+
+def test_transaction_pdf_translates_title_with_file_button_context(qapp: object, tmp_path: Path) -> None:
+    from bitcoin_qr_tools.data import Data, DataType
+    from PyQt6.QtCore import QTranslator
+    from PyQt6.QtWidgets import QApplication
+
+    from bitcoin_safe.gui.qt.export_data import FileToolButton
+    from tests.non_gui.test_psbt_util import p2wsh_psbt_0_1of1
+
+    class TestTranslator(QTranslator):
+        def translate(
+            self, context: str | None, sourceText: str | None, disambiguation: str | None = None, n: int = -1
+        ) -> str:
+            return (
+                "Transaktionsexport"
+                if (context, sourceText) == ("FileToolButton", "Transaction export")
+                else ""
+            )
+
+    assert isinstance(qapp, QApplication)
+    translator = TestTranslator()
+    qapp.installTranslator(translator)
+    previous_locale = QLocale()
+    QLocale.setDefault(QLocale("de_DE"))
+    button = FileToolButton(
+        Data(p2wsh_psbt_0_1of1.extract_tx(), DataType.Tx, bdk.Network.REGTEST), bdk.Network.REGTEST
+    )
+    button.txid = None
+    try:
+        with (
+            patch.object(DataExportPDF, "create_pdf") as create_pdf,
+            patch.object(DataExportPDF, "save_pdf"),
+            patch.object(DataExportPDF, "open_pdf"),
+            patch.object(Path, "home", return_value=tmp_path),
+        ):
+            filename = button.export_to_pdf()
+        assert create_pdf.call_args.kwargs["title"] == "Transaktionsexport"
+        assert filename and Path(filename).name.startswith("Transaktionsexport_")
+    finally:
+        button.close()
+        QLocale.setDefault(previous_locale)
+        qapp.removeTranslator(translator)
