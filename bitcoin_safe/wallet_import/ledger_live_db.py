@@ -200,7 +200,8 @@ def from_ledger_live_app(obj: dict[str, Any], password: str | None = None) -> li
             raise ExchangeError("Invalid Ledger Live account entry")
         # Ledger Desktop's versioned store wraps the public account as
         # {"data": {...}, "version": 3}. Older exports may be unwrapped.
-        row = record.get("data") if isinstance(record.get("data"), dict) else record
+        data = record.get("data")
+        row = data if isinstance(data, dict) else record
         if row.get("type") not in (None, "Account"):
             continue
         currency = row.get("currencyId")
