@@ -117,8 +117,10 @@ def test_sparrow_h2_import_needs_no_external_driver(qtbot: QtBot, tmp_path: Path
     qtbot.addWidget(screen)
     choose_format(screen, "sparrow")
     screen.wallet_path.setText(str(source))
-    screen.read_wallet()
-    qtbot.waitUntil(lambda: screen.worker is None, timeout=10000)
+    with patch.object(screen, "show_error") as error:
+        screen.read_wallet()
+        qtbot.waitUntil(lambda: screen.worker is None, timeout=10000)
+    error.assert_not_called()
     assert len(screen.wallets) == 1
     assert screen.wallets[0].name == "Synthetic"
     assert "driver" not in screen.format_help.text().lower()
@@ -136,8 +138,16 @@ def test_sparrow_h2_automatically_recovers_testnet_seed(qtbot: QtBot, tmp_path: 
     assert screen.bip39_passphrase.isEnabled()
     assert "automatically" in screen.format_help.text()
     screen.wallet_path.setText(str(source))
-    screen.read_wallet()
-    qtbot.waitUntil(lambda: screen.worker is None, timeout=10000)
+    with (
+        patch.object(screen, "show_error") as error,
+        patch(
+            "bitcoin_safe.gui.qt.wallet_file_import.QInputDialog.getText", return_value=("", False)
+        ) as prompt,
+    ):
+        screen.read_wallet()
+        qtbot.waitUntil(lambda: screen.worker is None, timeout=10000)
+    error.assert_not_called()
+    prompt.assert_not_called()
     assert screen.import_button.isEnabled()
     assert screen.wallets[0].keystores[0].non_mainnet_seed == SYNTHETIC_WORDS
 
