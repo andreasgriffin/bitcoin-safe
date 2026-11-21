@@ -107,10 +107,14 @@ def test_print_existing_transaction(
 
         # Stub PDF open behavior and export to a known temp file path.
         monkeypatch.setattr(
-            "bitcoin_safe.gui.qt.export_data.DataExportPDF.open_pdf",
+            "bitcoin_safe.gui.qt.transaction_pdf_export.DataExportPDF.open_pdf",
             lambda self, path: None,
         )
-        viewer.export_data_simple.button_export_file.export_to_pdf(filepath=pdf_path)
+        main_window.tab_wallets.setCurrentWidget(viewer)
+        button = viewer.export_data_simple.button_export_file
+        export_to_pdf = button.export_to_pdf
+        monkeypatch.setattr(button, "export_to_pdf", lambda: export_to_pdf(filepath=pdf_path))
+        main_window.menu_action_print_overview.trigger()
 
         # Validate the PDF file was created and non-empty.
         assert pdf_path.exists()

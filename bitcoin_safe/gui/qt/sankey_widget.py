@@ -44,6 +44,7 @@ from PyQt6.QtGui import (
     QAction,
     QColor,
     QFontMetricsF,
+    QImage,
     QLinearGradient,
     QMouseEvent,
     QPainter,
@@ -221,6 +222,35 @@ class SankeyWidget(QWidget):
         self._has_data = True
         self._labels_need_update = True
         self.signal_data_changed.emit()
+
+    def render_for_pdf(self) -> QImage | None:
+        """Render the diagram at a print size, even when this widget is collapsed."""
+        if not self.has_data:
+            return None
+        diagram = SankeyWidget(show_tooltips=False)
+        diagram.resize(1000, 200)
+        diagram.set(
+            self.in_flows_raw,
+            self.out_flows_raw,
+            colors=self.colors,
+            labels=self.labels,
+            center_color=self.center_color,
+            space_fraction=self.space_fraction,
+            text_outline=self.text_outline,
+        )
+        palette = diagram.palette()
+        palette.setColor(QPalette.ColorRole.Text, QColor("black"))
+        palette.setColor(QPalette.ColorRole.Base, QColor("white"))
+        diagram.setPalette(palette)
+        image = QImage(diagram.size(), QImage.Format.Format_RGB32)
+        image.fill(QColor("white"))
+        painter = QPainter(image)
+        try:
+            diagram.draw_content(painter)
+        finally:
+            painter.end()
+            diagram.close()
+        return image
 
     def _create_label_texts(self) -> None:
         """Prepare multiline labels without creating child widgets."""

@@ -33,6 +33,8 @@ from typing import cast
 from unittest.mock import Mock, patch
 
 import bdkpython as bdk
+from PyQt6.QtCore import QTranslator
+from PyQt6.QtWidgets import QApplication
 
 from bitcoin_safe.constants import APP_NAME
 from bitcoin_safe.inheritance_overview import (
@@ -85,6 +87,47 @@ def wallet(name: str, fingerprints: list[str]) -> Wallet:
             labels=SimpleNamespace(get_category=lambda address: "Savings"),
         ),
     )
+
+
+def test_overview_uses_translations_and_english_font_fallback(qapp: QApplication, tmp_path: Path) -> None:
+    from reportlab.pdfgen.canvas import Canvas
+
+    class TestTranslator(QTranslator):
+        def translate(
+            self, context: str | None, sourceText: str | None, disambiguation: str | None = None, n: int = -1
+        ) -> str:
+            if context != "pdf":
+                return ""
+            return {
+                "HOW TO RECOVER A WALLET": "WALLET WIEDERHERSTELLEN",
+                "{wallet_name} note: {note}": "{wallet_name} Hinweis: {note}",
+                "Requires 1 signer": "Ein Signierer erforderlich",
+                "Balance: {balance}": "Guthaben: {balance}",
+                "{balance} (test coins)": "{balance} (Testgeld)",
+            }.get(sourceText or "", "")
+
+    translator = TestTranslator()
+    qapp.installTranslator(translator)
+    first = wallet("First", ["aabbccdd"])
+    second = wallet("Second", ["aabbccdd"])
+    first.keystores[0].description = "Home"
+    second.keystores[0].description = "Office"
+    try:
+        with patch.object(Canvas, "drawString", autospec=True, side_effect=Canvas.drawString) as draw_string:
+            export_inheritance_overview([first, second], tmp_path / "translated.pdf", lang_code="de_DE")
+        labels = [call.args[3] for call in draw_string.call_args_list]
+        assert "WALLET WIEDERHERSTELLEN" in labels
+        assert "First Hinweis: Home" in labels
+        assert "Ein Signierer erforderlich" in labels
+        assert "Guthaben: 0.00125000 BTC (Testgeld)" in labels
+
+        with patch.object(Canvas, "drawString", autospec=True, side_effect=Canvas.drawString) as draw_string:
+            export_inheritance_overview([first], tmp_path / "fallback.pdf", lang_code="unsupported")
+        labels = [call.args[3] for call in draw_string.call_args_list]
+        assert "HOW TO RECOVER A WALLET" in labels
+        assert "Requires 1 signer" in labels
+    finally:
+        qapp.removeTranslator(translator)
 
 
 def test_shared_and_missing_fingerprints() -> None:

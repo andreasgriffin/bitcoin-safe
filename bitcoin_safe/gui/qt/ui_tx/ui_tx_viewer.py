@@ -68,6 +68,7 @@ from bitcoin_safe.gui.qt.labeledit import WalletLabelAndCategoryEdit
 from bitcoin_safe.gui.qt.my_treeview import needs_frequent_flag
 from bitcoin_safe.gui.qt.notification_bar import NotificationBar
 from bitcoin_safe.gui.qt.packaged_tx_like import UiElements
+from bitcoin_safe.gui.qt.transaction_pdf_export import ViewerTransactionPDFExporter
 from bitcoin_safe.gui.qt.tx_export import TxExport
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningSteps
 from bitcoin_safe.gui.qt.tx_tools import TxTools
@@ -362,6 +363,7 @@ class UITx_Viewer(UITx_Base):
             parent=self,
             sync_client=get_clients(wallet_functions=self.wallet_functions, cls=SyncClient),
         )
+        self.export_data_simple.button_export_file.pdf_exporter = ViewerTransactionPDFExporter(self)
         self.export_data_simple.button_export_file.signal_on_menu_updated.connect(
             self._on_export_file_menu_updated
         )
@@ -1699,6 +1701,7 @@ class UITx_Viewer(UITx_Base):
         txo_dict.update(self._get_python_txos())
         self.set_sankey(tx, fee_info=fee_info, txo_dict=txo_dict)
         self._set_signed_by_column(tx)
+        self.label_line_edit.autofill_label_and_category()
         self.container_label.setHidden(True)
         self.signal_updated_content.emit(self.data)
 
