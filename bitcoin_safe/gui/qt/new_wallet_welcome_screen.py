@@ -64,6 +64,7 @@ from bitcoin_safe.gui.qt.util import (
     svg_tools,
     to_color_name,
 )
+from bitcoin_safe.gui.qt.wallet_file_import import WALLET_FILE_FORMATS
 from bitcoin_safe.hardware_signers import SUPPORTED_HARDWARE_SIGNERS_URL
 from bitcoin_safe.signals import Signals
 
@@ -450,6 +451,7 @@ class NewWalletWelcomeScreen(QWidget):
     signal_onclick_connect_devices = cast(SignalProtocol[[]], pyqtSignal())
     signal_onclick_custom_signature = cast(SignalProtocol[[]], pyqtSignal())
     signal_onclick_demo_wallet = cast(SignalProtocol[[]], pyqtSignal())
+    signal_onclick_import_wallet = cast(SignalProtocol[[]], pyqtSignal())
     signal_remove_me = cast(SignalProtocol[[QWidget]], pyqtSignal(QWidget))
     visibilityChanged = cast(SignalProtocol[[bool]], pyqtSignal(bool))
 
@@ -472,6 +474,7 @@ class NewWalletWelcomeScreen(QWidget):
         self.card_hot_wallet.clicked.connect(self.on_click_hot_wallet)
         self.card_connect_devices.clicked.connect(self.on_click_connect_devices)
         self.card_custom_wallet.clicked.connect(self.on_click_custom_wallet)
+        self.card_import_wallet.clicked.connect(self.signal_onclick_import_wallet.emit)
         self.card_demo_wallet.clicked.connect(self.on_click_demo_wallet)
         logger.debug(f"initialized welcome_screen = {self.__class__.__name__}")
 
@@ -584,6 +587,7 @@ class NewWalletWelcomeScreen(QWidget):
             "hardware_signers/generic-hardware-wallet-icon.svg", self.left_column
         )
         self.card_custom_wallet = WelcomeActionCard("material-symbols--signature.svg", self.left_column)
+        self.card_import_wallet = WelcomeActionCard("file.svg", self.left_column)
         self.hot_wallet_help_label = IconLabel(parent=self.card_hot_wallet.header_widget)
         self.hot_wallet_help_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.card_hot_wallet.header_right_layout.addWidget(self.hot_wallet_help_label)
@@ -602,6 +606,7 @@ class NewWalletWelcomeScreen(QWidget):
         self.left_layout.addWidget(self.card_hot_wallet)
         self.left_layout.addWidget(self.card_connect_devices)
         self.left_layout.addWidget(self.card_custom_wallet)
+        self.left_layout.addWidget(self.card_import_wallet)
         self.left_layout.addStretch()
 
         self._layout.addWidget(self.left_column)
@@ -622,6 +627,7 @@ class NewWalletWelcomeScreen(QWidget):
         self.card_hot_wallet.updateUi()
         self.card_connect_devices.updateUi()
         self.card_custom_wallet.updateUi()
+        self.card_import_wallet.updateUi()
 
         self.card_demo_wallet.set_content(
             title=self.tr("Public Demo wallet"),
@@ -657,6 +663,12 @@ class NewWalletWelcomeScreen(QWidget):
         self.connect_devices_help_label.set_icon_as_help(
             self.tr("Open the list of supported hardware wallets and signers."),
             SUPPORTED_HARDWARE_SIGNERS_URL,
+        )
+        self.card_import_wallet.set_content(
+            title=self.tr("Import from another wallet file"),
+            description=self.tr("Import public wallet data and labels from {}.").format(
+                ", ".join(name for name, _ in WALLET_FILE_FORMATS)
+            ),
         )
         self.card_custom_wallet.set_content(
             title=self.tr("Custom / Recovery"),
