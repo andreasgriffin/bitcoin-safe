@@ -129,11 +129,8 @@ def test_wasabi_watch_only_rejects_unused_password():
 def test_plaintext_other_exports_reject_ignored_password(tmp_path):
     examples = [
         ({"name": "S", "recv_descriptor": "wpkh(" + xpub() + "/0/*)", "keys": []}, "specter"),
-        ({"accounts": [], "keystores": []}, "bitbox"),
-        ({"symbol": "btc", "accountType": "normal", "descriptor": xpub()}, "trezor"),
         ({"type": "Account", "derivationMode": "native_segwit", "xpub": xpub()}, "ledger"),
         ({"name": "G", "deployment": "mainnet", "xpub_hash_id": "x"}, "green"),
-        ({"descriptors": []}, "core"),
     ]
     for i, (obj, format_name) in enumerate(examples):
         f = tmp_path / f"example{i}.json"
@@ -148,11 +145,12 @@ def test_wasabi_regtest_uses_test_network_account_origin():
     data = {"ExtPubKey": xpub(0x043587CF), "BlockchainState": {"Network": "RegTest"}}
     wallet = from_wasabi(data)[0]
     assert wallet.network == "regtest"
-    assert wallet.keystores[0].key_origin == "m/84h/1h/0h"
+    # No path is present in the source. Never invent a signing origin.
+    assert wallet.keystores[0].key_origin is None
 
 
 def test_gnupg_wallet_wrapper_is_not_a_native_import_format(tmp_path):
     source = tmp_path / "accounts.json.gpg"
     source.write_bytes(b"\x8c\x0d" + b"not a native wallet format")
     with pytest.raises(ExchangeError, match="Binary wallet format not recognized"):
-        load_file(source, password="unused", hint="bitbox")
+        load_file(source, password="unused", hint="specter")

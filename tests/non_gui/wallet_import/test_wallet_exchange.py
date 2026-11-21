@@ -38,13 +38,11 @@ import pytest
 from bitcoin_safe.wallet_import import (
     ExchangeError,
     WalletExchange,
-    from_bitbox_config,
     from_descriptor,
     from_green,
     from_ledger_account,
     from_sparrow_json,
     from_specter,
-    from_trezor_account,
     import_bip329_jsonl,
     load_json_obj,
 )
@@ -223,60 +221,7 @@ def test_sparrow_multisig_not_guessed_without_policy():
     assert w.descriptor.startswith("wsh(multi(2,")
 
 
-def test_bitbox_native_account_config():
-    data = {
-        "keystores": [{"rootFingerprint": "f00dbabe", "name": "My BitBox"}],
-        "accounts": [
-            {
-                "name": "Savings",
-                "code": "btc-account-0",
-                "coinCode": "btc",
-                "receiveScriptType": "p2wpkh",
-                "configurations": [
-                    {
-                        "bitcoinSimple": {
-                            "scriptType": "p2pkh",
-                            "keyInfo": {
-                                "xpub": xpub(),
-                                "keypath": "m/44'/0'/0'",
-                                "rootFingerprint": "f00dbabe",
-                            },
-                        }
-                    },
-                    {
-                        "bitcoinSimple": {
-                            "scriptType": "p2wpkh",
-                            "keyInfo": {
-                                "xpub": xpub(),
-                                "keypath": "m/84'/0'/0'",
-                                "rootFingerprint": "f00dbabe",
-                            },
-                        }
-                    },
-                ],
-            }
-        ],
-    }
-    wallets = from_bitbox_config(data)
-    assert len(wallets) == 1
-    assert wallets[0].keystores[0].device_type == "bitbox02"
-    assert wallets[0].descriptor.startswith("wpkh(")
-    assert wallets[0].extra["available_script_types"] == ["p2pkh", "p2wpkh"]
-
-
-def test_trezor_and_ledger_models():
-    t = from_trezor_account(
-        {
-            "symbol": "btc",
-            "descriptor": xpub(),
-            "accountType": "normal",
-            "path": [0x80000054, 0x80000000, 0x80000000],
-            "index": 0,
-        }
-    )
-    assert t.network == "mainnet"
-    assert t.descriptor.startswith("wpkh(")
-    assert t.keystores[0].key_origin == "m/84h/0h/0h"
+def test_ledger_models():
     label_record = from_ledger_account(
         {
             "type": "Account",

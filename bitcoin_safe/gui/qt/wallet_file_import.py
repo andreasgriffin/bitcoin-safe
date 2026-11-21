@@ -74,6 +74,7 @@ from bitcoin_safe.wallet_import.electrum import (
     is_electrum_encrypted,
     missing_cosigner_origins,
 )
+from bitcoin_safe.wallet_import.ledger_live_db import discover_ledger_live_app_json
 from bitcoin_safe.wallet_import.model import PasswordRequired
 from bitcoin_safe.wallet_import.sparrow_crypto import is_sprw1
 from bitcoin_safe.wallet_import.sparrow_h2 import H2_MAGIC
@@ -83,8 +84,6 @@ WALLET_FILE_FORMATS = (
     ("Sparrow", "sparrow"),
     ("Specter Desktop", "specter"),
     ("Wasabi", "wasabi"),
-    ("BitBoxApp accounts", "bitbox"),
-    ("Trezor Suite account", "trezor"),
     ("Ledger Live", "ledger"),
     ("Blockstream Green", "green"),
 )
@@ -101,9 +100,6 @@ class ImportWorker(QThread):
         format_id: str,
         password: str | None,
         parent: QWidget,
-        trezor_metadata: str = "",
-        trezor_account_key: str = "",
-        trezor_metadata_version: int = 1,
         bip39_passphrase: str | None = None,
         bip39_passphrases: dict[str, str] | None = None,
     ) -> None:
@@ -113,9 +109,6 @@ class ImportWorker(QThread):
         self.password = password
         self.bip39_passphrase = bip39_passphrase
         self.bip39_passphrases = dict(bip39_passphrases or {})
-        self.trezor_metadata = trezor_metadata
-        self.trezor_account_key = trezor_account_key
-        self.trezor_metadata_version = trezor_metadata_version
 
     def run(self) -> None:
         try:
@@ -125,10 +118,6 @@ class ImportWorker(QThread):
                 password=self.password,
                 bip39_passphrase=self.bip39_passphrase,
                 bip39_passphrases=self.bip39_passphrases,
-                trezor_metadata=self.trezor_metadata or None,
-                trezor_account_key=self.trezor_account_key or None,
-                trezor_usb=bool(self.trezor_metadata),
-                trezor_metadata_version=self.trezor_metadata_version,
             )
         except PasswordRequired as exc:
             self.password_required.emit(str(exc))
@@ -193,8 +182,6 @@ class WalletFileImportScreen(QWidget):
         layout.addLayout(form)
         self.format = QComboBox(self)
         hardware_icons = {
-            "bitbox": "bitbox02-icon.svg",
-            "trezor": "trezor-icon.svg",
             "ledger": "ledgernano-icon.svg",
         }
         for title, hint in WALLET_FILE_FORMATS:
@@ -221,19 +208,6 @@ class WalletFileImportScreen(QWidget):
         )
         self.bip39_passphrase.setWordWrap(True)
         form.addRow(self.tr("BIP39 signer passphrases"), self.bip39_passphrase)
-        self.trezor_labels = self._file_row(
-            form, self.tr("Legacy Trezor labels (optional)"), self.tr("Choose .mtdt file")
-        )
-        trezor_labels_row = self.trezor_labels.parentWidget()
-        assert trezor_labels_row is not None
-        self.trezor_labels_row = trezor_labels_row
-        self.trezor_key = QLineEdit(self)
-        self.trezor_key.setPlaceholderText(self.tr("Original Suite metadata account key"))
-        form.addRow(self.tr("Trezor metadata account key"), self.trezor_key)
-        self.trezor_version = QComboBox(self)
-        self.trezor_version.addItem("1", 1)
-        self.trezor_version.addItem("2", 2)
-        form.addRow(self.tr("Trezor metadata version"), self.trezor_version)
         wallet_row = self.wallet_path.parentWidget()
         assert wallet_row is not None
         self.wallet_row = wallet_row
@@ -264,9 +238,6 @@ class WalletFileImportScreen(QWidget):
         layout.addLayout(self.button_row)
         self.format.currentIndexChanged.connect(self.update_format)
         self.wallet_path.textChanged.connect(self.clear_accounts)
-        self.trezor_labels.textChanged.connect(self.clear_accounts)
-        self.trezor_key.textChanged.connect(self.clear_accounts)
-        self.trezor_version.currentIndexChanged.connect(self.clear_accounts)
         self.update_format()
 
     def _file_row(self, form: QFormLayout, label: str, caption: str, file_filter: str = "") -> QLineEdit:
@@ -309,7 +280,8 @@ class WalletFileImportScreen(QWidget):
             )
         elif fmt == "ledger":
             info = self.tr(
-                "Ledger Live account exports and password-protected Desktop app.json files are supported. Use the Ledger Live application password, not the device PIN."
+                "Ledger Live accounts are read automatically from your local app.json user-data file. "
+                "No file selection is needed. An application password may be required, not the device PIN."
             )
         elif fmt == "wasabi":
             info = self.tr(
@@ -327,24 +299,34 @@ class WalletFileImportScreen(QWidget):
             info = self.tr(
                 "Native password protection is not supported for this format. Select a public wallet or account export."
             )
-            if fmt == "trezor":
-                info += " " + self.tr(
-                    "To import legacy .mtdt labels, connect and unlock the matching Trezor and provide the original Suite metadata account key."
-                )
         self.format_help.setText(info)
         self.form.setRowVisible(self.bip39_passphrase, fmt == "sparrow")
-        self.form.setRowVisible(self.trezor_labels_row, fmt == "trezor")
-        self.form.setRowVisible(self.trezor_key, fmt == "trezor")
-        self.form.setRowVisible(self.trezor_version, fmt == "trezor")
+        self.form.setRowVisible(self.wallet_row, fmt != "ledger")
         self.form.setRowVisible(self.labels_row, fmt not in self.formats_with_labels)
         self.form.setRowVisible(self.specter_path.parentWidget(), fmt == "specter")
+        self.load_button.setText(
+            self.tr("Discover Ledger accounts") if fmt == "ledger" else self.tr("Read wallet file")
+        )
 
     def read_wallet(self) -> None:
         self.clear_accounts()
-        selected_path = self.wallet_path.text().strip()
-        if not selected_path:
-            self.show_error(self.tr("Choose a wallet file using Browse before reading it."))
-            return
+        if self.format.currentData() == "ledger":
+            try:
+                selected_path = str(discover_ledger_live_app_json())
+            except FileNotFoundError:
+                self.show_error(
+                    self.tr(
+                        "Ledger Live app.json was not found in the default user-data folder. "
+                        "Open Ledger Live → Settings → Help → View user data, and check that "
+                        "the application stores its accounts locally."
+                    )
+                )
+                return
+        else:
+            selected_path = self.wallet_path.text().strip()
+            if not selected_path:
+                self.show_error(self.tr("Choose a wallet file using Browse before reading it."))
+                return
         try:
             path = Path(selected_path).expanduser()
             with path.open("rb") as stream:
@@ -389,17 +371,23 @@ class WalletFileImportScreen(QWidget):
         self.wallets = []
         self.accounts.clear()
         self.import_button.setEnabled(False)
-        path = str(Path(self.wallet_path.text().strip()).expanduser())
         fmt = str(self.format.currentData())
+        if fmt == "ledger":
+            try:
+                path = str(discover_ledger_live_app_json())
+            except FileNotFoundError:
+                self.show_error(
+                    self.tr("Ledger Live app.json was not found in the default user-data folder.")
+                )
+                return
+        else:
+            path = str(Path(self.wallet_path.text().strip()).expanduser())
         self.worker = ImportWorker(
             path,
             fmt,
             password,
             self,
             bip39_passphrases=dict(self._signer_passphrases) if fmt == "sparrow" else None,
-            trezor_metadata=self.trezor_labels.text().strip() if fmt == "trezor" else "",
-            trezor_account_key=self.trezor_key.text().strip() if fmt == "trezor" else "",
-            trezor_metadata_version=int(self.trezor_version.currentData()),
         )
         self.worker.loaded.connect(self.on_loaded)
         self.worker.failed.connect(self.show_error)
@@ -409,9 +397,6 @@ class WalletFileImportScreen(QWidget):
         self.format.setEnabled(False)
         self.wallet_row.setEnabled(False)
         self.bip39_passphrase.setEnabled(False)
-        self.trezor_labels_row.setEnabled(False)
-        self.trezor_key.setEnabled(False)
-        self.trezor_version.setEnabled(False)
         self.cancel_button.setEnabled(False)
         self.signal_busy_changed.emit(True)
         self.status.setText(self.tr("Reading wallet file…"))
@@ -483,9 +468,6 @@ class WalletFileImportScreen(QWidget):
         self.format.setEnabled(True)
         self.wallet_row.setEnabled(True)
         self.bip39_passphrase.setEnabled(True)
-        self.trezor_labels_row.setEnabled(True)
-        self.trezor_key.setEnabled(True)
-        self.trezor_version.setEnabled(True)
         self.cancel_button.setEnabled(True)
         if self.worker:
             self.worker.deleteLater()

@@ -29,8 +29,8 @@
 
 """Source-specific adapters, based on publicly documented/reviewed source fields.
 
-Accepts only explicit local files/exports. No filesystem wallet discovery, no
-network calls, no hardware access. Unsupported formats fail closed.
+Reads only supplied local source files. Ledger GUI discovery is limited to
+its standard app.json location; no network or device access. Unsupported formats fail closed.
 """
 
 from __future__ import annotations
@@ -420,113 +420,6 @@ def from_sparrow_json(data: dict[str, Any]) -> WalletExchange:
     return w
 
 
-def from_bitbox_config(data: dict[str, Any]) -> list[WalletExchange]:
-    result = []
-    hw = {
-        str(k.get("rootFingerprint", "")).lower(): k
-        for k in (data.get("keystores") or [])
-        if isinstance(k, dict)
-    }
-    for entry in data.get("accounts") or []:
-        if not isinstance(entry, dict) or _network(entry.get("coinCode")) == "unknown":
-            continue
-        configurations: list[dict[str, Any]] = []
-        for config in entry.get("configurations") or []:
-            if isinstance(config, dict) and isinstance(config.get("bitcoinSimple"), dict):
-                configurations.append(config["bitcoinSimple"])
-        if not configurations:
-            continue
-        preferred = entry.get("receiveScriptType")
-        chosen = next((x for x in configurations if x.get("scriptType") == preferred), configurations[0])
-        kinfo = chosen.get("keyInfo") or {}
-        net = _network(entry.get("coinCode"))
-        w = WalletExchange(
-            "bitbox-app", str(entry.get("name") or entry.get("code") or "BitBox account"), network=net
-        )
-        try:
-            fp = kinfo.get("rootFingerprint")
-            device = hw.get(str(fp).lower(), {})
-            ks = _public_key(
-                kinfo.get("xpub"),
-                fingerprint=fp,
-                path=kinfo.get("keypath"),
-                device="bitbox02",
-                label=device.get("name"),
-                source="hardware",
-            )
-            w.keystores = [ks]
-            _resolve_network(w)
-            desc = chosen.get("descriptor")
-            if desc:
-                supplied_keys = parse_keystores_from_descriptor(desc)
-                if supplied_keys and any(x.xpub != ks.xpub for x in supplied_keys):
-                    raise ExchangeError("BitBox descriptor does not match signing configuration xpub")
-            w.descriptor = (
-                add_checksum(desc) if desc else descriptor_for_keys(w.keystores, chosen.get("scriptType", ""))
-            )
-            w.address_type = chosen.get("scriptType")
-            if not w.descriptor:
-                w.warnings.append("BitBox descriptor could not be constructed")
-        except ExchangeError as exc:
-            w.warnings.append(f"BitBox signing configuration: {exc}")
-        w.extra.update(
-            {
-                "code": entry.get("code"),
-                "used": bool(entry.get("used")),
-                "inactive": bool(entry.get("inactive")),
-                "available_script_types": [x.get("scriptType") for x in configurations],
-            }
-        )
-        result.append(w)
-    return result
-
-
-def _format_bip32_indices(path: Any) -> str | None:
-    if isinstance(path, str):
-        return norm_path(path)
-    if not isinstance(path, list) or not path:
-        return None
-    try:
-        return "m/" + "/".join(f"{int(n) & 0x7FFFFFFF}{'h' if int(n) & 0x80000000 else ''}" for n in path)
-    except (ValueError, TypeError):
-        return None
-
-
-def from_trezor_account(data: dict[str, Any]) -> WalletExchange:
-    symbol = str(data.get("symbol") or "").lower()
-    if symbol not in ("btc", "test", "regtest"):
-        raise ExchangeError("Not a Trezor Bitcoin account")
-    w = WalletExchange(
-        "trezor-suite",
-        str(data.get("accountLabel") or data.get("name") or "Trezor account"),
-        network=_network(symbol),
-    )
-    type_name = str(data.get("accountType") or "")
-    # Source: trezor connect-common ACCOUNT_TYPES: normal=84, segwit=49, legacy=44.
-    script = {"normal": "wpkh", "segwit": "sh-wpkh", "legacy": "pkh", "taproot": "tr"}.get(type_name)
-    raw_descriptor = data.get("descriptor")
-    if isinstance(raw_descriptor, str) and "(" in raw_descriptor:
-        _set_descriptors(w, raw_descriptor, descriptor=raw_descriptor if "<0;1>" in raw_descriptor else None)
-    else:
-        path = _format_bip32_indices(data.get("path"))
-        fp = data.get("fingerprint") or data.get("masterFingerprint")
-        try:
-            w.keystores = [
-                _public_key(raw_descriptor, fingerprint=fp, path=path, device="trezor", source="hardware")
-            ]
-            w.descriptor = descriptor_for_keys(w.keystores, script or "")
-            w.address_type = script
-            if fp is None:
-                w.warnings.append("Trezor Suite account lacks master fingerprint; verify against device")
-        except ExchangeError as exc:
-            w.warnings.append(f"Could not construct Trezor descriptor: {exc}")
-    _resolve_network(w)
-    w.extra.update(
-        {"account_type": type_name, "index": _int(data.get("index")), "visible": data.get("visible")}
-    )
-    return w
-
-
 def from_ledger_account(data: dict[str, Any]) -> WalletExchange:
     currency = data.get("currency") or {}
     coin = str(
@@ -547,6 +440,22 @@ def from_ledger_account(data: dict[str, Any]) -> WalletExchange:
         "ledger-live", str(data.get("name") or "Ledger account"), network=networks.get(coin, "unknown")
     )
     raw = data.get("xpub")
+    resources = data.get("bitcoinResources") or {}
+    wallet_account = resources.get("walletAccount") if isinstance(resources, dict) else None
+    if isinstance(wallet_account, dict):
+        params = wallet_account.get("params")
+        xpub_record = wallet_account.get("xpub")
+        candidates = [raw]
+        if isinstance(params, dict):
+            candidates.append(params.get("xpub"))
+        if isinstance(xpub_record, dict):
+            candidates.append(xpub_record.get("xpub"))
+        public_keys = [candidate for candidate in candidates if isinstance(candidate, str) and candidate]
+        if public_keys:
+            canonical = {normalize_xpub(key)[0] for key in public_keys}
+            if len(canonical) != 1:
+                raise ExchangeError("Ledger Live top-level and nested account xpubs disagree")
+            raw = public_keys[0]
     mode = str(data.get("derivationMode") or "")
     script = {
         "": "pkh",
@@ -654,9 +563,22 @@ def from_green(data: dict[str, Any]) -> WalletExchange:
 
 
 def load_json_obj(obj: Any, hint: str | None = None, password: str | None = None) -> list[WalletExchange]:
-    """Conservative auto-detection; explicit hint may be 'specter', 'sparrow',
-    'bitbox', 'trezor', 'ledger', 'green'.
-    """
+    """Import only exposed formats: Electrum, Sparrow, Specter, Wasabi, Ledger, Green."""
+    fmt = (hint or "").lower()
+    if fmt not in (
+        "",
+        "electrum",
+        "sparrow",
+        "sparrow-h2",
+        "specter",
+        "specter-desktop",
+        "wasabi",
+        "ledger",
+        "ledger-app",
+        "ledger-live-db",
+        "green",
+    ):
+        raise ExchangeError("Unsupported wallet import format")
     if isinstance(obj, list):
         all_wallets: list[WalletExchange] = []
         for item in obj:
@@ -664,7 +586,6 @@ def load_json_obj(obj: Any, hint: str | None = None, password: str | None = None
         return all_wallets
     if not isinstance(obj, dict):
         raise ExchangeError("Expected a JSON wallet object")
-    fmt = (hint or "").lower()
     from .ledger_live_db import from_ledger_live_app, is_ledger_live_app
 
     if is_ledger_live_app(obj) and fmt in ("", "ledger", "ledger-app", "ledger-live-db"):
@@ -687,15 +608,6 @@ def load_json_obj(obj: Any, hint: str | None = None, password: str | None = None
         return [from_specter(obj)]
     if fmt == "sparrow" or (not hint and "purposeNodes" in obj and "keystores" in obj):
         return [from_sparrow_json(obj)]
-    if fmt == "bitbox" or (
-        not hint
-        and "accounts" in obj
-        and "keystores" in obj
-        and any(isinstance(a, dict) and "configurations" in a for a in (obj.get("accounts") or []))
-    ):
-        return from_bitbox_config(obj)
-    if fmt == "trezor" or (not hint and "accountType" in obj and "symbol" in obj and "descriptor" in obj):
-        return [from_trezor_account(obj)]
     if fmt == "ledger" or (not hint and obj.get("type") == "Account" and "derivationMode" in obj):
         return [from_ledger_account(obj)]
     if fmt == "green" or (
@@ -706,14 +618,6 @@ def load_json_obj(obj: Any, hint: str | None = None, password: str | None = None
         return [from_green(obj)]
     if not hint and isinstance(obj.get("accounts"), list):
         accounts = obj["accounts"]
-        if accounts and all(
-            isinstance(item, dict) and "accountType" in item and "symbol" in item for item in accounts
-        ):
-            return [
-                from_trezor_account(item)
-                for item in accounts
-                if item.get("symbol") in ("btc", "test", "regtest")
-            ]
         if accounts and all(
             isinstance(item, dict) and "derivationMode" in item and "xpub" in item for item in accounts
         ):
@@ -734,17 +638,9 @@ def load_file(
     labels: list[str | Path] | None = None,
     specter_addresses: str | Path | None = None,
     derive_public_from_seeds: bool = True,
-    trezor_metadata: str | Path | None = None,
-    trezor_account_key: str | None = None,
-    trezor_usb: bool = False,
-    trezor_metadata_version: int = 1,
     bip39_passphrase: str | None = None,
     bip39_passphrases: dict[str, str] | None = None,
 ) -> list[WalletExchange]:
-    if bool(trezor_metadata) != trezor_usb:
-        raise ExchangeError("Trezor metadata and device access must be provided together")
-    if trezor_account_key and not trezor_metadata:
-        raise ExchangeError("Trezor metadata account key requires a metadata file")
     file = Path(path)
     # Route recognized binary H2 files to the read-only Sparrow decoder before
     # applying the JSON size limit or decoding the file as text.
@@ -753,8 +649,6 @@ def load_file(
     with file.open("rb") as fp:
         head = fp.read(64)
     if is_sparrow_h2(file, head):
-        if trezor_metadata:
-            raise ExchangeError("Trezor labels require a Trezor account")
         if hint and hint.lower() not in ("sparrow", "sparrow-h2"):
             raise ExchangeError("This is a Sparrow H2 database; --format must be sparrow")
         out = load_sparrow_h2(
@@ -818,17 +712,6 @@ def load_file(
         except json.JSONDecodeError as exc:
             raise ExchangeError("Not a supported wallet JSON/descriptor export") from exc
         out = load_json_obj(obj, hint=hint, password=None if consumed_password else password)
-    if trezor_metadata:
-        if len(out) != 1 or out[0].source_wallet != "trezor-suite":
-            raise ExchangeError("Trezor labels require exactly one Trezor account")
-        if password is not None or not trezor_account_key:
-            raise ExchangeError("Supply the original Trezor metadata account key, without a wallet password")
-        from .trezor_metadata import apply_trezor_mtdt_labels, get_legacy_master_key_from_usb
-
-        device_master = get_legacy_master_key_from_usb(encryption_version=trezor_metadata_version)
-        apply_trezor_mtdt_labels(
-            out[0], trezor_metadata, trezor_account_key, device_master, trezor_metadata_version
-        )
     if specter_addresses:
         if len(out) != 1 or out[0].source_wallet != "specter-desktop":
             raise ExchangeError("--specter-addresses requires one Specter wallet")

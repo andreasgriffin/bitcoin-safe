@@ -50,6 +50,10 @@ import base64
 import binascii
 import hashlib
 import json
+import os
+import sys
+from collections.abc import Mapping
+from pathlib import Path
 from typing import Any
 
 from cryptography.hazmat.primitives import padding
@@ -58,6 +62,42 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from .model import ExchangeError, PasswordRequired, WalletExchange
 
 MAX_ACCOUNT_CIPHERTEXT = 32 * 1024 * 1024
+
+
+def discover_ledger_live_app_json(
+    *,
+    environ: Mapping[str, str] | None = None,
+    home: Path | None = None,
+    platform: str | None = None,
+) -> Path:
+    """Find Ledger Live's *default* local app.json, without scanning the disk.
+
+    This does not open the file, connect to a device, or read signing secrets.
+    Explicit LEDGER_CONFIG_DIRECTORY is useful for relocated installations;
+    it may name the user-data directory or app.json itself. Otherwise only
+    standard per-user locations are checked (Windows/macOS/Linux).
+    """
+    env = os.environ if environ is None else environ
+    base = Path.home() if home is None else Path(home)
+    system = sys.platform if platform is None else platform
+    override = env.get("LEDGER_CONFIG_DIRECTORY")
+    if override:
+        custom = Path(override).expanduser()
+        candidate = custom if custom.name.lower() == "app.json" else custom / "app.json"
+        if candidate.is_file():
+            return candidate
+        raise FileNotFoundError("Ledger Live app.json is absent from LEDGER_CONFIG_DIRECTORY")
+    if system.startswith("win"):
+        appdata = Path(env.get("APPDATA") or base / "AppData" / "Roaming")
+    elif system == "darwin":
+        appdata = base / "Library" / "Application Support"
+    else:
+        appdata = Path(env.get("XDG_CONFIG_HOME") or base / ".config")
+    for directory in ("Ledger Live", "Ledger Wallet"):
+        candidate = appdata / directory / "app.json"
+        if candidate.is_file():
+            return candidate
+    raise FileNotFoundError("Ledger Live app.json not found in the standard user-data location")
 
 
 def _evp_bytes_to_key(password: bytes) -> tuple[bytes, bytes]:
@@ -155,9 +195,12 @@ def from_ledger_live_app(obj: dict[str, Any], password: str | None = None) -> li
     from .adapters import from_ledger_account
 
     wallets: list[WalletExchange] = []
-    for row in rows:
-        if not isinstance(row, dict):
+    for record in rows:
+        if not isinstance(record, dict):
             raise ExchangeError("Invalid Ledger Live account entry")
+        # Ledger Desktop's versioned store wraps the public account as
+        # {"data": {...}, "version": 3}. Older exports may be unwrapped.
+        row = record.get("data") if isinstance(record.get("data"), dict) else record
         if row.get("type") not in (None, "Account"):
             continue
         currency = row.get("currencyId")

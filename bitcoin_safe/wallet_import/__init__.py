@@ -30,13 +30,11 @@
 """Public wallet importers for Bitcoin Safe."""
 
 from .adapters import (
-    from_bitbox_config,
     from_descriptor,
     from_green,
     from_ledger_account,
     from_sparrow_json,
     from_specter,
-    from_trezor_account,
     import_bip329_jsonl,
     import_specter_address_csv,
     load_file,
@@ -46,7 +44,7 @@ from .additional import from_wasabi
 from .bitcoin_safe_bridge import apply_bip329_labels, make_protowallet
 from .electrum import decrypt_electrum, from_electrum
 from .h2_verify import verify_sparrow_h2_password
-from .ledger_live_db import decrypt_ledger_live_accounts, from_ledger_live_app
+from .ledger_live_db import decrypt_ledger_live_accounts, discover_ledger_live_app_json, from_ledger_live_app
 from .model import UTXO, ExchangeError, Keystore, Label, PasswordRequired, WalletExchange
 from .passwords import verify_wasabi_password
 from .sparrow_h2 import from_sparrow_h2_rows, load_sparrow_h2
@@ -61,11 +59,10 @@ __all__ = [
     "from_descriptor",
     "from_specter",
     "from_sparrow_json",
-    "from_bitbox_config",
-    "from_trezor_account",
     "from_ledger_account",
     "from_ledger_live_app",
     "decrypt_ledger_live_accounts",
+    "discover_ledger_live_app_json",
     "from_green",
     "import_bip329_jsonl",
     "import_specter_address_csv",

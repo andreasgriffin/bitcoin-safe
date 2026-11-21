@@ -51,8 +51,6 @@ def test_wallet_formats_have_icons(qtbot: QtBot) -> None:
         "sparrow",
         "specter",
         "wasabi",
-        "bitbox",
-        "trezor",
         "ledger",
         "green",
     ]
@@ -282,10 +280,10 @@ def test_label_field_only_for_formats_without_embedded_labels(qtbot: QtBot, tmp_
     labels = tmp_path / "labels.jsonl"
     labels.write_text('{"type":"tx","ref":"' + "a" * 64 + '","label":"external"}\n')
     screen.labels_path.setText(str(labels))
-    for format_id in ("electrum", "sparrow", "specter", "wasabi"):
+    for format_id in ("electrum", "sparrow", "specter"):
         choose_format(screen, format_id)
         assert not screen.form.isRowVisible(screen.labels_row)
-    for format_id in ("bitbox", "trezor", "ledger", "green"):
+    for format_id in ("wasabi", "ledger", "green"):
         choose_format(screen, format_id)
         assert screen.form.isRowVisible(screen.labels_row)
     choose_format(screen, "electrum")
@@ -324,7 +322,9 @@ def test_back_and_busy_import_preserve_sidebar_lifecycle(qtbot: QtBot, test_conf
         assert window.tab_wallets.root.findNodeByWidget(screen) is None
 
 
-def test_encrypted_ledger_import_prompts_and_recovers_signer_origin(qtbot: QtBot, tmp_path: Path) -> None:
+def test_encrypted_ledger_import_prompts_and_recovers_signer_origin(
+    qtbot: QtBot, tmp_path: Path, monkeypatch
+) -> None:
     import json
 
     from tests.non_gui.wallet_import.test_ledger_live_native_password import (
@@ -338,7 +338,11 @@ def test_encrypted_ledger_import_prompts_and_recovers_signer_origin(qtbot: QtBot
     screen = WalletFileImportScreen("Imported", bdk.Network.BITCOIN)
     qtbot.addWidget(screen)
     choose_format(screen, "ledger")
-    screen.wallet_path.setText(str(source))
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.wallet_file_import.discover_ledger_live_app_json",
+        lambda: source,
+    )
+    assert not screen.form.isRowVisible(screen.wallet_row)
     with patch(
         "bitcoin_safe.gui.qt.wallet_file_import.PasswordQuestion.ask_for_password", return_value=password
     ) as prompt:
@@ -361,7 +365,7 @@ def test_encrypted_ledger_import_prompts_and_recovers_signer_origin(qtbot: QtBot
     assert proto.to_multipath_descriptor() is not None
 
 
-def test_cancel_ledger_password_and_invalid_fingerprint(qtbot: QtBot, tmp_path: Path) -> None:
+def test_cancel_ledger_password_and_invalid_fingerprint(qtbot: QtBot, tmp_path: Path, monkeypatch) -> None:
     import json
 
     from bitcoin_safe.wallet_import import from_ledger_account
@@ -371,7 +375,11 @@ def test_cancel_ledger_password_and_invalid_fingerprint(qtbot: QtBot, tmp_path: 
     screen = WalletFileImportScreen("Imported", bdk.Network.BITCOIN)
     qtbot.addWidget(screen)
     choose_format(screen, "ledger")
-    screen.wallet_path.setText(str(source))
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.wallet_file_import.discover_ledger_live_app_json",
+        lambda: source,
+    )
+    assert not screen.form.isRowVisible(screen.wallet_row)
     with patch("bitcoin_safe.gui.qt.wallet_file_import.PasswordQuestion.ask_for_password", return_value=None):
         screen.read_wallet()
         qtbot.waitUntil(lambda: screen.worker is None, timeout=10000)
@@ -437,7 +445,7 @@ def test_ledger_missing_path_is_requested_even_with_fingerprint(qtbot: QtBot) ->
     assert imported.args[0].keystores[0].key_origin == "m/84h/0h/0h"
 
 
-def test_incorrect_ledger_password_can_be_retried(qtbot: QtBot, tmp_path: Path) -> None:
+def test_incorrect_ledger_password_can_be_retried(qtbot: QtBot, tmp_path: Path, monkeypatch) -> None:
     import json
 
     from tests.non_gui.wallet_import.test_ledger_live_native_password import (
@@ -450,7 +458,11 @@ def test_incorrect_ledger_password_can_be_retried(qtbot: QtBot, tmp_path: Path) 
     screen = WalletFileImportScreen("Imported", bdk.Network.BITCOIN)
     qtbot.addWidget(screen)
     choose_format(screen, "ledger")
-    screen.wallet_path.setText(str(source))
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.wallet_file_import.discover_ledger_live_app_json",
+        lambda: source,
+    )
+    assert not screen.form.isRowVisible(screen.wallet_row)
     with (
         patch(
             "bitcoin_safe.gui.qt.wallet_file_import.PasswordQuestion.ask_for_password",
@@ -553,7 +565,7 @@ def test_gnupg_wallet_file_is_not_prompted_as_native_encryption(qtbot: QtBot, tm
     source.write_bytes(b"\x8c\x0d" + b"not a native wallet format")
     screen = WalletFileImportScreen("Imported", bdk.Network.BITCOIN)
     qtbot.addWidget(screen)
-    choose_format(screen, "bitbox")
+    choose_format(screen, "specter")
     screen.wallet_path.setText(str(source))
     with (
         patch("bitcoin_safe.gui.qt.wallet_file_import.PasswordQuestion.ask_for_password") as password,
