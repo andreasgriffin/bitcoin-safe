@@ -49,6 +49,7 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
 from argon2.low_level import Type, hash_secret_raw
+from Crypto.Hash import RIPEMD160
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.padding import PKCS7
 
@@ -68,7 +69,7 @@ MAX_SEED_ROWS = 1000
 
 
 def _fingerprint(pub: bytes) -> bytes:
-    return hashlib.new("ripemd160", hashlib.sha256(pub).digest()).digest()[:4]
+    return RIPEMD160.new(hashlib.sha256(pub).digest()).digest()[:4]
 
 
 def _read_path(path: Any) -> list[int]:

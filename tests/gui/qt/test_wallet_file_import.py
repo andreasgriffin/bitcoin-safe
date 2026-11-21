@@ -140,6 +140,7 @@ def test_sparrow_h2_automatically_recovers_testnet_seed(qtbot: QtBot, tmp_path: 
     screen.wallet_path.setText(str(source))
     with (
         patch.object(screen, "show_error") as error,
+        patch("hashlib.new", side_effect=ValueError("unsupported hash type ripemd160")),
         patch(
             "bitcoin_safe.gui.qt.wallet_file_import.QInputDialog.getText", return_value=("", False)
         ) as prompt,

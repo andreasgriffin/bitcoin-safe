@@ -36,6 +36,7 @@ import unicodedata
 from pathlib import Path
 
 import pytest
+from Crypto.Hash import RIPEMD160
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.padding import PKCS7
@@ -78,7 +79,7 @@ def test_bip39_derived_account_public_key_matches_independent_cryptography():
         .public_key()
         .public_bytes(Encoding.X962, PublicFormat.CompressedPoint)
     )
-    master_fingerprint = hashlib.new("ripemd160", hashlib.sha256(master_pub).digest()).digest()[:4]
+    master_fingerprint = RIPEMD160.new(hashlib.sha256(master_pub).digest()).digest()[:4]
     assert fingerprint == master_fingerprint.hex()
     parent_fingerprint = b""
     for idx in (0x80000030, 0x80000001, 0x80000000, 0x80000002):
@@ -87,7 +88,7 @@ def test_bip39_derived_account_public_key_matches_independent_cryptography():
             .public_key()
             .public_bytes(Encoding.X962, PublicFormat.CompressedPoint)
         )
-        parent_fingerprint = hashlib.new("ripemd160", hashlib.sha256(parent_pub).digest()).digest()[:4]
+        parent_fingerprint = RIPEMD160.new(hashlib.sha256(parent_pub).digest()).digest()[:4]
         digest = hmac.new(
             chain, b"\0" + k.to_bytes(32, "big") + idx.to_bytes(4, "big"), hashlib.sha512
         ).digest()
