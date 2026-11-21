@@ -475,7 +475,7 @@ class DataExportPDF(BasePDF):
                     for row in rows
                 ],
                 colWidths=[240, 100, 180],
-                repeatRows=1,
+                repeatRows=1,splitInRow=1,
             )
             table.setStyle(self.statement_table_style())
             self.elements.append(table)
