@@ -29,23 +29,22 @@
 
 from __future__ import annotations
 
-import datetime
 import logging
 from typing import Any
+from xml.sax.saxutils import escape
 
 import bdkpython as bdk
-import numpy as np
 from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol, Satoshis
 from bitcoin_usb.address_types import DescriptorInfo
-from PyQt6.QtCore import QDateTime, QLocale
 from reportlab.lib import colors
-from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus import PageBreak, Paragraph, Table, TableStyle
+from reportlab.platypus import BaseDocTemplate, PageBreak, Paragraph, SimpleDocTemplate, Table, TableStyle
 
 from bitcoin_safe.constants import APP_NAME, APP_WEBSITE
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.pdf_footer import draw_pdf_footer, pdf_timestamp
 from bitcoin_safe.pdfrecovery import BasePDF, pilimage_to_reportlab, white_space, write_and_open_temp_pdf
 
 from .wallet import Wallet
@@ -104,67 +103,59 @@ class NumberedPageCanvas(Canvas):
 
 
 class PdfStatement(BasePDF):
-    def __init__(self, network: bdk.Network, lang_code: str) -> None:
+    def __init__(self, network: bdk.Network, lang_code: str, created_at: str | None = None) -> None:
         """Initialize instance."""
         super().__init__(lang_code=lang_code)
         self.network = network
-        self.bitcoin_symbol = (
-            BitcoinSymbol.ISO.value
-        )  # fixed symbol to not get unicode issues in pdfs (with asian fonts)
+        self.created_at = created_at if created_at is not None else pdf_timestamp()
+        # Use an ASCII unit so statements distinguish test coins without font issues.
+        self.bitcoin_symbol = "BTC" if network == bdk.Network.BITCOIN else "tBTC"
+
+    def draw_footer(self, canvas: Canvas, document: BaseDocTemplate) -> None:
+        """Draw the statement footer on every page."""
+        draw_pdf_footer(canvas, letter[0], self.font_name, self.created_at)
+
+    def save_pdf(self, filename: str) -> None:
+        """Save the statement with a footer on every page."""
+        document = SimpleDocTemplate(
+            filename, pagesize=letter, leftMargin=36, rightMargin=36, topMargin=36, bottomMargin=36
+        )
+        document.build(self.elements, onFirstPage=self.draw_footer, onLaterPages=self.draw_footer)
 
     @property
     def TEXT_24_WORDS(self):
         """TEXT 24 WORDS."""
         return translate("pdf", "12 or 24", no_translate=self.no_translate)
 
-    def create_balance_table(
-        self,
-        table: np.ndarray,
-        widths: list[int],
-        header: list[str],
-        styles: list[ParagraphStyle] | None = None,
-        header_styles: list[ParagraphStyle] | None = None,
-    ) -> Table:
-        """Create balance table."""
-        if not styles:
-            styles = [self.style_paragraph for i in range(table.shape[1])]
-        else:
-            styles += [self.style_paragraph for i in range(table.shape[1] - len(styles))]
-
-        if not header_styles:
-            header_styles = styles
-        else:
-            header_styles = (header_styles + styles)[: len(styles)]
-
-        # Convert numpy array to a list of lists for ReportLab compatibility
-        data = [
-            [Paragraph(entry, style=style) for entry, style in zip(row, styles, strict=False)]
-            for row in table
-        ]
-        data.insert(
-            0, [Paragraph(entry, style=style) for entry, style in zip(header, header_styles, strict=False)]
-        )  # Insert the header at the beginning of the data list
-
-        # Create the table
-        t = Table(data, colWidths=widths)
-
-        # Define the style for the table
-        style = TableStyle(
+    def create_balance_table(self, rows: list[tuple[str, str, str, str]], header: list[str]) -> Table:
+        """Fit address, label, and balance columns within the printable page width."""
+        styles = [self.style_paragraph_left] * 3 + [self.style_paragraph_right]
+        data = [[Paragraph(escape(value), style) for value, style in zip(header, styles, strict=True)]]
+        data.extend(
             [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),  # Header background color
-                ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),  # Header text color
-                ("ALIGN", (0, 0), (-1, -1), "CENTER"),  # Default alignment to center
-                ("GRID", (0, 0), (-1, -1), 0.5, colors.black),  # Grid color and size
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),  # Font style for header
-                ("BACKGROUND", (0, -1), (-1, -1), colors.lightgrey),  # Header background color
-                ("TEXTCOLOR", (0, -1), (-1, -1), colors.whitesmoke),  # Header text color
+                Paragraph(escape(value) if column < 3 else value, styles[column])
+                for column, value in enumerate(row)
             ]
+            for row in rows
         )
+        # The widths fit inside the padded statement frame; paragraphs wrap as needed.
+        widths = [68, 211, 149, 100]
 
-        # Apply the style to the table
-        t.setStyle(style)
-
-        return t
+        table = Table(data, colWidths=widths, repeatRows=1, splitInRow=1)
+        table.setStyle(
+            TableStyle(
+                [
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                    ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                    ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+                    ("BACKGROUND", (0, -1), (-1, -1), colors.lightgrey),
+                    ("TEXTCOLOR", (0, -1), (-1, -1), colors.whitesmoke),
+                ]
+            )
+        )
+        return table
 
     @staticmethod
     def create_invisible_table(columns: list[Any], col_widths: list[int]) -> Table:
@@ -199,18 +190,17 @@ class PdfStatement(BasePDF):
         """Add page break."""
         self.elements.append(PageBreak())  # Add a page break between documents if needed
 
-    def _address_table(self, address_info: list[tuple[str, str, str]], total_amount: str) -> None:
-        """Address table."""
+    def _address_table(self, address_info: list[tuple[str, str, str, str]], total_amount: str) -> None:
+        """Add the funded addresses, their labels, and the total."""
         self.elements.append(
             self.create_balance_table(
-                table=np.array(address_info + [(translate("pdf", "Total"), "", total_amount)]),
-                widths=[120, 340, 100],
+                rows=address_info + [(translate("pdf", "Total"), "", "", total_amount)],
                 header=[
                     translate("pdf", "Category"),
                     translate("pdf", "Address"),
+                    translate("pdf", "Label"),
                     translate("pdf", "Balance") + f" [{self.bitcoin_symbol}]",
                 ],
-                styles=[self.style_paragraph_left, self.style_paragraph_left, self.style_paragraph_right],
             )
         )
 
@@ -251,22 +241,19 @@ class PdfStatement(BasePDF):
         self,
         title: str,
         wallet_descriptor_string: str,
-        address_info: list[tuple[str, str, str]],
+        address_info: list[tuple[str, str, str, str]],
         threshold: int,
         total_amount: str,
         max_tip: int,
         label_sync_nsec: str | None = None,
     ) -> None:
         """Create pdf."""
-        self.elements.append(Paragraph(title, style=self.style_heading))
+        self.elements.append(Paragraph(escape(title), style=self.style_heading))
 
-        localized_date = QLocale().toString(QDateTime(datetime.datetime.now()))
         # Small subtitle
         self.elements.append(
             Paragraph(
-                translate("pdf", "Created at {date} with", no_translate=self.no_translate).format(
-                    date=localized_date
-                )
+                translate("pdf", "Created with", no_translate=self.no_translate)
                 + f" {APP_NAME}: {white_space * 2} {APP_WEBSITE}",
                 self.style_paragraph,
             )
@@ -303,11 +290,13 @@ class PdfStatement(BasePDF):
             )
 
 
-def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None) -> None:
-    """Make and open pdf statement."""
+def create_pdf_statement(
+    wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None, created_at: str | None = None
+) -> PdfStatement:
+    """Build the balance statement for a wallet."""
     info = DescriptorInfo.from_str(str(wallet.multipath_descriptor))
 
-    addresses_and_balances: list[tuple[str, str, int]] = []  # category, address, amount
+    addresses_and_balances: list[tuple[str, str, str, int]] = []  # category, address, label, amount
     total_amount = 0
     for address in wallet.get_addresses():
         balance = wallet.get_addr_balance(address).total
@@ -317,25 +306,21 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec:
                 (
                     wallet.labels.get_category(address),
                     address,
+                    wallet.get_label_for_address(address),
                     balance,
                 )
             )
 
     address_infos = [
-        wallet.get_address_info_min(address) for category, address, balance in addresses_and_balances
+        wallet.get_address_info_min(address) for category, address, label, balance in addresses_and_balances
     ]
     address_infos_nonempty = [address_info.index for address_info in address_infos if address_info]
     max_tip = max(address_infos_nonempty) if address_infos_nonempty else 0
 
-    addresses_and_balances = sorted(addresses_and_balances, key=lambda row: (row[0], -row[2]))
+    addresses_and_balances = sorted(addresses_and_balances, key=lambda row: (row[0], -row[3]))
 
-    pdf_statement = PdfStatement(lang_code=lang_code, network=wallet.network)
+    pdf_statement = PdfStatement(lang_code=lang_code, network=wallet.network, created_at=created_at)
 
-    file_title = translate(
-        "pdf",
-        "Balance Statement of {id}",
-        no_translate=pdf_statement.no_translate,
-    ).format(id=wallet.id)
     title = translate(
         "pdf",
         'Balance Statement of "{id}"',
@@ -348,6 +333,7 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec:
             (
                 category,
                 address,
+                label,
                 Satoshis(value=amount, network=wallet.network).format(
                     color_formatting="rich",
                     show_unit=False,
@@ -355,7 +341,7 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec:
                     btc_symbol=BitcoinSymbol.ISO.value,  # fixed symbol to not get unicode issues in pdfs (with asian fonts)
                 ),
             )
-            for category, address, amount in addresses_and_balances
+            for category, address, label, amount in addresses_and_balances
         ],
         threshold=info.threshold,
         total_amount=Satoshis(value=total_amount, network=wallet.network).format(
@@ -368,4 +354,13 @@ def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec:
         label_sync_nsec=label_sync_nsec,
     )
 
+    return pdf_statement
+
+
+def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None) -> None:
+    """Build and open a wallet balance statement."""
+    pdf_statement = create_pdf_statement(wallet, lang_code, label_sync_nsec)
+    file_title = translate(
+        "pdf", "Balance Statement of {id}", no_translate=pdf_statement.no_translate
+    ).format(id=wallet.id)
     write_and_open_temp_pdf(pdf_statement, file_title)
