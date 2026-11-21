@@ -94,11 +94,11 @@ def _derived_account_pub(mnemonic: str, path: str, mainnet: bool, passphrase: st
     mnemonic_utf8 = unicodedata.normalize("NFKD", mnemonic).encode("utf-8")
     salt = b"mnemonic" + unicodedata.normalize("NFKD", passphrase).encode("utf-8")
     seed = hashlib.pbkdf2_hmac("sha512", mnemonic_utf8, salt, 2048, 64)
-    I = hmac.new(b"Bitcoin seed", seed, hashlib.sha512).digest()
-    scalar = int.from_bytes(I[:32], "big")
+    digest = hmac.new(b"Bitcoin seed", seed, hashlib.sha512).digest()
+    scalar = int.from_bytes(digest[:32], "big")
     if not 0 < scalar < N:
         raise ExchangeError("Invalid BIP32 master key")
-    chain = I[32:]
+    chain = digest[32:]
     pub = _compressed(_scalar_mul(scalar, G))
     master_fingerprint = _fingerprint(pub)
     parent_fingerprint = b"\x00" * 4
@@ -109,14 +109,14 @@ def _derived_account_pub(mnemonic: str, path: str, mainnet: bool, passphrase: st
             payload = b"\x00" + scalar.to_bytes(32, "big") + child.to_bytes(4, "big")
         else:
             payload = pub + child.to_bytes(4, "big")
-        I = hmac.new(chain, payload, hashlib.sha512).digest()
-        tweak = int.from_bytes(I[:32], "big")
+        digest = hmac.new(chain, payload, hashlib.sha512).digest()
+        tweak = int.from_bytes(digest[:32], "big")
         if tweak >= N:
             raise ExchangeError("Invalid Sparrow BIP32 child")
         scalar = (scalar + tweak) % N
         if scalar == 0:
             raise ExchangeError("Invalid Sparrow BIP32 child")
-        chain = I[32:]
+        chain = digest[32:]
         pub = _compressed(_scalar_mul(scalar, G))
     prefix = bytes.fromhex("0488b21e" if mainnet else "043587cf")
     payload = (
@@ -472,7 +472,7 @@ def augment_public_rows_from_seeds(
                 if signer_ref not in bip39_passphrases:
                     key_row["bip39PassphraseRequired"] = True
                     continue
-            signer_passphrase = bip39_passphrases[signer_ref] if has_passphrase else ""
+            signer_passphrase = bip39_passphrases[signer_ref] if signer_ref is not None else ""
             key_row.pop("bip39PassphraseRequired", None)
             stored_xpub = key_row.get("extendedPublicKey")
             mnemonic = _seed_mnemonic(seed_record, password, signer_passphrase if has_passphrase else None)
