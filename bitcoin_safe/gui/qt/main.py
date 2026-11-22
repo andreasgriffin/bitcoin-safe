@@ -134,6 +134,8 @@ from bitcoin_safe.theme import apply_theme_mode
 from bitcoin_safe.tx import HiddenTxUiInfos, TxBuilderInfos, TxUiInfos, short_tx_id
 from bitcoin_safe.util import OptExcInfo, filename_clean
 from bitcoin_safe.wallet import ProtoWallet, ToolsTxUiInfo, Wallet, get_wallets
+from bitcoin_safe.wallet_import.bitcoin_safe_bridge import apply_bip329_labels
+from bitcoin_safe.wallet_import.model import WalletExchange
 from bitcoin_safe.wallet_util import get_default_categories
 
 from ...config import UserConfig
@@ -170,6 +172,7 @@ from .util import (
     is_theme_change_event,
     propagate_theme_change_to_descendants,
 )
+from .wallet_file_import import WalletFileImportScreen
 
 logger = logging.getLogger(__name__)
 
@@ -299,6 +302,7 @@ class MainWindow(UnlockableMainWindow):
         self.welcome_screen.signal_onclick_hot_wallet.connect(self.click_create_hot_wallet)
         self.welcome_screen.signal_onclick_connect_devices.connect(self.click_connect_devices)
         self.welcome_screen.signal_onclick_custom_signature.connect(self.click_custom_signature)
+        self.welcome_screen.signal_onclick_import_wallet.connect(self.click_import_wallet)
         self.welcome_screen.signal_onclick_demo_wallet.connect(self.open_demo_wallet)
         self.network_choice_welcome_screen.signal_onclick_secure_wallet.connect(
             self.on_network_choice_secure_wallet
@@ -2609,6 +2613,44 @@ class MainWindow(UnlockableMainWindow):
         self.welcome_screen.remove_me()
         self.network_choice_welcome_screen.remove_me()
 
+    def click_import_wallet(self) -> None:
+        """Open an embedded setup page for importing a wallet file."""
+        wallet_id = self.preferred_wallet_id(self.welcome_screen.wallet_name)
+        screen = WalletFileImportScreen(wallet_id, self.config.network, self.tab_wallets)
+        node: SidebarNode[object] = SidebarNode(
+            title=self.tr("Import wallet file"), data=screen, widget=screen, icon="file.svg", closable=True
+        )
+        screen.signal_cancel.connect(partial(self.close_tab, node))
+        screen.signal_import_ready.connect(partial(self.on_wallet_file_import_ready, node))
+        screen.signal_busy_changed.connect(lambda busy: node.setClosable(not busy))
+        self.tab_wallets.root.addChildNode(node)
+
+    def on_wallet_file_import_ready(
+        self, node: SidebarNode, protowallet: ProtoWallet, exchange: WalletExchange
+    ) -> None:
+        """Create the wallet and close its import screen on success."""
+        if not self.ensure_wallet_id_available(protowallet.id):
+            return
+        try:
+            self.create_qtwallet_from_protowallet(
+                protowallet=protowallet,
+                tutorial_index=None,
+                known_new_wallet=False,
+                imported_exchange=exchange,
+            )
+        except Exception as exc:
+            Message(str(exc), type=MessageType.Error, parent=self)
+            return
+        self.close_tab(node)
+
+    def wallet_import_in_progress(self) -> bool:
+        """Keep the application alive until its importer thread has finished."""
+        for node in self.tab_wallets.roots:
+            if isinstance(node.data, WalletFileImportScreen) and node.data.worker is not None:
+                Message(self.tr("Please wait until the wallet file has finished loading."), parent=self)
+                return True
+        return False
+
     def _ask_if_full_scan(self) -> bool | None:
         return not question_dialog(
             text=self.tr("Is this a new wallet?"),
@@ -2622,6 +2664,7 @@ class MainWindow(UnlockableMainWindow):
         protowallet: ProtoWallet,
         tutorial_index: int | None,
         known_new_wallet: bool | None = None,
+        imported_exchange: WalletExchange | None = None,
     ) -> QTWallet:
         """Create qtwallet from protowallet."""
         is_new_wallet = bool(known_new_wallet)
@@ -2642,6 +2685,8 @@ class MainWindow(UnlockableMainWindow):
             is_new_wallet=is_new_wallet,
             loop_in_thread=self.loop_in_thread,
         )
+        if imported_exchange is not None:
+            apply_bip329_labels(wallet, imported_exchange)
         file_path = None
         password = None
         qt_wallet = QTWallet(
@@ -3107,6 +3152,10 @@ class MainWindow(UnlockableMainWindow):
         elif isinstance(tab_data, QTProtoWallet):
             tab_data.close()
             self._remove_qt_protowallet(tab_data)
+        elif isinstance(tab_data, WalletFileImportScreen):
+            if tab_data.worker is not None:
+                return
+            tab_data.deleteLater()
         elif isinstance(tab_data, UITx_Viewer):
             if isinstance(tab_data.data.data, bdk.Psbt) and question_dialog(
                 self.tr("Do you want to save the PSBT {id}?").format(
@@ -3215,6 +3264,9 @@ class MainWindow(UnlockableMainWindow):
         """CloseEvent."""
         if not a0:
             return
+        if self.wallet_import_in_progress():
+            a0.ignore()
+            return
         if a0.spontaneous() and not self.isHidden() and self.get_qt_wallets_in_cbf_ibd():
             # event.spontaneous() == True → originated from the window system (user click, Alt+F4, OS session end).
             # if i close it via the tray (hidden), then it shouldnt ask this question
@@ -3249,6 +3301,8 @@ class MainWindow(UnlockableMainWindow):
         self, new_startup_network: bdk.Network | None = None, restart_command: list[str] | None = None
     ) -> None:
         """Restart application."""
+        if self.wallet_import_in_progress():
+            return
         args: list[str] = []  #  sys.argv[1:]
         self.new_startup_network = new_startup_network
 
@@ -3264,6 +3318,8 @@ class MainWindow(UnlockableMainWindow):
 
     def shutdown(self, new_startup_network: bdk.Network | None = None) -> None:
         """Shutdown."""
+        if self.wallet_import_in_progress():
+            return
         self.new_startup_network = new_startup_network
         QCoreApplication.quit()
 
@@ -3272,8 +3328,9 @@ class MainWindow(UnlockableMainWindow):
         logger.info(f"Handling signal: {signum}")
         close_event = QCloseEvent()
         self.closeEvent(close_event)
-        logger.info(f"Received signal {signum}, exiting.")
-        QCoreApplication.quit()
+        if close_event.isAccepted():
+            logger.info(f"Received signal {signum}, exiting.")
+            QCoreApplication.quit()
 
     def setup_signal_handlers(self) -> None:
         """Setup signal handlers."""
