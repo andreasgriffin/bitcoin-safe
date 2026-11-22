@@ -29,6 +29,8 @@
 
 """Only metadata actually serialized into the account xpub can be checked."""
 
+from unittest.mock import patch
+
 import pytest
 from hwilib import _base58
 
@@ -48,6 +50,13 @@ def test_base58check_validation() -> None:
     for invalid in ("0", "", "3QJmnh", "111E1CgqX"):
         with pytest.raises(ValueError):
             b58decode_check(invalid)
+
+
+def test_base58check_rejects_long_input_before_decoding() -> None:
+    with patch("bitcoin_safe.xpub_utils._base58.decode_check") as decode:
+        with pytest.raises(ValueError, match="too long"):
+            b58decode_check("1" * 129)
+        decode.assert_not_called()
 
 
 @pytest.mark.parametrize("testnet", [False, True])

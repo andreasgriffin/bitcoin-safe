@@ -161,6 +161,92 @@ def test_specter_wallet_and_companion_labels():
     assert len([label_record for label_record in w.labels if label_record.ref == "bc1qexample"]) == 1
 
 
+def test_specter_rejects_conflicting_explicit_descriptor_policy() -> None:
+    receive, change, combined = expressions()
+    data = {
+        "keys": [{"xpub": xpub()}],
+        "recv_descriptor": receive,
+        "change_descriptor": change,
+        "descriptor": f"sh({combined})",
+    }
+    with pytest.raises(ExchangeError, match="descriptors conflict"):
+        from_specter(data)
+    data["descriptor"] = add_checksum(combined)
+    assert from_specter(data).descriptor == add_checksum(combined)
+    data["change_descriptor"] = receive
+    with pytest.raises(ExchangeError, match="descriptors conflict"):
+        from_specter(data)
+
+
+@pytest.mark.parametrize(
+    ("fingerprint", "path"),
+    [("deadbeef", "m/84h/0h/0h"), ("f00dbabe", "m/49h/0h/0h"), ("f00dbabe", "m/84h/0h/1h")],
+)
+def test_specter_rejects_conflicting_signer_origins(fingerprint: str, path: str) -> None:
+    receive, change, combined = expressions()
+    data = {
+        "keys": [{"xpub": xpub(), "fingerprint": fingerprint, "derivation": path}],
+        "recv_descriptor": receive,
+        "change_descriptor": change,
+        "descriptor": combined,
+    }
+    with pytest.raises(ExchangeError, match="signer origin conflicts"):
+        from_specter(data)
+
+
+def test_specter_signer_origins_normalize_hardened_paths_and_require_supplied_metadata() -> None:
+    _, _, combined = expressions()
+    data = {
+        "keys": [{"xpub": xpub(), "fingerprint": "F00DBABE", "derivation": "m/84'/0'/0'"}],
+        "descriptor": combined,
+    }
+    assert from_specter(data).descriptor == add_checksum(combined)
+    data["descriptor"] = f"wpkh({xpub()}/<0;1>/*)"
+    with pytest.raises(ExchangeError, match="signer origin conflicts"):
+        from_specter(data)
+    data["keys"] = [{"xpub": xpub()}]
+    assert from_specter(data).descriptor is not None
+
+
+def test_specter_checks_each_matching_key_even_when_signers_are_reordered() -> None:
+    first = xpub()
+    payload = bytearray(b58decode_check(first))
+    payload[13] ^= 1
+    second = b58encode_check(bytes(payload))
+    combined = f"wsh(sortedmulti(2,[f00dbabe/48h/0h/0h]{first}/<0;1>/*,[deadbeef/48h/0h/0h]{second}/<0;1>/*))"
+    data = {
+        "descriptor": combined,
+        "keys": [
+            {"xpub": second, "fingerprint": "deadbeef", "derivation": "m/48h/0h/0h"},
+            {"xpub": first, "fingerprint": "f00dbabe", "derivation": "m/48h/0h/0h"},
+        ],
+    }
+    assert from_specter(data).descriptor == add_checksum(combined)
+    data["keys"][0]["fingerprint"] = "f00dbabe"
+    with pytest.raises(ExchangeError, match="signer origin conflicts"):
+        from_specter(data)
+
+
+def test_specter_rejects_conflicting_origin_embedded_in_signer_key() -> None:
+    _, _, combined = expressions()
+    data = {
+        "keys": [{"xpub": f"[deadbeef/84h/0h/0h]{xpub()}", "fingerprint": "f00dbabe"}],
+        "descriptor": combined,
+    }
+    with pytest.raises(ExchangeError, match="signer origin conflicts"):
+        from_specter(data)
+
+
+def test_specter_rejects_ambiguous_duplicate_xpub_origins() -> None:
+    key = xpub()
+    data = {
+        "keys": [{"xpub": key, "fingerprint": "f00dbabe"}, {"xpub": key, "fingerprint": "f00dbabe"}],
+        "descriptor": f"wsh(sortedmulti(2,[f00dbabe]{key}/<0;1>/*,[deadbeef]{key}/<0;1>/*))",
+    }
+    with pytest.raises(ExchangeError, match="signer origin conflicts"):
+        from_specter(data)
+
+
 def test_sparrow_json_utxo_and_policies():
     k = xpub()
     p = {
@@ -227,6 +313,37 @@ def test_sparrow_multisig_not_guessed_without_policy():
     raw["defaultPolicy"] = {"miniscript": {"script": "wsh(multi(2,A,B))"}}
     w = from_sparrow_json(raw)
     assert w.descriptor.startswith("wsh(multi(2,")
+
+
+@pytest.mark.parametrize(
+    "script",
+    [
+        "wsh(and_v(v:multi(2,A,B),older(144)))",
+        "wsh(multi(2,A,B))extra",
+        "sh(wsh(multi(2,A,B)))",
+    ],
+)
+def test_sparrow_does_not_discard_extra_or_conflicting_policy(script: str) -> None:
+    data = {
+        "scriptType": "P2WSH",
+        "keystores": [
+            {"label": "A", "extendedPublicKey": xpub()},
+            {"label": "B", "extendedPublicKey": xpub()},
+        ],
+        "defaultPolicy": {"miniscript": {"script": script}},
+    }
+    wallet = from_sparrow_json(data)
+    assert wallet.descriptor is None
+    assert any("No verified descriptor" in warning for warning in wallet.warnings)
+
+
+def test_sparrow_does_not_discard_extra_single_signer_policy() -> None:
+    data = {
+        "scriptType": "P2WPKH",
+        "keystores": [{"label": "A", "extendedPublicKey": xpub()}],
+        "defaultPolicy": {"miniscript": {"script": "wsh(and_v(v:pk(A),older(144)))"}},
+    }
+    assert from_sparrow_json(data).descriptor is None
 
 
 def test_ledger_models():
@@ -391,6 +508,20 @@ def test_sparrow_multisig_policy_uses_sanitized_keystore_script_names():
     assert wallet.descriptor is not None
     assert wallet.descriptor.startswith("wsh(sortedmulti(2,")
     assert [k.label for k in wallet.keystores] == ["My Trezor", "BitBox 02"]
+
+
+def test_sparrow_accepts_nested_multisig_policy() -> None:
+    data = {
+        "scriptType": "P2SH_P2WSH",
+        "keystores": [
+            {"label": "A", "extendedPublicKey": xpub()},
+            {"label": "B", "extendedPublicKey": xpub()},
+        ],
+        "defaultPolicy": {"miniscript": {"script": "sh(wsh(sortedmulti(2,A,B)))"}},
+    }
+    wallet = from_sparrow_json(data)
+    assert wallet.descriptor is not None
+    assert wallet.descriptor.startswith("sh(wsh(sortedmulti(2,")
 
 
 @pytest.mark.parametrize("mode", [None, "", "unsupported"])

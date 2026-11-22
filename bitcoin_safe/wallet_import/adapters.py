@@ -51,6 +51,7 @@ from .descriptors import (
     norm_path,
     normalize_xpub,
     parse_keystores_from_descriptor,
+    strip_checksum,
 )
 from .model import OUTPOINT, TXID, UTXO, ExchangeError, Keystore, Label, WalletExchange
 from .sparrow_crypto import decrypt_sprw1, is_sprw1
@@ -211,22 +212,50 @@ def from_descriptor(
 
 def from_specter(data: dict[str, Any], address_csv: str | None = None) -> WalletExchange:
     w = WalletExchange("specter-desktop", str(data.get("name") or data.get("alias") or "Specter wallet"))
+    signers: list[tuple[Keystore, dict[str, Any]]] = []
     for idx, key in enumerate(data.get("keys") or []):
         if not isinstance(key, dict):
             continue
         try:
-            w.keystores.append(
-                _public_key(
-                    key.get("xpub") or key.get("original"),
-                    fingerprint=key.get("fingerprint"),
-                    path=key.get("derivation"),
-                    label=(data.get("devices") or [])[idx] if idx < len(data.get("devices") or []) else None,
-                    source="hardware-or-watch-only",
-                )
+            signer = _public_key(
+                key.get("xpub") or key.get("original"),
+                fingerprint=key.get("fingerprint"),
+                path=key.get("derivation"),
+                label=(data.get("devices") or [])[idx] if idx < len(data.get("devices") or []) else None,
+                source="hardware-or-watch-only",
             )
+            w.keystores.append(signer)
+            signers.append((signer, key))
         except ExchangeError:
             w.warnings.append(f"Could not parse public key from Specter signer {idx}")
-    _set_descriptors(w, data.get("recv_descriptor"), data.get("change_descriptor"), data.get("descriptor"))
+    receive, change, descriptor = (
+        data.get("recv_descriptor"),
+        data.get("change_descriptor"),
+        data.get("descriptor"),
+    )
+    if descriptor and (receive or change):
+        explicit = strip_checksum(descriptor)
+        if (
+            (receive and strip_checksum(receive) != explicit.replace("/<0;1>/*", "/0/*"))
+            or (change and strip_checksum(change) != explicit.replace("/<0;1>/*", "/1/*"))
+            or (receive and change and combine_receive_change(receive, change) != add_checksum(explicit))
+        ):
+            raise ExchangeError("Specter receive/change descriptors conflict with the combined descriptor")
+    _set_descriptors(w, receive, change, descriptor)
+    if w.descriptor:
+        descriptor_keys = parse_keystores_from_descriptor(w.descriptor)
+        for signer, source in signers:
+            candidates = [key for key in descriptor_keys if signer.xpub and key.xpub == signer.xpub]
+            fingerprint = source.get("fingerprint") or signer.fingerprint
+            path = source.get("derivation") or signer.key_origin
+            if candidates and not all(
+                (not fingerprint or (isinstance(fingerprint, str) and fingerprint.lower() == key.fingerprint))
+                and (not path or (isinstance(path, str) and norm_path(path) == key.key_origin))
+                and (not signer.fingerprint or signer.fingerprint == key.fingerprint)
+                and (not signer.key_origin or signer.key_origin == key.key_origin)
+                for key in candidates
+            ):
+                raise ExchangeError("Specter signer origin conflicts with descriptor origin")
     _resolve_network(w)
     w.next_receive_index = _int(data.get("address_index"))
     w.next_change_index = _int(data.get("change_index"))
@@ -368,8 +397,6 @@ def from_sparrow_json(data: dict[str, Any]) -> WalletExchange:
             w.warnings.append(f"Sparrow keystore {idx}: {exc}")
     policy = data.get("defaultPolicy") or {}
     script = ((policy.get("miniscript") or {}).get("script") if isinstance(policy, dict) else None) or ""
-    match = re.search(r"(?<![a-z])(?:sorted)?multi\((\d+)", script)
-    w.threshold = int(match.group(1)) if match else (1 if len(w.keystores) == 1 else None)
     w.gap_limit = _int(data.get("gapLimit"))
     w.next_receive_index = None
     w.birth_height = _int(data.get("birthHeight"))
@@ -379,22 +406,42 @@ def from_sparrow_json(data: dict[str, Any]) -> WalletExchange:
     # Sparrow defaultPolicy contains an exact miniscript referring to key IDs.
     # Only reconstruct multisig from the explicit policy; do NOT assume sortedmulti.
     script_type = str(data.get("scriptType") or "")
-    ordered = ("multi(" in script and "sortedmulti(" not in script) if match else None
-    if len(w.keystores) > 1 and script:
-        # Ensure source policy order is the same as the saved keystores.
-        m = re.search(r"(?:sorted)?multi\(\d+,([^)]*)\)", script)
-        if m:
-            names_in_script = [s.strip() for s in m.group(1).split(",")]
-            if (
-                len(names_in_script) == len(keynames)
-                and len(set(keynames)) == len(keynames)
-                and sorted(names_in_script) == sorted(keynames)
-            ):
-                w.keystores = [w.keystores[keynames.index(s)] for s in names_in_script]
-            else:
-                ordered = None
-                w.warnings.append("Sparrow multisig policy key order cannot be verified")
-    generated = descriptor_for_keys(w.keystores, script_type, threshold=w.threshold, ordered_multisig=ordered)
+    ordered = None
+    w.threshold = 1 if len(w.keystores) == 1 else None
+    policy_supported = True
+    if script:
+        compact = re.sub(r"\s+", "", script)
+        if len(w.keystores) == 1:
+            name = keynames[0]
+            expected = {
+                "P2PKH": f"pkh({name})",
+                "P2WPKH": f"wpkh({name})",
+                "P2SH_P2WPKH": f"sh(wpkh({name}))",
+                "P2TR": f"tr({name})",
+            }
+            policy_supported = compact == expected.get(script_type)
+        else:
+            inner = r"(sortedmulti|multi)\((\d+),([^()]*)\)"
+            pattern = {"P2WSH": rf"wsh\({inner}\)", "P2SH_P2WSH": rf"sh\(wsh\({inner}\)\)"}.get(script_type)
+            match = re.fullmatch(pattern, compact) if pattern else None
+            policy_supported = match is not None
+            if match:
+                names = match.group(3).split(",")
+                if (
+                    len(names) == len(keynames)
+                    and len(set(keynames)) == len(keynames)
+                    and sorted(names) == sorted(keynames)
+                ):
+                    w.keystores = [w.keystores[keynames.index(name)] for name in names]
+                    w.threshold = int(match.group(2))
+                    ordered = match.group(1) == "multi"
+                else:
+                    policy_supported = False
+    generated = (
+        descriptor_for_keys(w.keystores, script_type, threshold=w.threshold, ordered_multisig=ordered)
+        if policy_supported
+        else None
+    )
     if generated:
         _set_descriptors(w, generated, descriptor=generated)
     else:
