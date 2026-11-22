@@ -107,7 +107,7 @@ def test_bie2_load_file_from_hardware_xpub_without_user_password(tmp_path) -> No
     assert "BIE2" not in wallets[0].to_json()
     assert json.loads(wallets[0].to_json())["source_wallet"] == "electrum"
 
-    with pytest.raises(ExchangeError, match="USB device"):
+    with pytest.raises(ExchangeError, match="USB hardware wallet"):
         load_file(path, hint="electrum", password="typed-password")
     with pytest.raises(ExchangeError, match="wrong device"):
         load_file(path, hint="electrum", electrum_hw_xpub=synthetic_storage_xpub(2))

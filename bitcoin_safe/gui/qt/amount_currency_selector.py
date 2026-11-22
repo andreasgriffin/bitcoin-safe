@@ -305,7 +305,7 @@ if __name__ == "__main__":
             if self.selector is not None:
                 previous_amount, previous_unit = self.selector.amount_and_current_iso()
                 self.selector.setParent(None)
-                self.selector.deleteLater()
+                self.selector.hide()
 
             self.selector = AmountCurrencySelector(
                 network=self.config.network,

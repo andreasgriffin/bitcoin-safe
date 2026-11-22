@@ -60,6 +60,14 @@
           <li>📊 Keep track of when you last signed with a hardware signer</li>
           <li>💾 Sign messages with the hardware signer</li>
         </ul>
+        <p>Import wallets of other Bitcoin software</p>
+        <ul>
+          <li>Sparrow</li>
+          <li>Electrum</li>
+          <li>Wasabi</li>
+          <li>Specter Desktop</li>
+          <li>Ledger Live</li>
+        </ul>
       </description>
     </release>
     <release version="2.3.0" date="2026-11-10">

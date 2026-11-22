@@ -538,7 +538,8 @@ class NewWalletWelcomeScreen(QWidget):
             if result == int(QDialog.DialogCode.Accepted):
                 self.set_wallet_name(dialog.wallet_id)
                 self.on_click_custom_wallet()
-            dialog.deleteLater()
+            dialog.setParent(None)
+            dialog.hide()
 
         dialog.finished.connect(on_finished)
         dialog.open()

@@ -3157,7 +3157,8 @@ class MainWindow(UnlockableMainWindow):
         elif isinstance(tab_data, WalletFileImportScreen):
             if tab_data.worker is not None:
                 return
-            tab_data.deleteLater()
+            tab_data.setParent(None)
+            tab_data.hide()
         elif isinstance(tab_data, UITx_Viewer):
             if isinstance(tab_data.data.data, bdk.Psbt) and question_dialog(
                 self.tr("Do you want to save the PSBT {id}?").format(
