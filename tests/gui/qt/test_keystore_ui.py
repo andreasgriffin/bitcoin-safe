@@ -564,6 +564,36 @@ def test_keystore_ui_unexpected_key_origin_uses_warning_styling(
     assert warning_color in widget.edit_xpub.input_field.styleSheet()
 
 
+def test_empty_key_origin_and_xpub_stay_neutral_but_invalid_input_is_colored(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+    error_color = ColorScheme.ERROR.as_color(background=True).name()
+
+    widget.format_all_fields()
+    assert widget.get_worst_analysis().state == AnalyzerState.Invalid
+    assert error_color not in widget.edit_key_origin.input_field.styleSheet()
+    assert error_color not in widget.edit_xpub.input_field.styleSheet()
+
+    widget.edit_key_origin.setText("invalid")
+    widget.format_all_fields()
+    assert error_color in widget.edit_key_origin.input_field.styleSheet()
+    assert error_color not in widget.edit_xpub.input_field.styleSheet()
+
+    widget.edit_key_origin.setText("")
+    widget.edit_xpub.setText("invalid")
+    widget.format_all_fields()
+    assert error_color not in widget.edit_key_origin.input_field.styleSheet()
+    assert error_color in widget.edit_xpub.input_field.styleSheet()
+
+    widget.edit_key_origin.setText("")
+    widget.edit_xpub.setText("")
+    widget.format_all_fields()
+    assert error_color not in widget.edit_key_origin.input_field.styleSheet()
+    assert error_color not in widget.edit_xpub.input_field.styleSheet()
+
+
 def test_set_account_number_updates_key_origin_and_clears_xpub(
     qtbot: QtBot, loop_in_thread: LoopInThread, monkeypatch
 ) -> None:

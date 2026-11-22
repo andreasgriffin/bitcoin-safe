@@ -1025,7 +1025,10 @@ class KeyStoreUI(CardBase):
         extra_tooltip: str = "",
     ) -> None:
         """Apply analyzer styling and tooltip to a button edit."""
-        state = edit.input_field.state_for_text(text=text, analysis=analysis, override_state=override_state)
+        text = text.strip()
+        state = edit.input_field.state_for_text(
+            text=text, analysis=analysis, override_state=override_state if text else None
+        )
         edit.format_edit(state)
 
         tooltip_parts: list[str] = []
