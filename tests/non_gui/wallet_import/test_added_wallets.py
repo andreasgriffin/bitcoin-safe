@@ -57,8 +57,8 @@ from bitcoin_safe.wallet_import.sparrow_crypto import N, _compressed
 from .test_wallet_exchange import xpub
 
 
-def _encrypt_electrum(test_data: dict, password: str) -> bytes:
-    # Independently build Electrum's authenticated ECIES BIE1, using its known
+def _encrypt_electrum(test_data: dict, password: str, *, magic: bytes = b"BIE1") -> bytes:
+    # Independently build Electrum's authenticated ECIES BIE1/BIE2, using its known
     # password KDF and compressed-ECDH protocol. For unit tests only.
     password_seed = hashlib.pbkdf2_hmac("sha512", password.encode(), b"", 1024)
     scalar = int.from_bytes(password_seed, "big") % N
@@ -79,7 +79,7 @@ def _encrypt_electrum(test_data: dict, password: str) -> bytes:
     eph_pub = ephemeral.public_key().public_bytes(
         serialization.Encoding.X962, serialization.PublicFormat.CompressedPoint
     )
-    body = b"BIE1" + eph_pub + enc
+    body = magic + eph_pub + enc
     return base64.b64encode(body + hmac.new(key_m, body, hashlib.sha256).digest())
 
 

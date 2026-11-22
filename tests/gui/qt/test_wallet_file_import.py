@@ -221,6 +221,49 @@ def test_encrypted_electrum_password_retry(qtbot: QtBot, tmp_path: Path) -> None
     assert dialog.accounts.count() == 1
 
 
+def test_bie2_electrum_uses_bitcoin_usb_not_password_dialog(qtbot: QtBot, tmp_path: Path) -> None:
+    from bitcoin_safe.wallet_import.electrum import (
+        ELECTRUM_STORAGE_XPUB_PATH,
+        electrum_storage_password_from_xpub,
+    )
+    from tests.non_gui.wallet_import.test_added_wallets import _encrypt_electrum
+    from tests.non_gui.wallet_import.test_electrum_hw_bie2 import (
+        electrum_standard_wallet,
+        synthetic_storage_xpub,
+    )
+
+    storage_xpub = synthetic_storage_xpub()
+    path = tmp_path / "bie2-electrum"
+    path.write_bytes(
+        _encrypt_electrum(
+            electrum_standard_wallet(), electrum_storage_password_from_xpub(storage_xpub), magic=b"BIE2"
+        )
+    )
+    # Mock the public bitcoin_usb API; no device/seed is needed in GUI tests.
+    from unittest.mock import MagicMock
+
+    screen = WalletFileImportScreen("Imported", bdk.Network.BITCOIN, loop_in_thread=MagicMock())
+    qtbot.addWidget(screen)
+    assert screen.usb_gui is not None
+    choose_format(screen, "electrum")
+    screen.wallet_path.setText(str(path))
+    with (
+        patch.object(
+            screen.usb_gui,
+            "get_fingerprint_and_xpub",
+            return_value=({"type": "test-usb"}, "beefcafe", storage_xpub),
+        ) as get_xpub,
+        patch("bitcoin_safe.gui.qt.wallet_file_import.PasswordQuestion.ask_for_password") as prompt,
+        patch.object(screen, "show_error") as error,
+    ):
+        screen.read_wallet()
+        qtbot.waitUntil(lambda: screen.worker is None, timeout=10000)
+    get_xpub.assert_called_once_with(ELECTRUM_STORAGE_XPUB_PATH)
+    prompt.assert_not_called()
+    error.assert_not_called()
+    assert screen.accounts.count() == 1
+
+
 def test_multi_account_selection_imports_only_selected_account(qtbot: QtBot) -> None:
     first = from_descriptor(expressions()[2], name="First")
     second = from_descriptor(expressions()[2], name="Second")

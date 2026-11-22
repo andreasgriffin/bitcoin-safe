@@ -2616,7 +2616,9 @@ class MainWindow(UnlockableMainWindow):
     def click_import_wallet(self) -> None:
         """Open an embedded setup page for importing a wallet file."""
         wallet_id = self.preferred_wallet_id(self.welcome_screen.wallet_name)
-        screen = WalletFileImportScreen(wallet_id, self.config.network, self.tab_wallets)
+        screen = WalletFileImportScreen(
+            wallet_id, self.config.network, self.tab_wallets, loop_in_thread=self.loop_in_thread
+        )
         node: SidebarNode[object] = SidebarNode(
             title=self.tr("Import wallet file"), data=screen, widget=screen, icon="file.svg", closable=True
         )

@@ -50,13 +50,27 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from bitcoin_safe.xpub_utils import check_xpub_origin_depth_and_child_number
+from bitcoin_safe.xpub_utils import b58decode_check, check_xpub_origin_depth_and_child_number
 
 from .descriptors import add_checksum, norm_path, origin_expression, strip_checksum
 from .model import OUTPOINT, TXID, ExchangeError, Keystore, Label, WalletExchange
 
 N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
 MAX_DECOMPRESSED = 32 * 1024 * 1024
+# Electrum storage.py: m/4541509' ("ELE") / 1112098098' ("BIE2").
+ELECTRUM_STORAGE_XPUB_PATH = "m/4541509'/1112098098'"
+
+
+def electrum_storage_password_from_xpub(xpub: str) -> str:
+    """Public-only BIE2 storage credential from the device's special-path xpub.
+
+    Electrum encrypts storage with the compressed pubkey hex at this path,
+    NOT with the account xpub, fingerprint, private key, or device PIN.
+    BIP32 metadata checks cannot prove the full derivation path; ECIES MAC
+    authentication verifies that the selected device unlocks this file.
+    """
+    check_xpub_origin_depth_and_child_number(xpub, ELECTRUM_STORAGE_XPUB_PATH)
+    return b58decode_check(xpub)[45:78].hex()
 
 
 def is_electrum_encrypted(raw: bytes) -> bool:
@@ -67,21 +81,30 @@ def is_electrum_encrypted(raw: bytes) -> bool:
     return len(b) >= 85 and b[:4] in (b"BIE1", b"BIE2")
 
 
-def decrypt_electrum(raw: bytes, password: str) -> bytes:
-    """Decrypt Electrum BIE1 whole-file storage (PBKDF2 + ECIES + zlib).
+def decrypt_electrum(raw: bytes, password: str | None, *, electrum_hw_xpub: str | None = None) -> bytes:
+    """Decrypt BIE1 by password or BIE2 using an explicitly selected device xpub.
 
-    BIE2 is hardware-xpub-protected: a user password alone cannot unlock it.
+    The BIE2 hardware credential is derived from a public key, never an xprv.
+    Ordinary user passwords must never be interpreted as BIE2 credentials.
     """
     try:
         data = base64.b64decode(raw.strip(), validate=True)
     except (ValueError, binascii.Error) as exc:
         raise ExchangeError("Malformed Electrum encrypted file") from exc
-    if data[:4] == b"BIE2":
-        raise ExchangeError(
-            "Electrum BIE2 requires its hardware-derived xpub password; export an unencrypted watch-only copy using Electrum"
-        )
-    if len(data) < 85 or data[:4] != b"BIE1" or (len(data) - 4 - 33 - 32) % 16:
-        raise ExchangeError("Not an Electrum BIE1 encrypted wallet")
+    magic = data[:4]
+    if magic == b"BIE2":
+        if password is not None or not electrum_hw_xpub:
+            raise ExchangeError(
+                "Electrum BIE2 requires an unlocked USB hardware wallet, not a typed password"
+            )
+        try:
+            password = electrum_storage_password_from_xpub(electrum_hw_xpub)
+        except (TypeError, ValueError) as exc:
+            raise ExchangeError("Invalid Electrum hardware storage xpub") from exc
+    elif electrum_hw_xpub is not None:
+        raise ExchangeError("A USB hardware xpub may only unlock an Electrum BIE2 wallet")
+    if len(data) < 85 or magic not in (b"BIE1", b"BIE2") or (len(data) - 4 - 33 - 32) % 16:
+        raise ExchangeError("Not a supported Electrum encrypted wallet")
     if not isinstance(password, str):
         raise ExchangeError("Electrum wallet password is required")
     try:
@@ -117,6 +140,10 @@ def decrypt_electrum(raw: bytes, password: str) -> bytes:
         json.loads(plaintext.decode("utf-8"))
         return plaintext
     except (ValueError, UnicodeError, OverflowError, json.JSONDecodeError) as exc:
+        if magic == b"BIE2":
+            raise ExchangeError(
+                "Electrum BIE2 unlock failed: wrong device, seed/passphrase, or corrupted file"
+            ) from exc
         raise ExchangeError("Incorrect Electrum password or corrupt encrypted wallet") from exc
 
 

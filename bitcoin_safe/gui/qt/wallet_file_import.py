@@ -38,8 +38,10 @@ from pathlib import Path
 from typing import cast
 
 import bdkpython as bdk
+from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_usb.address_types import AddressTypes
+from bitcoin_usb.usb_gui import USBGui
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtWidgets import (
     QComboBox,
@@ -70,6 +72,7 @@ from bitcoin_safe.wallet_import.adapters import MAX_FILE
 from bitcoin_safe.wallet_import.bitcoin_safe_bridge import NETWORKS, label_import_data, make_protowallet
 from bitcoin_safe.wallet_import.descriptors import add_checksum, norm_path, strip_checksum
 from bitcoin_safe.wallet_import.electrum import (
+    ELECTRUM_STORAGE_XPUB_PATH,
     complete_cosigner_origins,
     is_electrum_encrypted,
     missing_cosigner_origins,
@@ -103,6 +106,7 @@ class ImportWorker(QThread):
         parent: QWidget,
         bip39_passphrase: str | None = None,
         bip39_passphrases: dict[str, str] | None = None,
+        electrum_hw_xpub: str | None = None,
     ) -> None:
         super().__init__(parent)
         self.path = path
@@ -110,6 +114,7 @@ class ImportWorker(QThread):
         self.password = password
         self.bip39_passphrase = bip39_passphrase
         self.bip39_passphrases = dict(bip39_passphrases or {})
+        self.electrum_hw_xpub = electrum_hw_xpub
 
     def run(self) -> None:
         try:
@@ -119,6 +124,7 @@ class ImportWorker(QThread):
                 password=self.password,
                 bip39_passphrase=self.bip39_passphrase,
                 bip39_passphrases=self.bip39_passphrases,
+                electrum_hw_xpub=self.electrum_hw_xpub,
             )
         except PasswordRequired as exc:
             self.password_required.emit(str(exc))
@@ -140,6 +146,7 @@ class ImportWorker(QThread):
             self.password = None
             self.bip39_passphrase = None
             self.bip39_passphrases = {}
+            self.electrum_hw_xpub = None
 
 
 class WalletFileImportScreen(QWidget):
@@ -150,10 +157,23 @@ class WalletFileImportScreen(QWidget):
     signal_busy_changed = cast(SignalProtocol[[bool]], pyqtSignal(bool))
     formats_with_labels = frozenset({"electrum", "sparrow", "specter"})
 
-    def __init__(self, wallet_id: str, network: bdk.Network, parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        wallet_id: str,
+        network: bdk.Network,
+        parent: QWidget | None = None,
+        loop_in_thread: LoopInThread | None = None,
+    ) -> None:
         super().__init__(parent)
         self.wallet_id = wallet_id
         self.network = network
+        # Reuse bitcoin_usb's generic picker/backends and platform-specific
+        # threading. Never open a vendor-specific device connection here.
+        self.usb_gui = (
+            USBGui(network=network, loop_in_thread=loop_in_thread, parent=self, enable_bluetooth=False)
+            if loop_in_thread is not None
+            else None
+        )
         self.wallets: list[WalletExchange] = []
         self.worker: ImportWorker | None = None
         self._pending_password_prompt = False
@@ -333,12 +353,9 @@ class WalletFileImportScreen(QWidget):
             with path.open("rb") as stream:
                 header = stream.read(1024)
             electrum_encrypted = is_electrum_encrypted(header)
-            if electrum_encrypted and base64.b64decode(header.strip()[:8]).startswith(b"BIE2"):
-                raise ExchangeError(
-                    self.tr(
-                        "Electrum BIE2 requires the original device. Export an unencrypted watch-only wallet from Electrum."
-                    )
-                )
+            electrum_bie2 = electrum_encrypted and base64.b64decode(
+                header.strip()[:8], validate=True
+            ).startswith(b"BIE2")
             encrypted = header.startswith(H2_MAGIC) or is_sprw1(header) or electrum_encrypted
         except RuntimeError:
             self.show_error(self.tr("Cannot resolve the wallet file path. Choose the file using Browse."))
@@ -361,13 +378,35 @@ class WalletFileImportScreen(QWidget):
             self.show_error(str(exc))
             return
         password = None
-        if encrypted:
+        electrum_hw_xpub = None
+        if electrum_bie2:
+            if self.format.currentData() != "electrum":
+                self.show_error(self.tr("Select the Electrum format for this encrypted wallet."))
+                return
+            if self.usb_gui is None:
+                self.show_error(self.tr("USB device access is unavailable for this import screen."))
+                return
+            self.status.setText(
+                self.tr("Select and unlock the hardware wallet used to encrypt this Electrum file.")
+            )
+            try:
+                # Electrum BIE2 uses a special hardened *public* xpub path;
+                # bitcoin_usb handles all supported USB hardware backends.
+                result = self.usb_gui.get_fingerprint_and_xpub(ELECTRUM_STORAGE_XPUB_PATH)
+            except Exception as exc:
+                self.show_error(self.tr("Could not read Electrum storage xpub: {error}").format(error=exc))
+                return
+            if result is None:
+                self.status.setText(self.tr("USB hardware wallet selection was cancelled or failed."))
+                return
+            _selected, _fingerprint, electrum_hw_xpub = result
+        elif encrypted:
             password = PasswordQuestion(self, self.tr("Enter the source wallet password:")).ask_for_password()
             if password is None:
                 return
-        self.start_import(password)
+        self.start_import(password, electrum_hw_xpub=electrum_hw_xpub)
 
-    def start_import(self, password: str | None) -> None:
+    def start_import(self, password: str | None, *, electrum_hw_xpub: str | None = None) -> None:
         self._source_wallet_password = password
         self.wallets = []
         self.accounts.clear()
@@ -389,6 +428,7 @@ class WalletFileImportScreen(QWidget):
             password,
             self,
             bip39_passphrases=dict(self._signer_passphrases) if fmt == "sparrow" else None,
+            electrum_hw_xpub=electrum_hw_xpub,
         )
         self.worker.loaded.connect(self.on_loaded)
         self.worker.failed.connect(self.show_error)

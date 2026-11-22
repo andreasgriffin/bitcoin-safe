@@ -687,6 +687,8 @@ def load_file(
     derive_public_from_seeds: bool = True,
     bip39_passphrase: str | None = None,
     bip39_passphrases: dict[str, str] | None = None,
+    *,
+    electrum_hw_xpub: str | None = None,
 ) -> list[WalletExchange]:
     file = Path(path)
     # Route recognized binary H2 files to the read-only Sparrow decoder before
@@ -725,12 +727,15 @@ def load_file(
     consumed_password = False
     from .electrum import decrypt_electrum, is_electrum_encrypted
 
-    if is_electrum_encrypted(raw):
+    electrum_encrypted = is_electrum_encrypted(raw)
+    if electrum_hw_xpub is not None and not electrum_encrypted:
+        raise ExchangeError("A USB hardware xpub may only unlock an encrypted Electrum BIE2 wallet")
+    if electrum_encrypted:
         if hint and hint.lower() != "electrum":
             raise ExchangeError("This is an Electrum wallet; select the Electrum format")
-        if password is None:
-            raise ExchangeError("Encrypted Electrum wallet requires an explicit password; use --ask-password")
-        raw = decrypt_electrum(raw, password)
+        if password is None and electrum_hw_xpub is None:
+            raise ExchangeError("Encrypted Electrum wallet requires a password (BIE1) or USB device (BIE2)")
+        raw = decrypt_electrum(raw, password, electrum_hw_xpub=electrum_hw_xpub)
         consumed_password = True
         hint = hint or "electrum"
     elif is_sprw1(raw):
