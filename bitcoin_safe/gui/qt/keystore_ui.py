@@ -148,6 +148,7 @@ class KeyStoreUI(CardBase):
         parent: QWidget | None = None,
         read_only_mode: bool = False,
         show_register_button: bool = True,
+        show_empty_details: bool = False,
     ) -> None:
         """Initialize instance."""
         self._theme_assets_ready = False
@@ -160,6 +161,7 @@ class KeyStoreUI(CardBase):
         self.get_address_type = get_address_type
         self.read_only_mode = read_only_mode
         self.show_register_button = show_register_button
+        self.show_empty_details = show_empty_details
         self.loop_in_thread = loop_in_thread
         self.counter_register_button_clicked = 0
         self._device_type_editing = False
@@ -895,16 +897,12 @@ class KeyStoreUI(CardBase):
         for widget in (
             self.label_fingerprint,
             self.edit_fingerprint,
-            self.label_account_number,
-            self.edit_account_number,
             self.label_key_origin,
             self.edit_key_origin,
             self.label_xpub,
             self.edit_xpub,
-            self.label_seed,
-            self.edit_seed,
         ):
-            widget.setVisible(has_details)
+            widget.setVisible(has_details or self.show_empty_details)
 
         self.label_account_number.setVisible(show_account_number)
         self.edit_account_number.setVisible(show_account_number)

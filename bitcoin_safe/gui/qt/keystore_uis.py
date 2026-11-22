@@ -67,6 +67,7 @@ class KeyStoreUIs(QWidget):
         loop_in_thread: LoopInThread,
         read_only_mode: bool = False,
         show_register_button: bool = True,
+        show_empty_details: bool = False,
     ) -> None:
         """Initialize instance."""
         super().__init__()
@@ -75,6 +76,7 @@ class KeyStoreUIs(QWidget):
         self.loop_in_thread = loop_in_thread
         self.read_only_mode = read_only_mode
         self.show_register_button = show_register_button
+        self.show_empty_details = show_empty_details
 
         self.get_editable_protowallet = get_editable_protowallet
         self.get_address_type = get_address_type
@@ -122,6 +124,7 @@ class KeyStoreUIs(QWidget):
             loop_in_thread=self.loop_in_thread,
             read_only_mode=self.read_only_mode,
             show_register_button=self.show_register_button,
+            show_empty_details=self.show_empty_details,
         )
         self._connect_keystore_ui(keystore_ui)
         return keystore_ui
