@@ -178,6 +178,42 @@ def test_specter_rejects_conflicting_explicit_descriptor_policy() -> None:
         from_specter(data)
 
 
+@pytest.mark.parametrize("has_explicit_descriptor", [False, True])
+def test_specter_accepts_equivalent_descriptor_origin_formats(has_explicit_descriptor: bool) -> None:
+    receive, change, combined = expressions()
+    receive = add_checksum(receive.replace("84h/0h/0h", "84'/0'/0'"))
+    change = add_checksum(change.replace("f00dbabe/84h/0h/0h", "F00DBABE/84H/0H/0H"))
+    data = {
+        "keys": [{"xpub": xpub(), "fingerprint": "f00dbabe", "derivation": "m/84h/0h/0h"}],
+        "recv_descriptor": receive,
+        "change_descriptor": change,
+    }
+    if has_explicit_descriptor:
+        data["descriptor"] = add_checksum(combined)
+    wallet = from_specter(data)
+    expected = combined if has_explicit_descriptor else combined.replace("84h/0h/0h", "84'/0'/0'")
+    assert wallet.descriptor == add_checksum(expected)
+
+
+@pytest.mark.parametrize("origin", ["f00dbabe/84/0h/0h", "f00dbabe/49h/0h/0h", "deadbeef/84h/0h/0h"])
+def test_specter_rejects_different_descriptor_origins(origin: str) -> None:
+    receive, change, combined = expressions()
+    data = {
+        "recv_descriptor": receive,
+        "change_descriptor": change.replace("f00dbabe/84h/0h/0h", origin),
+        "descriptor": combined,
+    }
+    with pytest.raises(ExchangeError, match="descriptors conflict"):
+        from_specter(data)
+
+
+def test_specter_still_checks_descriptor_checksum_when_normalizing_origins() -> None:
+    receive, change, combined = expressions()
+    data = {"recv_descriptor": receive + "#aaaaaaaa", "change_descriptor": change, "descriptor": combined}
+    with pytest.raises(ExchangeError, match="checksum mismatch"):
+        from_specter(data)
+
+
 @pytest.mark.parametrize(
     ("fingerprint", "path"),
     [("deadbeef", "m/84h/0h/0h"), ("f00dbabe", "m/49h/0h/0h"), ("f00dbabe", "m/84h/0h/1h")],

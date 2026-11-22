@@ -49,9 +49,9 @@ from .descriptors import (
     infer_network,
     infer_script_type,
     norm_path,
+    normalize_descriptor_origins,
     normalize_xpub,
     parse_keystores_from_descriptor,
-    strip_checksum,
 )
 from .model import OUTPOINT, TXID, UTXO, ExchangeError, Keystore, Label, WalletExchange
 from .sparrow_crypto import decrypt_sprw1, is_sprw1
@@ -234,11 +234,12 @@ def from_specter(data: dict[str, Any], address_csv: str | None = None) -> Wallet
         data.get("descriptor"),
     )
     if descriptor and (receive or change):
-        explicit = strip_checksum(descriptor)
+        explicit = normalize_descriptor_origins(descriptor)
+        combined = combine_receive_change(receive, change) if receive and change else None
         if (
-            (receive and strip_checksum(receive) != explicit.replace("/<0;1>/*", "/0/*"))
-            or (change and strip_checksum(change) != explicit.replace("/<0;1>/*", "/1/*"))
-            or (receive and change and combine_receive_change(receive, change) != add_checksum(explicit))
+            (receive and normalize_descriptor_origins(receive) != explicit.replace("/<0;1>/*", "/0/*"))
+            or (change and normalize_descriptor_origins(change) != explicit.replace("/<0;1>/*", "/1/*"))
+            or (receive and change and (not combined or normalize_descriptor_origins(combined) != explicit))
         ):
             raise ExchangeError("Specter receive/change descriptors conflict with the combined descriptor")
     _set_descriptors(w, receive, change, descriptor)

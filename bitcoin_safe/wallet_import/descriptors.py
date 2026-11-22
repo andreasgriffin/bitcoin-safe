@@ -139,6 +139,20 @@ def norm_path(path: str | None) -> str | None:
     return p
 
 
+def normalize_descriptor_origins(desc: str) -> str:
+    """Normalize fingerprint case and derivation paths in key origins for comparison."""
+
+    def normalize_origin(match: re.Match[str]) -> str:
+        path = norm_path(match.group("path")) or "m"
+        return f"[{match.group('fingerprint').lower()}{path.removeprefix('m')}]"
+
+    return re.sub(
+        r"\[(?P<fingerprint>[0-9a-fA-F]{8})(?P<path>(?:/[0-9]+[hH']?)*)\]",
+        normalize_origin,
+        strip_checksum(desc),
+    )
+
+
 def origin_expression(ks: Keystore) -> str:
     if not ks.xpub:
         raise ExchangeError("Cannot create a descriptor without a public key")
@@ -216,7 +230,7 @@ def combine_receive_change(receive: str | None, change: str | None) -> str | Non
         return None
     combined_r = recv.replace("/0/*", "/<0;1>/*")
     combined_c = chg.replace("/1/*", "/<0;1>/*")
-    if combined_r != combined_c:
+    if normalize_descriptor_origins(combined_r) != normalize_descriptor_origins(combined_c):
         return None
     return add_checksum(combined_r)
 
