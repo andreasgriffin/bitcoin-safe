@@ -1,0 +1,744 @@
+#
+# Bitcoin-Safe
+# Copyright (C) 2026 Andreas Griffin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of version 3 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/gpl-3.0.html
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+"""Source-specific adapters, based on publicly documented/reviewed source fields.
+
+Reads only supplied local source files. Ledger GUI discovery is limited to
+its standard app.json location; no network or device access. Unsupported formats fail closed.
+"""
+
+from __future__ import annotations
+
+import csv
+import io
+import json
+import re
+from pathlib import Path
+from typing import Any
+
+from .descriptors import (
+    add_checksum,
+    combine_receive_change,
+    descriptor_for_keys,
+    infer_network,
+    infer_script_type,
+    norm_path,
+    normalize_descriptor_origins,
+    normalize_xpub,
+    parse_keystores_from_descriptor,
+)
+from .model import OUTPOINT, TXID, UTXO, ExchangeError, Keystore, Label, WalletExchange
+from .sparrow_crypto import decrypt_sprw1, is_sprw1
+
+MAX_FILE = 32 * 1024 * 1024
+
+
+def _network(s: Any) -> str:
+    if isinstance(s, dict):
+        s = s.get("name") or s.get("id") or ""
+    s = str(s or "").lower()
+    if s in ("main", "bitcoin", "mainnet", "btc"):
+        return "mainnet"
+    if s in ("tbtc", "test", "testnet", "testnet3", "testnetv3"):
+        return "testnet"
+    if s in ("testnet4", "testnetv4"):
+        return "testnet4"
+    if s in ("regtest", "rbtc"):
+        return "regtest"
+    if s == "signet":
+        return "signet"
+    return "unknown"
+
+
+def _int(x: Any) -> int | None:
+    try:
+        return int(x) if x is not None and not isinstance(x, bool) else None
+    except (TypeError, ValueError):
+        return None
+
+
+def _public_key(
+    xpub: Any,
+    fingerprint: Any = None,
+    path: Any = None,
+    device: Any = None,
+    label: Any = None,
+    source: Any = None,
+) -> Keystore:
+    ks = Keystore(
+        device_type=str(device) if device else None,
+        label=str(label) if label else None,
+        source=str(source) if source else None,
+    )
+    if isinstance(fingerprint, str) and re.fullmatch(r"[0-9a-fA-F]{8}", fingerprint):
+        ks.fingerprint = fingerprint.lower()
+    ks.key_origin = norm_path(path) if isinstance(path, str) else None
+    if isinstance(xpub, str) and xpub:
+        # Can have '[fingerprint/path]xpub' in common export formats.
+        if xpub.startswith("["):
+            end = xpub.find("]")
+            if end < 0:
+                raise ExchangeError("Invalid origin bracket in xpub")
+            origin = xpub[1:end].split("/")
+            if len(origin[0]) == 8:
+                ks.fingerprint = origin[0].lower()
+            if len(origin) > 1:
+                ks.key_origin = norm_path("/".join(origin[1:]))
+            xpub = xpub[end + 1 :]
+        if "/" in xpub:
+            xpub, ks.derivation_suffix = xpub.split("/", 1)
+            ks.derivation_suffix = "/" + ks.derivation_suffix
+        ks.xpub, _net, ks.raw_xpub_prefix = normalize_xpub(xpub)
+    return ks
+
+
+def _resolve_network(wallet: WalletExchange, *additional: str) -> None:
+    key_net = infer_network(wallet.keystores)
+    candidates = [n for n in additional if n != "unknown"]
+    if wallet.network != "unknown":
+        candidates.append(wallet.network)
+    # Mainnet vs non-mainnet must not mismatch. Testnet/signet/regtest
+    # share tpub serialization; keep explicit network when present.
+    if key_net != "unknown" and candidates:
+        if any((n == "mainnet") != (key_net == "mainnet") for n in candidates):
+            raise ExchangeError("Network conflicts with extended public key version")
+    if wallet.network == "unknown":
+        if not candidates:
+            wallet.extra["network_inferred_from_keys"] = True
+        wallet.network = candidates[0] if candidates else key_net
+    if wallet.network == "unknown":
+        wallet.warnings.append("Network unknown: verify network before Bitcoin Safe import")
+
+
+def _set_descriptors(
+    wallet: WalletExchange, receive: str | None, change: str | None = None, descriptor: str | None = None
+) -> None:
+    wallet.receive_descriptor = add_checksum(receive) if receive else None
+    wallet.change_descriptor = add_checksum(change) if change else None
+    wallet.descriptor = add_checksum(descriptor) if descriptor else combine_receive_change(receive, change)
+    source_descriptor = wallet.descriptor or receive
+    if wallet.keystores and source_descriptor:
+        descriptor_keys = parse_keystores_from_descriptor(source_descriptor)
+        known = sorted(k.xpub for k in wallet.keystores if k.xpub)
+        found = sorted(k.xpub for k in descriptor_keys if k.xpub)
+        if found and known and known != found:
+            wallet.warnings.append(
+                "Descriptor public keys conflict with source keystores; refusing combined descriptor"
+            )
+            wallet.descriptor = None
+    if not wallet.keystores:
+        d = wallet.descriptor or receive or change
+        if d:
+            wallet.keystores = parse_keystores_from_descriptor(d)
+    wallet.address_type = infer_script_type(wallet.descriptor or receive)
+    if not wallet.descriptor:
+        wallet.warnings.append("Combined receive/change descriptor not established; check both branches")
+
+
+def _label_from_dict(obj: dict[str, Any]) -> Label:
+    return Label(
+        type=str(obj["type"]),
+        ref=str(obj["ref"]),
+        label=obj.get("label"),
+        origin=obj.get("origin"),
+        spendable=obj.get("spendable"),
+        extra={
+            k: obj[k]
+            for k in ("height", "time", "fee", "value", "rate", "keypath", "fmv", "heights")
+            if k in obj
+        },
+    )
+
+
+def import_bip329_jsonl(wallet: WalletExchange, text: str) -> int:
+    count = 0
+    for number, row in enumerate(text.splitlines(), start=1):
+        if not row.strip():
+            continue
+        try:
+            obj = json.loads(row)
+            if not isinstance(obj, dict):
+                raise ExchangeError("BIP329 record must be a JSON object")
+            if obj.get("type") not in {"tx", "addr", "pubkey", "input", "output", "xpub", "spscan", "wallet"}:
+                # Forward compatible: unknown types intentionally ignored.
+                continue
+            label = _label_from_dict(obj)
+            wallet.add_label(label)
+            if label.type == "output" and label.spendable is False and OUTPOINT.fullmatch(label.ref):
+                wallet.add_frozen_outpoint(label.ref)
+            count += 1
+        except (KeyError, ValueError, TypeError) as exc:
+            raise ExchangeError(f"BIP329 line {number}: {exc}") from exc
+    return count
+
+
+def from_descriptor(
+    text: str, name: str = "Imported descriptor", network: str = "unknown", source: str = "descriptor"
+) -> WalletExchange:
+    w = WalletExchange(source_wallet=source, name=name, network=network)
+    # `strip_checksum` / parse will refuse wrong checksums.
+    _set_descriptors(w, text, descriptor=text if "<0;1>" in text else None)
+    if not w.keystores:
+        w.warnings.append("No BIP32 public keys recognized in descriptor")
+    _resolve_network(w)
+    return w
+
+
+def from_specter(data: dict[str, Any], address_csv: str | None = None) -> WalletExchange:
+    w = WalletExchange("specter-desktop", str(data.get("name") or data.get("alias") or "Specter wallet"))
+    signers: list[tuple[Keystore, dict[str, Any]]] = []
+    for idx, key in enumerate(data.get("keys") or []):
+        if not isinstance(key, dict):
+            continue
+        try:
+            signer = _public_key(
+                key.get("xpub") or key.get("original"),
+                fingerprint=key.get("fingerprint"),
+                path=key.get("derivation"),
+                label=(data.get("devices") or [])[idx] if idx < len(data.get("devices") or []) else None,
+                source="hardware-or-watch-only",
+            )
+            w.keystores.append(signer)
+            signers.append((signer, key))
+        except ExchangeError:
+            w.warnings.append(f"Could not parse public key from Specter signer {idx}")
+    receive, change, descriptor = (
+        data.get("recv_descriptor"),
+        data.get("change_descriptor"),
+        data.get("descriptor"),
+    )
+    if descriptor and (receive or change):
+        explicit = normalize_descriptor_origins(descriptor)
+        combined = combine_receive_change(receive, change) if receive and change else None
+        if (
+            (receive and normalize_descriptor_origins(receive) != explicit.replace("/<0;1>/*", "/0/*"))
+            or (change and normalize_descriptor_origins(change) != explicit.replace("/<0;1>/*", "/1/*"))
+            or (receive and change and (not combined or normalize_descriptor_origins(combined) != explicit))
+        ):
+            raise ExchangeError("Specter receive/change descriptors conflict with the combined descriptor")
+    _set_descriptors(w, receive, change, descriptor)
+    if w.descriptor:
+        descriptor_keys = parse_keystores_from_descriptor(w.descriptor)
+        for signer, source in signers:
+            candidates = [key for key in descriptor_keys if signer.xpub and key.xpub == signer.xpub]
+            fingerprint = source.get("fingerprint") or signer.fingerprint
+            path = source.get("derivation") or signer.key_origin
+            if candidates and not all(
+                (not fingerprint or (isinstance(fingerprint, str) and fingerprint.lower() == key.fingerprint))
+                and (not path or (isinstance(path, str) and norm_path(path) == key.key_origin))
+                and (not signer.fingerprint or signer.fingerprint == key.fingerprint)
+                and (not signer.key_origin or signer.key_origin == key.key_origin)
+                for key in candidates
+            ):
+                raise ExchangeError("Specter signer origin conflicts with descriptor origin")
+    _resolve_network(w)
+    w.next_receive_index = _int(data.get("address_index"))
+    w.next_change_index = _int(data.get("change_index"))
+    w.gap_limit = _int(data.get("keypool"))
+    w.birth_height = _int(data.get("blockheight"))
+    w.threshold = _int(data.get("sigs_required"))
+    w.extra.update(
+        {
+            "alias": data.get("alias"),
+            "change_keypool": _int(data.get("change_keypool")),
+            "current_address": data.get("address"),
+            "current_change_address": data.get("change_address"),
+        }
+    )
+    for item in data.get("frozen_utxo") or []:
+        if isinstance(item, str):
+            w.add_frozen_outpoint(item)
+        elif isinstance(item, dict):
+            txid, vout = item.get("txid"), _int(item.get("vout"))
+            if txid and vout is not None:
+                w.add_frozen_outpoint(f"{txid}:{vout}")
+    # Specter JSON export labels are label -> array of addresses.
+    labels = data.get("labels") or {}
+    if isinstance(labels, dict):
+        for label, addresses in labels.items():
+            for address in addresses if isinstance(addresses, list) else [addresses]:
+                if isinstance(address, str) and address:
+                    w.add_label(Label("addr", address, str(label)))
+    if address_csv:
+        import_specter_address_csv(w, address_csv)
+    elif "labels" not in data:
+        w.warnings.append("Specter local labels are stored in adjacent _addr.csv; supply that file")
+    if data.get("pending_psbts"):
+        w.warnings.append("Pending PSBTs intentionally not copied; resolve/recreate them after migration")
+    return w
+
+
+def import_specter_address_csv(w: WalletExchange, text: str) -> None:
+    reader = csv.DictReader(io.StringIO(text))
+    for original in reader:
+        item = {k.lower(): v for k, v in original.items() if k}
+        address, label = item.get("address"), item.get("label")
+        if address and label and not label.startswith("Address #"):
+            w.add_label(Label("addr", address, label))
+
+
+def _walk_sparrow_node(w: WalletExchange, node: Any) -> None:
+    if not isinstance(node, dict):
+        return
+    address = node.get("address")
+    path = node.get("derivationPath")
+    if isinstance(address, str) and node.get("label") is not None:
+        w.add_label(
+            Label(
+                "addr", address, str(node["label"]), extra={"keypath": path} if isinstance(path, str) else {}
+            )
+        )
+    if isinstance(address, str) and node.get("status") == "FROZEN":
+        if address not in w.frozen_addresses:
+            w.frozen_addresses.append(address)
+    for out in node.get("transactionOutputs") or []:
+        if not isinstance(out, dict):
+            continue
+        txid, idx = out.get("hash"), _int(out.get("index"))
+        if not isinstance(txid, str) or not TXID.fullmatch(txid) or idx is None:
+            continue
+        outpoint = f"{txid.lower()}:{idx}"
+        frozen = out.get("status") == "FROZEN" and not out.get("spentBy")
+        utxo = UTXO(
+            outpoint,
+            address=address if isinstance(address, str) else None,
+            value_sats=_int(out.get("value")),
+            frozen=frozen,
+            label=out.get("label") if isinstance(out.get("label"), str) else None,
+            spent=bool(out.get("spentBy")),
+        )
+        w.utxos.append(utxo)
+        if utxo.label:
+            w.add_label(Label("output", outpoint, utxo.label))
+        if frozen:
+            w.add_frozen_outpoint(outpoint)
+    for ch in node.get("children") or []:
+        _walk_sparrow_node(w, ch)
+
+
+def from_sparrow_json(data: dict[str, Any]) -> WalletExchange:
+    w = WalletExchange(
+        "sparrow",
+        str(data.get("label") or data.get("name") or "Sparrow wallet"),
+        network=_network(data.get("network")),
+    )
+    for idx, raw in enumerate(data.get("keystores") or []):
+        if not isinstance(raw, dict):
+            continue
+        kd = raw.get("keyDerivation") or {}
+        try:
+            ks = _public_key(
+                raw.get("extendedPublicKey"),
+                fingerprint=kd.get("masterFingerprint"),
+                path=kd.get("derivationPath") or kd.get("derivation"),
+                device=raw.get("walletModel"),
+                label=raw.get("label"),
+                source=raw.get("source"),
+            )
+            seed = raw.get("seed")
+            if isinstance(seed, dict) and seed.get("type") in (0, "BIP39"):
+                phrase = seed.get("mnemonicString")
+                if not phrase and isinstance(seed.get("mnemonicCode"), list):
+                    phrase = " ".join(seed["mnemonicCode"])
+                if isinstance(phrase, str) and phrase and not seed.get("needsPassphrase"):
+                    from .sparrow_seed_public import recover_bip39_public_key
+
+                    if recover_bip39_public_key(ks, phrase, w.network) and w.network not in (
+                        "mainnet",
+                        "unknown",
+                    ):
+                        ks.non_mainnet_seed = phrase
+            indicators = raw.get("h2_signer_indicators")
+            if isinstance(indicators, dict):
+                ks.extra.update(indicators)
+            if raw.get("seed") is not None:
+                ks.recovery_material = "SEED_REDACTED"
+            elif raw.get("masterPrivateExtendedKey") is not None:
+                ks.recovery_material = "PRIVATE_KEY_REDACTED"
+            if ks.recovery_material:
+                w.warnings.append(
+                    f"Sparrow signer {idx + 1}: BIP39 seed retained for test-network signing"
+                    if ks.non_mainnet_seed
+                    else f"Sparrow signer {idx + 1}: {ks.recovery_material}; recovery data was not copied"
+                )
+            w.keystores.append(ks)
+            if not ks.xpub:
+                w.warnings.append(
+                    f"Sparrow keystore {idx} lacks an xpub (e.g. encrypted seed); use Sparrow's descriptor export"
+                )
+        except ExchangeError as exc:
+            if "BIP39 seed and" in str(exc):
+                raise
+            w.warnings.append(f"Sparrow keystore {idx}: {exc}")
+    policy = data.get("defaultPolicy") or {}
+    script = ((policy.get("miniscript") or {}).get("script") if isinstance(policy, dict) else None) or ""
+    w.gap_limit = _int(data.get("gapLimit"))
+    w.next_receive_index = None
+    w.birth_height = _int(data.get("birthHeight"))
+    # Sparrow's Policy uses Keystore.getScriptName(), which strips whitespace
+    # and non-alphanumeric characters from the human-readable keystore label.
+    keynames = ["".join(ch for ch in (k.label or "") if ch.isalnum()) or "Keystore" for k in w.keystores]
+    # Sparrow defaultPolicy contains an exact miniscript referring to key IDs.
+    # Only reconstruct multisig from the explicit policy; do NOT assume sortedmulti.
+    script_type = str(data.get("scriptType") or "")
+    ordered = None
+    w.threshold = 1 if len(w.keystores) == 1 else None
+    policy_supported = True
+    if script:
+        compact = re.sub(r"\s+", "", script)
+        if len(w.keystores) == 1:
+            name = keynames[0]
+            expected = {
+                "P2PKH": f"pkh({name})",
+                "P2WPKH": f"wpkh({name})",
+                "P2SH_P2WPKH": f"sh(wpkh({name}))",
+                "P2TR": f"tr({name})",
+            }
+            policy_supported = compact == expected.get(script_type)
+        else:
+            inner = r"(sortedmulti|multi)\((\d+),([^()]*)\)"
+            pattern = {"P2WSH": rf"wsh\({inner}\)", "P2SH_P2WSH": rf"sh\(wsh\({inner}\)\)"}.get(script_type)
+            match = re.fullmatch(pattern, compact) if pattern else None
+            policy_supported = match is not None
+            if match:
+                names = match.group(3).split(",")
+                if (
+                    len(names) == len(keynames)
+                    and len(set(keynames)) == len(keynames)
+                    and sorted(names) == sorted(keynames)
+                ):
+                    w.keystores = [w.keystores[keynames.index(name)] for name in names]
+                    w.threshold = int(match.group(2))
+                    ordered = match.group(1) == "multi"
+                else:
+                    policy_supported = False
+    generated = (
+        descriptor_for_keys(w.keystores, script_type, threshold=w.threshold, ordered_multisig=ordered)
+        if policy_supported
+        else None
+    )
+    if generated:
+        _set_descriptors(w, generated, descriptor=generated)
+    else:
+        w.warnings.append("No verified descriptor reconstructed; export descriptor from Sparrow")
+        w.address_type = script_type or None
+    _resolve_network(w)
+    for purpose in data.get("purposeNodes") or []:
+        _walk_sparrow_node(w, purpose)
+    for txid, entry in (data.get("transactions") or {}).items():
+        if TXID.fullmatch(str(txid)) and isinstance(entry, dict) and isinstance(entry.get("label"), str):
+            w.add_label(Label("tx", txid, entry["label"]))
+    for ref, label in (data.get("detachedLabels") or {}).items():
+        if not isinstance(label, str):
+            continue
+        if TXID.fullmatch(ref):
+            w.add_label(Label("tx", ref, label))
+        elif ref.startswith(("bc1", "tb1", "bcrt1", "1", "3", "m", "n", "2")):
+            w.add_label(Label("addr", ref, label))
+    if data.get("walletConfig"):
+        w.extra["has_wallet_config"] = True
+    if data.get("birthDate"):
+        w.extra["birth_date_raw"] = str(data.get("birthDate"))
+    return w
+
+
+def from_ledger_account(data: dict[str, Any]) -> WalletExchange:
+    currency = data.get("currency") or {}
+    coin = str(
+        data.get("currencyId")
+        or (currency.get("id") or currency.get("ticker") or "" if isinstance(currency, dict) else currency)
+    ).lower()
+    networks = {
+        "bitcoin": "mainnet",
+        "btc": "mainnet",
+        "bitcoin_testnet": "testnet",
+        "bitcoin_regtest": "regtest",
+        "bitcoin_signet": "signet",
+        "bitcoin_testnet4": "testnet4",
+    }
+    if coin and coin not in networks:
+        raise ExchangeError("Ledger account is not a supported Bitcoin network")
+    w = WalletExchange(
+        "ledger-live", str(data.get("name") or "Ledger account"), network=networks.get(coin, "unknown")
+    )
+    raw = data.get("xpub")
+    resources = data.get("bitcoinResources") or {}
+    wallet_account = resources.get("walletAccount") if isinstance(resources, dict) else None
+    if isinstance(wallet_account, dict):
+        params = wallet_account.get("params")
+        xpub_record = wallet_account.get("xpub")
+        candidates = [raw]
+        if isinstance(params, dict):
+            candidates.append(params.get("xpub"))
+        if isinstance(xpub_record, dict):
+            candidates.append(xpub_record.get("xpub"))
+        public_keys = [candidate for candidate in candidates if isinstance(candidate, str) and candidate]
+        if public_keys:
+            canonical = {normalize_xpub(key)[0] for key in public_keys}
+            if len(canonical) != 1:
+                raise ExchangeError("Ledger Live top-level and nested account xpubs disagree")
+            raw = public_keys[0]
+    mode = str(data.get("derivationMode") or "")
+    script = {
+        "unsplit": "pkh",
+        "segwit": "sh-wpkh",
+        "segwit_unsplit": "sh-wpkh",
+        "native_segwit": "wpkh",
+        "taproot": "tr",
+    }.get(mode)
+    # freshAddressPath is typically m/84h/0h/0h/0/0. Drop the last 2
+    # unhardened components to identify the account-level xpub origin.
+    fresh_path = norm_path(data.get("freshAddressPath"))
+    account_path = None
+    if fresh_path:
+        bits = fresh_path.split("/")
+        if len(bits) >= 5 and bits[-2] in ("0", "1") and bits[-1].isdigit():
+            account_path = "/".join(bits[:-2])
+    try:
+        w.keystores = [
+            _public_key(
+                raw,
+                fingerprint=data.get("masterFingerprint"),
+                path=account_path,
+                device="ledger",
+                source="hardware",
+            )
+        ]
+        _resolve_network(w)
+        if script:
+            w.descriptor = descriptor_for_keys(w.keystores, script)
+        else:
+            w.warnings.append(f"Unrecognized Ledger derivationMode {mode!r}; refusing to guess descriptor")
+        w.address_type = script
+    except ExchangeError as exc:
+        w.warnings.append(f"Ledger account xpub: {exc}")
+    if not data.get("masterFingerprint"):
+        w.warnings.append("Ledger Live account has no master fingerprint; verify signer origin on device")
+    w.next_receive_index = _int(data.get("freshAddressIndex"))
+    w.extra.update({"derivation_mode": mode, "index": _int(data.get("index"))})
+    expected_address = data.get("freshAddress")
+    if (
+        isinstance(expected_address, str)
+        and expected_address
+        and account_path
+        and fresh_path
+        and w.address_type in ("pkh", "wpkh", "sh-wpkh")
+        and w.keystores
+        and w.keystores[0].xpub
+    ):
+        bits = fresh_path.split("/")
+        if len(bits) >= 5 and bits[-2] in ("0", "1") and bits[-1].isdigit() and w.network != "unknown":
+            from .verification import address_from_public_keys
+
+            computed = address_from_public_keys(
+                w.keystores, w.address_type, w.network, int(bits[-2]), int(bits[-1])
+            )
+            if computed != expected_address:
+                raise ExchangeError(
+                    "Ledger Live stored address does not match public account xpub and policy"
+                )
+            w.extra["address_verification"] = {"branch": int(bits[-2]), "index": int(bits[-1])}
+    utxos = (data.get("bitcoinResources") or {}).get("utxos") or []
+    for item in utxos:
+        if isinstance(item, list) and len(item) >= 5:
+            txid, vout, _height, address, value = item[:5]
+        elif isinstance(item, dict):
+            txid, vout, address, value = (
+                item.get("hash"),
+                item.get("outputIndex"),
+                item.get("address"),
+                item.get("value"),
+            )
+        else:
+            continue
+        output_index = _int(vout)
+        if isinstance(txid, str) and TXID.fullmatch(txid) and output_index is not None:
+            w.utxos.append(UTXO(f"{txid}:{output_index}", address=address, value_sats=_int(value)))
+    return w
+
+
+def load_json_obj(obj: Any, hint: str | None = None, password: str | None = None) -> list[WalletExchange]:
+    """Import only exposed formats: Electrum, Sparrow, Specter, Wasabi, Ledger."""
+    fmt = (hint or "").lower()
+    if fmt not in (
+        "",
+        "electrum",
+        "sparrow",
+        "sparrow-h2",
+        "specter",
+        "specter-desktop",
+        "wasabi",
+        "ledger",
+        "ledger-app",
+        "ledger-live-db",
+    ):
+        raise ExchangeError("Unsupported wallet import format")
+    if isinstance(obj, list):
+        all_wallets: list[WalletExchange] = []
+        for item in obj:
+            all_wallets.extend(load_json_obj(item, hint=hint, password=password))
+        return all_wallets
+    if not isinstance(obj, dict):
+        raise ExchangeError("Expected a JSON wallet object")
+    from .ledger_live_db import from_ledger_live_app, is_ledger_live_app
+
+    if is_ledger_live_app(obj) and fmt in ("", "ledger", "ledger-app", "ledger-live-db"):
+        return from_ledger_live_app(obj, password=password)
+    if password is not None and not (
+        fmt == "wasabi" or (not hint and "ExtPubKey" in obj and "BlockchainState" in obj)
+    ):
+        raise ExchangeError("This wallet export is plaintext; its app or device password does not decrypt it")
+    if fmt == "electrum" or (
+        not hint and "wallet_type" in obj and ("keystore" in obj or "x1" in obj or "addresses" in obj)
+    ):
+        from .electrum import from_electrum
+
+        return [from_electrum(obj)]
+    if fmt == "wasabi" or (not hint and "ExtPubKey" in obj and "BlockchainState" in obj):
+        from .additional import from_wasabi
+
+        return from_wasabi(obj, password=password)
+    if fmt in ("specter", "specter-desktop") or (not hint and "recv_descriptor" in obj and "keys" in obj):
+        return [from_specter(obj)]
+    if fmt == "sparrow" or (not hint and "purposeNodes" in obj and "keystores" in obj):
+        return [from_sparrow_json(obj)]
+    if fmt == "ledger" or (not hint and obj.get("type") == "Account" and "derivationMode" in obj):
+        return [from_ledger_account(obj)]
+    if not hint and isinstance(obj.get("accounts"), list):
+        accounts = obj["accounts"]
+        if accounts and all(
+            isinstance(item, dict) and "derivationMode" in item and "xpub" in item for item in accounts
+        ):
+            eligible = []
+            for item in accounts:
+                currency = item.get("currency") or {}
+                currency_id = currency.get("id", "bitcoin") if isinstance(currency, dict) else str(currency)
+                if str(currency_id).lower().startswith("bitcoin"):
+                    eligible.append(from_ledger_account(item))
+            return eligible
+    raise ExchangeError("Unknown wallet format; choose a source-specific export or --format")
+
+
+def load_file(
+    path: str | Path,
+    password: str | None = None,
+    hint: str | None = None,
+    labels: list[str | Path] | None = None,
+    specter_addresses: str | Path | None = None,
+    derive_public_from_seeds: bool = True,
+    bip39_passphrase: str | None = None,
+    bip39_passphrases: dict[str, str] | None = None,
+    *,
+    electrum_hw_xpub: str | None = None,
+) -> list[WalletExchange]:
+    file = Path(path)
+    # Route recognized binary H2 files to the read-only Sparrow decoder before
+    # applying the JSON size limit or decoding the file as text.
+    from .sparrow_h2 import is_sparrow_h2, load_sparrow_h2
+
+    with file.open("rb") as fp:
+        head = fp.read(64)
+    if is_sparrow_h2(file, head):
+        if hint and hint.lower() not in ("sparrow", "sparrow-h2"):
+            raise ExchangeError("This is a Sparrow H2 database; --format must be sparrow")
+        out = load_sparrow_h2(
+            file,
+            password=password,
+            derive_public_from_seeds=derive_public_from_seeds,
+            bip39_passphrase=bip39_passphrase,
+            bip39_passphrases=bip39_passphrases,
+        )
+        if specter_addresses:
+            raise ExchangeError("--specter-addresses is for Specter, not Sparrow")
+        for label_path in labels or []:
+            p = Path(label_path)
+            if p.stat().st_size > MAX_FILE:
+                raise ExchangeError("BIP329 labels file too large")
+            if len(out) != 1:
+                raise ExchangeError(
+                    "Ambiguous multi-account labels; apply BIP329 labels to accounts individually"
+                )
+            import_bip329_jsonl(out[0], p.read_text(encoding="utf-8-sig"))
+        return out
+    if bip39_passphrases:
+        raise ExchangeError("Individual BIP39 passphrases require a Sparrow H2 wallet")
+    if file.stat().st_size > MAX_FILE:
+        raise ExchangeError("Wallet file exceeds safe maximum size")
+    raw = file.read_bytes()
+    consumed_password = False
+    from .electrum import decrypt_electrum, is_electrum_encrypted
+
+    electrum_encrypted = is_electrum_encrypted(raw)
+    if electrum_hw_xpub is not None and not electrum_encrypted:
+        raise ExchangeError("A USB hardware xpub may only unlock an encrypted Electrum BIE2 wallet")
+    if electrum_encrypted:
+        if hint and hint.lower() != "electrum":
+            raise ExchangeError("This is an Electrum wallet; select the Electrum format")
+        if password is None and electrum_hw_xpub is None:
+            raise ExchangeError("Encrypted Electrum wallet requires a password (BIE1) or USB device (BIE2)")
+        raw = decrypt_electrum(raw, password, electrum_hw_xpub=electrum_hw_xpub)
+        consumed_password = True
+        hint = hint or "electrum"
+    elif is_sprw1(raw):
+        if hint and hint.lower() != "sparrow":
+            raise ExchangeError("This is a Sparrow wallet; select the Sparrow format")
+        if password is None:
+            raise ExchangeError("Sparrow SPRW1 file requires explicit password; use --ask-password")
+        raw = decrypt_sprw1(raw, password)
+        consumed_password = True
+        hint = hint or "sparrow"
+    elif raw.startswith(b"H2encrypt\n"):
+        raise ExchangeError("Unrecognized H2-encrypted file; expected Sparrow .mv.db")
+    try:
+        text = raw.decode("utf-8-sig")
+    except UnicodeDecodeError as exc:
+        raise ExchangeError("Binary wallet format not recognized; use an application export") from exc
+    try:
+        obj = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ExchangeError("Not a supported wallet JSON/descriptor export") from exc
+    out = load_json_obj(obj, hint=hint, password=None if consumed_password else password)
+    if specter_addresses:
+        if len(out) != 1 or out[0].source_wallet != "specter-desktop":
+            raise ExchangeError("--specter-addresses requires one Specter wallet")
+        address_file = Path(specter_addresses)
+        if address_file.stat().st_size > MAX_FILE:
+            raise ExchangeError("Specter address CSV is too large")
+        import_specter_address_csv(out[0], address_file.read_text(encoding="utf-8-sig"))
+    for path in labels or []:
+        p = Path(path)
+        if p.stat().st_size > MAX_FILE:
+            raise ExchangeError("BIP329 labels file too large")
+        content = p.read_text(encoding="utf-8-sig")
+        if len(out) > 1:
+            raise ExchangeError(
+                "Ambiguous multi-account labels; import accounts individually to prevent metadata leakage"
+            )
+        import_bip329_jsonl(out[0], content)
+    return out

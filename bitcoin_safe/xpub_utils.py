@@ -42,6 +42,8 @@ _PATH_COMPONENT = re.compile(r"([0-9]+)(h?)\Z")
 
 def b58decode_check(value: str) -> bytes:
     """Decode Base58Check and reject an invalid checksum or alphabet."""
+    if len(value) > 128:
+        raise ValueError("Base58Check value is too long")
     try:
         payload = _base58.decode_check(value)
     except BadArgumentError as exc:

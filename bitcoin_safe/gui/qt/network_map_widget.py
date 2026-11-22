@@ -743,7 +743,7 @@ class NetworkMapWidget(QWidget):
             card = self._wallet_progress_cards.pop(wallet_id)
             card.hide()
             card.setParent(None)
-            card.deleteLater()
+            card.hide()
 
         for wallet_id, (wallet_title, progress_info) in progresses.items():
             self._update_wallet_progress_card(wallet_id, wallet_title, progress_info)

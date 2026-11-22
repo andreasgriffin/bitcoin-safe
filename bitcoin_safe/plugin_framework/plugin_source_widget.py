@@ -290,7 +290,8 @@ class SourceManagementDialog(QDialog):
                 continue
             widget = item.widget()
             if widget is not None:
-                widget.deleteLater()
+                widget.setParent(None)
+                widget.hide()
 
         sources = self._registry.load_sources()
         installed_counts = self._registry.installed_plugin_counts_by_source()
