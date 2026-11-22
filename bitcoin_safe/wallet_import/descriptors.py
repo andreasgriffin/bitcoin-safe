@@ -34,13 +34,12 @@ from __future__ import annotations
 import re
 
 from hwilib._base58 import encode_check as b58encode_check
+from hwilib.descriptor import AddChecksum, DescriptorChecksum
 
 from bitcoin_safe.xpub_utils import b58decode_check as _b58decode_check
 
 from .model import ExchangeError, Keystore
 
-CHARSET = "0123456789()[],'/*abcdefgh@:$%{}IJKLMNOPQRSTUVWXYZ&+-.;<=>?!^_|~ijklmnopqrstuvwxyzABCDEFGH`#\"\\ "
-CHECKSUM_CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
 VERSION = {
     0x0488B21E: (0x0488B21E, "mainnet", "xpub"),  # xpub
     0x049D7CB2: (0x0488B21E, "mainnet", "ypub"),
@@ -60,40 +59,14 @@ PUB_RE = re.compile(
 )
 
 
-def _polymod(c: int, value: int) -> int:
-    top = c >> 35
-    c = ((c & 0x7FFFFFFFF) << 5) ^ value
-    for i, g in enumerate((0xF5DEE51989, 0xA9FDCA3312, 0x1BAB10E32D, 0x3706B1677A, 0x644D626FFD)):
-        if (top >> i) & 1:
-            c ^= g
-    return c
-
-
-def descriptor_checksum(desc: str) -> str:
-    c, cls, cls_count = 1, 0, 0
-    for ch in desc:
-        pos = CHARSET.find(ch)
-        if pos < 0:
-            raise ExchangeError(f"Character not allowed in descriptor: {ch!r}")
-        c = _polymod(c, pos & 31)
-        cls = cls * 3 + (pos >> 5)
-        cls_count += 1
-        if cls_count == 3:
-            c = _polymod(c, cls)
-            cls = cls_count = 0
-    if cls_count:
-        c = _polymod(c, cls)
-    for _ in range(8):
-        c = _polymod(c, 0)
-    c ^= 1
-    return "".join(CHECKSUM_CHARSET[(c >> (5 * (7 - i))) & 31] for i in range(8))
-
-
 def strip_checksum(desc: str) -> str:
     desc = desc.strip()
     if "#" in desc:
         value, checksum = desc.rsplit("#", 1)
-        if checksum != descriptor_checksum(value):
+        expected = DescriptorChecksum(value)
+        if not expected:
+            raise ExchangeError("Character not allowed in descriptor")
+        if checksum != expected:
             raise ExchangeError("Descriptor checksum mismatch")
         return value
     return desc
@@ -108,7 +81,10 @@ def add_checksum(desc: str) -> str:
     # xpubs are allowed, but only recognized BIP32 keys create keystores.
     if re.search(r"(?<![0-9A-Za-z])[5KL9c][1-9A-HJ-NP-Za-km-z]{50,51}(?![0-9A-Za-z])", desc):
         raise ExchangeError("Private WIF keys are forbidden in descriptors")
-    return desc + "#" + descriptor_checksum(desc)
+    result = AddChecksum(desc)
+    if result.endswith("#"):
+        raise ExchangeError("Character not allowed in descriptor")
+    return result
 
 
 def b58decode_check(key: str) -> bytes:

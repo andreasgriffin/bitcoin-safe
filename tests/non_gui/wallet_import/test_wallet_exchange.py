@@ -52,8 +52,8 @@ from bitcoin_safe.wallet_import.descriptors import (
     b58decode_check,
     b58encode_check,
     combine_receive_change,
-    descriptor_checksum,
     normalize_xpub,
+    strip_checksum,
 )
 from bitcoin_safe.wallet_import.sparrow_crypto import _compressed, _scalar_mul, decrypt_sprw1
 
@@ -123,12 +123,24 @@ def test_slip132_and_descriptor_checksum():
     assert x == xpub()
     assert (network, prefix) == ("mainnet", "zpub")
     d = expressions()[2]
-    assert len(descriptor_checksum(d)) == 8
+    assert add_checksum("raw(deadbeef)") == "raw(deadbeef)#89f8spxm"
     assert add_checksum(add_checksum(d)) == add_checksum(d)
     with pytest.raises(ExchangeError):
         add_checksum(d + "#aaaaaaaa")
     assert combine_receive_change(expressions()[0], expressions()[1]) == add_checksum(d)
     assert combine_receive_change(expressions()[0], expressions()[0]) is None
+
+
+@pytest.mark.parametrize("value", ["wpkh(🔥)", "wpkh(🔥)#", "wpkh(🔥)#aaaaaaaa"])
+def test_descriptor_checksum_rejects_invalid_characters(value: str) -> None:
+    with pytest.raises(ExchangeError, match="Character not allowed"):
+        add_checksum(value)
+
+
+def test_strip_descriptor_checksum_checks_before_removing() -> None:
+    assert strip_checksum(" raw(deadbeef)#89f8spxm ") == "raw(deadbeef)"
+    with pytest.raises(ExchangeError, match="checksum mismatch"):
+        strip_checksum("raw(deadbeef)#aaaaaaaa")
 
 
 def test_descriptor_keystores():
