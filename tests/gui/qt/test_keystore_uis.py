@@ -381,3 +381,36 @@ def test_keystore_uis_blocks_xpub_origin_mismatch(qtbot: QtBot, loop_in_thread: 
 
     card.edit_key_origin.setText(keystore.key_origin)
     assert not widget.has_blocking_messages()
+
+
+def test_fingerprint_only_descriptor_survives_keystore_ui_sync(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    network = bdk.Network.REGTEST
+    account = create_test_seed_keystores(signers=1, key_origins=["m/84h/1h/0h"], network=network)[0]
+    descriptor = f"wpkh([{account.fingerprint}]{account.xpub}/0/*)"
+    protowallet = ProtoWallet.from_descriptor("wallet", descriptor, network)
+    widget = KeyStoreUIs(
+        get_editable_protowallet=lambda: protowallet,
+        get_address_type=lambda: AddressTypes.p2wpkh,
+        signals_min=SignalsMin(),
+        loop_in_thread=loop_in_thread,
+    )
+    qtbot.addWidget(widget)
+    widget.show()
+    card = list(widget.getAllTabData().values())[0]
+
+    assert card.xpub_validator()
+    assert not widget.has_blocking_messages()
+    widget.set_protowallet_from_keystore_ui()
+    assert protowallet.keystores[0] is not None
+    assert protowallet.keystores[0].key_origin == "m"
+
+    card.edit_key_origin.setText("m/84h/1h/0h")
+    card.edit_key_origin.setText("m")
+    assert not widget.has_blocking_messages()
+    card.edit_key_origin.setText("m/84h/1h/1h")
+    assert widget.has_blocking_messages()
+    card.edit_key_origin.setText("m/84h/1h/0h")
+    assert not widget.has_blocking_messages()
+    assert card.get_ui_values_as_keystore().key_origin == "m/84h/1h/0h"

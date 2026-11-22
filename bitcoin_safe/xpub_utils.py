@@ -56,9 +56,11 @@ def check_xpub_origin_depth_and_child_number(xpub: str, key_origin: str) -> None
 
     The extended public key encodes its BIP32 depth and the index (including
     its hardened bit) of the final derivation step. Reject origins that
-    disagree with either field. This does NOT authenticate earlier (especially
-    hardened) path components, the master fingerprint, or the Bitcoin network
-    within the testnet family. Verify those using a trusted source/device.
+    disagree with either field. The path "m" also represents a fingerprint-only
+    descriptor origin, so it leaves the xpub's origin unspecified. This does
+    NOT authenticate earlier (especially hardened) path components, the master
+    fingerprint, or the Bitcoin network within the testnet family. Verify those
+    using a trusted source/device.
 
     Raises ValueError for malformed input or contradictory metadata.
     """
@@ -69,8 +71,8 @@ def check_xpub_origin_depth_and_child_number(xpub: str, key_origin: str) -> None
         raise ValueError("Xpub origin must be a derivation path")
     normalized = key_origin.strip().replace("'", "h").replace("H", "h")
     if normalized == "m":
-        parts = []
-    elif normalized.startswith("m/"):
+        return
+    if normalized.startswith("m/"):
         parts = normalized[2:].split("/")
     else:
         raise ValueError("Xpub origin must start with m/")

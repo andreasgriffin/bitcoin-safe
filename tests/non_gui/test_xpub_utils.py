@@ -53,6 +53,7 @@ def test_base58check_validation() -> None:
 @pytest.mark.parametrize("testnet", [False, True])
 def test_matching_metadata_passes_without_seed(testnet: bool) -> None:
     xpub = make_xpub(3, 0x80000007, testnet=testnet)
+    check_xpub_origin_depth_and_child_number(xpub, "m")
     check_xpub_origin_depth_and_child_number(xpub, "m/84h/1h/7h")
     check_xpub_origin_depth_and_child_number(xpub, "m/49'/0'/7'")
 

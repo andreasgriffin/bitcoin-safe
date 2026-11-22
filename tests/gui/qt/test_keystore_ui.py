@@ -610,6 +610,27 @@ def test_xpub_origin_mismatch_is_reported_and_clears_when_corrected(
     assert all(analysis.msg != message for analysis in widget.get_analysis_list())
 
 
+def test_entered_m_origin_accepts_root_and_account_xpubs(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+    account = create_test_seed_keystores(signers=1, key_origins=["m/84h/1h/0h"], network=bdk.Network.REGTEST)[
+        0
+    ]
+    root_xpub = "tpubD6NzVbkrYhZ4XYa9MoLt4BiMZ4gkt2faZ4BcmKu2a9te4LDpQmvEz2L2yDERivHxFPnxXXhqDRkUNnQCpZggCyEZLBktV7VaSmwayqMJy1s"
+    widget.edit_fingerprint.setText(account.fingerprint)
+    widget.edit_key_origin.setText("m")
+    widget.edit_xpub.setText(root_xpub)
+
+    assert widget.xpub_validator()
+    assert widget.get_worst_analysis().state != AnalyzerState.Invalid
+    assert widget.get_ui_values_as_keystore().key_origin == "m"
+
+    widget.edit_xpub.setText(account.xpub)
+    assert widget.xpub_validator()
+    assert widget.get_worst_analysis().state != AnalyzerState.Invalid
+    assert widget.get_ui_values_as_keystore().key_origin == "m"
+
+
 def test_empty_key_origin_and_xpub_stay_neutral_but_invalid_input_is_colored(
     qtbot: QtBot, loop_in_thread: LoopInThread
 ) -> None:

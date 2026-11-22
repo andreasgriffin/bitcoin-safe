@@ -45,7 +45,7 @@ from bitcoin_safe.signals import Signals, WalletFunctions
 from bitcoin_safe.wallet import ProtoWallet, Wallet
 
 from ...helpers import TestConfig
-from ...non_gui.utils import create_multisig_protowallet
+from ...non_gui.utils import create_multisig_protowallet, create_test_seed_keystores
 
 
 def _build_descriptor_ui(
@@ -137,6 +137,30 @@ def test_wallet_setup_shows_empty_signer_details_on_existing_and_new_cards(
 
         card.edit_fingerprint.setText("12345678")
         assert card.edit_fingerprint.text() == "12345678"
+    finally:
+        descriptor_ui.close()
+        if wallet:
+            wallet.close()
+        loop_in_thread.stop()
+
+
+@pytest.mark.marker_qt_1
+def test_descriptor_ui_preserves_fingerprint_only_origin(qtbot: QtBot, test_config: TestConfig) -> None:
+    descriptor_ui, loop_in_thread, wallet = _build_descriptor_ui(qtbot, test_config)
+    try:
+        account = create_test_seed_keystores(
+            signers=1, key_origins=["m/84h/1h/0h"], network=test_config.network
+        )[0]
+        descriptor = f"wpkh([{account.fingerprint}]{account.xpub}/0/*)"
+        descriptor_ui.set_protowallet_from_descriptor_str(descriptor)
+        descriptor_ui.set_all_ui_from_protowallet()
+
+        assert not descriptor_ui.keystore_uis.has_blocking_messages()
+        descriptor_ui.set_protowallet_from_ui()
+        keystore = descriptor_ui.protowallet.keystores[0]
+        assert keystore is not None
+        assert keystore.key_origin == "m"
+        assert descriptor_ui.protowallet.to_multipath_descriptor() is not None
     finally:
         descriptor_ui.close()
         if wallet:
