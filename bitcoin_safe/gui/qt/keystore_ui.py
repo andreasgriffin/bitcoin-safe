@@ -92,6 +92,7 @@ from bitcoin_safe.gui.qt.util import (
 )
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.xpub_utils import check_xpub_origin_depth_and_child_number
 
 from ...execute_config import DEMO_MODE
 from ...hardware_signers import (
@@ -481,6 +482,9 @@ class KeyStoreUI(CardBase):
             cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self.format_all_fields
         )
         self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged), self.format_all_fields
+        )
+        self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged), self.updateUi
         )
         self.signal_tracker.connect(
@@ -659,6 +663,20 @@ class KeyStoreUI(CardBase):
             return duplicate_analysis
         return self.edit_xpub.input_field.analyze_text(self.edit_xpub.text())
 
+    def _xpub_origin_analysis(self) -> AnalyzerMessage | None:
+        key_origin = self.key_origin
+        xpub = self.edit_xpub.text().strip()
+        if not key_origin or self.edit_xpub.input_field.analyze_text(xpub).state != AnalyzerState.Valid:
+            return None
+        try:
+            check_xpub_origin_depth_and_child_number(xpub, key_origin)
+        except ValueError:
+            return AnalyzerMessage(
+                self.tr("The xPub depth or final child number does not match the key origin."),
+                AnalyzerState.Invalid,
+            )
+        return None
+
     def get_analysis_list(self, min_state: AnalyzerState = AnalyzerState.Valid) -> list[AnalyzerMessage]:
         """Return analyzer messages for the visible signer detail fields."""
         analysis_list: list[AnalyzerMessage] = []
@@ -670,6 +688,9 @@ class KeyStoreUI(CardBase):
             )
             if analysis.state >= min_state:
                 analysis_list.append(analysis)
+        if origin_analysis := self._xpub_origin_analysis():
+            if origin_analysis.state >= min_state:
+                analysis_list.append(origin_analysis)
         return analysis_list
 
     def get_worst_analysis(self) -> AnalyzerMessage:
@@ -1067,6 +1088,11 @@ class KeyStoreUI(CardBase):
             xpub_tooltip = self.tr(
                 "The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair."
             ).format(key_origin=key_origin_value)
+
+        if origin_analysis := self._xpub_origin_analysis():
+            key_origin_state = xpub_state = origin_analysis.state
+            key_origin_tooltip = "\n".join(filter(None, (key_origin_tooltip, origin_analysis.msg)))
+            xpub_tooltip = "\n".join(filter(None, (xpub_tooltip, origin_analysis.msg)))
 
         self._apply_field_analysis(
             edit=self.edit_key_origin,
