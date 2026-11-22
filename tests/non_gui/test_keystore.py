@@ -32,6 +32,7 @@ from __future__ import annotations
 import logging
 
 import bdkpython as bdk
+import pytest
 from bitcoin_qr_tools.signer_info import SignerInfo
 from bitcoin_usb.address_types import SimplePubKeyProvider
 
@@ -246,6 +247,17 @@ def test_is_xpub_valid() -> None:
     assert KeyStore.is_xpub_valid(keystore.xpub, keystore.network)
     # Truncated xpub should fail validation.
     assert not KeyStore.is_xpub_valid(keystore.xpub[:-4], keystore.network)
+    # The optional origin check rejects a mismatching final child or depth.
+    assert KeyStore.is_xpub_valid(keystore.xpub, keystore.network, keystore.key_origin)
+    assert not KeyStore.is_xpub_valid(keystore.xpub, keystore.network, "m/41h/1h/0h/1h")
+    assert not KeyStore.is_xpub_valid(keystore.xpub, keystore.network, "m/41h/1h/0h")
+    with pytest.raises(ValueError, match="Invalid xpub or origin metadata"):
+        KeyStore(
+            xpub=keystore.xpub,
+            fingerprint=keystore.fingerprint,
+            key_origin="m/41h/1h/0h/1h",
+            network=keystore.network,
+        )
 
 
 def test_clone_creates_equal_object() -> None:

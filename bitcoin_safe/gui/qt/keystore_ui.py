@@ -1207,7 +1207,7 @@ class KeyStoreUI(CardBase):
             raise ValueError("Could not recognize the QR Code")
 
     def xpub_validator(self) -> bool:
-        """Xpub validator."""
+        """Validate the xpub and any entered origin metadata."""
         xpub = self.edit_xpub.text()
         if ConverterXpub.is_slip132(xpub):
             Message(
@@ -1221,7 +1221,9 @@ class KeyStoreUI(CardBase):
                 logger.debug(f"{self.__class__.__name__}: {exc}")
                 return False
 
-        return KeyStore.is_xpub_valid(self.edit_xpub.text(), network=self.network)
+        return KeyStore.is_xpub_valid(
+            self.edit_xpub.text(), network=self.network, key_origin=self.key_origin or None
+        )
 
     def updateUi(self) -> None:
         """UpdateUi."""
