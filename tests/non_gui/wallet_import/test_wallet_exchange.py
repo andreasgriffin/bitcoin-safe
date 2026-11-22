@@ -120,6 +120,7 @@ def test_slip132_and_descriptor_checksum():
     x, network, prefix = normalize_xpub(xpub(0x04B24746))
     assert x == xpub()
     assert (network, prefix) == ("mainnet", "zpub")
+    assert normalize_xpub(xpub(0x045F1CF6)) == (xpub(0x043587CF), "testnet", "vpub")
     d = expressions()[2]
     assert add_checksum("raw(deadbeef)") == "raw(deadbeef)#89f8spxm"
     assert add_checksum(add_checksum(d)) == add_checksum(d)

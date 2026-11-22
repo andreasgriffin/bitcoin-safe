@@ -97,6 +97,9 @@ def _derived_account_pub(mnemonic: str, path: str, mainnet: bool, passphrase: st
     salt = b"mnemonic" + unicodedata.normalize("NFKD", passphrase).encode("utf-8")
     seed = hashlib.pbkdf2_hmac("sha512", mnemonic_utf8, salt, 2048, 64)
     digest = hmac.new(b"Bitcoin seed", seed, hashlib.sha512).digest()
+    # Immutable Python bytes cannot be reliably wiped; release references to
+    # the BIP39 seed and passphrase as soon as the master digest is computed.
+    del mnemonic_utf8, salt, seed
     scalar = int.from_bytes(digest[:32], "big")
     if not 0 < scalar < N:
         raise ExchangeError("Invalid BIP32 master key")
@@ -229,23 +232,32 @@ def _seed_mnemonic(
         raise ExchangeError("Malformed encrypted Sparrow seed")
     if password is None:
         raise ExchangeError("Encrypted Sparrow BIP39 seed requires its wallet password")
-    key = hash_secret_raw(
-        password.encode("utf-8"),
-        salt,
-        time_cost=10,
-        memory_cost=256 * 1024,
-        parallelism=4,
-        hash_len=32,
-        type=Type.ID,
+    # Best-effort: wipe our mutable KDF key and decrypted padding buffer.
+    # The returned mnemonic is a Python str and cannot be zeroized reliably.
+    key = bytearray(
+        hash_secret_raw(
+            password.encode("utf-8"),
+            salt,
+            time_cost=10,
+            memory_cost=256 * 1024,
+            parallelism=4,
+            hash_len=32,
+            type=Type.ID,
+        )
     )
-    decryptor = Cipher(algorithms.AES(key), modes.CBC(iv)).decryptor()
-    padded = decryptor.update(cipher) + decryptor.finalize()
+    padded = bytearray()
     try:
+        decryptor = Cipher(algorithms.AES(key), modes.CBC(iv)).decryptor()
+        padded.extend(decryptor.update(cipher))
+        padded.extend(decryptor.finalize())
         unpadder = PKCS7(128).unpadder()
         raw = unpadder.update(padded) + unpadder.finalize()
         return raw.decode("utf-8")
     except (ValueError, UnicodeError) as exc:
         raise ExchangeError("Could not decrypt Sparrow software seed with this password") from exc
+    finally:
+        key[:] = b"\x00" * len(key)
+        padded[:] = b"\x00" * len(padded)
 
 
 # Paths stored in Sparrow walletNode are account-relative receive/change paths.

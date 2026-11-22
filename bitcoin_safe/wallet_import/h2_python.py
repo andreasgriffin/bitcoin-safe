@@ -208,20 +208,26 @@ def _xts_decrypt_sector(key: bytes, number: int, payload: bytes) -> bytes:
     encrypter, decrypter = cipher.encryptor(), cipher.decryptor()
     tweak = bytearray(encrypter.update(number.to_bytes(16, "little")))
     plain = bytearray(len(payload))
-    for offset in range(0, len(payload), 16):
-        block = bytes(a ^ b for a, b in zip(payload[offset : offset + 16], tweak, strict=True))
-        unmasked = decrypter.update(block)
-        plain[offset : offset + 16] = bytes(a ^ b for a, b in zip(unmasked, tweak, strict=True))
-        carry = 0
-        for j in range(16):
-            doubled = (tweak[j] << 1) + carry
-            tweak[j] = doubled & 255
-            carry = doubled >> 8
-        if carry:
-            tweak[0] ^= 0x87
-    encrypter.finalize()
-    decrypter.finalize()
-    return bytes(plain)
+    try:
+        for offset in range(0, len(payload), 16):
+            block = bytes(a ^ b for a, b in zip(payload[offset : offset + 16], tweak, strict=True))
+            unmasked = decrypter.update(block)
+            plain[offset : offset + 16] = bytes(a ^ b for a, b in zip(unmasked, tweak, strict=True))
+            carry = 0
+            for j in range(16):
+                doubled = (tweak[j] << 1) + carry
+                tweak[j] = doubled & 255
+                carry = doubled >> 8
+            if carry:
+                tweak[0] ^= 0x87
+        encrypter.finalize()
+        decrypter.finalize()
+        return bytes(plain)
+    finally:
+        # This buffer can contain mainnet mnemonics/private keys from H2 pages.
+        # Clear mutable scratch storage even if sector decryption raises.
+        plain[:] = b"\x00" * len(plain)
+        tweak[:] = b"\x00" * len(tweak)
 
 
 def _plaintext_store(path: str | Path, password: str | None) -> bytes:

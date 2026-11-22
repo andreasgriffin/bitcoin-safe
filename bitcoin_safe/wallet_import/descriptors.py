@@ -88,12 +88,13 @@ def normalize_xpub(key: str) -> tuple[str, str, str]:
     payload = b58decode_check(key)
     if len(payload) != 78 or payload[45] not in (2, 3):
         raise ExchangeError("Not a public BIP32 extended key")
-    canonical = ConverterXpub.normalized_to_bip32(key)
-    network = BIP32_VERSIONS.get(b58decode_check(canonical)[:4])
+    # ConverterXpub owns the SLIP-132 version map; reuse it instead of
+    # decoding the converted key a second time.
+    network = BIP32_VERSIONS.get(ConverterXpub.version_bytes_map.get(payload[:4], payload[:4]))
     if network is None:
         raise ExchangeError("Unsupported extended public key version")
     # SLIP-132 prefixes (zpub, Vpub, ...) are fixed by their version bytes, so the first 4 chars are the prefix
-    return canonical, network, key[:4]
+    return ConverterXpub.normalized_to_bip32(key), network, key[:4]
 
 
 def norm_path(path: str | None) -> str | None:
@@ -191,8 +192,7 @@ def combine_receive_change(receive: str | None, change: str | None) -> str | Non
     chg = strip_checksum(change)
     # Convert ONLY if every branch occurrence and the complete rest of the
     # expression match. A mismatch is a migration blocker, not a guess.
-    recv_candidates = re.findall(r"/[01]/\*", recv)
-    if not recv_candidates or "/0/*" not in recv_candidates:
+    if "/0/*" not in recv:
         return None
     combined_r = recv.replace("/0/*", "/<0;1>/*")
     combined_c = chg.replace("/1/*", "/<0;1>/*")
@@ -242,10 +242,7 @@ def infer_script_type(desc: str | None) -> str | None:
 
 
 def infer_network(keys: list[Keystore]) -> str:
-    families = set()
-    for key in keys:
-        if key.xpub:
-            families.add(normalize_xpub(key.xpub)[1])
+    families = {normalize_xpub(key.xpub)[1] for key in keys if key.xpub}
     if len(families) > 1:
         raise ExchangeError("Mixed mainnet and non-mainnet public keys")
     return next(iter(families), "unknown")

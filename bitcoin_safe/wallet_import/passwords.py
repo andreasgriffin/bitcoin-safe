@@ -113,9 +113,14 @@ def verify_wasabi_password(data: dict[str, Any], password: str) -> None:
             maxmem=128 * 1024 * 1024,
         )
         dec = Cipher(algorithms.AES(derived[32:]), modes.ECB()).decryptor()
-        key_bytes = dec.update(payload[7:]) + dec.finalize()
-        secret_bytes = bytes(a ^ b for a, b in zip(key_bytes, derived[:32], strict=True))
-        secret_scalar = int.from_bytes(secret_bytes, "big")
+        key_bytes = bytearray(dec.update(payload[7:]) + dec.finalize())
+        secret_bytes = bytearray(a ^ b for a, b in zip(key_bytes, derived[:32], strict=True))
+        try:
+            secret_scalar = int.from_bytes(secret_bytes, "big")
+        finally:
+            # Scratch contains a decrypted BIP38 private key; wipe immediately.
+            key_bytes[:] = b"\x00" * len(key_bytes)
+            secret_bytes[:] = b"\x00" * len(secret_bytes)
         if not 1 <= secret_scalar < SECP_N:
             raise ValueError("invalid secret scalar")
         private = ec.derive_private_key(secret_scalar, ec.SECP256K1())

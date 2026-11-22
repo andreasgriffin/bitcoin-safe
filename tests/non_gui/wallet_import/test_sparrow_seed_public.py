@@ -109,6 +109,14 @@ def test_private_seed_decryption(monkeypatch):
     from bitcoin_safe.wallet_import import sparrow_seed_public as mod
 
     monkeypatch.setattr(mod, "hash_secret_raw", lambda *args, **kwargs: b"k" * 32)
+    captured_aes_keys = []
+    original_aes = mod.algorithms.AES
+
+    def capture_aes_key(key):
+        captured_aes_keys.append(key)
+        return original_aes(key)
+
+    monkeypatch.setattr(mod.algorithms, "AES", capture_aes_key)
     iv = b"0" * 16
     padder = PKCS7(128).padder()
     padded = padder.update(SYNTHETIC_WORDS.encode()) + padder.finalize()
@@ -124,6 +132,9 @@ def test_private_seed_decryption(monkeypatch):
         keySalt=b"x" * 16,
     )
     assert _seed_mnemonic(synthetic_row, "password") == SYNTHETIC_WORDS
+    # The returned mnemonic remains immutable, but our KDF scratch key is wiped.
+    assert isinstance(captured_aes_keys[-1], bytearray)
+    assert all(value == 0 for value in captured_aes_keys[-1])
     with pytest.raises(ExchangeError, match="passphrase"):
         _seed_mnemonic(dict(synthetic_row, needsPassphrase=True), "password")
     with pytest.raises(ExchangeError, match="BIP39 only"):
