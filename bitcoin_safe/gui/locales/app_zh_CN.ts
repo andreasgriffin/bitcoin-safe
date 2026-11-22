@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>地址描述符</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>已签名的消息</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2593,6 +2588,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>余额报表</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>关闭</translation>
 		</message>
@@ -2635,6 +2635,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>无法解码此字符串</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>无法导出钱包图表：{error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2692,6 +2697,11 @@ For a single signature wallet it gives full control over the funds.</source>
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>热钱包在比特币主网上已禁用。 
 您可以切换到测试网，以便在不使用真实比特币的情况下测试 {app_name}。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>继承概览</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2810,6 +2820,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>请先打开一个钱包。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>请在此处粘贴您的比特币交易，PSBT，或拖放文件。</translation>
 		</message>
@@ -2835,8 +2850,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>打印</translation>
+			<source>Print overview</source>
+			<translation>打印概览</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2982,6 +2997,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>钱包关系图</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>钱包同步中</translation>
 		</message>
@@ -3053,6 +3073,48 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n} 个区块</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>复制</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>无法验证签名：{reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>签名已验证</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>已签名的消息</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>已签名的消息</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>签名者</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>此签名只能证明对单个密钥的控制权，不能证明对多重签名地址的控制权。</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>已验证的密钥地址</translation>
 		</message>
 	</context>
 	<context>
@@ -4998,11 +5060,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>已签名的消息</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>验证失败。</translation>
 		</message>
@@ -5074,6 +5131,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Signed Message</source>
 			<translation>已签名的消息</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>此签名仅能证明对单个密钥的控制权，不能证明对多重签名地址的控制权。</translation>
 		</message>
 	</context>
 	<context>
@@ -6066,6 +6128,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>输出点</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>签名者</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8037,8 +8104,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. 在以下页面的右侧选择一个钱包。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 或 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. 沿着连线向左查找所需的签名者。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. 使用位置字段查找签名设备或助记词备份的存放位置。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. 在 {app_name} 中使用钱包的二维码恢复钱包，或使用来自以下来源的钱包恢复：</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. 使用所需的签名者授权交易。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8049,6 +8141,11 @@ Click here to learn more.</source>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr 二维码</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>比特币钱包</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8067,13 +8164,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>类别</translation>
+			<source>Balance: {balance}</source>
+			<translation>余额：{balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>创建于 {date}，通过</translation>
+			<source>Block explorer</source>
+			<translation>区块浏览器</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>类别</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8087,8 +8189,43 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>图表</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>只能在签名设备上输入助记词，绝不要在电脑或手机上输入。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>矿工费用</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>手续费（预估）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>未找到文件！</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>指纹：{fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>沿着连线查看每个钱包可以使用哪些签名设备或助记词备份。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>如何恢复钱包</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8102,8 +8239,38 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>继承概览 - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>标签</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>标签同步备份密钥：{label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>页面边缘的连线会在标示的页面继续。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>关系图后还有更多备注。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>绝不要分享助记词或密码短语，也不要将它们输入任何网站。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>绝不要拍摄助记词的照片。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8117,8 +8284,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>不可用</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>重新扫描此钱包时，请至少扫描到地址索引的第 {max_tip} 位，以发现所有已注资的地址。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>输出</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8127,8 +8304,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>需要 1 名签名者</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>需要这 {count} 名签名者中的任意 {threshold} 名</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>签名设备与助记词备份</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>扫描以恢复钱包信息。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>硬件签名器的助记词：永不在计算机上输入。永不拍照。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>助记词备份存放位置：</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8139,6 +8341,16 @@ Click here to learn more.</source>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>序列化的 {label}：</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>签名者备注（续）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>签名设备位置：</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8162,8 +8374,48 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>交易标签：{label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR 二维码</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>被 {count} 个钱包使用</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>钱包描述符过长，无法放入可打印的关系图节点中</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime：区块高度 {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime：{value}（本地时间）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>未知指纹</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance}（测试币）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  参见第 {page} 页</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8182,8 +8434,23 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  指纹：{fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title}（测试币没有货币价值）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}：第 {index} 片，共 {total} 片</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>{wallet_name} 备注：{note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8305,6 +8572,16 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>无法解析返回的已签名消息。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>无法将该签名唯一匹配到某个钱包签名者。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>无效的 bech32 地址。</translation>
 		</message>
@@ -8352,6 +8629,26 @@ Click here to learn more.</source>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>签名为嵌套 SegWit 地址必须使用压缩的公钥。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>无法验证返回的地址。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>返回的消息与请求的消息不同。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>无法验证签名或派生路径。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>无法派生签名地址。 |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

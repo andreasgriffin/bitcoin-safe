@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>Adres tanımlayıcısı</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>İmzalanmış Mesaj</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2587,6 +2582,11 @@ Tek imzalı bir cüzdan için fonlar üzerinde tam kontrol sağlar.</translation
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>Bakiye dökümü</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>Kapat</translation>
 		</message>
@@ -2629,6 +2629,11 @@ Tek imzalı bir cüzdan için fonlar üzerinde tam kontrol sağlar.</translation
 		<message>
 			<source>Could not decode this string</source>
 			<translation>Bu dize çözülemedi</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>Cüzdan grafiği dışa aktarılamadı: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2686,6 +2691,11 @@ Tek imzalı bir cüzdan için fonlar üzerinde tam kontrol sağlar.</translation
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet üzerinde sıcak cüzdanlar devre dışıdır.
 Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebilirsiniz.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>Miras genel görünümü</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2804,6 +2814,11 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>Lütfen önce bir cüzdan açın.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>Lütfen Bitcoin İşleminizi veya PSBT’nizi buraya yapıştırın veya bir dosya bırakın</translation>
 		</message>
@@ -2829,8 +2844,8 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>Yazdır</translation>
+			<source>Print overview</source>
+			<translation>Genel görünümü yazdır</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2976,6 +2991,11 @@ Cüzdanı açık tutmak istiyor musunuz?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>Cüzdan grafiği</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Cüzdan senkronize ediliyor</translation>
 		</message>
@@ -3047,6 +3067,48 @@ Bunun yerine sistem tepsisine gizlemek ister misiniz?</translation>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n}. Blok</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>Kopyala</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>İmza doğrulanamadı: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>İmza doğrulandı</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>İmzalanmış Mesaj</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>İmzalı mesaj</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>İmzalayan</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>Bu imza, çoklu imzalı adresin değil, yalnızca bir anahtarın kontrol edildiğini kanıtlar.</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>Doğrulanmış anahtar adresi</translation>
 		</message>
 	</context>
 	<context>
@@ -4988,11 +5050,6 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>İmzalanmış Mesaj</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>Doğrulama başarısız oldu.</translation>
 		</message>
@@ -5064,6 +5121,11 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		<message>
 			<source>Signed Message</source>
 			<translation>İmzalanmış Mesaj</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>Bu imza yalnızca bir anahtarın kontrol edildiğini kanıtlar, çoklu imzalı bir adresin değil.</translation>
 		</message>
 	</context>
 	<context>
@@ -6053,6 +6115,11 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>İmzalayan</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8018,8 +8085,33 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. Sonraki sayfaların sağ tarafında bir cüzdan seçin.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 veya 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. Gerekli imzalayanları bulmak için çizgileri sola doğru takip edin.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. Konum alanlarını kullanarak imzalama cihazlarının veya seed yedeklerinin yerini bulun.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. Cüzdanı {app_name} uygulamasında QR kodunu kullanarak veya şu kaynaklardan bir cüzdanla geri yükleyin:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. İşlemleri yetkilendirmek için gerekli imzalayanları kullanın.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8030,6 +8122,11 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>BITCOIN CÜZDANLARI</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8048,13 +8145,18 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>Kategori</translation>
+			<source>Balance: {balance}</source>
+			<translation>Bakiye: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>{date} tarihinde oluşturuldu</translation>
+			<source>Block explorer</source>
+			<translation>Blok gezgini</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>Kategori</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8068,8 +8170,43 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>Diyagram</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>Seed kelimelerini yalnızca bir imzalama cihazına girin; asla bilgisayara veya cep telefonuna girmeyin.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>Ücret</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>Ücret (tahmini)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>Dosya bulunamadı!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>Parmak izi: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>Her cüzdan için hangi imzalama cihazlarının veya seed yedeklerinin kullanılabileceğini görmek üzere çizgileri takip edin.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>BİR CÜZDAN NASIL KURTARILIR</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8083,8 +8220,38 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>Miras genel görünümü - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>Etiket</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Etiket senkronizasyon yedekleme anahtarı: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>Sayfa kenarlarındaki çizgiler belirtilen sayfada devam eder.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>Grafiğin ardından başka notlar gelir.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>Seed kelimelerinizi veya ek parolalarınızı asla paylaşmayın ya da bir web sitesine girmeyin.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>Seed kelimelerinizin asla fotoğrafını çekmeyin.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8098,8 +8265,18 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>Mevcut değil</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>Bu cüzdanı yeniden tararken, fonlanan tüm adresleri bulmak için en az adres indeksi {max_tip}’e kadar tarayın.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>Çıkışlar</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8108,8 +8285,33 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>1 imzalayan gerekir</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>Bu {count} imzalayandan herhangi {threshold} tanesi gerekir</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>İMZALAMA CİHAZLARI VE SEED YEDEKLERİ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>Cüzdan bilgilerini geri yüklemek için tarayın.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>Donanım imzalayıcı için gizli seed kelimeleri: Asla bilgisayara yazmayın. Asla fotoğraf çekmeyin.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>Seed yedeğinin konumu:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8120,6 +8322,16 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>Serileştirilmiş {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>İmzalayan notlarının devamı</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>İmzalama cihazının konumu:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8143,8 +8355,48 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>İşlem etiketi: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>{count} cüzdan tarafından kullanılıyor</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>Cüzdan tanımlayıcısı, yazdırılabilir bir grafik düğümüne sığmayacak kadar uzun</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: blok yüksekliği {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (yerel saat)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>bilinmeyen parmak izi</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (test coinleri)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  bkz. sayfa {page}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8163,8 +8415,23 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  Parmak izi: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (test coinlerinin parasal değeri yoktur)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: Parça {index} / {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>{wallet_name} notu: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8286,6 +8553,16 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>Döndürülen imzalı mesaj ayrıştırılamadı.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>İmza, bir cüzdan imzalayanıyla benzersiz şekilde eşleştirilemedi.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>Geçersiz bech32 adresi.</translation>
 		</message>
@@ -8333,6 +8610,26 @@ Daha fazla bilgi edinmek için burayatıklayın.</translation>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>İmza iç içe geçmiş SegWit adresleri için sıkıştırılmış açık anahtar kullanmalı.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>Döndürülen adres doğrulanamadı.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>Döndürülen mesaj, istenen mesajdan farklı.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>İmza veya türetme yolu doğrulanamadı.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>İmzalama adresi türetilemedi. |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

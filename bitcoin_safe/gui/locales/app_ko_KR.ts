@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>주소 설명자</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>서명된 메시지</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2584,6 +2579,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>잔액 명세서</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>닫기</translation>
 		</message>
@@ -2626,6 +2626,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>이 문자열을 해석 할 수 없습니다</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>지갑 그래프를 내보낼 수 없습니다: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2683,6 +2688,11 @@ For a single signature wallet it gives full control over the funds.</source>
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet에서는 핫 월렛이 비활성화되어 있습니다.
 실제 Bitcoin을 사용하지 않고 {app_name}를 테스트하려면 Testnet으로 전환할 수 있습니다.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>상속 개요</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2801,6 +2811,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>먼저 지갑을 열어 주세요.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>여기에 비트코인 트랜잭션 또는 PSBT를 붙여넣거나 파일을 드롭하세요</translation>
 		</message>
@@ -2826,8 +2841,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>인쇄</translation>
+			<source>Print overview</source>
+			<translation>개요 인쇄</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2973,6 +2988,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>지갑 그래프</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>지갑 동기화 중</translation>
 		</message>
@@ -3044,6 +3064,48 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n}번째 블록</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>복사</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>서명을 검증할 수 없습니다: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>서명이 검증되었습니다</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>서명된 메시지</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>서명된 메시지</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>서명자</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>이 서명은 다중 서명 주소가 아닌 하나의 키에 대한 제어 권한만 증명합니다.</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>검증된 키 주소</translation>
 		</message>
 	</context>
 	<context>
@@ -4983,11 +5045,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>서명된 메시지</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>검증에 실패했습니다.</translation>
 		</message>
@@ -5059,6 +5116,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Signed Message</source>
 			<translation>서명된 메시지</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>이 서명은 다중 서명 주소가 아닌 단일 키에 대한 제어 권한만 증명합니다.</translation>
 		</message>
 	</context>
 	<context>
@@ -6047,6 +6109,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>아웃포인트</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>서명자</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8010,8 +8077,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. 다음 페이지의 오른쪽에서 지갑을 선택하세요.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 또는 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. 선을 왼쪽으로 따라가 필요한 서명자를 찾으세요.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. 위치 필드를 사용하여 서명 장치 또는 시드 백업의 위치를 찾으세요.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. {app_name}에서 QR 코드를 사용하거나 다음에서 제공하는 지갑을 이용해 지갑을 복원하세요:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. 필요한 서명자를 사용하여 거래를 승인하세요.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8022,6 +8114,11 @@ Click here to learn more.</source>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>비트코인 지갑</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8040,13 +8137,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>카테고리</translation>
+			<source>Balance: {balance}</source>
+			<translation>잔액: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>{date}에 생성됨</translation>
+			<source>Block explorer</source>
+			<translation>블록 탐색기</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>카테고리</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8060,8 +8162,43 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>도표</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>시드 단어는 반드시 서명 장치에만 입력하고, 컴퓨터나 휴대전화에는 절대 입력하지 마세요.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>수수료</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>수수료(예상)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>파일을 찾을 수 없습니다!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>지문: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>선을 따라가 각 지갑에 사용할 수 있는 서명 장치 또는 시드 백업을 확인하세요.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>지갑 복원 방법</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8075,8 +8212,38 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>상속 개요 - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>명칭</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>명칭 동기화 백업 키: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>페이지 가장자리의 선은 표시된 페이지로 이어집니다.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>그래프 뒤에 추가 메모가 있습니다.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>시드 단어나 패스프레이즈를 절대 공유하거나 웹사이트에 입력하지 마세요.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>시드 단어를 절대 사진으로 찍지 마세요.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8090,8 +8257,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>사용할 수 없음</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>이 지갑을 다시 스캔할 때는 모든 자금이 조달된 주소를 발견하기 위해 적어도 주소 인덱스 {max_tip}까지 스캔하세요.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>출력</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8100,8 +8277,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>서명자 1명 필요</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>이 {count}명의 서명자 중 아무 {threshold}명 필요</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>서명 장치 및 시드 백업</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>스캔하여 지갑 정보를 복원하세요.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>하드웨어 서명 기계를 위한 비밀 시드 단어: 컴퓨터에 입력하거나 사진을 찍지 마세요.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>시드 백업 위치:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8112,6 +8314,16 @@ Click here to learn more.</source>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>직렬화된 {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>서명자 메모 계속</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>서명 장치 위치:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8135,8 +8347,48 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>거래 레이블: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>{count}개의 지갑에서 사용</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>지갑 디스크립터가 너무 길어 인쇄 가능한 그래프 노드에 들어가지 않습니다</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: 블록 높이 {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (현지 시간)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>알 수 없는 지문</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (테스트 코인)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  {page}페이지 참조</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8155,8 +8407,23 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  지문: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (테스트 코인은 금전적 가치가 없습니다)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: {total}개 중 {index}번째 조각</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>{wallet_name} 메모: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8278,6 +8545,16 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>반환된 서명 메시지를 파싱할 수 없습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>서명을 특정 지갑 서명자와 고유하게 일치시킬 수 없습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>잘못된 bech32 주소입니다.</translation>
 		</message>
@@ -8325,6 +8602,26 @@ Click here to learn more.</source>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>중첩된 SegWit 주소에는 압축된 공개키를 사용해야 합니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>반환된 주소를 검증할 수 없습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>반환된 메시지가 요청한 메시지와 다릅니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>서명 또는 파생 경로를 검증할 수 없습니다.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>서명 주소를 파생할 수 없습니다. |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

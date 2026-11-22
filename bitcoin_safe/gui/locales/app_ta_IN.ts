@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>முகவரி விவரிப்பான்</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>கையொப்பமிட்ட செய்தி</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2593,6 +2588,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>இருப்பு அறிக்கை</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>மூடு</translation>
 		</message>
@@ -2635,6 +2635,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>இந்த சரத்தை டிகோட் செய்ய முடியவில்லை</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>வாலட் வரைபடத்தை ஏற்றுமதி செய்ய முடியவில்லை: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2692,6 +2697,11 @@ For a single signature wallet it gives full control over the funds.</source>
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>வாரிசுரிமை மேலோட்டம்</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2810,6 +2820,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>முதலில் ஒரு வாலெட்டைத் திறக்கவும்.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>உங்கள் பிட்காயின் பரிவர்த்தனை அல்லது PSBT ஐ இங்கே ஒட்டவும் அல்லது கோப்பை கைவிடவும்</translation>
 		</message>
@@ -2835,8 +2850,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>அச்சிடுக</translation>
+			<source>Print overview</source>
+			<translation>மேலோட்டத்தை அச்சிடு</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2982,6 +2997,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>வாலெட் வரைபடம்</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>வாலட் ஒத்திசைவு</translation>
 		</message>
@@ -3053,6 +3073,48 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n}. தடு</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>நகலெடு</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>கையொப்பத்தைச் சரிபார்க்க முடியவில்லை: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>கையொப்பம் சரிபார்க்கப்பட்டது</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>கையொப்பமிட்ட செய்தி</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>கையொப்பமிட்ட செய்தி</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>கையொப்பமிடுபவர்</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>இந்தக் கையொப்பம் ஒரு சாவியின் மீதான கட்டுப்பாட்டை மட்டுமே நிரூபிக்கிறது; பல்கையொப்ப முகவரியின் மீதான கட்டுப்பாட்டை அல்ல.</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>சரிபார்க்கப்பட்ட சாவியின் முகவரி</translation>
 		</message>
 	</context>
 	<context>
@@ -5002,11 +5064,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>கையொப்பமிட்ட செய்தி</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>சரிபார்ப்பு தோல்வியடைந்தது.</translation>
 		</message>
@@ -5078,6 +5135,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Signed Message</source>
 			<translation>கையொப்பமிட்ட செய்தி</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>இந்தக் கையொப்பம் ஒரு சாவியின் மீதான கட்டுப்பாட்டை மட்டுமே நிரூபிக்கிறது; பல்கையொப்ப முகவரியின் மீதான கட்டுப்பாட்டை நிரூபிக்காது.</translation>
 		</message>
 	</context>
 	<context>
@@ -6071,6 +6133,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>அவுட்பாயிண்ட்</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>கையொப்பமிட்டவர்</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8043,8 +8110,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. பின்வரும் பக்கங்களின் வலது பக்கத்தில் ஒரு வாலெட்டைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 அல்லது 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. கோடுகளை இடதுபுறமாகப் பின்தொடர்ந்து தேவையான கையொப்பமிடுபவர்களைக் கண்டறியவும்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. இருப்பிடப் புலங்களைப் பயன்படுத்தி கையொப்பமிடும் சாதனங்கள் அல்லது சீட் காப்புப்பிரதிகளின் இருப்பிடங்களைக் கண்டறியவும்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. {app_name}-இல் அதன் QR குறியீட்டைப் பயன்படுத்தியோ அல்லது பின்வரும் மூலத்திலிருந்து ஒரு வாலெட்டைப் பயன்படுத்தியோ வாலெட்டை மீட்டெடுக்கவும்:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. பரிவர்த்தனைகளை அங்கீகரிக்கத் தேவையான கையொப்பமிடுபவர்களைப் பயன்படுத்தவும்.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8055,6 +8147,11 @@ Click here to learn more.</source>
 		<message>
 			<source>BBQr QR</source>
 			<translation>பிபிகியுஆர் விப</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>பிட்காயின் வாலெட்டுகள்</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8073,13 +8170,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>வகை</translation>
+			<source>Balance: {balance}</source>
+			<translation>இருப்பு: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>உடன் {date} இல் உருவாக்கப்பட்டது</translation>
+			<source>Block explorer</source>
+			<translation>பிளாக் எக்ஸ்ப்ளோரர்</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>வகை</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8093,8 +8195,43 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>வரைபடம்</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>சீட் சொற்களைக் கையொப்பமிடும் சாதனத்தில் மட்டுமே உள்ளிடவும்; கணினியிலோ கைப்பேசியிலோ ஒருபோதும் உள்ளிட வேண்டாம்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>கட்டணம்</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>கட்டணம் (மதிப்பீடு)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>கோப்பு கிடைக்கவில்லை!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>கைரேகை: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>ஒவ்வொரு வாலெட்டிற்கும் எந்தக் கையொப்பமிடும் சாதனங்கள் அல்லது சீட் காப்புப்பிரதிகளைப் பயன்படுத்தலாம் என்பதை அறிய கோடுகளைப் பின்தொடரவும்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>வாலெட்டை மீட்டெடுப்பது எப்படி</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8108,8 +8245,38 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>வாரிசுரிமை மேலோட்டம் - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>சிட்டை</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>சிட்டை ஒத்திசைவு காப்பு விசை: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>பக்கங்களின் விளிம்புகளில் உள்ள கோடுகள் குறிப்பிடப்பட்ட பக்கத்தில் தொடரும்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>வரைபடத்திற்குப் பிறகு கூடுதல் குறிப்புகள் உள்ளன.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>சீட் சொற்களையோ கடவுச்சொற்றொடர்களையோ ஒருபோதும் பகிர வேண்டாம்; அவற்றை எந்த இணையதளத்திலும் உள்ளிட வேண்டாம்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>உங்கள் சீட் சொற்களை ஒருபோதும் புகைப்படம் எடுக்க வேண்டாம்.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8123,8 +8290,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>கிடைக்கவில்லை</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>இந்த வாலட்டை மீண்டும் வருடு செய்யும்போது, நிதியளிக்கப்பட்ட அனைத்து முகவரிகளையும் கண்டறிய குறைந்தபட்சம் முகவரி குறியீட்டு {max_tip}ஐ வருடு செய்யவும்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>வெளியீடுகள்</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8133,8 +8310,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>1 கையொப்பமிடுபவர் தேவை</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>இந்த {count} கையொப்பமிடுபவர்களில் ஏதேனும் {threshold} பேர் தேவை</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>கையொப்பமிடும் சாதனங்கள் மற்றும் சீட் காப்புப்பிரதிகள்</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>வாலெட் தகவலை மீட்டெடுக்க ஸ்கேன் செய்யவும்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>வன்பொருள் கையொப்பமிடுபவர்களுக்கான ரகசிய விதை வார்த்தைகள்: கணினியில் தட்டச்சு செய்ய வேண்டாம். ஒருபோதும் படத்தை உருவாக்க வேண்டாம்.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>சீட் காப்புப்பிரதியின் இருப்பிடம்:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8145,6 +8347,16 @@ Click here to learn more.</source>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>வரிசைப்படுத்தப்பட்ட {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>கையொப்பமிடுபவரின் குறிப்புகள் தொடர்ச்சி</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>கையொப்பமிடும் சாதனத்தின் இருப்பிடம்:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8168,8 +8380,48 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>பரிவர்த்தனை லேபிள்: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>{count} வாலெட்டுகளால் பயன்படுத்தப்படுகிறது</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>வாலெட் விவரிப்பான் மிக நீளமாக இருப்பதால் அச்சிடக்கூடிய வரைபட முனையில் பொருந்தாது</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: பிளாக் உயரம் {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (உள்ளூர் நேரம்)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>தெரியாத கைரேகை</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (சோதனை நாணயங்கள்)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  பக்கம் {page} பார்க்கவும்</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8188,8 +8440,23 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  கைரேகை: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (சோதனை நாணயங்களுக்கு பண மதிப்பு இல்லை)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: {total} இல் துண்டு {index}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>{wallet_name} குறிப்பு: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8311,6 +8578,16 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>திரும்பப் பெறப்பட்ட கையொப்பமிடப்பட்ட செய்தியைப் பகுப்பாய்வு செய்ய முடியவில்லை.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>கையொப்பத்தை ஒரு குறிப்பிட்ட வாலெட் கையொப்பமிடுபவருடன் தனித்துவமாகப் பொருத்த முடியவில்லை.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>தவறான bech32 முகவரி.</translation>
 		</message>
@@ -8358,6 +8635,26 @@ Click here to learn more.</source>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>உள்ளமைக்கப்பட்ட SegWit முகவரிகளுக்கு கையொப்பம் சுருக்கப்பட்ட பொது விசையைப் பயன்படுத்த வேண்டும்.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>திரும்பப் பெறப்பட்ட முகவரியைச் சரிபார்க்க முடியவில்லை.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>திரும்பப் பெறப்பட்ட செய்தி கோரப்பட்ட செய்தியிலிருந்து வேறுபடுகிறது.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>கையொப்பம் அல்லது வழித்தோன்றல் பாதையைச் சரிபார்க்க முடியவில்லை.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>கையொப்பமிடும் முகவரியை வழித்தோன்றச் செய்ய முடியவில்லை. |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

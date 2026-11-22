@@ -34,10 +34,12 @@ from io import BytesIO
 from math import atan2, degrees, hypot
 from pathlib import Path
 from statistics import mean
+from tempfile import TemporaryDirectory
 
 import bdkpython as bdk
 import networkx as nx
 from PIL import Image
+from pypdf import PdfReader, PdfWriter
 from PyQt6.QtCore import QBuffer, QByteArray, QIODevice, QRectF
 from PyQt6.QtGui import QColor, QImage, QPainter
 from PyQt6.QtSvg import QSvgRenderer
@@ -45,18 +47,19 @@ from reportlab.graphics import renderPDF
 from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
 from reportlab.lib.colors import HexColor
-from reportlab.lib.pagesizes import A4, landscape, letter
+from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.utils import ImageReader, simpleSplit
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus import BaseDocTemplate, Flowable, Frame, NextPageTemplate, PageBreak, PageTemplate
+from reportlab.platypus import Flowable
 
 from bitcoin_safe.constants import APP_NAME, APP_WEBSITE
 from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.pdf.qt_overlay import TextOverlayCanvas, render_text_overlay
 from bitcoin_safe.pdf_footer import draw_pdf_footer, pdf_timestamp
-from bitcoin_safe.pdf_statement import PdfStatement, create_pdf_statement
-from bitcoin_safe.pdfrecovery import BasePDF, register_font
+from bitcoin_safe.pdf_statement import create_pdf_statement
+from bitcoin_safe.pdfrecovery import BasePDF
 from bitcoin_safe.util import resource_path
 from bitcoin_safe.wallet import Wallet
 
@@ -198,14 +201,12 @@ def _page_wallet_height(graph: nx.Graph, page: "GraphPage") -> float:
 MAX_SIGNER_NOTE_LINES = 5
 
 
-def _signer_note_lines(details: SignerDetails, font: str, no_translate: bool = False) -> list[str]:
+def _signer_note_lines(details: SignerDetails, font: str) -> list[str]:
     return [
         line
         for wallet_name, note in details.notes
         for line in _wrapped_lines(
-            translate("pdf", "{wallet_name} note: {note}", no_translate=no_translate).format(
-                wallet_name=wallet_name, note=note
-            )
+            translate("pdf", "{wallet_name} note: {note}").format(wallet_name=wallet_name, note=note)
             if len(details.notes) > 1
             else note,
             font,
@@ -215,12 +216,10 @@ def _signer_note_lines(details: SignerDetails, font: str, no_translate: bool = F
     ]
 
 
-def _card_note_lines(details: SignerDetails, font: str, no_translate: bool = False) -> list[str]:
-    lines = _signer_note_lines(details, font, no_translate)
+def _card_note_lines(details: SignerDetails, font: str) -> list[str]:
+    lines = _signer_note_lines(details, font)
     if len(lines) > MAX_SIGNER_NOTE_LINES:
-        return lines[: MAX_SIGNER_NOTE_LINES - 1] + [
-            translate("pdf", "More notes follow the graph.", no_translate=no_translate)
-        ]
+        return lines[: MAX_SIGNER_NOTE_LINES - 1] + [translate("pdf", "More notes follow the graph.")]
     return lines
 
 
@@ -238,7 +237,7 @@ class GraphPage:
     wallets: list[object] = field(default_factory=list)
 
 
-def _graph_pages(graph: nx.Graph, font: str, no_translate: bool = False) -> list[GraphPage]:
+def _graph_pages(graph: nx.Graph, font: str) -> list[GraphPage]:
     """Pack connected groups together, splitting a group only when necessary."""
     pages: list[GraphPage] = []
     order = {node: i for i, node in enumerate(graph)}
@@ -253,14 +252,13 @@ def _graph_pages(graph: nx.Graph, font: str, no_translate: bool = False) -> list
         signer_cards: list[tuple[object, list[str]]] = []
         for node in signers:
             details: SignerDetails = graph.nodes[node]["signer"]
-            signer_cards.append((node, _card_note_lines(details, font, no_translate)))
+            signer_cards.append((node, _card_note_lines(details, font)))
         for node in wallets:
             if _wallet_height(graph.nodes[node]["wallet"]) > 420:
                 raise ValueError(
                     translate(
                         "pdf",
                         "Wallet descriptor is too long to fit in a printable graph node",
-                        no_translate=no_translate,
                     )
                 )
 
@@ -446,7 +444,6 @@ def _draw_page_crossings(
     right_x: float,
     font: str,
     page_number: int,
-    no_translate: bool = False,
 ) -> None:
     """Draw cross-page lines towards the page where their other endpoint appears."""
     midpoint = (left_x + 300 + right_x) / 2
@@ -469,10 +466,8 @@ def _draw_page_crossings(
             if x1 > x2:
                 x1, y1, x2, y2 = x2, y2, x1, y1
             length = hypot(x2 - x1, y2 - y1)
-            fingerprint = crossing.fingerprint.upper() or translate(
-                "pdf", "unknown fingerprint", no_translate=no_translate
-            )
-            label = translate("pdf", "{fingerprint}  see page {page}", no_translate=no_translate).format(
+            fingerprint = crossing.fingerprint.upper() or translate("pdf", "unknown fingerprint")
+            label = translate("pdf", "{fingerprint}  see page {page}").format(
                 fingerprint=fingerprint, page=crossing.other_page
             )
             font_size = max(
@@ -495,12 +490,9 @@ def _draw_page_crossings(
 class RecoveryGuideSheet(Flowable):
     """A short, printable guide for the person using the overview."""
 
-    def __init__(
-        self, font: str, created_with: str, title: str, created_date: str, no_translate: bool = False
-    ) -> None:
+    def __init__(self, font: str, created_with: str, title: str, created_date: str) -> None:
         super().__init__()
         self.font, self.created_with, self.title, self.created_date = font, created_with, title, created_date
-        self.no_translate = no_translate
         width, height = landscape(A4)
         self.width, self.height = width - 72, height - 72
 
@@ -517,30 +509,24 @@ class RecoveryGuideSheet(Flowable):
         pdf.line(75, height - 82, width - 75, height - 82)
         pdf.setFillColor(INK)
         pdf.setFont(self.font, 14)
-        pdf.drawString(
-            95, height - 125, translate("pdf", "HOW TO RECOVER A WALLET", no_translate=self.no_translate)
-        )
+        pdf.drawString(95, height - 125, translate("pdf", "HOW TO RECOVER A WALLET"))
         pdf.setFont(self.font, 11)
         steps = [
             translate(
                 "pdf",
                 "1. Choose a wallet on the right of the following pages.",
-                no_translate=self.no_translate,
             ),
             translate(
                 "pdf",
                 "2. Find the required signers by following the lines to the left.",
-                no_translate=self.no_translate,
             ),
             translate(
                 "pdf",
                 "3. Locate the signing devices or seed backups using the location fields.",
-                no_translate=self.no_translate,
             ),
             translate(
                 "pdf",
                 "4. Restore the wallet using its QR code in {app_name}, or with a wallet from:",
-                no_translate=self.no_translate,
             ).format(app_name=APP_NAME),
         ]
         for index, step in enumerate(steps):
@@ -558,7 +544,6 @@ class RecoveryGuideSheet(Flowable):
             translate(
                 "pdf",
                 "5. Use the required signers to authorize transactions.",
-                no_translate=self.no_translate,
             ),
             self.font,
             11,
@@ -571,7 +556,6 @@ class RecoveryGuideSheet(Flowable):
             translate(
                 "pdf",
                 "Enter seed words only into a signing device, never into a computer or cellphone.",
-                no_translate=self.no_translate,
             ),
             self.font,
             11,
@@ -581,7 +565,7 @@ class RecoveryGuideSheet(Flowable):
             pdf,
             105,
             height - 374,
-            translate("pdf", "Never take a picture of your seed words.", no_translate=self.no_translate),
+            translate("pdf", "Never take a picture of your seed words."),
             self.font,
             11,
             width - 150,
@@ -593,7 +577,6 @@ class RecoveryGuideSheet(Flowable):
             translate(
                 "pdf",
                 "Never share seed words or passphrases, or enter them into a website.",
-                no_translate=self.no_translate,
             ),
             self.font,
             11,
@@ -615,7 +598,6 @@ class GraphSheet(Flowable):
         title: str,
         created_date: str,
         connections: list[CrossPageConnection],
-        no_translate: bool = False,
     ) -> None:
         super().__init__()
         self.graph = graph
@@ -626,7 +608,6 @@ class GraphSheet(Flowable):
         self.title = title
         self.created_date = created_date
         self.connections = connections
-        self.no_translate = no_translate
         width, height = landscape(A4)
         self.width, self.height = width - 72, height - 72
 
@@ -649,7 +630,6 @@ class GraphSheet(Flowable):
             translate(
                 "pdf",
                 "Follow the lines to see which signing devices or seed backups can be used for each wallet.",
-                no_translate=self.no_translate,
             ),
         )
         pdf.setStrokeColor(BORDER)
@@ -668,11 +648,9 @@ class GraphSheet(Flowable):
         pdf.drawString(
             left_x,
             height - 85,
-            translate("pdf", "SIGNING DEVICES & SEED BACKUPS", no_translate=self.no_translate),
+            translate("pdf", "SIGNING DEVICES & SEED BACKUPS"),
         )
-        pdf.drawString(
-            right_x, height - 85, translate("pdf", "BITCOIN WALLETS", no_translate=self.no_translate)
-        )
+        pdf.drawString(right_x, height - 85, translate("pdf", "BITCOIN WALLETS"))
         # Draw connections first so they remain behind the cards.
         pdf.setStrokeColor(MUTED)
         pdf.setLineWidth(1.1)
@@ -686,7 +664,7 @@ class GraphSheet(Flowable):
                         wy + _wallet_height(graph.nodes[wallet_node]["wallet"]) - 20,
                     )
         crossings = _page_crossings(graph, page, page_number, connections, left_x, right_x, left_y, right_y)
-        _draw_page_crossings(pdf, crossings, left_x, right_x, font, page_number, self.no_translate)
+        _draw_page_crossings(pdf, crossings, left_x, right_x, font, page_number)
         for (node, lines), y in zip(page.signers, left_y, strict=True):
             signer = graph.nodes[node]["signer"]
             top = y + _signer_height(lines)
@@ -707,29 +685,23 @@ class GraphSheet(Flowable):
                 pdf.drawRightString(
                     left_x + 288,
                     top - 17,
-                    translate("pdf", "Used by {count} wallets", no_translate=self.no_translate).format(
-                        count=shared_count
-                    ),
+                    translate("pdf", "Used by {count} wallets").format(count=shared_count),
                 )
             pdf.setFont(font, 8.5)
             fingerprint = (
-                signer.fingerprint.upper()
-                if signer.fingerprint
-                else translate("pdf", "Not available", no_translate=self.no_translate)
+                signer.fingerprint.upper() if signer.fingerprint else translate("pdf", "Not available")
             )
             pdf.drawString(
                 left_x + 42,
                 top - 30,
-                translate("pdf", "Fingerprint: {fingerprint}", no_translate=self.no_translate).format(
-                    fingerprint=fingerprint
-                ),
+                translate("pdf", "Fingerprint: {fingerprint}").format(fingerprint=fingerprint),
             )
             pdf.setFont(font, 7.5)
             for i, line in enumerate(lines):
                 _draw_fitted_text(pdf, left_x + 12, top - 42 - i * 8.5, line, font, 7.5, 276)
             pdf.setFont(font, 7)
-            signer_location = translate("pdf", "Signing device location:", no_translate=self.no_translate)
-            seed_location = translate("pdf", "Seed backup location:", no_translate=self.no_translate)
+            signer_location = translate("pdf", "Signing device location:")
+            seed_location = translate("pdf", "Seed backup location:")
             _draw_fitted_text(pdf, left_x + 12, y + 34, signer_location, font, 7, 160)
             _draw_fitted_text(pdf, left_x + 12, y + 10, seed_location, font, 7, 160)
             pdf.setStrokeColor(MUTED)
@@ -757,27 +729,23 @@ class GraphSheet(Flowable):
             pdf.setFillColor(MUTED)
             pdf.setFont(font, 8.5)
             policy = (
-                translate(
-                    "pdf", "Requires any {threshold} of these {count} signers", no_translate=self.no_translate
-                ).format(threshold=threshold, count=count)
+                translate("pdf", "Requires any {threshold} of these {count} signers").format(
+                    threshold=threshold, count=count
+                )
                 if count > 1
-                else translate("pdf", "Requires 1 signer", no_translate=self.no_translate)
+                else translate("pdf", "Requires 1 signer")
             )
             _draw_fitted_text(pdf, right_x + 12, top - 30, policy, font, 8.5, 214)
             amount = wallet.get_balance().total
             whole, fraction = divmod(abs(amount), 100_000_000)
             balance = f"{'-' if amount < 0 else ''}{whole}.{fraction:08d} BTC"
             if wallet.network != bdk.Network.BITCOIN:
-                balance = translate("pdf", "{balance} (test coins)", no_translate=self.no_translate).format(
-                    balance=balance
-                )
+                balance = translate("pdf", "{balance} (test coins)").format(balance=balance)
             _draw_fitted_text(
                 pdf,
                 right_x + 12,
                 top - 42,
-                translate("pdf", "Balance: {balance}", no_translate=self.no_translate).format(
-                    balance=balance
-                ),
+                translate("pdf", "Balance: {balance}").format(balance=balance),
                 font,
                 8.5,
                 214,
@@ -787,7 +755,7 @@ class GraphSheet(Flowable):
             pdf.drawCentredString(
                 right_x + 119,
                 top - 181,
-                translate("pdf", "Scan to restore wallet information.", no_translate=self.no_translate),
+                translate("pdf", "Scan to restore wallet information."),
             )
             pdf.setFillColor(INK)
             pdf.setFont("Courier", 4)
@@ -803,7 +771,6 @@ class GraphSheet(Flowable):
                 translate(
                     "pdf",
                     "Lines at page edges continue on the indicated page.",
-                    no_translate=self.no_translate,
                 ),
             )
 
@@ -817,11 +784,9 @@ class SignerNotesSheet(Flowable):
         lines: list[str],
         font: str,
         created_date: str,
-        no_translate: bool = False,
     ) -> None:
         super().__init__()
         self.signer, self.lines, self.font, self.created_date = signer, lines, font, created_date
-        self.no_translate = no_translate
         width, height = landscape(A4)
         self.width, self.height = width - 72, height - 72
 
@@ -831,19 +796,15 @@ class SignerNotesSheet(Flowable):
         width, height = landscape(A4)
         pdf.setFillColor(INK)
         pdf.setFont(self.font, 15)
-        pdf.drawString(
-            36, height - 40, translate("pdf", "Signer notes continued", no_translate=self.no_translate)
-        )
+        pdf.drawString(36, height - 40, translate("pdf", "Signer notes continued"))
         pdf.setFont(self.font, 10)
-        fingerprint = self.signer.fingerprint.upper() or translate(
-            "pdf", "Not available", no_translate=self.no_translate
-        )
+        fingerprint = self.signer.fingerprint.upper() or translate("pdf", "Not available")
         pdf.drawString(
             36,
             height - 60,
-            translate(
-                "pdf", "{signer}  |  Fingerprint: {fingerprint}", no_translate=self.no_translate
-            ).format(signer=self.signer.label, fingerprint=fingerprint),
+            translate("pdf", "{signer}  |  Fingerprint: {fingerprint}").format(
+                signer=self.signer.label, fingerprint=fingerprint
+            ),
         )
         pdf.setFont(self.font, 8.5)
         for i, line in enumerate(self.lines):
@@ -851,16 +812,39 @@ class SignerNotesSheet(Flowable):
         draw_pdf_footer(pdf, width, self.font, self.created_date)
 
 
-def _graph_title(wallets: list[Wallet], no_translate: bool = False) -> str:
+def _graph_title(wallets: list[Wallet]) -> str:
     networks = sorted({wallet.network.name for wallet in wallets})
-    title = translate("pdf", "Inheritance overview - {networks}", no_translate=no_translate).format(
-        networks=", ".join(networks)
-    )
+    title = translate("pdf", "Inheritance overview - {networks}").format(networks=", ".join(networks))
     if any(wallet.network != bdk.Network.BITCOIN for wallet in wallets):
-        title = translate(
-            "pdf", "{title} (test coins have no monetary value)", no_translate=no_translate
-        ).format(title=title)
+        title = translate("pdf", "{title} (test coins have no monetary value)").format(title=title)
     return title
+
+
+def _overview_sheets(
+    wallets: list[Wallet], font: str, created_with: str, created_date: str
+) -> list[Flowable]:
+    """Build the recovery guide and graph pages shared by both renderers."""
+    graph = wallet_graph(wallets)
+    pages = _graph_pages(graph, font)
+    connections = _cross_page_connections(graph, pages, page_offset=1)
+    title = _graph_title(wallets)
+    sheets: list[Flowable] = [RecoveryGuideSheet(font, created_with, title, created_date)]
+    sheets.extend(
+        GraphSheet(graph, page, i, font, created_with, title, created_date, connections)
+        for i, page in enumerate(pages, 2)
+    )
+    for node in graph:
+        if node[0] != "signer":
+            continue
+        signer: SignerDetails = graph.nodes[node]["signer"]
+        lines = _signer_note_lines(signer, font)
+        if len(lines) > MAX_SIGNER_NOTE_LINES:
+            remaining = lines[MAX_SIGNER_NOTE_LINES - 1 :]
+            sheets.extend(
+                SignerNotesSheet(signer, remaining[i : i + 40], font, created_date)
+                for i in range(0, len(remaining), 40)
+            )
+    return sheets
 
 
 def export_inheritance_overview(
@@ -871,69 +855,36 @@ def export_inheritance_overview(
     lang_code: str = "en_US",
 ) -> None:
     """Render the graph followed by the existing wallet balance statements."""
-    no_translate = register_font(lang_code).supported_lang_code == "en_US"
-    created_with = (
-        created_with
-        if created_with is not None
-        else translate("pdf", "Created with", no_translate=no_translate)
-    )
-    graph = wallet_graph(wallets)
-    pages = _graph_pages(graph, font, no_translate)
-    connections = _cross_page_connections(graph, pages, page_offset=1)
-    width, height = landscape(A4)
     created_date = pdf_timestamp()
-    title = _graph_title(wallets, no_translate)
-    sheets: list[Flowable] = [RecoveryGuideSheet(font, created_with, title, created_date, no_translate)]
-    sheets.extend(
-        GraphSheet(graph, page, i, font, created_with, title, created_date, connections, no_translate)
-        for i, page in enumerate(pages, 2)
-    )
-    for node in graph:
-        if node[0] != "signer":
-            continue
-        signer: SignerDetails = graph.nodes[node]["signer"]
-        lines = _signer_note_lines(signer, font, no_translate)
-        if len(lines) > MAX_SIGNER_NOTE_LINES:
-            remaining = lines[MAX_SIGNER_NOTE_LINES - 1 :]
-            sheets.extend(
-                SignerNotesSheet(signer, remaining[i : i + 40], font, created_date, no_translate)
-                for i in range(0, len(remaining), 40)
-            )
-    story: list[Flowable] = []
+    if created_with is None:
+        created_with = translate("pdf", "Created with")
+    sheets = _overview_sheets(wallets, font, created_with, created_date)
+    pagesize = landscape(A4)
+    graph_data = BytesIO()
+    canvas = TextOverlayCanvas(graph_data, pagesize)
     for sheet in sheets:
-        if story:
-            story.append(PageBreak())
-        story.append(sheet)
-    statements: list[PdfStatement] = []
-    for wallet in wallets:
-        statement = create_pdf_statement(wallet, lang_code, created_at=created_date)
-        statements.append(statement)
-        story.extend([NextPageTemplate("statements"), PageBreak(), *statement.elements])
-    document = BaseDocTemplate(str(path), pagesize=(width, height))
-    graph_frame = Frame(
-        36, 36, width - 72, height - 72, leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0
-    )
-    statement_width, statement_height = letter
-    statement_frame = Frame(
-        36,
-        36,
-        statement_width - 72,
-        statement_height - 72,
-        leftPadding=0,
-        rightPadding=0,
-        topPadding=0,
-        bottomPadding=0,
-    )
-    document.addPageTemplates([PageTemplate(id="graph", frames=graph_frame, pagesize=(width, height))])
-    if statements:
-        document.addPageTemplates(
-            [
-                PageTemplate(
-                    id="statements", frames=statement_frame, pagesize=letter, onPage=statements[0].draw_footer
-                )
-            ]
-        )
-    document.build(story)
+        sheet.drawOn(canvas, 36, 36)
+        canvas.showPage()
+    canvas.save()
+    graph_data.seek(0)
+
+    with TemporaryDirectory() as directory:
+        temp_dir = Path(directory)
+        overlay_path = temp_dir / "text.pdf"
+        render_text_overlay(overlay_path, canvas.text_pages[:-1], pagesize, lang_code)
+        graph = PdfReader(graph_data)
+        overlay = PdfReader(overlay_path)
+        writer = PdfWriter()
+        for page, text in zip(graph.pages, overlay.pages, strict=True):
+            writer.add_page(page)
+            writer.pages[-1].merge_page(text)
+        for index, wallet in enumerate(wallets):
+            statement = create_pdf_statement(wallet, lang_code, created_at=created_date)
+            statement_path = temp_dir / f"statement-{index}.pdf"
+            statement.qt_renderer(page_offset=len(writer.pages)).save(statement.elements, str(statement_path))
+            writer.append(str(statement_path))
+        with path.open("wb") as output:
+            writer.write(output)
 
 
 class InheritanceOverviewPDF(BasePDF):
@@ -949,6 +900,6 @@ class InheritanceOverviewPDF(BasePDF):
             self.wallets,
             Path(filename),
             self.font_name,
-            translate("pdf", "Created with", no_translate=self.no_translate),
+            translate("pdf", "Created with"),
             self.lang_code,
         )

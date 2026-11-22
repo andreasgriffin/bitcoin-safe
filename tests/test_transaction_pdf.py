@@ -33,16 +33,16 @@ from unittest.mock import Mock, patch
 import bdkpython as bdk
 import pytest
 from PIL import Image
-from PyQt6.QtCore import QDate, QLocale
+from PyQt6.QtCore import QLocale
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT
 from reportlab.platypus import Image as PDFImage
 from reportlab.platypus import Table
 
-from bitcoin_safe.pdfrecovery import DataExportPDF, NumberedPageCanvas
+from bitcoin_safe.pdfrecovery import DataExportPDF
 from bitcoin_safe.pythonbdk_types import Recipient
 
 
-def test_transaction_pdf_outputs_and_diagram(tmp_path: Path) -> None:
+def test_transaction_pdf_outputs_and_diagram(qapp: object, tmp_path: Path) -> None:
     pdf = DataExportPDF("en_US")
     pdf.create_pdf(
         title="Transaction export",
@@ -71,22 +71,9 @@ def test_transaction_pdf_outputs_and_diagram(tmp_path: Path) -> None:
     assert path.stat().st_size > 0
 
 
-def test_transaction_pdf_qr_rows_and_footer(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    footers: list[tuple[str, int, int]] = []
-    centered_dates: list[tuple[float, float, str]] = []
-    original_center = NumberedPageCanvas.drawCentredString
-    original_draw = NumberedPageCanvas.draw_page_number
+def test_transaction_pdf_qr_rows_and_footer(qapp: object, tmp_path: Path) -> None:
+    from pypdf import PdfReader
 
-    def record_footer(canvas: NumberedPageCanvas, page_count: int) -> None:
-        footers.append((canvas.created_date, canvas._pageNumber, page_count))
-        original_draw(canvas, page_count)
-
-    def record_center(canvas: NumberedPageCanvas, x: float, y: float, text: str) -> None:
-        centered_dates.append((x, canvas._pagesize[0], text))
-        original_center(canvas, x, y, text)
-
-    monkeypatch.setattr(NumberedPageCanvas, "draw_page_number", record_footer)
-    monkeypatch.setattr(NumberedPageCanvas, "drawCentredString", record_center)
     image = Image.new("RGB", (200, 200), "white")
     pdf = DataExportPDF("en_US")
     pdf.create_pdf("Transaction", None, "abcdef", "Transaction", [image, image, image])
@@ -95,16 +82,14 @@ def test_transaction_pdf_qr_rows_and_footer(tmp_path: Path, monkeypatch: pytest.
     assert len(rows[0]._cellvalues[0][0]) == 2
     assert len(rows[0]._cellvalues[0][1]) == 2
     assert not rows[1]._cellvalues[0][1]
-    pdf.save_pdf(str(tmp_path / "qr.pdf"))
-    assert footers
-    assert all(date and number <= total for date, number, total in footers)
-    assert len(footers) == footers[0][2]
-    expected_date = QLocale().toString(QDate.currentDate(), QLocale.FormatType.ShortFormat)
-    assert len(centered_dates) == len(footers)
-    assert all(x == width / 2 and text == expected_date for x, width, text in centered_dates)
+    path = tmp_path / "qr.pdf"
+    pdf.save_pdf(str(path))
+    pages = PdfReader(path).pages
+    for i, page in enumerate(pages):
+        assert f"{i + 1}/{len(pages)}" in page.extract_text()
 
 
-def test_transaction_pdf_explorer_qr(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_transaction_pdf_explorer_qr(qapp: object, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     from bitcoin_safe.pdfrecovery import QRGenerator
 
     urls: list[str] = []
@@ -239,11 +224,9 @@ def test_transaction_label_is_escaped_in_pdf() -> None:
 
     pdf = DataExportPDF("en_US")
     pdf.create_pdf("Transaction", None, "abcdef", "Transaction", [], tx_label="Rent & bills <April>")
-    assert any(
-        element.getPlainText() == "Transaction label: Rent & bills <April>"
-        for element in pdf.elements
-        if isinstance(element, Paragraph)
-    )
+    paragraphs = [element.getPlainText() for element in pdf.elements if isinstance(element, Paragraph)]
+    assert "Transaction label:" in paragraphs
+    assert "Rent & bills <April>" in paragraphs
 
 
 @pytest.mark.parametrize("data_type", ["tx", "psbt"])

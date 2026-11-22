@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>လိပ်စာဖော်ပြချက်</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2582,6 +2577,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>လက်ကျန်ငွေစာရင်း</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>ပိတ်ပါ</translation>
 		</message>
@@ -2624,6 +2624,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>ဤစာကိုဖတ်နိုင်ခြင်းမရှိပါ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>ပိုက်ဆံအိတ် ဂရပ်ဖ်ကို ထုတ်ယူ၍ မရပါ: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2680,6 +2685,11 @@ For a single signature wallet it gives full control over the funds.</source>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet တွင် hot wallet များကို ပိတ်ထားသည်။ Bitcoin အစစ်ကို မသုံးဘဲ {app_name} ကို စမ်းသပ်ရန် Testnet သို့ ပြောင်းနိုင်သည်။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>အမွေဆက်ခံမှု အကျဉ်းချုပ်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2798,6 +2808,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>ကျေးဇူးပြု၍ ပထမဦးစွာ ဝေါလက်တစ်ခုကို ဖွင့်ပါ။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>သင့်ရဲ့ Bitcoin ငွေလွှဲသို့မဟုတ် PSBT ကိုဤနေရာတွင်ကပ်ရောက်ပါ၊ သို့မဟုတ်ဖိုင်ကိုထည့်ပါ။</translation>
 		</message>
@@ -2823,8 +2838,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>ထွက်ရန်</translation>
+			<source>Print overview</source>
+			<translation>အကျဉ်းချုပ်ကို ပုံနှိပ်ရန်</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2969,6 +2984,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>ဝေါလက်များ၏ ချိတ်ဆက်ပုံ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>ပိုက်ဆံအိတ်ကို သင်တင်ဆက်နေပါသည်</translation>
 		</message>
@@ -3039,6 +3059,48 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n} ဘလော့ခ်</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>ကူးယူပါ</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>လက်မှတ်ကို အတည်မပြုနိုင်ပါ: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>လက်မှတ်ကို အတည်ပြုပြီးပါပြီ</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>လက်မှတ်ထိုးထားသော စာတမ်း</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>လက်မှတ်ရေးထိုးသူ</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>ဤလက်မှတ်သည် multisig လိပ်စာကို မဟုတ်ဘဲ သော့တစ်ခုတည်းကို ထိန်းချုပ်နိုင်ကြောင်း သက်သေပြပါသည်။</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>အတည်ပြုပြီးသော သော့လိပ်စာ</translation>
 		</message>
 	</context>
 	<context>
@@ -4968,11 +5030,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>အတည်ပြုမှု မအောင်မြင်ပါ။</translation>
 		</message>
@@ -5044,6 +5101,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Signed Message</source>
 			<translation>လက်မှတ်ထိုးထားသောစာတစ်စောင်</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>လက်မှတ်သည် သော့တစ်ခုတည်းကိုသာ ထိန်းချုပ်နိုင်ကြောင်း သက်သေပြပြီး multisig လိပ်စာကို ထိန်းချုပ်ကြောင်း မပြပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -6029,6 +6091,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>လက်မှတ်ရေးထိုးသူ</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -7990,8 +8057,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. နောက်စာမျက်နှာများ၏ ညာဘက်ရှိ ဝေါလက်တစ်ခုကို ရွေးချယ်ပါ။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 သို့မဟုတ် 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. လိုအပ်သော လက်မှတ်ရေးထိုးသူများကို ရှာရန် မျဉ်းများအတိုင်း ဘယ်ဘက်သို့ လိုက်ကြည့်ပါ။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. တည်နေရာအကွက်များကို အသုံးပြုပြီး လက်မှတ်ရေးထိုးသည့် စက်များ သို့မဟုတ် seed အရန်သိမ်းဆည်းမှုများ၏ တည်နေရာကို ရှာပါ။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. {app_name} တွင် ၎င်း၏ QR ကုဒ်ကို အသုံးပြု၍ သို့မဟုတ် အောက်ပါနေရာမှ ဝေါလက်တစ်ခုဖြင့် ဝေါလက်ကို ပြန်လည်ရယူပါ:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. ငွေလွှဲမှုများကို ခွင့်ပြုရန် လိုအပ်သော လက်မှတ်ရေးထိုးသူများကို အသုံးပြုပါ။</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8002,6 +8094,11 @@ Click here to learn more.</source>
 		<message>
 			<source>BBQr QR</source>
 			<translation>QR ဒေတာ မရှိပါ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>BITCOIN ဝေါလက်များ</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8020,13 +8117,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>အုပ်စု</translation>
+			<source>Balance: {balance}</source>
+			<translation>လက်ကျန်ငွေ: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>{date} မှဖန်တီးပါသည်</translation>
+			<source>Block explorer</source>
+			<translation>ဘလောက်ရှာဖွေရေးကိရိယာ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>အုပ်စု</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8040,8 +8142,43 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>နမူနာ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>Seed စကားလုံးများကို လက်မှတ်ရေးထိုးသည့် စက်တွင်သာ ထည့်သွင်းပါ။ ကွန်ပျူတာ သို့မဟုတ် မိုဘိုင်းဖုန်းတွင် လုံးဝမထည့်ပါနှင့်။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>အခကြေးငွေ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>အခကြေးငွေ (ခန့်မှန်း)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>ဖိုင်မတွေ့ပါ!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>လက်ဗွေ: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>မျဉ်းများအတိုင်း လိုက်ကြည့်ပြီး ဝေါလက်တစ်ခုချင်းစီအတွက် မည်သည့်လက်မှတ်ရေးထိုးသည့် စက်များ သို့မဟုတ် seed အရန်သိမ်းဆည်းမှုများကို အသုံးပြုနိုင်သည်ကို ကြည့်ပါ။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>ဝေါလက် ပြန်လည်ရယူနည်း</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8055,8 +8192,38 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>အမွေဆက်ခံမှု အကျဉ်းချုပ် - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>တံဆိပ်</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>တံဆိပ်ကိုက်ညီစေရန်အရန်လက်မှတ်သော့: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>စာမျက်နှာအစွန်းရှိ မျဉ်းများသည် ညွှန်ပြထားသော စာမျက်နှာတွင် ဆက်လက်ရှိပါသည်။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>ပုံကြမ်းနောက်တွင် မှတ်ချက်များ ဆက်လက်ရှိပါသည်။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>Seed စကားလုံးများ သို့မဟုတ် passphrase များကို မည်သူ့ကိုမျှ မမျှဝေပါနှင့်၊ ဝက်ဘ်ဆိုက်တွင်လည်း မထည့်သွင်းပါနှင့်။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>သင့် seed စကားလုံးများကို ဘယ်တော့မှ ဓာတ်ပုံမရိုက်ပါနှင့်။</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8070,8 +8237,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>မရရှိနိုင်</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>ဤပိုက်ဆံအိတ်ကိုပြန်ရွေးစစ်ပါက အနည်းဆုံးလိပ်စာအိန်ဒက် {max_tip} အထိရှာဖွေပြီးအားလုံးငွေဖြည့်ထားသောလိပ်စာများကိုရှာဖွေပါ။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>အထွက်များ</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8080,8 +8257,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>လက်မှတ်ရေးထိုးသူ 1 ဦး လိုအပ်သည်</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>ဤလက်မှတ်ရေးထိုးသူ {count} ဦးအနက် မည်သည့် {threshold} ဦးမဆို လိုအပ်သည်</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>လက်မှတ်ရေးထိုးသည့် စက်များနှင့် SEED အရန်သိမ်းဆည်းမှုများ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>ဝေါလက်အချက်အလက်ကို ပြန်လည်ရယူရန် စကင်ဖတ်ပါ။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>ဟာ့ဒ်ဝဲလ်အမှတ်သားစက်အတွက် မျိုးစေ့စကားလုံးများ: ကွန်ပျူတာထဲသို့ မရိုက်ပါ၊ ဓာတ်ပုံမရိုက်ပါ။</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>Seed အရန်သိမ်းဆည်းမှု တည်နေရာ:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8092,6 +8294,16 @@ Click here to learn more.</source>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>Serialized {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>လက်မှတ်ရေးထိုးသူ မှတ်ချက်များ (ဆက်လက်)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>လက်မှတ်ရေးထိုးသည့် စက်၏ တည်နေရာ:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8115,8 +8327,48 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>ငွေလွှဲမှု အညွှန်း: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>ဝေါလက် {count} ခုက အသုံးပြုသည်</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>ဝေါလက် descriptor သည် ပုံနှိပ်နိုင်သည့် ပုံကြမ်း node တစ်ခုတွင် ဆံ့ရန် အလွန်ရှည်လွန်းသည်</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: ဘလောက်အမြင့် {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (ဒေသစံတော်ချိန်)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>မသိသော လက်ဗွေ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (စမ်းသပ်ဒင်္ဂါးများ)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  စာမျက်နှာ {page} ကို ကြည့်ပါ</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8135,8 +8387,23 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  လက်ဗွေ: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (စမ်းသပ်ဒင်္ဂါးများတွင် ငွေကြေးတန်ဖိုး မရှိပါ)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: အပိုင်း {index} / {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>{wallet_name} မှတ်ချက်: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8258,6 +8525,16 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>ပြန်လည်ရရှိသော လက်မှတ်ရေးထိုးထားသည့် စာကို ခွဲခြမ်းစိတ်ဖြာ၍ မရပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>လက်မှတ်ကို ဝေါလက်၏ လက်မှတ်ရေးထိုးသူတစ်ဦးနှင့် တိတိကျကျ ကိုက်ညီအောင် မသတ်မှတ်နိုင်ပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>bech32 လိပ်စာမရှိနိုင်ပါ။</translation>
 		</message>
@@ -8305,6 +8582,26 @@ Click here to learn more.</source>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>Nested SegWit လိပ်စာများအတွက်လည်း ဖိထားသော public key ကို အသုံးပြုရမည်။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>ပြန်လည်ရရှိသော လိပ်စာကို အတည်မပြုနိုင်ပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>ပြန်လည်ရရှိသော စာသည် တောင်းဆိုထားသော စာနှင့် ကွဲပြားပါသည်။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>လက်မှတ် သို့မဟုတ် derivation path ကို အတည်မပြုနိုင်ပါ။</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>လက်မှတ်ရေးထိုးရန် လိပ်စာကို derivation ဖြင့် မထုတ်ယူနိုင်ပါ။ |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

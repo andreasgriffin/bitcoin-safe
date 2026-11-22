@@ -33,6 +33,7 @@ from typing import cast
 from unittest.mock import Mock, patch
 
 import bdkpython as bdk
+import pytest
 from PyQt6.QtCore import QTranslator
 from PyQt6.QtWidgets import QApplication
 
@@ -56,6 +57,11 @@ from bitcoin_safe.inheritance_overview import (
     wallet_graph,
 )
 from bitcoin_safe.wallet import Wallet
+
+
+@pytest.fixture(autouse=True)
+def qt_backend(qapp: QApplication) -> None:
+    pass
 
 
 def wallet(name: str, fingerprints: list[str]) -> Wallet:
@@ -89,22 +95,22 @@ def wallet(name: str, fingerprints: list[str]) -> Wallet:
     )
 
 
-def test_overview_uses_translations_and_english_font_fallback(qapp: QApplication, tmp_path: Path) -> None:
-    from reportlab.pdfgen.canvas import Canvas
+def test_overview_uses_translations_with_font_fallback(qapp: QApplication, tmp_path: Path) -> None:
+    from bitcoin_safe.pdf.qt_overlay import TextOverlayCanvas as Canvas
 
     class TestTranslator(QTranslator):
         def translate(
             self, context: str | None, sourceText: str | None, disambiguation: str | None = None, n: int = -1
         ) -> str:
             if context != "pdf":
-                return ""
+                return sourceText or ""
             return {
                 "HOW TO RECOVER A WALLET": "WALLET WIEDERHERSTELLEN",
                 "{wallet_name} note: {note}": "{wallet_name} Hinweis: {note}",
                 "Requires 1 signer": "Ein Signierer erforderlich",
                 "Balance: {balance}": "Guthaben: {balance}",
                 "{balance} (test coins)": "{balance} (Testgeld)",
-            }.get(sourceText or "", "")
+            }.get(sourceText or "", sourceText or "")
 
     translator = TestTranslator()
     qapp.installTranslator(translator)
@@ -124,8 +130,8 @@ def test_overview_uses_translations_and_english_font_fallback(qapp: QApplication
         with patch.object(Canvas, "drawString", autospec=True, side_effect=Canvas.drawString) as draw_string:
             export_inheritance_overview([first], tmp_path / "fallback.pdf", lang_code="unsupported")
         labels = [call.args[3] for call in draw_string.call_args_list]
-        assert "HOW TO RECOVER A WALLET" in labels
-        assert "Requires 1 signer" in labels
+        assert "WALLET WIEDERHERSTELLEN" in labels
+        assert "Ein Signierer erforderlich" in labels
     finally:
         qapp.removeTranslator(translator)
 
@@ -261,7 +267,7 @@ def test_related_wallets_remain_together_despite_interleaved_input() -> None:
 
 def test_cross_page_connection_draws_labeled_lines_on_both_pages(tmp_path: Path) -> None:
     wallets = [wallet("Large", [f"{i:08x}" for i in range(1, 5)])]
-    from reportlab.pdfgen.canvas import Canvas
+    from bitcoin_safe.pdf.qt_overlay import TextOverlayCanvas as Canvas
 
     original_rotate = Canvas.rotate
     with (
@@ -281,7 +287,7 @@ def test_cross_page_connection_draws_labeled_lines_on_both_pages(tmp_path: Path)
 
 
 def test_seed_boxes_include_handwritten_backup_location(tmp_path: Path) -> None:
-    from reportlab.pdfgen.canvas import Canvas
+    from bitcoin_safe.pdf.qt_overlay import TextOverlayCanvas as Canvas
 
     original = Canvas.drawString
     first = wallet("First", ["00000001", "00000002"])
@@ -311,49 +317,41 @@ def test_long_signer_notes_leave_space_for_location_lines() -> None:
 
 
 def test_datetime_and_page_numbers_on_graph_and_statement_pages(tmp_path: Path) -> None:
-    from reportlab.pdfgen.canvas import Canvas
+    from pypdf import PdfReader
 
     expected = "2026-11-19 12:34:56 UTC"
-    original_centered = Canvas.drawCentredString
-    original_right = Canvas.drawRightString
-    with (
-        patch("bitcoin_safe.inheritance_overview.pdf_timestamp", return_value=expected),
-        patch.object(Canvas, "drawCentredString", autospec=True, side_effect=original_centered) as centered,
-        patch.object(Canvas, "drawRightString", autospec=True, side_effect=original_right) as right,
-    ):
-        export_inheritance_overview(
-            [wallet("Large", [f"{i:08x}" for i in range(1, 5)])], tmp_path / "graph.pdf"
-        )
-    dates = [call.args[3] for call in centered.call_args_list if call.args[3].startswith("Date: ")]
-    pages = [call.args[3] for call in right.call_args_list if call.args[3].startswith("Page ")]
-    assert dates == [f"Date: {expected}"] * 4
-    assert pages == ["Page 1", "Page 2", "Page 3", "Page 4"]
+    path = tmp_path / "graph.pdf"
+    with patch("bitcoin_safe.inheritance_overview.pdf_timestamp", return_value=expected):
+        export_inheritance_overview([wallet("Large", [f"{i:08x}" for i in range(1, 5)])], path)
+    pages = PdfReader(path).pages
+    assert len(pages) == 4
+    for i, page in enumerate(pages):
+        text = " ".join(page.extract_text().split())
+        assert f"Date: {expected}" in text
+        assert f"Page {i + 1}" in text
 
 
 def test_standalone_balance_statement_has_datetime_and_page_number(tmp_path: Path) -> None:
-    from reportlab.pdfgen.canvas import Canvas
+    from pypdf import PdfReader
 
     from bitcoin_safe.pdf_statement import create_pdf_statement
 
     statement = create_pdf_statement(
         wallet("First", ["00000001"]), "en_US", created_at="2026-11-19 12:34:56 UTC"
     )
-    with (
-        patch.object(
-            Canvas, "drawCentredString", autospec=True, side_effect=Canvas.drawCentredString
-        ) as centered,
-        patch.object(Canvas, "drawRightString", autospec=True, side_effect=Canvas.drawRightString) as right,
-    ):
-        statement.save_pdf(str(tmp_path / "statement.pdf"))
-    assert any(call.args[3] == "Date: 2026-11-19 12:34:56 UTC" for call in centered.call_args_list)
-    assert any(call.args[3] == "Page 1" for call in right.call_args_list)
+    path = tmp_path / "statement.pdf"
+    statement.save_pdf(str(path))
+    text = " ".join(PdfReader(path).pages[0].extract_text().split())
+    assert "Date: 2026-11-19 12:34:56 UTC" in text
+    assert "1/1" in text
 
 
 def test_cross_page_lines_point_to_other_page_and_caption_is_near_edge() -> None:
     from math import hypot
 
     from reportlab.lib.pagesizes import A4, landscape
-    from reportlab.pdfgen.canvas import Canvas
+
+    from bitcoin_safe.pdf.qt_overlay import TextOverlayCanvas as Canvas
 
     connection = CrossPageConnection(("signer", 1), ("wallet", 1), 1, 1, 2)
     for page, other_page, edge_y in [(1, 2, 44.0), (2, 1, landscape(A4)[1] - 74)]:
@@ -371,29 +369,25 @@ def test_cross_page_lines_point_to_other_page_and_caption_is_near_edge() -> None
 
 
 def test_balance_statement_footer_on_every_page(tmp_path: Path) -> None:
-    from reportlab.pdfgen.canvas import Canvas
+    from pypdf import PdfReader
 
     from bitcoin_safe.pdf_statement import create_pdf_statement
 
     first = wallet("First", ["00000001"])
     first.get_addresses = lambda: [f"tb1qexample{i}" for i in range(90)]
     statement = create_pdf_statement(first, "en_US", created_at="2026-11-19 12:34:56 UTC")
-    with (
-        patch.object(
-            Canvas, "drawCentredString", autospec=True, side_effect=Canvas.drawCentredString
-        ) as centered,
-        patch.object(Canvas, "drawRightString", autospec=True, side_effect=Canvas.drawRightString) as right,
-    ):
-        statement.save_pdf(str(tmp_path / "statement.pdf"))
-    dates = [call.args[3] for call in centered.call_args_list if call.args[3].startswith("Date: ")]
-    pages = [call.args[3] for call in right.call_args_list if call.args[3].startswith("Page ")]
+    path = tmp_path / "statement.pdf"
+    statement.save_pdf(str(path))
+    pages = PdfReader(path).pages
     assert len(pages) > 1
-    assert pages == [f"Page {i}" for i in range(1, len(pages) + 1)]
-    assert dates == ["Date: 2026-11-19 12:34:56 UTC"] * len(pages)
+    for i, page in enumerate(pages):
+        text = " ".join(page.extract_text().split())
+        assert "Date: 2026-11-19 12:34:56 UTC" in text
+        assert f"{i + 1}/{len(pages)}" in text
 
 
 def test_wallet_cards_use_multisig_and_single_signature_labels(tmp_path: Path) -> None:
-    from reportlab.pdfgen.canvas import Canvas
+    from bitcoin_safe.pdf.qt_overlay import TextOverlayCanvas as Canvas
 
     wallets = [wallet("Shared", ["00000001", "00000002", "00000003"]), wallet("Single", ["00000004"])]
     wallets[0].get_mn_tuple = lambda: (2, 3)
@@ -406,9 +400,8 @@ def test_wallet_cards_use_multisig_and_single_signature_labels(tmp_path: Path) -
 
 
 def test_recovery_guide_and_shared_signer_are_shown(tmp_path: Path) -> None:
-    from reportlab.pdfgen.canvas import Canvas
-
     from bitcoin_safe.inheritance_overview import _qr
+    from bitcoin_safe.pdf.qt_overlay import TextOverlayCanvas as Canvas
 
     first, second = [wallet(name, ["aabbccdd"]) for name in ("First", "Second")]
     first.network = bdk.Network.BITCOIN
@@ -568,7 +561,7 @@ def test_matching_fingerprint_and_device_deduplicate() -> None:
 
 
 def test_merged_signer_notes_use_one_card(tmp_path: Path) -> None:
-    from reportlab.pdfgen.canvas import Canvas
+    from bitcoin_safe.pdf.qt_overlay import TextOverlayCanvas as Canvas
 
     first, second = [wallet(name, ["aabbccdd"]) for name in ("First", "Second")]
     first.keystores[0].description = "First note line one\nFirst note line two"
@@ -591,7 +584,7 @@ def test_merged_signer_notes_use_one_card(tmp_path: Path) -> None:
 def test_very_long_notes_continue_without_another_signer_card(tmp_path: Path) -> None:
     from collections import Counter
 
-    from reportlab.pdfgen.canvas import Canvas
+    from bitcoin_safe.pdf.qt_overlay import TextOverlayCanvas as Canvas
 
     first = wallet("First", ["aabbccdd"])
     first.keystores[0].description = "x" * 5000

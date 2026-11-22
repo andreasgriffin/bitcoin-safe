@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 from typing import Any
+from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
@@ -75,16 +76,14 @@ class PDFLabels(BasePDF):
             translate(
                 "pdf",
                 'Hardware signer labels for wallet "{wallet_id}"',
-                no_translate=self.no_translate,
-            ).format(wallet_id=wallet_id),
+            ).format(wallet_id=escape(wallet_id)),
             self.style_heading,
         )
         self.elements.append(heading)
 
         self.elements.append(
             Paragraph(
-                translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" {APP_NAME}: {white_space * 5} {APP_WEBSITE}",
+                translate("pdf", "Created with") + f" {APP_NAME}: {white_space * 5} {APP_WEBSITE}",
                 self.style_paragraph,
             )
         )
@@ -93,7 +92,6 @@ class PDFLabels(BasePDF):
         instruction_text = translate(
             "pdf",
             "Cut out the labels below and attach each one to the matching hardware signer.",
-            no_translate=self.no_translate,
         )
         self.elements.append(Paragraph(instruction_text, self.style_paragraph))
         self.elements.append(Spacer(1, 12))
@@ -104,7 +102,6 @@ class PDFLabels(BasePDF):
                     translate(
                         "pdf",
                         "No hardware signers configured yet.",
-                        no_translate=self.no_translate,
                     ),
                     self.style_paragraph,
                 )
@@ -122,7 +119,7 @@ class PDFLabels(BasePDF):
             for label, _device_name in label_pairs[i : i + columns]:
                 cell_flowables: list[Any] = [
                     Paragraph(
-                        f"{label}",
+                        escape(label),
                         self.style_label,
                     ),
                 ]
@@ -166,6 +163,5 @@ def make_and_open_labels_pdf(wallet_id: str, label_pairs: list[tuple[str, str]],
     filename = translate(
         "pdf",
         "Hardware signer labels for {id}",
-        no_translate=pdf_labels.no_translate,
     ).format(id=wallet_id)
     write_and_open_temp_pdf(pdf_labels, filename)

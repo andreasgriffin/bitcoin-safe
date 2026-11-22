@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>Descriptor d'adreça</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>Missatge signat</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2587,6 +2582,11 @@ Per a una cartera de signatura única, dona control total sobre els fons.</trans
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>Extracte de saldo</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>Tanca</translation>
 		</message>
@@ -2629,6 +2629,11 @@ Per a una cartera de signatura única, dona control total sobre els fons.</trans
 		<message>
 			<source>Could not decode this string</source>
 			<translation>No s'ha pogut descodificar aquesta cadena</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>No s’ha pogut exportar el gràfic del moneder: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2686,6 +2691,11 @@ Per a una cartera de signatura única, dona control total sobre els fons.</trans
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Els moneders calents estan desactivats a Bitcoin Mainnet.
 Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>Resum de l'herència</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2804,6 +2814,11 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>Obriu primer una cartera, si us plau.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>Enganxa la teva transacció Bitcoin o PSBT aquí, o arrossega un fitxer</translation>
 		</message>
@@ -2829,8 +2844,8 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>Imprimeix</translation>
+			<source>Print overview</source>
+			<translation>Imprimeix el resum</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2976,6 +2991,11 @@ Vols mantenir la cartera oberta?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>Graf de carteres</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Sincronització del moneder</translation>
 		</message>
@@ -3047,6 +3067,48 @@ Vols amagar-la a la safata?</translation>
 		<message>
 			<source>{n}. Block</source>
 			<translation>Bloc {n}</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>Copia</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>No s'ha pogut verificar la signatura: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>Signatura verificada</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>Missatge signat</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>Missatge signat</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>Signant</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>Aquesta signatura demostra el control d'una sola clau, no de l'adreça multisignatura.</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>Adreça de la clau verificada</translation>
 		</message>
 	</context>
 	<context>
@@ -4988,11 +5050,6 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>Missatge signat</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>La verificació ha fallat.</translation>
 		</message>
@@ -5064,6 +5121,11 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		<message>
 			<source>Signed Message</source>
 			<translation>Missatge signat</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>La signatura només demostra el control d'una clau, no d'una adreça multisignatura.</translation>
 		</message>
 	</context>
 	<context>
@@ -6053,6 +6115,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>Signat per</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8018,8 +8085,33 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. Trieu una cartera a la dreta de les pàgines següents.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 o 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. Trobeu els signants necessaris seguint les línies cap a l'esquerra.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. Localitzeu els dispositius de signatura o les còpies de seguretat de la llavor mitjançant els camps d'ubicació.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. Restaureu la cartera mitjançant el seu codi QR a {app_name}, o amb una cartera de:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. Feu servir els signants necessaris per autoritzar les transaccions.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8030,6 +8122,11 @@ Fes clic aquí per saber-ne més.</translation>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>CARTERES BITCOIN</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8048,13 +8145,18 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>Categoria</translation>
+			<source>Balance: {balance}</source>
+			<translation>Saldo: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>Creat el {date} amb</translation>
+			<source>Block explorer</source>
+			<translation>Explorador de blocs</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>Categoria</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8068,8 +8170,43 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>Diagrama</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>Introduïu les paraules de la llavor només en un dispositiu de signatura, mai en un ordinador o telèfon mòbil.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>Comissió</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>Comissió (estimada)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>Fitxer no trobat!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>Empremta digital: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>Seguiu les línies per veure quins dispositius de signatura o còpies de seguretat de la llavor es poden utilitzar per a cada cartera.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>COM RECUPERAR UNA CARTERA</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8083,8 +8220,38 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>Resum de l'herència - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>Etiqueta</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Clau de còpia de seguretat de sincronització d'etiquetes: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>Les línies dels marges de les pàgines continuen a la pàgina indicada.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>Hi ha més notes després del graf.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>No compartiu mai les paraules de la llavor ni les frases de contrasenya, ni les introduïu en cap lloc web.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>No feu mai fotografies de les paraules de la llavor.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8098,8 +8265,18 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>No disponible</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>En tornar a escanejar aquesta cartera, escaneja fins a l'índex d'adreça {max_tip} com a mínim per descobrir totes les adreces finançades.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>Sortides</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8108,8 +8285,33 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>Cal 1 signant</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>Calen {threshold} signants qualssevol d'aquests {count} signants</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>DISPOSITIUS DE SIGNATURA I CÒPIES DE SEGURETAT DE LA LLAVOR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>Escanegeu per restaurar la informació de la cartera.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>Paraules secretes de la seed per a un signador de maquinari: Mai les escriguis en un ordinador. Mai en facis una foto.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>Ubicació de la còpia de seguretat de la llavor:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8120,6 +8322,16 @@ Fes clic aquí per saber-ne més.</translation>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>{label} serialitzat:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>Continuació de les notes del signant</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>Ubicació del dispositiu de signatura:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8143,8 +8355,48 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>Etiqueta de la transacció: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>Utilitzat per {count} carteres</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>El descriptor de la cartera és massa llarg per encabir-lo en un node del graf imprimible</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: alçada del bloc {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (hora local)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>empremta digital desconeguda</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (monedes de prova)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  vegeu la pàgina {page}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8163,8 +8415,23 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  Empremta digital: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (les monedes de prova no tenen valor monetari)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: Fragment {index} de {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>Nota de {wallet_name}: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8286,6 +8553,16 @@ Fes clic aquí per saber-ne més.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>No s'ha pogut analitzar el missatge signat retornat.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>No s'ha pogut associar de manera única la signatura a un signant de la cartera.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>Adreça bech32 no vàlida.</translation>
 		</message>
@@ -8333,6 +8610,26 @@ Fes clic aquí per saber-ne més.</translation>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>La signatura ha d’utilitzar una clau pública comprimida per a adreces SegWit anidades.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>No s'ha pogut verificar l'adreça retornada.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>El missatge retornat és diferent del missatge sol·licitat.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>No s'ha pogut verificar la signatura o el camí de derivació.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>No s'ha pogut derivar l'adreça de signatura. |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

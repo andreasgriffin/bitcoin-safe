@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>ঠিকানা ডেসক্রিপ্টর</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>সাইন করা বার্তা</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2585,6 +2580,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>ব্যালেন্স বিবরণী</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>বন্ধ করুন</translation>
 		</message>
@@ -2627,6 +2627,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>এই স্ট্রিংটি ডিকোড করা যায়নি</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>wallet graph এক্সপোর্ট করা যায়নি: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2683,6 +2688,11 @@ For a single signature wallet it gives full control over the funds.</source>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet-এ হট ওয়ালেট নিষ্ক্রিয় করা আছে। বাস্তব Bitcoin ব্যবহার না করেই {app_name} পরীক্ষা করতে আপনি Testnet-এ যেতে পারেন।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>উত্তরাধিকার সংক্রান্ত সারসংক্ষেপ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2801,6 +2811,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>অনুগ্রহ করে প্রথমে একটি ওয়ালেট খুলুন।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>অনুগ্রহ করে আপনার Bitcoin ট্রানজ্যাকশন বা PSBT এখানে পেস্ট করুন, অথবা একটি ফাইল ড্রপ করুন</translation>
 		</message>
@@ -2826,8 +2841,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>প্রিন্ট</translation>
+			<source>Print overview</source>
+			<translation>সারসংক্ষেপ প্রিন্ট করুন</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2972,6 +2987,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>ওয়ালেট গ্রাফ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>ওয়ালেট সিঙ্ক হচ্ছে</translation>
 		</message>
@@ -3042,6 +3062,48 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n}. ব্লক</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>কপি</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>স্বাক্ষর যাচাই করা যায়নি: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>স্বাক্ষর যাচাই করা হয়েছে</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>স্বাক্ষরিত বার্তা</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>স্বাক্ষরিত বার্তা</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>স্বাক্ষরকারী</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>এই স্বাক্ষরটি একটি কী-এর নিয়ন্ত্রণ প্রমাণ করে, মাল্টিসিগ ঠিকানার নিয়ন্ত্রণ নয়।</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>যাচাইকৃত কী-এর ঠিকানা</translation>
 		</message>
 	</context>
 	<context>
@@ -4972,11 +5034,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>স্বাক্ষরিত বার্তা</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>যাচাই ব্যর্থ হয়েছে।</translation>
 		</message>
@@ -5048,6 +5105,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Signed Message</source>
 			<translation>স্বাক্ষরিত বার্তা</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>স্বাক্ষরটি শুধু একটি কী-এর নিয়ন্ত্রণ প্রমাণ করে, কোনো মাল্টিসিগ ঠিকানার নিয়ন্ত্রণ নয়।</translation>
 		</message>
 	</context>
 	<context>
@@ -6035,6 +6097,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>স্বাক্ষর করেছেন</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -7995,8 +8062,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. পরবর্তী পৃষ্ঠাগুলোর ডান দিকে একটি ওয়ালেট নির্বাচন করুন।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 অথবা 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. বাম দিকে রেখাগুলো অনুসরণ করে প্রয়োজনীয় স্বাক্ষরকারীদের খুঁজুন।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. অবস্থানের ঘরগুলো ব্যবহার করে স্বাক্ষর করার ডিভাইস বা সিড ব্যাকআপের অবস্থান খুঁজুন।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. {app_name}-এ ওয়ালেটের QR কোড ব্যবহার করে, অথবা নিম্নোক্ত উৎসের কোনো ওয়ালেট দিয়ে ওয়ালেট পুনরুদ্ধার করুন:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. লেনদেন অনুমোদন করতে প্রয়োজনীয় স্বাক্ষরকারীদের ব্যবহার করুন।</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8007,6 +8099,11 @@ Click here to learn more.</source>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>বিটকয়েন ওয়ালেট</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8025,13 +8122,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>ক্যাটেগরি</translation>
+			<source>Balance: {balance}</source>
+			<translation>ব্যালেন্স: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>{date} তারিখে তৈরি করা হয়েছে</translation>
+			<source>Block explorer</source>
+			<translation>ব্লক এক্সপ্লোরার</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>ক্যাটেগরি</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8045,8 +8147,43 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>ডায়াগ্রাম</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>সিড শব্দগুলো শুধু স্বাক্ষর করার ডিভাইসে লিখুন, কখনো কম্পিউটার বা মোবাইল ফোনে নয়।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>ফি</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>ফি (আনুমানিক)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>ফাইল পাওয়া যায়নি!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>ফিঙ্গারপ্রিন্ট: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>রেখাগুলো অনুসরণ করে দেখুন প্রতিটি ওয়ালেটের জন্য কোন স্বাক্ষর ডিভাইস বা সিড ব্যাকআপ ব্যবহার করা যাবে।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>কীভাবে একটি ওয়ালেট পুনরুদ্ধার করবেন</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8060,8 +8197,38 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>উত্তরাধিকার সংক্রান্ত সারসংক্ষেপ - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>লেবেল</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Label synchronization backup key: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>পৃষ্ঠার প্রান্তের রেখাগুলো নির্দেশিত পৃষ্ঠায় চলতে থাকে।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>গ্রাফের পরে আরও নোট রয়েছে।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>সিড শব্দ বা পাসফ্রেজ কখনো কারও সঙ্গে শেয়ার করবেন না বা কোনো ওয়েবসাইটে লিখবেন না।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>আপনার সিড শব্দগুলোর ছবি কখনো তুলবেন না।</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8075,8 +8242,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>উপলব্ধ নয়</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>এই wallet পুনরায় স্ক্যান করার সময়, সব funded address খুঁজে পেতে অন্তত address index {max_tip} পর্যন্ত স্ক্যান করুন।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>আউটপুট</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8085,8 +8262,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>১ জন স্বাক্ষরকারী প্রয়োজন</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>এই {count} জন স্বাক্ষরকারীর মধ্যে যেকোনো {threshold} জন প্রয়োজন</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>স্বাক্ষর ডিভাইস ও সিড ব্যাকআপ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>ওয়ালেটের তথ্য পুনরুদ্ধার করতে স্ক্যান করুন।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>একটি hardware signer-এর জন্য গোপন seed words: কখনও কম্পিউটারে টাইপ করবেন না। কখনও ছবি তুলবেন না।</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>সিড ব্যাকআপের অবস্থান:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8097,6 +8299,16 @@ Click here to learn more.</source>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>Serialized {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>স্বাক্ষরকারীর নোটের পরবর্তী অংশ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>স্বাক্ষর ডিভাইসের অবস্থান:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8120,8 +8332,48 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>লেনদেনের লেবেল: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>{count}টি ওয়ালেটে ব্যবহৃত</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>ওয়ালেট ডিসক্রিপ্টরটি এত দীর্ঘ যে প্রিন্টযোগ্য গ্রাফ নোডে ধরবে না</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: ব্লকের উচ্চতা {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (স্থানীয় সময়)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>অজানা ফিঙ্গারপ্রিন্ট</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (টেস্ট কয়েন)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  পৃষ্ঠা {page} দেখুন</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8140,8 +8392,23 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  ফিঙ্গারপ্রিন্ট: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (টেস্ট কয়েনের কোনো আর্থিক মূল্য নেই)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: {total} এর মধ্যে {index} নম্বর fragment</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>{wallet_name}-এর নোট: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8263,6 +8530,16 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>ফেরত আসা স্বাক্ষরিত বার্তাটি পার্স করা যায়নি।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>স্বাক্ষরটিকে নির্দিষ্ট একজন ওয়ালেট স্বাক্ষরকারীর সঙ্গে অনন্যভাবে মেলানো যায়নি।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>অবৈধ bech32 ঠিকানা।</translation>
 		</message>
@@ -8310,6 +8587,26 @@ Click here to learn more.</source>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>nested SegWit ঠিকানার জন্য স্বাক্ষরে compressed public key ব্যবহার করতে হবে।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>ফেরত আসা ঠিকানাটি যাচাই করা যায়নি।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>ফেরত আসা বার্তাটি অনুরোধ করা বার্তা থেকে আলাদা।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>স্বাক্ষর বা ডেরিভেশন পাথ যাচাই করা যায়নি।</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>স্বাক্ষর করার ঠিকানাটি ডেরাইভ করা যায়নি। |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

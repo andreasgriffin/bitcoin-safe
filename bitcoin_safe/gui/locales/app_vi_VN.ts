@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>Descriptor địa chỉ</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>Tin nhắn đã ký</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2587,6 +2582,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>Sao kê số dư</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>Đóng</translation>
 		</message>
@@ -2629,6 +2629,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>Không thể giải mã chuỗi này</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>Không thể xuất biểu đồ ví: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2686,6 +2691,11 @@ For a single signature wallet it gives full control over the funds.</source>
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Ví nóng bị tắt trên Bitcoin Mainnet.
 Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không cần dùng Bitcoin thật.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>Tổng quan về thừa kế</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2804,6 +2814,11 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>Vui lòng mở ví trước.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>Vui lòng dán giao dịch Bitcoin hoặc PSBT tại đây, hoặc thả tệp</translation>
 		</message>
@@ -2829,8 +2844,8 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>In</translation>
+			<source>Print overview</source>
+			<translation>In bản tổng quan</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2976,6 +2991,11 @@ Bạn có muốn giữ ví mở không?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>Sơ đồ ví</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Ví đang đồng bộ</translation>
 		</message>
@@ -3047,6 +3067,48 @@ Bạn có muốn ẩn vào khay thay vì vậy không?</translation>
 		<message>
 			<source>{n}. Block</source>
 			<translation>Block thứ {n}</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>Sao chép</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>Không thể xác minh chữ ký: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>Chữ ký đã được xác minh</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>Tin nhắn đã ký</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>Tin nhắn đã ký</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>Người ký</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>Chữ ký này chứng minh quyền kiểm soát một khóa, không phải địa chỉ đa chữ ký.</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>Địa chỉ khóa đã xác minh</translation>
 		</message>
 	</context>
 	<context>
@@ -4987,11 +5049,6 @@ Nếu bạn sai ở đây, tiền của bạn sẽ mất!</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>Tin nhắn đã ký</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>Xác minh thất bại.</translation>
 		</message>
@@ -5063,6 +5120,11 @@ Nếu bạn sai ở đây, tiền của bạn sẽ mất!</translation>
 		<message>
 			<source>Signed Message</source>
 			<translation>Tin nhắn đã ký</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>Chữ ký chỉ chứng minh quyền kiểm soát một khóa, không phải địa chỉ đa chữ ký.</translation>
 		</message>
 	</context>
 	<context>
@@ -6053,6 +6115,11 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>Được ký bởi</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8016,8 +8083,33 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. Chọn một ví ở bên phải các trang tiếp theo.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 hoặc 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. Tìm những người ký cần thiết bằng cách đi theo các đường nối về bên trái.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. Xác định vị trí các thiết bị ký hoặc bản sao lưu seed bằng các trường vị trí.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. Khôi phục ví bằng mã QR của ví trong {app_name}, hoặc bằng một ví từ:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. Sử dụng những người ký cần thiết để cho phép giao dịch.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8028,6 +8120,11 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>VÍ BITCOIN</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8046,13 +8143,18 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>Danh mục</translation>
+			<source>Balance: {balance}</source>
+			<translation>Số dư: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>Được tạo lúc {date} với</translation>
+			<source>Block explorer</source>
+			<translation>Trình khám phá khối</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>Danh mục</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8066,8 +8168,43 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>Sơ đồ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>Chỉ nhập các từ seed vào thiết bị ký, tuyệt đối không nhập vào máy tính hoặc điện thoại di động.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>Phí</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>Phí (ước tính)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>Không tìm thấy tệp!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>Dấu vân tay: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>Đi theo các đường nối để xem thiết bị ký hoặc bản sao lưu seed nào có thể được dùng cho từng ví.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>CÁCH KHÔI PHỤC VÍ</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8081,8 +8218,38 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>Tổng quan về thừa kế - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>Nhãn</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Khóa sao lưu đồng bộ nhãn: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>Các đường nối ở mép trang tiếp tục trên trang được chỉ định.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>Các ghi chú khác nằm sau sơ đồ.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>Tuyệt đối không chia sẻ các từ seed hoặc cụm mật khẩu, hay nhập chúng vào trang web.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>Tuyệt đối không chụp ảnh các từ seed của bạn.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8096,8 +8263,18 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>Không khả dụng</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>Khi quét lại ví này, hãy quét ít nhất tới chỉ mục địa chỉ {max_tip} để phát hiện tất cả địa chỉ đã được nạp tiền.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>Đầu ra</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8106,8 +8283,33 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>Yêu cầu 1 người ký</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>Yêu cầu bất kỳ {threshold} trong số {count} người ký này</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>THIẾT BỊ KÝ VÀ BẢN SAO LƯU SEED</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>Quét để khôi phục thông tin ví.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>Từ seed bí mật cho thiết bị ký phần cứng: Tuyệt đối không gõ vào máy tính. Tuyệt đối không chụp ảnh.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>Vị trí bản sao lưu seed:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8118,6 +8320,16 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>Đã serialize {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>Ghi chú tiếp theo về người ký</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>Vị trí thiết bị ký:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8141,8 +8353,48 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>Nhãn giao dịch: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>Được sử dụng bởi {count} ví</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>Bộ mô tả ví quá dài để hiển thị trong một nút của sơ đồ có thể in</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: chiều cao khối {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (giờ địa phương)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>dấu vân tay không xác định</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (coin thử nghiệm)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  xem trang {page}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8161,8 +8413,23 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  Dấu vân tay: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (coin thử nghiệm không có giá trị tiền tệ)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: Mảnh {index} trong {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>Ghi chú về {wallet_name}: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8284,6 +8551,16 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>Không thể phân tích cú pháp thông điệp đã ký được trả về.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>Không thể đối chiếu duy nhất chữ ký với một người ký của ví.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>Địa chỉ bech32 không hợp lệ.</translation>
 		</message>
@@ -8331,6 +8608,26 @@ Nhấp vào đây để tìm hiểu thêm.</translation>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>Chữ ký phải dùng khóa công khai dạng nén cho địa chỉ SegWit lồng (nested).</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>Không thể xác minh địa chỉ được trả về.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>Thông điệp được trả về khác với thông điệp đã yêu cầu.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>Không thể xác minh chữ ký hoặc đường dẫn dẫn xuất.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>Không thể dẫn xuất địa chỉ ký. |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

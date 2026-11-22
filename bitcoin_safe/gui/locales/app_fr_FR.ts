@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>Descripteur d'adresse</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>Message signé</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2587,6 +2582,11 @@ Pour un portefeuille à signature unique, elle donne le contrôle total des fond
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>Relevé de solde</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>Fermer</translation>
 		</message>
@@ -2629,6 +2629,11 @@ Pour un portefeuille à signature unique, elle donne le contrôle total des fond
 		<message>
 			<source>Could not decode this string</source>
 			<translation>Je ne peux pas décoder cette chaîne</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>Impossible d’exporter le graphe du portefeuille : {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2686,6 +2691,11 @@ Pour un portefeuille à signature unique, elle donne le contrôle total des fond
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Les portefeuilles chauds sont désactivés sur Bitcoin Mainnet.
 Vous pouvez passer à Testnet pour tester {app_name} sans utiliser de vrais bitcoins.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>Vue d’ensemble de la succession</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2804,6 +2814,11 @@ Vous pouvez passer à Testnet pour tester {app_name} sans utiliser de vrais bitc
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>Veuillez d’abord ouvrir un portefeuille.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>Veuillez coller votre Transaction Bitcoin ou PSBT ici, ou déposez un fichier</translation>
 		</message>
@@ -2829,8 +2844,8 @@ Vous pouvez passer à Testnet pour tester {app_name} sans utiliser de vrais bitc
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>Imprimer</translation>
+			<source>Print overview</source>
+			<translation>Imprimer la vue d’ensemble</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2976,6 +2991,11 @@ Voulez-vous garder le portefeuille ouvert ?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>Graphe des portefeuilles</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Synchronisation du portefeuille</translation>
 		</message>
@@ -3047,6 +3067,48 @@ Voulez-vous le masquer dans la barre d’état système à la place ?</translati
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n}. Bloc</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>Copier</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>La signature n’a pas pu être vérifiée : {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>Signature vérifiée</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>Message signé</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>Message signé</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>Signataire</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>Cette signature prouve le contrôle d’une seule clé, et non de l’adresse multisignature.</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>Adresse de la clé vérifiée</translation>
 		</message>
 	</context>
 	<context>
@@ -4989,11 +5051,6 @@ Si vous faites une erreur ici, votre argent est perdu!</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>Message signé</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>Échec de la vérification.</translation>
 		</message>
@@ -5065,6 +5122,11 @@ Si vous faites une erreur ici, votre argent est perdu!</translation>
 		<message>
 			<source>Signed Message</source>
 			<translation>Message signé</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>La signature prouve uniquement le contrôle d’une clé, et non d’une adresse multisignature.</translation>
 		</message>
 	</context>
 	<context>
@@ -6054,6 +6116,11 @@ La diffusion échouera. Voulez-vous quand même diffuser ?</translation>
 		<message>
 			<source>Outpoint</source>
 			<translation>Point de sortie</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>Signé par</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8020,8 +8087,33 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. Choisissez un portefeuille à droite sur les pages suivantes.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 ou 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. Trouvez les signataires requis en suivant les lignes vers la gauche.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. Localisez les appareils de signature ou les sauvegardes de seed à l’aide des champs d’emplacement.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. Restaurez le portefeuille à l’aide de son code QR dans {app_name}, ou avec un portefeuille provenant de :</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. Utilisez les signataires requis pour autoriser les transactions.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8032,6 +8124,11 @@ Cliquez ici pour en savoir plus.</translation>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>PORTEFEUILLES BITCOIN</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8050,13 +8147,18 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>Catégorie</translation>
+			<source>Balance: {balance}</source>
+			<translation>Solde : {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>Créé le {date} avec</translation>
+			<source>Block explorer</source>
+			<translation>Explorateur de blocs</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>Catégorie</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8070,8 +8172,43 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>Diagramme</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>Saisissez les mots de votre seed uniquement sur un appareil de signature, jamais sur un ordinateur ou un téléphone portable.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>Frais</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>Frais (estimés)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>Fichier introuvable!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>Empreinte : {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>Suivez les lignes pour voir quels appareils de signature ou sauvegardes de seed peuvent être utilisés pour chaque portefeuille.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>COMMENT RÉCUPÉRER UN PORTEFEUILLE</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8085,8 +8222,38 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>Vue d’ensemble de la succession - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>Étiquette</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Clé de sauvegarde de synchronisation des étiquettes : {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>Les lignes situées aux bords des pages se poursuivent sur la page indiquée.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>D’autres notes figurent après le graphe.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>Ne partagez jamais vos mots de seed ni vos phrases secrètes, et ne les saisissez jamais sur un site web.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>Ne prenez jamais vos mots de seed en photo.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8100,8 +8267,18 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>Non disponible</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>Lors du rescannage de ce portefeuille, scannez au moins jusqu'à l'indice d'adresse {max_tip} pour découvrir toutes les adresses financées.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>Sorties</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8110,8 +8287,33 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>Nécessite 1 signataire</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>Nécessite {threshold} signataires quelconques parmi ces {count} signataires</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>APPAREILS DE SIGNATURE ET SAUVEGARDES DE SEED</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>Scannez pour restaurer les informations du portefeuille.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>Mots de graine secrets pour un signataire matériel : Ne jamais taper sur un ordinateur. Ne jamais en faire une photo.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>Emplacement de la sauvegarde de seed :</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8122,6 +8324,16 @@ Cliquez ici pour en savoir plus.</translation>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>{label} sérialisé :</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>Suite des notes du signataire</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>Emplacement de l’appareil de signature :</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8145,8 +8357,48 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>Libellé de la transaction : {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>Utilisé par {count} portefeuilles</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>Le descripteur du portefeuille est trop long pour tenir dans un nœud du graphe imprimable</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime : hauteur de bloc {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime : {value} (heure locale)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>empreinte inconnue</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (bitcoins de test)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  voir page {page}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8165,8 +8417,23 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  Empreinte : {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (les bitcoins de test n’ont aucune valeur monétaire)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title} : Fragment {index} sur {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>Note sur {wallet_name} : {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8288,6 +8555,16 @@ Cliquez ici pour en savoir plus.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>Impossible d’analyser le message signé renvoyé.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>Impossible d’associer la signature de manière unique à un signataire du portefeuille.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>Adresse bech32 invalide.</translation>
 		</message>
@@ -8335,6 +8612,26 @@ Cliquez ici pour en savoir plus.</translation>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>La signature doit utiliser une clé publique compressée pour les adresses SegWit imbriquées.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>L’adresse renvoyée n’a pas pu être vérifiée.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>Le message renvoyé diffère du message demandé.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>La signature ou le chemin de dérivation n’a pas pu être vérifié.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>L’adresse de signature n’a pas pu être dérivée. |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

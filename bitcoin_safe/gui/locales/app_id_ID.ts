@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>Deskriptor alamat</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>Pesan yang Ditandatangani</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2586,6 +2581,11 @@ Untuk dompet tanda tangan tunggal, seed memberikan kendali penuh atas dana.</tra
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>Laporan saldo</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>Tutup</translation>
 		</message>
@@ -2628,6 +2628,11 @@ Untuk dompet tanda tangan tunggal, seed memberikan kendali penuh atas dana.</tra
 		<message>
 			<source>Could not decode this string</source>
 			<translation>Tidak dapat mendekode string ini</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>Tidak dapat mengekspor grafik dompet: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2685,6 +2690,11 @@ Untuk dompet tanda tangan tunggal, seed memberikan kendali penuh atas dana.</tra
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Hot wallet dinonaktifkan di Bitcoin Mainnet.
 Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin sungguhan.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>Ringkasan pewarisan</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2803,6 +2813,11 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>Silakan buka dompet terlebih dahulu.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>Harap tempel Transaksi Bitcoin atau PSBT Anda di sini, atau jatuhkan file</translation>
 		</message>
@@ -2828,8 +2843,8 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>Cetak</translation>
+			<source>Print overview</source>
+			<translation>Cetak ringkasan</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2975,6 +2990,11 @@ Apakah Anda ingin tetap membuka dompet?</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>Grafik dompet</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>Dompet sedang sinkronisasi</translation>
 		</message>
@@ -3046,6 +3066,48 @@ Apakah Anda ingin menyembunyikannya ke baki sistem?</translation>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n}. Blok</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>Salin</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>Tanda tangan tidak dapat diverifikasi: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>Tanda tangan terverifikasi</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>Pesan yang Ditandatangani</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>Pesan bertanda tangan</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>Penanda tangan</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>Tanda tangan ini membuktikan kendali atas satu kunci, bukan atas alamat multisig.</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>Alamat kunci terverifikasi</translation>
 		</message>
 	</context>
 	<context>
@@ -4987,11 +5049,6 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>Pesan yang Ditandatangani</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>Verifikasi gagal.</translation>
 		</message>
@@ -5063,6 +5120,11 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		<message>
 			<source>Signed Message</source>
 			<translation>Pesan yang Ditandatangani</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>Tanda tangan tersebut hanya membuktikan kendali atas satu kunci, bukan atas alamat multisig.</translation>
 		</message>
 	</context>
 	<context>
@@ -6052,6 +6114,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>Ditandatangani oleh</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8017,8 +8084,33 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. Pilih dompet di sisi kanan halaman-halaman berikutnya.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 atau 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. Temukan penanda tangan yang diperlukan dengan mengikuti garis ke kiri.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. Temukan lokasi perangkat penandatanganan atau cadangan seed menggunakan kolom lokasi.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. Pulihkan dompet menggunakan kode QR-nya di {app_name}, atau dengan dompet dari:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. Gunakan penanda tangan yang diperlukan untuk mengotorisasi transaksi.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8029,6 +8121,11 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>DOMPET BITCOIN</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8047,13 +8144,18 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>Kategori</translation>
+			<source>Balance: {balance}</source>
+			<translation>Saldo: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>Dibuat pada {date} dengan</translation>
+			<source>Block explorer</source>
+			<translation>Penjelajah blok</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>Kategori</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8067,8 +8169,43 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>Diagram</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>Masukkan kata-kata seed hanya ke perangkat penandatanganan, jangan pernah ke komputer atau ponsel.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>Biaya</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>Biaya (perkiraan)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>File tidak ditemukan!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>Sidik jari: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>Ikuti garis untuk melihat perangkat penandatanganan atau cadangan seed yang dapat digunakan untuk setiap dompet.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>CARA MEMULIHKAN DOMPET</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8082,8 +8219,38 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>Ringkasan pewarisan - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>Label</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>Kunci cadangan sinkronisasi label: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>Garis di tepi halaman berlanjut pada halaman yang ditunjukkan.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>Catatan lainnya tersedia setelah grafik.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>Jangan pernah membagikan kata-kata seed atau frasa sandi, atau memasukkannya ke situs web.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>Jangan pernah memotret kata-kata seed Anda.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8097,8 +8264,18 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>Tidak tersedia</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>Saat memindai ulang dompet ini, pindai hingga setidaknya indeks alamat {max_tip} untuk menemukan semua alamat yang memiliki dana.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>Output</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8107,8 +8284,33 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>Memerlukan 1 penanda tangan</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>Memerlukan {threshold} penanda tangan mana pun dari {count} penanda tangan ini</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>PERANGKAT PENANDATANGANAN &amp; CADANGAN SEED</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>Pindai untuk memulihkan informasi dompet.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>Kata-kata seed rahasia untuk penanda tangan perangkat keras: Jangan pernah mengetik di komputer. Jangan pernah membuat gambar.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>Lokasi cadangan seed:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8119,6 +8321,16 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>{label} terserialisasi:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>Lanjutan catatan penanda tangan</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>Lokasi perangkat penandatanganan:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8142,8 +8354,48 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>Label transaksi: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>Digunakan oleh {count} dompet</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>Deskriptor dompet terlalu panjang untuk dimuat dalam simpul grafik yang dapat dicetak</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: tinggi blok {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (waktu setempat)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>sidik jari tidak diketahui</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (koin uji)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  lihat halaman {page}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8162,8 +8414,23 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  Sidik jari: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (koin uji tidak memiliki nilai moneter)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: Fragmen {index} dari {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>Catatan {wallet_name}: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8285,6 +8552,16 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>Tidak dapat mengurai pesan bertanda tangan yang dikembalikan.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>Tidak dapat mencocokkan tanda tangan secara unik dengan penanda tangan dompet.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>Alamat bech32 tidak valid.</translation>
 		</message>
@@ -8332,6 +8609,26 @@ Klik di sini untuk mempelajari lebih lanjut.</translation>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>Tanda tangan harus menggunakan kunci publik terkompresi untuk alamat SegWit bersarang.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>Alamat yang dikembalikan tidak dapat diverifikasi.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>Pesan yang dikembalikan berbeda dari pesan yang diminta.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>Tanda tangan atau jalur derivasi tidak dapat diverifikasi.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>Alamat penandatanganan tidak dapat diturunkan. |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

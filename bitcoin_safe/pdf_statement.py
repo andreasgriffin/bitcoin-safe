@@ -38,13 +38,11 @@ from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol, Satoshis
 from bitcoin_usb.address_types import DescriptorInfo
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen.canvas import Canvas
-from reportlab.platypus import BaseDocTemplate, PageBreak, Paragraph, SimpleDocTemplate, Table, TableStyle
+from reportlab.platypus import PageBreak, Paragraph, Table, TableStyle
 
 from bitcoin_safe.constants import APP_NAME, APP_WEBSITE
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.pdf_footer import draw_pdf_footer, pdf_timestamp
+from bitcoin_safe.pdf_footer import pdf_timestamp
 from bitcoin_safe.pdfrecovery import BasePDF, pilimage_to_reportlab, white_space, write_and_open_temp_pdf
 
 from .wallet import Wallet
@@ -53,6 +51,8 @@ logger = logging.getLogger(__name__)
 
 
 class PdfStatement(BasePDF):
+    pdf_footer = "statement"
+
     def __init__(self, network: bdk.Network, lang_code: str, created_at: str | None = None) -> None:
         """Initialize instance."""
         super().__init__(lang_code=lang_code)
@@ -61,21 +61,10 @@ class PdfStatement(BasePDF):
         # Use an ASCII unit so statements distinguish test coins without font issues.
         self.bitcoin_symbol = "BTC" if network == bdk.Network.BITCOIN else "tBTC"
 
-    def draw_footer(self, canvas: Canvas, document: BaseDocTemplate) -> None:
-        """Draw the statement footer on every page."""
-        draw_pdf_footer(canvas, letter[0], self.font_name, self.created_at)
-
-    def save_pdf(self, filename: str) -> None:
-        """Save the statement with a footer on every page."""
-        document = SimpleDocTemplate(
-            filename, pagesize=letter, leftMargin=36, rightMargin=36, topMargin=36, bottomMargin=36
-        )
-        document.build(self.elements, onFirstPage=self.draw_footer, onLaterPages=self.draw_footer)
-
     @property
     def TEXT_24_WORDS(self):
         """TEXT 24 WORDS."""
-        return translate("pdf", "12 or 24", no_translate=self.no_translate)
+        return translate("pdf", "12 or 24")
 
     def create_balance_table(self, rows: list[tuple[str, str, str, str]], header: list[str]) -> Table:
         """Fit address, label, and balance columns within the printable page width."""
@@ -158,8 +147,7 @@ class PdfStatement(BasePDF):
                     "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows "
                     "you to create a watch-only wallet to see your balance. "
                     "To spent from it you need {threshold} Seeds and the wallet descriptor.",
-                    no_translate=self.no_translate,
-                ).format(threshold=threshold, wallet_descriptor_string=wallet_descriptor_string),
+                ).format(threshold=threshold, wallet_descriptor_string=escape(wallet_descriptor_string)),
                 self.style_paragraph,
             )
         else:
@@ -169,8 +157,9 @@ class PdfStatement(BasePDF):
                     "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/>"
                     " allows you to create a watch-only wallet to see your balance. "
                     "To spent from it you need the secret {number} words (Seed).",
-                    no_translate=self.no_translate,
-                ).format(number=self.TEXT_24_WORDS, wallet_descriptor_string=wallet_descriptor_string),
+                ).format(
+                    number=self.TEXT_24_WORDS, wallet_descriptor_string=escape(wallet_descriptor_string)
+                ),
                 self.style_paragraph,
             )
         self.elements.append(self.create_invisible_table([[qr_image], [desc_str]], [250, 300]))
@@ -191,8 +180,7 @@ class PdfStatement(BasePDF):
         # Small subtitle
         self.elements.append(
             Paragraph(
-                translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" {APP_NAME}: {white_space * 2} {APP_WEBSITE}",
+                translate("pdf", "Created with") + f" {APP_NAME}: {white_space * 2} {APP_WEBSITE}",
                 self.style_paragraph,
             )
         )
@@ -210,7 +198,6 @@ class PdfStatement(BasePDF):
                         "pdf",
                         "On rescanning this wallet, scan to at least address index "
                         "{max_tip} to discover all funded addresses.",
-                        no_translate=self.no_translate,
                     ).format(max_tip=max_tip),
                     self.style_paragraph,
                 )
@@ -221,7 +208,6 @@ class PdfStatement(BasePDF):
                     translate(
                         "pdf",
                         "Label syncronization backup key: {label_sync_nsec}",
-                        no_translate=self.no_translate,
                     ).format(label_sync_nsec=label_sync_nsec),
                     self.style_paragraph,
                 )
@@ -262,7 +248,6 @@ def create_pdf_statement(
     title = translate(
         "pdf",
         'Balance Statement of "{id}"',
-        no_translate=pdf_statement.no_translate,
     ).format(id=wallet.id)
     pdf_statement.create_pdf(
         title=title,
@@ -298,7 +283,5 @@ def create_pdf_statement(
 def make_and_open_pdf_statement(wallet: Wallet, lang_code: str, label_sync_nsec: str | None = None) -> None:
     """Build and open a wallet balance statement."""
     pdf_statement = create_pdf_statement(wallet, lang_code, label_sync_nsec)
-    file_title = translate(
-        "pdf", "Balance Statement of {id}", no_translate=pdf_statement.no_translate
-    ).format(id=wallet.id)
+    file_title = translate("pdf", "Balance Statement of {id}").format(id=wallet.id)
     write_and_open_temp_pdf(pdf_statement, file_title)
