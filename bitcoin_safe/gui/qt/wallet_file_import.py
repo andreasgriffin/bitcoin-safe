@@ -290,7 +290,9 @@ class WalletFileImportScreen(QWidget):
         fmt = self.format.currentData()
         if fmt == "electrum":
             info = self.tr(
-                "Electrum wallet file: password-protected BIE1 files are supported; BIE2 requires an Electrum export."
+                "Electrum wallet file: BIE1 uses a password. "
+                "BIE2 unlocks with the original USB hardware wallet, "
+                "if it supports Electrum's storage-key derivation path."
             )
         elif fmt == "sparrow":
             info = self.tr(
