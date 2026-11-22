@@ -31,7 +31,6 @@
 
 from .adapters import (
     from_descriptor,
-    from_green,
     from_ledger_account,
     from_sparrow_json,
     from_specter,
@@ -63,7 +62,6 @@ __all__ = [
     "from_ledger_live_app",
     "decrypt_ledger_live_accounts",
     "discover_ledger_live_app_json",
-    "from_green",
     "import_bip329_jsonl",
     "import_specter_address_csv",
     "load_file",

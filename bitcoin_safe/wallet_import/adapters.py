@@ -583,34 +583,8 @@ def from_ledger_account(data: dict[str, Any]) -> WalletExchange:
     return w
 
 
-def from_green(data: dict[str, Any]) -> WalletExchange:
-    # Blockstream green_qt wallets2 records are login records, NOT wallet
-    # descriptors (src/models/wallet.cpp). API subaccount exports MAY contain
-    # explicit `descriptor` fields. Never infer keys from an xpub_hash_id.
-    w = WalletExchange(
-        "blockstream-green",
-        str(data.get("name") or data.get("account_name") or "Green wallet"),
-        network=_network(data.get("deployment") or data.get("network")),
-    )
-    supplied = data.get("descriptor") or data.get("output_descriptor")
-    if supplied:
-        _set_descriptors(w, supplied, descriptor=supplied if "<0;1>" in supplied else None)
-        _resolve_network(w)
-    else:
-        w.warnings.append(
-            "Green local wallets2 records contain login metadata, not descriptors; obtain an explicit subaccount export"
-        )
-    w.extra.update(
-        {
-            "record_type": "login-only" if not supplied else "descriptor",
-            "has_device_login": "device" in data,
-        }
-    )
-    return w
-
-
 def load_json_obj(obj: Any, hint: str | None = None, password: str | None = None) -> list[WalletExchange]:
-    """Import only exposed formats: Electrum, Sparrow, Specter, Wasabi, Ledger, Green."""
+    """Import only exposed formats: Electrum, Sparrow, Specter, Wasabi, Ledger."""
     fmt = (hint or "").lower()
     if fmt not in (
         "",
@@ -623,7 +597,6 @@ def load_json_obj(obj: Any, hint: str | None = None, password: str | None = None
         "ledger",
         "ledger-app",
         "ledger-live-db",
-        "green",
     ):
         raise ExchangeError("Unsupported wallet import format")
     if isinstance(obj, list):
@@ -657,12 +630,6 @@ def load_json_obj(obj: Any, hint: str | None = None, password: str | None = None
         return [from_sparrow_json(obj)]
     if fmt == "ledger" or (not hint and obj.get("type") == "Account" and "derivationMode" in obj):
         return [from_ledger_account(obj)]
-    if fmt == "green" or (
-        not hint
-        and "deployment" in obj
-        and any(k in obj for k in ("pin", "device", "watchonly", "hashes", "xpub_hash_id"))
-    ):
-        return [from_green(obj)]
     if not hint and isinstance(obj.get("accounts"), list):
         accounts = obj["accounts"]
         if accounts and all(
@@ -752,18 +719,11 @@ def load_file(
         text = raw.decode("utf-8-sig")
     except UnicodeDecodeError as exc:
         raise ExchangeError("Binary wallet format not recognized; use an application export") from exc
-    if text.strip().startswith(("wpkh(", "sh(", "pkh(", "wsh(", "tr(")):
-        if not hint or hint.lower() != "green":
-            raise ExchangeError("This descriptor is only supported for Blockstream Green imports")
-        if password is not None and not consumed_password:
-            raise ExchangeError("Descriptor text is plaintext; do not supply a password")
-        out = [from_descriptor(text.strip(), name=file.stem, source="blockstream-green")]
-    else:
-        try:
-            obj = json.loads(text)
-        except json.JSONDecodeError as exc:
-            raise ExchangeError("Not a supported wallet JSON/descriptor export") from exc
-        out = load_json_obj(obj, hint=hint, password=None if consumed_password else password)
+    try:
+        obj = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ExchangeError("Not a supported wallet JSON/descriptor export") from exc
+    out = load_json_obj(obj, hint=hint, password=None if consumed_password else password)
     if specter_addresses:
         if len(out) != 1 or out[0].source_wallet != "specter-desktop":
             raise ExchangeError("--specter-addresses requires one Specter wallet")

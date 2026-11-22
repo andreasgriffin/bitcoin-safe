@@ -40,7 +40,6 @@ from bitcoin_safe.wallet_import import (
     ExchangeError,
     WalletExchange,
     from_descriptor,
-    from_green,
     from_ledger_account,
     from_sparrow_json,
     from_specter,
@@ -410,11 +409,6 @@ def test_ledger_models():
     assert label_record.descriptor.startswith("wpkh(")
     assert label_record.keystores[0].key_origin == "m/84h/0h/0h"
     assert label_record.utxos[0].value_sats == 1500
-
-
-def test_green_login_record_not_descriptor():
-    w = from_green({"name": "Green", "deployment": "mainnet", "xpub_hash_id": "abc"})
-    assert w.descriptor is None and w.warnings
 
 
 def test_bip329_preserves_optional_and_freeze_state():

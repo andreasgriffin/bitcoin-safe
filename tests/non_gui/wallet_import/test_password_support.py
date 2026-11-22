@@ -136,7 +136,6 @@ def test_plaintext_other_exports_reject_ignored_password(tmp_path):
     examples = [
         ({"name": "S", "recv_descriptor": "wpkh(" + xpub() + "/0/*)", "keys": []}, "specter"),
         ({"type": "Account", "derivationMode": "native_segwit", "xpub": xpub()}, "ledger"),
-        ({"name": "G", "deployment": "mainnet", "xpub_hash_id": "x"}, "green"),
     ]
     for i, (obj, format_name) in enumerate(examples):
         f = tmp_path / f"example{i}.json"

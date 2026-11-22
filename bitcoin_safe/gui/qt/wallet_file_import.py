@@ -89,7 +89,6 @@ WALLET_FILE_FORMATS = (
     ("Specter Desktop", "specter"),
     ("Wasabi", "wasabi"),
     ("Ledger Live", "ledger"),
-    ("Blockstream Green", "green"),
 )
 
 
@@ -310,12 +309,6 @@ class WalletFileImportScreen(QWidget):
                 "labels are converted from verified key paths. You can also select a BIP-329 "
                 "labels file for labels that cannot be resolved."
             )
-        elif fmt == "green":
-            info = self.tr(
-                "Green login files cannot be imported. To import a supported Bitcoin singlesig account, "
-                "copy its receive-and-change descriptor from Green and save it as a text file. "
-                "Green 2FA multisig and Liquid accounts are not supported."
-            )
         else:
             info = self.tr(
                 "Native password protection is not supported for this format. Select a public wallet or account export."
@@ -477,13 +470,6 @@ class WalletFileImportScreen(QWidget):
                 )
             else:
                 self.status.setText(self.tr("Choose an account and select Import."))
-        elif account.source_wallet == "blockstream-green":
-            self.status.setText(
-                self.tr(
-                    "This Green file cannot be imported because it contains login information only. "
-                    "Use a compatible Bitcoin account descriptor instead."
-                )
-            )
         elif account.source_wallet == "sparrow-h2":
             self.status.setText(
                 self.tr(

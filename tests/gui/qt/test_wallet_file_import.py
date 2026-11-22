@@ -55,37 +55,8 @@ def test_wallet_formats_have_icons(qtbot: QtBot) -> None:
         "specter",
         "wasabi",
         "ledger",
-        "green",
     ]
     assert all(not screen.format.itemIcon(i).isNull() for i in range(screen.format.count()))
-
-
-def test_import_green_descriptor_and_labels(qtbot: QtBot, tmp_path: Path) -> None:
-    source = tmp_path / "wallet.txt"
-    source.write_text(expressions()[2])
-    labels = tmp_path / "labels.jsonl"
-    labels.write_text('{"type":"tx","ref":"' + "a" * 64 + '","label":"test"}\n')
-    dialog = WalletFileImportScreen("Imported", bdk.Network.BITCOIN)
-    qtbot.addWidget(dialog)
-    dialog.show()
-    choose_format(dialog, "green")
-    assert "descriptor" in dialog.format_help.text()
-    dialog.wallet_path.setText(str(source))
-    dialog.labels_path.setText(str(labels))
-    dialog.read_wallet()
-    qtbot.waitUntil(lambda: dialog.worker is None, timeout=10000)
-    assert dialog.accounts.count() == 1
-    with (
-        patch(
-            "bitcoin_safe.gui.qt.wallet_file_import.QMessageBox.warning",
-            return_value=QMessageBox.StandardButton.Ok,
-        ),
-        qtbot.waitSignal(dialog.signal_import_ready) as imported,
-    ):
-        dialog.prepare_import()
-    proto, exchange = imported.args
-    assert proto.id == "Imported"
-    assert exchange.labels[0].label == "test"
 
 
 def test_inferred_testnet_requires_confirmation(qtbot: QtBot) -> None:
@@ -347,7 +318,7 @@ def test_label_field_only_for_formats_without_embedded_labels(qtbot: QtBot, tmp_
     for format_id in ("electrum", "sparrow", "specter"):
         choose_format(screen, format_id)
         assert not screen.form.isRowVisible(screen.labels_row)
-    for format_id in ("wasabi", "ledger", "green"):
+    for format_id in ("wasabi", "ledger"):
         choose_format(screen, format_id)
         assert screen.form.isRowVisible(screen.labels_row)
     choose_format(screen, "electrum")
@@ -584,36 +555,6 @@ def test_missing_wallet_file_errors_are_actionable(qtbot: QtBot, tmp_path: Path)
         with patch("pathlib.Path.open", side_effect=PermissionError):
             screen.read_wallet()
         assert "permissions" in warning.call_args.args[2].lower()
-
-
-def test_green_login_file_is_not_offered_as_importable(qtbot: QtBot, tmp_path: Path) -> None:
-    import json
-
-    source = tmp_path / "wallet.json"
-    source.write_text(json.dumps({"name": "Green", "deployment": "mainnet", "xpub_hash_id": "login"}))
-    screen = WalletFileImportScreen("Imported", bdk.Network.BITCOIN)
-    qtbot.addWidget(screen)
-    choose_format(screen, "green")
-    assert "login files cannot be imported" in screen.format_help.text().lower()
-    screen.wallet_path.setText(str(source))
-    screen.read_wallet()
-    qtbot.waitUntil(lambda: screen.worker is None, timeout=10000)
-    assert screen.accounts.count() == 1
-    assert not screen.import_button.isEnabled()
-    assert "login information only" in screen.status.text().lower()
-
-
-def test_green_compatible_descriptor_text_can_be_imported(qtbot: QtBot, tmp_path: Path) -> None:
-    source = tmp_path / "green-descriptor.txt"
-    source.write_text(expressions()[2])
-    screen = WalletFileImportScreen("Imported", bdk.Network.BITCOIN)
-    qtbot.addWidget(screen)
-    choose_format(screen, "green")
-    screen.wallet_path.setText(str(source))
-    screen.read_wallet()
-    qtbot.waitUntil(lambda: screen.worker is None, timeout=10000)
-    assert screen.import_button.isEnabled()
-    assert screen.wallets[0].source_wallet == "blockstream-green"
 
 
 def test_gnupg_is_not_advertised_as_a_wallet_format_feature(qtbot: QtBot) -> None:
