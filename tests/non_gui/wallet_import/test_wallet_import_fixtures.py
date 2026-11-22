@@ -32,8 +32,8 @@ from pathlib import Path
 
 import pytest
 
-from bitcoin_safe.wallet_import import ExchangeError, WalletExchange, load_file
-from bitcoin_safe.wallet_import.model import _assert_no_secrets
+from bitcoin_safe.wallet_import.adapters import load_file
+from bitcoin_safe.wallet_import.model import ExchangeError, WalletExchange, _assert_no_secrets
 from bitcoin_safe.wallet_import.verification import address_from_public_keys
 
 WALLET_DIR = Path(__file__).parents[2] / "data" / "wallet imports"

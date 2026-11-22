@@ -34,11 +34,13 @@ No real user wallet, seed, or private key is involved.
 
 import pytest
 
-from bitcoin_safe.wallet_import import ExchangeError, from_sparrow_h2_rows, load_file
+from bitcoin_safe.wallet_import.adapters import load_file
+from bitcoin_safe.wallet_import.model import ExchangeError
 from bitcoin_safe.wallet_import.sparrow_h2 import (
     H2_MAGIC,
     H2_SPRW_MAGIC,
     address_from_h2_data,
+    from_sparrow_h2_rows,
     is_sparrow_h2,
     sparrow_h2_file_password,
 )

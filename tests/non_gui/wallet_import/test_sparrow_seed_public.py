@@ -42,8 +42,9 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.padding import PKCS7
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 
-from bitcoin_safe.wallet_import import ExchangeError, load_file
+from bitcoin_safe.wallet_import.adapters import load_file
 from bitcoin_safe.wallet_import.descriptors import b58decode_check
+from bitcoin_safe.wallet_import.model import ExchangeError
 from bitcoin_safe.wallet_import.sparrow_crypto import N
 from bitcoin_safe.wallet_import.sparrow_h2 import SCRIPT_NAMES
 from bitcoin_safe.wallet_import.sparrow_seed_public import _derived_account_pub, _seed_mnemonic

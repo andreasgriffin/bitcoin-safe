@@ -50,8 +50,9 @@ from Crypto.Hash import RIPEMD160
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from hwilib._base58 import encode_check as b58encode_check
 
-from .descriptors import b58decode_check, b58encode_check
+from .descriptors import b58decode_check
 from .model import ExchangeError
 
 SECP_N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141

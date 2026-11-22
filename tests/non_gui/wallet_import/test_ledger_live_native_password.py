@@ -42,8 +42,9 @@ import pytest
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from bitcoin_safe.wallet_import import ExchangeError, load_file, load_json_obj
+from bitcoin_safe.wallet_import.adapters import load_file, load_json_obj
 from bitcoin_safe.wallet_import.ledger_live_db import decrypt_ledger_live_accounts
+from bitcoin_safe.wallet_import.model import ExchangeError
 
 from .test_wallet_exchange import xpub
 

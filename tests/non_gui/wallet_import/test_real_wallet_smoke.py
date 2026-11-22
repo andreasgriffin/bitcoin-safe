@@ -39,7 +39,8 @@ import os
 
 import pytest
 
-from bitcoin_safe.wallet_import import load_file, verify_sparrow_h2_password
+from bitcoin_safe.wallet_import.adapters import load_file
+from bitcoin_safe.wallet_import.h2_verify import verify_sparrow_h2_password
 
 
 def test_user_electrum_file():

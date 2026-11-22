@@ -38,7 +38,7 @@ from PyQt6.QtWidgets import QMessageBox
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.gui.qt.wallet_file_import import WalletFileImportScreen
-from bitcoin_safe.wallet_import import from_descriptor
+from bitcoin_safe.wallet_import.adapters import from_descriptor
 from tests.non_gui.wallet_import.test_wallet_exchange import expressions, xpub
 
 
@@ -403,7 +403,7 @@ def test_encrypted_ledger_import_prompts_and_recovers_signer_origin(
 def test_cancel_ledger_password_and_invalid_fingerprint(qtbot: QtBot, tmp_path: Path, monkeypatch) -> None:
     import json
 
-    from bitcoin_safe.wallet_import import from_ledger_account
+    from bitcoin_safe.wallet_import.adapters import from_ledger_account
 
     source = tmp_path / "app.json"
     source.write_text(json.dumps({"data": {"accounts": "locked"}}))
@@ -450,7 +450,7 @@ def test_wasabi_public_data_imports_without_a_password(qtbot: QtBot, tmp_path: P
 
 
 def test_ledger_missing_path_is_requested_even_with_fingerprint(qtbot: QtBot) -> None:
-    from bitcoin_safe.wallet_import import from_ledger_account
+    from bitcoin_safe.wallet_import.adapters import from_ledger_account
 
     exchange = from_ledger_account(
         {
@@ -481,7 +481,7 @@ def test_ledger_missing_path_is_requested_even_with_fingerprint(qtbot: QtBot) ->
 
 
 def test_ledger_rejects_origin_not_matching_xpub_child(qtbot: QtBot) -> None:
-    from bitcoin_safe.wallet_import import from_ledger_account
+    from bitcoin_safe.wallet_import.adapters import from_ledger_account
 
     exchange = from_ledger_account(
         {
@@ -578,7 +578,7 @@ def test_import_worker_reports_a_directory_without_system_error_number(qtbot: Qt
 
 
 def test_import_button_tracks_whether_selected_account_has_descriptor(qtbot: QtBot) -> None:
-    from bitcoin_safe.wallet_import import WalletExchange
+    from bitcoin_safe.wallet_import.model import WalletExchange
 
     screen = WalletFileImportScreen("Imported", bdk.Network.BITCOIN)
     qtbot.addWidget(screen)

@@ -43,15 +43,9 @@ from cryptography.hazmat.primitives import padding, serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from bitcoin_safe.wallet_import import (
-    ExchangeError,
-    WalletExchange,
-    from_electrum,
-    from_sparrow_json,
-    load_file,
-    load_json_obj,
-)
-from bitcoin_safe.wallet_import.electrum import decrypt_electrum, is_electrum_encrypted
+from bitcoin_safe.wallet_import.adapters import from_sparrow_json, load_file, load_json_obj
+from bitcoin_safe.wallet_import.electrum import decrypt_electrum, from_electrum, is_electrum_encrypted
+from bitcoin_safe.wallet_import.model import ExchangeError, WalletExchange
 from bitcoin_safe.wallet_import.sparrow_crypto import N, _compressed
 
 from .test_wallet_exchange import xpub
@@ -237,7 +231,7 @@ def test_h2_password_verified_against_encrypted_mvstore_sector(tmp_path):
 
 
 def test_h2_seed_reference_becomes_explicit_redacted_marker():
-    from bitcoin_safe.wallet_import import from_sparrow_h2_rows
+    from bitcoin_safe.wallet_import.sparrow_h2 import from_sparrow_h2_rows
 
     from .test_sparrow_h2 import synthetic_h2_rows
 

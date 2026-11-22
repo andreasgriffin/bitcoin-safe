@@ -61,14 +61,12 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.gui.qt.dialogs import PasswordQuestion
 from bitcoin_safe.gui.qt.util import svg_tools, svg_tools_hardware_signer
 from bitcoin_safe.wallet import ProtoWallet
-from bitcoin_safe.wallet_import import (
-    ExchangeError,
-    WalletExchange,
+from bitcoin_safe.wallet_import.adapters import (
+    MAX_FILE,
     import_bip329_jsonl,
     import_specter_address_csv,
     load_file,
 )
-from bitcoin_safe.wallet_import.adapters import MAX_FILE
 from bitcoin_safe.wallet_import.bitcoin_safe_bridge import NETWORKS, label_import_data, make_protowallet
 from bitcoin_safe.wallet_import.descriptors import add_checksum, norm_path, strip_checksum
 from bitcoin_safe.wallet_import.electrum import (
@@ -78,7 +76,7 @@ from bitcoin_safe.wallet_import.electrum import (
     missing_cosigner_origins,
 )
 from bitcoin_safe.wallet_import.ledger_live_db import discover_ledger_live_app_json
-from bitcoin_safe.wallet_import.model import PasswordRequired
+from bitcoin_safe.wallet_import.model import ExchangeError, PasswordRequired, WalletExchange
 from bitcoin_safe.wallet_import.sparrow_crypto import is_sprw1
 from bitcoin_safe.wallet_import.sparrow_h2 import H2_MAGIC
 from bitcoin_safe.xpub_utils import check_xpub_origin_depth_and_child_number

@@ -39,11 +39,12 @@ import hashlib
 import re
 from typing import Any
 
+from hwilib._base58 import encode_check as b58encode_check
+
 from .adapters import _public_key, _resolve_network
 from .descriptors import (
     add_checksum,
     b58decode_check,
-    b58encode_check,
     descriptor_for_keys,
     norm_path,
     strip_checksum,

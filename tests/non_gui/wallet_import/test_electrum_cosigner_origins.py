@@ -31,11 +31,12 @@
 
 import bdkpython as bdk
 import pytest
+from hwilib._base58 import encode_check as b58encode_check
 
-from bitcoin_safe.wallet_import import ExchangeError
 from bitcoin_safe.wallet_import.bitcoin_safe_bridge import make_protowallet
-from bitcoin_safe.wallet_import.descriptors import b58decode_check, b58encode_check
+from bitcoin_safe.wallet_import.descriptors import b58decode_check
 from bitcoin_safe.wallet_import.electrum import complete_cosigner_origins, from_electrum
+from bitcoin_safe.wallet_import.model import ExchangeError
 from tests.non_gui.wallet_import.test_wallet_exchange import xpub
 
 

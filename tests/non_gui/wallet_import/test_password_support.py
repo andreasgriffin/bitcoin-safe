@@ -40,9 +40,11 @@ from Crypto.Hash import RIPEMD160
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from hwilib._base58 import encode_check as b58encode_check
 
-from bitcoin_safe.wallet_import import ExchangeError, from_wasabi, load_file, load_json_obj
-from bitcoin_safe.wallet_import.descriptors import b58encode_check
+from bitcoin_safe.wallet_import.adapters import load_file, load_json_obj
+from bitcoin_safe.wallet_import.additional import from_wasabi
+from bitcoin_safe.wallet_import.model import ExchangeError
 from bitcoin_safe.wallet_import.passwords import verify_wasabi_password
 
 from .test_wallet_exchange import xpub

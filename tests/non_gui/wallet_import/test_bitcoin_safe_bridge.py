@@ -32,13 +32,13 @@ from unittest.mock import Mock
 import bdkpython as bdk
 import pytest
 
-from bitcoin_safe.wallet_import import ExchangeError, WalletExchange, from_descriptor
+from bitcoin_safe.wallet_import.adapters import from_descriptor
 from bitcoin_safe.wallet_import.bitcoin_safe_bridge import (
     apply_bip329_labels,
     label_import_data,
     make_protowallet,
 )
-from bitcoin_safe.wallet_import.model import Label
+from bitcoin_safe.wallet_import.model import ExchangeError, Label, WalletExchange
 
 from .test_wallet_exchange import expressions, xpub
 

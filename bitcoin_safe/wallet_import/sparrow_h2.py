@@ -35,7 +35,8 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .descriptors import b58encode_check
+from hwilib._base58 import encode_check as b58encode_check
+
 from .model import TXID, ExchangeError, Label, WalletExchange
 from .sparrow_crypto import N, _compressed, _scalar_mul
 

@@ -45,7 +45,7 @@ from unittest.mock import patch
 import pytest
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from bitcoin_safe.wallet_import import ExchangeError, load_file
+from bitcoin_safe.wallet_import.adapters import load_file
 from bitcoin_safe.wallet_import.h2_python import (
     H2DecodeError,
     _BinaryReader,
@@ -56,6 +56,7 @@ from bitcoin_safe.wallet_import.h2_python import (
     extract_sparrow_h2_rows_python,
 )
 from bitcoin_safe.wallet_import.h2_verify import _aes_block
+from bitcoin_safe.wallet_import.model import ExchangeError
 
 
 def varint(n: int) -> bytes:

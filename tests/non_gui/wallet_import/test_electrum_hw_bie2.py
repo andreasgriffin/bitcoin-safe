@@ -38,12 +38,13 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 from hwilib._base58 import encode_check
 
-from bitcoin_safe.wallet_import import ExchangeError, load_file
+from bitcoin_safe.wallet_import.adapters import load_file
 from bitcoin_safe.wallet_import.electrum import (
     ELECTRUM_STORAGE_XPUB_PATH,
     decrypt_electrum,
     electrum_storage_password_from_xpub,
 )
+from bitcoin_safe.wallet_import.model import ExchangeError
 
 from .test_added_wallets import _encrypt_electrum
 from .test_wallet_exchange import xpub

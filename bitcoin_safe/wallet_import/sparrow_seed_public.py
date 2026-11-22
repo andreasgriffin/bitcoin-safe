@@ -52,8 +52,9 @@ from argon2.low_level import Type, hash_secret_raw
 from Crypto.Hash import RIPEMD160
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.padding import PKCS7
+from hwilib._base58 import encode_check as b58encode_check
 
-from .descriptors import b58decode_check, b58encode_check, normalize_xpub
+from .descriptors import b58decode_check, normalize_xpub
 from .model import ExchangeError, Keystore
 from .sparrow_crypto import N, _compressed, _scalar_mul
 

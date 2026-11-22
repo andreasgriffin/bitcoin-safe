@@ -40,8 +40,9 @@ import hmac
 from collections.abc import Sequence
 
 from Crypto.Hash import RIPEMD160
+from hwilib._base58 import encode_check as b58encode_check
 
-from .descriptors import b58decode_check, b58encode_check
+from .descriptors import b58decode_check
 from .model import ExchangeError, Keystore
 from .sparrow_crypto import N, _compressed, _point_add, _point_from_compressed, _scalar_mul
 from .sparrow_h2 import _bech32_encode

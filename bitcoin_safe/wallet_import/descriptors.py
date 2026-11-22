@@ -33,25 +33,14 @@ from __future__ import annotations
 
 import re
 
-from hwilib._base58 import encode_check as b58encode_check
+from bitcoin_qr_tools.converter_xpub import ConverterXpub
 from hwilib.descriptor import AddChecksum, DescriptorChecksum
 
 from bitcoin_safe.xpub_utils import b58decode_check as _b58decode_check
 
 from .model import ExchangeError, Keystore
 
-VERSION = {
-    0x0488B21E: (0x0488B21E, "mainnet", "xpub"),  # xpub
-    0x049D7CB2: (0x0488B21E, "mainnet", "ypub"),
-    0x04B24746: (0x0488B21E, "mainnet", "zpub"),
-    0x0295B43F: (0x0488B21E, "mainnet", "Ypub"),
-    0x02AA7ED3: (0x0488B21E, "mainnet", "Zpub"),
-    0x043587CF: (0x043587CF, "testnet", "tpub"),
-    0x044A5262: (0x043587CF, "testnet", "upub"),
-    0x045F1CF6: (0x043587CF, "testnet", "vpub"),
-    0x024289EF: (0x043587CF, "testnet", "Upub"),
-    0x02575483: (0x043587CF, "testnet", "Vpub"),
-}
+BIP32_VERSIONS = {bytes.fromhex("0488b21e"): "mainnet", bytes.fromhex("043587cf"): "testnet"}
 PUB_RE = re.compile(
     r"(?P<origin>\[[0-9a-fA-F]{8}(?:/[0-9]+[hH']?)*\])?"
     r"(?P<key>(?:xpub|ypub|zpub|Ypub|Zpub|tpub|upub|vpub|Upub|Vpub)[1-9A-HJ-NP-Za-km-z]+)"
@@ -99,11 +88,12 @@ def normalize_xpub(key: str) -> tuple[str, str, str]:
     payload = b58decode_check(key)
     if len(payload) != 78 or payload[45] not in (2, 3):
         raise ExchangeError("Not a public BIP32 extended key")
-    v = int.from_bytes(payload[:4], "big")
-    if v not in VERSION:
+    canonical = ConverterXpub.normalized_to_bip32(key)
+    network = BIP32_VERSIONS.get(b58decode_check(canonical)[:4])
+    if network is None:
         raise ExchangeError("Unsupported extended public key version")
-    canonical, network, prefix = VERSION[v]
-    return b58encode_check(canonical.to_bytes(4, "big") + payload[4:]), network, prefix
+    # SLIP-132 prefixes (zpub, Vpub, ...) are fixed by their version bytes, so the first 4 chars are the prefix
+    return canonical, network, key[:4]
 
 
 def norm_path(path: str | None) -> str | None:

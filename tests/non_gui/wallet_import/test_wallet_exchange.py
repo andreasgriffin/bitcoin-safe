@@ -35,10 +35,9 @@ import zlib
 
 import bdkpython as bdk
 import pytest
+from hwilib._base58 import encode_check as b58encode_check
 
-from bitcoin_safe.wallet_import import (
-    ExchangeError,
-    WalletExchange,
+from bitcoin_safe.wallet_import.adapters import (
     from_descriptor,
     from_ledger_account,
     from_sparrow_json,
@@ -49,11 +48,11 @@ from bitcoin_safe.wallet_import import (
 from bitcoin_safe.wallet_import.descriptors import (
     add_checksum,
     b58decode_check,
-    b58encode_check,
     combine_receive_change,
     normalize_xpub,
     strip_checksum,
 )
+from bitcoin_safe.wallet_import.model import ExchangeError, WalletExchange
 from bitcoin_safe.wallet_import.sparrow_crypto import _compressed, _scalar_mul, decrypt_sprw1
 
 # Validly encoded account-level extended public key with the secp256k1 base point.
