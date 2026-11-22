@@ -419,6 +419,8 @@ class SankeyWidget(QWidget):
         if not painter.isActive() or self.width() <= 0 or self.height() <= 0:
             return
 
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
         if self._labels_need_update:
             self._create_label_texts()
             self._update_label_positions()
