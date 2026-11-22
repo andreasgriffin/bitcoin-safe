@@ -49,6 +49,7 @@ from bitcoin_safe.wallet_util import (
     WalletDifferences,
     WalletDifferenceType,
 )
+from bitcoin_safe.xpub_utils import check_xpub_origin_depth_and_child_number
 
 logger = logging.getLogger(__name__)
 
@@ -162,8 +163,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
         )
 
         self.network = network
-        if not self.is_xpub_valid(xpub=xpub, network=self.network):
-            raise ValueError(f"{xpub} is not a valid xpub")
+        if not self.is_xpub_valid(xpub=self.xpub, network=self.network, key_origin=self.key_origin):
+            raise ValueError("Invalid xpub or origin metadata (BIP32 depth/final child number mismatch)")
 
         self.mnemonic = mnemonic
         self.description = description
@@ -249,8 +250,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
             return "network: Test" in pub.__repr__()
 
     @classmethod
-    def is_xpub_valid(cls, xpub: str, network: bdk.Network) -> bool:
-        """Is xpub valid."""
+    def is_xpub_valid(cls, xpub: str, network: bdk.Network, key_origin: str | None = None) -> bool:
+        """Validate an xpub and, when given, its encoded origin depth/last child."""
         if not AddressTypes.p2pkh.bdk_descriptor:
             return False
         try:
@@ -263,6 +264,8 @@ class KeyStore(SimplePubKeyProvider, BaseSaveableClass):
                 bdk.KeychainKind.EXTERNAL,
                 network_kind(network),
             )
+            if key_origin:
+                check_xpub_origin_depth_and_child_number(xpub, key_origin)
 
             return True
         except Exception as e:

@@ -36,8 +36,54 @@ import pytest
 from bitcoin_qr_tools.data import ConverterMultisigWalletExport, Data, DataType
 
 from bitcoin_safe.descriptors import from_multisig_wallet_export
+from bitcoin_safe.keystore import KeyStore
+from bitcoin_safe.wallet import ProtoWallet
+
+from .utils import create_test_seed_keystores
 
 logger = logging.getLogger(__name__)
+
+
+def test_fingerprint_only_descriptor_preserves_unknown_origin() -> None:
+    network = bdk.Network.TESTNET
+    account = create_test_seed_keystores(signers=1, key_origins=["m/84h/1h/0h"], network=network)[0]
+    descriptor = f"wpkh([{account.fingerprint}]{account.xpub}/0/*)"
+
+    protowallet = ProtoWallet.from_descriptor("wallet", descriptor, network)
+    keystore = protowallet.keystores[0]
+    assert keystore is not None
+    assert keystore.key_origin == "m"
+    assert keystore.clone().key_origin == "m"
+    assert KeyStore.from_dump(keystore.dump()).key_origin == "m"
+    regenerated = protowallet.to_multipath_descriptor()
+    assert regenerated is not None
+    assert f"[{account.fingerprint.lower()}]{account.xpub}" in str(regenerated)
+
+    reimported = ProtoWallet.from_descriptor("wallet", str(regenerated), network)
+    assert reimported.keystores[0] is not None
+    assert reimported.keystores[0].key_origin == "m"
+
+    assert KeyStore(account.xpub, account.fingerprint, "m", network).key_origin == "m"
+    root_xpub = "tpubD6NzVbkrYhZ4XYa9MoLt4BiMZ4gkt2faZ4BcmKu2a9te4LDpQmvEz2L2yDERivHxFPnxXXhqDRkUNnQCpZggCyEZLBktV7VaSmwayqMJy1s"
+    assert KeyStore(root_xpub, account.fingerprint, "m", network).key_origin == "m"
+    with pytest.raises(ValueError, match="origin metadata"):
+        ProtoWallet.from_descriptor(
+            "wallet", f"wpkh([{account.fingerprint}/84h/1h/1h]{account.xpub}/0/*)", network
+        )
+
+
+def test_multisig_descriptor_preserves_fingerprint_only_origin() -> None:
+    network = bdk.Network.TESTNET
+    accounts = create_test_seed_keystores(signers=2, key_origins=["m/48h/1h/0h/2h"] * 2, network=network)
+    descriptor = (
+        f"wsh(sortedmulti(2,[{accounts[0].fingerprint}]{accounts[0].xpub}/0/*,"
+        f"[{accounts[1].fingerprint}/48h/1h/0h/2h]{accounts[1].xpub}/0/*))"
+    )
+    protowallet = ProtoWallet.from_descriptor("wallet", descriptor, network)
+    first, second = protowallet.keystores
+    assert first is not None and first.key_origin == "m"
+    assert second is not None and second.key_origin == "m/48h/1h/0h/2h"
+    assert protowallet.to_multipath_descriptor() is not None
 
 
 def test_from_multisig_wallet_export() -> None:

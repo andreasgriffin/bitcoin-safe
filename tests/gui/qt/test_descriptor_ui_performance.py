@@ -40,11 +40,12 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.descriptor_ui import DescriptorUI
 from bitcoin_safe.gui.qt.keystore_ui import KeyStoreUI
+from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.signals import Signals, WalletFunctions
 from bitcoin_safe.wallet import ProtoWallet, Wallet
 
 from ...helpers import TestConfig
-from ...non_gui.utils import create_multisig_protowallet
+from ...non_gui.utils import create_multisig_protowallet, create_test_seed_keystores
 
 
 def _build_descriptor_ui(
@@ -116,6 +117,55 @@ def _snapshot_wallet_controls(descriptor_ui: DescriptorUI) -> dict[str, Any]:
         "import_button_visible": descriptor_ui.edit_descriptor.import_button.isVisible(),
         "wallet_name": descriptor_ui.edit_wallet_name.text(),
     }
+
+
+@pytest.mark.marker_qt_1
+def test_wallet_setup_shows_empty_signer_details_on_existing_and_new_cards(
+    qtbot: QtBot, test_config: TestConfig
+) -> None:
+    descriptor_ui, loop_in_thread, wallet = _build_descriptor_ui(qtbot, test_config)
+    try:
+        descriptor_ui.spin_signers.setValue(4)
+        for index in (0, 3):
+            card = list(descriptor_ui.keystore_uis.getAllTabData().values())[index]
+            descriptor_ui.keystore_uis.setCurrentIndex(index)
+            card.select_hardware_signer(HardwareSigners.krux_diy)
+            qtbot.waitUntil(card.isVisible)
+            for field in (card.edit_fingerprint, card.edit_key_origin, card.edit_xpub):
+                assert field.isVisible()
+            assert not card.edit_account_number.isVisible()
+
+        card.edit_fingerprint.setText("12345678")
+        assert card.edit_fingerprint.text() == "12345678"
+    finally:
+        descriptor_ui.close()
+        if wallet:
+            wallet.close()
+        loop_in_thread.stop()
+
+
+@pytest.mark.marker_qt_1
+def test_descriptor_ui_preserves_fingerprint_only_origin(qtbot: QtBot, test_config: TestConfig) -> None:
+    descriptor_ui, loop_in_thread, wallet = _build_descriptor_ui(qtbot, test_config)
+    try:
+        account = create_test_seed_keystores(
+            signers=1, key_origins=["m/84h/1h/0h"], network=test_config.network
+        )[0]
+        descriptor = f"wpkh([{account.fingerprint}]{account.xpub}/0/*)"
+        descriptor_ui.set_protowallet_from_descriptor_str(descriptor)
+        descriptor_ui.set_all_ui_from_protowallet()
+
+        assert not descriptor_ui.keystore_uis.has_blocking_messages()
+        descriptor_ui.set_protowallet_from_ui()
+        keystore = descriptor_ui.protowallet.keystores[0]
+        assert keystore is not None
+        assert keystore.key_origin == "m"
+        assert descriptor_ui.protowallet.to_multipath_descriptor() is not None
+    finally:
+        descriptor_ui.close()
+        if wallet:
+            wallet.close()
+        loop_in_thread.stop()
 
 
 @pytest.mark.marker_qt_1

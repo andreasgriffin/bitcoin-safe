@@ -107,6 +107,7 @@ class DescriptorUI(QWidget):
             loop_in_thread=self.loop_in_thread,
             read_only_mode=self.wallet is not None,
             show_register_button=False,
+            show_empty_details=self.wallet is None,
         )
         self.keystore_uis.request_show_register_multisig.connect(self.show_register_multisig)
         self._layout.addWidget(self.keystore_uis)

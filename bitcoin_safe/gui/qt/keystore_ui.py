@@ -92,6 +92,7 @@ from bitcoin_safe.gui.qt.util import (
 )
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.i18n import translate
+from bitcoin_safe.xpub_utils import check_xpub_origin_depth_and_child_number
 
 from ...execute_config import DEMO_MODE
 from ...hardware_signers import (
@@ -148,6 +149,7 @@ class KeyStoreUI(CardBase):
         parent: QWidget | None = None,
         read_only_mode: bool = False,
         show_register_button: bool = True,
+        show_empty_details: bool = False,
     ) -> None:
         """Initialize instance."""
         self._theme_assets_ready = False
@@ -160,6 +162,7 @@ class KeyStoreUI(CardBase):
         self.get_address_type = get_address_type
         self.read_only_mode = read_only_mode
         self.show_register_button = show_register_button
+        self.show_empty_details = show_empty_details
         self.loop_in_thread = loop_in_thread
         self.counter_register_button_clicked = 0
         self._device_type_editing = False
@@ -479,6 +482,9 @@ class KeyStoreUI(CardBase):
             cast(SignalProtocol[[]], self.edit_key_origin_input.textChanged), self.format_all_fields
         )
         self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged), self.format_all_fields
+        )
+        self.signal_tracker.connect(
             cast(SignalProtocol[[]], self.edit_xpub.input_field.textChanged), self.updateUi
         )
         self.signal_tracker.connect(
@@ -657,6 +663,20 @@ class KeyStoreUI(CardBase):
             return duplicate_analysis
         return self.edit_xpub.input_field.analyze_text(self.edit_xpub.text())
 
+    def _xpub_origin_analysis(self) -> AnalyzerMessage | None:
+        key_origin = self.key_origin
+        xpub = self.edit_xpub.text().strip()
+        if not key_origin or self.edit_xpub.input_field.analyze_text(xpub).state != AnalyzerState.Valid:
+            return None
+        try:
+            check_xpub_origin_depth_and_child_number(xpub, key_origin)
+        except ValueError:
+            return AnalyzerMessage(
+                self.tr("The xPub depth or final child number does not match the key origin."),
+                AnalyzerState.Invalid,
+            )
+        return None
+
     def get_analysis_list(self, min_state: AnalyzerState = AnalyzerState.Valid) -> list[AnalyzerMessage]:
         """Return analyzer messages for the visible signer detail fields."""
         analysis_list: list[AnalyzerMessage] = []
@@ -668,6 +688,9 @@ class KeyStoreUI(CardBase):
             )
             if analysis.state >= min_state:
                 analysis_list.append(analysis)
+        if origin_analysis := self._xpub_origin_analysis():
+            if origin_analysis.state >= min_state:
+                analysis_list.append(origin_analysis)
         return analysis_list
 
     def get_worst_analysis(self) -> AnalyzerMessage:
@@ -895,16 +918,12 @@ class KeyStoreUI(CardBase):
         for widget in (
             self.label_fingerprint,
             self.edit_fingerprint,
-            self.label_account_number,
-            self.edit_account_number,
             self.label_key_origin,
             self.edit_key_origin,
             self.label_xpub,
             self.edit_xpub,
-            self.label_seed,
-            self.edit_seed,
         ):
-            widget.setVisible(has_details)
+            widget.setVisible(has_details or self.show_empty_details)
 
         self.label_account_number.setVisible(show_account_number)
         self.edit_account_number.setVisible(show_account_number)
@@ -1027,7 +1046,10 @@ class KeyStoreUI(CardBase):
         extra_tooltip: str = "",
     ) -> None:
         """Apply analyzer styling and tooltip to a button edit."""
-        state = edit.input_field.state_for_text(text=text, analysis=analysis, override_state=override_state)
+        text = text.strip()
+        state = edit.input_field.state_for_text(
+            text=text, analysis=analysis, override_state=override_state if text else None
+        )
         edit.format_edit(state)
 
         tooltip_parts: list[str] = []
@@ -1066,6 +1088,11 @@ class KeyStoreUI(CardBase):
             xpub_tooltip = self.tr(
                 "The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair."
             ).format(key_origin=key_origin_value)
+
+        if origin_analysis := self._xpub_origin_analysis():
+            key_origin_state = xpub_state = origin_analysis.state
+            key_origin_tooltip = "\n".join(filter(None, (key_origin_tooltip, origin_analysis.msg)))
+            xpub_tooltip = "\n".join(filter(None, (xpub_tooltip, origin_analysis.msg)))
 
         self._apply_field_analysis(
             edit=self.edit_key_origin,
@@ -1206,7 +1233,7 @@ class KeyStoreUI(CardBase):
             raise ValueError("Could not recognize the QR Code")
 
     def xpub_validator(self) -> bool:
-        """Xpub validator."""
+        """Validate the xpub and any entered origin metadata."""
         xpub = self.edit_xpub.text()
         if ConverterXpub.is_slip132(xpub):
             Message(
@@ -1220,7 +1247,9 @@ class KeyStoreUI(CardBase):
                 logger.debug(f"{self.__class__.__name__}: {exc}")
                 return False
 
-        return KeyStore.is_xpub_valid(self.edit_xpub.text(), network=self.network)
+        return KeyStore.is_xpub_valid(
+            self.edit_xpub.text(), network=self.network, key_origin=self.key_origin or None
+        )
 
     def updateUi(self) -> None:
         """UpdateUi."""

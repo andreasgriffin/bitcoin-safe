@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import bdkpython as bdk
+import pytest
 from bitcoin_qr_tools.data import Data, DataType, SignerInfo
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_usb.address_types import AddressType, AddressTypes
@@ -562,6 +563,102 @@ def test_keystore_ui_unexpected_key_origin_uses_warning_styling(
     warning_color = ColorScheme.WARNING.as_color(background=True).name()
     assert warning_color in widget.edit_key_origin.input_field.styleSheet()
     assert warning_color in widget.edit_xpub.input_field.styleSheet()
+
+
+@pytest.mark.parametrize("wrong_origin", ["m/48h/1h/0h", "m/48h/1h/0h/3h"])
+def test_xpub_origin_mismatch_is_reported_and_clears_when_corrected(
+    qtbot: QtBot, loop_in_thread: LoopInThread, wrong_origin: str
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+    keystore = create_test_seed_keystores(
+        signers=1,
+        key_origins=[AddressTypes.p2wsh.key_origin(bdk.Network.REGTEST)],
+        network=bdk.Network.REGTEST,
+    )[0]
+    widget.set_using_signer_info(SignerInfo(keystore.fingerprint, keystore.key_origin, keystore.xpub))
+    message = "The xPub depth or final child number does not match the key origin."
+    error_color = ColorScheme.ERROR.as_color(background=True).name()
+
+    widget.edit_key_origin.setText(wrong_origin)
+
+    assert widget.get_worst_analysis().state == AnalyzerState.Invalid
+    assert message in widget.header_status_icon.toolTip()
+    for field in (widget.edit_key_origin, widget.edit_xpub):
+        assert error_color in field.input_field.styleSheet()
+        assert message in field.toolTip()
+
+    widget.edit_key_origin.setText(keystore.key_origin)
+    assert widget.get_worst_analysis().state == AnalyzerState.Valid
+    assert message not in widget.header_status_icon.toolTip()
+    for field in (widget.edit_key_origin, widget.edit_xpub):
+        assert error_color not in field.input_field.styleSheet()
+        assert message not in field.toolTip()
+
+    mismatched_keystore = create_test_seed_keystores(
+        signers=1, key_origins=[wrong_origin], network=bdk.Network.REGTEST
+    )[0]
+    widget.edit_xpub.setText(mismatched_keystore.xpub)
+    assert widget.get_worst_analysis().state == AnalyzerState.Invalid
+    assert message in widget.edit_xpub.toolTip()
+    widget.edit_xpub.setText(keystore.xpub)
+    assert widget.get_worst_analysis().state == AnalyzerState.Valid
+    assert message not in widget.edit_xpub.toolTip()
+
+    widget.edit_key_origin.setText(wrong_origin)
+    widget.edit_xpub.setText("invalid")
+    assert all(analysis.msg != message for analysis in widget.get_analysis_list())
+
+
+def test_entered_m_origin_accepts_root_and_account_xpubs(qtbot: QtBot, loop_in_thread: LoopInThread) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+    account = create_test_seed_keystores(signers=1, key_origins=["m/84h/1h/0h"], network=bdk.Network.REGTEST)[
+        0
+    ]
+    root_xpub = "tpubD6NzVbkrYhZ4XYa9MoLt4BiMZ4gkt2faZ4BcmKu2a9te4LDpQmvEz2L2yDERivHxFPnxXXhqDRkUNnQCpZggCyEZLBktV7VaSmwayqMJy1s"
+    widget.edit_fingerprint.setText(account.fingerprint)
+    widget.edit_key_origin.setText("m")
+    widget.edit_xpub.setText(root_xpub)
+
+    assert widget.xpub_validator()
+    assert widget.get_worst_analysis().state != AnalyzerState.Invalid
+    assert widget.get_ui_values_as_keystore().key_origin == "m"
+
+    widget.edit_xpub.setText(account.xpub)
+    assert widget.xpub_validator()
+    assert widget.get_worst_analysis().state != AnalyzerState.Invalid
+    assert widget.get_ui_values_as_keystore().key_origin == "m"
+
+
+def test_empty_key_origin_and_xpub_stay_neutral_but_invalid_input_is_colored(
+    qtbot: QtBot, loop_in_thread: LoopInThread
+) -> None:
+    widget = _make_widget(qtbot, loop_in_thread)
+    _select_signer(widget, HardwareSigners.krux_diy.id)
+    error_color = ColorScheme.ERROR.as_color(background=True).name()
+
+    widget.format_all_fields()
+    assert widget.get_worst_analysis().state == AnalyzerState.Invalid
+    assert error_color not in widget.edit_key_origin.input_field.styleSheet()
+    assert error_color not in widget.edit_xpub.input_field.styleSheet()
+
+    widget.edit_key_origin.setText("invalid")
+    widget.format_all_fields()
+    assert error_color in widget.edit_key_origin.input_field.styleSheet()
+    assert error_color not in widget.edit_xpub.input_field.styleSheet()
+
+    widget.edit_key_origin.setText("")
+    widget.edit_xpub.setText("invalid")
+    widget.format_all_fields()
+    assert error_color not in widget.edit_key_origin.input_field.styleSheet()
+    assert error_color in widget.edit_xpub.input_field.styleSheet()
+
+    widget.edit_key_origin.setText("")
+    widget.edit_xpub.setText("")
+    widget.format_all_fields()
+    assert error_color not in widget.edit_key_origin.input_field.styleSheet()
+    assert error_color not in widget.edit_xpub.input_field.styleSheet()
 
 
 def test_set_account_number_updates_key_origin_and_clears_xpub(
