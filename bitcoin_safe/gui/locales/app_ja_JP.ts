@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>アドレス記述子</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>署名されたメッセージ</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2581,6 +2576,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>残高明細</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>閉じる</translation>
 		</message>
@@ -2623,6 +2623,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>この文字列を解読できませんでした</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>ウォレットグラフをエクスポートできませんでした：{error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2679,6 +2684,11 @@ For a single signature wallet it gives full control over the funds.</source>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet ではホットウォレットが無効になっています。実際の Bitcoin を使用せずに {app_name} をテストするには、Testnet に切り替えることができます。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>相続の概要</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2797,6 +2807,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>まずウォレットを開いてください。</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>ビットコインのトランザクションまたはPSBTをここに貼り付けるか、ファイルをドロップしてください</translation>
 		</message>
@@ -2822,8 +2837,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>印刷</translation>
+			<source>Print overview</source>
+			<translation>概要を印刷</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2968,6 +2983,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>ウォレットの関係図</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>ウォレット同期中</translation>
 		</message>
@@ -3038,6 +3058,48 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>〜{n} ブロック</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>自動</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>署名を検証できませんでした：{reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>署名を検証しました</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>署名されたメッセージ</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>署名付きメッセージ</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>署名者</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>この署名は1つの鍵の管理権限を証明するものであり、マルチシグアドレスの管理権限を証明するものではありません。</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>検証済みの鍵のアドレス</translation>
 		</message>
 	</context>
 	<context>
@@ -4969,11 +5031,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>署名されたメッセージ</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>検証に失敗しました。</translation>
 		</message>
@@ -5045,6 +5102,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Signed Message</source>
 			<translation>署名されたメッセージ</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>この署名が証明するのは1つの鍵の管理権限のみで、マルチシグアドレスの管理権限ではありません。</translation>
 		</message>
 	</context>
 	<context>
@@ -6029,6 +6091,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>アウトポイント</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>署名者</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -7989,8 +8056,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. 以下のページの右側からウォレットを選択してください。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12または24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. 線を左にたどって、必要な署名者を見つけてください。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. 場所の欄を使って署名デバイスまたはシードバックアップの保管場所を特定してください。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. {app_name} でQRコードを使うか、次の提供元のウォレットを使ってウォレットを復元してください：</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. 必要な署名者を使用してトランザクションを承認してください。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8001,6 +8093,11 @@ Click here to learn more.</source>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>ビットコインウォレット</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8019,13 +8116,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>カテゴリ</translation>
+			<source>Balance: {balance}</source>
+			<translation>残高：{balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>{date}に作成された</translation>
+			<source>Block explorer</source>
+			<translation>ブロックエクスプローラー</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>カテゴリ</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8039,8 +8141,43 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>図</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>シードフレーズの単語は署名デバイスにのみ入力し、パソコンや携帯電話には絶対に入力しないでください。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>手数料</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>手数料（推定）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>ファイルが見つかりません！</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>フィンガープリント：{fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>線をたどって、各ウォレットに使用できる署名デバイスまたはシードバックアップを確認してください。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>ウォレットの復元方法</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8054,8 +8191,38 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>相続の概要 - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>ラベル</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>ラベル同期バックアップキー：{label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>ページの端にある線は、指定されたページに続きます。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>関係図の後に追加のメモがあります。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>シードフレーズの単語やパスフレーズを他人と共有したり、ウェブサイトに入力したりしないでください。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>シードフレーズの単語を絶対に撮影しないでください。</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8069,8 +8236,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>利用不可</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>このウォレットを再スキャンする場合、少なくともアドレスインデックス{max_tip}までスキャンして、すべての資金提供されたアドレスを発見してください。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>出力</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8079,8 +8256,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>署名者1人が必要</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>この{count}人の署名者のうち、任意の{threshold}人が必要</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>署名デバイスとシードバックアップ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>スキャンしてウォレット情報を復元してください。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>ハードウェアサイナーの秘密シードワード：コンピュータに入力しないこと。写真を撮らないこと。</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>シードバックアップの保管場所：</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8091,6 +8293,16 @@ Click here to learn more.</source>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>シリアライズされた {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>署名者のメモ（続き）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>署名デバイスの保管場所：</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8114,8 +8326,48 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>トランザクションラベル：{label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>{count}個のウォレットで使用</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>ウォレットディスクリプターが長すぎるため、印刷可能な関係図のノードに収まりません</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime：ブロック高 {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime：{value}（現地時間）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>不明なフィンガープリント</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance}（テストコイン）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  {page}ページを参照</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8134,8 +8386,23 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  フィンガープリント：{fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title}（テストコインに金銭的価値はありません）</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: {total} のうち {index} 番目の断片</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>{wallet_name} のメモ：{note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8257,6 +8524,16 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>返された署名済みメッセージを解析できませんでした。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>署名を特定のウォレット署名者に一意に対応付けることができませんでした。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>無効な bech32 アドレスです。</translation>
 		</message>
@@ -8304,6 +8581,26 @@ Click here to learn more.</source>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>署名はネストされた SegWit アドレス用に圧縮公開鍵を使用する必要があります。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>返されたアドレスを検証できませんでした。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>返されたメッセージは要求したメッセージと異なります。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>署名または導出パスを検証できませんでした。</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>署名用アドレスを導出できませんでした。 |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

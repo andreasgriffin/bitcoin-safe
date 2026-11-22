@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>وصف العنوان</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>رسالة موقعة</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2586,6 +2581,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>كشف الرصيد</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>إغلاق</translation>
 		</message>
@@ -2628,6 +2628,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>لا يمكن فك تشفير هذه السلسلة</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>لم يُتمكّن من تصدير رسم بياني للمحفظة: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2685,6 +2690,11 @@ For a single signature wallet it gives full control over the funds.</source>
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>المحافظ الساخنة معطّلة على Bitcoin Mainnet.
 يمكنك التبديل إلى Testnet لاختبار {app_name} دون استخدام Bitcoin حقيقي.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>نظرة عامة على الميراث</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2803,6 +2813,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>يُرجى فتح محفظة أولاً.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>يرجى لصق معاملات البيتكوين الخاصة بك أو PSBT هنا، أو إسقاط ملف</translation>
 		</message>
@@ -2828,8 +2843,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>طباعة</translation>
+			<source>Print overview</source>
+			<translation>طباعة النظرة العامة</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2975,6 +2990,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>مخطط المحافظ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>مزامنة المحفظة</translation>
 		</message>
@@ -3046,6 +3066,48 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n}. الكتلة</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>نسخ</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>تعذّر التحقق من التوقيع: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>تم التحقق من التوقيع</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>رسالة موقعة</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>رسالة موقعة</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>المُوقِّع</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>يثبت هذا التوقيع التحكم في مفتاح واحد، وليس في العنوان متعدد التوقيعات.</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>عنوان المفتاح الذي تم التحقق منه</translation>
 		</message>
 	</context>
 	<context>
@@ -4988,11 +5050,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>رسالة موقعة</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>فشل التحقق.</translation>
 		</message>
@@ -5064,6 +5121,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Signed Message</source>
 			<translation>رسالة موقعة</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>يثبت التوقيع التحكم في مفتاح واحد فقط، وليس في عنوان متعدد التوقيعات.</translation>
 		</message>
 	</context>
 	<context>
@@ -6052,6 +6114,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>نقطة خارجية</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>وقّع بواسطة</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8015,8 +8082,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. اختر محفظة على يمين الصفحات التالية.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 أو 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. اعثر على المُوقِّعين المطلوبين باتباع الخطوط نحو اليسار.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. حدّد مواقع أجهزة التوقيع أو النسخ الاحتياطية للبذرة باستخدام حقول الموقع.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. استعد المحفظة باستخدام رمز QR الخاص بها في {app_name}، أو باستخدام محفظة من:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. استخدم المُوقِّعين المطلوبين لتفويض المعاملات.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8027,6 +8119,11 @@ Click here to learn more.</source>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>محافظ بيتكوين</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8045,13 +8142,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>فئة</translation>
+			<source>Balance: {balance}</source>
+			<translation>الرصيد: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>أُنشئ في {date} مع</translation>
+			<source>Block explorer</source>
+			<translation>مستكشف الكتل</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>فئة</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8065,8 +8167,43 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>رسم بياني</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>أدخل كلمات البذرة في جهاز توقيع فقط، ولا تدخلها مطلقًا في جهاز كمبيوتر أو هاتف محمول.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>رسوم</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>الرسوم (تقديرية)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>لم يتم العثور على الملف!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>البصمة: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>اتبع الخطوط لمعرفة أجهزة التوقيع أو النسخ الاحتياطية للبذرة التي يمكن استخدامها لكل محفظة.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>كيفية استعادة محفظة</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8080,8 +8217,38 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>نظرة عامة على الميراث - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>ملصق</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>مفتاح النسخ الاحتياطي لمزامنة العلامات: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>تستمر الخطوط الموجودة عند حواف الصفحات في الصفحة المشار إليها.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>توجد ملاحظات إضافية بعد المخطط.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>لا تشارك كلمات البذرة أو عبارات المرور أبدًا، ولا تدخلها في أي موقع إلكتروني.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>لا تلتقط صورة لكلمات البذرة مطلقًا.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8095,8 +8262,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>غير متوفر</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>عند إعادة فحص هذه المحفظة، افحص على الأقل حتى مؤشر العنوان {max_tip} لاكتشاف جميع العناوين الممولة.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>المخرجات</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8105,8 +8282,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>يتطلب مُوقِّعًا واحدًا</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>يتطلب أي {threshold} من هؤلاء المُوقِّعين البالغ عددهم {count}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>أجهزة التوقيع والنسخ الاحتياطية للبذرة</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>امسح لاستعادة معلومات المحفظة.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>كلمات بذور سرية لموقع توقيع الأجهزة: أبدًا لا تكتب على جهاز كمبيوتر. أبدًا لا تأخذ صورة.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>موقع النسخة الاحتياطية للبذرة:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8117,6 +8319,16 @@ Click here to learn more.</source>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>{label} المتسلسل:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>تتمة ملاحظات المُوقِّع</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>موقع جهاز التوقيع:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8140,8 +8352,48 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>تصنيف المعاملة: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>تستخدمه {count} محافظ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>واصف المحفظة أطول من أن يتسع داخل عقدة مخطط قابلة للطباعة</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: ارتفاع الكتلة {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (التوقيت المحلي)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>بصمة غير معروفة</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (عملات اختبار)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  انظر الصفحة {page}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8160,8 +8412,23 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  البصمة: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (عملات الاختبار ليس لها قيمة نقدية)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: الجزء {index} من {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>ملاحظة {wallet_name}: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8283,6 +8550,16 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>تعذّر تحليل الرسالة الموقّعة المُعادة.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>تعذّرت مطابقة التوقيع بشكل فريد مع أحد مُوقِّعي المحفظة.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>عنوان bech32 غير صالح.</translation>
 		</message>
@@ -8330,6 +8607,26 @@ Click here to learn more.</source>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>يجب أن يستخدم التوقيع مفتاحًا عامًا مضغوطًا لعناوين SegWit المتداخلة.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>تعذّر التحقق من العنوان المُعاد.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>الرسالة المُعادة تختلف عن الرسالة المطلوبة.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>تعذّر التحقق من التوقيع أو مسار الاشتقاق.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>تعذّر اشتقاق عنوان التوقيع. |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

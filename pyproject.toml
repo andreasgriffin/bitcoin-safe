@@ -58,10 +58,12 @@ cryptography = [
 ]
 btclib = "^2026.11.13"
 networkx = ">=3.4,<4"
+pypdf = ">=5,<7"
 
 
 
 [tool.poetry.group.dev.dependencies]
+fonttools = "4.68.0"
 pytest = ">=9.0.0"
 pytest-qt = ">=4.4.0"
 requests = ">=2.31.0"

@@ -135,7 +135,7 @@ class TransactionPDFExporter:
                 pass
         pdf = DataExportPDF(lang_code=QLocale().name())
         pdf.create_pdf(
-            title=translate("FileToolButton", "Transaction export", no_translate=pdf.no_translate),
+            title=translate("FileToolButton", "Transaction export"),
             txid=txid,
             explorer_url=explorer_url,
             nlocktime=get_future_nlocktime(tx, context.current_block_height) if tx else None,

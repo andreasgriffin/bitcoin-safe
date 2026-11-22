@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>توصیف‌گر آدرس</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>پیام امضاشده</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2586,6 +2581,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>صورتحساب موجودی</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>بستن</translation>
 		</message>
@@ -2628,6 +2628,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>امکان رمزگشایی این رشته وجود ندارد</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>نمی‌توان نمودار کیف‌پول را صادر کرد: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2685,6 +2690,11 @@ For a single signature wallet it gives full control over the funds.</source>
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>کیف‌پول‌های داغ در Bitcoin Mainnet غیرفعال هستند.
 می‌توانید برای آزمایش {app_name} بدون استفاده از Bitcoin واقعی، به Testnet تغییر دهید.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>نمای کلی ارث</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2803,6 +2813,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>لطفاً ابتدا یک کیف پول باز کنید.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>لطفاً تراکنش بیتکوین یا PSBT خود را اینجا جای‌گذاری کنید یا یک فایل بگذارید</translation>
 		</message>
@@ -2828,8 +2843,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>چاپ</translation>
+			<source>Print overview</source>
+			<translation>چاپ نمای کلی</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2975,6 +2990,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>نمودار کیف پول‌ها</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>همگام‌سازی کیف پول</translation>
 		</message>
@@ -3046,6 +3066,48 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>بلاک {n}.</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>کپی</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>امکان تأیید امضا وجود نداشت: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>امضا تأیید شد</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>پیام امضاشده</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>پیام امضاشده</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>امضاکننده</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>این امضا کنترل یک کلید را ثابت می‌کند، نه آدرس چندامضایی را.</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>آدرس کلید تأییدشده</translation>
 		</message>
 	</context>
 	<context>
@@ -4986,11 +5048,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>پیام امضاشده</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>تأیید ناموفق بود.</translation>
 		</message>
@@ -5062,6 +5119,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Signed Message</source>
 			<translation>پیام امضاشده</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>این امضا فقط کنترل یک کلید را ثابت می‌کند، نه یک آدرس چندامضایی را.</translation>
 		</message>
 	</context>
 	<context>
@@ -6050,6 +6112,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>نقطهٔ خروجی</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>امضاشده توسط</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -8015,8 +8082,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. در سمت راست صفحات بعدی یک کیف پول انتخاب کنید.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>۱۲ یا ۲۴</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. با دنبال کردن خطوط به سمت چپ، امضاکنندگان موردنیاز را پیدا کنید.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. با استفاده از فیلدهای مکان، محل دستگاه‌های امضا یا نسخه‌های پشتیبان سید را پیدا کنید.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. کیف پول را با استفاده از کد QR آن در {app_name} یا با یک کیف پول از منبع زیر بازیابی کنید:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. برای تأیید تراکنش‌ها از امضاکنندگان موردنیاز استفاده کنید.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8027,6 +8119,11 @@ Click here to learn more.</source>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>کیف پول‌های بیت‌کوین</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8045,13 +8142,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>دسته</translation>
+			<source>Balance: {balance}</source>
+			<translation>موجودی: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>ایجادشده در {date} با</translation>
+			<source>Block explorer</source>
+			<translation>کاوشگر بلاک</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>دسته</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8065,8 +8167,43 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>نمودار</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>واژه‌های سید را فقط در دستگاه امضا وارد کنید، هرگز در رایانه یا تلفن همراه وارد نکنید.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>کارمزد</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>کارمزد (تخمینی)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>فایل پیدا نشد!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>اثر انگشت: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>خطوط را دنبال کنید تا ببینید کدام دستگاه‌های امضا یا نسخه‌های پشتیبان سید برای هر کیف پول قابل استفاده هستند.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>نحوه بازیابی کیف پول</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8080,8 +8217,38 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>نمای کلی ارث - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>برچسب</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>کلید پشتیبان همگام‌سازی برچسب: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>خطوط لبه صفحات در صفحه مشخص‌شده ادامه پیدا می‌کنند.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>یادداشت‌های بیشتری پس از نمودار آمده است.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>هرگز واژه‌های سید یا عبارت‌های عبور خود را به اشتراک نگذارید یا در وب‌سایتی وارد نکنید.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>هرگز از واژه‌های سید خود عکس نگیرید.</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8095,8 +8262,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>در دسترس نیست</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>هنگام اسکن مجدد این کیف پول، حداقل تا ایندکس آدرس {max_tip} اسکن کنید تا همهٔ آدرس‌های دارای موجودی نمایش داده شوند.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>خروجی‌ها</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8105,8 +8282,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>به 1 امضاکننده نیاز دارد</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>به هر {threshold} نفر از این {count} امضاکننده نیاز دارد</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>دستگاه‌های امضا و نسخه‌های پشتیبان سید</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>برای بازیابی اطلاعات کیف پول اسکن کنید.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>کلمات سید محرمانه برای امضاکنندهٔ سخت‌افزاری: هرگز در رایانه تایپ نکنید. هرگز عکس نگیرید.</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>محل نسخه پشتیبان سید:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8117,6 +8319,16 @@ Click here to learn more.</source>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>{label} سریال‌شده:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>ادامه یادداشت‌های امضاکننده</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>محل دستگاه امضا:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8140,8 +8352,48 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>برچسب تراکنش: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>استفاده‌شده توسط {count} کیف پول</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>توصیف‌گر کیف پول بیش از حد طولانی است و در یک گره از نمودار قابل چاپ جا نمی‌شود</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: ارتفاع بلاک {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (زمان محلی)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>اثر انگشت ناشناخته</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (سکه‌های آزمایشی)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  صفحه {page} را ببینید</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8160,8 +8412,23 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  اثر انگشت: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (سکه‌های آزمایشی ارزش پولی ندارند)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: قطعه {index} از {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>یادداشت {wallet_name}: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8283,6 +8550,16 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>تجزیه پیام امضاشده بازگشتی ممکن نبود.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>امکان تطبیق منحصربه‌فرد امضا با یکی از امضاکنندگان کیف پول وجود نداشت.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>آدرس bech32 نامعتبر است.</translation>
 		</message>
@@ -8330,6 +8607,26 @@ Click here to learn more.</source>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>امضا باید برای آدرس‌های SegWit تودرتو از کلید عمومی فشرده استفاده کند.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>آدرس بازگشتی قابل تأیید نبود.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>پیام بازگشتی با پیام درخواست‌شده متفاوت است.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>امضا یا مسیر مشتق‌سازی قابل تأیید نبود.</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>امکان مشتق‌سازی آدرس امضا وجود نداشت. |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

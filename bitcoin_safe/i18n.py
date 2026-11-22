@@ -36,16 +36,12 @@ from PyQt6.QtCore import QCoreApplication
 logger = logging.getLogger(__name__)
 
 
-# this function must eb named identical to QCoreApplication.translate
-# otherwise lupdate doesnt recognize it
+# This function must be named like QCoreApplication.translate for lupdate.
 def translate(
     context: str,
     sourceText: str,
     disambiguation: str | None = None,
     n: int = 1,
-    no_translate=False,
 ) -> str:
     """Translate."""
-    if no_translate:
-        return sourceText if sourceText else ""
     return QCoreApplication.translate(context, sourceText, disambiguation=disambiguation, n=n)  # type: ignore

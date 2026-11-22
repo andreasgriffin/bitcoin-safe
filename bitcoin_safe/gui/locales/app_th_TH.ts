@@ -136,11 +136,6 @@
 			<source>Address descriptor</source>
 			<translation>ตัวบ่งชี้ที่อยู่</translation>
 		</message>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>ข้อความที่ลงนามแล้ว</translation>
-		</message>
 	</context>
 	<context>
 		<name>AddressDialog</name>
@@ -2582,6 +2577,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Balance statement</source>
+			<translation>รายการแสดงยอดคงเหลือ</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Close</source>
 			<translation>ปิด</translation>
 		</message>
@@ -2624,6 +2624,11 @@ For a single signature wallet it gives full control over the funds.</source>
 		<message>
 			<source>Could not decode this string</source>
 			<translation>ไม่สามารถถอดรหัสสตริงนี้ได้</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Could not export the wallet graph: {error}</source>
+			<translation>ไม่สามารถส่งออกกราฟของกระเป๋าเงินได้: {error}</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2680,6 +2685,11 @@ For a single signature wallet it gives full control over the funds.</source>
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>วอลเล็ตแบบ Hot wallet ถูกปิดใช้งานบน Bitcoin Mainnet คุณสามารถสลับไปยัง Testnet เพื่อทดสอบ {app_name} โดยไม่ต้องใช้ Bitcoin จริง</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Inheritance overview</source>
+			<translation>ภาพรวมการรับมรดก</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2798,6 +2808,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Please open a wallet first.</source>
+			<translation>โปรดเปิดกระเป๋าเงินก่อน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
 			<translation>โปรดวางธุรกรรมบิตคอยน์ หรือ PSBT ที่นี่ หรือวางไฟล์</translation>
 		</message>
@@ -2823,8 +2838,8 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
-			<source>Print</source>
-			<translation>พิมพ์</translation>
+			<source>Print overview</source>
+			<translation>พิมพ์ภาพรวม</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -2969,6 +2984,11 @@ Do you want to keep the wallet open?</source>
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Wallet graph</source>
+			<translation>แผนภาพกระเป๋าเงิน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Wallet syncing</source>
 			<translation>กำลังซิงค์กระเป๋าเงิน</translation>
 		</message>
@@ -3039,6 +3059,48 @@ Do you want to hide to tray instead?</source>
 		<message>
 			<source>{n}. Block</source>
 			<translation>{n} บล็อก</translation>
+		</message>
+	</context>
+	<context>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Copy</source>
+			<translation>คัดลอก</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature could not be verified: {reason}</source>
+			<translation>ไม่สามารถตรวจสอบลายเซ็นได้: {reason}</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signature verified</source>
+			<translation>ตรวจสอบลายเซ็นแล้ว</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed Message</source>
+			<translation>ข้อความที่ลงนามแล้ว</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signed message</source>
+			<translation>ข้อความที่ลงนาม</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Signer</source>
+			<translation>ผู้ลงนาม</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>This signature proves control of one key, not the multisig address.</source>
+			<translation>ลายเซ็นนี้พิสูจน์การควบคุมคีย์เพียงหนึ่งคีย์ ไม่ใช่ที่อยู่แบบหลายลายเซ็น</translation>
+		</message>
+		<name>MessageSignatureDialog</name>
+		<message>
+			<source>Verified key address</source>
+			<translation>ที่อยู่ของคีย์ที่ตรวจสอบแล้ว</translation>
 		</message>
 	</context>
 	<context>
@@ -4968,11 +5030,6 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignAndVerifyMessage</name>
 		<message>
-			<source>Signed Message</source>
-			<translation>ข้อความที่ลงนามแล้ว</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
 			<source>Verification failed.</source>
 			<translation>การตรวจสอบล้มเหลว</translation>
 		</message>
@@ -5044,6 +5101,11 @@ If you make a mistake here, your money is lost!</source>
 		<message>
 			<source>Signed Message</source>
 			<translation>ข้อความที่ลงนามแล้ว</translation>
+		</message>
+		<name>SignMessageBase</name>
+		<message>
+			<source>The signature proves control of one key only, not of a multisig address.</source>
+			<translation>ลายเซ็นนี้พิสูจน์การควบคุมคีย์เพียงหนึ่งคีย์เท่านั้น ไม่ใช่ที่อยู่แบบหลายลายเซ็น</translation>
 		</message>
 	</context>
 	<context>
@@ -6029,6 +6091,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Outpoint</source>
 			<translation>Outpoint</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Signed by</source>
+			<translation>ลงนามโดย</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -7990,8 +8057,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>1. Choose a wallet on the right of the following pages.</source>
+			<translation>1. เลือกกระเป๋าเงินทางด้านขวาของหน้าต่อไปนี้</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>12 or 24</source>
 			<translation>12 หรือ 24</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>2. Find the required signers by following the lines to the left.</source>
+			<translation>2. ค้นหาผู้ลงนามที่จำเป็นโดยไล่ตามเส้นไปทางซ้าย</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>3. Locate the signing devices or seed backups using the location fields.</source>
+			<translation>3. ค้นหาตำแหน่งอุปกรณ์ลงนามหรือข้อมูลสำรองซีดโดยใช้ช่องตำแหน่ง</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+			<translation>4. กู้คืนกระเป๋าเงินโดยใช้รหัส QR ใน {app_name} หรือใช้กระเป๋าเงินจาก:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>5. Use the required signers to authorize transactions.</source>
+			<translation>5. ใช้ผู้ลงนามที่จำเป็นเพื่ออนุมัติธุรกรรม</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8002,6 +8094,11 @@ Click here to learn more.</source>
 		<message>
 			<source>BBQr QR</source>
 			<translation>BBQr QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>BITCOIN WALLETS</source>
+			<translation>กระเป๋าเงินบิตคอยน์</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8020,13 +8117,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Category</source>
-			<translation>หมวดหมู่</translation>
+			<source>Balance: {balance}</source>
+			<translation>ยอดคงเหลือ: {balance}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
-			<source>Created at {date} with</source>
-			<translation>สร้างเมื่อ {date} ด้วย</translation>
+			<source>Block explorer</source>
+			<translation>ตัวสำรวจบล็อก</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Category</source>
+			<translation>หมวดหมู่</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8040,8 +8142,43 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Diagram</source>
+			<translation>แผนภูมิ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+			<translation>ป้อนคำซีดลงในอุปกรณ์ลงนามเท่านั้น ห้ามป้อนลงในคอมพิวเตอร์หรือโทรศัพท์มือถือเด็ดขาด</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee</source>
+			<translation>ค่าธรรมเนียม</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fee (estimated)</source>
+			<translation>ค่าธรรมเนียม (โดยประมาณ)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>File not found!</source>
 			<translation>ไม่พบไฟล์!</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Fingerprint: {fingerprint}</source>
+			<translation>ลายนิ้วมือ: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+			<translation>ไล่ตามเส้นเพื่อดูว่าอุปกรณ์ลงนามหรือข้อมูลสำรองซีดใดสามารถใช้กับกระเป๋าเงินแต่ละใบได้</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>HOW TO RECOVER A WALLET</source>
+			<translation>วิธีกู้คืนกระเป๋าเงิน</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8055,8 +8192,38 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Inheritance overview - {networks}</source>
+			<translation>ภาพรวมการรับมรดก - {networks}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Label</source>
+			<translation>ป้ายกำกับ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Label syncronization backup key: {label_sync_nsec}</source>
 			<translation>ป้ายกำกับกุญแจซิงค์สำรอง: {label_sync_nsec}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Lines at page edges continue on the indicated page.</source>
+			<translation>เส้นที่ขอบหน้าจะต่อเนื่องไปยังหน้าที่ระบุ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>More notes follow the graph.</source>
+			<translation>มีบันทึกเพิ่มเติมอยู่หลังแผนภาพ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never share seed words or passphrases, or enter them into a website.</source>
+			<translation>ห้ามเปิดเผยคำซีดหรือวลีรหัสผ่าน และห้ามป้อนข้อมูลเหล่านี้ลงในเว็บไซต์เด็ดขาด</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Never take a picture of your seed words.</source>
+			<translation>ห้ามถ่ายรูปคำซีดของคุณเด็ดขาด</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8070,8 +8237,18 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Not available</source>
+			<translation>ไม่พร้อมใช้งาน</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
 			<translation>เมื่อสแกนกระเป๋าเงินนี้ใหม่ สแกนไปยังอย่างน้อยดัชนีที่อยู่ {max_tip} เพื่อค้นหาที่อยู่ที่ได้รับเงินทุนทั้งหมด</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Outputs</source>
+			<translation>เอาต์พุต</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8080,8 +8257,33 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Requires 1 signer</source>
+			<translation>ต้องมีผู้ลงนาม 1 คน</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Requires any {threshold} of these {count} signers</source>
+			<translation>ต้องมีผู้ลงนาม {threshold} คนใดก็ได้จากผู้ลงนามทั้งหมด {count} คนนี้</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+			<translation>อุปกรณ์ลงนามและข้อมูลสำรองซีด</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Scan to restore wallet information.</source>
+			<translation>สแกนเพื่อกู้คืนข้อมูลกระเป๋าเงิน</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
 			<translation>คำลับเมล็ดพันธุ์สำหรับผู้ลงนามฮาร์ดแวร์: ไม่เคยพิมพ์ลงในคอมพิวเตอร์ ไม่เคยถ่ายรูป</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Seed backup location:</source>
+			<translation>ตำแหน่งข้อมูลสำรองซีด:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8092,6 +8294,16 @@ Click here to learn more.</source>
 		<message>
 			<source>Serialized {label}:</source>
 			<translation>ข้อมูลที่ซีเรียลไลซ์ {label}:</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signer notes continued</source>
+			<translation>บันทึกเพิ่มเติมของผู้ลงนาม</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Signing device location:</source>
+			<translation>ตำแหน่งอุปกรณ์ลงนาม:</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8115,8 +8327,48 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>Transaction label: {label}</source>
+			<translation>ป้ายกำกับธุรกรรม: {label}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>UR QR</source>
 			<translation>UR QR</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Used by {count} wallets</source>
+			<translation>ใช้โดยกระเป๋าเงิน {count} ใบ</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>Wallet descriptor is too long to fit in a printable graph node</source>
+			<translation>ตัวอธิบายกระเป๋าเงินยาวเกินกว่าจะแสดงในโหนดของแผนภาพที่พิมพ์ได้</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: block height {height}</source>
+			<translation>nLocktime: ความสูงของบล็อก {height}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>nLocktime: {value} (local time)</source>
+			<translation>nLocktime: {value} (เวลาท้องถิ่น)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>unknown fingerprint</source>
+			<translation>ลายนิ้วมือที่ไม่รู้จัก</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{balance} (test coins)</source>
+			<translation>{balance} (เหรียญทดสอบ)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{fingerprint}  see page {page}</source>
+			<translation>{fingerprint}  ดูหน้า {page}</translation>
 		</message>
 		<name>pdf</name>
 		<message>
@@ -8135,8 +8387,23 @@ Click here to learn more.</source>
 		</message>
 		<name>pdf</name>
 		<message>
+			<source>{signer}  |  Fingerprint: {fingerprint}</source>
+			<translation>{signer}  |  ลายนิ้วมือ: {fingerprint}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{title} (test coins have no monetary value)</source>
+			<translation>{title} (เหรียญทดสอบไม่มีมูลค่าเป็นเงิน)</translation>
+		</message>
+		<name>pdf</name>
+		<message>
 			<source>{title}: Fragment {index} of {total}</source>
 			<translation>{title}: ชิ้นส่วน {index} จากทั้งหมด {total}</translation>
+		</message>
+		<name>pdf</name>
+		<message>
+			<source>{wallet_name} note: {note}</source>
+			<translation>บันทึกของ {wallet_name}: {note}</translation>
 		</message>
 	</context>
 	<context>
@@ -8258,6 +8525,16 @@ Click here to learn more.</source>
 		</message>
 		<name>signatures</name>
 		<message>
+			<source>Could not parse the returned signed message.</source>
+			<translation>ไม่สามารถแยกวิเคราะห์ข้อความที่ลงนามแล้วซึ่งส่งกลับมาได้</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>Could not uniquely match the signature to a wallet signer.</source>
+			<translation>ไม่สามารถจับคู่ลายเซ็นกับผู้ลงนามของกระเป๋าเงินรายใดรายหนึ่งได้อย่างเฉพาะเจาะจง</translation>
+		</message>
+		<name>signatures</name>
+		<message>
 			<source>Invalid bech32 address.</source>
 			<translation>ที่อยู่ bech32 ไม่ถูกต้อง</translation>
 		</message>
@@ -8305,6 +8582,26 @@ Click here to learn more.</source>
 		<message>
 			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
 			<translation>ลายเซ็นต้องใช้คีย์สาธาราที่บีบอัดสำหรับที่อยู่ SegWit ซ้อน</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned address could not be verified.</source>
+			<translation>ไม่สามารถตรวจสอบที่อยู่ที่ส่งกลับมาได้</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The returned message differs from the requested message.</source>
+			<translation>ข้อความที่ส่งกลับมาแตกต่างจากข้อความที่ร้องขอ</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signature or derivation path could not be verified.</source>
+			<translation>ไม่สามารถตรวจสอบลายเซ็นหรือเส้นทางการสร้างคีย์ได้</translation>
+		</message>
+		<name>signatures</name>
+		<message>
+			<source>The signing address could not be derived.</source>
+			<translation>ไม่สามารถสร้างที่อยู่สำหรับลงนามจากข้อมูลที่มีได้ |</translation>
 		</message>
 		<name>signatures</name>
 		<message>

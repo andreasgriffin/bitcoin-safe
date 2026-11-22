@@ -37,7 +37,7 @@ import tempfile
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 from xml.sax.saxutils import escape
 
 import bdkpython as bdk
@@ -46,20 +46,16 @@ from bitcoin_qr_tools.qr_generator import QRGenerator
 from bitcoin_safe_lib.gui.qt.satoshis import format_number, unit_str
 from bitcoin_usb.address_types import DescriptorInfo
 from PIL.Image import Image as PilImage
-from PyQt6.QtCore import QDate, QDateTime, QLocale
+from PyQt6.QtCore import QDateTime, QLocale
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
-from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.cidfonts import UnicodeCIDFont
-from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import (
     Image,
     PageBreak,
     Paragraph,
-    SimpleDocTemplate,
     Spacer,
     Table,
     TableStyle,
@@ -71,6 +67,7 @@ from bitcoin_safe.gui.qt.util import svg_tools, svg_tools_hardware_signer
 from bitcoin_safe.hardware_signers import HardwareSigner, HardwareSigners
 from bitcoin_safe.i18n import translate
 from bitcoin_safe.locktime_estimation import LOCKTIME_THRESHOLD
+from bitcoin_safe.pdf.qt_renderer import QtPDFRenderer
 from bitcoin_safe.pythonbdk_types import Recipient
 
 from .gui.qt.util import qicon_to_pil
@@ -150,9 +147,9 @@ def register_font(lang_code: str) -> FontInfo:
         # CID Fonts
         "zh_CN": FontInfo("STSong-Light", FontType.CID, "zh_CN"),  # Simplified Chinese
         "zh_TW": FontInfo("MSung-Light", FontType.CID, "zh_TW"),  # Traditional Chinese (Taiwan)
-        "zh_HK": FontInfo("MHei-Medium", FontType.CID, "zh_HK"),  # Traditional Chinese (Hong Kong)
+        "zh_HK": FontInfo("MSung-Light", FontType.CID, "zh_HK"),  # Traditional Chinese (Hong Kong)
         "ja_JP": FontInfo("HeiseiMin-W3", FontType.CID, "ja_JP"),  # Japanese
-        "ko_KR": FontInfo("HYGoThic-Medium", FontType.CID, "ko_KR"),  # Korean
+        "ko_KR": FontInfo("HYGothic-Medium", FontType.CID, "ko_KR"),  # Korean
         # Built-in Fonts (Latin-based)
         "es_ES": FontInfo("Helvetica", FontType.BUILTIN, "es_ES"),  # Spanish
         "fr_FR": FontInfo("Helvetica", FontType.BUILTIN, "fr_FR"),  # French
@@ -213,59 +210,15 @@ def register_font(lang_code: str) -> FontInfo:
 white_space = '<font color="white"> - </font>'
 
 
-class NumberedPageCanvas(Canvas):
-    """
-    http://code.activestate.com/recipes/546511-page-x-of-y-with-reportlab/
-    http://code.activestate.com/recipes/576832/
-    http://www.blog.pythonlibrary.org/2013/08/12/reportlab-how-to-add-page-numbers/
-    """
-
-    def __init__(self, *args, **kwargs):
-        """Constructor."""
-        super().__init__(*args, **kwargs)
-        self.pages = []
-        self.created_date = QLocale().toString(QDate.currentDate(), QLocale.FormatType.ShortFormat)
-
-    def showPage(self):
-        """On a page break, add information to the list."""
-        self.pages.append(dict(self.__dict__))
-        self._startPage()  # type: ignore
-
-    def save(self):
-        """Add the page number to each page (page x of y)"""
-        page_count = len(self.pages)
-
-        for page in self.pages:
-            self.__dict__.update(page)
-            self.draw_page_number(page_count)
-            super().showPage()
-
-        super().save()
-
-    def draw_page_number(self, page_count: int) -> None:
-        """Draw the creation date, branding and page number below a blue rule."""
-        width, _ = self._pagesize  # type: ignore
-        left = 1.8 * cm
-        right = width - left
-        baseline = 0.8 * cm
-        self.setStrokeColor(colors.HexColor("#1F99E5"))
-        self.setLineWidth(0.75)
-        self.line(left, baseline + 8, right, baseline + 8)
-        self.setFillColor(colors.HexColor("#555555"))
-        self.setFont("Helvetica", 7.5)
-        self.drawString(left, baseline, f"{APP_NAME} | {APP_WEBSITE}")
-        self.drawCentredString(width / 2, baseline, self.created_date)
-        self.drawRightString(right, baseline, f"{self._pageNumber}/{page_count}")  # type: ignore
-
-
 class BasePDF:
-    canvas_class = Canvas
+    pdf_footer: Literal["transaction", "statement"] | None = None
 
     def __init__(self, lang_code: str) -> None:
         """Initialize instance."""
         font_info = register_font(lang_code=lang_code)
         self.font_name = font_info.font_name
-        self.no_translate = font_info.supported_lang_code == "en_US"
+        self.lang_code = lang_code
+        self.created_at = ""
 
         self.styles = getSampleStyleSheet()
         self.style_paragraph = ParagraphStyle(
@@ -317,22 +270,10 @@ class BasePDF:
         return style
 
     def save_pdf(self, filename: str) -> None:
-        # Adjust these values to set your desired margins (values are in points; 72 points = 1 inch)
-        """Save pdf."""
-        LEFT_MARGIN = 36  # 0.5 inch
-        RIGHT_MARGIN = 36  # 0.5 inch
-        TOP_MARGIN = 36  # 0.5 inch
-        BOTTOM_MARGIN = 36  # 0.5 inch
+        self.qt_renderer().save(self.elements, filename)
 
-        document = SimpleDocTemplate(
-            filename,
-            pagesize=letter,
-            leftMargin=LEFT_MARGIN,
-            rightMargin=RIGHT_MARGIN,
-            topMargin=TOP_MARGIN,
-            bottomMargin=BOTTOM_MARGIN,
-        )
-        document.build(self.elements, canvasmaker=self.canvas_class)
+    def qt_renderer(self, page_offset: int | None = None) -> QtPDFRenderer:
+        return QtPDFRenderer(self.lang_code, self.pdf_footer, self.created_at, page_offset)
 
     def open_pdf(self, filename: str) -> None:
         """Open pdf."""
@@ -343,7 +284,7 @@ class BasePDF:
 
 
 class DataExportPDF(BasePDF):
-    canvas_class = NumberedPageCanvas
+    pdf_footer = "transaction"
 
     def create_pdf(
         self,
@@ -364,11 +305,10 @@ class DataExportPDF(BasePDF):
     ) -> None:
         """Create a PDF that captures serialized data and its QR codes."""
 
-        self.elements.append(Paragraph(title, style=self.style_heading))
+        self.elements.append(Paragraph(escape(title), style=self.style_heading))
         self.elements.append(
             Paragraph(
-                translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" {APP_NAME}: {white_space * 5} {APP_WEBSITE}",
+                translate("pdf", "Created with") + f" {APP_NAME}: {white_space * 5} {APP_WEBSITE}",
                 self.style_paragraph,
             )
         )
@@ -376,9 +316,7 @@ class DataExportPDF(BasePDF):
 
         if txid:
             txid_text = Paragraph(
-                translate("pdf", "Transaction ID: {txid}", no_translate=self.no_translate).format(
-                    txid=escape(txid)
-                ),
+                translate("pdf", "Transaction ID: {txid}").format(txid=f"<br/>{escape(txid)}"),
                 self.style_paragraph_left,
             )
             if explorer_url:
@@ -391,7 +329,7 @@ class DataExportPDF(BasePDF):
                                 [
                                     pilimage_to_reportlab(qr_image, width=90, height=90),
                                     Paragraph(
-                                        translate("pdf", "Block explorer", no_translate=self.no_translate),
+                                        translate("pdf", "Block explorer"),
                                         self.style_paragraph,
                                     ),
                                 ],
@@ -406,30 +344,28 @@ class DataExportPDF(BasePDF):
             self.elements.append(Spacer(1, 6))
 
         if tx_label:
-            label = translate("pdf", "Transaction label: {label}", no_translate=self.no_translate).format(
-                label=escape(tx_label).replace("\n", "<br/>")
-            )
-            self.elements.append(Paragraph(label, self.style_paragraph_left))
+            # Separate the user-provided label from the translated text so Qt
+            # can choose its own paragraph direction without reordering it.
+            before, _, after = translate("pdf", "Transaction label: {label}").partition("{label}")
+            for part in (before.strip(), tx_label, after.strip()):
+                if part:
+                    self.elements.append(
+                        Paragraph(escape(part).replace("\n", "<br/>"), self.style_paragraph_left)
+                    )
             self.elements.append(Spacer(1, 6))
 
         if nlocktime is not None:
             if nlocktime >= LOCKTIME_THRESHOLD:
-                locktime_text = translate(
-                    "pdf", "nLocktime: {value} (local time)", no_translate=self.no_translate
-                ).format(value=QLocale().toString(QDateTime.fromSecsSinceEpoch(nlocktime)))
+                locktime_text = translate("pdf", "nLocktime: {value} (local time)").format(
+                    value=QLocale().toString(QDateTime.fromSecsSinceEpoch(nlocktime))
+                )
             else:
-                locktime_text = translate(
-                    "pdf", "nLocktime: block height {height}", no_translate=self.no_translate
-                ).format(height=nlocktime)
+                locktime_text = translate("pdf", "nLocktime: block height {height}").format(height=nlocktime)
             self.elements.append(Paragraph(escape(locktime_text), self.style_paragraph_left))
             self.elements.append(Spacer(1, 6))
 
         if diagram:
-            self.elements.append(
-                Paragraph(
-                    translate("pdf", "Diagram", no_translate=self.no_translate), self.style_paragraph_left
-                )
-            )
+            self.elements.append(Paragraph(translate("pdf", "Diagram"), self.style_paragraph_left))
             scale = min(520 / diagram.width, 300 / diagram.height)
             self.elements.append(
                 pilimage_to_reportlab(diagram, width=diagram.width * scale, height=diagram.height * scale)
@@ -437,11 +373,7 @@ class DataExportPDF(BasePDF):
             self.elements.append(Spacer(1, 12))
 
         if recipients or fee_amount is not None:
-            self.elements.append(
-                Paragraph(
-                    translate("pdf", "Outputs", no_translate=self.no_translate), self.style_paragraph_left
-                )
-            )
+            self.elements.append(Paragraph(translate("pdf", "Outputs"), self.style_paragraph_left))
             header = get_recipient_csv_header(network)
             header[1] = translate("Recipients", "Amount [{unit}]").format(unit=unit_str(network))
             rows = [header]
@@ -453,9 +385,9 @@ class DataExportPDF(BasePDF):
             )
             if fee_amount is not None:
                 fee_label = (
-                    translate("pdf", "Fee (estimated)", no_translate=self.no_translate)
+                    translate("pdf", "Fee (estimated)")
                     if fee_amount_is_estimated
-                    else translate("pdf", "Fee", no_translate=self.no_translate)
+                    else translate("pdf", "Fee")
                 )
                 rows.append([fee_label, format_number(fee_amount, include_decimal_spaces=False), ""])
             table = Table(
@@ -484,13 +416,11 @@ class DataExportPDF(BasePDF):
 
         self.elements.append(
             Paragraph(
-                translate("pdf", "Serialized {label}:", no_translate=self.no_translate).format(
-                    label=data_label
-                ),
+                translate("pdf", "Serialized {label}:").format(label=escape(data_label)),
                 self.style_paragraph_left,
             )
         )
-        self.elements.append(Paragraph(serialized, self.style_paragraph_left))
+        self.elements.append(Paragraph(escape(serialized), self.style_paragraph_left))
         self.elements.append(Spacer(1, 12))
 
         def _append_qr_section(title: str, images: list[PilImage]):
@@ -504,7 +434,6 @@ class DataExportPDF(BasePDF):
                     label = translate(
                         "pdf",
                         "{title}: Fragment {index} of {total}",
-                        no_translate=self.no_translate,
                     ).format(index=idx + 1, total=len(images), title=title)
                     cells.append(
                         [
@@ -517,13 +446,13 @@ class DataExportPDF(BasePDF):
                 self.elements.append(Table([cells], colWidths=[260, 260]))
                 self.elements.append(Spacer(1, 6))
 
-        _append_qr_section(translate("pdf", "BBQr QR", no_translate=self.no_translate), qr_images)
-        _append_qr_section(translate("pdf", "UR QR", no_translate=self.no_translate), ur_qr_images or [])
+        _append_qr_section(translate("pdf", "BBQr QR"), qr_images)
+        _append_qr_section(translate("pdf", "UR QR"), ur_qr_images or [])
 
         if not qr_images and not ur_qr_images:
             self.elements.append(
                 Paragraph(
-                    translate("pdf", "No QR data available", no_translate=self.no_translate),
+                    translate("pdf", "No QR data available"),
                     self.style_paragraph_left,
                 )
             )
@@ -533,7 +462,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
     @property
     def TEXT_24_WORDS(self):
         """TEXT 24 WORDS."""
-        return translate("pdf", "12 or 24", no_translate=self.no_translate)
+        return translate("pdf", "12 or 24")
 
     @staticmethod
     def create_table(columns: list[Any], col_widths: list[int]) -> Table:
@@ -588,7 +517,6 @@ class BitcoinWalletRecoveryPDF(BasePDF):
                 3. Put this paper in a secure location, where only you have access<br/>
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 """,  # noqa: E501
-                    no_translate=self.no_translate,
                 ).format(number=self.TEXT_24_WORDS),
                 self.style_paragraph_left,
             )
@@ -601,7 +529,6 @@ class BitcoinWalletRecoveryPDF(BasePDF):
                 3. Put each paper in a different secure location, where only you have access<br/>
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 """,  # noqa: E501
-                    no_translate=self.no_translate,
                 ).format(number=self.TEXT_24_WORDS),
                 self.style_paragraph_left,
             )
@@ -625,7 +552,6 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         table_title = translate(
             "pdf",
             "Secret seed words for a hardware signer: Never type into a computer. Never make a picture.",
-            no_translate=self.no_translate,
         )
         seed_placeholder = "___________________"
 
@@ -678,11 +604,10 @@ class BitcoinWalletRecoveryPDF(BasePDF):
                 "pdf",
                 "{keystore_label} ({keystore_fingerprint}): {keystore_description}<br/><br/>"
                 "Instructions for the heirs:",
-                no_translate=self.no_translate,
             ).format(
-                keystore_description=keystore_description.replace("\n", "<br/>"),
-                keystore_fingerprint=keystore_fingerprint,
-                keystore_label=keystore_label,
+                keystore_description=escape(keystore_description).replace("\n", "<br/>"),
+                keystore_fingerprint=escape(keystore_fingerprint),
+                keystore_label=escape(keystore_label),
             ),
             self.style_paragraph_left,
         )
@@ -710,8 +635,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
                     "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> "
                     "allows you to create a watch-only wallet to see your balance. "
                     "To spent from it you need {threshold} Seeds and the wallet descriptor.",
-                    no_translate=self.no_translate,
-                ).format(threshold=threshold, wallet_descriptor_string=wallet_descriptor_string),
+                ).format(threshold=threshold, wallet_descriptor_string=escape(wallet_descriptor_string)),
                 self.style_paragraph,
             )
         else:
@@ -721,8 +645,9 @@ class BitcoinWalletRecoveryPDF(BasePDF):
                     "The wallet descriptor (QR Code) <br/><br/>{wallet_descriptor_string}<br/><br/> allows "
                     "you to create a watch-only wallet to see your balance. "
                     "To spent from it you need the secret {number} words (Seed).",
-                    no_translate=self.no_translate,
-                ).format(number=self.TEXT_24_WORDS, wallet_descriptor_string=wallet_descriptor_string),
+                ).format(
+                    number=self.TEXT_24_WORDS, wallet_descriptor_string=escape(wallet_descriptor_string)
+                ),
                 self.style_paragraph,
             )
         self.elements.append(self.create_table([[qr_image], [desc_str]], [250, 300]))
@@ -741,12 +666,11 @@ class BitcoinWalletRecoveryPDF(BasePDF):
                 "pdf",
                 "{keystore_label}: Fingerprint: {keystore_fingerprint}, "
                 "Key origin: {keystore_key_origin}, {keystore_xpub}",
-                no_translate=self.no_translate,
             ).format(
-                keystore_label=keystore_label,
-                keystore_fingerprint=keystore_fingerprint,
-                keystore_key_origin=keystore_key_origin,
-                keystore_xpub=keystore_xpub,
+                keystore_label=escape(keystore_label),
+                keystore_fingerprint=escape(keystore_fingerprint),
+                keystore_key_origin=escape(keystore_key_origin),
+                keystore_xpub=escape(keystore_xpub),
             ),
             self.style_paragraph_left,
         )
@@ -792,13 +716,12 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         hardware_signer: HardwareSigner | None = None,
     ) -> None:
         """Create pdf."""
-        self.elements.append(Paragraph(title, style=self.style_heading))
+        self.elements.append(Paragraph(escape(title), style=self.style_heading))
 
         # Small subtitle
         self.elements.append(
             Paragraph(
-                translate("pdf", "Created with", no_translate=self.no_translate)
-                + f" {APP_NAME}: {white_space * 5} {APP_WEBSITE}",
+                translate("pdf", "Created with") + f" {APP_NAME}: {white_space * 5} {APP_WEBSITE}",
                 self.style_paragraph,
             )
         )
@@ -822,9 +745,7 @@ class BitcoinWalletRecoveryPDF(BasePDF):
         # line.keepWithNext = True  # Ensure line and text stay together on the same page
         self.elements.append(line)
         # Add text at the line as an element
-        text = (white_space * 5).join(
-            [translate("pdf", "Please fold here!", no_translate=self.no_translate)] * 5
-        )
+        text = (white_space * 5).join([translate("pdf", "Please fold here!")] * 5)
         text_paragraph = Paragraph(text, style=self.style_text)
         # text_paragraph.spaceBefore = -10  # Adjust the space before the text if needed
         self.elements.append(text_paragraph)
@@ -861,7 +782,6 @@ def make_and_open_pdf(
             translate(
                 "pdf",
                 '{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"',
-                no_translate=pdf_recovery.no_translate,
             ).format(i=i + 1, threshold=info.threshold, m=len(wallet.keystores), id=wallet.id)
             if len(wallet.keystores) > 1
             else f"{wallet.id}"
