@@ -53,6 +53,7 @@ from bitcoin_safe.gui.qt.tx_signing_steps import (
 )
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.hardware_signers import HardwareSigners
+from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.psbt_util import InputGroup, PartialSig, PubKeyInfo, SimpleInput, SimplePSBT
 from bitcoin_safe.signals import Signals, WalletFunctions
 from bitcoin_safe.signer import (
@@ -122,6 +123,39 @@ class DummyDescriptor:
 class DummyMultipathDescriptor:
     def to_single_descriptors(self) -> tuple[DummyDescriptor, DummyDescriptor]:
         return DummyDescriptor(), DummyDescriptor()
+
+
+def test_taproot_origin_without_fingerprint_is_enriched_from_wallet() -> None:
+    xpub = "xpub6BgBgsespWvERF3LHQu6CnqdvfEvtMcQjYrcRzx53QJjSxarj2afYWcLteoGVky7D3UKDP9QyrLprQ3VCECoY49yfdDEHGCtMMj92pReUsQ"
+    pubkey = "cc8a4bc64d897bddc5fbc2f670f7a8ba0b386779106cf1223c6fc5d7cd6fc115"
+    keystore = KeyStore(
+        xpub=xpub, fingerprint="73C5DA0A", key_origin="m/86h/0h/0h", network=bdk.Network.BITCOIN
+    )
+    descriptor = bdk.Descriptor(f"tr({xpub}/0/*)", bdk.NetworkKind.MAIN)
+    script = bytes(descriptor.derive_address(0, bdk.Network.BITCOIN).script_pubkey().to_bytes()).hex()
+    source_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
+    simple_input = SimpleInput.from_input(
+        {
+            "witness_utxo": {"value": 100000, "script_pubkey": script},
+            "tap_key_origins": [(pubkey, ([], ("", "m/86h/0h/0h/0/0")))],
+        },
+        source_input.txin,
+    )
+    wallet = DummyWallet(id="bip86", keystores=[keystore], owned_scripts={script})
+    wallet.network = bdk.Network.BITCOIN
+    wallet.bdkwallet = Mock(
+        derivation_of_spk=Mock(return_value=bdk.KeychainAndIndex(keychain=bdk.KeychainKind.EXTERNAL, index=0))
+    )
+    wallet_functions = WalletFunctions(Signals())
+    wallet_functions.get_wallets.connect(lambda: wallet, slot_name=wallet.id)
+    viewer = SimpleNamespace(wallet_functions=wallet_functions)
+    simple_psbt = SimplePSBT(txid="bip86", inputs=[simple_input])
+
+    UITx_Viewer.enrich_simple_psbt_with_wallet_data(viewer, simple_psbt)
+
+    assert simple_input.pubkeys[0].fingerprint == keystore.fingerprint
+    assert simple_input.pubkeys[0].pubkey == pubkey
+    assert simple_input.wallet_id == wallet.id
 
 
 def test_foreign_first_input_keeps_wallet_seed_option(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:
