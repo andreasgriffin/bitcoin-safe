@@ -863,14 +863,13 @@ class TxSigningSteps(StepProgressContainer):
     def _apply_signature_importer_details(self, devices: dict[str, SigningDevice]) -> None:
         for signature_importers in self.signature_importer_dict.values():
             for importer in signature_importers:
-                if not importer.signature_available:
-                    continue
                 for signer_identity in importer.signer_identities:
                     fingerprint = self._normalize_fingerprint(signer_identity.fingerprint)
                     if not signer_identity.id:
                         continue
-                    if signer_identity.id not in devices:
-                        devices[signer_identity.id] = SigningDevice(
+                    device_id = fingerprint or signer_identity.id
+                    if device_id not in devices:
+                        devices[device_id] = SigningDevice(
                             fingerprint=fingerprint,
                             label=signer_identity.display_name
                             or importer.display_label
@@ -878,7 +877,7 @@ class TxSigningSteps(StepProgressContainer):
                             hardware_signer=HardwareSigners.generic,
                         )
                     if importer.signatures:
-                        devices[signer_identity.id].signatures.update(importer.signatures)
+                        devices[device_id].signatures.update(importer.signatures)
 
     def _apply_psbt_signature_details(self, devices: dict[str, SigningDevice]) -> None:
         simple_psbt = SimplePSBT.from_psbt(self.psbt)

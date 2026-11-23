@@ -560,6 +560,9 @@ class SimpleInput:
         mn = self._get_m_of_n()
         if mn:
             return mn
+        if not self.pubkeys and not self.is_fully_signed():
+            # An unfinished input without signer metadata still needs a signing step.
+            return (1, 1)
         return (len(self.pubkeys), len(self.pubkeys))
 
     def _get_m_of_n(self) -> tuple[int, int] | None:

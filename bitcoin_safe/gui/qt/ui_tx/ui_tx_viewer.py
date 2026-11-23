@@ -79,6 +79,7 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import PoisoningWarningBar
 from bitcoin_safe.html_utils import html_f
+from bitcoin_safe.input_signer_attribution import fingerprint_for_pubkey
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
@@ -1044,6 +1045,19 @@ class UITx_Viewer(UITx_Base):
             wallet = get_wallet_for_psbt_input(simple_input, self.wallet_functions)
             if not wallet:
                 continue
+            unresolved = [info for info in simple_input.pubkeys if info.pubkey and not info.fingerprint]
+            if unresolved and (previous_txout := simple_input.previous_txout()):
+                derivation = wallet.bdkwallet.derivation_of_spk(previous_txout.script_pubkey)
+                if derivation:
+                    for info in unresolved:
+                        try:
+                            pubkey = bytes.fromhex(info.pubkey or "")
+                            info.fingerprint = (
+                                fingerprint_for_pubkey(pubkey, derivation, wallet.keystores, wallet.network)
+                                or ""
+                            )
+                        except ValueError:
+                            logger.warning("Could not match a PSBT public key to the wallet descriptor")
             wallet_pubkeys = [
                 PubKeyInfo(
                     fingerprint=keystore.fingerprint,
@@ -1182,6 +1196,10 @@ class UITx_Viewer(UITx_Base):
                         )
                         for signer_identifier, _pubkey_info in unsigned_signers
                     ]
+                    if not signer_identities:
+                        signer_identities = [
+                            SignerIdentity(id=input_group.group_id, label=self.tr("Unknown signer"))
+                        ]
                     signer_list.append(
                         cls(
                             self.network,

@@ -57,6 +57,21 @@ def derived_key_hash(keystore: KeyStore, keychain_index: bdk.KeychainAndIndex, n
     return script_pubkey[2:]
 
 
+def fingerprint_for_pubkey(
+    pubkey: bytes, keychain_index: bdk.KeychainAndIndex, keystores: Sequence[KeyStore], network: bdk.Network
+) -> str | None:
+    """Match a derived public key to a wallet keystore."""
+    pubkey_hash = hash160(pubkey)
+    return next(
+        (
+            keystore.fingerprint
+            for keystore in keystores
+            if derived_key_hash(keystore, keychain_index, network) == pubkey_hash
+        ),
+        None,
+    )
+
+
 def attribute_input_signers(
     result: InputResult,
     keychain_index: bdk.KeychainAndIndex | None,
@@ -72,11 +87,8 @@ def attribute_input_signers(
         return ()
     fingerprints: list[str] = []
     for signer_pubkey in result.signer_pubkeys:
-        signer_hash = hash160(signer_pubkey)
-        for keystore in keystores:
-            if derived_key_hash(keystore, keychain_index, network) == signer_hash:
-                fingerprints.append(keystore.fingerprint)
-                break
+        if fingerprint := fingerprint_for_pubkey(signer_pubkey, keychain_index, keystores, network):
+            fingerprints.append(fingerprint)
     return tuple(fingerprints)
 
 
