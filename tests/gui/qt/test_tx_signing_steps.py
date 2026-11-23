@@ -315,8 +315,11 @@ def test_taproot_signature_populates_signed_and_unsigned_signing_steps(
     psbt = _psbt_with_taproot_entries(
         [(b"\x14" + first_key + bytes.fromhex(leaf * 32), bytes.fromhex("44" * 64)) for leaf in ("33", "55")]
         + [
-            (b"\x16" + key, b"\x00" + bytes.fromhex(keystore.fingerprint))
-            for key, keystore in zip((first_key, second_key), keystores, strict=True)
+            (
+                b"\x16" + first_key,
+                b"\x02" + bytes.fromhex("33" * 32 + "55" * 32) + bytes.fromhex(keystores[0].fingerprint),
+            ),
+            (b"\x16" + second_key, b"\x00" + bytes.fromhex(keystores[1].fingerprint)),
         ]
     )
     input_data = json.loads(psbt.json_serialize())["inputs"][0]
