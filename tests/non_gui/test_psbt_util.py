@@ -402,10 +402,17 @@ def test_bdk_signed_taproot_keypath_psbt() -> None:
 )
 def test_taproot_key_signature_parsed_and_attributed(suffix: str, expected: str) -> None:
     key = bytes.fromhex(_TAP_PUBKEY)
-    signature = "11" * 63 + "81" + suffix
+    signature = "11" * 63 + "81"
     psbt = _psbt_with_taproot_entries(
-        [(b"\x13", bytes.fromhex(signature)), (b"\x17", key), (b"\x16" + key, bytes.fromhex("00aabbccdd"))]
+        [
+            (b"\x13", bytes.fromhex(signature + suffix)),
+            (b"\x17", key),
+            (b"\x16" + key, bytes.fromhex("00aabbccdd")),
+        ]
     )
+    bdk_signature = json.loads(psbt.json_serialize())["inputs"][0]["tap_key_sig"]
+    assert bdk_signature["signature"] == signature
+    assert SimpleInput._format_sighash_type(bdk_signature["sighash_type"]) == expected
     simple_psbt = SimplePSBT.from_psbt(psbt)
     simple_input = simple_psbt.inputs[0]
     signer = next(pubkey for pubkey in simple_input.pubkeys if pubkey.pubkey == _TAP_PUBKEY)
@@ -439,7 +446,11 @@ def test_taproot_script_signatures_parse_multiple_leaves_and_count_one_signer() 
     second = next(pubkey for pubkey in simple_input.pubkeys if pubkey.pubkey == _TAP_PUBKEY_2)
     assert len(simple_input.tap_script_sigs) == 2
     assert set(simple_input.tap_script_sigs) == {(_TAP_PUBKEY, leaf.hex()) for leaf in leaves}
-    assert simple_input.signature_for_pubkey(first) == PartialSig(signature.hex(), "ALL")
+    assert serialized_input["tap_script_sigs"][0][1] == {
+        "signature": "22" * 64,
+        "sighash_type": "SIGHASH_ALL",
+    }
+    assert simple_input.signature_for_pubkey(first) == PartialSig("22" * 64, "ALL")
     assert simple_input.signature_for_pubkey(second) is None
     assert simple_input.fingerprint_has_signature(first.fingerprint)
     assert not simple_input.fingerprint_has_signature(second.fingerprint)
@@ -537,21 +548,16 @@ def test_taproot_missing_fingerprint_preserves_key_without_attribution() -> None
 @pytest.mark.parametrize(
     ("raw", "sighash", "expected"),
     [
-        ("11" * 64, 0, PartialSig("11" * 64, "DEFAULT")),
-        ("11" * 64, 1, PartialSig("11" * 64 + "01", "ALL")),
+        ("AA" * 64, "SIGHASH_DEFAULT", PartialSig("aa" * 64, "DEFAULT")),
+        ("11" * 64, "SIGHASH_ALL", PartialSig("11" * 64, "ALL")),
         (
-            "11" * 64 + "83",
+            "11" * 64,
             "SIGHASH_SINGLE|SIGHASH_ANYONECANPAY",
-            PartialSig("11" * 64 + "83", "SINGLE|ANYONECANPAY"),
+            PartialSig("11" * 64, "SINGLE|ANYONECANPAY"),
         ),
-        ("11" * 64 + "00", "DEFAULT", None),
-        ("11" * 64 + "04", "ALL", None),
-        ("11" * 64 + "01", "NONE", None),
-        ("11" * 64, 0x21, None),
-        ("11" * 64, 0x100, None),
     ],
 )
-def test_taproot_signature_encoding(raw: str, sighash: int | str, expected: PartialSig | None) -> None:
+def test_taproot_signature_encoding(raw: str, sighash: str, expected: PartialSig) -> None:
     assert SimpleInput._parse_taproot_signature({"signature": raw, "sighash_type": sighash}) == expected
 
 
@@ -588,8 +594,10 @@ def test_group_finds_taproot_signatures_for_distinct_derived_keys() -> None:
         {"signature": "11" * 63, "sighash_type": "SIGHASH_DEFAULT"},
         {"signature": "11" * 65, "sighash_type": "SIGHASH_ALL"},
         {"signature": "zz" * 64, "sighash_type": "SIGHASH_DEFAULT"},
-        {"signature": "11" * 64, "sighash_type": "invalid"},
+        {"signature": "11" * 64, "sighash_type": ""},
         {"signature": "11" * 64, "sighash_type": []},
+        {"signature": "11" * 64, "sighash_type": 1},
+        {"signature": "11" * 63 + "  ", "sighash_type": "SIGHASH_DEFAULT"},
     ],
 )
 def test_taproot_invalid_signature_data_is_ignored(signature_data: object) -> None:
@@ -627,22 +635,29 @@ def test_taproot_invalid_script_signature_keys_are_ignored(key: object) -> None:
     assert not simple_input.fingerprint_has_signature("AABBCCDD")
 
 
-def test_taproot_psbt_sighash_conflict_preserves_signature_sighash(caplog: pytest.LogCaptureFixture) -> None:
+@pytest.mark.parametrize("script_path", [False, True])
+@pytest.mark.parametrize(("declared", "conflict"), [(0x81, False), (2, True)])
+def test_taproot_psbt_sighash_conflict_preserves_signature_sighash(
+    caplog: pytest.LogCaptureFixture, script_path: bool, declared: int, conflict: bool
+) -> None:
     key = bytes.fromhex(_TAP_PUBKEY)
+    leaf = bytes.fromhex("33" * 32)
+    signature_key = b"\x14" + key + leaf if script_path else b"\x13"
+    origin = b"\x01" + leaf if script_path else b"\x00"
     psbt = _psbt_with_taproot_entries(
         [
-            (b"\x13", bytes.fromhex("11" * 64)),
+            (signature_key, bytes.fromhex("11" * 64 + "81")),
             (b"\x17", key),
-            (b"\x16" + key, bytes.fromhex("00aabbccdd")),
-            (b"\x03", b"\x02\x00\x00\x00"),
+            (b"\x16" + key, origin + bytes.fromhex("aabbccdd")),
+            (b"\x03", declared.to_bytes(4, "little")),
         ]
     )
     simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
-    assert simple_input.sighash_type == 2
+    assert simple_input.sighash_type == declared
     assert simple_input.signature_for_pubkey(PubKeyInfo("AABBCCDD", _TAP_PUBKEY)) == PartialSig(
-        "11" * 64, "DEFAULT"
+        "11" * 64, "ALL|ANYONECANPAY"
     )
-    assert "sighash conflicts" in caplog.text
+    assert ("sighash conflicts" in caplog.text) == conflict
 
 
 def test_previous_txout_supports_segwit_witness_and_non_witness_utxo() -> None:

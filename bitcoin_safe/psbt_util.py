@@ -411,10 +411,7 @@ class SimpleInput:
             sighash_type = None
         if sighash_type is not None:
             for signature in ([tap_key_sig] if tap_key_sig else []) + list(tap_script_sigs.values()):
-                signature_sighash = (
-                    int(signature.signature[-2:], 16) if len(signature.signature) == 130 else 0
-                )
-                if cls._format_sighash_type(signature_sighash) != cls._format_sighash_type(sighash_type):
+                if cls._format_sighash_type(signature.sighash_type) != cls._format_sighash_type(sighash_type):
                     logger.warning("Taproot signature sighash conflicts with PSBT input sighash")
 
         self = cls(
@@ -464,42 +461,21 @@ class SimpleInput:
 
     @staticmethod
     def _parse_taproot_signature(signature_data: object) -> PartialSig | None:
-        """Restore the sighash byte BDK separates from the Schnorr signature in JSON."""
+        """Read the Schnorr signature and sighash separated by BDK."""
         if not isinstance(signature_data, dict):
             return None
-        sighash_types = {
-            "DEFAULT": 0,
-            "ALL": 1,
-            "NONE": 2,
-            "SINGLE": 3,
-            "ALL|ANYONECANPAY": 0x81,
-            "NONE|ANYONECANPAY": 0x82,
-            "SINGLE|ANYONECANPAY": 0x83,
-        }
         signature = signature_data.get("signature")
-        sighash_name = signature_data.get("sighash_type")
+        sighash_type = signature_data.get("sighash_type")
         if (
             not isinstance(signature, str)
-            or not isinstance(sighash_name, (int, str))
-            or isinstance(sighash_name, bool)
+            or not re.fullmatch(r"[0-9a-fA-F]{128}", signature)
+            or not isinstance(sighash_type, str)
+            or not sighash_type
         ):
             return None
-        sighash = sighash_types.get(SimpleInput._format_sighash_type(sighash_name))
-        if sighash is None or len(signature) not in (128, 130):
-            return None
-        try:
-            signature_bytes = bytes.fromhex(signature)
-            if len(signature_bytes) not in (64, 65):
-                return None
-        except ValueError:
-            return None
-        if len(signature_bytes) == 65:
-            if not sighash or signature_bytes[-1] != sighash:
-                return None
-            signature = signature[:-2]
         return PartialSig(
-            signature.lower() + (f"{sighash:02x}" if sighash else ""),
-            SimpleInput._format_sighash_type(sighash),
+            signature=signature.lower(),
+            sighash_type=SimpleInput._format_sighash_type(sighash_type),
         )
 
     @classmethod
