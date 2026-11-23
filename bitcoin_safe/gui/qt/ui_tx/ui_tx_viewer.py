@@ -1052,10 +1052,11 @@ class UITx_Viewer(UITx_Base):
                     for info in unresolved:
                         try:
                             pubkey = bytes.fromhex(info.pubkey or "")
-                            info.fingerprint = (
-                                fingerprint_for_pubkey(pubkey, derivation, wallet.keystores, wallet.network)
-                                or ""
+                            fingerprint = fingerprint_for_pubkey(
+                                pubkey, derivation, wallet.keystores, wallet.network
                             )
+                            if fingerprint:
+                                simple_input.set_verified_fingerprint(info, fingerprint)
                         except ValueError:
                             logger.warning("Could not match a PSBT public key to the wallet descriptor")
             wallet_pubkeys = [

@@ -33,6 +33,7 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 import bdkpython as bdk
+import pytest
 from bitcoin_qr_tools.data import Data
 from bitcoin_qr_tools.unified_encoder import QrExportTypes
 from PyQt6.QtWidgets import QPushButton
@@ -129,7 +130,8 @@ class DummyMultipathDescriptor:
         return DummyDescriptor(), DummyDescriptor()
 
 
-def test_taproot_origin_without_fingerprint_is_enriched_from_wallet() -> None:
+@pytest.mark.parametrize("script_path", [False, True])
+def test_taproot_origin_without_fingerprint_is_enriched_from_wallet(script_path: bool) -> None:
     xpub = "xpub6BgBgsespWvERF3LHQu6CnqdvfEvtMcQjYrcRzx53QJjSxarj2afYWcLteoGVky7D3UKDP9QyrLprQ3VCECoY49yfdDEHGCtMMj92pReUsQ"
     pubkey = "cc8a4bc64d897bddc5fbc2f670f7a8ba0b386779106cf1223c6fc5d7cd6fc115"
     keystore = KeyStore(
@@ -137,14 +139,26 @@ def test_taproot_origin_without_fingerprint_is_enriched_from_wallet() -> None:
     )
     descriptor = bdk.Descriptor(f"tr({xpub}/0/*)", bdk.NetworkKind.MAIN)
     script = bytes(descriptor.derive_address(0, bdk.Network.BITCOIN).script_pubkey().to_bytes()).hex()
+    leaf = "33" * 32
+    path = "m/86h/0h/0h/0/0"
+    signature = {"signature": "11" * 64, "sighash_type": "SIGHASH_DEFAULT"}
     source_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
     simple_input = SimpleInput.from_input(
         {
             "witness_utxo": {"value": 100000, "script_pubkey": script},
-            "tap_key_origins": [(pubkey, ([], ("", "m/86h/0h/0h/0/0")))],
+            "tap_internal_key": pubkey,
+            "tap_key_sig": None if script_path else signature,
+            "tap_script_sigs": [[[pubkey, leaf], signature]] if script_path else [],
+            "tap_key_origins": [
+                (pubkey, ([leaf] if script_path else [], ("", path))),
+                (_TAP_PUBKEY, ([leaf], ("", path))),
+                (_TAP_PUBKEY_2, ([], ("11223344", path))),
+            ],
         },
         source_input.txin,
     )
+    assert simple_input.signature_for_pubkey(PubKeyInfo(keystore.fingerprint, pubkey, path)) is None
+    assert simple_input.tap_key_origins[0][1][1] == ("", path)
     wallet = DummyWallet(id="bip86", keystores=[keystore], owned_scripts={script})
     wallet.network = bdk.Network.BITCOIN
     wallet.bdkwallet = Mock(
@@ -159,6 +173,14 @@ def test_taproot_origin_without_fingerprint_is_enriched_from_wallet() -> None:
 
     assert simple_input.pubkeys[0].fingerprint == keystore.fingerprint
     assert simple_input.pubkeys[0].pubkey == pubkey
+    assert simple_input.tap_key_origins == [
+        (pubkey, ([leaf] if script_path else [], (keystore.fingerprint, path))),
+        (_TAP_PUBKEY, ([leaf], ("", path))),
+        (_TAP_PUBKEY_2, ([], ("11223344", path))),
+    ]
+    assert simple_input.signature_for_pubkey(simple_input.pubkeys[0]) == PartialSig("11" * 64, "DEFAULT")
+    assert simple_input.fingerprint_has_signature(keystore.fingerprint)
+    assert not simple_input.fingerprint_has_signature("11223344")
     assert simple_input.wallet_id == wallet.id
 
 

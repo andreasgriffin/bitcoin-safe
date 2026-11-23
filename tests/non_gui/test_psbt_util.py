@@ -545,6 +545,27 @@ def test_taproot_missing_fingerprint_preserves_key_without_attribution() -> None
     assert simple_input.signature_for_pubkey(PubKeyInfo("AABBCCDD", _TAP_PUBKEY, "m/0")) is None
 
 
+def test_verified_fingerprint_preserves_unrelated_taproot_origins() -> None:
+    simple_input = SimpleInput(
+        txin=tr_psbt_singlesig.extract_tx().input()[0],
+        tap_key_origins=[
+            (_TAP_PUBKEY, (["33" * 32], ("", "m/0"))),
+            (_TAP_PUBKEY, ([], ("11223344", "m/0"))),
+            (_TAP_PUBKEY, ([], ("11223344", "m/1"))),
+            (_TAP_PUBKEY, ([], ("", "m/2"))),
+            (_TAP_PUBKEY_2, ([], ("", "m/0"))),
+        ],
+    )
+    simple_input.set_verified_fingerprint(PubKeyInfo("", _TAP_PUBKEY, "m/0"), "aabbccdd")
+    assert simple_input.tap_key_origins == [
+        (_TAP_PUBKEY, (["33" * 32], ("AABBCCDD", "m/0"))),
+        (_TAP_PUBKEY, ([], ("11223344", "m/0"))),
+        (_TAP_PUBKEY, ([], ("11223344", "m/1"))),
+        (_TAP_PUBKEY, ([], ("", "m/2"))),
+        (_TAP_PUBKEY_2, ([], ("", "m/0"))),
+    ]
+
+
 @pytest.mark.parametrize(
     ("raw", "sighash", "expected"),
     [

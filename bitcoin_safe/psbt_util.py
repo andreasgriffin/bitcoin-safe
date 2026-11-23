@@ -572,6 +572,22 @@ class SimpleInput:
             return None
         return self.tap_key_sig if self._taproot_origin_for_pubkey(pubkey_info) is not None else None
 
+    def set_verified_fingerprint(self, pubkey_info: PubKeyInfo, fingerprint: str) -> None:
+        """Record a wallet-verified fingerprint on the public key and its matching Taproot origin."""
+        if pubkey_info.fingerprint or not fingerprint:
+            return
+        pubkey_info.fingerprint = PubKeyInfo(fingerprint).fingerprint
+        pubkey = self._normalize_hex_32(pubkey_info.pubkey)
+        if not pubkey:
+            return
+        for index, (key, (leaves, (origin_fingerprint, path))) in enumerate(self.tap_key_origins):
+            if (
+                self._normalize_hex_32(key) == pubkey
+                and not origin_fingerprint
+                and PubKeyInfo("", key, path).derivation_path == pubkey_info.derivation_path
+            ):
+                self.tap_key_origins[index] = (key, (leaves, (pubkey_info.fingerprint, path)))
+
     def _taproot_origin_for_pubkey(self, pubkey_info: PubKeyInfo) -> list[str] | None:
         pubkey = self._normalize_hex_32(pubkey_info.pubkey)
         origins = [
@@ -580,12 +596,10 @@ class SimpleInput:
         if not pubkey or len(origins) != 1:
             return None
         _, (leaves, (fingerprint, path)) = origins[0]
-        # Wallet enrichment can resolve a missing PSBT fingerprint on pubkey_info.
-        resolved_fingerprint = fingerprint or pubkey_info.fingerprint
-        if not resolved_fingerprint:
+        if not fingerprint:
             return None
-        origin = PubKeyInfo(resolved_fingerprint, pubkey, path)
-        if fingerprint and pubkey_info.fingerprint != origin.fingerprint:
+        origin = PubKeyInfo(fingerprint, pubkey, path)
+        if pubkey_info.fingerprint != origin.fingerprint:
             return None
         if pubkey_info.derivation_path and pubkey_info.derivation_path != origin.derivation_path:
             return None
