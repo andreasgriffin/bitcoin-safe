@@ -175,7 +175,9 @@ def _aiohttp_session_kwargs(
 
     scheme = proxy_info.scheme.lower()
     if scheme.startswith("socks"):
-        session_kwargs["connector"] = ProxyConnector.from_url(proxy_info.get_url())
+        session_kwargs["connector"] = ProxyConnector.from_url(
+            proxy_info.get_url_no_h(), rdns=scheme.endswith("h")
+        )
         return session_kwargs, request_kwargs
 
     if scheme.startswith("http"):
