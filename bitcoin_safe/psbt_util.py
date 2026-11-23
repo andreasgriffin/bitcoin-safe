@@ -378,7 +378,7 @@ class SimpleInput:
     hash160_preimages: dict[str, str] = field(default_factory=dict)
     hash256_preimages: dict[str, str] = field(default_factory=dict)
     tap_key_sig: str | None = None
-    tap_script_sigs: dict[str, str] = field(default_factory=dict)
+    tap_script_sigs: dict[tuple[str, str], str] = field(default_factory=dict)
     tap_scripts: list[tuple[str, str, str]] = field(default_factory=list)
     tap_key_origins: list[tuple[str, tuple[str, list[str]]]] = field(default_factory=list)
     tap_internal_key: str | None = None
@@ -387,6 +387,9 @@ class SimpleInput:
     @classmethod
     def from_input(cls, input_data: dict[str, Any], txin: bdk.TxIn) -> SimpleInput:
         """From input."""
+        sighash_type = input_data.get("sighash_type")
+        if isinstance(sighash_type, dict):
+            sighash_type = sighash_type.get("inner")
         self = cls(
             txin,
             witness_script=input_data.get("witness_script"),
@@ -401,14 +404,17 @@ class SimpleInput:
             final_script_witness=input_data.get("final_script_witness"),
             non_witness_utxo=input_data.get("non_witness_utxo"),
             witness_utxo=input_data.get("witness_utxo"),
-            sighash_type=input_data.get("sighash_type"),
+            sighash_type=sighash_type,
             redeem_script=input_data.get("redeem_script"),
             ripemd160_preimages=input_data.get("ripemd160_preimages", {}),
             sha256_preimages=input_data.get("sha256_preimages", {}),
             hash160_preimages=input_data.get("hash160_preimages", {}),
             hash256_preimages=input_data.get("hash256_preimages", {}),
-            tap_key_sig=input_data.get("tap_key_sig"),
-            tap_script_sigs={k: v for k, v in input_data.get("tap_script_sigs", [])},
+            tap_key_sig=cls._taproot_signature_from_json(input_data.get("tap_key_sig")),
+            tap_script_sigs={
+                (pubkey, leaf_hash): cls._taproot_signature_from_json(signature) or ""
+                for (pubkey, leaf_hash), signature in input_data.get("tap_script_sigs", [])
+            },
             tap_scripts=input_data.get("tap_scripts", []),
             tap_key_origins=input_data.get("tap_key_origins", []),
             tap_internal_key=input_data.get("tap_internal_key"),
@@ -431,6 +437,23 @@ class SimpleInput:
         self._recover_finalized_singlesig_signer_data()
         self.m_of_n = self._get_m_of_n()
         return self
+
+    @staticmethod
+    def _taproot_signature_from_json(signature: dict[str, str] | None) -> str | None:
+        """Restore the sighash byte BDK separates from the Schnorr signature in JSON."""
+        if signature is None:
+            return None
+        sighash_types = {
+            "SIGHASH_DEFAULT": 0,
+            "SIGHASH_ALL": 1,
+            "SIGHASH_NONE": 2,
+            "SIGHASH_SINGLE": 3,
+            "SIGHASH_ALL|SIGHASH_ANYONECANPAY": 0x81,
+            "SIGHASH_NONE|SIGHASH_ANYONECANPAY": 0x82,
+            "SIGHASH_SINGLE|SIGHASH_ANYONECANPAY": 0x83,
+        }
+        sighash = sighash_types[signature["sighash_type"]]
+        return signature["signature"] + (f"{sighash:02x}" if sighash else "")
 
     def _recover_finalized_singlesig_signer_data(self) -> None:
         """Recover signer data from finalized singlesig witnesses when derivation data is absent."""
@@ -478,6 +501,52 @@ class SimpleInput:
             return self._format_sighash_type(int(signature[-2:], 16))
         return "unknown"
 
+    def _recovered_taproot_sighash_type(self, signature: str) -> str:
+        if self.sighash_type is not None:
+            return self._format_sighash_type(self.sighash_type)
+        try:
+            signature_bytes = bytes.fromhex(signature)
+        except ValueError:
+            return "unknown"
+        if len(signature_bytes) == 64:
+            return "DEFAULT"
+        if len(signature_bytes) == 65:
+            return self._format_sighash_type(signature_bytes[-1])
+        return "unknown"
+
+    @staticmethod
+    def _xonly_pubkey(pubkey: str | None) -> str | None:
+        if not pubkey:
+            return None
+        pubkey = pubkey.lower()
+        if len(pubkey) == 66 and pubkey.startswith(("02", "03")):
+            pubkey = pubkey[2:]
+        if len(pubkey) != 64:
+            return None
+        try:
+            if len(bytes.fromhex(pubkey)) != 32:
+                return None
+        except ValueError:
+            return None
+        return pubkey
+
+    def _taproot_signature_for_pubkey(self, pubkey_info: PubKeyInfo) -> PartialSig | None:
+        pubkey = self._xonly_pubkey(pubkey_info.pubkey)
+        if not pubkey:
+            return None
+
+        signature = None
+        if self.tap_key_sig and self._xonly_pubkey(self.tap_internal_key) == pubkey:
+            signature = self.tap_key_sig
+        else:
+            for (signer_pubkey, _leaf_hash), script_signature in self.tap_script_sigs.items():
+                if script_signature and self._xonly_pubkey(signer_pubkey) == pubkey:
+                    signature = script_signature
+                    break
+        if signature:
+            return PartialSig(signature, self._recovered_taproot_sighash_type(signature))
+        return None
+
     @staticmethod
     def _format_sighash_type(sighash_type: int | str) -> str:
         """Format a sighash flag as a display string.
@@ -521,6 +590,10 @@ class SimpleInput:
         partial_sig = self.partial_sigs.get(pubkey_info.pubkey)
         if partial_sig:
             return partial_sig
+
+        taproot_signature = self._taproot_signature_for_pubkey(pubkey_info)
+        if taproot_signature:
+            return taproot_signature
 
         finalized_signature = self._finalized_singlesig_signature_and_pubkey()
         if not finalized_signature:

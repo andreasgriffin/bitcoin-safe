@@ -297,6 +297,79 @@ def test_signed_ui_is_shown_on_matching_device_card(qtbot: QtBot, loop_in_thread
     assert signed_card.header_status.textLabel.text() == "Signed"
 
 
+def test_taproot_signature_populates_signed_and_unsigned_signing_steps(
+    qtbot: QtBot, loop_in_thread, monkeypatch
+) -> None:
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    keystores = create_test_seed_keystores(
+        signers=2,
+        key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h"],
+        network=bdk.Network.REGTEST,
+    )
+    first_key, second_key = "11" * 32, "22" * 32
+    simple_input = SimpleInput(
+        txin=tr_psbt_singlesig.extract_tx().input()[0],
+        pubkeys=[
+            PubKeyInfo(keystores[0].fingerprint, first_key),
+            PubKeyInfo(keystores[1].fingerprint, second_key),
+        ],
+        m_of_n=(2, 2),
+        tap_script_sigs={(first_key, "33" * 32): "44" * 64},
+    )
+    simple_psbt = SimplePSBT(txid="taproot", inputs=[simple_input])
+    monkeypatch.setattr(SimplePSBT, "from_psbt", classmethod(lambda cls, psbt: simple_psbt))
+    wallet = DummyWallet(id="multisig", keystores=keystores)
+    monkeypatch.setattr(TxSigningSteps, "_involved_wallets", lambda self: [wallet])
+    viewer = SimpleNamespace(
+        network=bdk.Network.REGTEST,
+        wallet_functions=wallet_functions,
+        signals=signals,
+        loop_in_thread=loop_in_thread,
+        tr=lambda text: text,
+        import_trusted_psbt=lambda psbt: None,
+        tx_received=lambda tx: None,
+        enrich_simple_psbt_with_wallet_data=lambda psbt: psbt,
+    )
+    viewer._normalize_fingerprint = UITx_Viewer._normalize_fingerprint
+    viewer._normalize_fingerprints = UITx_Viewer._normalize_fingerprints.__get__(viewer, SimpleNamespace)
+    viewer._wallet_signing_fingerprints = UITx_Viewer._wallet_signing_fingerprints.__get__(
+        viewer, SimpleNamespace
+    )
+
+    importers = UITx_Viewer.get_combined_signature_importers(viewer, tr_psbt_singlesig)
+    steps = list(importers.values())
+    assert len(steps) == 2
+    assert steps[0][0].signatures == {0: PartialSig("44" * 64, "DEFAULT")}
+    assert steps[0][0].signer_identities[0].fingerprint == keystores[0].fingerprint
+    assert all(importer.signer_identities[0].fingerprint == keystores[1].fingerprint for importer in steps[1])
+    assert not simple_input.is_fully_signed()
+
+    widget = TxSigningSteps(
+        importers, tr_psbt_singlesig, bdk.Network.REGTEST, wallet_functions, loop_in_thread
+    )
+    qtbot.addWidget(widget)
+    widget.show()
+    widget.set_current_index(0)
+    signed_step = widget.stacked_widget.widget(0)
+    assert isinstance(signed_step, TxSigningDeviceList)
+    signed_card = next(
+        card for card in signed_step.cards if card.device.fingerprint == keystores[0].fingerprint
+    )
+    signed_card.expand()
+    assert signed_card.body.findChild(SignedUI)
+    assert signed_card.header_status.textLabel.text() == "Signed"
+
+    widget.set_current_index(1)
+    unsigned_step = widget.stacked_widget.widget(1)
+    assert isinstance(unsigned_step, TxSigningDeviceList)
+    unsigned_card = next(
+        card for card in unsigned_step.cards if card.device.fingerprint == keystores[1].fingerprint
+    )
+    assert unsigned_card.body.findChild(SignedUI) is None
+    assert unsigned_card.button_sign.text() == "Sign with this device"
+
+
 def test_mixed_steps_keep_device_cards_instead_of_step_summary(
     qtbot: QtBot, loop_in_thread, monkeypatch
 ) -> None:

@@ -29,9 +29,12 @@
 
 from __future__ import annotations
 
+import base64
+import json
 from typing import cast
 
 import bdkpython as bdk
+import pytest
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
@@ -296,6 +299,129 @@ def test_tr_psbt() -> None:
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 1
     assert len(psbt.outputs) == 2
+
+
+def _psbt_with_taproot_entries(entries: list[tuple[bytes, bytes]]) -> bdk.Psbt:
+    """Insert BIP371 entries into the first input of the existing PSBT fixture."""
+    raw = bytearray(base64.b64decode(tr_psbt_singlesig.serialize()))
+
+    def read_size(offset: int) -> tuple[int, int]:
+        prefix = raw[offset]
+        if prefix < 253:
+            return prefix, offset + 1
+        width = {253: 2, 254: 4, 255: 8}[prefix]
+        return int.from_bytes(raw[offset + 1 : offset + 1 + width], "little"), offset + 1 + width
+
+    def map_end(offset: int) -> int:
+        while raw[offset]:
+            key_size, offset = read_size(offset)
+            value_size, offset = read_size(offset + key_size)
+            offset += value_size
+        return offset
+
+    input_start = map_end(5) + 1
+    offset = input_start
+    while raw[offset]:
+        entry_start = offset
+        key_size, offset = read_size(offset)
+        key = raw[offset : offset + key_size]
+        value_size, offset = read_size(offset + key_size)
+        offset += value_size
+        if key == b"\x03":  # The fixture specifies SIGHASH_ALL; test each signature independently.
+            del raw[entry_start:offset]
+            break
+    input_end = map_end(input_start)
+    for key, value in entries:
+        assert len(key) < 253 and len(value) < 253
+        raw[input_end:input_end] = bytes([len(key)]) + key + bytes([len(value)]) + value
+    return bdk.Psbt(base64.b64encode(raw).decode())
+
+
+_TAP_PUBKEY = "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+_TAP_PUBKEY_2 = "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+
+
+@pytest.mark.parametrize(
+    ("suffix", "expected"), [("", "DEFAULT"), ("01", "ALL"), ("83", "SINGLE|ANYONECANPAY")]
+)
+def test_taproot_key_signature_parsed_and_attributed(suffix: str, expected: str) -> None:
+    key = bytes.fromhex(_TAP_PUBKEY)
+    signature = "11" * 63 + "81" + suffix
+    psbt = _psbt_with_taproot_entries(
+        [(b"\x13", bytes.fromhex(signature)), (b"\x17", key), (b"\x16" + key, bytes.fromhex("00aabbccdd"))]
+    )
+    simple_psbt = SimplePSBT.from_psbt(psbt)
+    simple_input = simple_psbt.inputs[0]
+    signer = next(pubkey for pubkey in simple_input.pubkeys if pubkey.pubkey == _TAP_PUBKEY)
+
+    assert not simple_input.is_fully_signed()
+    assert simple_input.signature_for_pubkey(signer) == PartialSig(signature, expected)
+    assert simple_input.fingerprint_has_signature("AABBCCDD")
+    assert signer in simple_input.get_pub_keys_with_signature()
+    assert simple_input.signature_count() == "1"
+    group = simple_psbt.group_inputs()[0]
+    assert group.signatures_by_identifier()[signer.signer_id] == {0: PartialSig(signature, expected)}
+
+
+def test_taproot_script_signatures_parse_multiple_leaves_and_count_one_signer() -> None:
+    key = bytes.fromhex(_TAP_PUBKEY)
+    other_key = bytes.fromhex(_TAP_PUBKEY_2)
+    signature = bytes.fromhex("22" * 64 + "01")
+    leaves = [bytes.fromhex("33" * 32), bytes.fromhex("44" * 32)]
+    psbt = _psbt_with_taproot_entries(
+        [(b"\x14" + key + leaf, signature) for leaf in leaves]
+        + [(b"\x16" + key, bytes.fromhex("00aabbccdd")), (b"\x16" + other_key, bytes.fromhex("0011223344"))]
+    )
+    serialized_input = json.loads(psbt.json_serialize())["inputs"][0]
+    assert serialized_input["tap_script_sigs"][0][0] == [_TAP_PUBKEY, leaves[0].hex()]
+
+    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+    first = next(pubkey for pubkey in simple_input.pubkeys if pubkey.pubkey == _TAP_PUBKEY)
+    second = next(pubkey for pubkey in simple_input.pubkeys if pubkey.pubkey == _TAP_PUBKEY_2)
+    assert len(simple_input.tap_script_sigs) == 2
+    assert simple_input.signature_for_pubkey(first) == PartialSig(signature.hex(), "ALL")
+    assert simple_input.signature_for_pubkey(second) is None
+    assert simple_input.fingerprint_has_signature(first.fingerprint)
+    assert not simple_input.fingerprint_has_signature(second.fingerprint)
+    assert simple_input.get_pub_keys_with_signature() == [first]
+    assert second in simple_input.get_pub_keys_without_signature()
+    assert simple_input.signature_count() == "1"
+    assert not simple_input.is_fully_signed()
+
+
+@pytest.mark.parametrize("internal_key", [_TAP_PUBKEY, _TAP_PUBKEY_2, None, "55" * 32])
+def test_taproot_key_signature_only_belongs_to_internal_key(internal_key: str | None) -> None:
+    first = PubKeyInfo(fingerprint="AABBCCDD", pubkey="02" + _TAP_PUBKEY.upper())
+    second = PubKeyInfo(fingerprint="11223344", pubkey=_TAP_PUBKEY_2)
+    simple_input = SimpleInput(
+        txin=tr_psbt_singlesig.extract_tx().input()[0],
+        pubkeys=[first, second],
+        tap_internal_key=internal_key,
+        tap_key_sig="11" * 64,
+    )
+    assert bool(simple_input.signature_for_pubkey(first)) == (internal_key == _TAP_PUBKEY)
+    assert bool(simple_input.signature_for_pubkey(second)) == (internal_key == _TAP_PUBKEY_2)
+    assert simple_input.signature_for_pubkey(PubKeyInfo(fingerprint="", pubkey=None)) is None
+
+
+@pytest.mark.parametrize(
+    ("signature", "expected"), [("11" * 63, "unknown"), ("zz" * 64, "unknown"), ("11" * 66, "unknown")]
+)
+def test_taproot_sighash_handles_malformed_signatures(signature: str, expected: str) -> None:
+    simple_input = SimpleInput(txin=tr_psbt_singlesig.extract_tx().input()[0])
+    assert simple_input._recovered_taproot_sighash_type(signature) == expected
+    simple_input.sighash_type = 2
+    assert simple_input._recovered_taproot_sighash_type(signature) == "NONE"
+
+
+def test_taproot_psbt_sighash_overrides_signature_sighash() -> None:
+    key = bytes.fromhex(_TAP_PUBKEY)
+    psbt = _psbt_with_taproot_entries(
+        [(b"\x13", bytes.fromhex("11" * 64)), (b"\x17", key), (b"\x03", b"\x02\x00\x00\x00")]
+    )
+    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+    assert simple_input.sighash_type == 2
+    assert simple_input.signature_for_pubkey(PubKeyInfo("", _TAP_PUBKEY)) == PartialSig("11" * 64, "NONE")
 
 
 def test_previous_txout_supports_segwit_witness_and_non_witness_utxo() -> None:
