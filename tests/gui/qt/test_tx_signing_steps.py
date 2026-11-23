@@ -27,6 +27,7 @@
 # SOFTWARE.
 #
 
+import json
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
@@ -64,6 +65,9 @@ from bitcoin_safe.signer import (
 )
 
 from ...non_gui.test_psbt_util import (
+    _TAP_PUBKEY,
+    _TAP_PUBKEY_2,
+    _psbt_with_taproot_entries,
     mixed_input_no_signatures,
     mixed_input_no_signatures_partially_signed,
     mixed_inputs_finalized_and_nothing_signed_psbt,
@@ -307,16 +311,18 @@ def test_taproot_signature_populates_signed_and_unsigned_signing_steps(
         key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h"],
         network=bdk.Network.REGTEST,
     )
-    first_key, second_key = "11" * 32, "22" * 32
-    simple_input = SimpleInput(
-        txin=tr_psbt_singlesig.extract_tx().input()[0],
-        pubkeys=[
-            PubKeyInfo(keystores[0].fingerprint, first_key),
-            PubKeyInfo(keystores[1].fingerprint, second_key),
-        ],
-        m_of_n=(2, 2),
-        tap_script_sigs={(first_key, "33" * 32): "44" * 64},
+    first_key, second_key = bytes.fromhex(_TAP_PUBKEY), bytes.fromhex(_TAP_PUBKEY_2)
+    psbt = _psbt_with_taproot_entries(
+        [(b"\x14" + first_key + bytes.fromhex(leaf * 32), bytes.fromhex("44" * 64)) for leaf in ("33", "55")]
+        + [
+            (b"\x16" + key, b"\x00" + bytes.fromhex(keystore.fingerprint))
+            for key, keystore in zip((first_key, second_key), keystores, strict=True)
+        ]
     )
+    input_data = json.loads(psbt.json_serialize())["inputs"][0]
+    input_data["bip32_derivation"] = []
+    simple_input = SimpleInput.from_input(input_data, psbt.extract_tx().input()[0])
+    simple_input.m_of_n = (2, 2)
     simple_psbt = SimplePSBT(txid="taproot", inputs=[simple_input])
     monkeypatch.setattr(SimplePSBT, "from_psbt", classmethod(lambda cls, psbt: simple_psbt))
     wallet = DummyWallet(id="multisig", keystores=keystores)
