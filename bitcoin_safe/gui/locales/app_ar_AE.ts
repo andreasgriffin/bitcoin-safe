@@ -1,9409 +1,9416 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TS version="2.1">
-	<context>
-		<name>AboutTab</name>
-		<message>
-			<source>(newest version)</source>
-			<translation>(أحدث إصدار)</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
-			<source>A secure bitcoin savings wallet for everyone.</source>
-			<translation>محفظة ادخار بيتكوين آمنة للجميع.</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
-			<source>Binaries are {link}.</source>
-			<translation>الملفات الثنائية متاحة في {link}.</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
-			<source>FOSS - Free &amp; Open Source Software</source>
-			<translation>FOSS - برمجيات حرة ومفتوحة المصدر</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
-			<source>Licence</source>
-			<translation>الترخيص</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
-			<source>Update available</source>
-			<translation>يوجد تحديث متاح</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
-			<source>Update to {version} available</source>
-			<translation>يوجد تحديث إلى {version}</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
-			<source>Version {version}</source>
-			<translation>الإصدار {version}</translation>
-		</message>
-		<name>AboutTab</name>
-		<message>
-			<source>reproducible</source>
-			<translation>قابل لإعادة الإنتاج</translation>
-		</message>
-	</context>
-	<context>
-		<name>AbstractSignatureImporter</name>
-		<message>
-			<source>No additional signatures were added</source>
-			<translation>لم يتم إضافة توقيعات إضافية</translation>
-		</message>
-		<name>AbstractSignatureImporter</name>
-		<message>
-			<source>The input is incompatible with the PSBT to be signed.</source>
-			<translation>الإدخال غير متوافق مع PSBT المراد توقيعها.</translation>
-		</message>
-		<name>AbstractSignatureImporter</name>
-		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي</translation>
-		</message>
-		<name>AbstractSignatureImporter</name>
-		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>خطأ في مكتبة bdk. لا يجب تغيير txid أثناء الإنهاء</translation>
-		</message>
-	</context>
-	<context>
-		<name>AddCategoryButton</name>
-		<message>
-			<source>Add new category</source>
-			<translation>إضافة فئة جديدة</translation>
-		</message>
-		<name>AddCategoryButton</name>
-		<message>
-			<source>KYC Exchange, Private, ...</source>
-			<translation>تبادل KYC، خاص، …</translation>
-		</message>
-	</context>
-	<context>
-		<name>AddPluginSourceDialog</name>
-		<message>
-			<source>Add Plugin Source</source>
-			<translation>إضافة مصدر إضافة</translation>
-		</message>
-		<name>AddPluginSourceDialog</name>
-		<message>
-			<source>Bearer token</source>
-			<translation>رمز Bearer</translation>
-		</message>
-		<name>AddPluginSourceDialog</name>
-		<message>
-			<source>Display name</source>
-			<translation>اسم العرض</translation>
-		</message>
-		<name>AddPluginSourceDialog</name>
-		<message>
-			<source>Manifest URL</source>
-			<translation>عنوان URL للبيان</translation>
-		</message>
-		<name>AddPluginSourceDialog</name>
-		<message>
-			<source>Paste the ASCII-armored public key here</source>
-			<translation>الصق المفتاح العام بصيغة ASCII-armored هنا</translation>
-		</message>
-		<name>AddPluginSourceDialog</name>
-		<message>
-			<source>Pinned public key</source>
-			<translation>المفتاح العام المثبّت</translation>
-		</message>
-	</context>
-	<context>
-		<name>AddressAnalyzer</name>
-		<message>
-			<source>Invalid Address</source>
-			<translation>العنوان غير صالح</translation>
-		</message>
-		<name>AddressAnalyzer</name>
-		<message>
-			<source>Missing Address</source>
-			<translation>العنوان مفقود</translation>
-		</message>
-		<name>AddressAnalyzer</name>
-		<message>
-			<source>Valid Address</source>
-			<translation>العنوان صالح</translation>
-		</message>
-	</context>
-	<context>
-		<name>AddressDetailsAdvanced</name>
-		<message>
-			<source>Address descriptor</source>
-			<translation>وصف العنوان</translation>
-		</message>
-	</context>
-	<context>
-		<name>AddressDialog</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>AddressDialog</name>
-		<message>
-			<source>Advanced</source>
-			<translation>متقدم</translation>
-		</message>
-		<name>AddressDialog</name>
-		<message>
-			<source>Close</source>
-			<translation>إغلاق</translation>
-		</message>
-		<name>AddressDialog</name>
-		<message>
-			<source>Validate</source>
-			<translation>تحقق</translation>
-		</message>
-	</context>
-	<context>
-		<name>AddressEdit</name>
-		<message>
-			<source>Enter address here</source>
-			<translation>أدخل العنوان هنا</translation>
-		</message>
-	</context>
-	<context>
-		<name>AddressList</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Address {address}</source>
-			<translation>العنوان {address}</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Balance</source>
-			<translation>رصيد</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Category</source>
-			<translation>فئة</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Copy Addresses</source>
-			<translation>نسخ العناوين</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Copy as csv</source>
-			<translation>نسخ كملف csv</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Details</source>
-			<translation>تفاصيل</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Index</source>
-			<translation>الفهرس</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Label</source>
-			<translation>تصنيف</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>No spendable UTXOs found for the selected addresses.</source>
-			<translation>لم يتم العثور على UTXO قابلة للإنفاق للعناوين المحددة.</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Number of transactions</source>
-			<translation>عدد المعاملات</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
-			<translation>يرجى اختيار عناوين من محفظة واحدة لاختيار UTXO للإرسال.</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Select corresponding UTXOs for sending</source>
-			<translation>حدّد UTXO المقابلة للإرسال</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Set category</source>
-			<translation>تعيين الفئة</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Tx</source>
-			<translation>تحويلة</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Type</source>
-			<translation>نوع</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Value</source>
-			<translation>القيمة</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>View on block explorer</source>
-			<translation>عرض على مستكشف البلوكات</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>Wallet</source>
-			<translation>محفظة</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>change</source>
-			<translation>تغيير</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>change address</source>
-			<translation>عنوان التغيير</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>receiving</source>
-			<translation>استقبال</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>receiving address</source>
-			<translation>عنوان الاستقبال</translation>
-		</message>
-		<name>AddressList</name>
-		<message>
-			<source>{n} addresses have ben copied</source>
-			<translation>تم نسخ {n} عنوانًا</translation>
-		</message>
-	</context>
-	<context>
-		<name>AddressListWithToolbar</name>
-		<message>
-			<source>Create new address</source>
-			<translation>أنشئ عنوانًا جديدًا</translation>
-		</message>
-		<name>AddressListWithToolbar</name>
-		<message>
-			<source>Generate to selected adddresses</source>
-			<translation>توليف إلى العناوين المحددة</translation>
-		</message>
-		<name>AddressListWithToolbar</name>
-		<message>
-			<source>Manage Categories</source>
-			<translation>إدارة الفئات</translation>
-		</message>
-		<name>AddressListWithToolbar</name>
-		<message>
-			<source>for</source>
-			<translation>لـ</translation>
-		</message>
-	</context>
-	<context>
-		<name>AmountAnalyzer</name>
-		<message>
-			<source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
-			<translation>المبلغ كبير جدًا. يرجى النقر على فئة ممولة بشكل كافٍ على اليسار، أو اختيار العملات في علامة التبويب المتقدمة</translation>
-		</message>
-		<name>AmountAnalyzer</name>
-		<message>
-			<source>Amount too small</source>
-			<translation>المبلغ صغير جدًا</translation>
-		</message>
-	</context>
-	<context>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>A browser callback arrived after the invoice expired. Please try again.</source>
-			<translation>وصل استدعاء المتصفح بعد انتهاء صلاحية الفاتورة. يرجى المحاولة مرة أخرى.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Choose an amount and create a donation invoice.</source>
-			<translation>اختر مبلغًا وأنشئ فاتورة تبرع.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Complete the payment in your browser.</source>
-			<translation>أكمل الدفع في متصفحك.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Could not create invoice. Please try again.</source>
-			<translation>تعذر إنشاء الفاتورة. يرجى المحاولة مرة أخرى.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Could not open your browser automatically.</source>
-			<translation>تعذر فتح متصفحك تلقائيًا.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
-			<translation>تعذر بدء خادم الاستدعاء المحلي. يتم فتح الفاتورة في المتصفح بدون تأكيد تلقائي.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Create invoice</source>
-			<translation>إنشاء فاتورة</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>If the browser did not open, click &lt;a href="{url}"&gt;here&lt;/a&gt;.</source>
-			<translation>إذا لم يفتح المتصفح، فانقر &lt;a href="{url}"&gt;هنا&lt;/a&gt;.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>If there is an issue, please do not hesitate to contact us at &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</source>
-			<translation>إذا كانت هناك مشكلة، فلا تتردد في التواصل معنا على &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt;.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
-			<translation>الفاتورة جاهزة. أكمل الدفع في متصفحك. قد لا يكون التأكيد التلقائي متاحًا.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Invoice service returned an error ({code}).</source>
-			<translation>أعاد نظام الفواتير خطأً ({code}).</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
-			<translation>لم يتم استلام استدعاء من المتصفح قبل انتهاء مهلة الفاتورة. يرجى إعادة المحاولة للتبرع.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>No browser callback was received before the invoice timed out. Please try again.</source>
-			<translation>لم يتم استلام استدعاء من المتصفح قبل انتهاء مهلة الفاتورة. يرجى المحاولة مرة أخرى.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Payment confirmed via browser callback. Thank you!</source>
-			<translation>تم تأكيد الدفع عبر استدعاء المتصفح. شكرًا لك!</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Please choose an amount.</source>
-			<translation>يرجى اختيار مبلغ.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Requesting invoice...</source>
-			<translation>جارٍ طلب الفاتورة...</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</source>
-			<translation>جارٍ طلب الفاتورة... سيتم فتح متصفح وسيقوم {app_name} بالاستماع للاستدعاء محليًا.</translation>
-		</message>
-		<name>BTCPayWebButton</name>
-		<message>
-			<source>Unable to reach the donation server. Please try again later.</source>
-			<translation>تعذر الوصول إلى خادم التبرعات. يرجى المحاولة لاحقًا.</translation>
-		</message>
-	</context>
-	<context>
-		<name>BTCSpinBox</name>
-		<message>
-			<source>Max ≈ {amount}</source>
-			<translation>الحد الأقصى ≈ {amount}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BackupNsecNotificationBar</name>
-		<message>
-			<source>Please backup your sync key.</source>
-			<translation>يرجى عمل نسخة احتياطية من مفتاح المزامنة.</translation>
-		</message>
-		<name>BackupNsecNotificationBar</name>
-		<message>
-			<source>Restore labels</source>
-			<translation>استعادة التسميات</translation>
-		</message>
-		<name>BackupNsecNotificationBar</name>
-		<message>
-			<source>Save sync key</source>
-			<translation>حفظ مفتاح المزامنة</translation>
-		</message>
-		<name>BackupNsecNotificationBar</name>
-		<message>
-			<source>Sync key of wallet {wallet_id}:  {nsec}</source>
-			<translation>مفتاح المزامنة للمحفظة {wallet_id}:  {nsec}</translation>
-		</message>
-	</context>
-	<context>
-		<name>Balance</name>
-		<message>
-			<source>Confirmed</source>
-			<translation>تأكيد</translation>
-		</message>
-		<name>Balance</name>
-		<message>
-			<source>Unconfirmed</source>
-			<translation>غير مؤكد</translation>
-		</message>
-		<name>Balance</name>
-		<message>
-			<source>Unmatured</source>
-			<translation>غير ناضج</translation>
-		</message>
-	</context>
-	<context>
-		<name>BaseChat</name>
-		<message>
-			<source>Could not recognize {file_content} as BitcoinData</source>
-			<translation>لم يتم التعرف على {file_content} كـ BitcoinData</translation>
-		</message>
-	</context>
-	<context>
-		<name>BaseDeviceItem</name>
-		<message>
-			<source>Device name</source>
-			<translation>اسم الجهاز</translation>
-		</message>
-		<name>BaseDeviceItem</name>
-		<message>
-			<source>Enter a name of device with {npub}</source>
-			<translation>أدخل اسم جهاز مع {npub}</translation>
-		</message>
-		<name>BaseDeviceItem</name>
-		<message>
-			<source>Rename</source>
-			<translation>إعادة تسمية</translation>
-		</message>
-	</context>
-	<context>
-		<name>BaseHardwareSignerInteractionWidget</name>
-		<message>
-			<source>Device instructions</source>
-			<translation>تعليمات الجهاز</translation>
-		</message>
-	</context>
-	<context>
-		<name>BaseNostrSync</name>
-		<message>
-			<source>Could not recognize {file_content} as BitcoinData</source>
-			<translation>لم يتم التعرف على {file_content} كـ BitcoinData</translation>
-		</message>
-		<name>BaseNostrSync</name>
-		<message>
-			<source>Enter a name of device with {npub}</source>
-			<translation>أدخل اسم جهاز مع {npub}</translation>
-		</message>
-		<name>BaseNostrSync</name>
-		<message>
-			<source>Go to {untrusted}</source>
-			<translation>اذهب إلى {untrusted}</translation>
-		</message>
-		<name>BaseNostrSync</name>
-		<message>
-			<source>To complete the connection, accept my {id} request on the other device {other}.</source>
-			<translation>لإكمال الاتصال، قبل طلب {id} الخاص بي على الجهاز الآخر {other}.</translation>
-		</message>
-	</context>
-	<context>
-		<name>BasePluginWidget</name>
-		<message>
-			<source>Enable</source>
-			<translation>تمكين</translation>
-		</message>
-		<name>BasePluginWidget</name>
-		<message>
-			<source>Open plugin</source>
-			<translation>فتح الإضافة</translation>
-		</message>
-		<name>BasePluginWidget</name>
-		<message>
-			<source>Provided by: {provider}</source>
-			<translation>مقدم من: {provider}</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinDmChatGui</name>
-		<message>
-			<source>Me</source>
-			<translation>أنا</translation>
-		</message>
-	</context>
-	<context>
-		<name>BitcoinQuickReceive</name>
-		<message>
-			<source>Receive addresses</source>
-			<translation>عناوين الاستلام</translation>
-		</message>
-	</context>
-	<context>
-		<name>BlockingWaitingDialog</name>
-		<message>
-			<source>Please wait</source>
-			<translation>الرجاء الانتظار</translation>
-		</message>
-	</context>
-	<context>
-		<name>BusinessPlanItem</name>
-		<message>
-			<source>Business Plan</source>
-			<translation>خطة الأعمال</translation>
-		</message>
-		<name>BusinessPlanItem</name>
-		<message>
-			<source>Business plan access is active.</source>
-			<translation>الوصول إلى خطة الأعمال نشط.</translation>
-		</message>
-		<name>BusinessPlanItem</name>
-		<message>
-			<source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
-			<translation>افتح جميع الإضافات المدفوعة باشتراك واحد وأزل رسوم خدمة المدفوعات المجدولة.</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonEdit</name>
-		<message>
-			<source>Could not recognize the input. Do you want to scan again?
+<context>
+    <name>AboutTab</name>
+    <message>
+        <source>(newest version)</source>
+        <translation>(أحدث إصدار)</translation>
+    </message>
+    <name>AboutTab</name>
+    <message>
+        <source>A secure bitcoin savings wallet for everyone.</source>
+        <translation>محفظة ادخار بيتكوين آمنة للجميع.</translation>
+    </message>
+    <name>AboutTab</name>
+    <message>
+        <source>Binaries are {link}.</source>
+        <translation>الملفات الثنائية متاحة في {link}.</translation>
+    </message>
+    <name>AboutTab</name>
+    <message>
+        <source>FOSS - Free &amp; Open Source Software</source>
+        <translation>FOSS - برمجيات حرة ومفتوحة المصدر</translation>
+    </message>
+    <name>AboutTab</name>
+    <message>
+        <source>Licence</source>
+        <translation>الترخيص</translation>
+    </message>
+    <name>AboutTab</name>
+    <message>
+        <source>Update available</source>
+        <translation>يوجد تحديث متاح</translation>
+    </message>
+    <name>AboutTab</name>
+    <message>
+        <source>Update to {version} available</source>
+        <translation>يوجد تحديث إلى {version}</translation>
+    </message>
+    <name>AboutTab</name>
+    <message>
+        <source>Version {version}</source>
+        <translation>الإصدار {version}</translation>
+    </message>
+    <name>AboutTab</name>
+    <message>
+        <source>reproducible</source>
+        <translation>قابل لإعادة الإنتاج</translation>
+    </message>
+</context>
+<context>
+    <name>AbstractSignatureImporter</name>
+    <message>
+        <source>No additional signatures were added</source>
+        <translation>لم يتم إضافة توقيعات إضافية</translation>
+    </message>
+    <name>AbstractSignatureImporter</name>
+    <message>
+        <source>The input is incompatible with the PSBT to be signed.</source>
+        <translation>الإدخال غير متوافق مع PSBT المراد توقيعها.</translation>
+    </message>
+    <name>AbstractSignatureImporter</name>
+    <message>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي</translation>
+    </message>
+    <name>AbstractSignatureImporter</name>
+    <message>
+        <source>bdk libary error. The txid should not be changed during finalizing</source>
+        <translation>خطأ في مكتبة bdk. لا يجب تغيير txid أثناء الإنهاء</translation>
+    </message>
+</context>
+<context>
+    <name>AddCategoryButton</name>
+    <message>
+        <source>Add new category</source>
+        <translation>إضافة فئة جديدة</translation>
+    </message>
+    <name>AddCategoryButton</name>
+    <message>
+        <source>KYC Exchange, Private, ...</source>
+        <translation>تبادل KYC، خاص، …</translation>
+    </message>
+</context>
+<context>
+    <name>AddPluginSourceDialog</name>
+    <message>
+        <source>Add Plugin Source</source>
+        <translation>إضافة مصدر إضافة</translation>
+    </message>
+    <name>AddPluginSourceDialog</name>
+    <message>
+        <source>Bearer token</source>
+        <translation>رمز Bearer</translation>
+    </message>
+    <name>AddPluginSourceDialog</name>
+    <message>
+        <source>Display name</source>
+        <translation>اسم العرض</translation>
+    </message>
+    <name>AddPluginSourceDialog</name>
+    <message>
+        <source>Manifest URL</source>
+        <translation>عنوان URL للبيان</translation>
+    </message>
+    <name>AddPluginSourceDialog</name>
+    <message>
+        <source>Paste the ASCII-armored public key here</source>
+        <translation>الصق المفتاح العام بصيغة ASCII-armored هنا</translation>
+    </message>
+    <name>AddPluginSourceDialog</name>
+    <message>
+        <source>Pinned public key</source>
+        <translation>المفتاح العام المثبّت</translation>
+    </message>
+</context>
+<context>
+    <name>AddressAnalyzer</name>
+    <message>
+        <source>Invalid Address</source>
+        <translation>العنوان غير صالح</translation>
+    </message>
+    <name>AddressAnalyzer</name>
+    <message>
+        <source>Missing Address</source>
+        <translation>العنوان مفقود</translation>
+    </message>
+    <name>AddressAnalyzer</name>
+    <message>
+        <source>Valid Address</source>
+        <translation>العنوان صالح</translation>
+    </message>
+</context>
+<context>
+    <name>AddressDetailsAdvanced</name>
+    <message>
+        <source>Address descriptor</source>
+        <translation>وصف العنوان</translation>
+    </message>
+</context>
+<context>
+    <name>AddressDialog</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>AddressDialog</name>
+    <message>
+        <source>Advanced</source>
+        <translation>متقدم</translation>
+    </message>
+    <name>AddressDialog</name>
+    <message>
+        <source>Close</source>
+        <translation>إغلاق</translation>
+    </message>
+    <name>AddressDialog</name>
+    <message>
+        <source>Validate</source>
+        <translation>تحقق</translation>
+    </message>
+</context>
+<context>
+    <name>AddressEdit</name>
+    <message>
+        <source>Enter address here</source>
+        <translation>أدخل العنوان هنا</translation>
+    </message>
+</context>
+<context>
+    <name>AddressList</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Address {address}</source>
+        <translation>العنوان {address}</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Balance</source>
+        <translation>رصيد</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Category</source>
+        <translation>فئة</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Copy Addresses</source>
+        <translation>نسخ العناوين</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Copy as csv</source>
+        <translation>نسخ كملف csv</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Details</source>
+        <translation>تفاصيل</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Index</source>
+        <translation>الفهرس</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Label</source>
+        <translation>تصنيف</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>No spendable UTXOs found for the selected addresses.</source>
+        <translation>لم يتم العثور على UTXO قابلة للإنفاق للعناوين المحددة.</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Number of transactions</source>
+        <translation>عدد المعاملات</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Please select addresses from a single wallet to choose UTXOs for sending.</source>
+        <translation>يرجى اختيار عناوين من محفظة واحدة لاختيار UTXO للإرسال.</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Select corresponding UTXOs for sending</source>
+        <translation>حدّد UTXO المقابلة للإرسال</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Set category</source>
+        <translation>تعيين الفئة</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Tx</source>
+        <translation>تحويلة</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Type</source>
+        <translation>نوع</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Value</source>
+        <translation>القيمة</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>View on block explorer</source>
+        <translation>عرض على مستكشف البلوكات</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>Wallet</source>
+        <translation>محفظة</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>change</source>
+        <translation>تغيير</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>change address</source>
+        <translation>عنوان التغيير</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>receiving</source>
+        <translation>استقبال</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>receiving address</source>
+        <translation>عنوان الاستقبال</translation>
+    </message>
+    <name>AddressList</name>
+    <message>
+        <source>{n} addresses have ben copied</source>
+        <translation>تم نسخ {n} عنوانًا</translation>
+    </message>
+</context>
+<context>
+    <name>AddressListWithToolbar</name>
+    <message>
+        <source>Create new address</source>
+        <translation>أنشئ عنوانًا جديدًا</translation>
+    </message>
+    <name>AddressListWithToolbar</name>
+    <message>
+        <source>Generate to selected adddresses</source>
+        <translation>توليف إلى العناوين المحددة</translation>
+    </message>
+    <name>AddressListWithToolbar</name>
+    <message>
+        <source>Manage Categories</source>
+        <translation>إدارة الفئات</translation>
+    </message>
+    <name>AddressListWithToolbar</name>
+    <message>
+        <source>for</source>
+        <translation>لـ</translation>
+    </message>
+</context>
+<context>
+    <name>AmountAnalyzer</name>
+    <message>
+        <source>Amount too large. Please click on a sufficiently funded category on the left, or select the coins in the advanced tab</source>
+        <translation>المبلغ كبير جدًا. يرجى النقر على فئة ممولة بشكل كافٍ على اليسار، أو اختيار العملات في علامة التبويب المتقدمة</translation>
+    </message>
+    <name>AmountAnalyzer</name>
+    <message>
+        <source>Amount too small</source>
+        <translation>المبلغ صغير جدًا</translation>
+    </message>
+</context>
+<context>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>A browser callback arrived after the invoice expired. Please try again.</source>
+        <translation>وصل استدعاء المتصفح بعد انتهاء صلاحية الفاتورة. يرجى المحاولة مرة أخرى.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Choose an amount and create a donation invoice.</source>
+        <translation>اختر مبلغًا وأنشئ فاتورة تبرع.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Complete the payment in your browser.</source>
+        <translation>أكمل الدفع في متصفحك.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Could not create invoice. Please try again.</source>
+        <translation>تعذر إنشاء الفاتورة. يرجى المحاولة مرة أخرى.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Could not open your browser automatically.</source>
+        <translation>تعذر فتح متصفحك تلقائيًا.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Could not start the local callback server. Opening the invoice in your browser without automatic confirmation.</source>
+        <translation>تعذر بدء خادم الاستدعاء المحلي. يتم فتح الفاتورة في المتصفح بدون تأكيد تلقائي.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Create invoice</source>
+        <translation>إنشاء فاتورة</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>If the browser did not open, click &lt;a href=&quot;{url}&quot;&gt;here&lt;/a&gt;.</source>
+        <translation>إذا لم يفتح المتصفح، فانقر &lt;a href=&quot;{url}&quot;&gt;هنا&lt;/a&gt;.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>If there is an issue, please do not hesitate to contact us at &lt;a href=&quot;mailto:{email}&quot;&gt;{email}&lt;/a&gt;.</source>
+        <translation>إذا كانت هناك مشكلة، فلا تتردد في التواصل معنا على &lt;a href=&quot;mailto:{email}&quot;&gt;{email}&lt;/a&gt;.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Invoice ready. Complete the payment in your browser. Automatic confirmation may not be available.</source>
+        <translation>الفاتورة جاهزة. أكمل الدفع في متصفحك. قد لا يكون التأكيد التلقائي متاحًا.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Invoice service returned an error ({code}).</source>
+        <translation>أعاد نظام الفواتير خطأً ({code}).</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>No browser callback was received before the invoice timed out. Please retry the donation.</source>
+        <translation>لم يتم استلام استدعاء من المتصفح قبل انتهاء مهلة الفاتورة. يرجى إعادة المحاولة للتبرع.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>No browser callback was received before the invoice timed out. Please try again.</source>
+        <translation>لم يتم استلام استدعاء من المتصفح قبل انتهاء مهلة الفاتورة. يرجى المحاولة مرة أخرى.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Payment confirmed via browser callback. Thank you!</source>
+        <translation>تم تأكيد الدفع عبر استدعاء المتصفح. شكرًا لك!</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Please choose an amount.</source>
+        <translation>يرجى اختيار مبلغ.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Requesting invoice...</source>
+        <translation>جارٍ طلب الفاتورة...</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Requesting invoice... A browser will open and {app_name} will listen for the callback locally.</source>
+        <translation>جارٍ طلب الفاتورة... سيتم فتح متصفح وسيقوم {app_name} بالاستماع للاستدعاء محليًا.</translation>
+    </message>
+    <name>BTCPayWebButton</name>
+    <message>
+        <source>Unable to reach the donation server. Please try again later.</source>
+        <translation>تعذر الوصول إلى خادم التبرعات. يرجى المحاولة لاحقًا.</translation>
+    </message>
+</context>
+<context>
+    <name>BTCSpinBox</name>
+    <message>
+        <source>Max ≈ {amount}</source>
+        <translation>الحد الأقصى ≈ {amount}</translation>
+    </message>
+</context>
+<context>
+    <name>BackupNsecNotificationBar</name>
+    <message>
+        <source>Please backup your sync key.</source>
+        <translation>يرجى عمل نسخة احتياطية من مفتاح المزامنة.</translation>
+    </message>
+    <name>BackupNsecNotificationBar</name>
+    <message>
+        <source>Restore labels</source>
+        <translation>استعادة التسميات</translation>
+    </message>
+    <name>BackupNsecNotificationBar</name>
+    <message>
+        <source>Save sync key</source>
+        <translation>حفظ مفتاح المزامنة</translation>
+    </message>
+    <name>BackupNsecNotificationBar</name>
+    <message>
+        <source>Sync key of wallet {wallet_id}:  {nsec}</source>
+        <translation>مفتاح المزامنة للمحفظة {wallet_id}:  {nsec}</translation>
+    </message>
+</context>
+<context>
+    <name>Balance</name>
+    <message>
+        <source>Confirmed</source>
+        <translation>تأكيد</translation>
+    </message>
+    <name>Balance</name>
+    <message>
+        <source>Unconfirmed</source>
+        <translation>غير مؤكد</translation>
+    </message>
+    <name>Balance</name>
+    <message>
+        <source>Unmatured</source>
+        <translation>غير ناضج</translation>
+    </message>
+</context>
+<context>
+    <name>BaseChat</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>لم يتم التعرف على {file_content} كـ BitcoinData</translation>
+    </message>
+</context>
+<context>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Device name</source>
+        <translation>اسم الجهاز</translation>
+    </message>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>أدخل اسم جهاز مع {npub}</translation>
+    </message>
+    <name>BaseDeviceItem</name>
+    <message>
+        <source>Rename</source>
+        <translation>إعادة تسمية</translation>
+    </message>
+</context>
+<context>
+    <name>BaseHardwareSignerInteractionWidget</name>
+    <message>
+        <source>Device instructions</source>
+        <translation>تعليمات الجهاز</translation>
+    </message>
+</context>
+<context>
+    <name>BaseNostrSync</name>
+    <message>
+        <source>Could not recognize {file_content} as BitcoinData</source>
+        <translation>لم يتم التعرف على {file_content} كـ BitcoinData</translation>
+    </message>
+    <name>BaseNostrSync</name>
+    <message>
+        <source>Enter a name of device with {npub}</source>
+        <translation>أدخل اسم جهاز مع {npub}</translation>
+    </message>
+    <name>BaseNostrSync</name>
+    <message>
+        <source>Go to {untrusted}</source>
+        <translation>اذهب إلى {untrusted}</translation>
+    </message>
+    <name>BaseNostrSync</name>
+    <message>
+        <source>To complete the connection, accept my {id} request on the other device {other}.</source>
+        <translation>لإكمال الاتصال، قبل طلب {id} الخاص بي على الجهاز الآخر {other}.</translation>
+    </message>
+</context>
+<context>
+    <name>BasePluginWidget</name>
+    <message>
+        <source>Enable</source>
+        <translation>تمكين</translation>
+    </message>
+    <name>BasePluginWidget</name>
+    <message>
+        <source>Open plugin</source>
+        <translation>فتح الإضافة</translation>
+    </message>
+    <name>BasePluginWidget</name>
+    <message>
+        <source>Provided by: {provider}</source>
+        <translation>مقدم من: {provider}</translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinDmChatGui</name>
+    <message>
+        <source>Me</source>
+        <translation>أنا</translation>
+    </message>
+</context>
+<context>
+    <name>BitcoinQuickReceive</name>
+    <message>
+        <source>Receive addresses</source>
+        <translation>عناوين الاستلام</translation>
+    </message>
+</context>
+<context>
+    <name>BlockingWaitingDialog</name>
+    <message>
+        <source>Please wait</source>
+        <translation>الرجاء الانتظار</translation>
+    </message>
+</context>
+<context>
+    <name>BusinessPlanItem</name>
+    <message>
+        <source>Business Plan</source>
+        <translation>خطة الأعمال</translation>
+    </message>
+    <name>BusinessPlanItem</name>
+    <message>
+        <source>Business plan access is active.</source>
+        <translation>الوصول إلى خطة الأعمال نشط.</translation>
+    </message>
+    <name>BusinessPlanItem</name>
+    <message>
+        <source>Unlock all paid plugins with one subscription and remove the scheduled-payments service fee. Start the free trial first, then manage or refresh the subscription here.</source>
+        <translation>افتح جميع الإضافات المدفوعة باشتراك واحد وأزل رسوم خدمة المدفوعات المجدولة.</translation>
+    </message>
+</context>
+<context>
+    <name>ButtonEdit</name>
+    <message>
+        <source>Could not recognize the input. Do you want to scan again?
 
 The error was: {error}</source>
-			<translation>تعذّر التعرّف على الإدخال. هل تريد إجراء المسح مرة أخرى؟ كان الخطأ: {error}</translation>
-		</message>
-		<name>ButtonEdit</name>
-		<message>
-			<source>Scan again</source>
-			<translation>إعادة المسح</translation>
-		</message>
-	</context>
-	<context>
-		<name>ButtonExplorerIcon</name>
-		<message>
-			<source>Open in the block explorer</source>
-			<translation>افتح في مستكشف الكتل</translation>
-		</message>
-	</context>
-	<context>
-		<name>CBFProgressBar</name>
-		<message>
-			<source>Past time: {passed_time}</source>
-			<translation>الوقت المنقضي: {passed_time}</translation>
-		</message>
-		<name>CBFProgressBar</name>
-		<message>
-			<source>{percent}%</source>
-			<translation>{percent}%</translation>
-		</message>
-		<name>CBFProgressBar</name>
-		<message>
-			<source>{percent}% - Finished {remaining_time}</source>
-			<translation>{percent}% - اكتمل {remaining_time}</translation>
-		</message>
-	</context>
-	<context>
-		<name>CPFPIcon</name>
-		<message>
-			<source>Spend your change with this fee to pull the parent in (CPFP).
+        <translation>تعذّر التعرّف على الإدخال. هل تريد إجراء المسح مرة أخرى؟
+
+ كان الخطأ: {error}</translation>
+    </message>
+    <name>ButtonEdit</name>
+    <message>
+        <source>Scan again</source>
+        <translation>إعادة المسح</translation>
+    </message>
+</context>
+<context>
+    <name>ButtonExplorerIcon</name>
+    <message>
+        <source>Open in the block explorer</source>
+        <translation>افتح في مستكشف الكتل</translation>
+    </message>
+</context>
+<context>
+    <name>CBFProgressBar</name>
+    <message>
+        <source>Past time: {passed_time}</source>
+        <translation>الوقت المنقضي: {passed_time}</translation>
+    </message>
+    <name>CBFProgressBar</name>
+    <message>
+        <source>{percent}%</source>
+        <translation>{percent}%</translation>
+    </message>
+    <name>CBFProgressBar</name>
+    <message>
+        <source>{percent}% - Finished {remaining_time}</source>
+        <translation>{percent}% - اكتمل {remaining_time}</translation>
+    </message>
+</context>
+<context>
+    <name>CPFPIcon</name>
+    <message>
+        <source>Spend your change with this fee to pull the parent in (CPFP).
 The combined parent+child fee rate should meet the target block.</source>
-			<translation>استخدم فكة المبلغ بهذه الرسوم لسحب المعاملة الأصلية (CPFP).
+        <translation>استخدم فكة المبلغ بهذه الرسوم لسحب المعاملة الأصلية (CPFP).
 يجب أن يحقق معدل الرسوم المجمّع للأصل+الفرعي كتلة الهدف.</translation>
-		</message>
-	</context>
-	<context>
-		<name>CategoryComboBox</name>
-		<message>
-			<source>Add category</source>
-			<translation>إضافة فئة</translation>
-		</message>
-	</context>
-	<context>
-		<name>CategoryList</name>
-		<message>
-			<source>Addresses</source>
-			<translation>العناوين</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Balance</source>
-			<translation>الرصيد</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Category</source>
-			<translation>فئة</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Color</source>
-			<translation>اللون</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Current Balance</source>
-			<translation>الرصيد الحالي</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Number of spent and unspent transaction outputs</source>
-			<translation>عدد مخرجات المعاملات المصروفة وغير المصروفة</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Number of unspent transaction outputs</source>
-			<translation>عدد مخرجات المعاملات غير المصروفة</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Received</source>
-			<translation>تم الاستلام</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Total received (possibly already spent again)</source>
-			<translation>إجمالي المستلم (قد يكون تم صرفه مرة أخرى)</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Tx Outputs</source>
-			<translation>مخرجات المعاملة</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>UTXOs</source>
-			<translation>UTXOs</translation>
-		</message>
-		<name>CategoryList</name>
-		<message>
-			<source>Value</source>
-			<translation>القيمة</translation>
-		</message>
-	</context>
-	<context>
-		<name>CategoryManager</name>
-		<message>
-			<source>Add Category</source>
-			<translation>إضافة فئة</translation>
-		</message>
-		<name>CategoryManager</name>
-		<message>
-			<source>Change category</source>
-			<translation>تغيير الفئة</translation>
-		</message>
-		<name>CategoryManager</name>
-		<message>
-			<source>Manage Categories of {wallet_id}</source>
-			<translation>إدارة فئات {wallet_id}</translation>
-		</message>
-		<name>CategoryManager</name>
-		<message>
-			<source>Merge</source>
-			<translation>دمج</translation>
-		</message>
-		<name>CategoryManager</name>
-		<message>
-			<source>Rename</source>
-			<translation>إعادة تسمية</translation>
-		</message>
-		<name>CategoryManager</name>
-		<message>
-			<source>The addresses {used_addresses}
+    </message>
+</context>
+<context>
+    <name>CategoryComboBox</name>
+    <message>
+        <source>Add category</source>
+        <translation>إضافة فئة</translation>
+    </message>
+</context>
+<context>
+    <name>CategoryList</name>
+    <message>
+        <source>Addresses</source>
+        <translation>العناوين</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Balance</source>
+        <translation>الرصيد</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Category</source>
+        <translation>فئة</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Color</source>
+        <translation>اللون</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Current Balance</source>
+        <translation>الرصيد الحالي</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Number of spent and unspent transaction outputs</source>
+        <translation>عدد مخرجات المعاملات المصروفة وغير المصروفة</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Number of unspent transaction outputs</source>
+        <translation>عدد مخرجات المعاملات غير المصروفة</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Received</source>
+        <translation>تم الاستلام</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Total received (possibly already spent again)</source>
+        <translation>إجمالي المستلم (قد يكون تم صرفه مرة أخرى)</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Tx Outputs</source>
+        <translation>مخرجات المعاملة</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>UTXOs</source>
+        <translation>UTXOs</translation>
+    </message>
+    <name>CategoryList</name>
+    <message>
+        <source>Value</source>
+        <translation>القيمة</translation>
+    </message>
+</context>
+<context>
+    <name>CategoryManager</name>
+    <message>
+        <source>Add Category</source>
+        <translation>إضافة فئة</translation>
+    </message>
+    <name>CategoryManager</name>
+    <message>
+        <source>Change category</source>
+        <translation>تغيير الفئة</translation>
+    </message>
+    <name>CategoryManager</name>
+    <message>
+        <source>Manage Categories of {wallet_id}</source>
+        <translation>إدارة فئات {wallet_id}</translation>
+    </message>
+    <name>CategoryManager</name>
+    <message>
+        <source>Merge</source>
+        <translation>دمج</translation>
+    </message>
+    <name>CategoryManager</name>
+    <message>
+        <source>Rename</source>
+        <translation>إعادة تسمية</translation>
+    </message>
+    <name>CategoryManager</name>
+    <message>
+        <source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change the category?</source>
-			<translation>العناوين {used_addresses}
+        <translation>العناوين {used_addresses}
 لديها معاملات مرتبطة بعناوين أخرى بالفعل. هل أنت متأكد من أنك تريد تغيير الفئة؟</translation>
-		</message>
-		<name>CategoryManager</name>
-		<message>
-			<source>The addresses {used_addresses}
+    </message>
+    <name>CategoryManager</name>
+    <message>
+        <source>The addresses {used_addresses}
 have transactions linking to other addresses already. Are you sure you want to change their category?</source>
-			<translation>العناوين {used_addresses}
+        <translation>العناوين {used_addresses}
 لديها معاملات مرتبطة بعناوين أخرى بالفعل. هل أنت متأكد أنك تريد تغيير فئتها؟</translation>
-		</message>
-	</context>
-	<context>
-		<name>Chat</name>
-		<message>
-			<source>Could not publish self-copy</source>
-			<translation>تعذّر نشر النسخة الذاتية</translation>
-		</message>
-		<name>Chat</name>
-		<message>
-			<source>Could not publish self-copy: {error}</source>
-			<translation>تعذّر نشر النسخة الذاتية: {error}</translation>
-		</message>
-		<name>Chat</name>
-		<message>
-			<source>Pending confirmation from {waiting_for}</source>
-			<translation>في انتظار التأكيد من {waiting_for}</translation>
-		</message>
-		<name>Chat</name>
-		<message>
-			<source>Pending due to failed publishes: {failures}</source>
-			<translation>معلّق بسبب عمليات نشر فاشلة: {failures}</translation>
-		</message>
-		<name>Chat</name>
-		<message>
-			<source>Pending: {waiting_for}. Failed: {failures}</source>
-			<translation>معلّق: {waiting_for}. فشل: {failures}</translation>
-		</message>
-		<name>Chat</name>
-		<message>
-			<source>Publish failed for {recipient}</source>
-			<translation>فشل النشر إلى {recipient}</translation>
-		</message>
-		<name>Chat</name>
-		<message>
-			<source>Publish failed for {recipient}: {error}</source>
-			<translation>فشل النشر إلى {recipient}: {error}</translation>
-		</message>
-		<name>Chat</name>
-		<message>
-			<source>Published to all recipients and self-copy received</source>
-			<translation>تم النشر إلى جميع المستلمين وتم استلام النسخة الذاتية</translation>
-		</message>
-		<name>Chat</name>
-		<message>
-			<source>You can only send only PSBTs or transactions</source>
-			<translation>يمكنك إرسال PSBTs أو المعاملات فقط</translation>
-		</message>
-		<name>Chat</name>
-		<message>
-			<source>self-copy</source>
-			<translation>النسخة الذاتية</translation>
-		</message>
-	</context>
-	<context>
-		<name>ChatGui</name>
-		<message>
-			<source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
-			<translation>جميع الملفات (*);;PSBT (*.psbt);;صفقة (*.tx)</translation>
-		</message>
-		<name>ChatGui</name>
-		<message>
-			<source>Open Transaction/PSBT</source>
-			<translation>فتح المعاملة/PSBT</translation>
-		</message>
-		<name>ChatGui</name>
-		<message>
-			<source>Send</source>
-			<translation>يرسل</translation>
-		</message>
-		<name>ChatGui</name>
-		<message>
-			<source>Share a PSBT</source>
-			<translation>شارك PSBT</translation>
-		</message>
-		<name>ChatGui</name>
-		<message>
-			<source>Type your message here...</source>
-			<translation>اكتب رسالتك هنا...</translation>
-		</message>
-	</context>
-	<context>
-		<name>Client</name>
-		<message>
-			<source>Chain height {height}</source>
-			<translation>ارتفاع السلسلة {height}</translation>
-		</message>
-		<name>Client</name>
-		<message>
-			<source>Connecting to nodes</source>
-			<translation>جارٍ الاتصال بالعُقد</translation>
-		</message>
-		<name>Client</name>
-		<message>
-			<source>Downloaded {count} blocks</source>
-			<translation>تم تنزيل {count} من الكتل</translation>
-		</message>
-		<name>Client</name>
-		<message>
-			<source>Syncing via Electrum</source>
-			<translation>المزامنة عبر Electrum</translation>
-		</message>
-		<name>Client</name>
-		<message>
-			<source>Syncing via Esplora</source>
-			<translation>المزامنة عبر Esplora</translation>
-		</message>
-	</context>
-	<context>
-		<name>ColdcardSeedWarningBar</name>
-		<message>
-			<source>Learn more</source>
-			<translation>معرفة المزيد</translation>
-		</message>
-		<name>ColdcardSeedWarningBar</name>
-		<message>
-			<source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
+    </message>
+</context>
+<context>
+    <name>Chat</name>
+    <message>
+        <source>Could not publish self-copy</source>
+        <translation>تعذّر نشر النسخة الذاتية</translation>
+    </message>
+    <name>Chat</name>
+    <message>
+        <source>Could not publish self-copy: {error}</source>
+        <translation>تعذّر نشر النسخة الذاتية: {error}</translation>
+    </message>
+    <name>Chat</name>
+    <message>
+        <source>Pending confirmation from {waiting_for}</source>
+        <translation>في انتظار التأكيد من {waiting_for}</translation>
+    </message>
+    <name>Chat</name>
+    <message>
+        <source>Pending due to failed publishes: {failures}</source>
+        <translation>معلّق بسبب عمليات نشر فاشلة: {failures}</translation>
+    </message>
+    <name>Chat</name>
+    <message>
+        <source>Pending: {waiting_for}. Failed: {failures}</source>
+        <translation>معلّق: {waiting_for}. فشل: {failures}</translation>
+    </message>
+    <name>Chat</name>
+    <message>
+        <source>Publish failed for {recipient}</source>
+        <translation>فشل النشر إلى {recipient}</translation>
+    </message>
+    <name>Chat</name>
+    <message>
+        <source>Publish failed for {recipient}: {error}</source>
+        <translation>فشل النشر إلى {recipient}: {error}</translation>
+    </message>
+    <name>Chat</name>
+    <message>
+        <source>Published to all recipients and self-copy received</source>
+        <translation>تم النشر إلى جميع المستلمين وتم استلام النسخة الذاتية</translation>
+    </message>
+    <name>Chat</name>
+    <message>
+        <source>You can only send only PSBTs or transactions</source>
+        <translation>يمكنك إرسال PSBTs أو المعاملات فقط</translation>
+    </message>
+    <name>Chat</name>
+    <message>
+        <source>self-copy</source>
+        <translation>النسخة الذاتية</translation>
+    </message>
+</context>
+<context>
+    <name>ChatGui</name>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transation (*.tx)</source>
+        <translation>جميع الملفات (*);;PSBT (*.psbt);;صفقة (*.tx)</translation>
+    </message>
+    <name>ChatGui</name>
+    <message>
+        <source>Open Transaction/PSBT</source>
+        <translation>فتح المعاملة/PSBT</translation>
+    </message>
+    <name>ChatGui</name>
+    <message>
+        <source>Send</source>
+        <translation>يرسل</translation>
+    </message>
+    <name>ChatGui</name>
+    <message>
+        <source>Share a PSBT</source>
+        <translation>شارك PSBT</translation>
+    </message>
+    <name>ChatGui</name>
+    <message>
+        <source>Type your message here...</source>
+        <translation>اكتب رسالتك هنا...</translation>
+    </message>
+</context>
+<context>
+    <name>Client</name>
+    <message>
+        <source>Chain height {height}</source>
+        <translation>ارتفاع السلسلة {height}</translation>
+    </message>
+    <name>Client</name>
+    <message>
+        <source>Connecting to nodes</source>
+        <translation>جارٍ الاتصال بالعُقد</translation>
+    </message>
+    <name>Client</name>
+    <message>
+        <source>Downloaded {count} blocks</source>
+        <translation>تم تنزيل {count} من الكتل</translation>
+    </message>
+    <name>Client</name>
+    <message>
+        <source>Syncing via Electrum</source>
+        <translation>المزامنة عبر Electrum</translation>
+    </message>
+    <name>Client</name>
+    <message>
+        <source>Syncing via Esplora</source>
+        <translation>المزامنة عبر Esplora</translation>
+    </message>
+</context>
+<context>
+    <name>ColdcardSeedWarningBar</name>
+    <message>
+        <source>Learn more</source>
+        <translation>معرفة المزيد</translation>
+    </message>
+    <name>ColdcardSeedWarningBar</name>
+    <message>
+        <source>Urgent security warning: All Coldcard device models were affected by a seed-generation vulnerability.
 Funds may be at risk. Read the guidance now and migrate to a seed generated with fixed firmware.</source>
-			<translation>تحذير أمني عاجل: تأثرت جميع طُرز أجهزة Coldcard بثغرة أمنية في إنشاء العبارة الأولية.
+        <translation>تحذير أمني عاجل: تأثرت جميع طُرز أجهزة Coldcard بثغرة أمنية في إنشاء العبارة الأولية.
 قد تكون الأموال معرضة للخطر. اقرأ الإرشادات الآن وانتقل إلى عبارة أولية تم إنشاؤها باستخدام برنامج ثابت مُصحّح.</translation>
-		</message>
-	</context>
-	<context>
-		<name>ColumnFee</name>
-		<message>
-			<source>Confirmed</source>
-			<translation>مؤكد</translation>
-		</message>
-		<name>ColumnFee</name>
-		<message>
-			<source>Confirming...</source>
-			<translation>قيد التأكيد...</translation>
-		</message>
-		<name>ColumnFee</name>
-		<message>
-			<source>Mempool Fees</source>
-			<translation>رسوم الميمبول</translation>
-		</message>
-		<name>ColumnFee</name>
-		<message>
-			<source>Mempool position</source>
-			<translation>الموضع في الميمبول</translation>
-		</message>
-		<name>ColumnFee</name>
-		<message>
-			<source>Priority</source>
-			<translation>الأولوية</translation>
-		</message>
-		<name>ColumnFee</name>
-		<message>
-			<source>Show nLocktime</source>
-			<translation>إظهار nLocktime</translation>
-		</message>
-	</context>
-	<context>
-		<name>ColumnInputs</name>
-		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>إضافة UTXOs الأجنبية</translation>
-		</message>
-		<name>ColumnInputs</name>
-		<message>
-			<source>Input total:</source>
-			<translation>إجمالي المدخلات:</translation>
-		</message>
-		<name>ColumnInputs</name>
-		<message>
-			<source>Select specific UTXOs</source>
-			<translation>اختر UTXO محددة</translation>
-		</message>
-		<name>ColumnInputs</name>
-		<message>
-			<source>Sending source</source>
-			<translation>مصدر الإرسال</translation>
-		</message>
-	</context>
-	<context>
-		<name>ColumnRecipients</name>
-		<message>
-			<source>Sending total:</source>
-			<translation>إجمالي الإرسال:</translation>
-		</message>
-	</context>
-	<context>
-		<name>ColumnSankey</name>
-		<message>
-			<source>Diagram</source>
-			<translation>رسم بياني</translation>
-		</message>
-	</context>
-	<context>
-		<name>DateRangePicker</name>
-		<message>
-			<source>Reset zoom</source>
-			<translation>إعادة تعيين التكبير</translation>
-		</message>
-		<name>DateRangePicker</name>
-		<message>
-			<source>to</source>
-			<translation>إلى</translation>
-		</message>
-	</context>
-	<context>
-		<name>DemoWindow</name>
-		<message>
-			<source>Auto convert between fiat currencies</source>
-			<translation>تحويل تلقائي بين العملات الورقية</translation>
-		</message>
-	</context>
-	<context>
-		<name>DescriptorAnalyzer</name>
-		<message>
-			<source>Invalid Descriptor</source>
-			<translation>مُعرّف غير صالح</translation>
-		</message>
-		<name>DescriptorAnalyzer</name>
-		<message>
-			<source>Missing Descriptor</source>
-			<translation>الوصف مفقود</translation>
-		</message>
-	</context>
-	<context>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Copy to clipboard</source>
-			<translation>نسخ إلى الحافظة</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>تعذّر التعرّف على الإدخال. هل تريد المسح مرة أخرى؟</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Descriptor not valid</source>
-			<translation>الواصف غير صالح</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Export</source>
-			<translation>تصدير</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Export for hardware signers</source>
-			<translation>تصدير لأجهزة التوقيع</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Import</source>
-			<translation>استيراد</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Import from Clipboard</source>
-			<translation>استيراد من الحافظة</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Paste or scan your descriptor, if you restore a wallet.</source>
-			<translation>لصق أو مسح وصفك، إذا قمت بإعادة تعيين محفظة.</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Please select a Multisignature wallet first</source>
-			<translation>الرجاء اختيار محفظة التوقيع المتعدد أولاً</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Read QR Code</source>
-			<translation>قراءة رمز QR</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Recovery Sheet</source>
-			<translation>ورقة الاسترداد</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Register with hardware signers</source>
-			<translation>التسجيل مع مُوقِّعات الأجهزة</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Scan again</source>
-			<translation>إعادة المسح</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>This "descriptor" contains all information to reconstruct the wallet. 
+    </message>
+</context>
+<context>
+    <name>ColumnFee</name>
+    <message>
+        <source>Confirmed</source>
+        <translation>مؤكد</translation>
+    </message>
+    <name>ColumnFee</name>
+    <message>
+        <source>Confirming...</source>
+        <translation>قيد التأكيد...</translation>
+    </message>
+    <name>ColumnFee</name>
+    <message>
+        <source>Mempool Fees</source>
+        <translation>رسوم الميمبول</translation>
+    </message>
+    <name>ColumnFee</name>
+    <message>
+        <source>Mempool position</source>
+        <translation>الموضع في الميمبول</translation>
+    </message>
+    <name>ColumnFee</name>
+    <message>
+        <source>Priority</source>
+        <translation>الأولوية</translation>
+    </message>
+    <name>ColumnFee</name>
+    <message>
+        <source>Show nLocktime</source>
+        <translation>إظهار nLocktime</translation>
+    </message>
+</context>
+<context>
+    <name>ColumnInputs</name>
+    <message>
+        <source>Add foreign UTXOs</source>
+        <translation>إضافة UTXOs الأجنبية</translation>
+    </message>
+    <name>ColumnInputs</name>
+    <message>
+        <source>Input total:</source>
+        <translation>إجمالي المدخلات:</translation>
+    </message>
+    <name>ColumnInputs</name>
+    <message>
+        <source>Select specific UTXOs</source>
+        <translation>اختر UTXO محددة</translation>
+    </message>
+    <name>ColumnInputs</name>
+    <message>
+        <source>Sending source</source>
+        <translation>مصدر الإرسال</translation>
+    </message>
+</context>
+<context>
+    <name>ColumnRecipients</name>
+    <message>
+        <source>Sending total:</source>
+        <translation>إجمالي الإرسال:</translation>
+    </message>
+</context>
+<context>
+    <name>ColumnSankey</name>
+    <message>
+        <source>Diagram</source>
+        <translation>رسم بياني</translation>
+    </message>
+</context>
+<context>
+    <name>DateRangePicker</name>
+    <message>
+        <source>Reset zoom</source>
+        <translation>إعادة تعيين التكبير</translation>
+    </message>
+    <name>DateRangePicker</name>
+    <message>
+        <source>to</source>
+        <translation>إلى</translation>
+    </message>
+</context>
+<context>
+    <name>DemoWindow</name>
+    <message>
+        <source>Auto convert between fiat currencies</source>
+        <translation>تحويل تلقائي بين العملات الورقية</translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorAnalyzer</name>
+    <message>
+        <source>Invalid Descriptor</source>
+        <translation>مُعرّف غير صالح</translation>
+    </message>
+    <name>DescriptorAnalyzer</name>
+    <message>
+        <source>Missing Descriptor</source>
+        <translation>الوصف مفقود</translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Copy to clipboard</source>
+        <translation>نسخ إلى الحافظة</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Could not recognize the input. Do you want to scan again?</source>
+        <translation>تعذّر التعرّف على الإدخال. هل تريد المسح مرة أخرى؟</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Descriptor not valid</source>
+        <translation>الواصف غير صالح</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Export</source>
+        <translation>تصدير</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Export for hardware signers</source>
+        <translation>تصدير لأجهزة التوقيع</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Import</source>
+        <translation>استيراد</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Import from Clipboard</source>
+        <translation>استيراد من الحافظة</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Paste or scan your descriptor, if you restore a wallet.</source>
+        <translation>لصق أو مسح وصفك، إذا قمت بإعادة تعيين محفظة.</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Please select a Multisignature wallet first</source>
+        <translation>الرجاء اختيار محفظة التوقيع المتعدد أولاً</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Read QR Code</source>
+        <translation>قراءة رمز QR</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Recovery Sheet</source>
+        <translation>ورقة الاسترداد</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Register with hardware signers</source>
+        <translation>التسجيل مع مُوقِّعات الأجهزة</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Scan again</source>
+        <translation>إعادة المسح</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>This &quot;descriptor&quot; contains all information to reconstruct the wallet. 
 Please back up this descriptor to be able to recover the funds!</source>
-			<translation>يحتوي "الوصف" هذا على جميع المعلومات لإعادة بناء المحفظة. يرجى عمل نسخة احتياطية من هذا الوصف لتكون قادرًا على استعادة الأموال!</translation>
-		</message>
-		<name>DescriptorEdit</name>
-		<message>
-			<source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
-			<translation>لم يتم الانتهاء من إعداد المحفظة. يرجى الانتهاء قبل إنشاء ملف PDF للنسخ الاحتياطي.</translation>
-		</message>
-	</context>
-	<context>
-		<name>DescriptorExport</name>
-		<message>
-			<source>Export Descriptor</source>
-			<translation>تصدير الواصف</translation>
-		</message>
-	</context>
-	<context>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Address Type</source>
-			<translation>نوع العنوان</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Apply</source>
-			<translation>تطبيق</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Descriptor unchanged</source>
-			<translation>الوصف غير متغير</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Discard</source>
-			<translation>تجاهل</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Fill signer information based on the new descriptor?</source>
-			<translation>هل تريد ملء معلومات الموقّع بناءً على الوصف الجديد؟</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Input corrected</source>
-			<translation>تم تصحيح الإدخال</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>New descriptor entered</source>
-			<translation>تم إدخال وصف جديد</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Please select a Multisignature wallet first</source>
-			<translation>الرجاء اختيار محفظة التوقيع المتعدد أولاً</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Required Signers</source>
-			<translation>التوقيعات المطلوبة</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Scan Addresses ahead</source>
-			<translation>مسح العناوين مقدما</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Wallet Descriptor</source>
-			<translation>واصف المحفظة</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Wallet Properties</source>
-			<translation>خصائص المحفظة</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>Wallet name</source>
-			<translation>ابدأ التجربة المجانية أولاً، ثم أدر الاشتراك أو حدّثه هنا.</translation>
-		</message>
-		<name>DescriptorUI</name>
-		<message>
-			<source>While scanning the blockchain the wallet will create additional addresses to discover transactions
+        <translation>يحتوي &quot;الوصف&quot; هذا على جميع المعلومات لإعادة بناء المحفظة. يرجى عمل نسخة احتياطية من هذا الوصف لتكون قادرًا على استعادة الأموال!</translation>
+    </message>
+    <name>DescriptorEdit</name>
+    <message>
+        <source>Wallet setup not finished. Please finish before creating a Backup pdf.</source>
+        <translation>لم يتم الانتهاء من إعداد المحفظة. يرجى الانتهاء قبل إنشاء ملف PDF للنسخ الاحتياطي.</translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorExport</name>
+    <message>
+        <source>Export Descriptor</source>
+        <translation>تصدير الواصف</translation>
+    </message>
+</context>
+<context>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Address Type</source>
+        <translation>نوع العنوان</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Apply</source>
+        <translation>تطبيق</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Descriptor unchanged</source>
+        <translation>الوصف غير متغير</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Discard</source>
+        <translation>تجاهل</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Fill signer information based on the new descriptor?</source>
+        <translation>هل تريد ملء معلومات الموقّع بناءً على الوصف الجديد؟</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Input corrected</source>
+        <translation>تم تصحيح الإدخال</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>New descriptor entered</source>
+        <translation>تم إدخال وصف جديد</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Please select a Multisignature wallet first</source>
+        <translation>الرجاء اختيار محفظة التوقيع المتعدد أولاً</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Required Signers</source>
+        <translation>التوقيعات المطلوبة</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Scan Addresses ahead</source>
+        <translation>مسح العناوين مقدما</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Wallet Descriptor</source>
+        <translation>واصف المحفظة</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Wallet Properties</source>
+        <translation>خصائص المحفظة</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>Wallet name</source>
+        <translation>اسم المحفظة</translation>
+    </message>
+    <name>DescriptorUI</name>
+    <message>
+        <source>While scanning the blockchain the wallet will create additional addresses to discover transactions
 The bigger the gap limit value is, the more time it will take to initial sync to complete.
 A reasonable minimum value is 20</source>
-			<translation>أثناء فحص سلسلة الكتل، ستُنشئ المحفظة عناوين إضافية لاكتشاف المعاملاتnكلما زادت قيمة حد الفجوة، زاد الوقت اللازم لإكمال المزامنة الأولية.nالحد الأدنى المعقول هو 20</translation>
-		</message>
-	</context>
-	<context>
-		<name>DeviceDialog</name>
-		<message>
-			<source>1. Connect your hardware signer
+        <translation>أثناء فحص سلسلة الكتل، ستُنشئ المحفظة عناوين إضافية لاكتشاف المعاملات
+كلما زادت قيمة حد الفجوة، زاد الوقت اللازم لإكمال المزامنة الأولية.
+الحد الأدنى المعقول هو 20</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceDialog</name>
+    <message>
+        <source>1. Connect your hardware signer
 2. Click Scan
 3. Unlock the device
 4. Select the device</source>
-			<translation>1. قم بتوصيل جهاز التوقيع المادي الخاص بكn2. انقر على فحصn3. افتح قفل الجهازn4. اختر الجهاز</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Detected devices</source>
-			<translation>الأجهزة المكتشفة</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Device scan</source>
-			<translation>فحص الجهاز</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Device scan failed: {error}</source>
-			<translation>فشل فحص الجهاز: {error}</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Install udev rules</source>
-			<translation>تثبيت قواعد udev</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>No devices found</source>
-			<translation>لم يتم العثور على أجهزة</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>SN {serial}</source>
-			<translation>SN {serial}</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Scan Bluetooth devices</source>
-			<translation>فحص أجهزة Bluetooth</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Scan USB devices</source>
-			<translation>فحص أجهزة USB</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Scanning for compatible Bluetooth hardware signers.</source>
-			<translation>جارٍ البحث عن أجهزة توقيع مادية متوافقة عبر Bluetooth.</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Select the detected device</source>
-			<translation>اختر الجهاز المكتشف</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Try to {actions}.</source>
-			<translation>حاول {actions}.</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>Unlock your hardware signer</source>
-			<translation>افتح قفل جهاز التوقيع المادي الخاص بك</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>install udev rules</source>
-			<translation>تثبيت قواعد udev</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>or</source>
-			<translation>أو</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>scan Bluetooth devices</source>
-			<translation>فحص أجهزة Bluetooth</translation>
-		</message>
-		<name>DeviceDialog</name>
-		<message>
-			<source>scan USB devices</source>
-			<translation>فحص أجهزة USB</translation>
-		</message>
-	</context>
-	<context>
-		<name>DeviceManager</name>
-		<message>
-			<source>Trusted</source>
-			<translation>موثوق</translation>
-		</message>
-		<name>DeviceManager</name>
-		<message>
-			<source>Untrusted</source>
-			<translation>غير موثوق</translation>
-		</message>
-	</context>
-	<context>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>1. Print backup sheets</source>
-			<translation>اسم المحفظة</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Backup Recovery Sheet (required)</source>
-			<translation>ورقة استرداد النسخة الاحتياطية (مطلوبة)</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Backup sheet</source>
-			<translation>2. نعم، أرفقت كلمات seed بالمطبوع</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Backup sheet + seed words</source>
-			<translation>ورقة النسخ الاحتياطي</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Backup sheet {number}</source>
-			<translation>ورقة النسخ الاحتياطي {number}</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Congratulations, your wallet is ready. Now protect it!</source>
-			<translation>تهانينا، محفظتك جاهزة. قم بحمايتها الآن!</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Distribute to 2 separate locations</source>
-			<translation>وزّع على موقعين منفصلين</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Distribute to {n} separate locations</source>
-			<translation>وزّع على {n} مواقع منفصلة</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
-			<translation>اتبع الخطوات أدناه للتأكد من إنشاء نسخة احتياطية آمنة لاستعادة أموالك في أسوأ الحالات.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Location</source>
-			<translation>مهم</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Location 1</source>
-			<translation>الموقع</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Location 2</source>
-			<translation>الموقع 1</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
-			<translation>بعد الطباعة، اكتب عبارة seed من جهازك بخط اليد على الورقة، أو أكّد أنها منسوخة بالفعل على ورقة منفصلة محفوظة معها.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Open instructions for viewing seed words on this signer.</source>
-			<translation>الموقع 2</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Please complete the previous steps.</source>
-			<translation>الرجاء إكمال الخطوات السابقة.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Please select at least one backup sheet to print.</source>
-			<translation>يرجى تحديد ورقة نسخ احتياطي واحدة على الأقل للطباعة.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Print the recovery sheets associated with the devices that you possess and control.</source>
-			<translation>اطبع أوراق الاسترداد المرتبطة بالأجهزة التي تمتلكها وتتحكم بها.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Recovery Signer {i}</source>
-			<translation>مُوقع الاسترداد {i}</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Seed words attached</source>
-			<translation>ضع نسخك الاحتياطية والموقّعين في مواقع آمنة</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Signer device</source>
-			<translation>جهاز الموقّع</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Signer {i}</source>
-			<translation>الموقّع {i}</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Store each signer together with its backup sheet and seed words in the same location.</source>
-			<translation>جهاز الموقّع</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
-			<translation>خزّن كل موقّع مع ورقة النسخ الاحتياطي الخاصة به وكلمات seed في الموقع نفسه.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Vault {letter}</source>
-			<translation>الخزنة {letter}</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>View seed words</source>
-			<translation>عرض كلمات seed</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Yes, I confirm seed words are attached to the printout</source>
-			<translation>نعم، أؤكد أن كلمات seed مرفقة بالمطبوع</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
-			<translation>محفظتك محمية بورقة الاسترداد الخاصة بها، والتي ينبغي حفظها في مكان مختلف عن مكان جهاز التوقيع المادي الخاص بك. اطبعها، وأرفق seed، واحفظها في موقع آمن وخاضع للتحكم في الوصول. باستخدام كلمات seed يكون لديك التحكم الكامل في محفظتك.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
-			<translation>محفظتك محمية بواسطة {n} أوراق نسخ احتياطي مع seeds مرفقة ومخزنة في مواقع مختلفة. اطبعها وضعها في مواقع آمنة وخاضعة للتحكم في الوصول. باستخدام {m} منها يكون لديك التحكم الكامل في محفظتك.</translation>
-		</message>
-		<name>DistributeSeeds</name>
-		<message>
-			<source>{number} of {total}</source>
-			<translation>{number} من {total}</translation>
-		</message>
-	</context>
-	<context>
-		<name>DonateDialog</name>
-		<message>
-			<source>Donation</source>
-			<translation>تبرع</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
-			<source>Donation successful. Thank you so much for supporting {app_name}!</source>
-			<translation>تمت عملية التبرع بنجاح. شكرًا جزيلًا لدعمك {app_name}!</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
-			<source>Email us</source>
-			<translation>راسلنا عبر البريد الإلكتروني</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
-			<source>Help {app_name} grow as Free and Open Source Software.</source>
-			<translation>ساعد {app_name} على النمو كمشروع برمجي حر ومفتوح المصدر.</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
-			<source>Support {app_name}</source>
-			<translation>ادعم {app_name}</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
-			<source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
-			<translation>هل ترغب في مناقشة مساهمة أكبر أو شراكة؟ استخدم زر التواصل أدناه للوصول إلينا.</translation>
-		</message>
-		<name>DonateDialog</name>
-		<message>
-			<source>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;supporters page&lt;/a&gt;.</source>
-			<translation>يتم تمويل {app_name} من قِبل المجتمع. دعمك يحافظ على استقلالية التطوير، ويسمح لنا بإطلاق ميزات جديدة، ويحسّن مراجعات الأمان. يمكن عرض الداعمين الكبار في &lt;a href='https://bitcoin-safe.org/en/donate/'&gt;صفحة الداعمين&lt;/a&gt;.</translation>
-		</message>
-	</context>
-	<context>
-		<name>DonationInvoiceWidget</name>
-		<message>
-			<source>Message (optional)</source>
-			<translation>رسالة (اختياري)</translation>
-		</message>
-		<name>DonationInvoiceWidget</name>
-		<message>
-			<source>Thanks for {app_name}!</source>
-			<translation>Thanks for {app_name}!</translation>
-		</message>
-		<name>DonationInvoiceWidget</name>
-		<message>
-			<source>Value</source>
-			<translation>القيمة</translation>
-		</message>
-	</context>
-	<context>
-		<name>Downloader</name>
-		<message>
-			<source>Download Progress</source>
-			<translation>تقدم التحميل</translation>
-		</message>
-		<name>Downloader</name>
-		<message>
-			<source>Download {}</source>
-			<translation>تنزيل {}</translation>
-		</message>
-		<name>Downloader</name>
-		<message>
-			<source>Open download folder: {}</source>
-			<translation>فتح مجلد التنزيلات: {}</translation>
-		</message>
-	</context>
-	<context>
-		<name>DragAndDropButtonEdit</name>
-		<message>
-			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
-			<translation>جميع الملفات (*);;PSBT (*.psbt);;معاملة (*.tx)</translation>
-		</message>
-	</context>
-	<context>
-		<name>EditWithFeeIcon</name>
-		<message>
-			<source>Edit with this fee rate</source>
-			<translation>تعديل بهذا معدل الرسوم</translation>
-		</message>
-	</context>
-	<context>
-		<name>EnlargableImageWidgetWithButton</name>
-		<message>
-			<source>Enlarge</source>
-			<translation>تكبير</translation>
-		</message>
-	</context>
-	<context>
-		<name>ExportDataSimple</name>
-		<message>
-			<source>Enlarge {} QR</source>
-			<translation>تكبير رمز الاستجابة السريعة {}</translation>
-		</message>
-		<name>ExportDataSimple</name>
-		<message>
-			<source>Export {data_type} to hardware signer</source>
-			<translation>تصدير {data_type} إلى الموقّع الأجهزة</translation>
-		</message>
-		<name>ExportDataSimple</name>
-		<message>
-			<source>Image (*.{image_format})</source>
-			<translation>الصورة (*.{image_format})</translation>
-		</message>
-		<name>ExportDataSimple</name>
-		<message>
-			<source>Save as image</source>
-			<translation>حفظ كصورة</translation>
-		</message>
-		<name>ExportDataSimple</name>
-		<message>
-			<source>Save {name} file</source>
-			<translation>حفظ ملف {name}</translation>
-		</message>
-	</context>
-	<context>
-		<name>ExportLabelMenu</name>
-		<message>
-			<source>Exchange format (BIP329)</source>
-			<translation>تنسيق التبادل (BIP329)</translation>
-		</message>
-		<name>ExportLabelMenu</name>
-		<message>
-			<source>Export labels and categories</source>
-			<translation>تصدير التصنيفات والفئات</translation>
-		</message>
-		<name>ExportLabelMenu</name>
-		<message>
-			<source>Full ({app_name})</source>
-			<translation>كامل ({app_name})</translation>
-		</message>
-	</context>
-	<context>
-		<name>ExternalPaidPluginWidget</name>
-		<message>
-			<source>Delete Plugin</source>
-			<translation>حذف المكوّن الإضافي</translation>
-		</message>
-	</context>
-	<context>
-		<name>ExternalPluginWidget</name>
-		<message>
-			<source>Delete Plugin</source>
-			<translation>حذف الإضافة</translation>
-		</message>
-	</context>
-	<context>
-		<name>FeeGroup</name>
-		<message>
-			<source>Approximate rate</source>
-			<translation>معدل تقريبي</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>The fee rate cannot be known exactly,
+        <translation>1. قم بتوصيل جهاز التوقيع المادي الخاص بك
+2. انقر على فحص
+3. افتح قفل الجهاز
+4. اختر الجهاز</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Detected devices</source>
+        <translation>الأجهزة المكتشفة</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Device scan</source>
+        <translation>فحص الجهاز</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Device scan failed: {error}</source>
+        <translation>فشل فحص الجهاز: {error}</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Install udev rules</source>
+        <translation>تثبيت قواعد udev</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>No devices found</source>
+        <translation>لم يتم العثور على أجهزة</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>SN {serial}</source>
+        <translation>SN {serial}</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Scan Bluetooth devices</source>
+        <translation>فحص أجهزة Bluetooth</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Scan USB devices</source>
+        <translation>فحص أجهزة USB</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Scanning for compatible Bluetooth hardware signers.</source>
+        <translation>جارٍ البحث عن أجهزة توقيع مادية متوافقة عبر Bluetooth.</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Select the detected device</source>
+        <translation>اختر الجهاز المكتشف</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Try to {actions}.</source>
+        <translation>حاول {actions}.</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>Unlock your hardware signer</source>
+        <translation>افتح قفل جهاز التوقيع المادي الخاص بك</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>install udev rules</source>
+        <translation>تثبيت قواعد udev</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>or</source>
+        <translation>أو</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>scan Bluetooth devices</source>
+        <translation>فحص أجهزة Bluetooth</translation>
+    </message>
+    <name>DeviceDialog</name>
+    <message>
+        <source>scan USB devices</source>
+        <translation>فحص أجهزة USB</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceManager</name>
+    <message>
+        <source>Trusted</source>
+        <translation>موثوق</translation>
+    </message>
+    <name>DeviceManager</name>
+    <message>
+        <source>Untrusted</source>
+        <translation>غير موثوق</translation>
+    </message>
+</context>
+<context>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>1. Print backup sheets</source>
+        <translation>اسم المحفظة</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Backup Recovery Sheet (required)</source>
+        <translation>ورقة استرداد النسخة الاحتياطية (مطلوبة)</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Backup sheet</source>
+        <translation>2. نعم، أرفقت كلمات seed بالمطبوع</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Backup sheet + seed words</source>
+        <translation>ورقة النسخ الاحتياطي</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Backup sheet {number}</source>
+        <translation>ورقة النسخ الاحتياطي {number}</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Congratulations, your wallet is ready. Now protect it!</source>
+        <translation>تهانينا، محفظتك جاهزة. قم بحمايتها الآن!</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Distribute to 2 separate locations</source>
+        <translation>وزّع على موقعين منفصلين</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Distribute to {n} separate locations</source>
+        <translation>وزّع على {n} مواقع منفصلة</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Follow the steps below to ensure you create a secure backup to restore your funds in the worst case scenario.</source>
+        <translation>اتبع الخطوات أدناه للتأكد من إنشاء نسخة احتياطية آمنة لاستعادة أموالك في أسوأ الحالات.</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Location</source>
+        <translation>مهم</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Location 1</source>
+        <translation>الموقع</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Location 2</source>
+        <translation>الموقع 1</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Once printed, handwrite the seed phrase from your device onto the sheet, or confirm it is already transcribed on a separate piece of paper stored with it.</source>
+        <translation>بعد الطباعة، اكتب عبارة seed من جهازك بخط اليد على الورقة، أو أكّد أنها منسوخة بالفعل على ورقة منفصلة محفوظة معها.</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Open instructions for viewing seed words on this signer.</source>
+        <translation>الموقع 2</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Please complete the previous steps.</source>
+        <translation>الرجاء إكمال الخطوات السابقة.</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Please select at least one backup sheet to print.</source>
+        <translation>يرجى تحديد ورقة نسخ احتياطي واحدة على الأقل للطباعة.</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Print the recovery sheets associated with the devices that you possess and control.</source>
+        <translation>اطبع أوراق الاسترداد المرتبطة بالأجهزة التي تمتلكها وتتحكم بها.</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Recovery Signer {i}</source>
+        <translation>مُوقع الاسترداد {i}</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Seed words attached</source>
+        <translation>ضع نسخك الاحتياطية والموقّعين في مواقع آمنة</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Signer device</source>
+        <translation>جهاز الموقّع</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Signer {i}</source>
+        <translation>الموقّع {i}</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Store each signer together with its backup sheet and seed words in the same location.</source>
+        <translation>جهاز الموقّع</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Store the signer device and the backup sheet with seed words in separate secure locations.</source>
+        <translation>خزّن كل موقّع مع ورقة النسخ الاحتياطي الخاصة به وكلمات seed في الموقع نفسه.</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Vault {letter}</source>
+        <translation>الخزنة {letter}</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>View seed words</source>
+        <translation>عرض كلمات seed</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Yes, I confirm seed words are attached to the printout</source>
+        <translation>نعم، أؤكد أن كلمات seed مرفقة بالمطبوع</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Your wallet is protected by its recovery sheet, which should be stored somewhere different from where your hardware signer is. Print it, attach the seed and store it in a secure, access controlled location. With the seed words you have full control over your wallet.</source>
+        <translation>محفظتك محمية بورقة الاسترداد الخاصة بها، والتي ينبغي حفظها في مكان مختلف عن مكان جهاز التوقيع المادي الخاص بك. اطبعها، وأرفق seed، واحفظها في موقع آمن وخاضع للتحكم في الوصول. باستخدام كلمات seed يكون لديك التحكم الكامل في محفظتك.</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>Your wallet is protected by {n} backup sheets with attached seeds stored in different locations. Print them and place them in secure, access controlled locations. With {m} of them you have full control over your wallet.</source>
+        <translation>محفظتك محمية بواسطة {n} أوراق نسخ احتياطي مع seeds مرفقة ومخزنة في مواقع مختلفة. اطبعها وضعها في مواقع آمنة وخاضعة للتحكم في الوصول. باستخدام {m} منها يكون لديك التحكم الكامل في محفظتك.</translation>
+    </message>
+    <name>DistributeSeeds</name>
+    <message>
+        <source>{number} of {total}</source>
+        <translation>{number} من {total}</translation>
+    </message>
+</context>
+<context>
+    <name>DonateDialog</name>
+    <message>
+        <source>Donation</source>
+        <translation>تبرع</translation>
+    </message>
+    <name>DonateDialog</name>
+    <message>
+        <source>Donation successful. Thank you so much for supporting {app_name}!</source>
+        <translation>تمت عملية التبرع بنجاح. شكرًا جزيلًا لدعمك {app_name}!</translation>
+    </message>
+    <name>DonateDialog</name>
+    <message>
+        <source>Email us</source>
+        <translation>راسلنا عبر البريد الإلكتروني</translation>
+    </message>
+    <name>DonateDialog</name>
+    <message>
+        <source>Help {app_name} grow as Free and Open Source Software.</source>
+        <translation>ساعد {app_name} على النمو كمشروع برمجي حر ومفتوح المصدر.</translation>
+    </message>
+    <name>DonateDialog</name>
+    <message>
+        <source>Support {app_name}</source>
+        <translation>ادعم {app_name}</translation>
+    </message>
+    <name>DonateDialog</name>
+    <message>
+        <source>Want to discuss a larger contribution or partnership? Use the contact button below to reach us.</source>
+        <translation>هل ترغب في مناقشة مساهمة أكبر أو شراكة؟ استخدم زر التواصل أدناه للوصول إلينا.</translation>
+    </message>
+    <name>DonateDialog</name>
+    <message>
+        <source>{app_name} is community funded. Your support keeps development independent, lets us ship new features, and improves security reviews. Larger supporters can be featured on our &lt;a href=&apos;https://bitcoin-safe.org/en/donate/&apos;&gt;supporters page&lt;/a&gt;.</source>
+        <translation>يتم تمويل {app_name} من قِبل المجتمع. دعمك يحافظ على استقلالية التطوير، ويسمح لنا بإطلاق ميزات جديدة، ويحسّن مراجعات الأمان. يمكن عرض الداعمين الكبار في &lt;a href=&apos;https://bitcoin-safe.org/en/donate/&apos;&gt;صفحة الداعمين&lt;/a&gt;.</translation>
+    </message>
+</context>
+<context>
+    <name>DonationInvoiceWidget</name>
+    <message>
+        <source>Message (optional)</source>
+        <translation>رسالة (اختياري)</translation>
+    </message>
+    <name>DonationInvoiceWidget</name>
+    <message>
+        <source>Thanks for {app_name}!</source>
+        <translation>Thanks for {app_name}!</translation>
+    </message>
+    <name>DonationInvoiceWidget</name>
+    <message>
+        <source>Value</source>
+        <translation>القيمة</translation>
+    </message>
+</context>
+<context>
+    <name>Downloader</name>
+    <message>
+        <source>Download Progress</source>
+        <translation>تقدم التحميل</translation>
+    </message>
+    <name>Downloader</name>
+    <message>
+        <source>Download {}</source>
+        <translation>تنزيل {}</translation>
+    </message>
+    <name>Downloader</name>
+    <message>
+        <source>Open download folder: {}</source>
+        <translation>فتح مجلد التنزيلات: {}</translation>
+    </message>
+</context>
+<context>
+    <name>DragAndDropButtonEdit</name>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
+        <translation>جميع الملفات (*);;PSBT (*.psbt);;معاملة (*.tx)</translation>
+    </message>
+</context>
+<context>
+    <name>EditWithFeeIcon</name>
+    <message>
+        <source>Edit with this fee rate</source>
+        <translation>تعديل بهذا معدل الرسوم</translation>
+    </message>
+</context>
+<context>
+    <name>EnlargableImageWidgetWithButton</name>
+    <message>
+        <source>Enlarge</source>
+        <translation>تكبير</translation>
+    </message>
+</context>
+<context>
+    <name>ExportDataSimple</name>
+    <message>
+        <source>Enlarge {} QR</source>
+        <translation>تكبير رمز الاستجابة السريعة {}</translation>
+    </message>
+    <name>ExportDataSimple</name>
+    <message>
+        <source>Export {data_type} to hardware signer</source>
+        <translation>تصدير {data_type} إلى الموقّع الأجهزة</translation>
+    </message>
+    <name>ExportDataSimple</name>
+    <message>
+        <source>Image (*.{image_format})</source>
+        <translation>الصورة (*.{image_format})</translation>
+    </message>
+    <name>ExportDataSimple</name>
+    <message>
+        <source>Save as image</source>
+        <translation>حفظ كصورة</translation>
+    </message>
+    <name>ExportDataSimple</name>
+    <message>
+        <source>Save {name} file</source>
+        <translation>حفظ ملف {name}</translation>
+    </message>
+</context>
+<context>
+    <name>ExportLabelMenu</name>
+    <message>
+        <source>Exchange format (BIP329)</source>
+        <translation>تنسيق التبادل (BIP329)</translation>
+    </message>
+    <name>ExportLabelMenu</name>
+    <message>
+        <source>Export labels and categories</source>
+        <translation>تصدير التصنيفات والفئات</translation>
+    </message>
+    <name>ExportLabelMenu</name>
+    <message>
+        <source>Full ({app_name})</source>
+        <translation>كامل ({app_name})</translation>
+    </message>
+</context>
+<context>
+    <name>ExternalPaidPluginWidget</name>
+    <message>
+        <source>Delete Plugin</source>
+        <translation>حذف المكوّن الإضافي</translation>
+    </message>
+</context>
+<context>
+    <name>ExternalPluginWidget</name>
+    <message>
+        <source>Delete Plugin</source>
+        <translation>حذف الإضافة</translation>
+    </message>
+</context>
+<context>
+    <name>FeeGroup</name>
+    <message>
+        <source>Approximate rate</source>
+        <translation>معدل تقريبي</translation>
+    </message>
+    <name>FeeGroup</name>
+    <message>
+        <source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
-			<translation>لا يمكن معرفة معدل الرسوم بدقة، لأن الحجم النهائي للمعاملة غير معروف.</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>Transaction fee rate</source>
-			<translation>معدل رسوم المعاملة</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>in ~{n}. Block</source>
-			<translation>في ~{n}. بلوك</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>{cpfp} total: {rate}</source>
-			<translation>{cpfp} الإجمالي: {rate}</translation>
-		</message>
-		<name>FeeGroup</name>
-		<message>
-			<source>{rbf} min: {rate}</source>
-			<translation>{rbf} الحد الأدنى: {rate}</translation>
-		</message>
-	</context>
-	<context>
-		<name>FeeRateWarningBar</name>
-		<message>
-			<source>High fee rate!</source>
-			<translation>معدل رسوم عال!</translation>
-		</message>
-		<name>FeeRateWarningBar</name>
-		<message>
-			<source>The high priority mempool fee rate is {rate}</source>
-			<translation>معدل رسوم الميمبول ذو الأولوية العالية هو {rate}</translation>
-		</message>
-	</context>
-	<context>
-		<name>FeeWarningBar</name>
-		<message>
-			<source>High fee ratio: {ratio}%.</source>
-			<translation>نسبة الرسوم مرتفعة: {ratio}%</translation>
-		</message>
-		<name>FeeWarningBar</name>
-		<message>
-			<source>The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
-			<translation>رسوم المعاملة المقدّرة هي: {fee}، أي {percent}% من قيمة الإرسال {sent}</translation>
-		</message>
-		<name>FeeWarningBar</name>
-		<message>
-			<source>The transaction fee is:
+        <translation>لا يمكن معرفة معدل الرسوم بدقة، لأن الحجم النهائي للمعاملة غير معروف.</translation>
+    </message>
+    <name>FeeGroup</name>
+    <message>
+        <source>Transaction fee rate</source>
+        <translation>معدل رسوم المعاملة</translation>
+    </message>
+    <name>FeeGroup</name>
+    <message>
+        <source>in ~{n}. Block</source>
+        <translation>في ~{n}. بلوك</translation>
+    </message>
+    <name>FeeGroup</name>
+    <message>
+        <source>{cpfp} total: {rate}</source>
+        <translation>{cpfp} الإجمالي: {rate}</translation>
+    </message>
+    <name>FeeGroup</name>
+    <message>
+        <source>{rbf} min: {rate}</source>
+        <translation>{rbf} الحد الأدنى: {rate}</translation>
+    </message>
+</context>
+<context>
+    <name>FeeRateWarningBar</name>
+    <message>
+        <source>High fee rate!</source>
+        <translation>معدل رسوم عال!</translation>
+    </message>
+    <name>FeeRateWarningBar</name>
+    <message>
+        <source>The high priority mempool fee rate is {rate}</source>
+        <translation>معدل رسوم الميمبول ذو الأولوية العالية هو {rate}</translation>
+    </message>
+</context>
+<context>
+    <name>FeeWarningBar</name>
+    <message>
+        <source>High fee ratio: {ratio}%.</source>
+        <translation>نسبة الرسوم مرتفعة: {ratio}%</translation>
+    </message>
+    <name>FeeWarningBar</name>
+    <message>
+        <source>The estimated transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+        <translation>رسوم المعاملة المقدّرة هي: {fee}، أي {percent}% من قيمة الإرسال {sent}</translation>
+    </message>
+    <name>FeeWarningBar</name>
+    <message>
+        <source>The transaction fee is:
 {fee}, and {sent} is sent!</source>
-			<translation>رسوم المعاملة هي:
+        <translation>رسوم المعاملة هي:
 {fee}، وتم إرسال {sent}!</translation>
-		</message>
-		<name>FeeWarningBar</name>
-		<message>
-			<source>The transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
-			<translation>رسوم المعاملة هي: {fee}، أي {percent}% من قيمة الإرسال {sent}</translation>
-		</message>
-		<name>FeeWarningBar</name>
-		<message>
-			<source>{sent} is sent!</source>
-			<translation>تم إرسال {sent}!</translation>
-		</message>
-	</context>
-	<context>
-		<name>FiatSpinBox</name>
-		<message>
-			<source>Max ≈ {amount}</source>
-			<translation>الحد الأقصى ≈ {amount}</translation>
-		</message>
-	</context>
-	<context>
-		<name>FileToolButton</name>
-		<message>
-			<source>Copy JSON</source>
-			<translation>نسخ JSON</translation>
-		</message>
-		<name>FileToolButton</name>
-		<message>
-			<source>Copy TxId</source>
-			<translation>نسخ معرف المعاملة</translation>
-		</message>
-		<name>FileToolButton</name>
-		<message>
-			<source>Copy {name}</source>
-			<translation>نسخ {name}</translation>
-		</message>
-		<name>FileToolButton</name>
-		<message>
-			<source>Export</source>
-			<translation>تصدير</translation>
-		</message>
-		<name>FileToolButton</name>
-		<message>
-			<source>File</source>
-			<translation>ملف</translation>
-		</message>
-		<name>FileToolButton</name>
-		<message>
-			<source>Not available</source>
-			<translation>غير متوفر</translation>
-		</message>
-		<name>FileToolButton</name>
-		<message>
-			<source>PDF</source>
-			<translation>PDF</translation>
-		</message>
-		<name>FileToolButton</name>
-		<message>
-			<source>PDF export is only available for transactions or PSBTs.</source>
-			<translation>تصدير PDF متاح فقط للمعاملات أو PSBT.</translation>
-		</message>
-		<name>FileToolButton</name>
-		<message>
-			<source>Transaction export</source>
-			<translation>تصدير المعاملة</translation>
-		</message>
-	</context>
-	<context>
-		<name>FingerprintAnalyzer</name>
-		<message>
-			<source>Invalid Fingerprint</source>
-			<translation>بصمة غير صالحة</translation>
-		</message>
-		<name>FingerprintAnalyzer</name>
-		<message>
-			<source>Missing Fingerprint</source>
-			<translation>بصمة مفقودة</translation>
-		</message>
-	</context>
-	<context>
-		<name>HardwareSignerInteractionWidget</name>
-		<message>
-			<source>Export File</source>
-			<translation>تصدير الملف</translation>
-		</message>
-		<name>HardwareSignerInteractionWidget</name>
-		<message>
-			<source>Import File or Text</source>
-			<translation>استيراد ملف أو نص</translation>
-		</message>
-		<name>HardwareSignerInteractionWidget</name>
-		<message>
-			<source>QR Code</source>
-			<translation>رمز الاستجابة السريعة</translation>
-		</message>
-		<name>HardwareSignerInteractionWidget</name>
-		<message>
-			<source>USB</source>
-			<translation>يو إس بي</translation>
-		</message>
-	</context>
-	<context>
-		<name>HiddenRecipientsPlaceholder</name>
-		<message>
-			<source>({count} outputs)</source>
-			<translation>({count} مخرجات)</translation>
-		</message>
-		<name>HiddenRecipientsPlaceholder</name>
-		<message>
-			<source>{count} outputs without a known wallet or label are hidden here.</source>
-			<translation>يتم إخفاء {count} من المخرجات التي لا تحتوي على محفظة أو تسمية معروفة هنا.</translation>
-		</message>
-	</context>
-	<context>
-		<name>HistList</name>
-		<message>
-			<source>Balance</source>
-			<translation>الرصيد</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
-			<translation>لا يمكن العثور على المحفظة للمعاملة {txid}. الرجاء فتح المحفظة المقابلة أولاً.</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Category</source>
-			<translation>فئة</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Copy as csv</source>
-			<translation>انسخ كملف CSV</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Delta Balance</source>
-			<translation>تغير الرصيد</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Details</source>
-			<translation>تفاصيل</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Estimated timestamp</source>
-			<translation>الطابع الزمني التقديري</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Label</source>
-			<translation>تصنيف</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Local</source>
-			<translation>محلي</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Not broadcasted.</source>
-			<translation>لم يتم نشرها.</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Remove</source>
-			<translation>إزالة</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Save as file</source>
-			<translation>حفظ كملف</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Status</source>
-			<translation>الحالة</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Transaction id</source>
-			<translation>معرّف المعاملة</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Txid</source>
-			<translation>معرف المعاملة</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>View on block explorer</source>
-			<translation>عرض على كتلة اكسبلورر</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Waiting to be included in a block</source>
-			<translation>في انتظار تضمينها في كتلة</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Wallet</source>
-			<translation>محفظة</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>nLocktime</source>
-			<translation>nLocktime</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>{number} Confirmations</source>
-			<translation>{number} تأكيدات</translation>
-		</message>
-		<name>HistList</name>
-		<message>
-			<source>Δ</source>
-			<translation>Δ</translation>
-		</message>
-	</context>
-	<context>
-		<name>HistListWithToolbar</name>
-		<message>
-			<source>&amp;Generate PDF balance Statement</source>
-			<translation>&amp;إنشاء كشف حساب الرصيد PDF</translation>
-		</message>
-	</context>
-	<context>
-		<name>ImportLabelMenu</name>
-		<message>
-			<source>Electrum Wallet</source>
-			<translation>محفظة Electrum</translation>
-		</message>
-		<name>ImportLabelMenu</name>
-		<message>
-			<source>Exchange format (BIP329)</source>
-			<translation>تنسيق التبادل (BIP329)</translation>
-		</message>
-		<name>ImportLabelMenu</name>
-		<message>
-			<source>Full ({app_name})</source>
-			<translation>كامل ({app_name})</translation>
-		</message>
-		<name>ImportLabelMenu</name>
-		<message>
-			<source>Import labels and categories</source>
-			<translation>استيراد التصنيفات والفئات</translation>
-		</message>
-		<name>ImportLabelMenu</name>
-		<message>
-			<source>Restore labels from cloud using an existing sync key</source>
-			<translation>استعادة العلامات من السحاب باستخدام مفتاح مزامنة موجود</translation>
-		</message>
-	</context>
-	<context>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Import hardware signer information into {app_name}</source>
-			<translation>استيراد معلومات جهاز التوقيع المادي إلى {app_name}</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Next step</source>
-			<translation>الخطوة التالية</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Previous step</source>
-			<translation>الخطوة السابقة</translation>
-		</message>
-		<name>ImportXpubs</name>
-		<message>
-			<source>Skip step</source>
-			<translation>تخطي الخطوة</translation>
-		</message>
-	</context>
-	<context>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>App lock password</source>
-			<translation>كلمة مرور قفل التطبيق</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>App lock password cannot be empty.</source>
-			<translation>لا يمكن أن تكون كلمة مرور قفل التطبيق فارغة.</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Change</source>
-			<translation>يتغير</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Clear app lock password</source>
-			<translation>مسح كلمة مرور قفل التطبيق</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Configured</source>
-			<translation>تم الإعداد</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Dark</source>
-			<translation>داكن</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Enter app lock password:</source>
-			<translation>أدخل كلمة مرور قفل التطبيق:</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Invalid password</source>
-			<translation>كلمة مرور غير صالحة</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Light</source>
-			<translation>فاتح</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Not configured</source>
-			<translation>غير مُعد</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Remove the app lock password?</source>
-			<translation>هل تريد إزالة كلمة مرور قفل التطبيق؟</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>Set</source>
-			<translation>تعيين</translation>
-		</message>
-		<name>InterfaceSettingsUi</name>
-		<message>
-			<source>System</source>
-			<translation>النظام</translation>
-		</message>
-	</context>
-	<context>
-		<name>KeyOriginAnalyzer</name>
-		<message>
-			<source>Missing Key origin</source>
-			<translation>أصل المفتاح مفقود</translation>
-		</message>
-		<name>KeyOriginAnalyzer</name>
-		<message>
-			<source>The provided account {provided_account} differs from the default account {default_account}.</source>
-			<translation>الحساب المقدم {provided_account} يختلف عن الحساب الافتراضي {default_account}.</translation>
-		</message>
-		<name>KeyOriginAnalyzer</name>
-		<message>
-			<source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
-			<translation>المعلومات المقدمة هي لـ {key_origin_network}. الرجاء تقديم xPub للشبكة {network}</translation>
-		</message>
-		<name>KeyOriginAnalyzer</name>
-		<message>
-			<source>The provided xpub origin {given} does not match the expectation {expected}</source>
-			<translation>لا يتطابق أصل xpub المقدَّم {given} مع الأصل المتوقَّع {expected}</translation>
-		</message>
-		<name>KeyOriginAnalyzer</name>
-		<message>
-			<source>This looks like a {provided_kind}. Expected: {expected_kind}.</source>
-			<translation>يبدو أن هذا من نوع {provided_kind}. المتوقع: {expected_kind}.</translation>
-		</message>
-		<name>KeyOriginAnalyzer</name>
-		<message>
-			<source>multi-sig</source>
-			<translation>متعدد التوقيعات</translation>
-		</message>
-		<name>KeyOriginAnalyzer</name>
-		<message>
-			<source>single-sig</source>
-			<translation>أحادي التوقيع</translation>
-		</message>
-		<name>KeyOriginAnalyzer</name>
-		<message>
-			<source>{given} looks like {provided_type}, but this wallet expects {expected_type}.</source>
-			<translation>يبدو {given} من نوع {provided_type}، لكن هذه المحفظة تتوقع {expected_type}.</translation>
-		</message>
-	</context>
-	<context>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Abort and try later</source>
-			<translation>إلغاء والمحاولة لاحقًا</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Account number</source>
-			<translation>رقم الحساب</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Bluetooth</source>
-			<translation>Bluetooth</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Change device type</source>
-			<translation>تغيير نوع الجهاز</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Derivation path</source>
-			<translation>مسار الاشتقاق</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Device instructions</source>
-			<translation>تعليمات الجهاز</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Fingerprint</source>
-			<translation>بصمة الإصبع</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Hide details</source>
-			<translation>إخفاء التفاصيل</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Ignore warning and proceed</source>
-			<translation>تجاهل التحذير والمتابعة</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Import</source>
-			<translation>استيراد</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Import fingerprint and xpub</source>
-			<translation>استيراد بصمة الإصبع و xpub</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
-			<translation>استيراد بيانات جهاز التوقيع عبر QR أو USB أو Bluetooth أو استيراد نص/ملف.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;supported signers&lt;/a&gt;.</source>
-			<translation>تعرّف على المزيد حول &lt;a href="{url}"&gt;الموقّعين المدعومين&lt;/a&gt;.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Learn more about &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</source>
-			<translation>تعرّف على المزيد حول &lt;a href="{url}"&gt;{device}&lt;/a&gt;.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Learn more about this signer</source>
-			<translation>تعرّف على المزيد حول جهاز التوقيع هذا</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
-			<translation>لم يتم العثور على بيانات الموقّع للأصل Xpub المتوقع {key_origin}. إذا كنت تريد استيراد رقم حساب غير افتراضي، فحدّد أصل Xpub ثم أعد الفحص.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>OK</source>
-			<translation>موافق</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Open the signer guide</source>
-			<translation>افتح دليل الموقّع</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Personal notes:</source>
-			<translation>ملاحظات شخصية:</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Please ensure that there are no other programs accessing the Hardware signer</source>
-			<translation>يرجى التأكد من عدم وجود برامج أخرى تستخدم الموقع الإلكتروني للتوقيع الأجهزة</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Please import the information from all hardware signers first</source>
-			<translation>يرجى استيراد المعلومات من جميع الموقعين العتاد أولاً</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Please paste descriptors into the descriptor field in the top right.</source>
-			<translation>يرجى لصق الوصفات في حقل الوصفات في الزاوية اليمنى العلوية.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Please paste the exported file (like sparrow-export.json)</source>
-			<translation>الرجاء لصق الملف المُصدر (مثل sparrow-export.json)</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Please paste the exported file (like sparrow-export.json):</source>
-			<translation>الرجاء لصق الملف المُصدر (مثل sparrow-export.json):</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>QR Code</source>
-			<translation>رمز الاستجابة السريعة</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Register</source>
-			<translation>تسجيل</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Reregister multisig</source>
-			<translation>إعادة تسجيل التوقيع المتعدد</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Seed</source>
-			<translation>بذرة</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Select Brand</source>
-			<translation>اختر العلامة التجارية</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Select Model</source>
-			<translation>اختر الطراز</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Select the signer brand</source>
-			<translation>اختر العلامة التجارية للموقّع</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Select the signer model</source>
-			<translation>اختر طراز الموقّع</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Select your signer</source>
-			<translation>حدد المُوقّع الخاص بك</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Set account number</source>
-			<translation>تعيين رقم الحساب</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Set account number...</source>
-			<translation>تعيين رقم الحساب...</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Show details</source>
-			<translation>عرض التفاصيل</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
-			<translation>المعيار لنوع العنوان المختار {type} هو {expected_key_origin}. الرجاء التصحيح إذا لم تكن متأكدًا.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>The 8 digit fingerprint identifies the seed.
+    </message>
+    <name>FeeWarningBar</name>
+    <message>
+        <source>The transaction fee is: {fee}, which is {percent}% of the sending value {sent}</source>
+        <translation>رسوم المعاملة هي: {fee}، أي {percent}% من قيمة الإرسال {sent}</translation>
+    </message>
+    <name>FeeWarningBar</name>
+    <message>
+        <source>{sent} is sent!</source>
+        <translation>تم إرسال {sent}!</translation>
+    </message>
+</context>
+<context>
+    <name>FiatSpinBox</name>
+    <message>
+        <source>Max ≈ {amount}</source>
+        <translation>الحد الأقصى ≈ {amount}</translation>
+    </message>
+</context>
+<context>
+    <name>FileToolButton</name>
+    <message>
+        <source>Copy JSON</source>
+        <translation>نسخ JSON</translation>
+    </message>
+    <name>FileToolButton</name>
+    <message>
+        <source>Copy TxId</source>
+        <translation>نسخ معرف المعاملة</translation>
+    </message>
+    <name>FileToolButton</name>
+    <message>
+        <source>Copy {name}</source>
+        <translation>نسخ {name}</translation>
+    </message>
+    <name>FileToolButton</name>
+    <message>
+        <source>Export</source>
+        <translation>تصدير</translation>
+    </message>
+    <name>FileToolButton</name>
+    <message>
+        <source>File</source>
+        <translation>ملف</translation>
+    </message>
+    <name>FileToolButton</name>
+    <message>
+        <source>Not available</source>
+        <translation>غير متوفر</translation>
+    </message>
+    <name>FileToolButton</name>
+    <message>
+        <source>PDF</source>
+        <translation>PDF</translation>
+    </message>
+    <name>FileToolButton</name>
+    <message>
+        <source>PDF export is only available for transactions or PSBTs.</source>
+        <translation>تصدير PDF متاح فقط للمعاملات أو PSBT.</translation>
+    </message>
+    <name>FileToolButton</name>
+    <message>
+        <source>Transaction export</source>
+        <translation>تصدير المعاملة</translation>
+    </message>
+</context>
+<context>
+    <name>FingerprintAnalyzer</name>
+    <message>
+        <source>Invalid Fingerprint</source>
+        <translation>بصمة غير صالحة</translation>
+    </message>
+    <name>FingerprintAnalyzer</name>
+    <message>
+        <source>Missing Fingerprint</source>
+        <translation>بصمة مفقودة</translation>
+    </message>
+</context>
+<context>
+    <name>HardwareSignerInteractionWidget</name>
+    <message>
+        <source>Export File</source>
+        <translation>تصدير الملف</translation>
+    </message>
+    <name>HardwareSignerInteractionWidget</name>
+    <message>
+        <source>Import File or Text</source>
+        <translation>استيراد ملف أو نص</translation>
+    </message>
+    <name>HardwareSignerInteractionWidget</name>
+    <message>
+        <source>QR Code</source>
+        <translation>رمز الاستجابة السريعة</translation>
+    </message>
+    <name>HardwareSignerInteractionWidget</name>
+    <message>
+        <source>USB</source>
+        <translation>يو إس بي</translation>
+    </message>
+</context>
+<context>
+    <name>HiddenRecipientsPlaceholder</name>
+    <message>
+        <source>({count} outputs)</source>
+        <translation>({count} مخرجات)</translation>
+    </message>
+    <name>HiddenRecipientsPlaceholder</name>
+    <message>
+        <source>{count} outputs without a known wallet or label are hidden here.</source>
+        <translation>يتم إخفاء {count} من المخرجات التي لا تحتوي على محفظة أو تسمية معروفة هنا.</translation>
+    </message>
+</context>
+<context>
+    <name>HistList</name>
+    <message>
+        <source>Balance</source>
+        <translation>الرصيد</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Cannot find wallet for transaction {txid}. Please open the corresponding wallet first.</source>
+        <translation>لا يمكن العثور على المحفظة للمعاملة {txid}. الرجاء فتح المحفظة المقابلة أولاً.</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Category</source>
+        <translation>فئة</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Copy as csv</source>
+        <translation>انسخ كملف CSV</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Delta Balance</source>
+        <translation>تغير الرصيد</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Details</source>
+        <translation>تفاصيل</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Estimated timestamp</source>
+        <translation>الطابع الزمني التقديري</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Label</source>
+        <translation>تصنيف</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Local</source>
+        <translation>محلي</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Not broadcasted.</source>
+        <translation>لم يتم نشرها.</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Remove</source>
+        <translation>إزالة</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Save as file</source>
+        <translation>حفظ كملف</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Status</source>
+        <translation>الحالة</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Transaction id</source>
+        <translation>معرّف المعاملة</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Txid</source>
+        <translation>معرف المعاملة</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>View on block explorer</source>
+        <translation>عرض على كتلة اكسبلورر</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Waiting to be included in a block</source>
+        <translation>في انتظار تضمينها في كتلة</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Wallet</source>
+        <translation>محفظة</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>nLocktime</source>
+        <translation>nLocktime</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>{number} Confirmations</source>
+        <translation>{number} تأكيدات</translation>
+    </message>
+    <name>HistList</name>
+    <message>
+        <source>Δ</source>
+        <translation>Δ</translation>
+    </message>
+</context>
+<context>
+    <name>HistListWithToolbar</name>
+    <message>
+        <source>&amp;Generate PDF balance Statement</source>
+        <translation>&amp;إنشاء كشف حساب الرصيد PDF</translation>
+    </message>
+</context>
+<context>
+    <name>ImportLabelMenu</name>
+    <message>
+        <source>Electrum Wallet</source>
+        <translation>محفظة Electrum</translation>
+    </message>
+    <name>ImportLabelMenu</name>
+    <message>
+        <source>Exchange format (BIP329)</source>
+        <translation>تنسيق التبادل (BIP329)</translation>
+    </message>
+    <name>ImportLabelMenu</name>
+    <message>
+        <source>Full ({app_name})</source>
+        <translation>كامل ({app_name})</translation>
+    </message>
+    <name>ImportLabelMenu</name>
+    <message>
+        <source>Import labels and categories</source>
+        <translation>استيراد التصنيفات والفئات</translation>
+    </message>
+    <name>ImportLabelMenu</name>
+    <message>
+        <source>Restore labels from cloud using an existing sync key</source>
+        <translation>استعادة العلامات من السحاب باستخدام مفتاح مزامنة موجود</translation>
+    </message>
+</context>
+<context>
+    <name>ImportXpubs</name>
+    <message>
+        <source>Import hardware signer information into {app_name}</source>
+        <translation>استيراد معلومات جهاز التوقيع المادي إلى {app_name}</translation>
+    </message>
+    <name>ImportXpubs</name>
+    <message>
+        <source>Next step</source>
+        <translation>الخطوة التالية</translation>
+    </message>
+    <name>ImportXpubs</name>
+    <message>
+        <source>Previous step</source>
+        <translation>الخطوة السابقة</translation>
+    </message>
+    <name>ImportXpubs</name>
+    <message>
+        <source>Skip step</source>
+        <translation>تخطي الخطوة</translation>
+    </message>
+</context>
+<context>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>App lock password</source>
+        <translation>كلمة مرور قفل التطبيق</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>App lock password cannot be empty.</source>
+        <translation>لا يمكن أن تكون كلمة مرور قفل التطبيق فارغة.</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Change</source>
+        <translation>يتغير</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Clear app lock password</source>
+        <translation>مسح كلمة مرور قفل التطبيق</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Configured</source>
+        <translation>تم الإعداد</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Dark</source>
+        <translation>داكن</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Enter app lock password:</source>
+        <translation>أدخل كلمة مرور قفل التطبيق:</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Invalid password</source>
+        <translation>كلمة مرور غير صالحة</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Light</source>
+        <translation>فاتح</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Not configured</source>
+        <translation>غير مُعد</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Remove the app lock password?</source>
+        <translation>هل تريد إزالة كلمة مرور قفل التطبيق؟</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>Set</source>
+        <translation>تعيين</translation>
+    </message>
+    <name>InterfaceSettingsUi</name>
+    <message>
+        <source>System</source>
+        <translation>النظام</translation>
+    </message>
+</context>
+<context>
+    <name>KeyOriginAnalyzer</name>
+    <message>
+        <source>Missing Key origin</source>
+        <translation>أصل المفتاح مفقود</translation>
+    </message>
+    <name>KeyOriginAnalyzer</name>
+    <message>
+        <source>The provided account {provided_account} differs from the default account {default_account}.</source>
+        <translation>الحساب المقدم {provided_account} يختلف عن الحساب الافتراضي {default_account}.</translation>
+    </message>
+    <name>KeyOriginAnalyzer</name>
+    <message>
+        <source>The provided information is for {key_origin_network}. Please provide xPub for network {network}</source>
+        <translation>المعلومات المقدمة هي لـ {key_origin_network}. الرجاء تقديم xPub للشبكة {network}</translation>
+    </message>
+    <name>KeyOriginAnalyzer</name>
+    <message>
+        <source>The provided xpub origin {given} does not match the expectation {expected}</source>
+        <translation>لا يتطابق أصل xpub المقدَّم {given} مع الأصل المتوقَّع {expected}</translation>
+    </message>
+    <name>KeyOriginAnalyzer</name>
+    <message>
+        <source>This looks like a {provided_kind}. Expected: {expected_kind}.</source>
+        <translation>يبدو أن هذا من نوع {provided_kind}. المتوقع: {expected_kind}.</translation>
+    </message>
+    <name>KeyOriginAnalyzer</name>
+    <message>
+        <source>multi-sig</source>
+        <translation>متعدد التوقيعات</translation>
+    </message>
+    <name>KeyOriginAnalyzer</name>
+    <message>
+        <source>single-sig</source>
+        <translation>أحادي التوقيع</translation>
+    </message>
+    <name>KeyOriginAnalyzer</name>
+    <message>
+        <source>{given} looks like {provided_type}, but this wallet expects {expected_type}.</source>
+        <translation>يبدو {given} من نوع {provided_type}، لكن هذه المحفظة تتوقع {expected_type}.</translation>
+    </message>
+</context>
+<context>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Abort and try later</source>
+        <translation>إلغاء والمحاولة لاحقًا</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Account number</source>
+        <translation>رقم الحساب</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Change device type</source>
+        <translation>تغيير نوع الجهاز</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Derivation path</source>
+        <translation>مسار الاشتقاق</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Device instructions</source>
+        <translation>تعليمات الجهاز</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Fingerprint</source>
+        <translation>بصمة الإصبع</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Hide details</source>
+        <translation>إخفاء التفاصيل</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Ignore warning and proceed</source>
+        <translation>تجاهل التحذير والمتابعة</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Import</source>
+        <translation>استيراد</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Import fingerprint and xpub</source>
+        <translation>استيراد بصمة الإصبع و xpub</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Import signer data with QR, USB, Bluetooth, or text/file import.</source>
+        <translation>استيراد بيانات جهاز التوقيع عبر QR أو USB أو Bluetooth أو استيراد نص/ملف.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Learn more about &lt;a href=&quot;{url}&quot;&gt;supported signers&lt;/a&gt;.</source>
+        <translation>تعرّف على المزيد حول &lt;a href=&quot;{url}&quot;&gt;الموقّعين المدعومين&lt;/a&gt;.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Learn more about &lt;a href=&quot;{url}&quot;&gt;{device}&lt;/a&gt;.</source>
+        <translation>تعرّف على المزيد حول &lt;a href=&quot;{url}&quot;&gt;{device}&lt;/a&gt;.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Learn more about this signer</source>
+        <translation>تعرّف على المزيد حول جهاز التوقيع هذا</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>No signer data for the expected Xpub origin {key_origin} found. If you want to import a non-default account number, specify the Xpub origin and scan again.</source>
+        <translation>لم يتم العثور على بيانات الموقّع للأصل Xpub المتوقع {key_origin}. إذا كنت تريد استيراد رقم حساب غير افتراضي، فحدّد أصل Xpub ثم أعد الفحص.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>OK</source>
+        <translation>موافق</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Open the signer guide</source>
+        <translation>افتح دليل الموقّع</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Personal notes:</source>
+        <translation>ملاحظات شخصية:</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Please ensure that there are no other programs accessing the Hardware signer</source>
+        <translation>يرجى التأكد من عدم وجود برامج أخرى تستخدم الموقع الإلكتروني للتوقيع الأجهزة</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Please import the information from all hardware signers first</source>
+        <translation>يرجى استيراد المعلومات من جميع الموقعين العتاد أولاً</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Please paste descriptors into the descriptor field in the top right.</source>
+        <translation>يرجى لصق الوصفات في حقل الوصفات في الزاوية اليمنى العلوية.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Please paste the exported file (like sparrow-export.json)</source>
+        <translation>الرجاء لصق الملف المُصدر (مثل sparrow-export.json)</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Please paste the exported file (like sparrow-export.json):</source>
+        <translation>الرجاء لصق الملف المُصدر (مثل sparrow-export.json):</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>QR Code</source>
+        <translation>رمز الاستجابة السريعة</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Register</source>
+        <translation>تسجيل</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Reregister multisig</source>
+        <translation>إعادة تسجيل التوقيع المتعدد</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Seed</source>
+        <translation>بذرة</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Select Brand</source>
+        <translation>اختر العلامة التجارية</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Select Model</source>
+        <translation>اختر الطراز</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Select the signer brand</source>
+        <translation>اختر العلامة التجارية للموقّع</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Select the signer model</source>
+        <translation>اختر طراز الموقّع</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Select your signer</source>
+        <translation>حدد المُوقّع الخاص بك</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Set account number</source>
+        <translation>تعيين رقم الحساب</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Set account number...</source>
+        <translation>تعيين رقم الحساب...</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Show details</source>
+        <translation>عرض التفاصيل</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Standard for the selected address type {type} is {expected_key_origin}.  Please correct if you are not sure.</source>
+        <translation>المعيار لنوع العنوان المختار {type} هو {expected_key_origin}. الرجاء التصحيح إذا لم تكن متأكدًا.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>The 8 digit fingerprint identifies the seed.
 You can write it onto the hardware signer
 to keep track of different seeds and signing devices.</source>
-			<translation>تحدد البصمة المكونة من 8 أرقام seed.
+        <translation>تحدد البصمة المكونة من 8 أرقام seed.
 يمكنك كتابتها على جهاز التوقيع المادي لتتبع seeds وأجهزة التوقيع المختلفة.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
-			<translation>تغيّر الحساب من {current_account_number} إلى {new_account_number}. هل تريد المتابعة؟</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>The account number is encoded in the derivation path and selects the signer xPub.</source>
-			<translation>يُشفَّر رقم الحساب في مسار الاشتقاق ويحدّد xPub الخاص بالموقّع.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>The key origin is needed to construct
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>The account changed from {current_account_number} to {new_account_number}. Proceed?</source>
+        <translation>تغيّر الحساب من {current_account_number} إلى {new_account_number}. هل تريد المتابعة؟</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>The account number is encoded in the derivation path and selects the signer xPub.</source>
+        <translation>يُشفَّر رقم الحساب في مسار الاشتقاق ويحدّد xPub الخاص بالموقّع.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>The key origin is needed to construct
 transactions (PSBTs) correctly and is connected to the xPub.</source>
-			<translation>أصل المفتاح مطلوب لإنشاء المعاملات (PSBTs) بشكل صحيح وهو مرتبط بـ xPub.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>The seed is the secret, that enables transaction signing.
+        <translation>أصل المفتاح مطلوب لإنشاء المعاملات (PSBTs) بشكل صحيح وهو مرتبط بـ xPub.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
-			<translation>seed هو السر الذي يتيح توقيع المعاملات.
+        <translation>seed هو السر الذي يتيح توقيع المعاملات.
 بالنسبة إلى محفظة بتوقيع واحد، فإنه يمنح تحكماً كاملاً في الأموال.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
-			<translation>أصل xPub {key_origin} و xPub ينتميان معًا. يرجى اختيار زوج أصل xPub الصحيح.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>The xpub is in SLIP132 format. Converting to standard format.</source>
-			<translation>xpub في تنسيق SLIP132. تحويل إلى تنسيق قياسي.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>USB</source>
-			<translation>يو إس بي</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Wallet addresses are derived from the xPub.</source>
-			<translation>تُشتق عناوين المحفظة من xPub.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>Write here notes relative to this signer, memos, etc...</source>
-			<translation>اكتب هنا ملاحظات متعلقة بهذا الموقّع، مذكرات، إلخ...</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>xPub</source>
-			<translation>xPub</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>{data_type} cannot be used here.</source>
-			<translation>{data_type} لا يمكن استخدامها هنا.</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>{device} instructions</source>
-			<translation>تعليمات {device}</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>{msg}</source>
-			<translation>{msg}</translation>
-		</message>
-		<name>KeyStoreUI</name>
-		<message>
-			<source>{xpub} is not a valid public xpub</source>
-			<translation>{xpub} ليس xpub عامًا صالحًا</translation>
-		</message>
-	</context>
-	<context>
-		<name>KeyStoreUIs</name>
-		<message>
-			<source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
-			<translation>ملء جميع الموقعين {number} بالبصمات {fingerprints}</translation>
-		</message>
-		<name>KeyStoreUIs</name>
-		<message>
-			<source>Please import the complete data for Signer {i}!</source>
-			<translation>الرجاء استيراد البيانات الكاملة للموقع {i}!</translation>
-		</message>
-		<name>KeyStoreUIs</name>
-		<message>
-			<source>Proceed anyway</source>
-			<translation>المتابعة على أي حال</translation>
-		</message>
-		<name>KeyStoreUIs</name>
-		<message>
-			<source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
-			<translation>تحتوي خانات الموقّعين {signers} على xpub نفسه. يعني هذا عادةً أنه تم استيراد تصدير الموقّع نفسه مرتين. يُرجى استيراد جهاز أو حساب مختلف لكل موقّع.</translation>
-		</message>
-		<name>KeyStoreUIs</name>
-		<message>
-			<source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
-			<translation>لقد قمت باستيراد نفس البصمة عدة مرات!!! الرجاء استخدام جهاز توقيع مختلف.</translation>
-		</message>
-		<name>KeyStoreUIs</name>
-		<message>
-			<source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
-			<translation>أصول المفاتيح التي قمت باستيرادها {key_origins} مختلفة! الرجاء التحقق مرة أخرى إذا كنت تنوي ذلك.</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelSnapshotMenu</name>
-		<message>
-			<source>Automatic snapshot</source>
-			<translation>لقطة تلقائية</translation>
-		</message>
-		<name>LabelSnapshotMenu</name>
-		<message>
-			<source>No previous snapshots</source>
-			<translation>لا توجد لقطات سابقة</translation>
-		</message>
-		<name>LabelSnapshotMenu</name>
-		<message>
-			<source>No wallets available</source>
-			<translation>لا توجد محافظ متاحة</translation>
-		</message>
-		<name>LabelSnapshotMenu</name>
-		<message>
-			<source>Restore labels and categories snapshot</source>
-			<translation>استعادة لقطة التصنيفات والفئات</translation>
-		</message>
-		<name>LabelSnapshotMenu</name>
-		<message>
-			<source>Restored labels snapshot from {timestamp}</source>
-			<translation>تم استعادة لقطة التصنيفات من {timestamp}</translation>
-		</message>
-		<name>LabelSnapshotMenu</name>
-		<message>
-			<source>State before restore</source>
-			<translation>الحالة قبل الاستعادة</translation>
-		</message>
-		<name>LabelSnapshotMenu</name>
-		<message>
-			<source>{count} Labels</source>
-			<translation>{count} تصنيفات</translation>
-		</message>
-	</context>
-	<context>
-		<name>LabelTimeEstimation</name>
-		<message>
-			<source>~in {t} hours</source>
-			<translation>~ في {t} ساعة</translation>
-		</message>
-		<name>LabelTimeEstimation</name>
-		<message>
-			<source>~in {t} min</source>
-			<translation>~ في {t} دقيقة</translation>
-		</message>
-	</context>
-	<context>
-		<name>LicenseDialog</name>
-		<message>
-			<source>License Info</source>
-			<translation>معلومات الترخيص</translation>
-		</message>
-	</context>
-	<context>
-		<name>LinkingWarningBar</name>
-		<message>
-			<source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
-			<translation>تجمع هذه المعاملة فئات العملات {categories} وتجعل هذه الفئات قابلة للربط!</translation>
-		</message>
-		<name>LinkingWarningBar</name>
-		<message>
-			<source>{category} (in wallet {wallet_ids})</source>
-			<translation>{category} (في محفظة {wallet_ids})</translation>
-		</message>
-	</context>
-	<context>
-		<name>LoadingWalletTab</name>
-		<message>
-			<source>Loading, please wait...</source>
-			<translation>جار التحميل، يرجى الانتظار...</translation>
-		</message>
-	</context>
-	<context>
-		<name>MainWindow</name>
-		<message>
-			<source> Please open the sender wallet to edit this transaction.</source>
-			<translation> من فضلك افتح محفظة المرسل لتحرير هذه العملية.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;About</source>
-			<translation>&amp;حول</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Check for update</source>
-			<translation>&amp;التحقق من التحديث</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Close</source>
-			<translation>&amp;إغلاق</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Community forum</source>
-			<translation>&amp;منتدى المجتمع</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Contact</source>
-			<translation>&amp;اتصال</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Current Wallet</source>
-			<translation>&amp;المحفظة الحالية</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Descriptor for hardware signers</source>
-			<translation>&amp;واصف لموقّعي الأجهزة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Documentation</source>
-			<translation>الوثائق</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Donate</source>
-			<translation>&amp;تبرع</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Edit</source>
-			<translation>&amp;تعديل</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Exit Full Screen</source>
-			<translation>&amp;الخروج من ملء الشاشة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Export</source>
-			<translation>&amp;تصدير</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Feedback</source>
-			<translation>&amp;ملاحظات</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;File</source>
-			<translation>&amp;ملف</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Full Screen</source>
-			<translation>&amp;ملء الشاشة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Help</source>
-			<translation>&amp;مساعدة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Load Transaction or PSBT</source>
-			<translation>&amp;تحميل المعاملة أو PSBT</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Lock and minimize to tray</source>
-			<translation>&amp;قفل وتصغير إلى شريط النظام</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Manage Categories</source>
-			<translation>&amp;إدارة الفئات</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Message Signatures</source>
-			<translation>&amp;تواقيع الرسائل</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Minimize to tray</source>
-			<translation>&amp;تصغير إلى الشريط</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Network</source>
-			<translation>&amp;الشبكة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Network Map</source>
-			<translation>&amp;خريطة الشبكة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;New Wallet</source>
-			<translation>&amp;محفظة جديدة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Next Wallet/Tab</source>
-			<translation>&amp;المحفظة/علامة التبويب التالية</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Nostr DM</source>
-			<translation>&amp;Nostr DM</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Open Wallet</source>
-			<translation>&amp;فتح المحفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Open issue in github</source>
-			<translation>فتح مشكلة في github</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;PDF Wallet</source>
-			<translation>&amp;محفظة PDF</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Plugins</source>
-			<translation>&amp;المكونات الإضافية</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Previous Wallet/Tab</source>
-			<translation>&amp;المحفظة/علامة التبويب السابقة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Register Multisig with hardware signers</source>
-			<translation>&amp;تسجيل Multisig مع الموقعين بالأجهزة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Save</source>
-			<translation>&amp;حفظ</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Search</source>
-			<translation>&amp;بحث</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Send Email</source>
-			<translation>&amp;إرسال بريد إلكتروني</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Send via Email</source>
-			<translation>&amp;إرسال عبر البريد الإلكتروني</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Settings</source>
-			<translation>&amp;الإعدادات</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Show Logs</source>
-			<translation>&amp;عرض السجلات</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Show/Hide Wizard</source>
-			<translation>&amp;إظهار/إخفاء المعالج</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Tools</source>
-			<translation>&amp;أدوات</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;USB Signer Tools</source>
-			<translation>&amp;أدوات موقع USB</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Unlock app</source>
-			<translation>&amp;فتح قفل التطبيق</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;View</source>
-			<translation>&amp;عرض</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Wallet name</source>
-			<translation>&amp;اسم المحفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;Wallet password</source>
-			<translation>&amp;كلمة مرور المحفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>&amp;X/Twitter DM</source>
-			<translation>&amp;X/Twitter DM</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
-			<translation>توجد بالفعل محفظة باسم {wallet_id}. يرجى اختيار اسم مختلف.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>A wallet with id {name} is already open.  </source>
-			<translation>محفظة بالمعرّف {name} مفتوحة بالفعل.  </translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>A wallet with id {name} is already open. Please close it first.</source>
-			<translation>محفظة بمعرف {name} مفتوحة بالفعل. الرجاء إغلاقها أولاً.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
-			<translation>جميع الملفات (*);;PSBT (*.psbt);;معاملة (*.tx)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Balance statement</source>
-			<translation>كشف الرصيد</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Close</source>
-			<translation>إغلاق</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Close Tab</source>
-			<translation>إغلاق التبويب</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Close all transactions</source>
-			<translation>إغلاق جميع المعاملات</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Close anyway</source>
-			<translation>إغلاق على أي حال</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Close wallet</source>
-			<translation>إغلاق المحفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Close wallet {id}?</source>
-			<translation>هل تريد إغلاق المحفظة {id}؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Closing tab {name}</source>
-			<translation>جارٍ إغلاق التبويب {name}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Connecting to additional peer (currently {count} active)</source>
-			<translation>جارٍ الاتصال بنظير إضافي (حاليًا {count} نشطة)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Could not decode this string</source>
-			<translation>لا يمكن فك تشفير هذه السلسلة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Could not export the wallet graph: {error}</source>
-			<translation>لم يُتمكّن من تصدير رسم بياني للمحفظة: {error}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Could not identify the wallet belonging to the transaction inputs.</source>
-			<translation>تعذر تحديد المحفظة المرتبطة بمدخلات المعاملة.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Could not open PSBT</source>
-			<translation>تعذّر فتح PSBT</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Could not open PSBT, because it lacks the input UTXOs.</source>
-			<translation>تعذّر فتح PSBT، لأن UTXO الخاصة بالإدخال غير متوفرة.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>تعذّر التعرّف على الإدخال. هل تريد المسح مرة أخرى؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Do you want to save the PSBT {id}?</source>
-			<translation>هل تريد حفظ PSBT {id}؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>From &amp;QR Code</source>
-			<translation>من &amp;رمز الاستجابة السريعة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>From &amp;file</source>
-			<translation>من &amp;ملف</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>From &amp;text</source>
-			<translation>من &amp;نص</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Hide to tray</source>
-			<translation>إخفاء إلى علبة النظام</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Hiding tab {name}</source>
-			<translation>جارٍ إخفاء علامة التبويب {name}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Hot wallets are disabled on Bitcoin Mainnet.
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>The xPub origin {key_origin} and the xPub belong together. Please choose the correct xPub origin pair.</source>
+        <translation>أصل xPub {key_origin} و xPub ينتميان معًا. يرجى اختيار زوج أصل xPub الصحيح.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>The xpub is in SLIP132 format. Converting to standard format.</source>
+        <translation>xpub في تنسيق SLIP132. تحويل إلى تنسيق قياسي.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>USB</source>
+        <translation>يو إس بي</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Wallet addresses are derived from the xPub.</source>
+        <translation>تُشتق عناوين المحفظة من xPub.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>Write here notes relative to this signer, memos, etc...</source>
+        <translation>اكتب هنا ملاحظات متعلقة بهذا الموقّع، مذكرات، إلخ...</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>xPub</source>
+        <translation>xPub</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>{data_type} cannot be used here.</source>
+        <translation>{data_type} لا يمكن استخدامها هنا.</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>{device} instructions</source>
+        <translation>تعليمات {device}</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>{msg}</source>
+        <translation>{msg}</translation>
+    </message>
+    <name>KeyStoreUI</name>
+    <message>
+        <source>{xpub} is not a valid public xpub</source>
+        <translation>{xpub} ليس xpub عامًا صالحًا</translation>
+    </message>
+</context>
+<context>
+    <name>KeyStoreUIs</name>
+    <message>
+        <source>Filling in all {number} signers with the fingerprints {fingerprints}</source>
+        <translation>ملء جميع الموقعين {number} بالبصمات {fingerprints}</translation>
+    </message>
+    <name>KeyStoreUIs</name>
+    <message>
+        <source>Please import the complete data for Signer {i}!</source>
+        <translation>الرجاء استيراد البيانات الكاملة للموقع {i}!</translation>
+    </message>
+    <name>KeyStoreUIs</name>
+    <message>
+        <source>Proceed anyway</source>
+        <translation>المتابعة على أي حال</translation>
+    </message>
+    <name>KeyStoreUIs</name>
+    <message>
+        <source>Signer slots {signers} contain the same xpub. This usually means the same signer export was imported twice. Please import a different device or account for each signer.</source>
+        <translation>تحتوي خانات الموقّعين {signers} على xpub نفسه. يعني هذا عادةً أنه تم استيراد تصدير الموقّع نفسه مرتين. يُرجى استيراد جهاز أو حساب مختلف لكل موقّع.</translation>
+    </message>
+    <name>KeyStoreUIs</name>
+    <message>
+        <source>You imported the same fingerprint multiple times!!! Please use a different signing device.</source>
+        <translation>لقد قمت باستيراد نفس البصمة عدة مرات!!! الرجاء استخدام جهاز توقيع مختلف.</translation>
+    </message>
+    <name>KeyStoreUIs</name>
+    <message>
+        <source>Your imported key origins {key_origins} differ! Please double-check if you intended this.</source>
+        <translation>أصول المفاتيح التي قمت باستيرادها {key_origins} مختلفة! الرجاء التحقق مرة أخرى إذا كنت تنوي ذلك.</translation>
+    </message>
+</context>
+<context>
+    <name>LabelSnapshotMenu</name>
+    <message>
+        <source>Automatic snapshot</source>
+        <translation>لقطة تلقائية</translation>
+    </message>
+    <name>LabelSnapshotMenu</name>
+    <message>
+        <source>No previous snapshots</source>
+        <translation>لا توجد لقطات سابقة</translation>
+    </message>
+    <name>LabelSnapshotMenu</name>
+    <message>
+        <source>No wallets available</source>
+        <translation>لا توجد محافظ متاحة</translation>
+    </message>
+    <name>LabelSnapshotMenu</name>
+    <message>
+        <source>Restore labels and categories snapshot</source>
+        <translation>استعادة لقطة التصنيفات والفئات</translation>
+    </message>
+    <name>LabelSnapshotMenu</name>
+    <message>
+        <source>Restored labels snapshot from {timestamp}</source>
+        <translation>تم استعادة لقطة التصنيفات من {timestamp}</translation>
+    </message>
+    <name>LabelSnapshotMenu</name>
+    <message>
+        <source>State before restore</source>
+        <translation>الحالة قبل الاستعادة</translation>
+    </message>
+    <name>LabelSnapshotMenu</name>
+    <message>
+        <source>{count} Labels</source>
+        <translation>{count} تصنيفات</translation>
+    </message>
+</context>
+<context>
+    <name>LabelTimeEstimation</name>
+    <message>
+        <source>~in {t} hours</source>
+        <translation>~ في {t} ساعة</translation>
+    </message>
+    <name>LabelTimeEstimation</name>
+    <message>
+        <source>~in {t} min</source>
+        <translation>~ في {t} دقيقة</translation>
+    </message>
+</context>
+<context>
+    <name>LicenseDialog</name>
+    <message>
+        <source>License Info</source>
+        <translation>معلومات الترخيص</translation>
+    </message>
+</context>
+<context>
+    <name>LinkingWarningBar</name>
+    <message>
+        <source>This transaction combines the coin categories {categories} and makes these categories linkable!</source>
+        <translation>تجمع هذه المعاملة فئات العملات {categories} وتجعل هذه الفئات قابلة للربط!</translation>
+    </message>
+    <name>LinkingWarningBar</name>
+    <message>
+        <source>{category} (in wallet {wallet_ids})</source>
+        <translation>{category} (في محفظة {wallet_ids})</translation>
+    </message>
+</context>
+<context>
+    <name>LoadingWalletTab</name>
+    <message>
+        <source>Loading, please wait...</source>
+        <translation>جار التحميل، يرجى الانتظار...</translation>
+    </message>
+</context>
+<context>
+    <name>MainWindow</name>
+    <message>
+        <source> Please open the sender wallet to edit this transaction.</source>
+        <translation> من فضلك افتح محفظة المرسل لتحرير هذه العملية.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;About</source>
+        <translation>&amp;حول</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Check for update</source>
+        <translation>&amp;التحقق من التحديث</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Close</source>
+        <translation>&amp;إغلاق</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Community forum</source>
+        <translation>&amp;منتدى المجتمع</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Contact</source>
+        <translation>&amp;اتصال</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Current Wallet</source>
+        <translation>&amp;المحفظة الحالية</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Descriptor for hardware signers</source>
+        <translation>&amp;واصف لموقّعي الأجهزة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Documentation</source>
+        <translation>الوثائق</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Donate</source>
+        <translation>&amp;تبرع</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;تعديل</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Exit Full Screen</source>
+        <translation>&amp;الخروج من ملء الشاشة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Export</source>
+        <translation>&amp;تصدير</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Feedback</source>
+        <translation>&amp;ملاحظات</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;File</source>
+        <translation>&amp;ملف</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Full Screen</source>
+        <translation>&amp;ملء الشاشة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Help</source>
+        <translation>&amp;مساعدة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Load Transaction or PSBT</source>
+        <translation>&amp;تحميل المعاملة أو PSBT</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Lock and minimize to tray</source>
+        <translation>&amp;قفل وتصغير إلى شريط النظام</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Manage Categories</source>
+        <translation>&amp;إدارة الفئات</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Message Signatures</source>
+        <translation>&amp;تواقيع الرسائل</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Minimize to tray</source>
+        <translation>&amp;تصغير إلى الشريط</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Network</source>
+        <translation>&amp;الشبكة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Network Map</source>
+        <translation>&amp;خريطة الشبكة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;New Wallet</source>
+        <translation>&amp;محفظة جديدة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Next Wallet/Tab</source>
+        <translation>&amp;المحفظة/علامة التبويب التالية</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Nostr DM</source>
+        <translation>&amp;Nostr DM</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Open Wallet</source>
+        <translation>&amp;فتح المحفظة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Open issue in github</source>
+        <translation>فتح مشكلة في github</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;PDF Wallet</source>
+        <translation>&amp;محفظة PDF</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Plugins</source>
+        <translation>&amp;المكونات الإضافية</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Previous Wallet/Tab</source>
+        <translation>&amp;المحفظة/علامة التبويب السابقة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Register Multisig with hardware signers</source>
+        <translation>&amp;تسجيل Multisig مع الموقعين بالأجهزة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Save</source>
+        <translation>&amp;حفظ</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;بحث</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Send Email</source>
+        <translation>&amp;إرسال بريد إلكتروني</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Send via Email</source>
+        <translation>&amp;إرسال عبر البريد الإلكتروني</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Settings</source>
+        <translation>&amp;الإعدادات</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Show Logs</source>
+        <translation>&amp;عرض السجلات</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Show/Hide Wizard</source>
+        <translation>&amp;إظهار/إخفاء المعالج</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Tools</source>
+        <translation>&amp;أدوات</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;USB Signer Tools</source>
+        <translation>&amp;أدوات موقع USB</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Unlock app</source>
+        <translation>&amp;فتح قفل التطبيق</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;View</source>
+        <translation>&amp;عرض</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Wallet name</source>
+        <translation>&amp;اسم المحفظة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;Wallet password</source>
+        <translation>&amp;كلمة مرور المحفظة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>&amp;X/Twitter DM</source>
+        <translation>&amp;X/Twitter DM</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>A wallet named {wallet_id} already exists. Please choose a different name.</source>
+        <translation>توجد بالفعل محفظة باسم {wallet_id}. يرجى اختيار اسم مختلف.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>A wallet with id {name} is already open.  </source>
+        <translation>محفظة بالمعرّف {name} مفتوحة بالفعل.  </translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>A wallet with id {name} is already open. Please close it first.</source>
+        <translation>محفظة بمعرف {name} مفتوحة بالفعل. الرجاء إغلاقها أولاً.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
+        <translation>جميع الملفات (*);;PSBT (*.psbt);;معاملة (*.tx)</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Balance statement</source>
+        <translation>كشف الرصيد</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Close</source>
+        <translation>إغلاق</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Close Tab</source>
+        <translation>إغلاق التبويب</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Close all transactions</source>
+        <translation>إغلاق جميع المعاملات</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Close anyway</source>
+        <translation>إغلاق على أي حال</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Close wallet</source>
+        <translation>إغلاق المحفظة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Close wallet {id}?</source>
+        <translation>هل تريد إغلاق المحفظة {id}؟</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Closing tab {name}</source>
+        <translation>جارٍ إغلاق التبويب {name}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Connecting to additional peer (currently {count} active)</source>
+        <translation>جارٍ الاتصال بنظير إضافي (حاليًا {count} نشطة)</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Could not decode this string</source>
+        <translation>لا يمكن فك تشفير هذه السلسلة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Could not export the wallet graph: {error}</source>
+        <translation>لم يُتمكّن من تصدير رسم بياني للمحفظة: {error}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Could not identify the wallet belonging to the transaction inputs.</source>
+        <translation>تعذر تحديد المحفظة المرتبطة بمدخلات المعاملة.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Could not open PSBT</source>
+        <translation>تعذّر فتح PSBT</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Could not open PSBT, because it lacks the input UTXOs.</source>
+        <translation>تعذّر فتح PSBT، لأن UTXO الخاصة بالإدخال غير متوفرة.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Could not recognize the input. Do you want to scan again?</source>
+        <translation>تعذّر التعرّف على الإدخال. هل تريد المسح مرة أخرى؟</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Do you want to save the PSBT {id}?</source>
+        <translation>هل تريد حفظ PSBT {id}؟</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>From &amp;QR Code</source>
+        <translation>من &amp;رمز الاستجابة السريعة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>From &amp;file</source>
+        <translation>من &amp;ملف</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>From &amp;text</source>
+        <translation>من &amp;نص</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Hide to tray</source>
+        <translation>إخفاء إلى علبة النظام</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Hiding tab {name}</source>
+        <translation>جارٍ إخفاء علامة التبويب {name}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
-			<translation>المحافظ الساخنة معطّلة على Bitcoin Mainnet.
+        <translation>المحافظ الساخنة معطّلة على Bitcoin Mainnet.
 يمكنك التبديل إلى Testnet لاختبار {app_name} دون استخدام Bitcoin حقيقي.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Inheritance overview</source>
-			<translation>نظرة عامة على الميراث</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Is this a new wallet?</source>
-			<translation>هل هذه محفظة جديدة؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Keep open</source>
-			<translation>ابقِ مفتوحاً</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Locked</source>
-			<translation>مقفل</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Message Signatures</source>
-			<translation>تواقيع الرسائل</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Monitoring the p2p bitcoin network</source>
-			<translation>مراقبة شبكة البيتكوين p2p</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
-			<translation>مراقبة شبكة البيتكوين p2p عبر الوكيل {proxy}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Network Map</source>
-			<translation>خريطة الشبكة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>New Tab {n}</source>
-			<translation>علامة تبويب جديدة {n}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>No demo wallet is available for this network.</source>
-			<translation>لا تتوفر محفظة تجريبية لهذه الشبكة.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>No file selected</source>
-			<translation>لم يتم اختيار ملف</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>No wallet open. Please open the sender wallet to edit this transaction.</source>
-			<translation>لا توجد محفظة مفتوحة. من فضلك افتح محفظة المرسل لتحرير هذه العملية.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>No, do a full scan</source>
-			<translation>لا، إجراء مسح كامل</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>OK</source>
-			<translation>موافق</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>On macOS only {n} wallets can be opened at the same time</source>
-			<translation>على نظام macOS يمكن فتح {n} محافظ فقط في نفس الوقت</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Open &amp;Recent</source>
-			<translation>فتح &amp;الأخيرة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Open Transaction or PSBT</source>
-			<translation>فتح الصفقة أو PSBT</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Open Transaction/PSBT</source>
-			<translation>فتح الصفقة/PSBT</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Open Wallet</source>
-			<translation>فتح المحفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Open anyway</source>
-			<translation>فتح على أي حال</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
-			<translation>لصق معاملات البيتكوين الخاصة بك أو PSBT هنا أو إسقاط ملف</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Please choose a wallet name</source>
-			<translation>يرجى اختيار اسم محفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Please complete the wallet setup.</source>
-			<translation>يرجى استكمال إعداد المحفظة.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Please enter the password for {filename}:</source>
-			<translation>يرجى إدخال كلمة المرور لـ {filename}:</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Please open a wallet first.</source>
-			<translation>يُرجى فتح محفظة أولاً.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
-			<translation>يرجى لصق معاملات البيتكوين الخاصة بك أو PSBT هنا، أو إسقاط ملف</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Please select a Multisignature wallet first</source>
-			<translation>الرجاء اختيار محفظة التوقيع المتعدد أولاً</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Please select the wallet</source>
-			<translation>يرجى تحديد المحفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Please select the wallet first.</source>
-			<translation>يرجى تحديد المحفظة أولاً.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Plugin updates are available.</source>
-			<translation>تتوفر تحديثات للمكونات الإضافية.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Print overview</source>
-			<translation>طباعة النظرة العامة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>QR &amp;Scanner</source>
-			<translation>QR &amp;ماسح ضوئي</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>QR Scanner</source>
-			<translation>ماسح QR</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Quit</source>
-			<translation>إنهاء</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Reveal in file explorer</source>
-			<translation>إظهار في مستكشف الملفات</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Save</source>
-			<translation>حفظ</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Save PSBT?</source>
-			<translation>حفظ PSBT؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Search &amp;next	{shortcut}</source>
-			<translation>بحث &amp;التالي {shortcut}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Search &amp;previous	{shortcut}</source>
-			<translation>بحث &amp;السابق {shortcut}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Selected file: {file_path}</source>
-			<translation>الملف المحدد: {file_path}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Set an app lock password first in Settings -&gt; General.</source>
-			<translation>قم أولاً بتعيين كلمة مرور لقفل التطبيق في الإعدادات -&gt; عام.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Show Plugin updates</source>
-			<translation>إظهار تحديثات المكونات الإضافية</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>رسالة موقعة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Status: Connected</source>
-			<translation>الحالة: متصل</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Status: Connected to {count} peers</source>
-			<translation>الحالة: متصل بـ {count} نظيرًا</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Status: Disconnected</source>
-			<translation>الحالة: غير متصل</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Sync</source>
-			<translation>مزامنة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Tab history: &amp;Backward	{shortcut}</source>
-			<translation>سجل علامات التبويب: &amp;رجوع {shortcut}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Tab history: &amp;Forward	{shortcut}</source>
-			<translation>سجل علامات التبويب: &amp;تقدم {shortcut}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>The wallet {file_path} is already open.</source>
-			<translation>المحفظة {file_path} مفتوحة بالفعل.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
-			<translation>المحفظة {file_path} مفتوحة بالفعل. هل تريد فتح المحفظة على أي حال؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>There is no such file: {file_path}</source>
-			<translation>لا يوجد مثل هذا الملف: {file_path}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>This wallet is still syncing and syncing would need to start from scratch if you close it.
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Inheritance overview</source>
+        <translation>نظرة عامة على الميراث</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Is this a new wallet?</source>
+        <translation>هل هذه محفظة جديدة؟</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Keep open</source>
+        <translation>ابقِ مفتوحاً</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Locked</source>
+        <translation>مقفل</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Message Signatures</source>
+        <translation>تواقيع الرسائل</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Monitoring the p2p bitcoin network</source>
+        <translation>مراقبة شبكة البيتكوين p2p</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Monitoring the p2p bitcoin network via the proxy {proxy}</source>
+        <translation>مراقبة شبكة البيتكوين p2p عبر الوكيل {proxy}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Network Map</source>
+        <translation>خريطة الشبكة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>New Tab {n}</source>
+        <translation>علامة تبويب جديدة {n}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>No demo wallet is available for this network.</source>
+        <translation>لا تتوفر محفظة تجريبية لهذه الشبكة.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>No wallet open. Please open the sender wallet to edit this transaction.</source>
+        <translation>لا توجد محفظة مفتوحة. من فضلك افتح محفظة المرسل لتحرير هذه العملية.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>No, do a full scan</source>
+        <translation>لا، إجراء مسح كامل</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>OK</source>
+        <translation>موافق</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>On macOS only {n} wallets can be opened at the same time</source>
+        <translation>على نظام macOS يمكن فتح {n} محافظ فقط في نفس الوقت</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>فتح &amp;الأخيرة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Open Transaction or PSBT</source>
+        <translation>فتح الصفقة أو PSBT</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Open Transaction/PSBT</source>
+        <translation>فتح الصفقة/PSBT</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Open Wallet</source>
+        <translation>فتح المحفظة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Open anyway</source>
+        <translation>فتح على أي حال</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Paste your Bitcoin Transaction or PSBT in here or drop a file</source>
+        <translation>لصق معاملات البيتكوين الخاصة بك أو PSBT هنا أو إسقاط ملف</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>يرجى اختيار اسم محفظة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Please complete the wallet setup.</source>
+        <translation>يرجى استكمال إعداد المحفظة.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Please enter the password for {filename}:</source>
+        <translation>يرجى إدخال كلمة المرور لـ {filename}:</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Please open a wallet first.</source>
+        <translation>يُرجى فتح محفظة أولاً.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Please paste your Bitcoin Transaction or PSBT in here, or drop a file</source>
+        <translation>يرجى لصق معاملات البيتكوين الخاصة بك أو PSBT هنا، أو إسقاط ملف</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Please select a Multisignature wallet first</source>
+        <translation>الرجاء اختيار محفظة التوقيع المتعدد أولاً</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Please select the wallet</source>
+        <translation>يرجى تحديد المحفظة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Please select the wallet first.</source>
+        <translation>يرجى تحديد المحفظة أولاً.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Plugin updates are available.</source>
+        <translation>تتوفر تحديثات للمكونات الإضافية.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Print overview</source>
+        <translation>طباعة النظرة العامة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>QR &amp;Scanner</source>
+        <translation>QR &amp;ماسح ضوئي</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>QR Scanner</source>
+        <translation>ماسح QR</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Quit</source>
+        <translation>إنهاء</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Reveal in file explorer</source>
+        <translation>إظهار في مستكشف الملفات</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Save</source>
+        <translation>حفظ</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Save PSBT?</source>
+        <translation>حفظ PSBT؟</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Search &amp;next	{shortcut}</source>
+        <translation>بحث &amp;التالي {shortcut}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Search &amp;previous	{shortcut}</source>
+        <translation>بحث &amp;السابق {shortcut}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Selected file: {file_path}</source>
+        <translation>الملف المحدد: {file_path}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Set an app lock password first in Settings -&gt; General.</source>
+        <translation>قم أولاً بتعيين كلمة مرور لقفل التطبيق في الإعدادات -&gt; عام.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Show Plugin updates</source>
+        <translation>إظهار تحديثات المكونات الإضافية</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Signed Message</source>
+        <translation>رسالة موقعة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Status: Connected</source>
+        <translation>الحالة: متصل</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Status: Connected to {count} peers</source>
+        <translation>الحالة: متصل بـ {count} نظيرًا</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Status: Disconnected</source>
+        <translation>الحالة: غير متصل</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Sync</source>
+        <translation>مزامنة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Tab history: &amp;Backward	{shortcut}</source>
+        <translation>سجل علامات التبويب: &amp;رجوع {shortcut}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Tab history: &amp;Forward	{shortcut}</source>
+        <translation>سجل علامات التبويب: &amp;تقدم {shortcut}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>The wallet {file_path} is already open.</source>
+        <translation>المحفظة {file_path} مفتوحة بالفعل.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>The wallet {file_path} is already open.  Do you want to open the wallet anyway?</source>
+        <translation>المحفظة {file_path} مفتوحة بالفعل. هل تريد فتح المحفظة على أي حال؟</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>There is no such file: {file_path}</source>
+        <translation>لا يوجد مثل هذا الملف: {file_path}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>This wallet is still syncing and syncing would need to start from scratch if you close it.
 Do you want to keep the wallet open?</source>
-			<translation>لا يزال هذا المحفظة في حالة مزامنة، ويجب أن تبدأ المزامنة من جديد إذا أغلقتها.
+        <translation>لا يزال هذا المحفظة في حالة مزامنة، ويجب أن تبدأ المزامنة من جديد إذا أغلقتها.
 هل تريد إبقاء المحفظة مفتوحة؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Try connecting to: {ip}</source>
-			<translation>حاول الاتصال بـ: {ip}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Try connecting to: {ip} via proxy {proxy}</source>
-			<translation>حاول الاتصال بـ: {ip} عبر الوكيل {proxy}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Trying to connect to bitcoin node...</source>
-			<translation>تتم محاولة الاتصال بعقدة البيتكوين...</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wallet Files (*.wallet);;All Files (*)</source>
-			<translation>ملفات المحفظة (*.wallet);;كل الملفات (*)</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wallet already open</source>
-			<translation>المحفظة مفتوحة بالفعل</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wallet could not be loaded. See logs for details.</source>
-			<translation>تعذر تحميل المحفظة. راجع السجلات لمزيد من التفاصيل.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wallet graph</source>
-			<translation>مخطط المحافظ</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wallet syncing</source>
-			<translation>مزامنة المحفظة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wallet {n}</source>
-			<translation>محفظة {n}</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Try connecting to: {ip}</source>
+        <translation>حاول الاتصال بـ: {ip}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Try connecting to: {ip} via proxy {proxy}</source>
+        <translation>حاول الاتصال بـ: {ip} عبر الوكيل {proxy}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Trying to connect to bitcoin node...</source>
+        <translation>تتم محاولة الاتصال بعقدة البيتكوين...</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wallet Files (*.wallet);;All Files (*)</source>
+        <translation>ملفات المحفظة (*.wallet);;كل الملفات (*)</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wallet already open</source>
+        <translation>المحفظة مفتوحة بالفعل</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wallet could not be loaded. See logs for details.</source>
+        <translation>تعذر تحميل المحفظة. راجع السجلات لمزيد من التفاصيل.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wallet graph</source>
+        <translation>مخطط المحافظ</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wallet syncing</source>
+        <translation>مزامنة المحفظة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wallet {n}</source>
+        <translation>محفظة {n}</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wallets are still syncing and syncing would need to start from scratch if you close the app.
 Do you want to hide to tray instead?</source>
-			<translation>لا تزال المحافظ في حالة مزامنة، ويجب أن تبدأ من جديد إذا أغلقت التطبيق.
+        <translation>لا تزال المحافظ في حالة مزامنة، ويجب أن تبدأ من جديد إذا أغلقت التطبيق.
 هل ترغب في إخفائها في شريط المهام بدلاً من ذلك؟</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wallets still syncing</source>
-			<translation>المحافظ لا تزال تُزامن</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wrong password</source>
-			<translation>كلمة مرور خاطئة</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Wrong password. Wallet could not be loaded.</source>
-			<translation>كلمة مرور خاطئة. تعذر تحميل المحفظة.</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>Yes</source>
-			<translation>نعم</translation>
-		</message>
-		<name>MainWindow</name>
-		<message>
-			<source>{ip} via proxy {proxy}</source>
-			<translation>{ip} عبر الوكيل {proxy}</translation>
-		</message>
-	</context>
-	<context>
-		<name>MempoolButtons</name>
-		<message>
-			<source>Block {n}</source>
-			<translation>البلوك {n}</translation>
-		</message>
-		<name>MempoolButtons</name>
-		<message>
-			<source>Confirmations</source>
-			<translation>التأكيدات</translation>
-		</message>
-		<name>MempoolButtons</name>
-		<message>
-			<source>Fetch new mempool data</source>
-			<translation>جلب بيانات ميمبول جديدة</translation>
-		</message>
-		<name>MempoolButtons</name>
-		<message>
-			<source>First confirmation</source>
-			<translation>أول تأكيد</translation>
-		</message>
-		<name>MempoolButtons</name>
-		<message>
-			<source>Next Block</source>
-			<translation>الكتلة التالية</translation>
-		</message>
-		<name>MempoolButtons</name>
-		<message>
-			<source>{n}. Block</source>
-			<translation>{n}. الكتلة</translation>
-		</message>
-	</context>
-	<context>
-		<name>MessageSignatureDialog</name>
-		<message>
-			<source>Copy</source>
-			<translation>نسخ</translation>
-		</message>
-		<name>MessageSignatureDialog</name>
-		<message>
-			<source>Signature could not be verified: {reason}</source>
-			<translation>تعذّر التحقق من التوقيع: {reason}</translation>
-		</message>
-		<name>MessageSignatureDialog</name>
-		<message>
-			<source>Signature verified</source>
-			<translation>تم التحقق من التوقيع</translation>
-		</message>
-		<name>MessageSignatureDialog</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>رسالة موقعة</translation>
-		</message>
-		<name>MessageSignatureDialog</name>
-		<message>
-			<source>Signed message</source>
-			<translation>رسالة موقعة</translation>
-		</message>
-		<name>MessageSignatureDialog</name>
-		<message>
-			<source>Signer</source>
-			<translation>المُوقِّع</translation>
-		</message>
-		<name>MessageSignatureDialog</name>
-		<message>
-			<source>This signature proves control of one key, not the multisig address.</source>
-			<translation>يثبت هذا التوقيع التحكم في مفتاح واحد، وليس في العنوان متعدد التوقيعات.</translation>
-		</message>
-		<name>MessageSignatureDialog</name>
-		<message>
-			<source>Verified key address</source>
-			<translation>عنوان المفتاح الذي تم التحقق منه</translation>
-		</message>
-	</context>
-	<context>
-		<name>MyTreeView</name>
-		<message>
-			<source>All Files (*);;Text Files (*.csv)</source>
-			<translation>كل الملفات (*);;ملفات نصية (*.csv)</translation>
-		</message>
-		<name>MyTreeView</name>
-		<message>
-			<source>Copy</source>
-			<translation>نسخ</translation>
-		</message>
-		<name>MyTreeView</name>
-		<message>
-			<source>Copy as csv</source>
-			<translation>نسخ كـ csv</translation>
-		</message>
-		<name>MyTreeView</name>
-		<message>
-			<source>Export csv</source>
-			<translation>تصدير csv</translation>
-		</message>
-		<name>MyTreeView</name>
-		<message>
-			<source>No file selected</source>
-			<translation>لم يتم اختيار ملف</translation>
-		</message>
-		<name>MyTreeView</name>
-		<message>
-			<source>{n} rows have been copied as text</source>
-			<translation>تم نسخ {n} صفًا كنص</translation>
-		</message>
-		<name>MyTreeView</name>
-		<message>
-			<source>{n} rows have ben copied as csv</source>
-			<translation>تم نسخ {n} صفًا كـ csv</translation>
-		</message>
-	</context>
-	<context>
-		<name>NLocktimeFutureWarningBar</name>
-		<message>
-			<source>This transaction will not be valid until {date}.</source>
-			<translation>لن تكون هذه المعاملة صالحة حتى {date}.</translation>
-		</message>
-		<name>NLocktimeFutureWarningBar</name>
-		<message>
-			<source>nLocktime is far in the future.</source>
-			<translation>nLocktime محدد في مستقبل بعيد.</translation>
-		</message>
-	</context>
-	<context>
-		<name>NLocktimeGroupBox</name>
-		<message>
-			<source>Block height</source>
-			<translation>ارتفاع الكتلة</translation>
-		</message>
-		<name>NLocktimeGroupBox</name>
-		<message>
-			<source>Block height: {height} ({remaining})</source>
-			<translation>ارتفاع الكتلة: {height} ({remaining})</translation>
-		</message>
-		<name>NLocktimeGroupBox</name>
-		<message>
-			<source>Date/time</source>
-			<translation>التاريخ/الوقت</translation>
-		</message>
-		<name>NLocktimeGroupBox</name>
-		<message>
-			<source>No nLocktime set.</source>
-			<translation>لم يتم تعيين nLocktime.</translation>
-		</message>
-		<name>NLocktimeGroupBox</name>
-		<message>
-			<source>Use block height to delay until a specific block is mined.
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wallets still syncing</source>
+        <translation>المحافظ لا تزال تُزامن</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wrong password</source>
+        <translation>كلمة مرور خاطئة</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Wrong password. Wallet could not be loaded.</source>
+        <translation>كلمة مرور خاطئة. تعذر تحميل المحفظة.</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>Yes</source>
+        <translation>نعم</translation>
+    </message>
+    <name>MainWindow</name>
+    <message>
+        <source>{ip} via proxy {proxy}</source>
+        <translation>{ip} عبر الوكيل {proxy}</translation>
+    </message>
+</context>
+<context>
+    <name>MempoolButtons</name>
+    <message>
+        <source>Block {n}</source>
+        <translation>البلوك {n}</translation>
+    </message>
+    <name>MempoolButtons</name>
+    <message>
+        <source>Confirmations</source>
+        <translation>التأكيدات</translation>
+    </message>
+    <name>MempoolButtons</name>
+    <message>
+        <source>Fetch new mempool data</source>
+        <translation>جلب بيانات ميمبول جديدة</translation>
+    </message>
+    <name>MempoolButtons</name>
+    <message>
+        <source>First confirmation</source>
+        <translation>أول تأكيد</translation>
+    </message>
+    <name>MempoolButtons</name>
+    <message>
+        <source>Next Block</source>
+        <translation>الكتلة التالية</translation>
+    </message>
+    <name>MempoolButtons</name>
+    <message>
+        <source>{n}. Block</source>
+        <translation>{n}. الكتلة</translation>
+    </message>
+</context>
+<context>
+    <name>MessageSignatureDialog</name>
+    <message>
+        <source>Copy</source>
+        <translation>نسخ</translation>
+    </message>
+    <name>MessageSignatureDialog</name>
+    <message>
+        <source>Signature could not be verified: {reason}</source>
+        <translation>تعذّر التحقق من التوقيع: {reason}</translation>
+    </message>
+    <name>MessageSignatureDialog</name>
+    <message>
+        <source>Signature verified</source>
+        <translation>تم التحقق من التوقيع</translation>
+    </message>
+    <name>MessageSignatureDialog</name>
+    <message>
+        <source>Signed Message</source>
+        <translation>رسالة موقعة</translation>
+    </message>
+    <name>MessageSignatureDialog</name>
+    <message>
+        <source>Signed message</source>
+        <translation>رسالة موقعة</translation>
+    </message>
+    <name>MessageSignatureDialog</name>
+    <message>
+        <source>Signer</source>
+        <translation>المُوقِّع</translation>
+    </message>
+    <name>MessageSignatureDialog</name>
+    <message>
+        <source>This signature proves control of one key, not the multisig address.</source>
+        <translation>يثبت هذا التوقيع التحكم في مفتاح واحد، وليس في العنوان متعدد التوقيعات.</translation>
+    </message>
+    <name>MessageSignatureDialog</name>
+    <message>
+        <source>Verified key address</source>
+        <translation>عنوان المفتاح الذي تم التحقق منه</translation>
+    </message>
+</context>
+<context>
+    <name>MyTreeView</name>
+    <message>
+        <source>All Files (*);;Text Files (*.csv)</source>
+        <translation>كل الملفات (*);;ملفات نصية (*.csv)</translation>
+    </message>
+    <name>MyTreeView</name>
+    <message>
+        <source>Copy</source>
+        <translation>نسخ</translation>
+    </message>
+    <name>MyTreeView</name>
+    <message>
+        <source>Copy as csv</source>
+        <translation>نسخ كـ csv</translation>
+    </message>
+    <name>MyTreeView</name>
+    <message>
+        <source>Export csv</source>
+        <translation>تصدير csv</translation>
+    </message>
+    <name>MyTreeView</name>
+    <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف</translation>
+    </message>
+    <name>MyTreeView</name>
+    <message>
+        <source>{n} rows have been copied as text</source>
+        <translation>تم نسخ {n} صفًا كنص</translation>
+    </message>
+    <name>MyTreeView</name>
+    <message>
+        <source>{n} rows have ben copied as csv</source>
+        <translation>تم نسخ {n} صفًا كـ csv</translation>
+    </message>
+</context>
+<context>
+    <name>NLocktimeFutureWarningBar</name>
+    <message>
+        <source>This transaction will not be valid until {date}.</source>
+        <translation>لن تكون هذه المعاملة صالحة حتى {date}.</translation>
+    </message>
+    <name>NLocktimeFutureWarningBar</name>
+    <message>
+        <source>nLocktime is far in the future.</source>
+        <translation>nLocktime محدد في مستقبل بعيد.</translation>
+    </message>
+</context>
+<context>
+    <name>NLocktimeGroupBox</name>
+    <message>
+        <source>Block height</source>
+        <translation>ارتفاع الكتلة</translation>
+    </message>
+    <name>NLocktimeGroupBox</name>
+    <message>
+        <source>Block height: {height} ({remaining})</source>
+        <translation>ارتفاع الكتلة: {height} ({remaining})</translation>
+    </message>
+    <name>NLocktimeGroupBox</name>
+    <message>
+        <source>Date/time</source>
+        <translation>التاريخ/الوقت</translation>
+    </message>
+    <name>NLocktimeGroupBox</name>
+    <message>
+        <source>No nLocktime set.</source>
+        <translation>لم يتم تعيين nLocktime.</translation>
+    </message>
+    <name>NLocktimeGroupBox</name>
+    <message>
+        <source>Use block height to delay until a specific block is mined.
 Use date/time to delay until a specific network time (median-time-past).
 Median-time-past is the median timestamp of the last 11 blocks,
 so it is typically about {minutes} minutes behind the tip.</source>
-			<translation>استخدم ارتفاع الكتلة للتأخير حتى يتم تعدين كتلة معينة.
+        <translation>استخدم ارتفاع الكتلة للتأخير حتى يتم تعدين كتلة معينة.
 استخدم التاريخ/الوقت للتأخير حتى وقت شبكة محدد (median-time-past).
 median-time-past هو الطابع الزمني الوسيط لآخر 11 كتلة، لذلك يكون عادةً متأخرًا بحوالي {minutes} دقيقة عن قمة السلسلة.</translation>
-		</message>
-		<name>NLocktimeGroupBox</name>
-		<message>
-			<source>Valid from</source>
-			<translation>صالح من</translation>
-		</message>
-		<name>NLocktimeGroupBox</name>
-		<message>
-			<source>{value} (local time)</source>
-			<translation>{value} (الوقت المحلي)</translation>
-		</message>
-	</context>
-	<context>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
-			<translation>هل أنت ملمّ بالفعل بـ Bitcoin؟ قم بإعداد محفظة تحتفظ بقيمة حقيقية وتنقلها بثقة.</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Best for long-term storage</source>
-			<translation>الأفضل للتخزين طويل الأجل</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Create new wallet</source>
-			<translation>إنشاء محفظة جديدة</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Explore Playground</source>
-			<translation>استكشاف Playground</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Explore with a demo wallet</source>
-			<translation>استكشف باستخدام محفظة تجريبية</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Keep your seed phrase safe</source>
-			<translation>حافظ على أمان عبارة seed الخاصة بك</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Learn safely, risk-free</source>
-			<translation>تعلّم بأمان، دون مخاطر</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Manage Real Funds</source>
-			<translation>إدارة أموال حقيقية</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
-			<translation>تدرّب في بيئة خالية من المخاطر وشاهد بالضبط كيف يعمل كل شيء. جرّب الإرسال والاستلام وتغيير الرسوم باستخدام عملات اختبار يمكنك خسارتها دون ندم.</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Real sound money (BTC)</source>
-			<translation>مال سليم حقيقي (BTC)</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Send and receive real bitcoin</source>
-			<translation>إرسال واستلام bitcoin حقيقي</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Setup a Wallet</source>
-			<translation>إعداد محفظة</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Start Exploring</source>
-			<translation>بدء الاستكشاف</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
-			<translation>ابدأ التعامل بمال سليم أو تعلّم في playground آمن. وفي كلتا الحالتين، يمكنك دائماً إنشاء محفظة أخرى لاحقاً.</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Test coins (tBTC) have no value</source>
-			<translation>عملات الاختبار (tBTC) ليس لها قيمة</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Test coins, no monetary value</source>
-			<translation>عملات اختبار، بلا قيمة نقدية</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Transactions are permanent</source>
-			<translation>المعاملات دائمة</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Uses Signet test network</source>
-			<translation>يستخدم شبكة اختبار Signet</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Uses onchain Mainnet network</source>
-			<translation>يستخدم شبكة Mainnet على السلسلة</translation>
-		</message>
-		<name>NetworkChoiceWelcomeScreen</name>
-		<message>
-			<source>Where would you like to start?</source>
-			<translation>من أين تريد أن تبدأ؟</translation>
-		</message>
-	</context>
-	<context>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; عقد بيتكوين: {total} &lt;span style='color:{gray}'&gt;(تمت المطابقة: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; أقران CBF: {total} &lt;span style='color:{gray}'&gt;(تمت المطابقة: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; أقران الاستماع P2P: {total} &lt;span style='color:{gray}'&gt;(المُعيَّنة: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(mapped: {mapped})&lt;/span&gt;</source>
-			<translation>&lt;span style='color:{color}'&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style='color:{gray}'&gt;(المُعيَّنة: {mapped})&lt;/span&gt;</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
-			<translation>تتيح Compact Block Filters ‏(BIP157/BIP158) للمحافظ اكتشاف المعاملات ذات الصلة مع الحفاظ على خصوصية عناوينك.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Configured server: {server}</source>
-			<translation>الخادم المُعدّ: {server}</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Configured server: {server}
+    </message>
+    <name>NLocktimeGroupBox</name>
+    <message>
+        <source>Valid from</source>
+        <translation>صالح من</translation>
+    </message>
+    <name>NLocktimeGroupBox</name>
+    <message>
+        <source>{value} (local time)</source>
+        <translation>{value} (الوقت المحلي)</translation>
+    </message>
+</context>
+<context>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Already familiar with Bitcoin? Set up a wallet that holds and moves real value with confidence.</source>
+        <translation>هل أنت ملمّ بالفعل بـ Bitcoin؟ قم بإعداد محفظة تحتفظ بقيمة حقيقية وتنقلها بثقة.</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Best for long-term storage</source>
+        <translation>الأفضل للتخزين طويل الأجل</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Create new wallet</source>
+        <translation>إنشاء محفظة جديدة</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Explore Playground</source>
+        <translation>استكشاف Playground</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Explore with a demo wallet</source>
+        <translation>استكشف باستخدام محفظة تجريبية</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Keep your seed phrase safe</source>
+        <translation>حافظ على أمان عبارة seed الخاصة بك</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Learn safely, risk-free</source>
+        <translation>تعلّم بأمان، دون مخاطر</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Manage Real Funds</source>
+        <translation>إدارة أموال حقيقية</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Practice in a risk-free environment and see exactly how everything works. Try sending, receiving, changing fees using test coins that you can lose without regret.</source>
+        <translation>تدرّب في بيئة خالية من المخاطر وشاهد بالضبط كيف يعمل كل شيء. جرّب الإرسال والاستلام وتغيير الرسوم باستخدام عملات اختبار يمكنك خسارتها دون ندم.</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Real sound money (BTC)</source>
+        <translation>مال سليم حقيقي (BTC)</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Send and receive real bitcoin</source>
+        <translation>إرسال واستلام bitcoin حقيقي</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Setup a Wallet</source>
+        <translation>إعداد محفظة</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Start Exploring</source>
+        <translation>بدء الاستكشاف</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Start transact with sound money or learn in a secure playground. Either way, you can always create another wallet later.</source>
+        <translation>ابدأ التعامل بمال سليم أو تعلّم في playground آمن. وفي كلتا الحالتين، يمكنك دائماً إنشاء محفظة أخرى لاحقاً.</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Test coins (tBTC) have no value</source>
+        <translation>عملات الاختبار (tBTC) ليس لها قيمة</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Test coins, no monetary value</source>
+        <translation>عملات اختبار، بلا قيمة نقدية</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Transactions are permanent</source>
+        <translation>المعاملات دائمة</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Uses Signet test network</source>
+        <translation>يستخدم شبكة اختبار Signet</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Uses onchain Mainnet network</source>
+        <translation>يستخدم شبكة Mainnet على السلسلة</translation>
+    </message>
+    <name>NetworkChoiceWelcomeScreen</name>
+    <message>
+        <source>Where would you like to start?</source>
+        <translation>من أين تريد أن تبدأ؟</translation>
+    </message>
+</context>
+<context>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>&lt;span style=&apos;color:{color}&apos;&gt;●&lt;/span&gt; Bitcoin nodes: {total} &lt;span style=&apos;color:{gray}&apos;&gt;(mapped: {mapped})&lt;/span&gt;</source>
+        <translation>&lt;span style=&apos;color:{color}&apos;&gt;●&lt;/span&gt; عقد بيتكوين: {total} &lt;span style=&apos;color:{gray}&apos;&gt;(تمت المطابقة: {mapped})&lt;/span&gt;</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>&lt;span style=&apos;color:{color}&apos;&gt;●&lt;/span&gt; CBF peers: {total} &lt;span style=&apos;color:{gray}&apos;&gt;(mapped: {mapped})&lt;/span&gt;</source>
+        <translation>&lt;span style=&apos;color:{color}&apos;&gt;●&lt;/span&gt; أقران CBF: {total} &lt;span style=&apos;color:{gray}&apos;&gt;(تمت المطابقة: {mapped})&lt;/span&gt;</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>&lt;span style=&apos;color:{color}&apos;&gt;●&lt;/span&gt; P2P listener peers: {total} &lt;span style=&apos;color:{gray}&apos;&gt;(mapped: {mapped})&lt;/span&gt; &amp;nbsp;&amp;nbsp;</source>
+        <translation>&lt;span style=&apos;color:{color}&apos;&gt;●&lt;/span&gt; أقران الاستماع P2P: {total} &lt;span style=&apos;color:{gray}&apos;&gt;(المُعيَّنة: {mapped})&lt;/span&gt;</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>&lt;span style=&apos;color:{color}&apos;&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style=&apos;color:{gray}&apos;&gt;(mapped: {mapped})&lt;/span&gt;</source>
+        <translation>&lt;span style=&apos;color:{color}&apos;&gt;●&lt;/span&gt; {server_label}: {total} &lt;span style=&apos;color:{gray}&apos;&gt;(المُعيَّنة: {mapped})&lt;/span&gt;</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Compact Block Filters (BIP157/BIP158) let wallets discover relevant transactions while keeping your addresses private.</source>
+        <translation>تتيح Compact Block Filters ‏(BIP157/BIP158) للمحافظ اكتشاف المعاملات ذات الصلة مع الحفاظ على خصوصية عناوينك.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Configured server: {server}</source>
+        <translation>الخادم المُعدّ: {server}</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Configured server: {server}
 Location unavailable.</source>
-			<translation>الخادم المُعدّ: {server}
+        <translation>الخادم المُعدّ: {server}
 الموقع غير متاح.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Discovered bitcoin nodes.</source>
-			<translation>تم اكتشاف عقد بيتكوين.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Electrum server</source>
-			<translation>خادم Electrum</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Esplora server</source>
-			<translation>خادم Esplora</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
-			<translation>إذا كان لديك خادم Electrum خاص بك أو لا تريد الانتظار، فاتصل بخادم Electrum عام من إعدادات الشبكة.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Network Map</source>
-			<translation>خريطة الشبكة</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Network settings</source>
-			<translation>إعدادات الشبكة</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>No server is configured.</source>
-			<translation>لم يتم إعداد أي خادم.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Recently broadcasted messages are received
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Discovered bitcoin nodes.</source>
+        <translation>تم اكتشاف عقد بيتكوين.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Electrum server</source>
+        <translation>خادم Electrum</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Esplora server</source>
+        <translation>خادم Esplora</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>If you have your own Electrum server or do not want to wait, connect to a public Electrum server in network settings.</source>
+        <translation>إذا كان لديك خادم Electrum خاص بك أو لا تريد الانتظار، فاتصل بخادم Electrum عام من إعدادات الشبكة.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Network Map</source>
+        <translation>خريطة الشبكة</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Network settings</source>
+        <translation>إعدادات الشبكة</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>No server is configured.</source>
+        <translation>لم يتم إعداد أي خادم.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Recently broadcasted messages are received
 from these peers via the bitcoin network.
 Current total receive rate: {rate:.2f} txs/s</source>
-			<translation>يتم استلام الرسائل التي تم بثها مؤخرًا&lt;br&gt;من هذه العقد النظيرة عبر شبكة بيتكوين.&lt;br&gt;إجمالي معدل الاستلام الحالي: {rate:.2f} معاملة/ثانية</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Scanning Bitcoin blockchain</source>
-			<translation>جارٍ فحص سلسلة كتل البيتكوين</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Server</source>
-			<translation>الخادم</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Short summaries (Compact Block Filters) and bitcoin blocks are
+        <translation>يتم استلام الرسائل التي تم بثها مؤخرًا&lt;br&gt;من هذه العقد النظيرة عبر شبكة بيتكوين.&lt;br&gt;إجمالي معدل الاستلام الحالي: {rate:.2f} معاملة/ثانية</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Scanning Bitcoin blockchain</source>
+        <translation>جارٍ فحص سلسلة كتل البيتكوين</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Server</source>
+        <translation>الخادم</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Short summaries (Compact Block Filters) and bitcoin blocks are
 received from these peers via the bitcoin network.</source>
-			<translation>يتم استلام الملخصات القصيرة (Compact Block Filters) وكتل البيتكوين من هؤلاء الأقران عبر شبكة البيتكوين.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>The currently configured wallet sync server.</source>
-			<translation>خادم مزامنة المحفظة المُعدّ حاليًا.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Update the active server or proxy configuration in network settings.</source>
-			<translation>حدّث الخادم النشط أو إعدادات الوكيل في إعدادات الشبكة.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>View current network connections and servers.</source>
-			<translation>اعرض اتصالات الشبكة والخوادم الحالية.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Why this protects privacy (learn more)</source>
-			<translation>لماذا يحمي هذا الخصوصية (اعرف المزيد)</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Your wallet syncs through the configured Electrum server.</source>
-			<translation>تتزامن محفظتك عبر خادم Electrum المُعدّ.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>Your wallet syncs through the configured Esplora server.</source>
-			<translation>تتزامن محفظتك عبر خادم Esplora المُعدّ.</translation>
-		</message>
-		<name>NetworkMapWidget</name>
-		<message>
-			<source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
-			<translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
-		</message>
-	</context>
-	<context>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Apply and restart</source>
-			<translation>تطبيق وإعادة التشغيل</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Are you sure '{scheme}' is correct in the esplora url?</source>
-			<translation>هل أنت متأكد من صحة '{scheme}' في عنوان URL الخاص بـ esplora؟</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>At least {count} configured peers are required when using configured peers only.</source>
-			<translation>يلزم إعداد ما لا يقل عن {count} من الأقران عند استخدام الأقران المُعدّين فقط.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Automatic</source>
-			<translation>تلقائي</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Blockchain data source</source>
-			<translation>مصدر بيانات البلوكتشين</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
-			<translation>اختر ما إذا كان سيتم تفضيل الأقران المُعدّين أو استخدامهم كقائمة سماح حصرية.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Click here for an example of a Tor proxy configuration.</source>
-			<translation>انقر هنا للحصول على مثال لتكوين وكيل Tor.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Click to open the mempool url</source>
-			<translation>انقر لفتح رابط الميمبول</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Configured peers</source>
-			<translation>الأقران المُعدّون</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Configured peers only</source>
-			<translation>الأقران المُعدّون فقط</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Connect to a different peer</source>
-			<translation>الاتصال بقرين مختلف</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Could not update the peer list.</source>
-			<translation>تعذّر تحديث قائمة الأقران.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Deactive</source>
-			<translation>تعطيل</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Discover local network peers</source>
-			<translation>اكتشاف الأقران على الشبكة المحلية</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Edit</source>
-			<translation>يحرر</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Edit configured peers</source>
-			<translation>تعديل الأقران المُعدّين</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Enable SSL</source>
-			<translation>تمكين SSL</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Error in server connection.
+        <translation>يتم استلام الملخصات القصيرة (Compact Block Filters) وكتل البيتكوين من هؤلاء الأقران عبر شبكة البيتكوين.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>The currently configured wallet sync server.</source>
+        <translation>خادم مزامنة المحفظة المُعدّ حاليًا.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Update the active server or proxy configuration in network settings.</source>
+        <translation>حدّث الخادم النشط أو إعدادات الوكيل في إعدادات الشبكة.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>View current network connections and servers.</source>
+        <translation>اعرض اتصالات الشبكة والخوادم الحالية.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Why this protects privacy (learn more)</source>
+        <translation>لماذا يحمي هذا الخصوصية (اعرف المزيد)</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Your wallet syncs through the configured Electrum server.</source>
+        <translation>تتزامن محفظتك عبر خادم Electrum المُعدّ.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>Your wallet syncs through the configured Esplora server.</source>
+        <translation>تتزامن محفظتك عبر خادم Esplora المُعدّ.</translation>
+    </message>
+    <name>NetworkMapWidget</name>
+    <message>
+        <source>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</source>
+        <translation>{app_name} downloads block summaries from multiple nodes for privacy. After this initial sync, updates will be fast.</translation>
+    </message>
+</context>
+<context>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Apply and restart</source>
+        <translation>تطبيق وإعادة التشغيل</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Are you sure &apos;{scheme}&apos; is correct in the esplora url?</source>
+        <translation>هل أنت متأكد من صحة &apos;{scheme}&apos; في عنوان URL الخاص بـ esplora؟</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>At least {count} configured peers are required when using configured peers only.</source>
+        <translation>يلزم إعداد ما لا يقل عن {count} من الأقران عند استخدام الأقران المُعدّين فقط.</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Automatic</source>
+        <translation>تلقائي</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Blockchain data source</source>
+        <translation>مصدر بيانات البلوكتشين</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Choose whether configured peers are preferred or used as an exclusive whitelist.</source>
+        <translation>اختر ما إذا كان سيتم تفضيل الأقران المُعدّين أو استخدامهم كقائمة سماح حصرية.</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Click here for an example of a Tor proxy configuration.</source>
+        <translation>انقر هنا للحصول على مثال لتكوين وكيل Tor.</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Click to open the mempool url</source>
+        <translation>انقر لفتح رابط الميمبول</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Configured peers</source>
+        <translation>الأقران المُعدّون</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Configured peers only</source>
+        <translation>الأقران المُعدّون فقط</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Connect to a different peer</source>
+        <translation>الاتصال بقرين مختلف</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Could not update the peer list.</source>
+        <translation>تعذّر تحديث قائمة الأقران.</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Deactive</source>
+        <translation>تعطيل</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Discover local network peers</source>
+        <translation>اكتشاف الأقران على الشبكة المحلية</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Edit</source>
+        <translation>يحرر</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Edit configured peers</source>
+        <translation>تعديل الأقران المُعدّين</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Enable SSL</source>
+        <translation>تمكين SSL</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Error in server connection.
 {responses}
 
  Do you want to proceed anyway?</source>
-			<translation>خطأ في اتصال الخادم.
+        <translation>خطأ في اتصال الخادم.
 
 {responses}
 
 هل تريد المتابعة على أي حال؟</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Found {count} local network peer(s).</source>
-			<translation>تم العثور على {count} من الأقران على الشبكة المحلية.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>IP Address:</source>
-			<translation>عنوان IP:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Invalid peer '{peer}': {error}</source>
-			<translation>نظير غير صالح '{peer}': {error}</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Local peer discovery failed: {error}</source>
-			<translation>فشل اكتشاف الأقران على الشبكة المحلية: {error}</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
-			<translation>الحد الأقصى لعدد النظراء لمراقبتهم في وقت واحد عبر مستمع p2p.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Mempool Instance</source>
-			<translation>مثيل Mempool</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>More connections increase privacy but reduce syncing speed.</source>
-			<translation>المزيد من الاتصالات يزيد الخصوصية لكنه يقلل سرعة المزامنة.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Network Settings</source>
-			<translation>إعدادات الشبكة</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Number of connections:</source>
-			<translation>عدد الاتصالات:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Password:</source>
-			<translation>كلمة المرور:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Peer configuration</source>
-			<translation>إعدادات الأقران</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Please remove the '{scheme}' from the electrum url</source>
-			<translation>الرجاء إزالة '{scheme}' من عنوان URL الخاص بـ electrum</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Please try '{scheme}' at the beginning of the mempool url</source>
-			<translation>الرجاء تجربة '{scheme}' في بداية عنوان URL الخاص بـ mempool</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Port:</source>
-			<translation>المنفذ:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Preferred peers</source>
-			<translation>الأقران المفضّلون</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Press ⬇ arrow key for suggestions</source>
-			<translation>اضغط على مفتاح السهم ⬇ للاقتراحات</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Proxy</source>
-			<translation>الوكيل</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Responses:
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Found {count} local network peer(s).</source>
+        <translation>تم العثور على {count} من الأقران على الشبكة المحلية.</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>IP Address:</source>
+        <translation>عنوان IP:</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Invalid peer &apos;{peer}&apos;: {error}</source>
+        <translation>نظير غير صالح &apos;{peer}&apos;: {error}</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Local peer discovery failed: {error}</source>
+        <translation>فشل اكتشاف الأقران على الشبكة المحلية: {error}</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Maximum number of peers to monitor concurrently via the p2p listener.</source>
+        <translation>الحد الأقصى لعدد النظراء لمراقبتهم في وقت واحد عبر مستمع p2p.</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Mempool Instance</source>
+        <translation>مثيل Mempool</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>More connections increase privacy but reduce syncing speed.</source>
+        <translation>المزيد من الاتصالات يزيد الخصوصية لكنه يقلل سرعة المزامنة.</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Network Settings</source>
+        <translation>إعدادات الشبكة</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Number of connections:</source>
+        <translation>عدد الاتصالات:</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Password:</source>
+        <translation>كلمة المرور:</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Peer configuration</source>
+        <translation>إعدادات الأقران</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Please remove the &apos;{scheme}&apos; from the electrum url</source>
+        <translation>الرجاء إزالة &apos;{scheme}&apos; من عنوان URL الخاص بـ electrum</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Please try &apos;{scheme}&apos; at the beginning of the mempool url</source>
+        <translation>الرجاء تجربة &apos;{scheme}&apos; في بداية عنوان URL الخاص بـ mempool</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Port:</source>
+        <translation>المنفذ:</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Preferred peers</source>
+        <translation>الأقران المفضّلون</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Press ⬇ arrow key for suggestions</source>
+        <translation>اضغط على مفتاح السهم ⬇ للاقتراحات</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Proxy</source>
+        <translation>الوكيل</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Responses:
     {name}: {status}
     Mempool Instance: {server}</source>
-			<translation>الردود:
+        <translation>الردود:
 {name}: {status}
     Mempool Instance: {server}</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>SSL:</source>
-			<translation>SSL:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Scanning local network…</source>
-			<translation>جارٍ فحص الشبكة المحلية…</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Test Connection</source>
-			<translation>اختبار الاتصال</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>The format for tor addresses should be '{scheme}'</source>
-			<translation>يجب أن يكون تنسيق عناوين tor '{scheme}'</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>The mempool instance provides mempool data and fee estimates used by the application.</source>
-			<translation>يوفّر مثيل mempool بيانات مجمع المعاملات وتقديرات الرسوم التي يستخدمها التطبيق.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>The proxy does not apply to Sync&amp;Chat plugin
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>SSL:</source>
+        <translation>SSL:</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Scanning local network…</source>
+        <translation>جارٍ فحص الشبكة المحلية…</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Test Connection</source>
+        <translation>اختبار الاتصال</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>The format for tor addresses should be &apos;{scheme}&apos;</source>
+        <translation>يجب أن يكون تنسيق عناوين tor &apos;{scheme}&apos;</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>The mempool instance provides mempool data and fee estimates used by the application.</source>
+        <translation>يوفّر مثيل mempool بيانات مجمع المعاملات وتقديرات الرسوم التي يستخدمها التطبيق.</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>The proxy does not apply to Sync&amp;Chat plugin
 and subscription purchases!
 Hostname-based server location and DNS-seed discovery
 are not resolved through the proxy.</source>
-			<translation>لا ينطبق الوكيل على إضافة Sync&amp;Chat
+        <translation>لا ينطبق الوكيل على إضافة Sync&amp;Chat
 ولا على عمليات شراء الاشتراكات!
 لا يتم تحديد مواقع الخوادم استنادًا إلى أسماء المضيفين أو اكتشافها عبر بذور DNS
 من خلال الوكيل.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>This sets how many Bitcoin peers the listener connects to at once.
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>This sets how many Bitcoin peers the listener connects to at once.
 It only hears transactions broadcast while the app is running, so it will miss anything already in mempools before startup.
 Connected peers do not learn anything about your wallet or your transactions.
 Using more peers improves coverage but uses more bandwidth and connections.</source>
-			<translation>يحدد هذا الإعداد عدد نظراء Bitcoin الذين يتصل بهم المستمع في الوقت نفسه.
+        <translation>يحدد هذا الإعداد عدد نظراء Bitcoin الذين يتصل بهم المستمع في الوقت نفسه.
 لا يسمع إلا المعاملات التي يتم بثها أثناء تشغيل التطبيق، لذا سيفوّت أي شيء كان موجودًا بالفعل في الميمبولات قبل بدء التشغيل.
 لا يتعلم النظراء المتصلون أي شيء عن محفظتك أو معاملاتك.
 استخدام عدد أكبر من النظراء يحسّن التغطية لكنه يستهلك مزيدًا من عرض النطاق والاتصالات.</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>URL:</source>
-			<translation>الرابط:</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Unconfirmed Transaction monitoring</source>
-			<translation>مراقبة المعاملات غير المؤكدة</translation>
-		</message>
-		<name>NetworkSettingsUI</name>
-		<message>
-			<source>Username:</source>
-			<translation>اسم المستخدم:</translation>
-		</message>
-	</context>
-	<context>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Connect Device(s)</source>
-			<translation>توصيل الجهاز/الأجهزة</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Create new wallet</source>
-			<translation>إنشاء محفظة جديدة</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Custom / Recovery</source>
-			<translation>مخصص / استرداد</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Guided setup for your self-custody wallet.</source>
-			<translation>إعداد موجّه لمحفظتك ذات الحفظ الذاتي.</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Hot Single Signature Wallet</source>
-			<translation>محفظة ساخنة بتوقيع واحد</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Hot wallets are disabled on Bitcoin Mainnet.
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>URL:</source>
+        <translation>الرابط:</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Unconfirmed Transaction monitoring</source>
+        <translation>مراقبة المعاملات غير المؤكدة</translation>
+    </message>
+    <name>NetworkSettingsUI</name>
+    <message>
+        <source>Username:</source>
+        <translation>اسم المستخدم:</translation>
+    </message>
+</context>
+<context>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Connect Device(s)</source>
+        <translation>توصيل الجهاز/الأجهزة</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Create new wallet</source>
+        <translation>إنشاء محفظة جديدة</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Custom / Recovery</source>
+        <translation>مخصص / استرداد</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Guided setup for your self-custody wallet.</source>
+        <translation>إعداد موجّه لمحفظتك ذات الحفظ الذاتي.</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Hot Single Signature Wallet</source>
+        <translation>محفظة ساخنة بتوقيع واحد</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
-			<translation>المحافظ الساخنة معطّلة على Bitcoin Mainnet.
+        <translation>المحافظ الساخنة معطّلة على Bitcoin Mainnet.
 يمكنك التبديل إلى Testnet لاختبار {app_name} دون استخدام Bitcoin حقيقي.</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
-			<translation>تعرّف على كيفية تحويل هاتف Android إلى جهاز مخصّص لتوقيع معاملات bitcoin.</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>No signer available?</source>
-			<translation>لا يوجد موقّع متاح؟</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Open the list of supported hardware wallets and signers.</source>
-			<translation>افتح قائمة محافظ الأجهزة والموقّعين المدعومين.</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Play with an existing wallet that has some test coins to explore safely.</source>
-			<translation>جرّب محفظة موجودة تحتوي على بعض العملات الاختبارية للاستكشاف بأمان.</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Public Demo wallet</source>
-			<translation>محفظة تجريبية عامة</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
-			<translation>أنشئ محفظة بسرعة للاستخدام الفوري، دون الحاجة إلى مفاتيح موجودة.&lt;br&gt;&lt;small&gt;معطّل على Mainnet لأن الكمبيوتر المتصل بالإنترنت غير مصمم لحفظ الأسرار التي تمثل المال بأمان.&lt;/small&gt;</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
-			<translation>أنشئ محفظة بسرعة للاستخدام الفوري، دون الحاجة إلى مفاتيح موجودة.&lt;br&gt;&lt;small&gt;إن إنشاء المفاتيح وتخزينها على كمبيوتر متصل بالإنترنت غير آمن. الكمبيوتر متعدد الأغراض غير مصمم لحفظ الأسرار التي تمثل المال.&lt;/small&gt;</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
-			<translation>استعد محفظة من محفظة/محافظ أجهزة أو من واصف.</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Supported signers</source>
-			<translation>الموقّعون المدعومون</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>Wallet name</source>
-			<translation>اسم المحفظة</translation>
-		</message>
-		<name>NewWalletWelcomeScreen</name>
-		<message>
-			<source>wallet_name</source>
-			<translation>wallet_name</translation>
-		</message>
-	</context>
-	<context>
-		<name>NostrSync</name>
-		<message>
-			<source>Group Chat</source>
-			<translation>دردشة جماعية</translation>
-		</message>
-	</context>
-	<context>
-		<name>NostrSyncWithSingleChats</name>
-		<message>
-			<source>Chat</source>
-			<translation>دردشة</translation>
-		</message>
-	</context>
-	<context>
-		<name>NotificationBar</name>
-		<message>
-			<source>Close notification</source>
-			<translation>إغلاق الإشعار</translation>
-		</message>
-	</context>
-	<context>
-		<name>NotificationBarCBF</name>
-		<message>
-			<source>Activate and restart</source>
-			<translation>تفعيل وإعادة التشغيل</translation>
-		</message>
-		<name>NotificationBarCBF</name>
-		<message>
-			<source>Compact Block Filters for p2p syncing is now available</source>
-			<translation>مرشحات الكتل المدمجة للمزامنة عبر p2p أصبحت متاحة الآن</translation>
-		</message>
-		<name>NotificationBarCBF</name>
-		<message>
-			<source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
-			<translation>سيتم تفعيل Compact Block Filters للشبكات المدعومة. ستحتفظ هذه الشبكة بخادمها الحالي.</translation>
-		</message>
-		<name>NotificationBarCBF</name>
-		<message>
-			<source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
-			<translation>اتصل بعُقد البيتكوين (p2p) وقم بتنزيل الكتل ذات الصلة منها.</translation>
-		</message>
-		<name>NotificationBarCBF</name>
-		<message>
-			<source>Open Network Settings</source>
-			<translation>فتح إعدادات الشبكة</translation>
-		</message>
-		<name>NotificationBarCBF</name>
-		<message>
-			<source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
-			<translation>حدّث إعدادات الشبكة الخاصة بك (الخادم الحالي غير موثوق)! يمكنك تجربة Compact Block Filters لمزامنة p2p</translation>
-		</message>
-	</context>
-	<context>
-		<name>NotificationBarRecipient</name>
-		<message>
-			<source>This address belongs to wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
-			<translation>هذا العنوان ينتمي إلى المحفظة: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
-		</message>
-	</context>
-	<context>
-		<name>NotificationBarRegtest</name>
-		<message>
-			<source>Get {testnet} coins</source>
-			<translation>احصل على عملات {testnet}</translation>
-		</message>
-		<name>NotificationBarRegtest</name>
-		<message>
-			<source>Network = {network}. The coins are worthless!</source>
-			<translation>الشبكة = {network}. العملات لا قيمة لها!</translation>
-		</message>
-		<name>NotificationBarRegtest</name>
-		<message>
-			<source>Open Network Settings</source>
-			<translation>فتح إعدادات الشبكة</translation>
-		</message>
-	</context>
-	<context>
-		<name>PSBTAlreadyBroadcastedBar</name>
-		<message>
-			<source>This transaction {txid} exists is in wallet {wallet} and the serializations of both differ.</source>
-			<translation>هذه المعاملة {txid} موجودة في المحفظة {wallet} وتسلسلاتهما مختلفة.</translation>
-		</message>
-		<name>PSBTAlreadyBroadcastedBar</name>
-		<message>
-			<source>This transaction {txid} was already signed and is in wallet {wallet}</source>
-			<translation>هذه المعاملة {txid} تم توقيعها بالفعل وهي في المحفظة {wallet}</translation>
-		</message>
-	</context>
-	<context>
-		<name>PaidPluginClient</name>
-		<message>
-			<source>Check subscription</source>
-			<translation>التحقق من الاشتراك</translation>
-		</message>
-		<name>PaidPluginClient</name>
-		<message>
-			<source>Start free trial</source>
-			<translation>بدء التجربة المجانية</translation>
-		</message>
-		<name>PaidPluginClient</name>
-		<message>
-			<source>Subscription</source>
-			<translation>الاشتراك</translation>
-		</message>
-		<name>PaidPluginClient</name>
-		<message>
-			<source>month</source>
-			<translation>شهر</translation>
-		</message>
-		<name>PaidPluginClient</name>
-		<message>
-			<source>year</source>
-			<translation>سنة</translation>
-		</message>
-		<name>PaidPluginClient</name>
-		<message>
-			<source>{price} {currency} / {period}</source>
-			<translation>{price} {currency} / {period}</translation>
-		</message>
-	</context>
-	<context>
-		<name>PaidPluginWidget</name>
-		<message>
-			<source>Manage</source>
-			<translation>إدارة</translation>
-		</message>
-		<name>PaidPluginWidget</name>
-		<message>
-			<source>Refresh status</source>
-			<translation>تحديث الحالة</translation>
-		</message>
-		<name>PaidPluginWidget</name>
-		<message>
-			<source>Subscription:</source>
-			<translation>الاشتراك:</translation>
-		</message>
-		<name>PaidPluginWidget</name>
-		<message>
-			<source>This subscription is valid on any computer with this wallet</source>
-			<translation>هذا الاشتراك صالح على أي جهاز كمبيوتر يحتوي على هذه المحفظة</translation>
-		</message>
-	</context>
-	<context>
-		<name>PasswordCreation</name>
-		<message>
-			<source>Create Password</source>
-			<translation>إنشاء كلمة مرور</translation>
-		</message>
-		<name>PasswordCreation</name>
-		<message>
-			<source>Enter your password:</source>
-			<translation>أدخل كلمة المرور الخاصة بك:</translation>
-		</message>
-		<name>PasswordCreation</name>
-		<message>
-			<source>Error</source>
-			<translation>خطأ</translation>
-		</message>
-		<name>PasswordCreation</name>
-		<message>
-			<source>Hide Password</source>
-			<translation>إخفاء كلمة المرور</translation>
-		</message>
-		<name>PasswordCreation</name>
-		<message>
-			<source>Passwords do not match!</source>
-			<translation>كلمات المرور غير متطابقة!</translation>
-		</message>
-		<name>PasswordCreation</name>
-		<message>
-			<source>Re-enter your password:</source>
-			<translation>أعد إدخال كلمة المرور الخاصة بك:</translation>
-		</message>
-		<name>PasswordCreation</name>
-		<message>
-			<source>Show Password</source>
-			<translation>إظهار كلمة المرور</translation>
-		</message>
-		<name>PasswordCreation</name>
-		<message>
-			<source>Submit</source>
-			<translation>إرسال</translation>
-		</message>
-	</context>
-	<context>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Hide Password</source>
-			<translation>إخفاء كلمة المرور</translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Password Input</source>
-			<translation>إدخال كلمة المرور</translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Please enter your password:</source>
-			<translation>الرجاء إدخال كلمة المرور الخاصة بك:</translation>
-		</message>
-		<name>PasswordQuestion</name>
-		<message>
-			<source>Show Password</source>
-			<translation>إظهار كلمة المرور</translation>
-		</message>
-	</context>
-	<context>
-		<name>PluginClient</name>
-		<message>
-			<source>Update</source>
-			<translation>تحديث</translation>
-		</message>
-		<name>PluginClient</name>
-		<message>
-			<source>Update available: {update_target}</source>
-			<translation>يتوفر تحديث: {update_target}</translation>
-		</message>
-		<name>PluginClient</name>
-		<message>
-			<source>Update to {update_target}</source>
-			<translation>التحديث إلى {update_target}</translation>
-		</message>
-		<name>PluginClient</name>
-		<message>
-			<source>Version {version}</source>
-			<translation>الإصدار {version}</translation>
-		</message>
-	</context>
-	<context>
-		<name>PluginListStep</name>
-		<message>
-			<source>Explore plugins</source>
-			<translation>استكشاف المكونات الإضافية</translation>
-		</message>
-		<name>PluginListStep</name>
-		<message>
-			<source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
-			<translation>المكونات الإضافية غير متاحة لهذه المحفظة، لذلك لا يوجد شيء لتكوينه هنا.</translation>
-		</message>
-		<name>PluginListStep</name>
-		<message>
-			<source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
-			<translation>راجع المكونات الإضافية المتاحة لهذه المحفظة. يمكنك تفعيل ما تريده الآن والعودة إلى تبويب المكونات الإضافية لاحقًا في أي وقت.</translation>
-		</message>
-	</context>
-	<context>
-		<name>PluginListWidget</name>
-		<message>
-			<source>Enable and manage optional wallet integrations.</source>
-			<translation>فعّل وأدر تكاملات المحفظة الاختيارية.</translation>
-		</message>
-		<name>PluginListWidget</name>
-		<message>
-			<source>Plugins</source>
-			<translation>الإضافات</translation>
-		</message>
-	</context>
-	<context>
-		<name>PluginManager</name>
-		<message>
-			<source>Cancel</source>
-			<translation>إلغاء</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Delete</source>
-			<translation>حذف</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Delete Installed Plugin</source>
-			<translation>حذف المكون الإضافي المثبت</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Delete installed plugin {plugin}?</source>
-			<translation>هل تريد حذف المكون الإضافي المثبت {plugin}؟</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Manifest URL and pinned public key are required.</source>
-			<translation>عنوان URL للبيان والمفتاح العام المثبّت مطلوبان.</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Plugin operation failed.</source>
-			<translation>فشلت عملية المكون الإضافي.</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Plugin source {source_id} does not exist.</source>
-			<translation>مصدر المكون الإضافي {source_id} غير موجود.</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Rechecked installed plugins.</source>
-			<translation>تمت إعادة فحص المكونات الإضافية المثبتة.</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
-			<translation>تمت إعادة فحص المكونات الإضافية المثبتة. {count} مكون/مكونات إضافية غير صالحة.</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Remove Plugin Source</source>
-			<translation>إزالة مصدر المكون الإضافي</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Remove plugin source {source}?</source>
-			<translation>هل تريد إزالة مصدر المكون الإضافي {source}؟</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>This plugin cannot be deleted.</source>
-			<translation>لا يمكن حذف هذا المكون الإضافي.</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>This source's publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
-			<translation>يمكن لناشر هذا المصدر (المفتاح {fingerprint}) توزيع إضافات تعمل بصلاحية وصول كاملة إلى هذه المحفظة، بما في ذلك تسمياتها وعناوينها ومعاملاتها، ويمكنه الاستمرار في ذلك عبر التحديثات المستقبلية. لا تثق إلا بالناشرين الذين تعرفهم.</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Trust and add</source>
-			<translation>الوثوق والإضافة</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>Trust this plugin source?</source>
-			<translation>هل تثق بمصدر الإضافات هذا؟</translation>
-		</message>
-		<name>PluginManager</name>
-		<message>
-			<source>unknown</source>
-			<translation>غير معروف</translation>
-		</message>
-	</context>
-	<context>
-		<name>PluginManagerWidget</name>
-		<message>
-			<source>Applies to all paid plugins and subscription-gated service fees.</source>
-			<translation>ينطبق على جميع المكونات الإضافية المدفوعة ورسوم الخدمات المقيدة بالاشتراك.</translation>
-		</message>
-		<name>PluginManagerWidget</name>
-		<message>
-			<source>Business plan</source>
-			<translation>خطة Business</translation>
-		</message>
-		<name>PluginManagerWidget</name>
-		<message>
-			<source>Plugins</source>
-			<translation>الإضافات</translation>
-		</message>
-		<name>PluginManagerWidget</name>
-		<message>
-			<source>Sources</source>
-			<translation>المصادر</translation>
-		</message>
-	</context>
-	<context>
-		<name>PluginSourceWidget</name>
-		<message>
-			<source>Cannot remove while {count} plugin(s) are installed.</source>
-			<translation>لا يمكن الإزالة أثناء تثبيت {count} مكون/مكونات إضافية.</translation>
-		</message>
-		<name>PluginSourceWidget</name>
-		<message>
-			<source>Delete</source>
-			<translation>حذف</translation>
-		</message>
-		<name>PluginSourceWidget</name>
-		<message>
-			<source>Last error: {error}</source>
-			<translation>آخر خطأ: {error}</translation>
-		</message>
-		<name>PluginSourceWidget</name>
-		<message>
-			<source>Refresh</source>
-			<translation>تحديث</translation>
-		</message>
-		<name>PluginSourceWidget</name>
-		<message>
-			<source>Remove installed plugins from this source before deleting the source.</source>
-			<translation>أزل الإضافات المثبّتة من هذا المصدر قبل حذف المصدر.</translation>
-		</message>
-		<name>PluginSourceWidget</name>
-		<message>
-			<source>Source ID: {source_id}</source>
-			<translation>معرّف المصدر: {source_id}</translation>
-		</message>
-	</context>
-	<context>
-		<name>PluginWidget</name>
-		<message>
-			<source>Open</source>
-			<translation>فتح</translation>
-		</message>
-	</context>
-	<context>
-		<name>PoisoningWarningBar</name>
-		<message>
-			<source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
-			<translation>تحذير! تتضمن هذه المعاملة عناوين مشابهة بشكل مضلل. قد تكون هجوم تسميم العنوان. العناوين المشابهة هي &lt;br&gt;{addresses}.&lt;br&gt; تحقق بعناية من جميع تفاصيل المعاملة!</translation>
-		</message>
-	</context>
-	<context>
-		<name>QTProtoWallet</name>
-		<message>
-			<source>Setup wallet</source>
-			<translation>إعداد المحفظة</translation>
-		</message>
-	</context>
-	<context>
-		<name>QTWallet</name>
-		<message>
-			<source>  Replaced By TxID(s): {new_txid}</source>
-			<translation>  {new_txid}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>(not detected)</source>
-			<translation>(غير مكتشف)</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>- TxID: {txid}
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Learn how to turn an Android phone into a dedicated bitcoin signer.</source>
+        <translation>تعرّف على كيفية تحويل هاتف Android إلى جهاز مخصّص لتوقيع معاملات bitcoin.</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>No signer available?</source>
+        <translation>لا يوجد موقّع متاح؟</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Open the list of supported hardware wallets and signers.</source>
+        <translation>افتح قائمة محافظ الأجهزة والموقّعين المدعومين.</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Play with an existing wallet that has some test coins to explore safely.</source>
+        <translation>جرّب محفظة موجودة تحتوي على بعض العملات الاختبارية للاستكشاف بأمان.</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Public Demo wallet</source>
+        <translation>محفظة تجريبية عامة</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Disabled on Mainnet because an internet-connected computer is not designed to safely hold secrets representing money.&lt;/small&gt;</source>
+        <translation>أنشئ محفظة بسرعة للاستخدام الفوري، دون الحاجة إلى مفاتيح موجودة.&lt;br&gt;&lt;small&gt;معطّل على Mainnet لأن الكمبيوتر المتصل بالإنترنت غير مصمم لحفظ الأسرار التي تمثل المال بأمان.&lt;/small&gt;</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Quickly generate a wallet for immediate use, no existing keys required.&lt;br&gt;&lt;small&gt;Generating and storing keys on an internet-connected computer is insecure. A general-purpose computer is not designed to hold secrets representing money.&lt;/small&gt;</source>
+        <translation>أنشئ محفظة بسرعة للاستخدام الفوري، دون الحاجة إلى مفاتيح موجودة.&lt;br&gt;&lt;small&gt;إن إنشاء المفاتيح وتخزينها على كمبيوتر متصل بالإنترنت غير آمن. الكمبيوتر متعدد الأغراض غير مصمم لحفظ الأسرار التي تمثل المال.&lt;/small&gt;</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Restore a wallet from hardware wallet(s) or a descriptor.</source>
+        <translation>استعد محفظة من محفظة/محافظ أجهزة أو من واصف.</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Supported signers</source>
+        <translation>الموقّعون المدعومون</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>Wallet name</source>
+        <translation>اسم المحفظة</translation>
+    </message>
+    <name>NewWalletWelcomeScreen</name>
+    <message>
+        <source>wallet_name</source>
+        <translation>wallet_name</translation>
+    </message>
+</context>
+<context>
+    <name>NostrSync</name>
+    <message>
+        <source>Group Chat</source>
+        <translation>دردشة جماعية</translation>
+    </message>
+</context>
+<context>
+    <name>NostrSyncWithSingleChats</name>
+    <message>
+        <source>Chat</source>
+        <translation>دردشة</translation>
+    </message>
+</context>
+<context>
+    <name>NotificationBar</name>
+    <message>
+        <source>Close notification</source>
+        <translation>إغلاق الإشعار</translation>
+    </message>
+</context>
+<context>
+    <name>NotificationBarCBF</name>
+    <message>
+        <source>Activate and restart</source>
+        <translation>تفعيل وإعادة التشغيل</translation>
+    </message>
+    <name>NotificationBarCBF</name>
+    <message>
+        <source>Compact Block Filters for p2p syncing is now available</source>
+        <translation>مرشحات الكتل المدمجة للمزامنة عبر p2p أصبحت متاحة الآن</translation>
+    </message>
+    <name>NotificationBarCBF</name>
+    <message>
+        <source>Compact Block Filters will be activated for supported networks. This network will keep its current server.</source>
+        <translation>سيتم تفعيل Compact Block Filters للشبكات المدعومة. ستحتفظ هذه الشبكة بخادمها الحالي.</translation>
+    </message>
+    <name>NotificationBarCBF</name>
+    <message>
+        <source>Connect to bitcoin nodes (p2p) and download relevant blocks from them.</source>
+        <translation>اتصل بعُقد البيتكوين (p2p) وقم بتنزيل الكتل ذات الصلة منها.</translation>
+    </message>
+    <name>NotificationBarCBF</name>
+    <message>
+        <source>Open Network Settings</source>
+        <translation>فتح إعدادات الشبكة</translation>
+    </message>
+    <name>NotificationBarCBF</name>
+    <message>
+        <source>Update your network settings (current server is unreliable)! You can try Compact Block Filters for p2p syncing</source>
+        <translation>حدّث إعدادات الشبكة الخاصة بك (الخادم الحالي غير موثوق)! يمكنك تجربة Compact Block Filters لمزامنة p2p</translation>
+    </message>
+</context>
+<context>
+    <name>NotificationBarRecipient</name>
+    <message>
+        <source>This address belongs to wallet: &lt;b&gt;{wallet_id}&lt;/b&gt;</source>
+        <translation>هذا العنوان ينتمي إلى المحفظة: &lt;b&gt;{wallet_id}&lt;/b&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>NotificationBarRegtest</name>
+    <message>
+        <source>Get {testnet} coins</source>
+        <translation>احصل على عملات {testnet}</translation>
+    </message>
+    <name>NotificationBarRegtest</name>
+    <message>
+        <source>Network = {network}. The coins are worthless!</source>
+        <translation>الشبكة = {network}. العملات لا قيمة لها!</translation>
+    </message>
+    <name>NotificationBarRegtest</name>
+    <message>
+        <source>Open Network Settings</source>
+        <translation>فتح إعدادات الشبكة</translation>
+    </message>
+</context>
+<context>
+    <name>PSBTAlreadyBroadcastedBar</name>
+    <message>
+        <source>This transaction {txid} exists is in wallet {wallet} and the serializations of both differ.</source>
+        <translation>هذه المعاملة {txid} موجودة في المحفظة {wallet} وتسلسلاتهما مختلفة.</translation>
+    </message>
+    <name>PSBTAlreadyBroadcastedBar</name>
+    <message>
+        <source>This transaction {txid} was already signed and is in wallet {wallet}</source>
+        <translation>هذه المعاملة {txid} تم توقيعها بالفعل وهي في المحفظة {wallet}</translation>
+    </message>
+</context>
+<context>
+    <name>PaidPluginClient</name>
+    <message>
+        <source>Check subscription</source>
+        <translation>التحقق من الاشتراك</translation>
+    </message>
+    <name>PaidPluginClient</name>
+    <message>
+        <source>Start free trial</source>
+        <translation>بدء التجربة المجانية</translation>
+    </message>
+    <name>PaidPluginClient</name>
+    <message>
+        <source>Subscription</source>
+        <translation>الاشتراك</translation>
+    </message>
+    <name>PaidPluginClient</name>
+    <message>
+        <source>month</source>
+        <translation>شهر</translation>
+    </message>
+    <name>PaidPluginClient</name>
+    <message>
+        <source>year</source>
+        <translation>سنة</translation>
+    </message>
+    <name>PaidPluginClient</name>
+    <message>
+        <source>{price} {currency} / {period}</source>
+        <translation>{price} {currency} / {period}</translation>
+    </message>
+</context>
+<context>
+    <name>PaidPluginWidget</name>
+    <message>
+        <source>Manage</source>
+        <translation>إدارة</translation>
+    </message>
+    <name>PaidPluginWidget</name>
+    <message>
+        <source>Refresh status</source>
+        <translation>تحديث الحالة</translation>
+    </message>
+    <name>PaidPluginWidget</name>
+    <message>
+        <source>Subscription:</source>
+        <translation>الاشتراك:</translation>
+    </message>
+    <name>PaidPluginWidget</name>
+    <message>
+        <source>This subscription is valid on any computer with this wallet</source>
+        <translation>هذا الاشتراك صالح على أي جهاز كمبيوتر يحتوي على هذه المحفظة</translation>
+    </message>
+</context>
+<context>
+    <name>PasswordCreation</name>
+    <message>
+        <source>Create Password</source>
+        <translation>إنشاء كلمة مرور</translation>
+    </message>
+    <name>PasswordCreation</name>
+    <message>
+        <source>Enter your password:</source>
+        <translation>أدخل كلمة المرور الخاصة بك:</translation>
+    </message>
+    <name>PasswordCreation</name>
+    <message>
+        <source>Error</source>
+        <translation>خطأ</translation>
+    </message>
+    <name>PasswordCreation</name>
+    <message>
+        <source>Hide Password</source>
+        <translation>إخفاء كلمة المرور</translation>
+    </message>
+    <name>PasswordCreation</name>
+    <message>
+        <source>Passwords do not match!</source>
+        <translation>كلمات المرور غير متطابقة!</translation>
+    </message>
+    <name>PasswordCreation</name>
+    <message>
+        <source>Re-enter your password:</source>
+        <translation>أعد إدخال كلمة المرور الخاصة بك:</translation>
+    </message>
+    <name>PasswordCreation</name>
+    <message>
+        <source>Show Password</source>
+        <translation>إظهار كلمة المرور</translation>
+    </message>
+    <name>PasswordCreation</name>
+    <message>
+        <source>Submit</source>
+        <translation>إرسال</translation>
+    </message>
+</context>
+<context>
+    <name>PasswordQuestion</name>
+    <message>
+        <source>Hide Password</source>
+        <translation>إخفاء كلمة المرور</translation>
+    </message>
+    <name>PasswordQuestion</name>
+    <message>
+        <source>Password Input</source>
+        <translation>إدخال كلمة المرور</translation>
+    </message>
+    <name>PasswordQuestion</name>
+    <message>
+        <source>Please enter your password:</source>
+        <translation>الرجاء إدخال كلمة المرور الخاصة بك:</translation>
+    </message>
+    <name>PasswordQuestion</name>
+    <message>
+        <source>Show Password</source>
+        <translation>إظهار كلمة المرور</translation>
+    </message>
+</context>
+<context>
+    <name>PluginClient</name>
+    <message>
+        <source>Update</source>
+        <translation>تحديث</translation>
+    </message>
+    <name>PluginClient</name>
+    <message>
+        <source>Update available: {update_target}</source>
+        <translation>يتوفر تحديث: {update_target}</translation>
+    </message>
+    <name>PluginClient</name>
+    <message>
+        <source>Update to {update_target}</source>
+        <translation>التحديث إلى {update_target}</translation>
+    </message>
+    <name>PluginClient</name>
+    <message>
+        <source>Version {version}</source>
+        <translation>الإصدار {version}</translation>
+    </message>
+</context>
+<context>
+    <name>PluginListStep</name>
+    <message>
+        <source>Explore plugins</source>
+        <translation>استكشاف المكونات الإضافية</translation>
+    </message>
+    <name>PluginListStep</name>
+    <message>
+        <source>Plugins are not available for this wallet, so there is nothing to configure here.</source>
+        <translation>المكونات الإضافية غير متاحة لهذه المحفظة، لذلك لا يوجد شيء لتكوينه هنا.</translation>
+    </message>
+    <name>PluginListStep</name>
+    <message>
+        <source>Review the available plugins for this wallet. You can enable the ones you want now and come back to the Plugins tab later at any time.</source>
+        <translation>راجع المكونات الإضافية المتاحة لهذه المحفظة. يمكنك تفعيل ما تريده الآن والعودة إلى تبويب المكونات الإضافية لاحقًا في أي وقت.</translation>
+    </message>
+</context>
+<context>
+    <name>PluginListWidget</name>
+    <message>
+        <source>Enable and manage optional wallet integrations.</source>
+        <translation>فعّل وأدر تكاملات المحفظة الاختيارية.</translation>
+    </message>
+    <name>PluginListWidget</name>
+    <message>
+        <source>Plugins</source>
+        <translation>الإضافات</translation>
+    </message>
+</context>
+<context>
+    <name>PluginManager</name>
+    <message>
+        <source>Cancel</source>
+        <translation>إلغاء</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Delete</source>
+        <translation>حذف</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Delete Installed Plugin</source>
+        <translation>حذف المكون الإضافي المثبت</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Delete installed plugin {plugin}?</source>
+        <translation>هل تريد حذف المكون الإضافي المثبت {plugin}؟</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Manifest URL and pinned public key are required.</source>
+        <translation>عنوان URL للبيان والمفتاح العام المثبّت مطلوبان.</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Plugin operation failed.</source>
+        <translation>فشلت عملية المكون الإضافي.</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Plugin source {source_id} does not exist.</source>
+        <translation>مصدر المكون الإضافي {source_id} غير موجود.</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Rechecked installed plugins.</source>
+        <translation>تمت إعادة فحص المكونات الإضافية المثبتة.</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Rechecked installed plugins. {count} plugin(s) are invalid.</source>
+        <translation>تمت إعادة فحص المكونات الإضافية المثبتة. {count} مكون/مكونات إضافية غير صالحة.</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Remove Plugin Source</source>
+        <translation>إزالة مصدر المكون الإضافي</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Remove plugin source {source}?</source>
+        <translation>هل تريد إزالة مصدر المكون الإضافي {source}؟</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>This plugin cannot be deleted.</source>
+        <translation>لا يمكن حذف هذا المكون الإضافي.</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>This source&apos;s publisher (key {fingerprint}) can ship plugins that run with full access to this wallet, including its labels, addresses and transactions, and can keep doing so through future updates. Only trust publishers you know.</source>
+        <translation>يمكن لناشر هذا المصدر (المفتاح {fingerprint}) توزيع إضافات تعمل بصلاحية وصول كاملة إلى هذه المحفظة، بما في ذلك تسمياتها وعناوينها ومعاملاتها، ويمكنه الاستمرار في ذلك عبر التحديثات المستقبلية. لا تثق إلا بالناشرين الذين تعرفهم.</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Trust and add</source>
+        <translation>الوثوق والإضافة</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>Trust this plugin source?</source>
+        <translation>هل تثق بمصدر الإضافات هذا؟</translation>
+    </message>
+    <name>PluginManager</name>
+    <message>
+        <source>unknown</source>
+        <translation>غير معروف</translation>
+    </message>
+</context>
+<context>
+    <name>PluginManagerWidget</name>
+    <message>
+        <source>Applies to all paid plugins and subscription-gated service fees.</source>
+        <translation>ينطبق على جميع المكونات الإضافية المدفوعة ورسوم الخدمات المقيدة بالاشتراك.</translation>
+    </message>
+    <name>PluginManagerWidget</name>
+    <message>
+        <source>Business plan</source>
+        <translation>خطة Business</translation>
+    </message>
+    <name>PluginManagerWidget</name>
+    <message>
+        <source>Plugins</source>
+        <translation>الإضافات</translation>
+    </message>
+    <name>PluginManagerWidget</name>
+    <message>
+        <source>Sources</source>
+        <translation>المصادر</translation>
+    </message>
+</context>
+<context>
+    <name>PluginSourceWidget</name>
+    <message>
+        <source>Cannot remove while {count} plugin(s) are installed.</source>
+        <translation>لا يمكن الإزالة أثناء تثبيت {count} مكون/مكونات إضافية.</translation>
+    </message>
+    <name>PluginSourceWidget</name>
+    <message>
+        <source>Delete</source>
+        <translation>حذف</translation>
+    </message>
+    <name>PluginSourceWidget</name>
+    <message>
+        <source>Last error: {error}</source>
+        <translation>آخر خطأ: {error}</translation>
+    </message>
+    <name>PluginSourceWidget</name>
+    <message>
+        <source>Refresh</source>
+        <translation>تحديث</translation>
+    </message>
+    <name>PluginSourceWidget</name>
+    <message>
+        <source>Remove installed plugins from this source before deleting the source.</source>
+        <translation>أزل الإضافات المثبّتة من هذا المصدر قبل حذف المصدر.</translation>
+    </message>
+    <name>PluginSourceWidget</name>
+    <message>
+        <source>Source ID: {source_id}</source>
+        <translation>معرّف المصدر: {source_id}</translation>
+    </message>
+</context>
+<context>
+    <name>PluginWidget</name>
+    <message>
+        <source>Open</source>
+        <translation>فتح</translation>
+    </message>
+</context>
+<context>
+    <name>PoisoningWarningBar</name>
+    <message>
+        <source>Warning! This transaction involves deceptively similar addresses. It may be an address poisoning attack. Similar addresses are  &lt;br&gt;{addresses}.&lt;br&gt; Double-check all transaction details carefully!</source>
+        <translation>تحذير! تتضمن هذه المعاملة عناوين مشابهة بشكل مضلل. قد تكون هجوم تسميم العنوان. العناوين المشابهة هي &lt;br&gt;{addresses}.&lt;br&gt; تحقق بعناية من جميع تفاصيل المعاملة!</translation>
+    </message>
+</context>
+<context>
+    <name>QTProtoWallet</name>
+    <message>
+        <source>Setup wallet</source>
+        <translation>إعداد المحفظة</translation>
+    </message>
+</context>
+<context>
+    <name>QTWallet</name>
+    <message>
+        <source>  Replaced By TxID(s): {new_txid}</source>
+        <translation>  {new_txid}</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>(not detected)</source>
+        <translation>(غير مكتشف)</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>- TxID: {txid}
 {replaced_by_block}
   What Happened: {happened_text}</source>
-			<translation>- TxID:
+        <translation>- TxID:
 {txid}
   {replaced_by_block}
   ماذا حدث: {happened_text}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Add as unconfirmed in-mempool</source>
-			<translation>إضافة كغير مؤكدة في mempool</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Add as unconfirmed in-mempool?</source>
-			<translation>هل تريد الإضافة كغير مؤكدة في mempool؟</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Addresses</source>
-			<translation>العناوين</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>All Files (*);;JSON Files (*.json)</source>
-			<translation>جميع الملفات (*);;ملفات JSON (*.json)</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)</source>
-			<translation>جميع الملفات (*);;ملفات JSON (*.jsonl);;ملفات JSON (*.json)</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
-			<translation>جميع الملفات (*);;ملفات JSONL (*.jsonl);;ملفات JSON (*.json)</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>All Files (*);;Wallet Files (*.wallet)</source>
-			<translation>كل الملفات (*);;ملفات المحفظة (*.wallet)</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>An indication for a low gap limit was detected (received Bitcoin to change addresses). This is most likely due to a too low gap limit.</source>
-			<translation>تم اكتشاف مؤشر على حد فجوة منخفض (تم استلام بيتكوين إلى عناوين التغيير). من المرجح أن يكون ذلك بسبب حد فجوة منخفض جدًا.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Backup failed. Aborting Changes.</source>
-			<translation>فشلت النسخ الاحتياطي. إحباط التغييرات.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Backup saved to {filename}</source>
-			<translation>تم حفظ النسخ الاحتياطي إلى {filename}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Balance</source>
-			<translation>الرصيد</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Cancel</source>
-			<translation>إلغاء</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Cannot move the wallet file, because {file_path} exists</source>
-			<translation>لا يمكن نقل ملف المحفظة، لأن {file_path} موجود</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Change password</source>
-			<translation>تغيير كلمة المرور</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Changes applied.</source>
-			<translation>تم تطبيق التغييرات.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Connected to {server}</source>
-			<translation>متصل بـ {server}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Current price per bitcoin is unavailable.</source>
-			<translation>سعر البيتكوين الحالي غير متاح.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Current price per bitcoin: {price} ({currency})</source>
-			<translation>السعر الحالي لكل بيتكوين: {price} ({currency})</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Dashboard</source>
-			<translation>لوحة التحكم</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Details</source>
-			<translation>تفاصيل</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Disconnected from {server}</source>
-			<translation>منفصل عن {server}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Don't save wallet</source>
-			<translation>لا تحفظ المحفظة</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Export labels</source>
-			<translation>تصدير التسميات</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Import Electrum Wallet labels</source>
-			<translation>استيراد تسميات محفظة إلكتروم</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Import labels</source>
-			<translation>استيراد التسميات</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Keep existing</source>
-			<translation>الإبقاء على الموجود</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Negative confirmed balances detected. This is most likely due to a too low gap limit.</source>
-			<translation>تم اكتشاف أرصدة مؤكدة سلبية. من المرجح أن يكون ذلك بسبب حد فجوة منخفض جدًا.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>New password:</source>
-			<translation>كلمة مرور جديدة:</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>New transaction in wallet '{wallet}':
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Add as unconfirmed in-mempool</source>
+        <translation>إضافة كغير مؤكدة في mempool</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Add as unconfirmed in-mempool?</source>
+        <translation>هل تريد الإضافة كغير مؤكدة في mempool؟</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Addresses</source>
+        <translation>العناوين</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>All Files (*);;JSON Files (*.json)</source>
+        <translation>جميع الملفات (*);;ملفات JSON (*.json)</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>All Files (*);;JSON Files (*.jsonl);;JSON Files (*.json)</source>
+        <translation>جميع الملفات (*);;ملفات JSON (*.jsonl);;ملفات JSON (*.json)</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>All Files (*);;JSONL Files (*.jsonl);;JSON Files (*.json)</source>
+        <translation>جميع الملفات (*);;ملفات JSONL (*.jsonl);;ملفات JSON (*.json)</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>All Files (*);;Wallet Files (*.wallet)</source>
+        <translation>كل الملفات (*);;ملفات المحفظة (*.wallet)</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>An indication for a low gap limit was detected (received Bitcoin to change addresses). This is most likely due to a too low gap limit.</source>
+        <translation>تم اكتشاف مؤشر على حد فجوة منخفض (تم استلام بيتكوين إلى عناوين التغيير). من المرجح أن يكون ذلك بسبب حد فجوة منخفض جدًا.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Backup failed. Aborting Changes.</source>
+        <translation>فشلت النسخ الاحتياطي. إحباط التغييرات.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Backup saved to {filename}</source>
+        <translation>تم حفظ النسخ الاحتياطي إلى {filename}</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Balance</source>
+        <translation>الرصيد</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Cancel</source>
+        <translation>إلغاء</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Cannot move the wallet file, because {file_path} exists</source>
+        <translation>لا يمكن نقل ملف المحفظة، لأن {file_path} موجود</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Change password</source>
+        <translation>تغيير كلمة المرور</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Changes applied.</source>
+        <translation>تم تطبيق التغييرات.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Connected to {server}</source>
+        <translation>متصل بـ {server}</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Current price per bitcoin is unavailable.</source>
+        <translation>سعر البيتكوين الحالي غير متاح.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Current price per bitcoin: {price} ({currency})</source>
+        <translation>السعر الحالي لكل بيتكوين: {price} ({currency})</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Dashboard</source>
+        <translation>لوحة التحكم</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Details</source>
+        <translation>تفاصيل</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Disconnected from {server}</source>
+        <translation>منفصل عن {server}</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Don&apos;t save wallet</source>
+        <translation>لا تحفظ المحفظة</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Export labels</source>
+        <translation>تصدير التسميات</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Import Electrum Wallet labels</source>
+        <translation>استيراد تسميات محفظة إلكتروم</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Import labels</source>
+        <translation>استيراد التسميات</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Keep existing</source>
+        <translation>الإبقاء على الموجود</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Negative confirmed balances detected. This is most likely due to a too low gap limit.</source>
+        <translation>تم اكتشاف أرصدة مؤكدة سلبية. من المرجح أن يكون ذلك بسبب حد فجوة منخفض جدًا.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>New password:</source>
+        <translation>كلمة مرور جديدة:</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>New transaction in wallet &apos;{wallet}&apos;:
 {txs}</source>
-			<translation>معاملة جديدة في المحفظة '{wallet}':
+        <translation>معاملة جديدة في المحفظة &apos;{wallet}&apos;:
 {txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>No changes to apply.</source>
-			<translation>لا توجد تغييرات لتطبيقها.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>No file selected</source>
-			<translation>لم يتم اختيار ملف</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Overwrite existing</source>
-			<translation>الكتابة فوق الموجود</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Password incorrect</source>
-			<translation>كلمة المرور غير صحيحة</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Please choose a wallet name</source>
-			<translation>يرجى اختيار اسم محفظة</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
-			<translation>تعذّرت استعادة الإضافة {plugin}. تم تحميل حالة جديدة. تم حفظ نسخة احتياطية من الحالة السابقة لمحفظتك في {filename}.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
-			<translation>تعذّرت استعادة الإضافة {plugin}. لم يتم نسخ حالتها السابقة احتياطيًا بأمان، لذلك لم يتم تحميل حالة جديدة.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Plugins</source>
-			<translation>الإضافات</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Proceed</source>
-			<translation>المتابعة</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Proceeding will potentially change all wallet addresses.</source>
-			<translation>قد تؤدي المتابعة إلى تغيير جميع عناوين المحفظة.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Refresh all caches before syncing.</source>
-			<translation>قم بتحديث جميع الذاكرات المؤقتة قبل المزامنة.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Remove</source>
-			<translation>إزالة</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Remove unconfirmed transaction?</source>
-			<translation>إزالة المعاملة غير المؤكدة؟</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Removed Transaction(s) in Wallet '{wallet}':
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>No changes to apply.</source>
+        <translation>لا توجد تغييرات لتطبيقها.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Overwrite existing</source>
+        <translation>الكتابة فوق الموجود</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Password incorrect</source>
+        <translation>كلمة المرور غير صحيحة</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>يرجى اختيار اسم محفظة</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Plugin {plugin} could not be restored. A fresh state was loaded. Your previous wallet state was backed up to {filename}.</source>
+        <translation>تعذّرت استعادة الإضافة {plugin}. تم تحميل حالة جديدة. تم حفظ نسخة احتياطية من الحالة السابقة لمحفظتك في {filename}.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Plugin {plugin} could not be restored. Its old state was not safely backed up, so no fresh state was loaded.</source>
+        <translation>تعذّرت استعادة الإضافة {plugin}. لم يتم نسخ حالتها السابقة احتياطيًا بأمان، لذلك لم يتم تحميل حالة جديدة.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Plugins</source>
+        <translation>الإضافات</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Proceed</source>
+        <translation>المتابعة</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Proceeding will potentially change all wallet addresses.</source>
+        <translation>قد تؤدي المتابعة إلى تغيير جميع عناوين المحفظة.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Refresh all caches before syncing.</source>
+        <translation>قم بتحديث جميع الذاكرات المؤقتة قبل المزامنة.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Remove</source>
+        <translation>إزالة</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Remove unconfirmed transaction?</source>
+        <translation>إزالة المعاملة غير المؤكدة؟</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Removed Transaction(s) in Wallet &apos;{wallet}&apos;:
 
 {txs}
 
 Saved copies to:
 {path}</source>
-			<translation>المعاملة/المعاملات المُزالة في المحفظة '{wallet}':
+        <translation>المعاملة/المعاملات المُزالة في المحفظة &apos;{wallet}&apos;:
 {txs}
 تم حفظ النسخ في:
 {path}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Save wallet</source>
-			<translation>حفظ المحفظة</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Send</source>
-			<translation>إرسال</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Successfully updated {number} Labels</source>
-			<translation>تم تحديث {number} من العلامات بنجاح</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Sync failed for wallet '{wallet}'.</source>
-			<translation>فشل المزامنة للمحفظة '{wallet}'.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Syncing with {server}</source>
-			<translation>مزامنة مع {server}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>The transactions
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Save wallet</source>
+        <translation>حفظ المحفظة</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Send</source>
+        <translation>إرسال</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Successfully updated {number} Labels</source>
+        <translation>تم تحديث {number} من العلامات بنجاح</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Sync failed for wallet &apos;{wallet}&apos;.</source>
+        <translation>فشل المزامنة للمحفظة &apos;{wallet}&apos;.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Syncing with {server}</source>
+        <translation>مزامنة مع {server}</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>The transactions
 {}
 can only be added as unconfirmed in-mempool. 
 Do you want to continue anyway?</source>
-			<translation>يمكن إضافة المعاملات
+        <translation>يمكن إضافة المعاملات
 {}
 فقط كغير مؤكدة في mempool. هل تريد المتابعة على أي حال؟</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
-			<translation>تم تأكيد هذه المعاملة سابقًا وتمت إزالتها الآن. يشير هذا إلى إعادة تنظيم السلسلة (Reorg).</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
-			<translation>لم يتم تأكيد هذه المعاملة وتمت إزالتها الآن. تمت إزالتها من الـ Mempool، ولا توجد حاليًا معاملة بديلة يتم تتبعها بواسطة هذه المحفظة.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>This transaction was previously confirmed and is now removed. This indicates a Chain Reorganization (Reorg).</source>
+        <translation>تم تأكيد هذه المعاملة سابقًا وتمت إزالتها الآن. يشير هذا إلى إعادة تنظيم السلسلة (Reorg).</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>This transaction was unconfirmed and is now removed. It was removed from the Mempool, and no replacement transaction is currently tracked by this wallet.</source>
+        <translation>لم يتم تأكيد هذه المعاملة وتمت إزالتها الآن. تمت إزالتها من الـ Mempool، ولا توجد حاليًا معاملة بديلة يتم تتبعها بواسطة هذه المحفظة.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>This will only remove the transaction from this wallet view. It is already broadcast to the Bitcoin network and will likely still confirm.
 
 Do you want to remove it from the wallet anyway?</source>
-			<translation>سيؤدي هذا إلى إزالة المعاملة من عرض هذه المحفظة فقط.
+        <translation>سيؤدي هذا إلى إزالة المعاملة من عرض هذه المحفظة فقط.
 لقد تم بثها بالفعل إلى شبكة بيتكوين ومن المرجح أن يتم تأكيدها لاحقًا. هل تريد إزالتها من المحفظة على أي حال؟</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
-			<translation>تم تحديث المعاملة الواردة: ظلت عناوين الاستلام والمبالغ دون تغيير. المعرف القديم txid={txs}. المعرف الجديد txid={new_txs}</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Value</source>
-			<translation>القيمة</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Wallet not saved yet</source>
-			<translation>لم تُحفَظ المحفظة بعد</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Wallet saved</source>
-			<translation>تم حفظ المحفظة</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>Wallet was not saved.</source>
-			<translation>لم يتم حفظ المحفظة.</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>finished updating lists</source>
-			<translation>انتهاء تحديث القوائم</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>start updating lists</source>
-			<translation>بدء تحديث القوائم</translation>
-		</message>
-		<name>QTWallet</name>
-		<message>
-			<source>{number} new transactions in wallet '{wallet}':
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Updated incoming transaction: Your receival addresses and amounts stayed unchanged. Old txid={txs}. New txid={new_txs}</source>
+        <translation>تم تحديث المعاملة الواردة: ظلت عناوين الاستلام والمبالغ دون تغيير. المعرف القديم txid={txs}. المعرف الجديد txid={new_txs}</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Value</source>
+        <translation>القيمة</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Wallet not saved yet</source>
+        <translation>لم تُحفَظ المحفظة بعد</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Wallet saved</source>
+        <translation>تم حفظ المحفظة</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>Wallet was not saved.</source>
+        <translation>لم يتم حفظ المحفظة.</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>finished updating lists</source>
+        <translation>انتهاء تحديث القوائم</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>start updating lists</source>
+        <translation>بدء تحديث القوائم</translation>
+    </message>
+    <name>QTWallet</name>
+    <message>
+        <source>{number} new transactions in wallet &apos;{wallet}&apos;:
 {txs}</source>
-			<translation>{number} معاملات جديدة في المحفظة '{wallet}':
+        <translation>{number} معاملات جديدة في المحفظة &apos;{wallet}&apos;:
 {txs}</translation>
-		</message>
-	</context>
-	<context>
-		<name>QrToolButton</name>
-		<message>
-			<source>QR Code</source>
-			<translation>رمز الاستجابة السريعة</translation>
-		</message>
-	</context>
-	<context>
-		<name>QuickReceive</name>
-		<message>
-			<source>Manage Categories</source>
-			<translation>إدارة الفئات</translation>
-		</message>
-		<name>QuickReceive</name>
-		<message>
-			<source>Open the category manager</source>
-			<translation>افتح مدير الفئات</translation>
-		</message>
-		<name>QuickReceive</name>
-		<message>
-			<source>Quick Receive</source>
-			<translation>استقبال سريع</translation>
-		</message>
-	</context>
-	<context>
-		<name>RBFIcon</name>
-		<message>
-			<source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
+    </message>
+</context>
+<context>
+    <name>QrToolButton</name>
+    <message>
+        <source>QR Code</source>
+        <translation>رمز الاستجابة السريعة</translation>
+    </message>
+</context>
+<context>
+    <name>QuickReceive</name>
+    <message>
+        <source>Manage Categories</source>
+        <translation>إدارة الفئات</translation>
+    </message>
+    <name>QuickReceive</name>
+    <message>
+        <source>Open the category manager</source>
+        <translation>افتح مدير الفئات</translation>
+    </message>
+    <name>QuickReceive</name>
+    <message>
+        <source>Quick Receive</source>
+        <translation>استقبال سريع</translation>
+    </message>
+</context>
+<context>
+    <name>RBFIcon</name>
+    <message>
+        <source>Use this fee to build a replacement (RBF) transaction at the shown target speed.
 Outputs stay the same; only the fee changes.</source>
-			<translation>استخدم هذه الرسوم لإنشاء معاملة بديلة (RBF) بسرعة الهدف المعروضة.
+        <translation>استخدم هذه الرسوم لإنشاء معاملة بديلة (RBF) بسرعة الهدف المعروضة.
 تبقى المخرجات كما هي؛ تتغير الرسوم فقط.</translation>
-		</message>
-	</context>
-	<context>
-		<name>RandomQuoteLabel</name>
-		<message>
-			<source>Click the quote or the link below to show another item</source>
-			<translation>انقر على الاقتباس أو الرابط أدناه لعرض عنصر آخر</translation>
-		</message>
-	</context>
-	<context>
-		<name>ReceiveGroup</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>ReceiveGroup</name>
-		<message>
-			<source>Copy address to clipboard</source>
-			<translation>نسخ العنوان إلى الحافظة</translation>
-		</message>
-		<name>ReceiveGroup</name>
-		<message>
-			<source>Get next address</source>
-			<translation>الحصول على العنوان التالي</translation>
-		</message>
-		<name>ReceiveGroup</name>
-		<message>
-			<source>Magnify QR code</source>
-			<translation>تكبير رمز QR</translation>
-		</message>
-	</context>
-	<context>
-		<name>ReceiveTest</name>
-		<message>
-			<source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
+    </message>
+</context>
+<context>
+    <name>RandomQuoteLabel</name>
+    <message>
+        <source>Click the quote or the link below to show another item</source>
+        <translation>انقر على الاقتباس أو الرابط أدناه لعرض عنصر آخر</translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Copy address to clipboard</source>
+        <translation>نسخ العنوان إلى الحافظة</translation>
+    </message>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Get next address</source>
+        <translation>الحصول على العنوان التالي</translation>
+    </message>
+    <name>ReceiveGroup</name>
+    <message>
+        <source>Magnify QR code</source>
+        <translation>تكبير رمز QR</translation>
+    </message>
+</context>
+<context>
+    <name>ReceiveTest</name>
+    <message>
+        <source>&lt;br&gt;&lt;b&gt;Why?&lt;/b&gt; &lt;br&gt;
                         To know if you control the funds, you have to test spending from the wallet.
                         &lt;br&gt;
                         So before you send a substantial amount of Bitcoin into the wallet, it is &lt;b&gt;crucial&lt;/b&gt; to spend from the wallet and test all signers.
                         </source>
-			<translation>&lt;br&gt;&lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt; لمعرفة ما إذا كنت تتحكم في الأموال، عليك اختبار الإنفاق من المحفظة.
+        <translation>&lt;br&gt;&lt;b&gt;لماذا؟&lt;/b&gt; &lt;br&gt; لمعرفة ما إذا كنت تتحكم في الأموال، عليك اختبار الإنفاق من المحفظة.
 &lt;br&gt; لذلك قبل أن ترسل مبلغًا كبيرًا من Bitcoin إلى المحفظة، من &lt;b&gt;الضروري&lt;/b&gt; الإنفاق من المحفظة واختبار جميع الموقّعين.
                         </translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Check if received</source>
-			<translation>تحقق مما تم استلامه</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>No wallet setup yet</source>
-			<translation>لا توجد محفظة معدة بعد</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Receive Test</source>
-			<translation>تلقي الاختبار</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
-			<translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد من هذه المحفظة.&lt;br&gt;</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Receive from faucet</source>
-			<translation>استلام من faucet</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Receive instructions</source>
-			<translation>تعليمات الاستلام</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Recognized Transaction</source>
-			<translation>معاملة معروفة</translation>
-		</message>
-		<name>ReceiveTest</name>
-		<message>
-			<source>Waiting for funds to arrive in the wallet...</source>
-			<translation>في انتظار وصول الأموال إلى المحفظة...</translation>
-		</message>
-	</context>
-	<context>
-		<name>RecentlyOpenedWalletsGroup</name>
-		<message>
-			<source>ALL WALLETS</source>
-			<translation>كل المحافظ</translation>
-		</message>
-		<name>RecentlyOpenedWalletsGroup</name>
-		<message>
-			<source>RECENT WALLETS</source>
-			<translation>المحافظ الحديثة</translation>
-		</message>
-		<name>RecentlyOpenedWalletsGroup</name>
-		<message>
-			<source>Reveal in file explorer</source>
-			<translation>إظهار في مستكشف الملفات</translation>
-		</message>
-	</context>
-	<context>
-		<name>RecipientWidget</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>RecipientWidget</name>
-		<message>
-			<source>Amount</source>
-			<translation>كمية</translation>
-		</message>
-		<name>RecipientWidget</name>
-		<message>
-			<source>Enter label here</source>
-			<translation>أدخل التسمية هنا</translation>
-		</message>
-		<name>RecipientWidget</name>
-		<message>
-			<source>Label</source>
-			<translation>ملصق</translation>
-		</message>
-		<name>RecipientWidget</name>
-		<message>
-			<source>Send max</source>
-			<translation>إرسال الحد الأقصى</translation>
-		</message>
-		<name>RecipientWidget</name>
-		<message>
-			<source>Value</source>
-			<translation>القيمة</translation>
-		</message>
-	</context>
-	<context>
-		<name>Recipients</name>
-		<message>
-			<source>Add Recipient</source>
-			<translation>إضافة مستلم</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>All Files (*);;CSV (*.csv)</source>
-			<translation>كل الملفات (*);;CSV (*.csv)</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>All Files (*);;Wallet Files (*.csv)</source>
-			<translation>كل الملفات (*);;ملفات المحفظة (*.csv)</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Amount [{unit}]</source>
-			<translation>المبلغ [{unit}]</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Export</source>
-			<translation>تصدير</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Export CSV Template</source>
-			<translation>تصدير نموذج CSV</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Export as CSV file</source>
-			<translation>تصدير كملف CSV</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Export csv</source>
-			<translation>تصدير csv</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Import CSV file</source>
-			<translation>استيراد ملف CSV</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Import/Export</source>
-			<translation>الاستيراد/التصدير</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Label</source>
-			<translation>ملصق</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>No file selected</source>
-			<translation>لم يتم اختيار ملف</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>No rows recognized</source>
-			<translation>لم يتم التعرف على أي صفوف</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Open CSV</source>
-			<translation>فتح CSV</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Please use the CSV template and include the header row.</source>
-			<translation>يرجى استخدام نموذج CSV وتضمين صف العنوان.</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Recipients</source>
-			<translation>المستلمون</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Recipients ({count})</source>
-			<translation>المستلمون ({count})</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>Recipients CSV</source>
-			<translation>المستلمون CSV</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>{address} is not a valid address!</source>
-			<translation>{address} ليس عنوانًا صالحًا!</translation>
-		</message>
-		<name>Recipients</name>
-		<message>
-			<source>{amount} is not a valid integer!</source>
-			<translation>{amount} ليس عددًا صحيحًا صالحًا!</translation>
-		</message>
-	</context>
-	<context>
-		<name>RegisterMultisig</name>
-		<message>
-			<source>Register the multisig wallet on each signing device.</source>
-			<translation>سجّل محفظة multisig على كل جهاز توقيع.</translation>
-		</message>
-	</context>
-	<context>
-		<name>RegisterMultisigInteractionWidget</name>
-		<message>
-			<source>Device instructions</source>
-			<translation>تعليمات الجهاز</translation>
-		</message>
-		<name>RegisterMultisigInteractionWidget</name>
-		<message>
-			<source>Register '{wallet_name}'</source>
-			<translation>تسجيل '{wallet_name}'</translation>
-		</message>
-		<name>RegisterMultisigInteractionWidget</name>
-		<message>
-			<source>Register '{wallet_name}' to '{device}'</source>
-			<translation>تسجيل '{wallet_name}' على '{device}'</translation>
-		</message>
-		<name>RegisterMultisigInteractionWidget</name>
-		<message>
-			<source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
-			<translation>سجّل محفظة التوقيع المتعدد هذه على كل جهاز توقيع عتادي تخطط لاستخدامه. بهذه الطريقة يمكن لجهاز التوقيع العتادي التحقق من عناوين التغيير في المعاملات.</translation>
-		</message>
-		<name>RegisterMultisigInteractionWidget</name>
-		<message>
-			<source>{device} instructions</source>
-			<translation>تعليمات {device}</translation>
-		</message>
-	</context>
-	<context>
-		<name>RelayDialog</name>
-		<message>
-			<source>Enter custom Nostr Relays</source>
-			<translation>أدخل نقاط الربط Nostr المخصصة</translation>
-		</message>
-	</context>
-	<context>
-		<name>SankeyBitcoin</name>
-		<message>
-			<source>Fee</source>
-			<translation>رسوم</translation>
-		</message>
-	</context>
-	<context>
-		<name>SankeyWidget</name>
-		<message>
-			<source>All Files (*);;Text Files (*.svg)</source>
-			<translation>جميع الملفات (*);;ملفات نصية (*.svg)</translation>
-		</message>
-		<name>SankeyWidget</name>
-		<message>
-			<source>Export svg</source>
-			<translation>تصدير svg</translation>
-		</message>
-		<name>SankeyWidget</name>
-		<message>
-			<source>Export to SVG</source>
-			<translation>تصدير إلى SVG</translation>
-		</message>
-		<name>SankeyWidget</name>
-		<message>
-			<source>No file selected</source>
-			<translation>لم يتم اختيار ملف</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScreenshotsExportXpub</name>
-		<message>
-			<source>How-to export the wallet information from the hardware signer</source>
-			<translation>كيفية تصدير معلومات المحفظة من الموقع العتاد</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScreenshotsGenerateSeed</name>
-		<message>
-			<source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
-			<translation>قم بإنشاء {number} كلمات بذور سرية على كل موقع جهاز واكتبها على ورقة الاسترداد</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScreenshotsRegisterMultisig</name>
-		<message>
-			<source>Import the multisig information in the hardware signer</source>
-			<translation>قم باستيراد معلومات multisig في موقع الأجهزة</translation>
-		</message>
-	</context>
-	<context>
-		<name>ScreenshotsViewSeed</name>
-		<message>
-			<source>Compare the {number} words on the backup paper to the hardware signer.
+    </message>
+    <name>ReceiveTest</name>
+    <message>
+        <source>Check if received</source>
+        <translation>تحقق مما تم استلامه</translation>
+    </message>
+    <name>ReceiveTest</name>
+    <message>
+        <source>No wallet setup yet</source>
+        <translation>لا توجد محفظة معدة بعد</translation>
+    </message>
+    <name>ReceiveTest</name>
+    <message>
+        <source>Receive Test</source>
+        <translation>تلقي الاختبار</translation>
+    </message>
+    <name>ReceiveTest</name>
+    <message>
+        <source>Receive a &lt;b&gt;small&lt;/b&gt; amount (less than {test_amount}) to 1 address of this wallet.&lt;br&gt;</source>
+        <translation>استلم مبلغًا &lt;b&gt;صغيرًا&lt;/b&gt; (أقل من {test_amount}) إلى عنوان واحد من هذه المحفظة.&lt;br&gt;</translation>
+    </message>
+    <name>ReceiveTest</name>
+    <message>
+        <source>Receive from faucet</source>
+        <translation>استلام من faucet</translation>
+    </message>
+    <name>ReceiveTest</name>
+    <message>
+        <source>Receive instructions</source>
+        <translation>تعليمات الاستلام</translation>
+    </message>
+    <name>ReceiveTest</name>
+    <message>
+        <source>Recognized Transaction</source>
+        <translation>معاملة معروفة</translation>
+    </message>
+    <name>ReceiveTest</name>
+    <message>
+        <source>Waiting for funds to arrive in the wallet...</source>
+        <translation>في انتظار وصول الأموال إلى المحفظة...</translation>
+    </message>
+</context>
+<context>
+    <name>RecentlyOpenedWalletsGroup</name>
+    <message>
+        <source>ALL WALLETS</source>
+        <translation>كل المحافظ</translation>
+    </message>
+    <name>RecentlyOpenedWalletsGroup</name>
+    <message>
+        <source>RECENT WALLETS</source>
+        <translation>المحافظ الحديثة</translation>
+    </message>
+    <name>RecentlyOpenedWalletsGroup</name>
+    <message>
+        <source>Reveal in file explorer</source>
+        <translation>إظهار في مستكشف الملفات</translation>
+    </message>
+</context>
+<context>
+    <name>RecipientWidget</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>RecipientWidget</name>
+    <message>
+        <source>Amount</source>
+        <translation>كمية</translation>
+    </message>
+    <name>RecipientWidget</name>
+    <message>
+        <source>Enter label here</source>
+        <translation>أدخل التسمية هنا</translation>
+    </message>
+    <name>RecipientWidget</name>
+    <message>
+        <source>Label</source>
+        <translation>ملصق</translation>
+    </message>
+    <name>RecipientWidget</name>
+    <message>
+        <source>Send max</source>
+        <translation>إرسال الحد الأقصى</translation>
+    </message>
+    <name>RecipientWidget</name>
+    <message>
+        <source>Value</source>
+        <translation>القيمة</translation>
+    </message>
+</context>
+<context>
+    <name>Recipients</name>
+    <message>
+        <source>Add Recipient</source>
+        <translation>إضافة مستلم</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>All Files (*);;CSV (*.csv)</source>
+        <translation>كل الملفات (*);;CSV (*.csv)</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>All Files (*);;Wallet Files (*.csv)</source>
+        <translation>كل الملفات (*);;ملفات المحفظة (*.csv)</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Amount [{unit}]</source>
+        <translation>المبلغ [{unit}]</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Export</source>
+        <translation>تصدير</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Export CSV Template</source>
+        <translation>تصدير نموذج CSV</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Export as CSV file</source>
+        <translation>تصدير كملف CSV</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Export csv</source>
+        <translation>تصدير csv</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Import CSV file</source>
+        <translation>استيراد ملف CSV</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Import/Export</source>
+        <translation>الاستيراد/التصدير</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Label</source>
+        <translation>ملصق</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>No rows recognized</source>
+        <translation>لم يتم التعرف على أي صفوف</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Open CSV</source>
+        <translation>فتح CSV</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Please use the CSV template and include the header row.</source>
+        <translation>يرجى استخدام نموذج CSV وتضمين صف العنوان.</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Recipients</source>
+        <translation>المستلمون</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Recipients ({count})</source>
+        <translation>المستلمون ({count})</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>Recipients CSV</source>
+        <translation>المستلمون CSV</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>{address} is not a valid address!</source>
+        <translation>{address} ليس عنوانًا صالحًا!</translation>
+    </message>
+    <name>Recipients</name>
+    <message>
+        <source>{amount} is not a valid integer!</source>
+        <translation>{amount} ليس عددًا صحيحًا صالحًا!</translation>
+    </message>
+</context>
+<context>
+    <name>RegisterMultisig</name>
+    <message>
+        <source>Register the multisig wallet on each signing device.</source>
+        <translation>سجّل محفظة multisig على كل جهاز توقيع.</translation>
+    </message>
+</context>
+<context>
+    <name>RegisterMultisigInteractionWidget</name>
+    <message>
+        <source>Device instructions</source>
+        <translation>تعليمات الجهاز</translation>
+    </message>
+    <name>RegisterMultisigInteractionWidget</name>
+    <message>
+        <source>Register &apos;{wallet_name}&apos;</source>
+        <translation>تسجيل &apos;{wallet_name}&apos;</translation>
+    </message>
+    <name>RegisterMultisigInteractionWidget</name>
+    <message>
+        <source>Register &apos;{wallet_name}&apos; to &apos;{device}&apos;</source>
+        <translation>تسجيل &apos;{wallet_name}&apos; على &apos;{device}&apos;</translation>
+    </message>
+    <name>RegisterMultisigInteractionWidget</name>
+    <message>
+        <source>Register this multisig wallet on every hardware signer you plan to use. That way the hardware signer can verify change addresses of transactions.</source>
+        <translation>سجّل محفظة التوقيع المتعدد هذه على كل جهاز توقيع عتادي تخطط لاستخدامه. بهذه الطريقة يمكن لجهاز التوقيع العتادي التحقق من عناوين التغيير في المعاملات.</translation>
+    </message>
+    <name>RegisterMultisigInteractionWidget</name>
+    <message>
+        <source>{device} instructions</source>
+        <translation>تعليمات {device}</translation>
+    </message>
+</context>
+<context>
+    <name>RelayDialog</name>
+    <message>
+        <source>Enter custom Nostr Relays</source>
+        <translation>أدخل نقاط الربط Nostr المخصصة</translation>
+    </message>
+</context>
+<context>
+    <name>SankeyBitcoin</name>
+    <message>
+        <source>Fee</source>
+        <translation>رسوم</translation>
+    </message>
+</context>
+<context>
+    <name>SankeyWidget</name>
+    <message>
+        <source>All Files (*);;Text Files (*.svg)</source>
+        <translation>جميع الملفات (*);;ملفات نصية (*.svg)</translation>
+    </message>
+    <name>SankeyWidget</name>
+    <message>
+        <source>Export svg</source>
+        <translation>تصدير svg</translation>
+    </message>
+    <name>SankeyWidget</name>
+    <message>
+        <source>Export to SVG</source>
+        <translation>تصدير إلى SVG</translation>
+    </message>
+    <name>SankeyWidget</name>
+    <message>
+        <source>No file selected</source>
+        <translation>لم يتم اختيار ملف</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenshotsExportXpub</name>
+    <message>
+        <source>How-to export the wallet information from the hardware signer</source>
+        <translation>كيفية تصدير معلومات المحفظة من الموقع العتاد</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenshotsGenerateSeed</name>
+    <message>
+        <source>Generate {number} secret seed words on each hardware signer and write them on the recovery sheet</source>
+        <translation>قم بإنشاء {number} كلمات بذور سرية على كل موقع جهاز واكتبها على ورقة الاسترداد</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenshotsRegisterMultisig</name>
+    <message>
+        <source>Import the multisig information in the hardware signer</source>
+        <translation>قم باستيراد معلومات multisig في موقع الأجهزة</translation>
+    </message>
+</context>
+<context>
+    <name>ScreenshotsViewSeed</name>
+    <message>
+        <source>Compare the {number} words on the backup paper to the hardware signer.
 If you make a mistake here, your money is lost!</source>
-			<translation>قارن {number} الكلمات على الورق الاحتياطي بالموقع العتاد.
+        <translation>قارن {number} الكلمات على الورق الاحتياطي بالموقع العتاد.
 إذا ارتكبت خطأ هنا، فسيضيع مالك!</translation>
-		</message>
-	</context>
-	<context>
-		<name>SearchTreeView</name>
-		<message>
-			<source>Type to search...</source>
-			<translation>اكتب للبحث...</translation>
-		</message>
-	</context>
-	<context>
-		<name>SearchWallets</name>
-		<message>
-			<source>Spent Outputs</source>
-			<translation>المخرجات المستهلكة</translation>
-		</message>
-		<name>SearchWallets</name>
-		<message>
-			<source>UTXOs</source>
-			<translation>UTXOs</translation>
-		</message>
-	</context>
-	<context>
-		<name>SeedAnalyzer</name>
-		<message>
-			<source>Invalid seed</source>
-			<translation>بذور غير صالحة</translation>
-		</message>
-		<name>SeedAnalyzer</name>
-		<message>
-			<source>Missing Seed</source>
-			<translation>البذور مفقودة</translation>
-		</message>
-	</context>
-	<context>
-		<name>SendTest</name>
-		<message>
-			<source>Create the transaction in this card.</source>
-			<translation>أنشئ المعاملة في هذه البطاقة.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Self-Send Test {number}</source>
-			<translation>اختبار الإرسال إلى الذات {number}</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Self-Send Test {number}: Verify another combination of signing devices</source>
-			<translation>اختبار الإرسال إلى الذات {number}: التحقق من مجموعة أخرى من أجهزة التوقيع</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Sign and broadcast the transaction below.</source>
-			<translation>وقّع المعاملة أدناه وابثّها.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Skip {send_test_name}?</source>
-			<translation>هل تريد تخطي {send_test_name}؟</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>Waiting for the transaction to be prepared.</source>
-			<translation>بانتظار تجهيز المعاملة.</translation>
-		</message>
-		<name>SendTest</name>
-		<message>
-			<source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
-			<translation>لقد أجريت بالفعل {n} من المعاملات الصادرة. هل ترغب في تخطي {send_test_name}؟</translation>
-		</message>
-	</context>
-	<context>
-		<name>Settings</name>
-		<message>
-			<source>About</source>
-			<translation>حول</translation>
-		</message>
-		<name>Settings</name>
-		<message>
-			<source>General</source>
-			<translation>عام</translation>
-		</message>
-		<name>Settings</name>
-		<message>
-			<source>Network</source>
-			<translation>الشبكة</translation>
-		</message>
-	</context>
-	<context>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>ASCII armored message is required.</source>
-			<translation>مطلوب رسالة مدرعة بصيغة ASCII.</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Address used to sign the message</source>
-			<translation>العنوان المستخدم لتوقيع الرسالة</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Address, message and signature are required for verification.</source>
-			<translation>العنوان والرسالة والتوقيع مطلوبة للتحقق.</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Armored message is valid.</source>
-			<translation>الرسالة المدرعة صالحة.</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Base64 signature</source>
-			<translation>توقيع Base64</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Enter message</source>
-			<translation>أدخل الرسالة</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Message</source>
-			<translation>الرسالة</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Sign</source>
-			<translation>توقيع</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Signature</source>
-			<translation>التوقيع</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Signature matches the provided address.</source>
-			<translation>التوقيع يطابق العنوان المقدم.</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Verification failed.</source>
-			<translation>فشل التحقق.</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Verify</source>
-			<translation>تحقق</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Verify ASCII Armour</source>
-			<translation>التحقق من درع ASCII</translation>
-		</message>
-		<name>SignAndVerifyMessage</name>
-		<message>
-			<source>Verify PGP</source>
-			<translation>التحقق من PGP</translation>
-		</message>
-	</context>
-	<context>
-		<name>SignMessage</name>
-		<message>
-			<source>Enter message to be signed at {bip32_path}</source>
-			<translation>أدخل الرسالة للتوقيع عند {bip32_path}</translation>
-		</message>
-		<name>SignMessage</name>
-		<message>
-			<source>Sign message</source>
-			<translation>توقيع الرسالة</translation>
-		</message>
-	</context>
-	<context>
-		<name>SignMessageBase</name>
-		<message>
-			<source>1. Scan QR code with hardware signer</source>
-			<translation>1. امسح رمز QR باستخدام جهاز التوقيع العتادي</translation>
-		</message>
-		<name>SignMessageBase</name>
-		<message>
-			<source>2. Detect signed message</source>
-			<translation>2. اكتشاف الرسالة الموقّعة</translation>
-		</message>
-		<name>SignMessageBase</name>
-		<message>
-			<source>Could not determine the derivation path for the provided address.</source>
-			<translation>تعذر تحديد مسار الاشتقاق للعنوان المقدم.</translation>
-		</message>
-		<name>SignMessageBase</name>
-		<message>
-			<source>Message too short.</source>
-			<translation>الرسالة قصيرة جداً.</translation>
-		</message>
-		<name>SignMessageBase</name>
-		<message>
-			<source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
-			<translation>بعد توقيعك للرسالة، سيوفر جهاز التوقيع العتادي رمز QR ثانياً يمكنك مسحه من هذا الكمبيوتر</translation>
-		</message>
-		<name>SignMessageBase</name>
-		<message>
-			<source>Scan QR code</source>
-			<translation>مسح رمز الاستجابة السريعة</translation>
-		</message>
-		<name>SignMessageBase</name>
-		<message>
-			<source>Sign</source>
-			<translation>توقيع</translation>
-		</message>
-		<name>SignMessageBase</name>
-		<message>
-			<source>Signed Message</source>
-			<translation>رسالة موقعة</translation>
-		</message>
-		<name>SignMessageBase</name>
-		<message>
-			<source>The signature proves control of one key only, not of a multisig address.</source>
-			<translation>يثبت التوقيع التحكم في مفتاح واحد فقط، وليس في عنوان متعدد التوقيعات.</translation>
-		</message>
-	</context>
-	<context>
-		<name>SignatureImporterClipboard</name>
-		<message>
-			<source>Import signed PSBT</source>
-			<translation>استيراد موقعة PSBT</translation>
-		</message>
-		<name>SignatureImporterClipboard</name>
-		<message>
-			<source>OK</source>
-			<translation>نعم</translation>
-		</message>
-		<name>SignatureImporterClipboard</name>
-		<message>
-			<source>Paste your PSBT in here or drop a file</source>
-			<translation>الصق PSBT الخاص بك هنا أو قم بإسقاط ملف</translation>
-		</message>
-		<name>SignatureImporterClipboard</name>
-		<message>
-			<source>Please paste your PSBT in here, or drop a file</source>
-			<translation>يرجى لصق PSBT الخاص بك هنا، أو إسقاط ملف</translation>
-		</message>
-	</context>
-	<context>
-		<name>SignatureImporterFile</name>
-		<message>
-			<source>Import signed PSBT</source>
-			<translation>استيراد موقعة PSBT</translation>
-		</message>
-		<name>SignatureImporterFile</name>
-		<message>
-			<source>OK</source>
-			<translation>نعم</translation>
-		</message>
-		<name>SignatureImporterFile</name>
-		<message>
-			<source>Paste your PSBT in here or drop a file</source>
-			<translation>الصق PSBT الخاص بك هنا أو قم بإسقاط ملف</translation>
-		</message>
-		<name>SignatureImporterFile</name>
-		<message>
-			<source>Please paste your PSBT in here, or drop a file</source>
-			<translation>يرجى لصق PSBT الخاص بك هنا، أو إسقاط ملف</translation>
-		</message>
-	</context>
-	<context>
-		<name>SignatureImporterQR</name>
-		<message>
-			<source>Could not recognize the input. Do you want to scan again?</source>
-			<translation>تعذّر التعرّف على الإدخال. هل تريد المسح مرة أخرى؟</translation>
-		</message>
-		<name>SignatureImporterQR</name>
-		<message>
-			<source>Scan QR code</source>
-			<translation>مسح رمز الاستجابة السريعة</translation>
-		</message>
-	</context>
-	<context>
-		<name>SignatureImporterUSB</name>
-		<message>
-			<source>Please do 'Wallet --&gt; Export --&gt; Export for ...' and register the multisignature wallet on the hardware signer.</source>
-			<translation>يرجى القيام بـ "المحفظة --&gt; تصدير --&gt; تصدير لـ..." وتسجيل المحفظة متعددة التوقيع على موقع الجهاز.</translation>
-		</message>
-		<name>SignatureImporterUSB</name>
-		<message>
-			<source>USB and Bluetooth</source>
-			<translation>USB وBluetooth</translation>
-		</message>
-	</context>
-	<context>
-		<name>SignatureImporterWallet</name>
-		<message>
-			<source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
-			<translation>تحتوي معاملة PSBT على بيانات UTXO غير متسقة. تم رفض توقيع معاملة PSBT غير الصالحة هذه.</translation>
-		</message>
-		<name>SignatureImporterWallet</name>
-		<message>
-			<source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
-			<translation>تطلب معاملة PSBT قيمة sighash غير قياسية. تم رفض توقيع معاملة PSBT غير الصالحة هذه.</translation>
-		</message>
-		<name>SignatureImporterWallet</name>
-		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي. الإجهاض</translation>
-		</message>
-	</context>
-	<context>
-		<name>SourceCatalogItem</name>
-		<message>
-			<source>Available version: {version}</source>
-			<translation>الإصدار المتاح: {version}</translation>
-		</message>
-		<name>SourceCatalogItem</name>
-		<message>
-			<source>Install {version}</source>
-			<translation>ثبّت {version}</translation>
-		</message>
-		<name>SourceCatalogItem</name>
-		<message>
-			<source>Installed version: {version}</source>
-			<translation>الإصدار المثبّت: {version}</translation>
-		</message>
-		<name>SourceCatalogItem</name>
-		<message>
-			<source>Installed {installed}; update available: {available}</source>
-			<translation>مثبّت {installed}؛ يتوفر تحديث: {available}</translation>
-		</message>
-		<name>SourceCatalogItem</name>
-		<message>
-			<source>Latest {version}</source>
-			<translation>الأحدث {version}</translation>
-		</message>
-		<name>SourceCatalogItem</name>
-		<message>
-			<source>Reinstall {version}</source>
-			<translation>إعادة تثبيت {version}</translation>
-		</message>
-		<name>SourceCatalogItem</name>
-		<message>
-			<source>Update to {available}</source>
-			<translation>حدّث إلى {available}</translation>
-		</message>
-		<name>SourceCatalogItem</name>
-		<message>
-			<source>Version {installed} -&gt; {available}</source>
-			<translation>الإصدار {installed} -&gt; {available}</translation>
-		</message>
-		<name>SourceCatalogItem</name>
-		<message>
-			<source>Version {version}</source>
-			<translation>الإصدار {version}</translation>
-		</message>
-	</context>
-	<context>
-		<name>SourceCatalogItemWidget</name>
-		<message>
-			<source>Delete Plugin</source>
-			<translation>حذف الإضافة</translation>
-		</message>
-	</context>
-	<context>
-		<name>SourceManagementDialog</name>
-		<message>
-			<source>Add Plugin Source...</source>
-			<translation>إضافة مصدر إضافات...</translation>
-		</message>
-		<name>SourceManagementDialog</name>
-		<message>
-			<source>Close</source>
-			<translation>إغلاق</translation>
-		</message>
-		<name>SourceManagementDialog</name>
-		<message>
-			<source>Configured plugin sources</source>
-			<translation>مصادر الإضافات المُهيّأة</translation>
-		</message>
-		<name>SourceManagementDialog</name>
-		<message>
-			<source>No plugin sources added yet.</source>
-			<translation>لم تتم إضافة أي مصادر إضافات بعد.</translation>
-		</message>
-		<name>SourceManagementDialog</name>
-		<message>
-			<source>Plugin Sources</source>
-			<translation>مصادر الإضافات</translation>
-		</message>
-		<name>SourceManagementDialog</name>
-		<message>
-			<source>Recheck Installed Plugins</source>
-			<translation>إعادة فحص الإضافات المثبّتة</translation>
-		</message>
-	</context>
-	<context>
-		<name>StepProgressContainer</name>
-		<message>
-			<source>Completed</source>
-			<translation>مكتمل</translation>
-		</message>
-		<name>StepProgressContainer</name>
-		<message>
-			<source>Current</source>
-			<translation>حالي</translation>
-		</message>
-		<name>StepProgressContainer</name>
-		<message>
-			<source>Future incomplete steps</source>
-			<translation>خطوات مستقبلية غير مكتملة</translation>
-		</message>
-		<name>StepProgressContainer</name>
-		<message>
-			<source>Step {current} of {total}</source>
-			<translation>الخطوة {current} من {total}</translation>
-		</message>
-	</context>
-	<context>
-		<name>SyncChatToolButton</name>
-		<message>
-			<source>Please enable syncing in the wallet {wallet_id} first</source>
-			<translation>يرجى تمكين المزامنة في المحفظة {wallet_id} أولاً</translation>
-		</message>
-		<name>SyncChatToolButton</name>
-		<message>
-			<source>Please enable the sync tab first</source>
-			<translation>يرجى تمكين علامة المزامنة أولاً</translation>
-		</message>
-		<name>SyncChatToolButton</name>
-		<message>
-			<source>Share with all devices in {wallet_id}</source>
-			<translation>مشاركة مع جميع الأجهزة في {wallet_id}</translation>
-		</message>
-		<name>SyncChatToolButton</name>
-		<message>
-			<source>Share with single device</source>
-			<translation>مشاركة مع جهاز واحد</translation>
-		</message>
-		<name>SyncChatToolButton</name>
-		<message>
-			<source>Share with trusted devices</source>
-			<translation>مشاركة مع الأجهزة الموثوق بها</translation>
-		</message>
-	</context>
-	<context>
-		<name>SyncClient</name>
-		<message>
-			<source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
-			<translation>- احتفظ بنسخة احتياطية من التسميات وفئات العملات في السحابة.&lt;br&gt;- مزامنة تسمياتك وفئات العملات بين عدة أجهزة كمبيوتر. {synclink}&lt;br&gt;- وقع مع الآخرين معاملة بالتعاون، أينما كنت في العالم. {videolink}&lt;br&gt;- كل شيء مشفَّر دائماً (تعرف أكثر على {protocol_link})</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>Collaboration Video</source>
-			<translation>فيديو التعاون</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>Keep existing key</source>
-			<translation>الاحتفاظ بالمفتاح الحالي</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>Label backup and encrypted syncing to trusted devices</source>
-			<translation>نسخة احتياطية للتسميات ومزامنة مشفرة إلى الأجهزة الموثوقة</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>New computer detected</source>
-			<translation>تم اكتشاف كمبيوتر جديد</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>Open received Transactions and PSBTs</source>
-			<translation>فتح المعاملات و PSBTs المستلمة</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>Opening {name} from {author}</source>
-			<translation>فتح {name} من {author}</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>Reset sync key</source>
-			<translation>إعادة تعيين مفتاح المزامنة</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>Sync &amp; Chat</source>
-			<translation>المزامنة &amp; الدردشة</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>Synchronization Video</source>
-			<translation>فيديو المزامنة</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>This wallet was last used on another computer.
+    </message>
+</context>
+<context>
+    <name>SearchTreeView</name>
+    <message>
+        <source>Type to search...</source>
+        <translation>اكتب للبحث...</translation>
+    </message>
+</context>
+<context>
+    <name>SearchWallets</name>
+    <message>
+        <source>Spent Outputs</source>
+        <translation>المخرجات المستهلكة</translation>
+    </message>
+    <name>SearchWallets</name>
+    <message>
+        <source>UTXOs</source>
+        <translation>UTXOs</translation>
+    </message>
+</context>
+<context>
+    <name>SeedAnalyzer</name>
+    <message>
+        <source>Invalid seed</source>
+        <translation>بذور غير صالحة</translation>
+    </message>
+    <name>SeedAnalyzer</name>
+    <message>
+        <source>Missing Seed</source>
+        <translation>البذور مفقودة</translation>
+    </message>
+</context>
+<context>
+    <name>SendTest</name>
+    <message>
+        <source>Create the transaction in this card.</source>
+        <translation>أنشئ المعاملة في هذه البطاقة.</translation>
+    </message>
+    <name>SendTest</name>
+    <message>
+        <source>Self-Send Test {number}</source>
+        <translation>اختبار الإرسال إلى الذات {number}</translation>
+    </message>
+    <name>SendTest</name>
+    <message>
+        <source>Self-Send Test {number}: Verify another combination of signing devices</source>
+        <translation>اختبار الإرسال إلى الذات {number}: التحقق من مجموعة أخرى من أجهزة التوقيع</translation>
+    </message>
+    <name>SendTest</name>
+    <message>
+        <source>Sign and broadcast the transaction below.</source>
+        <translation>وقّع المعاملة أدناه وابثّها.</translation>
+    </message>
+    <name>SendTest</name>
+    <message>
+        <source>Skip {send_test_name}?</source>
+        <translation>هل تريد تخطي {send_test_name}؟</translation>
+    </message>
+    <name>SendTest</name>
+    <message>
+        <source>Waiting for the transaction to be prepared.</source>
+        <translation>بانتظار تجهيز المعاملة.</translation>
+    </message>
+    <name>SendTest</name>
+    <message>
+        <source>You made {n} outgoing transactions already. Would you like to skip {send_test_name}?</source>
+        <translation>لقد أجريت بالفعل {n} من المعاملات الصادرة. هل ترغب في تخطي {send_test_name}؟</translation>
+    </message>
+</context>
+<context>
+    <name>Settings</name>
+    <message>
+        <source>About</source>
+        <translation>حول</translation>
+    </message>
+    <name>Settings</name>
+    <message>
+        <source>General</source>
+        <translation>عام</translation>
+    </message>
+    <name>Settings</name>
+    <message>
+        <source>Network</source>
+        <translation>الشبكة</translation>
+    </message>
+</context>
+<context>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>ASCII armored message is required.</source>
+        <translation>مطلوب رسالة مدرعة بصيغة ASCII.</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Address used to sign the message</source>
+        <translation>العنوان المستخدم لتوقيع الرسالة</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Address, message and signature are required for verification.</source>
+        <translation>العنوان والرسالة والتوقيع مطلوبة للتحقق.</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Armored message is valid.</source>
+        <translation>الرسالة المدرعة صالحة.</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Base64 signature</source>
+        <translation>توقيع Base64</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Enter message</source>
+        <translation>أدخل الرسالة</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Message</source>
+        <translation>الرسالة</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Sign</source>
+        <translation>توقيع</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Signature</source>
+        <translation>التوقيع</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Signature matches the provided address.</source>
+        <translation>التوقيع يطابق العنوان المقدم.</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Verification failed.</source>
+        <translation>فشل التحقق.</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Verify</source>
+        <translation>تحقق</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Verify ASCII Armour</source>
+        <translation>التحقق من درع ASCII</translation>
+    </message>
+    <name>SignAndVerifyMessage</name>
+    <message>
+        <source>Verify PGP</source>
+        <translation>التحقق من PGP</translation>
+    </message>
+</context>
+<context>
+    <name>SignMessage</name>
+    <message>
+        <source>Enter message to be signed at {bip32_path}</source>
+        <translation>أدخل الرسالة للتوقيع عند {bip32_path}</translation>
+    </message>
+    <name>SignMessage</name>
+    <message>
+        <source>Sign message</source>
+        <translation>توقيع الرسالة</translation>
+    </message>
+</context>
+<context>
+    <name>SignMessageBase</name>
+    <message>
+        <source>1. Scan QR code with hardware signer</source>
+        <translation>1. امسح رمز QR باستخدام جهاز التوقيع العتادي</translation>
+    </message>
+    <name>SignMessageBase</name>
+    <message>
+        <source>2. Detect signed message</source>
+        <translation>2. اكتشاف الرسالة الموقّعة</translation>
+    </message>
+    <name>SignMessageBase</name>
+    <message>
+        <source>Could not determine the derivation path for the provided address.</source>
+        <translation>تعذر تحديد مسار الاشتقاق للعنوان المقدم.</translation>
+    </message>
+    <name>SignMessageBase</name>
+    <message>
+        <source>Message too short.</source>
+        <translation>الرسالة قصيرة جداً.</translation>
+    </message>
+    <name>SignMessageBase</name>
+    <message>
+        <source>Once you signed the message, your hardware signer will provide a second QR code you can scan from this computer</source>
+        <translation>بعد توقيعك للرسالة، سيوفر جهاز التوقيع العتادي رمز QR ثانياً يمكنك مسحه من هذا الكمبيوتر</translation>
+    </message>
+    <name>SignMessageBase</name>
+    <message>
+        <source>Scan QR code</source>
+        <translation>مسح رمز الاستجابة السريعة</translation>
+    </message>
+    <name>SignMessageBase</name>
+    <message>
+        <source>Sign</source>
+        <translation>توقيع</translation>
+    </message>
+    <name>SignMessageBase</name>
+    <message>
+        <source>Signed Message</source>
+        <translation>رسالة موقعة</translation>
+    </message>
+    <name>SignMessageBase</name>
+    <message>
+        <source>The signature proves control of one key only, not of a multisig address.</source>
+        <translation>يثبت التوقيع التحكم في مفتاح واحد فقط، وليس في عنوان متعدد التوقيعات.</translation>
+    </message>
+</context>
+<context>
+    <name>SignatureImporterClipboard</name>
+    <message>
+        <source>Import signed PSBT</source>
+        <translation>استيراد موقعة PSBT</translation>
+    </message>
+    <name>SignatureImporterClipboard</name>
+    <message>
+        <source>OK</source>
+        <translation>نعم</translation>
+    </message>
+    <name>SignatureImporterClipboard</name>
+    <message>
+        <source>Paste your PSBT in here or drop a file</source>
+        <translation>الصق PSBT الخاص بك هنا أو قم بإسقاط ملف</translation>
+    </message>
+    <name>SignatureImporterClipboard</name>
+    <message>
+        <source>Please paste your PSBT in here, or drop a file</source>
+        <translation>يرجى لصق PSBT الخاص بك هنا، أو إسقاط ملف</translation>
+    </message>
+</context>
+<context>
+    <name>SignatureImporterFile</name>
+    <message>
+        <source>Import signed PSBT</source>
+        <translation>استيراد موقعة PSBT</translation>
+    </message>
+    <name>SignatureImporterFile</name>
+    <message>
+        <source>OK</source>
+        <translation>نعم</translation>
+    </message>
+    <name>SignatureImporterFile</name>
+    <message>
+        <source>Paste your PSBT in here or drop a file</source>
+        <translation>الصق PSBT الخاص بك هنا أو قم بإسقاط ملف</translation>
+    </message>
+    <name>SignatureImporterFile</name>
+    <message>
+        <source>Please paste your PSBT in here, or drop a file</source>
+        <translation>يرجى لصق PSBT الخاص بك هنا، أو إسقاط ملف</translation>
+    </message>
+</context>
+<context>
+    <name>SignatureImporterQR</name>
+    <message>
+        <source>Could not recognize the input. Do you want to scan again?</source>
+        <translation>تعذّر التعرّف على الإدخال. هل تريد المسح مرة أخرى؟</translation>
+    </message>
+    <name>SignatureImporterQR</name>
+    <message>
+        <source>Scan QR code</source>
+        <translation>مسح رمز الاستجابة السريعة</translation>
+    </message>
+</context>
+<context>
+    <name>SignatureImporterUSB</name>
+    <message>
+        <source>Please do &apos;Wallet --&gt; Export --&gt; Export for ...&apos; and register the multisignature wallet on the hardware signer.</source>
+        <translation>يرجى القيام بـ &quot;المحفظة --&gt; تصدير --&gt; تصدير لـ...&quot; وتسجيل المحفظة متعددة التوقيع على موقع الجهاز.</translation>
+    </message>
+    <name>SignatureImporterUSB</name>
+    <message>
+        <source>USB and Bluetooth</source>
+        <translation>USB وBluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>SignatureImporterWallet</name>
+    <message>
+        <source>The PSBT contains inconsistent UTXO data. Refusing to sign this malformed PSBT.</source>
+        <translation>تحتوي معاملة PSBT على بيانات UTXO غير متسقة. تم رفض توقيع معاملة PSBT غير الصالحة هذه.</translation>
+    </message>
+    <name>SignatureImporterWallet</name>
+    <message>
+        <source>The PSBT requests a non-standard sighash. Refusing to sign this malformed PSBT.</source>
+        <translation>تطلب معاملة PSBT قيمة sighash غير قياسية. تم رفض توقيع معاملة PSBT غير الصالحة هذه.</translation>
+    </message>
+    <name>SignatureImporterWallet</name>
+    <message>
+        <source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
+        <translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي. الإجهاض</translation>
+    </message>
+</context>
+<context>
+    <name>SourceCatalogItem</name>
+    <message>
+        <source>Available version: {version}</source>
+        <translation>الإصدار المتاح: {version}</translation>
+    </message>
+    <name>SourceCatalogItem</name>
+    <message>
+        <source>Install {version}</source>
+        <translation>ثبّت {version}</translation>
+    </message>
+    <name>SourceCatalogItem</name>
+    <message>
+        <source>Installed version: {version}</source>
+        <translation>الإصدار المثبّت: {version}</translation>
+    </message>
+    <name>SourceCatalogItem</name>
+    <message>
+        <source>Installed {installed}; update available: {available}</source>
+        <translation>مثبّت {installed}؛ يتوفر تحديث: {available}</translation>
+    </message>
+    <name>SourceCatalogItem</name>
+    <message>
+        <source>Latest {version}</source>
+        <translation>الأحدث {version}</translation>
+    </message>
+    <name>SourceCatalogItem</name>
+    <message>
+        <source>Reinstall {version}</source>
+        <translation>إعادة تثبيت {version}</translation>
+    </message>
+    <name>SourceCatalogItem</name>
+    <message>
+        <source>Update to {available}</source>
+        <translation>حدّث إلى {available}</translation>
+    </message>
+    <name>SourceCatalogItem</name>
+    <message>
+        <source>Version {installed} -&gt; {available}</source>
+        <translation>الإصدار {installed} -&gt; {available}</translation>
+    </message>
+    <name>SourceCatalogItem</name>
+    <message>
+        <source>Version {version}</source>
+        <translation>الإصدار {version}</translation>
+    </message>
+</context>
+<context>
+    <name>SourceCatalogItemWidget</name>
+    <message>
+        <source>Delete Plugin</source>
+        <translation>حذف الإضافة</translation>
+    </message>
+</context>
+<context>
+    <name>SourceManagementDialog</name>
+    <message>
+        <source>Add Plugin Source...</source>
+        <translation>إضافة مصدر إضافات...</translation>
+    </message>
+    <name>SourceManagementDialog</name>
+    <message>
+        <source>Close</source>
+        <translation>إغلاق</translation>
+    </message>
+    <name>SourceManagementDialog</name>
+    <message>
+        <source>Configured plugin sources</source>
+        <translation>مصادر الإضافات المُهيّأة</translation>
+    </message>
+    <name>SourceManagementDialog</name>
+    <message>
+        <source>No plugin sources added yet.</source>
+        <translation>لم تتم إضافة أي مصادر إضافات بعد.</translation>
+    </message>
+    <name>SourceManagementDialog</name>
+    <message>
+        <source>Plugin Sources</source>
+        <translation>مصادر الإضافات</translation>
+    </message>
+    <name>SourceManagementDialog</name>
+    <message>
+        <source>Recheck Installed Plugins</source>
+        <translation>إعادة فحص الإضافات المثبّتة</translation>
+    </message>
+</context>
+<context>
+    <name>StepProgressContainer</name>
+    <message>
+        <source>Completed</source>
+        <translation>مكتمل</translation>
+    </message>
+    <name>StepProgressContainer</name>
+    <message>
+        <source>Current</source>
+        <translation>حالي</translation>
+    </message>
+    <name>StepProgressContainer</name>
+    <message>
+        <source>Future incomplete steps</source>
+        <translation>خطوات مستقبلية غير مكتملة</translation>
+    </message>
+    <name>StepProgressContainer</name>
+    <message>
+        <source>Step {current} of {total}</source>
+        <translation>الخطوة {current} من {total}</translation>
+    </message>
+</context>
+<context>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Please enable syncing in the wallet {wallet_id} first</source>
+        <translation>يرجى تمكين المزامنة في المحفظة {wallet_id} أولاً</translation>
+    </message>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Please enable the sync tab first</source>
+        <translation>يرجى تمكين علامة المزامنة أولاً</translation>
+    </message>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Share with all devices in {wallet_id}</source>
+        <translation>مشاركة مع جميع الأجهزة في {wallet_id}</translation>
+    </message>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Share with single device</source>
+        <translation>مشاركة مع جهاز واحد</translation>
+    </message>
+    <name>SyncChatToolButton</name>
+    <message>
+        <source>Share with trusted devices</source>
+        <translation>مشاركة مع الأجهزة الموثوق بها</translation>
+    </message>
+</context>
+<context>
+    <name>SyncClient</name>
+    <message>
+        <source>- Backup your labels and coin categories in the cloud.&lt;br&gt;- Synchronize your labels and coin categories between multiple computers. {synclink}&lt;br&gt;- Sign a transaction with others collaboratively, no matter where you are in the world. {videolink}&lt;br&gt;- Everything is always encrypted (learn more about the {protocol_link})</source>
+        <translation>- احتفظ بنسخة احتياطية من التسميات وفئات العملات في السحابة.&lt;br&gt;- مزامنة تسمياتك وفئات العملات بين عدة أجهزة كمبيوتر. {synclink}&lt;br&gt;- وقع مع الآخرين معاملة بالتعاون، أينما كنت في العالم. {videolink}&lt;br&gt;- كل شيء مشفَّر دائماً (تعرف أكثر على {protocol_link})</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>Collaboration Video</source>
+        <translation>فيديو التعاون</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>Keep existing key</source>
+        <translation>الاحتفاظ بالمفتاح الحالي</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>Label backup and encrypted syncing to trusted devices</source>
+        <translation>نسخة احتياطية للتسميات ومزامنة مشفرة إلى الأجهزة الموثوقة</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>New computer detected</source>
+        <translation>تم اكتشاف كمبيوتر جديد</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>Open received Transactions and PSBTs</source>
+        <translation>فتح المعاملات و PSBTs المستلمة</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>Opening {name} from {author}</source>
+        <translation>فتح {name} من {author}</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>Reset sync key</source>
+        <translation>إعادة تعيين مفتاح المزامنة</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>Sync &amp; Chat</source>
+        <translation>المزامنة &amp; الدردشة</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>Synchronization Video</source>
+        <translation>فيديو المزامنة</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>This wallet was last used on another computer.
 If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec) now.</source>
-			<translation>تم استخدام هذه المحفظة آخر مرة على كمبيوتر آخر.
+        <translation>تم استخدام هذه المحفظة آخر مرة على كمبيوتر آخر.
 إذا كنت تريد الاستمرار في استخدام كليهما، يرجى إعادة تعيين مفتاح مزامنة الدردشة والمزامنة (nsec) الآن.</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>protocol</source>
-			<translation>البروتوكول</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>this computer</source>
-			<translation>هذا الكمبيوتر</translation>
-		</message>
-		<name>SyncClient</name>
-		<message>
-			<source>{author}: {description}</source>
-			<translation>{author}: {description}</translation>
-		</message>
-	</context>
-	<context>
-		<name>SyncTab</name>
-		<message>
-			<source>Label backup and encrypted syncing to trusted devices</source>
-			<translation>نسخة احتياطية للتسميات ومزامنة مشفرة إلى الأجهزة الموثوقة</translation>
-		</message>
-		<name>SyncTab</name>
-		<message>
-			<source>Open received Transactions and PSBTs</source>
-			<translation>فتح المعاملات و PSBTs المستلمة</translation>
-		</message>
-		<name>SyncTab</name>
-		<message>
-			<source>Opening {name} from {author}</source>
-			<translation>فتح {name} من {author}</translation>
-		</message>
-		<name>SyncTab</name>
-		<message>
-			<source>{author}: {description}</source>
-			<translation>{author}: {description}</translation>
-		</message>
-	</context>
-	<context>
-		<name>TooSmallGapLimitWarningBar</name>
-		<message>
-			<source>Gap limit may be too small.</source>
-			<translation>قد يكون حد الفجوة صغيرًا جدًا.</translation>
-		</message>
-		<name>TooSmallGapLimitWarningBar</name>
-		<message>
-			<source>Increase gap limit</source>
-			<translation>زيادة حد الفجوة</translation>
-		</message>
-		<name>TooSmallGapLimitWarningBar</name>
-		<message>
-			<source>Increase gap limit to {gap}</source>
-			<translation>زيادة حد الفجوة إلى {gap}</translation>
-		</message>
-	</context>
-	<context>
-		<name>ToolGui</name>
-		<message>
-			<source>Account index: </source>
-			<translation>فهرس الحساب: </translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Address index</source>
-			<translation>مؤشر العنوان</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Display Address</source>
-			<translation>عرض العنوان</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Get xpubs</source>
-			<translation>احصل على xpubs</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Install udev rules</source>
-			<translation>تثبيت قواعد udev</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>PSBT</source>
-			<translation>PSBT</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Paste your PSBT in here</source>
-			<translation>الصق PSBT الخاص بك هنا</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Paste your address descriptor, .e.g. wpkh([fingerprint/84'/0'/0']xpub/0/0)</source>
-			<translation>ألصق واصف العنوان الخاص بك، على سبيل المثال wpkh([fingerprint/84'/0'/0']xpub/0/0)</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Paste your text to be signed</source>
-			<translation>الصق نصك للتوقيع</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Show Seed</source>
-			<translation>عرض البذور</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Sign Message</source>
-			<translation>توقيع رسالة</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Sign PSBT</source>
-			<translation>توقيع PSBT</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>USB Signer Tools</source>
-			<translation>أدوات موقع USB</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Unlock</source>
-			<translation>فك القفل</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Unlock Devices</source>
-			<translation>فتح الأجهزة</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>Wipe Device</source>
-			<translation>مسح الجهاز</translation>
-		</message>
-		<name>ToolGui</name>
-		<message>
-			<source>XPUBs</source>
-			<translation>XPUBs</translation>
-		</message>
-	</context>
-	<context>
-		<name>TrackingChartView</name>
-		<message>
-			<source>Reset zoom</source>
-			<translation>إعادة تعيين التكبير</translation>
-		</message>
-	</context>
-	<context>
-		<name>TrayController</name>
-		<message>
-			<source>&amp;Exit</source>
-			<translation>&amp;خروج</translation>
-		</message>
-		<name>TrayController</name>
-		<message>
-			<source>&amp;Lock and minimize to tray</source>
-			<translation>&amp;قفل وتصغير إلى شريط النظام</translation>
-		</message>
-		<name>TrayController</name>
-		<message>
-			<source>Clear notifications</source>
-			<translation>مسح الإشعارات</translation>
-		</message>
-		<name>TrayController</name>
-		<message>
-			<source>Minimize to tray</source>
-			<translation>تصغير إلى شريط النظام</translation>
-		</message>
-		<name>TrayController</name>
-		<message>
-			<source>No notifications</source>
-			<translation>لا توجد إشعارات</translation>
-		</message>
-		<name>TrayController</name>
-		<message>
-			<source>Notifications hidden while app is locked</source>
-			<translation>الإشعارات مخفية أثناء قفل التطبيق</translation>
-		</message>
-		<name>TrayController</name>
-		<message>
-			<source>Past notifications</source>
-			<translation>الإشعارات السابقة</translation>
-		</message>
-		<name>TrayController</name>
-		<message>
-			<source>Show</source>
-			<translation>إظهار</translation>
-		</message>
-		<name>TrayController</name>
-		<message>
-			<source>Unlock to show</source>
-			<translation>افتح القفل للإظهار</translation>
-		</message>
-	</context>
-	<context>
-		<name>TrustedDeviceItem</name>
-		<message>
-			<source>Untrust device</source>
-			<translation>جهاز غير موثوق</translation>
-		</message>
-	</context>
-	<context>
-		<name>TxExport</name>
-		<message>
-			<source>Export Transaction</source>
-			<translation>تصدير المعاملة</translation>
-		</message>
-	</context>
-	<context>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>1. Scan QR code with hardware signer</source>
-			<translation>1. امسح رمز QR باستخدام جهاز التوقيع العتادي</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>2. Scan signed PSBT</source>
-			<translation>2. مسح PSBT الموقّع</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Collapse</source>
-			<translation>طي</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Detect Device</source>
-			<translation>اكتشاف الجهاز</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Export / Import</source>
-			<translation>تصدير / استيراد</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Keep ready for test {number}</source>
-			<translation>أبقِه جاهزًا للاختبار {number}</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
-			<translation>بعد توقيعك لـ PSBT، سيوفر جهاز التوقيع العتادي رمز QR ثانياً يمكنك مسحه من هذا الكمبيوتر</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Scan QR code</source>
-			<translation>مسح رمز الاستجابة السريعة</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Share with...</source>
-			<translation>مشاركة مع...</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Show QR Code</source>
-			<translation>إظهار رمز QR</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Sign now</source>
-			<translation>وقّع الآن</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Sign via Bluetooth</source>
-			<translation>وقّع عبر Bluetooth</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Sign via Chat&amp;Sync</source>
-			<translation>وقّع عبر Chat&amp;Sync</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Sign via File</source>
-			<translation>وقّع عبر ملف</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Sign via QR</source>
-			<translation>وقّع عبر QR</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Sign via USB</source>
-			<translation>وقّع عبر USB</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Sign with this device</source>
-			<translation>وقّع بهذا الجهاز</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Signed</source>
-			<translation>تم التوقيع</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Test verified</source>
-			<translation>تم التحقق من الاختبار</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>This signer is needed in send test {number}. Do not sign with it yet.</source>
-			<translation>هذا الموقّع مطلوب في اختبار الإرسال {number}. لا توقّع به بعد.</translation>
-		</message>
-		<name>TxSigningDeviceCard</name>
-		<message>
-			<source>Use Wallet Seed</source>
-			<translation>استخدام Seed المحفظة</translation>
-		</message>
-	</context>
-	<context>
-		<name>TxSigningSteps</name>
-		<message>
-			<source>Signature {n}</source>
-			<translation>التوقيع {n}</translation>
-		</message>
-		<name>TxSigningSteps</name>
-		<message>
-			<source>Signing Device</source>
-			<translation>جهاز التوقيع</translation>
-		</message>
-	</context>
-	<context>
-		<name>TxidLabel</name>
-		<message>
-			<source>Copy transaction ID</source>
-			<translation>نسخ معرف المعاملة</translation>
-		</message>
-		<name>TxidLabel</name>
-		<message>
-			<source>Transaction ID</source>
-			<translation>معرف المعاملة</translation>
-		</message>
-		<name>TxidLabel</name>
-		<message>
-			<source>Txid: </source>
-			<translation>Txid: </translation>
-		</message>
-		<name>TxidLabel</name>
-		<message>
-			<source>View on block explorer</source>
-			<translation>عرض على كتلة اكسبلورر</translation>
-		</message>
-	</context>
-	<context>
-		<name>UI</name>
-		<message>
-			<source>Export sync key</source>
-			<translation>تصدير مفتاح المزامنة</translation>
-		</message>
-		<name>UI</name>
-		<message>
-			<source>Import sync key</source>
-			<translation>استيراد مفتاح المزامنة</translation>
-		</message>
-		<name>UI</name>
-		<message>
-			<source>My Device: {id}</source>
-			<translation>جهازي: {id}</translation>
-		</message>
-		<name>UI</name>
-		<message>
-			<source>Reset sync key</source>
-			<translation>إعادة تعيين مفتاح المزامنة</translation>
-		</message>
-		<name>UI</name>
-		<message>
-			<source>Set custom Relay list</source>
-			<translation>تعيين قائمة تتابع مخصصة</translation>
-		</message>
-		<name>UI</name>
-		<message>
-			<source>Sync key Export</source>
-			<translation>تصدير مفتاح المزامنة</translation>
-		</message>
-		<name>UI</name>
-		<message>
-			<source>Your sync key is:
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>protocol</source>
+        <translation>البروتوكول</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>this computer</source>
+        <translation>هذا الكمبيوتر</translation>
+    </message>
+    <name>SyncClient</name>
+    <message>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}</translation>
+    </message>
+</context>
+<context>
+    <name>SyncTab</name>
+    <message>
+        <source>Label backup and encrypted syncing to trusted devices</source>
+        <translation>نسخة احتياطية للتسميات ومزامنة مشفرة إلى الأجهزة الموثوقة</translation>
+    </message>
+    <name>SyncTab</name>
+    <message>
+        <source>Open received Transactions and PSBTs</source>
+        <translation>فتح المعاملات و PSBTs المستلمة</translation>
+    </message>
+    <name>SyncTab</name>
+    <message>
+        <source>Opening {name} from {author}</source>
+        <translation>فتح {name} من {author}</translation>
+    </message>
+    <name>SyncTab</name>
+    <message>
+        <source>{author}: {description}</source>
+        <translation>{author}: {description}</translation>
+    </message>
+</context>
+<context>
+    <name>TooSmallGapLimitWarningBar</name>
+    <message>
+        <source>Gap limit may be too small.</source>
+        <translation>قد يكون حد الفجوة صغيرًا جدًا.</translation>
+    </message>
+    <name>TooSmallGapLimitWarningBar</name>
+    <message>
+        <source>Increase gap limit</source>
+        <translation>زيادة حد الفجوة</translation>
+    </message>
+    <name>TooSmallGapLimitWarningBar</name>
+    <message>
+        <source>Increase gap limit to {gap}</source>
+        <translation>زيادة حد الفجوة إلى {gap}</translation>
+    </message>
+</context>
+<context>
+    <name>ToolGui</name>
+    <message>
+        <source>Account index: </source>
+        <translation>فهرس الحساب: </translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Address index</source>
+        <translation>مؤشر العنوان</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Display Address</source>
+        <translation>عرض العنوان</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Get xpubs</source>
+        <translation>احصل على xpubs</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Install udev rules</source>
+        <translation>تثبيت قواعد udev</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>PSBT</source>
+        <translation>PSBT</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Paste your PSBT in here</source>
+        <translation>الصق PSBT الخاص بك هنا</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Paste your address descriptor, .e.g. wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</source>
+        <translation>ألصق واصف العنوان الخاص بك، على سبيل المثال wpkh([fingerprint/84&apos;/0&apos;/0&apos;]xpub/0/0)</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Paste your text to be signed</source>
+        <translation>الصق نصك للتوقيع</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Show Seed</source>
+        <translation>عرض البذور</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Sign Message</source>
+        <translation>توقيع رسالة</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Sign PSBT</source>
+        <translation>توقيع PSBT</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>USB Signer Tools</source>
+        <translation>أدوات موقع USB</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Unlock</source>
+        <translation>فك القفل</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Unlock Devices</source>
+        <translation>فتح الأجهزة</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>Wipe Device</source>
+        <translation>مسح الجهاز</translation>
+    </message>
+    <name>ToolGui</name>
+    <message>
+        <source>XPUBs</source>
+        <translation>XPUBs</translation>
+    </message>
+</context>
+<context>
+    <name>TrackingChartView</name>
+    <message>
+        <source>Reset zoom</source>
+        <translation>إعادة تعيين التكبير</translation>
+    </message>
+</context>
+<context>
+    <name>TrayController</name>
+    <message>
+        <source>&amp;Exit</source>
+        <translation>&amp;خروج</translation>
+    </message>
+    <name>TrayController</name>
+    <message>
+        <source>&amp;Lock and minimize to tray</source>
+        <translation>&amp;قفل وتصغير إلى شريط النظام</translation>
+    </message>
+    <name>TrayController</name>
+    <message>
+        <source>Clear notifications</source>
+        <translation>مسح الإشعارات</translation>
+    </message>
+    <name>TrayController</name>
+    <message>
+        <source>Minimize to tray</source>
+        <translation>تصغير إلى شريط النظام</translation>
+    </message>
+    <name>TrayController</name>
+    <message>
+        <source>No notifications</source>
+        <translation>لا توجد إشعارات</translation>
+    </message>
+    <name>TrayController</name>
+    <message>
+        <source>Notifications hidden while app is locked</source>
+        <translation>الإشعارات مخفية أثناء قفل التطبيق</translation>
+    </message>
+    <name>TrayController</name>
+    <message>
+        <source>Past notifications</source>
+        <translation>الإشعارات السابقة</translation>
+    </message>
+    <name>TrayController</name>
+    <message>
+        <source>Show</source>
+        <translation>إظهار</translation>
+    </message>
+    <name>TrayController</name>
+    <message>
+        <source>Unlock to show</source>
+        <translation>افتح القفل للإظهار</translation>
+    </message>
+</context>
+<context>
+    <name>TrustedDeviceItem</name>
+    <message>
+        <source>Untrust device</source>
+        <translation>جهاز غير موثوق</translation>
+    </message>
+</context>
+<context>
+    <name>TxExport</name>
+    <message>
+        <source>Export Transaction</source>
+        <translation>تصدير المعاملة</translation>
+    </message>
+</context>
+<context>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>1. Scan QR code with hardware signer</source>
+        <translation>1. امسح رمز QR باستخدام جهاز التوقيع العتادي</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>2. Scan signed PSBT</source>
+        <translation>2. مسح PSBT الموقّع</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Collapse</source>
+        <translation>طي</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Detect Device</source>
+        <translation>اكتشاف الجهاز</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Export / Import</source>
+        <translation>تصدير / استيراد</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Keep ready for test {number}</source>
+        <translation>أبقِه جاهزًا للاختبار {number}</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Once you signed the PSBT, your hardware signer will provide a second QR code you can scan from this computer</source>
+        <translation>بعد توقيعك لـ PSBT، سيوفر جهاز التوقيع العتادي رمز QR ثانياً يمكنك مسحه من هذا الكمبيوتر</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Scan QR code</source>
+        <translation>مسح رمز الاستجابة السريعة</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Share with...</source>
+        <translation>مشاركة مع...</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Show QR Code</source>
+        <translation>إظهار رمز QR</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Sign now</source>
+        <translation>وقّع الآن</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Sign via Bluetooth</source>
+        <translation>وقّع عبر Bluetooth</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Sign via Chat&amp;Sync</source>
+        <translation>وقّع عبر Chat&amp;Sync</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Sign via File</source>
+        <translation>وقّع عبر ملف</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Sign via QR</source>
+        <translation>وقّع عبر QR</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Sign via USB</source>
+        <translation>وقّع عبر USB</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Sign with this device</source>
+        <translation>وقّع بهذا الجهاز</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Signed</source>
+        <translation>تم التوقيع</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Test verified</source>
+        <translation>تم التحقق من الاختبار</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>This signer is needed in send test {number}. Do not sign with it yet.</source>
+        <translation>هذا الموقّع مطلوب في اختبار الإرسال {number}. لا توقّع به بعد.</translation>
+    </message>
+    <name>TxSigningDeviceCard</name>
+    <message>
+        <source>Use Wallet Seed</source>
+        <translation>استخدام Seed المحفظة</translation>
+    </message>
+</context>
+<context>
+    <name>TxSigningSteps</name>
+    <message>
+        <source>Signature {n}</source>
+        <translation>التوقيع {n}</translation>
+    </message>
+    <name>TxSigningSteps</name>
+    <message>
+        <source>Signing Device</source>
+        <translation>جهاز التوقيع</translation>
+    </message>
+</context>
+<context>
+    <name>TxidLabel</name>
+    <message>
+        <source>Copy transaction ID</source>
+        <translation>نسخ معرف المعاملة</translation>
+    </message>
+    <name>TxidLabel</name>
+    <message>
+        <source>Transaction ID</source>
+        <translation>معرف المعاملة</translation>
+    </message>
+    <name>TxidLabel</name>
+    <message>
+        <source>Txid: </source>
+        <translation>Txid: </translation>
+    </message>
+    <name>TxidLabel</name>
+    <message>
+        <source>View on block explorer</source>
+        <translation>عرض على كتلة اكسبلورر</translation>
+    </message>
+</context>
+<context>
+    <name>UI</name>
+    <message>
+        <source>Export sync key</source>
+        <translation>تصدير مفتاح المزامنة</translation>
+    </message>
+    <name>UI</name>
+    <message>
+        <source>Import sync key</source>
+        <translation>استيراد مفتاح المزامنة</translation>
+    </message>
+    <name>UI</name>
+    <message>
+        <source>My Device: {id}</source>
+        <translation>جهازي: {id}</translation>
+    </message>
+    <name>UI</name>
+    <message>
+        <source>Reset sync key</source>
+        <translation>إعادة تعيين مفتاح المزامنة</translation>
+    </message>
+    <name>UI</name>
+    <message>
+        <source>Set custom Relay list</source>
+        <translation>تعيين قائمة تتابع مخصصة</translation>
+    </message>
+    <name>UI</name>
+    <message>
+        <source>Sync key Export</source>
+        <translation>تصدير مفتاح المزامنة</translation>
+    </message>
+    <name>UI</name>
+    <message>
+        <source>Your sync key is:
 
 {sync_key}
 
- Save it, and when you click 'import sync key', it should restore your labels from the nostr relays.</source>
-			<translation>مفتاح المزامنة الخاص بك هو:
+ Save it, and when you click &apos;import sync key&apos;, it should restore your labels from the nostr relays.</source>
+        <translation>مفتاح المزامنة الخاص بك هو:
 {sync_key}
-احفظه، وعندما تنقر على 'استيراد مفتاح المزامنة'، يجب أن يستعيد تسمياتك من ترحيلات nostr.</translation>
-		</message>
-	</context>
-	<context>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Add Inputs</source>
-			<translation>إضافة المدخلات</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Additional inputs may be added 
+احفظه، وعندما تنقر على &apos;استيراد مفتاح المزامنة&apos;، يجب أن يستعيد تسمياتك من ترحيلات nostr.</translation>
+    </message>
+</context>
+<context>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Add Inputs</source>
+        <translation>إضافة المدخلات</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Additional inputs may be added 
 below {rate} to consolidate UTXOs and reduce future fees</source>
-			<translation>قد تُضاف  مدخلات إضافية دون {rate} لدمج UTXO وتقليل الرسوم المستقبلية</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Back</source>
-			<translation>رجوع</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Change fee rate</source>
-			<translation>غيّر معدل الرسوم</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Create</source>
-			<translation>إنشاء</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Do you want to continue, even though both coin categories become linkable?</source>
-			<translation>هل ترغب في الاستمرار، على الرغم من أن كلا فئتي العملات تصبح قابلة للربط؟</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Fee rate too low</source>
-			<translation>معدل الرسوم منخفض جدًا</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Keep fee rate</source>
-			<translation>الإبقاء على معدل الرسوم</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Load UTXOs</source>
-			<translation>تحميل UTXOs</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please change the fee rate to be at least {minimum},
+        <translation>قد تُضاف  مدخلات إضافية دون {rate} لدمج UTXO وتقليل الرسوم المستقبلية</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Back</source>
+        <translation>رجوع</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Change fee rate</source>
+        <translation>غيّر معدل الرسوم</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Create</source>
+        <translation>إنشاء</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Do you want to continue, even though both coin categories become linkable?</source>
+        <translation>هل ترغب في الاستمرار، على الرغم من أن كلا فئتي العملات تصبح قابلة للربط؟</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Fee rate too low</source>
+        <translation>معدل الرسوم منخفض جدًا</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Keep fee rate</source>
+        <translation>الإبقاء على معدل الرسوم</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Load UTXOs</source>
+        <translation>تحميل UTXOs</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Please change the fee rate to be at least {minimum},
 otherwise you may not be able to broadcast it.</source>
-			<translation>يرجى تغيير معدل الرسوم ليكون على الأقل {minimum}، وإلا قد لا تتمكن من بثّ المعاملة.</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here</source>
-			<translation>من فضلك قم بلصق UTXO هنا</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
+        <translation>يرجى تغيير معدل الرسوم ليكون على الأقل {minimum}، وإلا قد لا تتمكن من بثّ المعاملة.</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Please paste UTXO here</source>
+        <translation>من فضلك قم بلصق UTXO هنا</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Please paste UTXO here in the format  txid:outpoint
 txid:outpoint</source>
-			<translation>يرجى لصق UTXO هنا بالتنسيق txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please select an input category on the left, that fits the transaction recipients.</source>
-			<translation>يرجى تحديد فئة الإدخال على اليسار، والتي تناسب مستلمي المعاملة.</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Reduce future fees by merging UTXOs below {rate}</source>
-			<translation>خفِّض الرسوم المستقبلية بدمج UTXO دون {rate}</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
-			<translation>اختر واحداً أو أكثر من UTXO من القائمة على اليسار، أو قم بإلغاء تحديد “اختر UTXOs محددة” أعلاه لتمكين {app_name} من اختيار أفضل العملات لمعاملتك.</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
-			<translation>تتعارض المدخلات {inputs} مع txids المؤكدة {txids}.</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
-			<translation>ستتم إزالة المعاملات التابعة غير المؤكدة {txids} بواسطة هذه المعاملة الجديدة التي تقوم بإنشائها.</translation>
-		</message>
-	</context>
-	<context>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href="{url}"&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
-			<translation>&lt;p&gt;انتهت مهلة طلب البث. قد يحدث ذلك عندما تكون رسوم المعاملة منخفضة جدًا أو عندما تكون المعاملة قد بُثت بالفعل.&lt;/p&gt;&lt;p&gt;تحقق مما إذا كانت قد بُثت: &lt;a href="{url}"&gt;عرض في مستكشف الكتل&lt;/a&gt;. إذا لم تكن مدرجة، فقد يلزم زيادة الرسوم قبل إعادة المحاولة.&lt;/p&gt;</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Back</source>
-			<translation>رجوع</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Broadcast status unknown</source>
-			<translation>حالة البث غير معروفة</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Could not broadcast transaction</source>
-			<translation>تعذر بث المعاملة</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Import file</source>
-			<translation>استيراد ملف</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Label: </source>
-			<translation>التسمية: </translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Not all necessary transaction details are available for RBF</source>
-			<translation>ليست كل تفاصيل المعاملة الضرورية متاحة لـ RBF</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>PSBT {txid}</source>
-			<translation>PSBT {txid}</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Please open a wallet first to broadcast the transaction.
+        <translation>يرجى لصق UTXO هنا بالتنسيق txid:outpoint txid:outpoint</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Please select an input category on the left, that fits the transaction recipients.</source>
+        <translation>يرجى تحديد فئة الإدخال على اليسار، والتي تناسب مستلمي المعاملة.</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Reduce future fees by merging UTXOs below {rate}</source>
+        <translation>خفِّض الرسوم المستقبلية بدمج UTXO دون {rate}</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>Select one or more UTXOs from the list on the left, or uncheck &quot;Select specific UTXOs&quot; above to let {app_name} pick the best coins for your transaction.</source>
+        <translation>اختر واحداً أو أكثر من UTXO من القائمة على اليسار، أو قم بإلغاء تحديد “اختر UTXOs محددة” أعلاه لتمكين {app_name} من اختيار أفضل العملات لمعاملتك.</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>The inputs {inputs} conflict with these confirmed txids {txids}.</source>
+        <translation>تتعارض المدخلات {inputs} مع txids المؤكدة {txids}.</translation>
+    </message>
+    <name>UITx_Creator</name>
+    <message>
+        <source>The unconfirmed dependent transactions {txids} will be removed by this new transaction you are creating.</source>
+        <translation>ستتم إزالة المعاملات التابعة غير المؤكدة {txids} بواسطة هذه المعاملة الجديدة التي تقوم بإنشائها.</translation>
+    </message>
+</context>
+<context>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>&lt;p&gt;The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast.&lt;/p&gt;&lt;p&gt;Check whether it was broadcast: &lt;a href=&quot;{url}&quot;&gt;View in block explorer&lt;/a&gt;. If it is not listed, the fee may need to be increased before retrying.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;انتهت مهلة طلب البث. قد يحدث ذلك عندما تكون رسوم المعاملة منخفضة جدًا أو عندما تكون المعاملة قد بُثت بالفعل.&lt;/p&gt;&lt;p&gt;تحقق مما إذا كانت قد بُثت: &lt;a href=&quot;{url}&quot;&gt;عرض في مستكشف الكتل&lt;/a&gt;. إذا لم تكن مدرجة، فقد يلزم زيادة الرسوم قبل إعادة المحاولة.&lt;/p&gt;</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Back</source>
+        <translation>رجوع</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Broadcast status unknown</source>
+        <translation>حالة البث غير معروفة</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Could not broadcast transaction</source>
+        <translation>تعذر بث المعاملة</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Import file</source>
+        <translation>استيراد ملف</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Label: </source>
+        <translation>التسمية: </translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Not all necessary transaction details are available for RBF</source>
+        <translation>ليست كل تفاصيل المعاملة الضرورية متاحة لـ RBF</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>PSBT {txid}</source>
+        <translation>PSBT {txid}</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Please open a wallet first to broadcast the transaction.
 Or you can broadcast via {url}</source>
-			<translation>يُرجى فتح محفظة أولًا لبثّ المعاملة.
+        <translation>يُرجى فتح محفظة أولًا لبثّ المعاملة.
 أو يمكنك البث عبر {url}</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Please remove the existing local transaction of the wallet first.</source>
-			<translation>يرجى إزالة المعاملة المحلية الموجودة في المحفظة أولاً.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>SVG</source>
-			<translation>SVG</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Save in wallet</source>
-			<translation>احفظ في المحفظة</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Send</source>
-			<translation>يرسل</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
-			<translation>انتهت مهلة طلب البث. قد يحدث ذلك عندما تكون رسوم المعاملة منخفضة جدًا أو عندما تكون المعاملة قد بُثت بالفعل. إذا لم تكن المعاملة مدرجة في مستكشف الكتل، فقد يلزم زيادة الرسوم قبل إعادة المحاولة.</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Please remove the existing local transaction of the wallet first.</source>
+        <translation>يرجى إزالة المعاملة المحلية الموجودة في المحفظة أولاً.</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>SVG</source>
+        <translation>SVG</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Save in wallet</source>
+        <translation>احفظ في المحفظة</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Send</source>
+        <translation>يرسل</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>The broadcast request timed out. This can happen when the transaction fee is too low or when the transaction was already broadcast. If the transaction is not listed in a block explorer, the fee may need to be increased before retrying.</source>
+        <translation>انتهت مهلة طلب البث. قد يحدث ذلك عندما تكون رسوم المعاملة منخفضة جدًا أو عندما تكون المعاملة قد بُثت بالفعل. إذا لم تكن المعاملة مدرجة في مستكشف الكتل، فقد يلزم زيادة الرسوم قبل إعادة المحاولة.</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>The txid of the signed psbt doesnt match the original txid</source>
+        <translation>لا يتطابق txid الخاص بـ psbt المُوقع مع txid الأصلي</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>This transaction is not valid yet (nLocktime set). Broadcasting will fail.
 Do you want to broadcast anyway?</source>
-			<translation>هذه المعاملة غير صالحة بعد (تم تعيين nLocktime).
+        <translation>هذه المعاملة غير صالحة بعد (تم تعيين nLocktime).
 سيفشل البث. هل تريد البث على أي حال؟</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Transaction {txid}</source>
-			<translation>معاملة {txid}</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>View in block explorer</source>
-			<translation>عرض في مستكشف الكتل</translation>
-		</message>
-		<name>UITx_Viewer</name>
-		<message>
-			<source>Wallet of transaction inputs could not be found</source>
-			<translation>تعذّر العثور على محفظة مدخلات المعاملة</translation>
-		</message>
-	</context>
-	<context>
-		<name>USBDevice</name>
-		<message>
-			<source>Do you want to restore an existing seed onto the device?</source>
-			<translation>هل تريد استعادة بذور موجودة على الجهاز؟</translation>
-		</message>
-		<name>USBDevice</name>
-		<message>
-			<source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
-			<translation>اكتمل تحديث البرنامج الثابت لجهاز Trezor وأُعيد تشغيل الجهاز. يُرجى إعادة توصيل الجهاز والمحاولة مرة أخرى.</translation>
-		</message>
-	</context>
-	<context>
-		<name>USBGui</name>
-		<message>
-			<source>Bluetooth scanning is not available in this environment.</source>
-			<translation>فحص Bluetooth غير متاح في هذه البيئة.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Bluetooth support is disabled by configuration.</source>
-			<translation>دعم Bluetooth معطل بواسطة الإعدادات.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Manually install udev rules</source>
-			<translation>تثبيت قواعد udev يدويًا</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Please copy and paste the following script in a terminal to install the udev rules:</source>
-			<translation>يرجى نسخ ولصق السكربت التالي في الطرفية لتثبيت قواعد udev:</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Please restart your computer for the changes to take effect.</source>
-			<translation>يرجى إعادة تشغيل الكمبيوتر لتفعيل التغييرات.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Please try disconnecting and reconnecting the device</source>
-			<translation>يرجى محاولة فصل الجهاز ثم إعادة توصيله</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
-			<translation>تسجيل محافظ متعددة التوقيعات عبر USB غير مدعوم بواسطة {device_type}. يرجى استخدام بطاقات sd أو مسح رمز ال QR.</translation>
-		</message>
-		<name>USBGui</name>
-		<message>
-			<source>Restart computer</source>
-			<translation>إعادة تشغيل الكمبيوتر</translation>
-		</message>
-	</context>
-	<context>
-		<name>USBRegisterMultisigWidget</name>
-		<message>
-			<source>Device instructions</source>
-			<translation>تعليمات الجهاز</translation>
-		</message>
-		<name>USBRegisterMultisigWidget</name>
-		<message>
-			<source>Help</source>
-			<translation>مساعدة</translation>
-		</message>
-		<name>USBRegisterMultisigWidget</name>
-		<message>
-			<source>Register Multisig</source>
-			<translation>تسجيل Multisig</translation>
-		</message>
-		<name>USBRegisterMultisigWidget</name>
-		<message>
-			<source>Register Multisig wallet on hardware signer</source>
-			<translation>تسجيل محفظة Multisig على الموقّع الأجهزة</translation>
-		</message>
-		<name>USBRegisterMultisigWidget</name>
-		<message>
-			<source>Successfully registered multisig wallet on hardware signer</source>
-			<translation>تم تسجيل محفظة متعددة التوقيعات بنجاح على الموقع الأجهزة</translation>
-		</message>
-		<name>USBRegisterMultisigWidget</name>
-		<message>
-			<source>{device} instructions</source>
-			<translation>تعليمات {device}</translation>
-		</message>
-	</context>
-	<context>
-		<name>USBValidateAddressWidget</name>
-		<message>
-			<source>Validate address</source>
-			<translation>تحقق من العنوان</translation>
-		</message>
-		<name>USBValidateAddressWidget</name>
-		<message>
-			<source>Validate receive address:</source>
-			<translation>تحقق من عنوان الاستلام:</translation>
-		</message>
-	</context>
-	<context>
-		<name>UTXOList</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>UTXOList</name>
-		<message>
-			<source>Amount</source>
-			<translation>كمية</translation>
-		</message>
-		<name>UTXOList</name>
-		<message>
-			<source>Category</source>
-			<translation>فئة</translation>
-		</message>
-		<name>UTXOList</name>
-		<message>
-			<source>Label</source>
-			<translation>ملصق</translation>
-		</message>
-		<name>UTXOList</name>
-		<message>
-			<source>Outpoint</source>
-			<translation>نقطة خارجية</translation>
-		</message>
-		<name>UTXOList</name>
-		<message>
-			<source>Signed by</source>
-			<translation>وقّع بواسطة</translation>
-		</message>
-		<name>UTXOList</name>
-		<message>
-			<source>Transaction status</source>
-			<translation>حالة المعاملة</translation>
-		</message>
-		<name>UTXOList</name>
-		<message>
-			<source>Tx</source>
-			<translation>تحويلة</translation>
-		</message>
-		<name>UTXOList</name>
-		<message>
-			<source>Value</source>
-			<translation>القيمة</translation>
-		</message>
-		<name>UTXOList</name>
-		<message>
-			<source>Wallet</source>
-			<translation>محفظة</translation>
-		</message>
-	</context>
-	<context>
-		<name>UnlockableMainWindow</name>
-		<message>
-			<source>Enter the app lock password:</source>
-			<translation>أدخل كلمة مرور قفل التطبيق:</translation>
-		</message>
-		<name>UnlockableMainWindow</name>
-		<message>
-			<source>Wrong app lock password.</source>
-			<translation>كلمة مرور قفل التطبيق غير صحيحة.</translation>
-		</message>
-	</context>
-	<context>
-		<name>UntrustedDeviceItem</name>
-		<message>
-			<source>Trust</source>
-			<translation>ثقة</translation>
-		</message>
-		<name>UntrustedDeviceItem</name>
-		<message>
-			<source>Trust this device</source>
-			<translation>ثق بهذا الجهاز</translation>
-		</message>
-	</context>
-	<context>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Check for Update</source>
-			<translation>فحص التحديثات</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Could not verify the download. Please try again later.</source>
-			<translation>لم يتم التحقق من التنزيل. يرجى المحاولة مرة أخرى لاحقًا.</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Failed to extract update archive.</source>
-			<translation>تم إكمال جميع اختبارات الإرسال الذاتي بنجاح.</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Installer started. Closing {app_name}...</source>
-			<translation>تم بدء برنامج التثبيت. يتم إغلاق {app_name}...</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>New version available {tag}</source>
-			<translation>الإصدار الجديد متاح {tag}</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>No update found</source>
-			<translation>لم يتم العثور على أي تحديث</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Selected update file does not exist.</source>
-			<translation>ملف التحديث المحدد غير موجود.</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Signature doesn't match!!! Please try again.</source>
-			<translation>التوقيع غير مطابق!!! يرجى المحاولة مرة أخرى.</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Signature verified.</source>
-			<translation>تم التحقق من التوقيع.</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Signature verified. Update downloaded.</source>
-			<translation>تم التحقق من التوقيع. تم تنزيل التحديث.</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Update applied.</source>
-			<translation>تم تطبيق التحديث.</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Update applied. Restarting {app_name}...</source>
-			<translation>تم تطبيق التحديث. جارٍ إعادة تشغيل {app_name}...</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>Update file was verified but no automatic install was performed:
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Transaction {txid}</source>
+        <translation>معاملة {txid}</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>View in block explorer</source>
+        <translation>عرض في مستكشف الكتل</translation>
+    </message>
+    <name>UITx_Viewer</name>
+    <message>
+        <source>Wallet of transaction inputs could not be found</source>
+        <translation>تعذّر العثور على محفظة مدخلات المعاملة</translation>
+    </message>
+</context>
+<context>
+    <name>USBDevice</name>
+    <message>
+        <source>Do you want to restore an existing seed onto the device?</source>
+        <translation>هل تريد استعادة بذور موجودة على الجهاز؟</translation>
+    </message>
+    <name>USBDevice</name>
+    <message>
+        <source>The Trezor firmware update finished and the device rebooted. Please reconnect the device and try again.</source>
+        <translation>اكتمل تحديث البرنامج الثابت لجهاز Trezor وأُعيد تشغيل الجهاز. يُرجى إعادة توصيل الجهاز والمحاولة مرة أخرى.</translation>
+    </message>
+</context>
+<context>
+    <name>USBGui</name>
+    <message>
+        <source>Bluetooth scanning is not available in this environment.</source>
+        <translation>فحص Bluetooth غير متاح في هذه البيئة.</translation>
+    </message>
+    <name>USBGui</name>
+    <message>
+        <source>Bluetooth support is disabled by configuration.</source>
+        <translation>دعم Bluetooth معطل بواسطة الإعدادات.</translation>
+    </message>
+    <name>USBGui</name>
+    <message>
+        <source>Manually install udev rules</source>
+        <translation>تثبيت قواعد udev يدويًا</translation>
+    </message>
+    <name>USBGui</name>
+    <message>
+        <source>Please copy and paste the following script in a terminal to install the udev rules:</source>
+        <translation>يرجى نسخ ولصق السكربت التالي في الطرفية لتثبيت قواعد udev:</translation>
+    </message>
+    <name>USBGui</name>
+    <message>
+        <source>Please restart your computer for the changes to take effect.</source>
+        <translation>يرجى إعادة تشغيل الكمبيوتر لتفعيل التغييرات.</translation>
+    </message>
+    <name>USBGui</name>
+    <message>
+        <source>Please try disconnecting and reconnecting the device</source>
+        <translation>يرجى محاولة فصل الجهاز ثم إعادة توصيله</translation>
+    </message>
+    <name>USBGui</name>
+    <message>
+        <source>Registering multisig wallets via USB is not supported by {device_type}. Please use sd-cards or scan the QR Code.</source>
+        <translation>تسجيل محافظ متعددة التوقيعات عبر USB غير مدعوم بواسطة {device_type}. يرجى استخدام بطاقات sd أو مسح رمز ال QR.</translation>
+    </message>
+    <name>USBGui</name>
+    <message>
+        <source>Restart computer</source>
+        <translation>إعادة تشغيل الكمبيوتر</translation>
+    </message>
+</context>
+<context>
+    <name>USBRegisterMultisigWidget</name>
+    <message>
+        <source>Device instructions</source>
+        <translation>تعليمات الجهاز</translation>
+    </message>
+    <name>USBRegisterMultisigWidget</name>
+    <message>
+        <source>Help</source>
+        <translation>مساعدة</translation>
+    </message>
+    <name>USBRegisterMultisigWidget</name>
+    <message>
+        <source>Register Multisig</source>
+        <translation>تسجيل Multisig</translation>
+    </message>
+    <name>USBRegisterMultisigWidget</name>
+    <message>
+        <source>Register Multisig wallet on hardware signer</source>
+        <translation>تسجيل محفظة Multisig على الموقّع الأجهزة</translation>
+    </message>
+    <name>USBRegisterMultisigWidget</name>
+    <message>
+        <source>Successfully registered multisig wallet on hardware signer</source>
+        <translation>تم تسجيل محفظة متعددة التوقيعات بنجاح على الموقع الأجهزة</translation>
+    </message>
+    <name>USBRegisterMultisigWidget</name>
+    <message>
+        <source>{device} instructions</source>
+        <translation>تعليمات {device}</translation>
+    </message>
+</context>
+<context>
+    <name>USBValidateAddressWidget</name>
+    <message>
+        <source>Validate address</source>
+        <translation>تحقق من العنوان</translation>
+    </message>
+    <name>USBValidateAddressWidget</name>
+    <message>
+        <source>Validate receive address:</source>
+        <translation>تحقق من عنوان الاستلام:</translation>
+    </message>
+</context>
+<context>
+    <name>UTXOList</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>UTXOList</name>
+    <message>
+        <source>Amount</source>
+        <translation>كمية</translation>
+    </message>
+    <name>UTXOList</name>
+    <message>
+        <source>Category</source>
+        <translation>فئة</translation>
+    </message>
+    <name>UTXOList</name>
+    <message>
+        <source>Label</source>
+        <translation>ملصق</translation>
+    </message>
+    <name>UTXOList</name>
+    <message>
+        <source>Outpoint</source>
+        <translation>نقطة خارجية</translation>
+    </message>
+    <name>UTXOList</name>
+    <message>
+        <source>Signed by</source>
+        <translation>وقّع بواسطة</translation>
+    </message>
+    <name>UTXOList</name>
+    <message>
+        <source>Transaction status</source>
+        <translation>حالة المعاملة</translation>
+    </message>
+    <name>UTXOList</name>
+    <message>
+        <source>Tx</source>
+        <translation>تحويلة</translation>
+    </message>
+    <name>UTXOList</name>
+    <message>
+        <source>Value</source>
+        <translation>القيمة</translation>
+    </message>
+    <name>UTXOList</name>
+    <message>
+        <source>Wallet</source>
+        <translation>محفظة</translation>
+    </message>
+</context>
+<context>
+    <name>UnlockableMainWindow</name>
+    <message>
+        <source>Enter the app lock password:</source>
+        <translation>أدخل كلمة مرور قفل التطبيق:</translation>
+    </message>
+    <name>UnlockableMainWindow</name>
+    <message>
+        <source>Wrong app lock password.</source>
+        <translation>كلمة مرور قفل التطبيق غير صحيحة.</translation>
+    </message>
+</context>
+<context>
+    <name>UntrustedDeviceItem</name>
+    <message>
+        <source>Trust</source>
+        <translation>ثقة</translation>
+    </message>
+    <name>UntrustedDeviceItem</name>
+    <message>
+        <source>Trust this device</source>
+        <translation>ثق بهذا الجهاز</translation>
+    </message>
+</context>
+<context>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Check for Update</source>
+        <translation>فحص التحديثات</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Could not verify the download. Please try again later.</source>
+        <translation>لم يتم التحقق من التنزيل. يرجى المحاولة مرة أخرى لاحقًا.</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Failed to extract update archive.</source>
+        <translation>تم إكمال جميع اختبارات الإرسال الذاتي بنجاح.</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Installer started. Closing {app_name}...</source>
+        <translation>تم بدء برنامج التثبيت. يتم إغلاق {app_name}...</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>New version available {tag}</source>
+        <translation>الإصدار الجديد متاح {tag}</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>No update found</source>
+        <translation>لم يتم العثور على أي تحديث</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Selected update file does not exist.</source>
+        <translation>ملف التحديث المحدد غير موجود.</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Signature doesn&apos;t match!!! Please try again.</source>
+        <translation>التوقيع غير مطابق!!! يرجى المحاولة مرة أخرى.</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Signature verified.</source>
+        <translation>تم التحقق من التوقيع.</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Signature verified. Update downloaded.</source>
+        <translation>تم التحقق من التوقيع. تم تنزيل التحديث.</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Update applied.</source>
+        <translation>تم تطبيق التحديث.</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Update applied. Restarting {app_name}...</source>
+        <translation>تم تطبيق التحديث. جارٍ إعادة تشغيل {app_name}...</translation>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>Update file was verified but no automatic install was performed:
 {reason}</source>
-			<translation>تم التحقق من ملف التحديث ولكن لم يتم إجراء تثبيت تلقائي:
+        <translation>تم التحقق من ملف التحديث ولكن لم يتم إجراء تثبيت تلقائي:
 {reason}</translation>
-		</message>
-		<name>UpdateNotificationBar</name>
-		<message>
-			<source>You have already the newest version.</source>
-			<translation>لديك بالفعل الإصدار الأحدث.</translation>
-		</message>
-	</context>
-	<context>
-		<name>UtxoListWithToolbar</name>
-		<message>
-			<source>{amount} selected ({number} UTXOs)</source>
-			<translation>تم اختيار {amount} ({number} UTXOs)</translation>
-		</message>
-	</context>
-	<context>
-		<name>VerifyGpgMessageTab</name>
-		<message>
-			<source>Signed message</source>
-			<translation>رسالة موقعة</translation>
-		</message>
-		<name>VerifyGpgMessageTab</name>
-		<message>
-			<source>Verify</source>
-			<translation>تحقق</translation>
-		</message>
-	</context>
-	<context>
-		<name>WalletBalanceChart</name>
-		<message>
-			<source>Balance ({unit})</source>
-			<translation>الرصيد ({unit})</translation>
-		</message>
-	</context>
-	<context>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Center funding transaction</source>
-			<translation>تموضع معاملة التمويل في المنتصف</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Center spending transaction</source>
-			<translation>تموضع معاملة الإنفاق في المنتصف</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Click to open the creating transaction.</source>
-			<translation>انقر لفتح المعاملة التي تُنشأ.</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Could not export the wallet graph: {error}</source>
-			<translation>لم يُتمكّن من تصدير رسم بياني للمحفظة: {error}</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Date</source>
-			<translation>التاريخ</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
-			<translation>اسحب لاستكشاف المخطط الزمني. انقر أو انقر بزر الماوس الأيمن على معاملة أو txid أو UTXO لرؤية الخيارات.</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Export graph…</source>
-			<translation>تصدير الرسم البياني…</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Export wallet graph</source>
-			<translation>تصدير الرسم البياني للمحفظة</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>External input</source>
-			<translation>إدخال خارجي</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Fee</source>
-			<translation>رسوم</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Full txid</source>
-			<translation>Txid الكامل</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Jump to Input</source>
-			<translation>انتقل إلى الإدخال</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Label</source>
-			<translation>ملصق</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>No jump targets available</source>
-			<translation>لا توجد أهداف انتقال متاحة</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>No known inputs</source>
-			<translation>لا توجد مدخلات معروفة</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>No transactions to display.</source>
-			<translation>لا توجد معاملات لعرضها.</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Received</source>
-			<translation>تم الاستلام</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Redraw the wallet graph.</source>
-			<translation>أعد رسم الرسم البياني للمحفظة.</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Refresh</source>
-			<translation>تحديث</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Sent</source>
-			<translation>تم الإرسال</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Spent</source>
-			<translation>تم الإنفاق</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Status: {status}</source>
-			<translation>الحالة: {status}</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Transaction</source>
-			<translation>معاملة</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>UTXO</source>
-			<translation>UTXO</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Unknown</source>
-			<translation>مجهول</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Unknown fee</source>
-			<translation>رسوم غير معروفة</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Unspent</source>
-			<translation>غير منفقة</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Value</source>
-			<translation>القيمة</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
-			<translation>تصوّر كيف تُنشئ معاملات محفظتك وتُنفق UTXO مع مرور الوقت.</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Wallet Graph</source>
-			<translation>رسم المحفظة البياني</translation>
-		</message>
-		<name>WalletGraphClient</name>
-		<message>
-			<source>Wallet graph exported to {path}</source>
-			<translation>تم تصدير الرسم البياني للمحفظة إلى {path}</translation>
-		</message>
-	</context>
-	<context>
-		<name>WalletIdDialog</name>
-		<message>
-			<source>Choose wallet name</source>
-			<translation>اختر اسم المحفظة</translation>
-		</message>
-		<name>WalletIdDialog</name>
-		<message>
-			<source>Error</source>
-			<translation>خطأ</translation>
-		</message>
-		<name>WalletIdDialog</name>
-		<message>
-			<source>Please choose a wallet name</source>
-			<translation>يرجى اختيار اسم محفظة</translation>
-		</message>
-		<name>WalletIdDialog</name>
-		<message>
-			<source>The wallet {filename} exists already.</source>
-			<translation>المحفظة {filename} موجودة بالفعل.</translation>
-		</message>
-		<name>WalletIdDialog</name>
-		<message>
-			<source>Type wallet name</source>
-			<translation>أدخل اسم المحفظة</translation>
-		</message>
-		<name>WalletIdDialog</name>
-		<message>
-			<source>Wallet name:</source>
-			<translation>اسم المحفظة:</translation>
-		</message>
-	</context>
-	<context>
-		<name>WalletLabelAndCategoryEdit</name>
-		<message>
-			<source>Enter label for recipient address</source>
-			<translation>أدخل التسمية لعنوان المستلم</translation>
-		</message>
-		<name>WalletLabelAndCategoryEdit</name>
-		<message>
-			<source>Enter label for transaction</source>
-			<translation>أدخل تسمية للمعاملة</translation>
-		</message>
-	</context>
-	<context>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>1 Signer</source>
-			<translation>موقّع واحد</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>2-of-3 Multi Signature</source>
-			<translation>توقيع متعدد 2 من 3</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>3-of-5 Multi Signature</source>
-			<translation>توقيع متعدد 3 من 5</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Can tolerate loss of 1 signing device and its backup seed</source>
-			<translation>يمكنه تحمّل فقدان جهاز توقيع واحد ونسخة seed الاحتياطية الخاصة به</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Can tolerate loss of 2 signing devices and its backup seeds</source>
-			<translation>يمكنه تحمّل فقدان جهازي توقيع ونسخ seed الاحتياطية الخاصة بهما</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Choose a wallet template</source>
-			<translation>اختر قالب محفظة</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Cons</source>
-			<translation>السلبيات</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Continue</source>
-			<translation>متابعة</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>High complexity</source>
-			<translation>تعقيد مرتفع</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>If the signer device and seed backup is lost, then the funds are lost</source>
-			<translation>إذا فُقد جهاز التوقيع ونسخة seed الاحتياطية، فستُفقد الأموال</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Long-term cold storage</source>
-			<translation>تخزين بارد طويل الأجل</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Long-term cold storage (2-of-3 Multi Signature)</source>
-			<translation>تخزين بارد طويل الأجل (توقيع متعدد 2 من 3)</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Low complexity</source>
-			<translation>تعقيد منخفض</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Medium complexity</source>
-			<translation>تعقيد متوسط</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Please choose a wallet name</source>
-			<translation>يرجى اختيار اسم محفظة</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Previous Step</source>
-			<translation>خطوة سابقة</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Pros</source>
-			<translation>الإيجابيات</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Recovery</source>
-			<translation>الاسترداد</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Required</source>
-			<translation>مطلوب</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Requires 1 secure access-controlled place to store the seed backup</source>
-			<translation>يتطلب مكانًا آمنًا واحدًا مع تحكم في الوصول لتخزين نسخة seed الاحتياطية</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Requires 3 secure access-controlled places to store the seed backups</source>
-			<translation>يتطلب 3 أماكن آمنة مع تحكم في الوصول لتخزين نسخ seed الاحتياطية</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Requires 5 secure access-controlled places to store the seed backups</source>
-			<translation>يتطلب 5 أماكن آمنة مع تحكم في الوصول لتخزين نسخ seed الاحتياطية</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Robust wallet for long-term self-custody.</source>
-			<translation>محفظة قوية للحفظ الذاتي طويل الأجل.</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Select a template from the list.</source>
-			<translation>اختر قالبًا من القائمة.</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Self-custody with 1 signer and 1 seed backup.</source>
-			<translation>حفظ ذاتي مع موقّع واحد ونسخة احتياطية واحدة من seed.</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Simple cold storage</source>
-			<translation>تخزين بارد بسيط</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Simple cold storage (1 Signer)</source>
-			<translation>تخزين بارد بسيط (موقّع واحد)</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Store the seed backup separately from the device to avoid one-point failure.</source>
-			<translation>خزّن النسخة الاحتياطية من seed بشكل منفصل عن الجهاز لتجنب نقطة فشل واحدة.</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Super robust storage</source>
-			<translation>تخزين فائق المتانة</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Super robust storage (3-of-5 Multi Signature)</source>
-			<translation>تخزين فائق المتانة (توقيع متعدد 3-من-5)</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
-			<translation>يجب تخزين ورقة الاسترداد التي تحتوي على واصف المحفظة مع كل نسخة احتياطية من seed.</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Total</source>
-			<translation>الإجمالي</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>Wallet name</source>
-			<translation>اسم المحفظة</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>signer</source>
-			<translation>موقّع</translation>
-		</message>
-		<name>WalletSetupOptions</name>
-		<message>
-			<source>signers</source>
-			<translation>موقّعون</translation>
-		</message>
-	</context>
-	<context>
-		<name>WalletSyncProgressCard</name>
-		<message>
-			<source>Elapsed: {elapsed} | Remaining: {remaining}</source>
-			<translation>المنقضي: {elapsed} | المتبقي: {remaining}</translation>
-		</message>
-		<name>WalletSyncProgressCard</name>
-		<message>
-			<source>Preparing private sync…</source>
-			<translation>جارٍ تحضير المزامنة الخاصة…</translation>
-		</message>
-		<name>WalletSyncProgressCard</name>
-		<message>
-			<source>Sync progress: {percent}%</source>
-			<translation>تقدم المزامنة: {percent}%</translation>
-		</message>
-	</context>
-	<context>
-		<name>Wizard</name>
-		<message>
-			<source> and </source>
-			<translation> و </translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Choose template</source>
-			<translation>اختر قالبًا</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Import signer info</source>
-			<translation>استيراد معلومات الموقع</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Plugins</source>
-			<translation>الإضافات</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Previous step</source>
-			<translation>الخطوة السابقة</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Receive Test</source>
-			<translation>تلقي الاختبار</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Register multisig on signers</source>
-			<translation>تسجيل multisig على الموقعين</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Review the transaction and create it when you are ready.</source>
-			<translation>راجع المعاملة وأنشئها عندما تكون جاهزًا.</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Secure your Keys</source>
-			<translation>أمّن مفاتيحك</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Self-Send Test</source>
-			<translation>اختبار الإرسال الذاتي</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Self-Send test</source>
-			<translation>اختبار الإرسال الذاتي</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Self-Send test {j}</source>
-			<translation>اختبار الإرسال الذاتي {j}</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Sign with {label}</source>
-			<translation>التوقيع باستخدام {label}</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Signer {index}</source>
-			<translation>الموقّع {index}</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>The wallet is not funded. Please fund the wallet.</source>
-			<translation>لم يتم تمويل المحفظة. يرجى تمويل المحفظة.</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
-			<translation>تم إنشاء المعاملة. وقّعها وانشرها أدناه، ثم انتظر حتى تتعرف عليها المحفظة.</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Transaction recognized by the wallet.</source>
-			<translation>تعرّفت المحفظة على المعاملة.</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>Waiting for the wallet to recognize the broadcast transaction.</source>
-			<translation>في انتظار أن تتعرف المحفظة على المعاملة المنشورة.</translation>
-		</message>
-		<name>Wizard</name>
-		<message>
-			<source>You must have an initilized wallet first</source>
-			<translation>يجب أن يكون لديك محفظة مهيأة أولاً</translation>
-		</message>
-	</context>
-	<context>
-		<name>WizardBase</name>
-		<message>
-			<source>Wizard</source>
-			<translation>المعالج</translation>
-		</message>
-	</context>
-	<context>
-		<name>WorldPeerMapWidget</name>
-		<message>
-			<source>
+    </message>
+    <name>UpdateNotificationBar</name>
+    <message>
+        <source>You have already the newest version.</source>
+        <translation>لديك بالفعل الإصدار الأحدث.</translation>
+    </message>
+</context>
+<context>
+    <name>UtxoListWithToolbar</name>
+    <message>
+        <source>{amount} selected ({number} UTXOs)</source>
+        <translation>تم اختيار {amount} ({number} UTXOs)</translation>
+    </message>
+</context>
+<context>
+    <name>VerifyGpgMessageTab</name>
+    <message>
+        <source>Signed message</source>
+        <translation>رسالة موقعة</translation>
+    </message>
+    <name>VerifyGpgMessageTab</name>
+    <message>
+        <source>Verify</source>
+        <translation>تحقق</translation>
+    </message>
+</context>
+<context>
+    <name>WalletBalanceChart</name>
+    <message>
+        <source>Balance ({unit})</source>
+        <translation>الرصيد ({unit})</translation>
+    </message>
+</context>
+<context>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Center funding transaction</source>
+        <translation>تموضع معاملة التمويل في المنتصف</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Center spending transaction</source>
+        <translation>تموضع معاملة الإنفاق في المنتصف</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Click to open the creating transaction.</source>
+        <translation>انقر لفتح المعاملة التي تُنشأ.</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Could not export the wallet graph: {error}</source>
+        <translation>لم يُتمكّن من تصدير رسم بياني للمحفظة: {error}</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Date</source>
+        <translation>التاريخ</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Drag to explore the timeline. Click or right-click a transaction, txid, or UTXO for options.</source>
+        <translation>اسحب لاستكشاف المخطط الزمني. انقر أو انقر بزر الماوس الأيمن على معاملة أو txid أو UTXO لرؤية الخيارات.</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Export graph…</source>
+        <translation>تصدير الرسم البياني…</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Export wallet graph</source>
+        <translation>تصدير الرسم البياني للمحفظة</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>External input</source>
+        <translation>إدخال خارجي</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Fee</source>
+        <translation>رسوم</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Full txid</source>
+        <translation>Txid الكامل</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Jump to Input</source>
+        <translation>انتقل إلى الإدخال</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Label</source>
+        <translation>ملصق</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>No jump targets available</source>
+        <translation>لا توجد أهداف انتقال متاحة</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>No known inputs</source>
+        <translation>لا توجد مدخلات معروفة</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>No transactions to display.</source>
+        <translation>لا توجد معاملات لعرضها.</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Received</source>
+        <translation>تم الاستلام</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Redraw the wallet graph.</source>
+        <translation>أعد رسم الرسم البياني للمحفظة.</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Refresh</source>
+        <translation>تحديث</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Sent</source>
+        <translation>تم الإرسال</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Spent</source>
+        <translation>تم الإنفاق</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Status: {status}</source>
+        <translation>الحالة: {status}</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Transaction</source>
+        <translation>معاملة</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>UTXO</source>
+        <translation>UTXO</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Unknown</source>
+        <translation>مجهول</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Unknown fee</source>
+        <translation>رسوم غير معروفة</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Unspent</source>
+        <translation>غير منفقة</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Value</source>
+        <translation>القيمة</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Visualize how your wallet transactions create and spend UTXOs across time.</source>
+        <translation>تصوّر كيف تُنشئ معاملات محفظتك وتُنفق UTXO مع مرور الوقت.</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Wallet Graph</source>
+        <translation>رسم المحفظة البياني</translation>
+    </message>
+    <name>WalletGraphClient</name>
+    <message>
+        <source>Wallet graph exported to {path}</source>
+        <translation>تم تصدير الرسم البياني للمحفظة إلى {path}</translation>
+    </message>
+</context>
+<context>
+    <name>WalletIdDialog</name>
+    <message>
+        <source>Choose wallet name</source>
+        <translation>اختر اسم المحفظة</translation>
+    </message>
+    <name>WalletIdDialog</name>
+    <message>
+        <source>Error</source>
+        <translation>خطأ</translation>
+    </message>
+    <name>WalletIdDialog</name>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>يرجى اختيار اسم محفظة</translation>
+    </message>
+    <name>WalletIdDialog</name>
+    <message>
+        <source>The wallet {filename} exists already.</source>
+        <translation>المحفظة {filename} موجودة بالفعل.</translation>
+    </message>
+    <name>WalletIdDialog</name>
+    <message>
+        <source>Type wallet name</source>
+        <translation>أدخل اسم المحفظة</translation>
+    </message>
+    <name>WalletIdDialog</name>
+    <message>
+        <source>Wallet name:</source>
+        <translation>اسم المحفظة:</translation>
+    </message>
+</context>
+<context>
+    <name>WalletLabelAndCategoryEdit</name>
+    <message>
+        <source>Enter label for recipient address</source>
+        <translation>أدخل التسمية لعنوان المستلم</translation>
+    </message>
+    <name>WalletLabelAndCategoryEdit</name>
+    <message>
+        <source>Enter label for transaction</source>
+        <translation>أدخل تسمية للمعاملة</translation>
+    </message>
+</context>
+<context>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>1 Signer</source>
+        <translation>موقّع واحد</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>2-of-3 Multi Signature</source>
+        <translation>توقيع متعدد 2 من 3</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>3-of-5 Multi Signature</source>
+        <translation>توقيع متعدد 3 من 5</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Can tolerate loss of 1 signing device and its backup seed</source>
+        <translation>يمكنه تحمّل فقدان جهاز توقيع واحد ونسخة seed الاحتياطية الخاصة به</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Can tolerate loss of 2 signing devices and its backup seeds</source>
+        <translation>يمكنه تحمّل فقدان جهازي توقيع ونسخ seed الاحتياطية الخاصة بهما</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Choose a wallet template</source>
+        <translation>اختر قالب محفظة</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Cons</source>
+        <translation>السلبيات</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Continue</source>
+        <translation>متابعة</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>High complexity</source>
+        <translation>تعقيد مرتفع</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>If the signer device and seed backup is lost, then the funds are lost</source>
+        <translation>إذا فُقد جهاز التوقيع ونسخة seed الاحتياطية، فستُفقد الأموال</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Long-term cold storage</source>
+        <translation>تخزين بارد طويل الأجل</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Long-term cold storage (2-of-3 Multi Signature)</source>
+        <translation>تخزين بارد طويل الأجل (توقيع متعدد 2 من 3)</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Low complexity</source>
+        <translation>تعقيد منخفض</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Medium complexity</source>
+        <translation>تعقيد متوسط</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Please choose a wallet name</source>
+        <translation>يرجى اختيار اسم محفظة</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Previous Step</source>
+        <translation>خطوة سابقة</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Pros</source>
+        <translation>الإيجابيات</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Recovery</source>
+        <translation>الاسترداد</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Required</source>
+        <translation>مطلوب</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Requires 1 secure access-controlled place to store the seed backup</source>
+        <translation>يتطلب مكانًا آمنًا واحدًا مع تحكم في الوصول لتخزين نسخة seed الاحتياطية</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Requires 3 secure access-controlled places to store the seed backups</source>
+        <translation>يتطلب 3 أماكن آمنة مع تحكم في الوصول لتخزين نسخ seed الاحتياطية</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Requires 5 secure access-controlled places to store the seed backups</source>
+        <translation>يتطلب 5 أماكن آمنة مع تحكم في الوصول لتخزين نسخ seed الاحتياطية</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Robust wallet for long-term self-custody.</source>
+        <translation>محفظة قوية للحفظ الذاتي طويل الأجل.</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Select a template from the list.</source>
+        <translation>اختر قالبًا من القائمة.</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Self-custody with 1 signer and 1 seed backup.</source>
+        <translation>حفظ ذاتي مع موقّع واحد ونسخة احتياطية واحدة من seed.</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Simple cold storage</source>
+        <translation>تخزين بارد بسيط</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Simple cold storage (1 Signer)</source>
+        <translation>تخزين بارد بسيط (موقّع واحد)</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Store the seed backup separately from the device to avoid one-point failure.</source>
+        <translation>خزّن النسخة الاحتياطية من seed بشكل منفصل عن الجهاز لتجنب نقطة فشل واحدة.</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Super robust storage</source>
+        <translation>تخزين فائق المتانة</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Super robust storage (3-of-5 Multi Signature)</source>
+        <translation>تخزين فائق المتانة (توقيع متعدد 3-من-5)</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>The recovery sheet with the wallet descriptor should be stored with each seed backup.</source>
+        <translation>يجب تخزين ورقة الاسترداد التي تحتوي على واصف المحفظة مع كل نسخة احتياطية من seed.</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Total</source>
+        <translation>الإجمالي</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>Wallet name</source>
+        <translation>اسم المحفظة</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>signer</source>
+        <translation>موقّع</translation>
+    </message>
+    <name>WalletSetupOptions</name>
+    <message>
+        <source>signers</source>
+        <translation>موقّعون</translation>
+    </message>
+</context>
+<context>
+    <name>WalletSyncProgressCard</name>
+    <message>
+        <source>Elapsed: {elapsed} | Remaining: {remaining}</source>
+        <translation>المنقضي: {elapsed} | المتبقي: {remaining}</translation>
+    </message>
+    <name>WalletSyncProgressCard</name>
+    <message>
+        <source>Preparing private sync…</source>
+        <translation>جارٍ تحضير المزامنة الخاصة…</translation>
+    </message>
+    <name>WalletSyncProgressCard</name>
+    <message>
+        <source>Sync progress: {percent}%</source>
+        <translation>تقدم المزامنة: {percent}%</translation>
+    </message>
+</context>
+<context>
+    <name>Wizard</name>
+    <message>
+        <source> and </source>
+        <translation> و </translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Choose template</source>
+        <translation>اختر قالبًا</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Import signer info</source>
+        <translation>استيراد معلومات الموقع</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Plugins</source>
+        <translation>الإضافات</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Previous step</source>
+        <translation>الخطوة السابقة</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Receive Test</source>
+        <translation>تلقي الاختبار</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Register multisig on signers</source>
+        <translation>تسجيل multisig على الموقعين</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Review the transaction and create it when you are ready.</source>
+        <translation>راجع المعاملة وأنشئها عندما تكون جاهزًا.</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Secure your Keys</source>
+        <translation>أمّن مفاتيحك</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Self-Send Test</source>
+        <translation>اختبار الإرسال الذاتي</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Self-Send test</source>
+        <translation>اختبار الإرسال الذاتي</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Self-Send test {j}</source>
+        <translation>اختبار الإرسال الذاتي {j}</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Sign with {label}</source>
+        <translation>التوقيع باستخدام {label}</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Signer {index}</source>
+        <translation>الموقّع {index}</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>The wallet is not funded. Please fund the wallet.</source>
+        <translation>لم يتم تمويل المحفظة. يرجى تمويل المحفظة.</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Transaction created. Sign and broadcast it below, then wait for wallet recognition.</source>
+        <translation>تم إنشاء المعاملة. وقّعها وانشرها أدناه، ثم انتظر حتى تتعرف عليها المحفظة.</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Transaction recognized by the wallet.</source>
+        <translation>تعرّفت المحفظة على المعاملة.</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>Waiting for the wallet to recognize the broadcast transaction.</source>
+        <translation>في انتظار أن تتعرف المحفظة على المعاملة المنشورة.</translation>
+    </message>
+    <name>Wizard</name>
+    <message>
+        <source>You must have an initilized wallet first</source>
+        <translation>يجب أن يكون لديك محفظة مهيأة أولاً</translation>
+    </message>
+</context>
+<context>
+    <name>WizardBase</name>
+    <message>
+        <source>Wizard</source>
+        <translation>المعالج</translation>
+    </message>
+</context>
+<context>
+    <name>WorldPeerMapWidget</name>
+    <message>
+        <source>
 Received: {rate:.2f} txs/s</source>
-			<translation>&lt;br&gt;تم الاستلام: {rate:.2f} معاملة/ثانية</translation>
-		</message>
-		<name>WorldPeerMapWidget</name>
-		<message>
-			<source>Bitcoin node</source>
-			<translation>عقدة بيتكوين</translation>
-		</message>
-		<name>WorldPeerMapWidget</name>
-		<message>
-			<source>CBF peer</source>
-			<translation>قرين CBF</translation>
-		</message>
-		<name>WorldPeerMapWidget</name>
-		<message>
-			<source>Host</source>
-			<translation>المضيف</translation>
-		</message>
-		<name>WorldPeerMapWidget</name>
-		<message>
-			<source>IP</source>
-			<translation>IP</translation>
-		</message>
-		<name>WorldPeerMapWidget</name>
-		<message>
-			<source>P2P listener peer</source>
-			<translation>قرين مستمع P2P</translation>
-		</message>
-		<name>WorldPeerMapWidget</name>
-		<message>
-			<source>Server</source>
-			<translation>الخادم</translation>
-		</message>
-		<name>WorldPeerMapWidget</name>
-		<message>
-			<source>Unknown</source>
-			<translation>مجهول</translation>
-		</message>
-		<name>WorldPeerMapWidget</name>
-		<message>
-			<source>{source}
+        <translation>&lt;br&gt;تم الاستلام: {rate:.2f} معاملة/ثانية</translation>
+    </message>
+    <name>WorldPeerMapWidget</name>
+    <message>
+        <source>Bitcoin node</source>
+        <translation>عقدة بيتكوين</translation>
+    </message>
+    <name>WorldPeerMapWidget</name>
+    <message>
+        <source>CBF peer</source>
+        <translation>قرين CBF</translation>
+    </message>
+    <name>WorldPeerMapWidget</name>
+    <message>
+        <source>Host</source>
+        <translation>المضيف</translation>
+    </message>
+    <name>WorldPeerMapWidget</name>
+    <message>
+        <source>IP</source>
+        <translation>IP</translation>
+    </message>
+    <name>WorldPeerMapWidget</name>
+    <message>
+        <source>P2P listener peer</source>
+        <translation>قرين مستمع P2P</translation>
+    </message>
+    <name>WorldPeerMapWidget</name>
+    <message>
+        <source>Server</source>
+        <translation>الخادم</translation>
+    </message>
+    <name>WorldPeerMapWidget</name>
+    <message>
+        <source>Unknown</source>
+        <translation>مجهول</translation>
+    </message>
+    <name>WorldPeerMapWidget</name>
+    <message>
+        <source>{source}
 {endpoint_label}: {ip}
 Country: {country}{tx_rate}</source>
-			<translation>{source}&lt;br&gt;{endpoint_label}:
+        <translation>{source}&lt;br&gt;{endpoint_label}:
 {ip}&lt;br&gt;الدولة: {country}{tx_rate}</translation>
-		</message>
-	</context>
-	<context>
-		<name>XpubAnalyzer</name>
-		<message>
-			<source>Converting format</source>
-			<translation>تحويل الصيغة</translation>
-		</message>
-		<name>XpubAnalyzer</name>
-		<message>
-			<source>Invalid xpub</source>
-			<translation>Xpub غير صالح</translation>
-		</message>
-		<name>XpubAnalyzer</name>
-		<message>
-			<source>Missing xPub</source>
-			<translation>xPub مفقود</translation>
-		</message>
-		<name>XpubAnalyzer</name>
-		<message>
-			<source>The xpub is in SLIP132 format. Converting to standard format.</source>
-			<translation>xpub في تنسيق SLIP132. تحويل إلى تنسيق قياسي.</translation>
-		</message>
-	</context>
-	<context>
-		<name>_SignTab</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>_SignTab</name>
-		<message>
-			<source>Address used to sign the message</source>
-			<translation>العنوان المستخدم لتوقيع الرسالة</translation>
-		</message>
-		<name>_SignTab</name>
-		<message>
-			<source>Enter message</source>
-			<translation>أدخل الرسالة</translation>
-		</message>
-		<name>_SignTab</name>
-		<message>
-			<source>Message</source>
-			<translation>الرسالة</translation>
-		</message>
-	</context>
-	<context>
-		<name>address_list</name>
-		<message>
-			<source>All status</source>
-			<translation>كل الوضع</translation>
-		</message>
-		<name>address_list</name>
-		<message>
-			<source>All types</source>
-			<translation>كل الانواع</translation>
-		</message>
-		<name>address_list</name>
-		<message>
-			<source>Change</source>
-			<translation>يتغير</translation>
-		</message>
-		<name>address_list</name>
-		<message>
-			<source>Funded</source>
-			<translation>ممولة</translation>
-		</message>
-		<name>address_list</name>
-		<message>
-			<source>Funded or Unused</source>
-			<translation>الممولة أو غير المستخدمة</translation>
-		</message>
-		<name>address_list</name>
-		<message>
-			<source>Receiving</source>
-			<translation>يستلم</translation>
-		</message>
-		<name>address_list</name>
-		<message>
-			<source>Unused</source>
-			<translation>غير مستعمل</translation>
-		</message>
-		<name>address_list</name>
-		<message>
-			<source>Used and empty</source>
-			<translation>مستخدمة وفارغة</translation>
-		</message>
-	</context>
-	<context>
-		<name>basetab</name>
-		<message>
-			<source>Finish and go to Dashboard</source>
-			<translation>إنهاء والانتقال إلى لوحة التحكم</translation>
-		</message>
-		<name>basetab</name>
-		<message>
-			<source>Next step</source>
-			<translation>الخطوة التالية</translation>
-		</message>
-		<name>basetab</name>
-		<message>
-			<source>Previous step</source>
-			<translation>الخطوة السابقة</translation>
-		</message>
-	</context>
-	<context>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>21 Lessons: What I've Learned from Bitcoin</source>
-			<translation>21 درسًا: ما تعلمته من البيتكوين</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>A node verifies everything itself.</source>
-			<translation>تتحقق العقدة من كل شيء بنفسها.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin Is A Trojan Horse For Freedom</source>
-			<translation>البيتكوين حصان طروادة للحرية</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin Whitepaper</source>
-			<translation>الورقة البيضاء للبيتكوين</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin Whitepaper (Nakamoto Institute)</source>
-			<translation>الورقة البيضاء للبيتكوين (معهد ناكاموتو)</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin aligns incentives globally.</source>
-			<translation>البيتكوين ينسق الحوافز عالميًا.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin allows innovation without permission.</source>
-			<translation>البيتكوين يسمح بالابتكار دون إذن.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin changes everything.</source>
-			<translation>البيتكوين يغير كل شيء.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin could become one of the most important ways to transfer value.</source>
-			<translation>قد يصبح البيتكوين أحد أهم طرق نقل القيمة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin does not require permission to use.</source>
-			<translation>لا يتطلب البيتكوين إذنًا للاستخدام.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin enables value transfer without intermediaries.</source>
-			<translation>يسمح البيتكوين بنقل القيمة دون وسطاء.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin feels like the internet before the browser.</source>
-			<translation>يشبه البيتكوين الإنترنت قبل المتصفح.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin has all the signs of a paradigm shift.</source>
-			<translation>يمتلك البيتكوين جميع علامات التحول النموذجي.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin has incentives aligned at its core.</source>
-			<translation>يمتلك البيتكوين حوافز متناسقة في جوهره.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin has the potential to become the first global currency.</source>
-			<translation>لدى البيتكوين القدرة على أن يصبح أول عملة عالمية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is Time</source>
-			<translation>البيتكوين هو الوقت</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a censorship-resistant store of value.</source>
-			<translation>البيتكوين مخزن للقيمة مقاوم للرقابة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a currency that is decentralized and cryptographic.</source>
-			<translation>البيتكوين عملة لامركزية ومشفرة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a global, neutral asset.</source>
-			<translation>البيتكوين أصل عالمي ومحايد.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a hedge against inflation.</source>
-			<translation>البيتكوين وسيلة تحوط ضد التضخم.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a hedge against monetary irresponsibility.</source>
-			<translation>البيتكوين وسيلة تحوط ضد عدم المسؤولية النقدية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a mathematical framework free of politics.</source>
-			<translation>البيتكوين إطار رياضي خالٍ من السياسة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a monetary revolution.</source>
-			<translation>البيتكوين ثورة نقدية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a network of truth.</source>
-			<translation>البيتكوين شبكة للحقيقة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a new ecosystem for efficient money movement.</source>
-			<translation>البيتكوين نظام بيئي جديد لتحريك الأموال بكفاءة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a peaceful revolution.</source>
-			<translation>البيتكوين ثورة سلمية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a programmable ledger.</source>
-			<translation>البيتكوين دفتر حسابات قابل للبرمجة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a protocol for value transfer.</source>
-			<translation>البيتكوين بروتوكول لنقل القيمة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a protocol, not a company.</source>
-			<translation>البيتكوين بروتوكول وليس شركة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a remarkable cryptographic achievement.</source>
-			<translation>البيتكوين إنجاز تشفيري مذهل.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a smart currency designed by forward-thinking engineers.</source>
-			<translation>البيتكوين عملة ذكية صممها مهندسون ذوو رؤية مستقبلية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a system of incentives, not trust.</source>
-			<translation>البيتكوين نظام حوافز وليس ثقة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a technological tour de force.</source>
-			<translation>البيتكوين إنجاز تقني مذهل.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a tool for human rights.</source>
-			<translation>البيتكوين أداة لحقوق الإنسان.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is a way to opt out.</source>
-			<translation>البيتكوين وسيلة للخروج من النظام.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is an economic network secured by incentives.</source>
-			<translation>البيتكوين شبكة اقتصادية مؤمنة بالحوافز.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is an idea whose time has come.</source>
-			<translation>البيتكوين فكرة حان وقتها.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is an international asset.</source>
-			<translation>البيتكوين أصل دولي.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is an open monetary network.</source>
-			<translation>البيتكوين شبكة نقدية مفتوحة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is antifragile.</source>
-			<translation>البيتكوين مضاد للهشاشة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is based on cryptographic proof.</source>
-			<translation>البيتكوين قائم على إثباتات تشفيرية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is borderless money.</source>
-			<translation>البيتكوين مال بلا حدود.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is censorship resistant.</source>
-			<translation>البيتكوين مقاوم للرقابة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is code, not promises.</source>
-			<translation>البيتكوين كود وليس وعودًا.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is decentralized by design.</source>
-			<translation>البيتكوين لامركزي بطبيعته.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is decentralized truth.</source>
-			<translation>البيتكوين حقيقة لامركزية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is digital capital.</source>
-			<translation>البيتكوين رأس مال رقمي.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is digital gold.</source>
-			<translation>البيتكوين ذهب رقمي.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is digital scarcity.</source>
-			<translation>البيتكوين ندرة رقمية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is driven by adoption and user acceptance.</source>
-			<translation>البيتكوين مدفوع بالتبني وقبول المستخدمين.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is economic freedom.</source>
-			<translation>البيتكوين حرية اقتصادية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is energy transformed into money.</source>
-			<translation>البيتكوين طاقة متحولة إلى مال.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is engineered scarcity.</source>
-			<translation>البيتكوين ندرة مصممة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is engineered to store value.</source>
-			<translation>البيتكوين مصمم لتخزين القيمة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is exciting because it removes intermediaries.</source>
-			<translation>البيتكوين مثير لأنه يزيل الوسطاء.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is financial freedom.</source>
-			<translation>البيتكوين حرية مالية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is freedom money.</source>
-			<translation>البيتكوين مال الحرية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is global money for a digital world.</source>
-			<translation>البيتكوين مال عالمي لعالم رقمي.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is global money.</source>
-			<translation>البيتكوين مال عالمي.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is governed by consensus, not authority.</source>
-			<translation>البيتكوين يُدار بالإجماع وليس بالسلطة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is here to stay.</source>
-			<translation>البيتكوين هنا ليبقى.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is immutable.</source>
-			<translation>البيتكوين غير قابل للتغيير.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is incorruptible money.</source>
-			<translation>البيتكوين مال غير قابل للفساد.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is incorruptible.</source>
-			<translation>البيتكوين غير قابل للفساد.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is independent money.</source>
-			<translation>البيتكوين مال مستقل.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is independent of central banks.</source>
-			<translation>البيتكوين مستقل عن البنوك المركزية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is math-based money.</source>
-			<translation>البيتكوين مال قائم على الرياضيات.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is monetary sovereignty.</source>
-			<translation>البيتكوين سيادة نقدية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is money over internet protocol.</source>
-			<translation>البيتكوين مال على بروتوكول الإنترنت.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is necessary and important for the future.</source>
-			<translation>البيتكوين ضروري ومهم للمستقبل.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is neutral money.</source>
-			<translation>البيتكوين مال محايد.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is not just money, it's a system of trust.</source>
-			<translation>البيتكوين ليس مجرد مال، بل نظام ثقة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is open source money.</source>
-			<translation>البيتكوين مال مفتوح المصدر.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is open to everyone.</source>
-			<translation>البيتكوين مفتوح للجميع.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is peer-to-peer finance replacing banks.</source>
-			<translation>البيتكوين تمويل من نظير إلى نظير يستبدل البنوك.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is permissionless innovation.</source>
-			<translation>البيتكوين ابتكار بدون إذن.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is programmable money.</source>
-			<translation>البيتكوين مال قابل للبرمجة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is regulated by math, not governments.</source>
-			<translation>البيتكوين منظم بالرياضيات وليس الحكومات.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is resilient.</source>
-			<translation>البيتكوين مرن.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is resistant to censorship and control.</source>
-			<translation>البيتكوين مقاوم للرقابة والتحكم.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is savings technology.</source>
-			<translation>البيتكوين تقنية ادخار.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is scarce by design.</source>
-			<translation>البيتكوين نادر بطبيعته.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is secured by energy and computation.</source>
-			<translation>البيتكوين مؤمن بالطاقة والحوسبة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is sound money.</source>
-			<translation>البيتكوين مال سليم.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is the apex property of the human race.</source>
-			<translation>البيتكوين أعلى أشكال الملكية للبشرية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is the base layer of money.</source>
-			<translation>البيتكوين الطبقة الأساسية للمال.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is the beginning of something great: a currency without a government.</source>
-			<translation>البيتكوين بداية شيء عظيم: عملة بدون حكومة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is the exit.</source>
-			<translation>البيتكوين هو المخرج.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is the first money that cannot be debased.</source>
-			<translation>البيتكوين أول مال لا يمكن تخفيض قيمته.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is the first real alternative to fiat money.</source>
-			<translation>البيتكوين أول بديل حقيقي للنقود الورقية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is the hardest asset.</source>
-			<translation>البيتكوين أقوى أصل.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is the hardest money ever created.</source>
-			<translation>البيتكوين أقوى مال تم إنشاؤه على الإطلاق.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is the internet of money.</source>
-			<translation>البيتكوين إنترنت المال.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is time.</source>
-			<translation>البيتكوين هو الوقت.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is transparent.</source>
-			<translation>البيتكوين شفاف.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is trust minimized.</source>
-			<translation>البيتكوين يقلل الحاجة إلى الثقة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is truth in code.</source>
-			<translation>البيتكوين هو الحقيقة في الكود.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is uncensorable and unconfiscatable.</source>
-			<translation>البيتكوين غير قابل للرقابة وغير قابل للمصادرة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is unstoppable code.</source>
-			<translation>البيتكوين كود لا يمكن إيقافه.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is unstoppable.</source>
-			<translation>البيتكوين لا يمكن إيقافه.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is verifiable.</source>
-			<translation>البيتكوين قابل للتحقق.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin is what PayPal tried to create.</source>
-			<translation>البيتكوين هو ما حاولت PayPal إنشاؤه.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin might lead to a world currency.</source>
-			<translation>قد يؤدي البيتكوين إلى عملة عالمية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin offers lower transaction costs than traditional systems.</source>
-			<translation>يوفر البيتكوين تكاليف معاملات أقل من الأنظمة التقليدية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin operates without central control.</source>
-			<translation>يعمل البيتكوين بدون تحكم مركزي.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin replaces the role of trusted institutions with code.</source>
-			<translation>يستبدل البيتكوين دور المؤسسات الموثوقة بالكود.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin replaces trust with verification.</source>
-			<translation>يستبدل البيتكوين الثقة بالتحقق.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin represents a significant leap forward in money.</source>
-			<translation>يمثل البيتكوين قفزة كبيرة في المال.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin scarcity is enforced by mathematics and energy.</source>
-			<translation>يتم فرض ندرة البيتكوين بواسطة الرياضيات والطاقة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin separates money from state.</source>
-			<translation>يفصل البيتكوين المال عن الدولة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin will do to banks what email did to the postal industry.</source>
-			<translation>سيفعل البيتكوين بالبنوك ما فعله البريد الإلكتروني بصناعة البريد.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin will probably work better than gold.</source>
-			<translation>من المحتمل أن يعمل البيتكوين بشكل أفضل من الذهب.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Bitcoin: Cryptography is Not Enough</source>
-			<translation>البيتكوين: التشفير وحده لا يكفي</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Can Bitcoin Be Palestine's Currency Of Freedom?</source>
-			<translation>هل يمكن أن يكون البيتكوين عملة الحرية لفلسطين؟</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Consensus is what defines Bitcoin.</source>
-			<translation>الإجماع هو ما يحدد البيتكوين.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Don't trust, verify.</source>
-			<translation>لا تثق، تحقق.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Fighting Monetary Colonialism With Open-Source Code</source>
-			<translation>محاربة الاستعمار النقدي باستخدام كود مفتوح المصدر</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Fix the money, fix the world.</source>
-			<translation>أصلح المال، أصلح العالم.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>How The U.S. Dollar Became The World’s Reserve Currency</source>
-			<translation>كيف أصبح الدولار الأمريكي عملة الاحتياط العالمية</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>I see Bitcoin as ultimately becoming a reserve currency for banks.</source>
-			<translation>أرى أن البيتكوين سيصبح في النهاية عملة احتياط للبنوك.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>I think it's brilliant.</source>
-			<translation>أعتقد أنه رائع.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>If you don't believe me or don't get it, I don't have time to try to convince you.</source>
-			<translation>إذا لم تصدقني أو لم تفهم، فلا وقت لدي لمحاولة إقناعك.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Learn Me A Bitcoin</source>
-			<translation>علمني البيتكوين</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Mastering Bitcoin (open source)</source>
-			<translation>Mastering Bitcoin (مفتوح المصدر)</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Money should be scarce, durable, and verifiable.</source>
-			<translation>يجب أن يكون المال نادرًا ودائمًا وقابلًا للتحقق.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Not your keys, not your coins.</source>
-			<translation>ليست مفاتيحك، ليست عملاتك.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Own the fastest horse.</source>
-			<translation>امتلك الحصان الأسرع.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Running bitcoin.</source>
-			<translation>تشغيل البيتكوين.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Security matters more than throughput.</source>
-			<translation>الأمان أهم من الإنتاجية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Shelling Out: The Origins of Money</source>
-			<translation>Shelling Out: أصول المال</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Stay humble, stack sats.</source>
-			<translation>ابق متواضعًا، وراكم الساتس.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Structural Adjustment: How The IMF And World Bank Repress Poor Countries</source>
-			<translation>التكيف الهيكلي: كيف يقمع صندوق النقد الدولي والبنك الدولي الدول الفقيرة</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>The Bullish Case for Bitcoin</source>
-			<translation>الحجة الصعودية للبيتكوين</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>The Invisible Cost Of War In The Age Of Quantitative Easing</source>
-			<translation>التكلفة غير المرئية للحرب في عصر التيسير الكمي</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.</source>
-			<translation>The Times 03/Jan/2009 المستشار على حافة خطة إنقاذ ثانية للبنوك.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>The blockchain records proofs, not just transactions.</source>
-			<translation>يسجل البلوكشين الأدلة وليس فقط المعاملات.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Total circulation will be 21 million coins.</source>
-			<translation>سيكون إجمالي العرض 21 مليون عملة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>Trusted third parties are security holes.</source>
-			<translation>الأطراف الثالثة الموثوقة هي ثغرات أمنية.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>We have proposed a system for electronic transactions without relying on trust.</source>
-			<translation>لقد اقترحنا نظامًا للمعاملات الإلكترونية دون الاعتماد على الثقة.</translation>
-		</message>
-		<name>bitcoin_quotes</name>
-		<message>
-			<source>With e-currency based on cryptographic proof, without trust.</source>
-			<translation>مع عملة إلكترونية قائمة على إثبات تشفيري، دون ثقة.</translation>
-		</message>
-	</context>
-	<context>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Error</source>
-			<translation>خطأ</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Executing the script</source>
-			<translation>تنفيذ البرنامج النصي</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Install udev files</source>
-			<translation>تثبيت ملفات udev</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No HWI AddressType could be found for {name}</source>
-			<translation>لم يتم العثور على نوع عنوان HWI لـ {name}</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>No suitable terminal emulator found.</source>
-			<translation>لم يتم العثور على محاكي طرفية مناسب.</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
-			<translation>يجب أن يكون جزء الشبكة {network_str} من أصل المفتاح {key_origin} مُعزّزًا بـ h</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
-			<translation>قد تظهر أخطاء USB بسبب عدم وجود ملفات udev. هل ترغب في تثبيت ملفات udev الآن؟</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>Unknown network/coin type {network_str} in {key_origin}</source>
-			<translation>نوع شبكة/عملة غير معروف {network_str} في {key_origin}</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>derivation_path {value} must start with a /</source>
-			<translation>يجب أن يبدأ مسار التحويل {value} بـ /</translation>
-		</message>
-		<name>bitcoin_usb</name>
-		<message>
-			<source>{value} is not a valid fingerprint</source>
-			<translation>{value} ليس بصمة صالحة</translation>
-		</message>
-	</context>
-	<context>
-		<name>category</name>
-		<message>
-			<source>Add Category</source>
-			<translation>إضافة فئة</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Category name:</source>
-			<translation>اسم الفئة:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Default</source>
-			<translation>افتراضي</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Enter new category name...</source>
-			<translation>أدخل اسم فئة جديدًا...</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Merge Categories</source>
-			<translation>دمج الفئات</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>New category name:</source>
-			<translation>اسم الفئة الجديدة:</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Rename Category</source>
-			<translation>إعادة تسمية الفئة</translation>
-		</message>
-		<name>category</name>
-		<message>
-			<source>Resulting category:</source>
-			<translation>الفئة الناتجة:</translation>
-		</message>
-	</context>
-	<context>
-		<name>constant</name>
-		<message>
-			<source>All files (*)</source>
-			<translation>كل الملفات (*)</translation>
-		</message>
-		<name>constant</name>
-		<message>
-			<source>Complete Transaction (*.txn)</source>
-			<translation>المعاملة الكاملة (*.txn)</translation>
-		</message>
-		<name>constant</name>
-		<message>
-			<source>Partial Transaction (*.psbt)</source>
-			<translation>المعاملة الجزئية (*.psbt)</translation>
-		</message>
-		<name>constant</name>
-		<message>
-			<source>Transaction (*.txn *.psbt);;All files (*)</source>
-			<translation>المعاملة (*.txn *.psbt);;كل الملفات (*)</translation>
-		</message>
-	</context>
-	<context>
-		<name>d</name>
-		<message>
-			<source>Connect to USB signer</source>
-			<translation>الاتصال بموقِّع USB</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Copy to clipboard</source>
-			<translation>نسخ إلى الحافظة</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Create PDF</source>
-			<translation>إنشاء قوات الدفاع الشعبي</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Create random mnemonic</source>
-			<translation>إنشاء تذكير عشوائي</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Import from camera</source>
-			<translation>الاستيراد من الكاميرا</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Open file</source>
-			<translation>افتح الملف</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Read QR code from camera</source>
-			<translation>قراءة رمز الاستجابة السريعة من الكاميرا</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Recovery</source>
-			<translation>الاسترداد</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Recovery Signer {i}</source>
-			<translation>مُوقع الاسترداد {i}</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Signer {i}</source>
-			<translation>الموقّع {i}</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>Text copied to Clipboard</source>
-			<translation>تم نسخ النص إلى الحافظة</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>View on block explorer</source>
-			<translation>عرض على كتلة اكسبلورر</translation>
-		</message>
-		<name>d</name>
-		<message>
-			<source>{} copied to Clipboard</source>
-			<translation>{} نسخ إلى الحافظة</translation>
-		</message>
-	</context>
-	<context>
-		<name>data</name>
-		<message>
-			<source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
-			<translation>البصمات مختلفة. يتم دعم البصمات المتطابقة فقط، مما يضمن أن جميع المفاتيح المشتقة تنتمي إلى نفس الموقع!</translation>
-		</message>
-	</context>
-	<context>
-		<name>descriptor</name>
-		<message>
-			<source>Export Wallet for {name}</source>
-			<translation>تصدير المحفظة لـ {name}</translation>
-		</message>
-	</context>
-	<context>
-		<name>general</name>
-		<message>
-			<source>PSBT</source>
-			<translation>PSBT</translation>
-		</message>
-		<name>general</name>
-		<message>
-			<source>Transaction</source>
-			<translation>معاملة</translation>
-		</message>
-	</context>
-	<context>
-		<name>gpg</name>
-		<message>
-			<source>Fingerprint</source>
-			<translation>بصمة الإصبع</translation>
-		</message>
-		<name>gpg</name>
-		<message>
-			<source>PGP signature is valid.</source>
-			<translation>توقيع PGP صالح.</translation>
-		</message>
-		<name>gpg</name>
-		<message>
-			<source>PGP signature verification failed.</source>
-			<translation>فشل التحقق من توقيع PGP.</translation>
-		</message>
-		<name>gpg</name>
-		<message>
-			<source>Please paste the signer's public key block.</source>
-			<translation>يرجى لصق كتلة المفتاح العام للموقّع.</translation>
-		</message>
-		<name>gpg</name>
-		<message>
-			<source>Public key required</source>
-			<translation>المفتاح العام مطلوب</translation>
-		</message>
-		<name>gpg</name>
-		<message>
-			<source>Signed PGP message is required.</source>
-			<translation>مطلوب رسالة PGP موقعة.</translation>
-		</message>
-	</context>
-	<context>
-		<name>help</name>
-		<message>
-			<source>Help</source>
-			<translation>مساعدة</translation>
-		</message>
-	</context>
-	<context>
-		<name>hist_list</name>
-		<message>
-			<source>All status</source>
-			<translation>كل الوضع</translation>
-		</message>
-		<name>hist_list</name>
-		<message>
-			<source>All types</source>
-			<translation>كل الانواع</translation>
-		</message>
-		<name>hist_list</name>
-		<message>
-			<source>Change</source>
-			<translation>يتغير</translation>
-		</message>
-		<name>hist_list</name>
-		<message>
-			<source>Funded</source>
-			<translation>ممولة</translation>
-		</message>
-		<name>hist_list</name>
-		<message>
-			<source>Funded or Unused</source>
-			<translation>الممولة أو غير المستخدمة</translation>
-		</message>
-		<name>hist_list</name>
-		<message>
-			<source>Receiving</source>
-			<translation>يستلم</translation>
-		</message>
-		<name>hist_list</name>
-		<message>
-			<source>Unused</source>
-			<translation>غير مستعمل</translation>
-		</message>
-		<name>hist_list</name>
-		<message>
-			<source>Used</source>
-			<translation>مستخدم</translation>
-		</message>
-	</context>
-	<context>
-		<name>import</name>
-		<message>
-			<source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
-			<translation>يرجى الذهاب إلى علامة التبويب مزامنة واستيراد مفتاح المزامنة الخاص بك هناك. ثم سيتم استعادة العلامات تلقائيًا.</translation>
-		</message>
-	</context>
-	<context>
-		<name>importer</name>
-		<message>
-			<source>Import Signature</source>
-			<translation>استيراد التوقيع</translation>
-		</message>
-		<name>importer</name>
-		<message>
-			<source>Import file</source>
-			<translation>استيراد ملف</translation>
-		</message>
-	</context>
-	<context>
-		<name>mytreeview</name>
-		<message>
-			<source>Export as CSV</source>
-			<translation>تصدير كملف CSV</translation>
-		</message>
-		<name>mytreeview</name>
-		<message>
-			<source>Type to filter</source>
-			<translation>اكتب للتصفية</translation>
-		</message>
-		<name>mytreeview</name>
-		<message>
-			<source>Visible columns</source>
-			<translation>الأعمدة المرئية</translation>
-		</message>
-	</context>
-	<context>
-		<name>net_conf</name>
-		<message>
-			<source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
-			<translation>خيار جيد هو {electrum_testnet4} وكمتصفح للكتل {explorer_testnet4}. هناك {faucet} للحصول على عملات اختبار مجانية.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
-			<translation>خيار جيد هو {electrum_testnet}، ومُستكشف الكتل هو {explorer_testnet}</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the 'Peer configuration' section below.</source>
-			<translation>تُعد مرشحات الكتل المدمجة طريقة سريعة وتحافظ على الخصوصية للحصول على جميع معلومات سلسلة الكتل. ستتصل المحفظة مباشرةً بعُقد بيتكوين متعددة وتنزّل منها ملخصات الكتل (مرشحات الكتل المدمجة).&lt;br&gt;يمكنك إعداد الأقران المفضّلين أو الأقران المسموح بهم حصريًا في قسم 'إعدادات الأقران' أدناه.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>Run your bitcoind with "bitcoind -chain=regtest"</source>
-			<translation>قم بتشغيل bitcoind الخاص بك باستخدام "bitcoind -chain=regtest"</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>Run your bitcoind with "bitcoind -chain=signet"  </source>
-			<translation>شغّل bitcoind باستخدام "bitcoind -chain=signet"  </translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>Run your bitcoind with "bitcoind -chain=test"</source>
-			<translation>قم بتشغيل bitcoind الخاص بك باستخدام "bitcoind -chain=test"</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>Run your bitcoind with "bitcoind -chain=testnet4"</source>
-			<translation>شغل bitcoind الخاص بك باستخدام "bitcoind -chain=testnet4"</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
-			<translation>Signet يختار {electrum} ويستخدم مستعرض الكتل على {mempool_url}. يوجد {faucet} للحصول على عملات اختبار مجانية。</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>The server can associate your IP address with the wallet addresses.
+    </message>
+</context>
+<context>
+    <name>XpubAnalyzer</name>
+    <message>
+        <source>Converting format</source>
+        <translation>تحويل الصيغة</translation>
+    </message>
+    <name>XpubAnalyzer</name>
+    <message>
+        <source>Invalid xpub</source>
+        <translation>Xpub غير صالح</translation>
+    </message>
+    <name>XpubAnalyzer</name>
+    <message>
+        <source>Missing xPub</source>
+        <translation>xPub مفقود</translation>
+    </message>
+    <name>XpubAnalyzer</name>
+    <message>
+        <source>The xpub is in SLIP132 format. Converting to standard format.</source>
+        <translation>xpub في تنسيق SLIP132. تحويل إلى تنسيق قياسي.</translation>
+    </message>
+</context>
+<context>
+    <name>_SignTab</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>_SignTab</name>
+    <message>
+        <source>Address used to sign the message</source>
+        <translation>العنوان المستخدم لتوقيع الرسالة</translation>
+    </message>
+    <name>_SignTab</name>
+    <message>
+        <source>Enter message</source>
+        <translation>أدخل الرسالة</translation>
+    </message>
+    <name>_SignTab</name>
+    <message>
+        <source>Message</source>
+        <translation>الرسالة</translation>
+    </message>
+</context>
+<context>
+    <name>address_list</name>
+    <message>
+        <source>All status</source>
+        <translation>كل الوضع</translation>
+    </message>
+    <name>address_list</name>
+    <message>
+        <source>All types</source>
+        <translation>كل الانواع</translation>
+    </message>
+    <name>address_list</name>
+    <message>
+        <source>Change</source>
+        <translation>يتغير</translation>
+    </message>
+    <name>address_list</name>
+    <message>
+        <source>Funded</source>
+        <translation>ممولة</translation>
+    </message>
+    <name>address_list</name>
+    <message>
+        <source>Funded or Unused</source>
+        <translation>الممولة أو غير المستخدمة</translation>
+    </message>
+    <name>address_list</name>
+    <message>
+        <source>Receiving</source>
+        <translation>يستلم</translation>
+    </message>
+    <name>address_list</name>
+    <message>
+        <source>Unused</source>
+        <translation>غير مستعمل</translation>
+    </message>
+    <name>address_list</name>
+    <message>
+        <source>Used and empty</source>
+        <translation>مستخدمة وفارغة</translation>
+    </message>
+</context>
+<context>
+    <name>basetab</name>
+    <message>
+        <source>Finish and go to Dashboard</source>
+        <translation>إنهاء والانتقال إلى لوحة التحكم</translation>
+    </message>
+    <name>basetab</name>
+    <message>
+        <source>Next step</source>
+        <translation>الخطوة التالية</translation>
+    </message>
+    <name>basetab</name>
+    <message>
+        <source>Previous step</source>
+        <translation>الخطوة السابقة</translation>
+    </message>
+</context>
+<context>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>21 Lessons: What I&apos;ve Learned from Bitcoin</source>
+        <translation>21 درسًا: ما تعلمته من البيتكوين</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>A node verifies everything itself.</source>
+        <translation>تتحقق العقدة من كل شيء بنفسها.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin Is A Trojan Horse For Freedom</source>
+        <translation>البيتكوين حصان طروادة للحرية</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin Whitepaper</source>
+        <translation>الورقة البيضاء للبيتكوين</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin Whitepaper (Nakamoto Institute)</source>
+        <translation>الورقة البيضاء للبيتكوين (معهد ناكاموتو)</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin aligns incentives globally.</source>
+        <translation>البيتكوين ينسق الحوافز عالميًا.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin allows innovation without permission.</source>
+        <translation>البيتكوين يسمح بالابتكار دون إذن.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin changes everything.</source>
+        <translation>البيتكوين يغير كل شيء.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin could become one of the most important ways to transfer value.</source>
+        <translation>قد يصبح البيتكوين أحد أهم طرق نقل القيمة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin does not require permission to use.</source>
+        <translation>لا يتطلب البيتكوين إذنًا للاستخدام.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin enables value transfer without intermediaries.</source>
+        <translation>يسمح البيتكوين بنقل القيمة دون وسطاء.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin feels like the internet before the browser.</source>
+        <translation>يشبه البيتكوين الإنترنت قبل المتصفح.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin has all the signs of a paradigm shift.</source>
+        <translation>يمتلك البيتكوين جميع علامات التحول النموذجي.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin has incentives aligned at its core.</source>
+        <translation>يمتلك البيتكوين حوافز متناسقة في جوهره.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin has the potential to become the first global currency.</source>
+        <translation>لدى البيتكوين القدرة على أن يصبح أول عملة عالمية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is Time</source>
+        <translation>البيتكوين هو الوقت</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a censorship-resistant store of value.</source>
+        <translation>البيتكوين مخزن للقيمة مقاوم للرقابة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a currency that is decentralized and cryptographic.</source>
+        <translation>البيتكوين عملة لامركزية ومشفرة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a global, neutral asset.</source>
+        <translation>البيتكوين أصل عالمي ومحايد.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a hedge against inflation.</source>
+        <translation>البيتكوين وسيلة تحوط ضد التضخم.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a hedge against monetary irresponsibility.</source>
+        <translation>البيتكوين وسيلة تحوط ضد عدم المسؤولية النقدية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a mathematical framework free of politics.</source>
+        <translation>البيتكوين إطار رياضي خالٍ من السياسة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a monetary revolution.</source>
+        <translation>البيتكوين ثورة نقدية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a network of truth.</source>
+        <translation>البيتكوين شبكة للحقيقة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a new ecosystem for efficient money movement.</source>
+        <translation>البيتكوين نظام بيئي جديد لتحريك الأموال بكفاءة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a peaceful revolution.</source>
+        <translation>البيتكوين ثورة سلمية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a programmable ledger.</source>
+        <translation>البيتكوين دفتر حسابات قابل للبرمجة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a protocol for value transfer.</source>
+        <translation>البيتكوين بروتوكول لنقل القيمة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a protocol, not a company.</source>
+        <translation>البيتكوين بروتوكول وليس شركة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a remarkable cryptographic achievement.</source>
+        <translation>البيتكوين إنجاز تشفيري مذهل.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a smart currency designed by forward-thinking engineers.</source>
+        <translation>البيتكوين عملة ذكية صممها مهندسون ذوو رؤية مستقبلية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a system of incentives, not trust.</source>
+        <translation>البيتكوين نظام حوافز وليس ثقة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a technological tour de force.</source>
+        <translation>البيتكوين إنجاز تقني مذهل.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a tool for human rights.</source>
+        <translation>البيتكوين أداة لحقوق الإنسان.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is a way to opt out.</source>
+        <translation>البيتكوين وسيلة للخروج من النظام.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is an economic network secured by incentives.</source>
+        <translation>البيتكوين شبكة اقتصادية مؤمنة بالحوافز.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is an idea whose time has come.</source>
+        <translation>البيتكوين فكرة حان وقتها.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is an international asset.</source>
+        <translation>البيتكوين أصل دولي.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is an open monetary network.</source>
+        <translation>البيتكوين شبكة نقدية مفتوحة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is antifragile.</source>
+        <translation>البيتكوين مضاد للهشاشة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is based on cryptographic proof.</source>
+        <translation>البيتكوين قائم على إثباتات تشفيرية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is borderless money.</source>
+        <translation>البيتكوين مال بلا حدود.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is censorship resistant.</source>
+        <translation>البيتكوين مقاوم للرقابة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is code, not promises.</source>
+        <translation>البيتكوين كود وليس وعودًا.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is decentralized by design.</source>
+        <translation>البيتكوين لامركزي بطبيعته.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is decentralized truth.</source>
+        <translation>البيتكوين حقيقة لامركزية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is digital capital.</source>
+        <translation>البيتكوين رأس مال رقمي.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is digital gold.</source>
+        <translation>البيتكوين ذهب رقمي.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is digital scarcity.</source>
+        <translation>البيتكوين ندرة رقمية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is driven by adoption and user acceptance.</source>
+        <translation>البيتكوين مدفوع بالتبني وقبول المستخدمين.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is economic freedom.</source>
+        <translation>البيتكوين حرية اقتصادية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is energy transformed into money.</source>
+        <translation>البيتكوين طاقة متحولة إلى مال.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is engineered scarcity.</source>
+        <translation>البيتكوين ندرة مصممة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is engineered to store value.</source>
+        <translation>البيتكوين مصمم لتخزين القيمة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is exciting because it removes intermediaries.</source>
+        <translation>البيتكوين مثير لأنه يزيل الوسطاء.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is financial freedom.</source>
+        <translation>البيتكوين حرية مالية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is freedom money.</source>
+        <translation>البيتكوين مال الحرية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is global money for a digital world.</source>
+        <translation>البيتكوين مال عالمي لعالم رقمي.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is global money.</source>
+        <translation>البيتكوين مال عالمي.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is governed by consensus, not authority.</source>
+        <translation>البيتكوين يُدار بالإجماع وليس بالسلطة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is here to stay.</source>
+        <translation>البيتكوين هنا ليبقى.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is immutable.</source>
+        <translation>البيتكوين غير قابل للتغيير.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is incorruptible money.</source>
+        <translation>البيتكوين مال غير قابل للفساد.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is incorruptible.</source>
+        <translation>البيتكوين غير قابل للفساد.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is independent money.</source>
+        <translation>البيتكوين مال مستقل.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is independent of central banks.</source>
+        <translation>البيتكوين مستقل عن البنوك المركزية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is math-based money.</source>
+        <translation>البيتكوين مال قائم على الرياضيات.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is monetary sovereignty.</source>
+        <translation>البيتكوين سيادة نقدية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is money over internet protocol.</source>
+        <translation>البيتكوين مال على بروتوكول الإنترنت.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is necessary and important for the future.</source>
+        <translation>البيتكوين ضروري ومهم للمستقبل.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is neutral money.</source>
+        <translation>البيتكوين مال محايد.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is not just money, it&apos;s a system of trust.</source>
+        <translation>البيتكوين ليس مجرد مال، بل نظام ثقة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is open source money.</source>
+        <translation>البيتكوين مال مفتوح المصدر.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is open to everyone.</source>
+        <translation>البيتكوين مفتوح للجميع.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is peer-to-peer finance replacing banks.</source>
+        <translation>البيتكوين تمويل من نظير إلى نظير يستبدل البنوك.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is permissionless innovation.</source>
+        <translation>البيتكوين ابتكار بدون إذن.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is programmable money.</source>
+        <translation>البيتكوين مال قابل للبرمجة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is regulated by math, not governments.</source>
+        <translation>البيتكوين منظم بالرياضيات وليس الحكومات.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is resilient.</source>
+        <translation>البيتكوين مرن.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is resistant to censorship and control.</source>
+        <translation>البيتكوين مقاوم للرقابة والتحكم.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is savings technology.</source>
+        <translation>البيتكوين تقنية ادخار.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is scarce by design.</source>
+        <translation>البيتكوين نادر بطبيعته.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is secured by energy and computation.</source>
+        <translation>البيتكوين مؤمن بالطاقة والحوسبة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is sound money.</source>
+        <translation>البيتكوين مال سليم.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is the apex property of the human race.</source>
+        <translation>البيتكوين أعلى أشكال الملكية للبشرية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is the base layer of money.</source>
+        <translation>البيتكوين الطبقة الأساسية للمال.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is the beginning of something great: a currency without a government.</source>
+        <translation>البيتكوين بداية شيء عظيم: عملة بدون حكومة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is the exit.</source>
+        <translation>البيتكوين هو المخرج.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is the first money that cannot be debased.</source>
+        <translation>البيتكوين أول مال لا يمكن تخفيض قيمته.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is the first real alternative to fiat money.</source>
+        <translation>البيتكوين أول بديل حقيقي للنقود الورقية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is the hardest asset.</source>
+        <translation>البيتكوين أقوى أصل.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is the hardest money ever created.</source>
+        <translation>البيتكوين أقوى مال تم إنشاؤه على الإطلاق.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is the internet of money.</source>
+        <translation>البيتكوين إنترنت المال.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is time.</source>
+        <translation>البيتكوين هو الوقت.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is transparent.</source>
+        <translation>البيتكوين شفاف.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is trust minimized.</source>
+        <translation>البيتكوين يقلل الحاجة إلى الثقة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is truth in code.</source>
+        <translation>البيتكوين هو الحقيقة في الكود.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is uncensorable and unconfiscatable.</source>
+        <translation>البيتكوين غير قابل للرقابة وغير قابل للمصادرة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is unstoppable code.</source>
+        <translation>البيتكوين كود لا يمكن إيقافه.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is unstoppable.</source>
+        <translation>البيتكوين لا يمكن إيقافه.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is verifiable.</source>
+        <translation>البيتكوين قابل للتحقق.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin is what PayPal tried to create.</source>
+        <translation>البيتكوين هو ما حاولت PayPal إنشاؤه.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin might lead to a world currency.</source>
+        <translation>قد يؤدي البيتكوين إلى عملة عالمية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin offers lower transaction costs than traditional systems.</source>
+        <translation>يوفر البيتكوين تكاليف معاملات أقل من الأنظمة التقليدية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin operates without central control.</source>
+        <translation>يعمل البيتكوين بدون تحكم مركزي.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin replaces the role of trusted institutions with code.</source>
+        <translation>يستبدل البيتكوين دور المؤسسات الموثوقة بالكود.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin replaces trust with verification.</source>
+        <translation>يستبدل البيتكوين الثقة بالتحقق.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin represents a significant leap forward in money.</source>
+        <translation>يمثل البيتكوين قفزة كبيرة في المال.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin scarcity is enforced by mathematics and energy.</source>
+        <translation>يتم فرض ندرة البيتكوين بواسطة الرياضيات والطاقة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin separates money from state.</source>
+        <translation>يفصل البيتكوين المال عن الدولة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin will do to banks what email did to the postal industry.</source>
+        <translation>سيفعل البيتكوين بالبنوك ما فعله البريد الإلكتروني بصناعة البريد.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin will probably work better than gold.</source>
+        <translation>من المحتمل أن يعمل البيتكوين بشكل أفضل من الذهب.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Bitcoin: Cryptography is Not Enough</source>
+        <translation>البيتكوين: التشفير وحده لا يكفي</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Can Bitcoin Be Palestine&apos;s Currency Of Freedom?</source>
+        <translation>هل يمكن أن يكون البيتكوين عملة الحرية لفلسطين؟</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Consensus is what defines Bitcoin.</source>
+        <translation>الإجماع هو ما يحدد البيتكوين.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Don&apos;t trust, verify.</source>
+        <translation>لا تثق، تحقق.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Fighting Monetary Colonialism With Open-Source Code</source>
+        <translation>محاربة الاستعمار النقدي باستخدام كود مفتوح المصدر</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Fix the money, fix the world.</source>
+        <translation>أصلح المال، أصلح العالم.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>How The U.S. Dollar Became The World’s Reserve Currency</source>
+        <translation>كيف أصبح الدولار الأمريكي عملة الاحتياط العالمية</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>I see Bitcoin as ultimately becoming a reserve currency for banks.</source>
+        <translation>أرى أن البيتكوين سيصبح في النهاية عملة احتياط للبنوك.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>I think it&apos;s brilliant.</source>
+        <translation>أعتقد أنه رائع.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>If you don&apos;t believe me or don&apos;t get it, I don&apos;t have time to try to convince you.</source>
+        <translation>إذا لم تصدقني أو لم تفهم، فلا وقت لدي لمحاولة إقناعك.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Learn Me A Bitcoin</source>
+        <translation>علمني البيتكوين</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Mastering Bitcoin (open source)</source>
+        <translation>Mastering Bitcoin (مفتوح المصدر)</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Money should be scarce, durable, and verifiable.</source>
+        <translation>يجب أن يكون المال نادرًا ودائمًا وقابلًا للتحقق.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Not your keys, not your coins.</source>
+        <translation>ليست مفاتيحك، ليست عملاتك.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Own the fastest horse.</source>
+        <translation>امتلك الحصان الأسرع.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Running bitcoin.</source>
+        <translation>تشغيل البيتكوين.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Security matters more than throughput.</source>
+        <translation>الأمان أهم من الإنتاجية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Shelling Out: The Origins of Money</source>
+        <translation>Shelling Out: أصول المال</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Stay humble, stack sats.</source>
+        <translation>ابق متواضعًا، وراكم الساتس.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Structural Adjustment: How The IMF And World Bank Repress Poor Countries</source>
+        <translation>التكيف الهيكلي: كيف يقمع صندوق النقد الدولي والبنك الدولي الدول الفقيرة</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>The Bullish Case for Bitcoin</source>
+        <translation>الحجة الصعودية للبيتكوين</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>The Invisible Cost Of War In The Age Of Quantitative Easing</source>
+        <translation>التكلفة غير المرئية للحرب في عصر التيسير الكمي</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.</source>
+        <translation>The Times 03/Jan/2009 المستشار على حافة خطة إنقاذ ثانية للبنوك.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>The blockchain records proofs, not just transactions.</source>
+        <translation>يسجل البلوكشين الأدلة وليس فقط المعاملات.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Total circulation will be 21 million coins.</source>
+        <translation>سيكون إجمالي العرض 21 مليون عملة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>Trusted third parties are security holes.</source>
+        <translation>الأطراف الثالثة الموثوقة هي ثغرات أمنية.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>We have proposed a system for electronic transactions without relying on trust.</source>
+        <translation>لقد اقترحنا نظامًا للمعاملات الإلكترونية دون الاعتماد على الثقة.</translation>
+    </message>
+    <name>bitcoin_quotes</name>
+    <message>
+        <source>With e-currency based on cryptographic proof, without trust.</source>
+        <translation>مع عملة إلكترونية قائمة على إثبات تشفيري، دون ثقة.</translation>
+    </message>
+</context>
+<context>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>Error</source>
+        <translation>خطأ</translation>
+    </message>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>Executing the script</source>
+        <translation>تنفيذ البرنامج النصي</translation>
+    </message>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>Install udev files</source>
+        <translation>تثبيت ملفات udev</translation>
+    </message>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>No HWI AddressType could be found for {name}</source>
+        <translation>لم يتم العثور على نوع عنوان HWI لـ {name}</translation>
+    </message>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>No suitable terminal emulator found.</source>
+        <translation>لم يتم العثور على محاكي طرفية مناسب.</translation>
+    </message>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>The network part {network_str} of the key origin {key_origin} must be hardened with a h</source>
+        <translation>يجب أن يكون جزء الشبكة {network_str} من أصل المفتاح {key_origin} مُعزّزًا بـ h</translation>
+    </message>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>USB errors can appear due to missing udev files. Do you want to install udev files now?</source>
+        <translation>قد تظهر أخطاء USB بسبب عدم وجود ملفات udev. هل ترغب في تثبيت ملفات udev الآن؟</translation>
+    </message>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>Unknown network/coin type {network_str} in {key_origin}</source>
+        <translation>نوع شبكة/عملة غير معروف {network_str} في {key_origin}</translation>
+    </message>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>derivation_path {value} must start with a /</source>
+        <translation>يجب أن يبدأ مسار التحويل {value} بـ /</translation>
+    </message>
+    <name>bitcoin_usb</name>
+    <message>
+        <source>{value} is not a valid fingerprint</source>
+        <translation>{value} ليس بصمة صالحة</translation>
+    </message>
+</context>
+<context>
+    <name>category</name>
+    <message>
+        <source>Add Category</source>
+        <translation>إضافة فئة</translation>
+    </message>
+    <name>category</name>
+    <message>
+        <source>Category name:</source>
+        <translation>اسم الفئة:</translation>
+    </message>
+    <name>category</name>
+    <message>
+        <source>Default</source>
+        <translation>افتراضي</translation>
+    </message>
+    <name>category</name>
+    <message>
+        <source>Enter new category name...</source>
+        <translation>أدخل اسم فئة جديدًا...</translation>
+    </message>
+    <name>category</name>
+    <message>
+        <source>Merge Categories</source>
+        <translation>دمج الفئات</translation>
+    </message>
+    <name>category</name>
+    <message>
+        <source>New category name:</source>
+        <translation>اسم الفئة الجديدة:</translation>
+    </message>
+    <name>category</name>
+    <message>
+        <source>Rename Category</source>
+        <translation>إعادة تسمية الفئة</translation>
+    </message>
+    <name>category</name>
+    <message>
+        <source>Resulting category:</source>
+        <translation>الفئة الناتجة:</translation>
+    </message>
+</context>
+<context>
+    <name>constant</name>
+    <message>
+        <source>All files (*)</source>
+        <translation>كل الملفات (*)</translation>
+    </message>
+    <name>constant</name>
+    <message>
+        <source>Complete Transaction (*.txn)</source>
+        <translation>المعاملة الكاملة (*.txn)</translation>
+    </message>
+    <name>constant</name>
+    <message>
+        <source>Partial Transaction (*.psbt)</source>
+        <translation>المعاملة الجزئية (*.psbt)</translation>
+    </message>
+    <name>constant</name>
+    <message>
+        <source>Transaction (*.txn *.psbt);;All files (*)</source>
+        <translation>المعاملة (*.txn *.psbt);;كل الملفات (*)</translation>
+    </message>
+</context>
+<context>
+    <name>d</name>
+    <message>
+        <source>Connect to USB signer</source>
+        <translation>الاتصال بموقِّع USB</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Copy to clipboard</source>
+        <translation>نسخ إلى الحافظة</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Create PDF</source>
+        <translation>إنشاء قوات الدفاع الشعبي</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Create random mnemonic</source>
+        <translation>إنشاء تذكير عشوائي</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Import from camera</source>
+        <translation>الاستيراد من الكاميرا</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Open file</source>
+        <translation>افتح الملف</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Read QR code from camera</source>
+        <translation>قراءة رمز الاستجابة السريعة من الكاميرا</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Recovery</source>
+        <translation>الاسترداد</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Recovery Signer {i}</source>
+        <translation>مُوقع الاسترداد {i}</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Signer {i}</source>
+        <translation>الموقّع {i}</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>Text copied to Clipboard</source>
+        <translation>تم نسخ النص إلى الحافظة</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>View on block explorer</source>
+        <translation>عرض على كتلة اكسبلورر</translation>
+    </message>
+    <name>d</name>
+    <message>
+        <source>{} copied to Clipboard</source>
+        <translation>{} نسخ إلى الحافظة</translation>
+    </message>
+</context>
+<context>
+    <name>data</name>
+    <message>
+        <source>The fingerprints differ.  Only same fingerprints are supported, ensuring all derived keys belong to the same signer!</source>
+        <translation>البصمات مختلفة. يتم دعم البصمات المتطابقة فقط، مما يضمن أن جميع المفاتيح المشتقة تنتمي إلى نفس الموقع!</translation>
+    </message>
+</context>
+<context>
+    <name>descriptor</name>
+    <message>
+        <source>Export Wallet for {name}</source>
+        <translation>تصدير المحفظة لـ {name}</translation>
+    </message>
+</context>
+<context>
+    <name>general</name>
+    <message>
+        <source>PSBT</source>
+        <translation>PSBT</translation>
+    </message>
+    <name>general</name>
+    <message>
+        <source>Transaction</source>
+        <translation>معاملة</translation>
+    </message>
+</context>
+<context>
+    <name>gpg</name>
+    <message>
+        <source>Fingerprint</source>
+        <translation>بصمة الإصبع</translation>
+    </message>
+    <name>gpg</name>
+    <message>
+        <source>PGP signature is valid.</source>
+        <translation>توقيع PGP صالح.</translation>
+    </message>
+    <name>gpg</name>
+    <message>
+        <source>PGP signature verification failed.</source>
+        <translation>فشل التحقق من توقيع PGP.</translation>
+    </message>
+    <name>gpg</name>
+    <message>
+        <source>Please paste the signer&apos;s public key block.</source>
+        <translation>يرجى لصق كتلة المفتاح العام للموقّع.</translation>
+    </message>
+    <name>gpg</name>
+    <message>
+        <source>Public key required</source>
+        <translation>المفتاح العام مطلوب</translation>
+    </message>
+    <name>gpg</name>
+    <message>
+        <source>Signed PGP message is required.</source>
+        <translation>مطلوب رسالة PGP موقعة.</translation>
+    </message>
+</context>
+<context>
+    <name>help</name>
+    <message>
+        <source>Help</source>
+        <translation>مساعدة</translation>
+    </message>
+</context>
+<context>
+    <name>hist_list</name>
+    <message>
+        <source>All status</source>
+        <translation>كل الوضع</translation>
+    </message>
+    <name>hist_list</name>
+    <message>
+        <source>All types</source>
+        <translation>كل الانواع</translation>
+    </message>
+    <name>hist_list</name>
+    <message>
+        <source>Change</source>
+        <translation>يتغير</translation>
+    </message>
+    <name>hist_list</name>
+    <message>
+        <source>Funded</source>
+        <translation>ممولة</translation>
+    </message>
+    <name>hist_list</name>
+    <message>
+        <source>Funded or Unused</source>
+        <translation>الممولة أو غير المستخدمة</translation>
+    </message>
+    <name>hist_list</name>
+    <message>
+        <source>Receiving</source>
+        <translation>يستلم</translation>
+    </message>
+    <name>hist_list</name>
+    <message>
+        <source>Unused</source>
+        <translation>غير مستعمل</translation>
+    </message>
+    <name>hist_list</name>
+    <message>
+        <source>Used</source>
+        <translation>مستخدم</translation>
+    </message>
+</context>
+<context>
+    <name>import</name>
+    <message>
+        <source>Please go to the Sync Tab and import your Sync key there. The labels will then be automatically restored.</source>
+        <translation>يرجى الذهاب إلى علامة التبويب مزامنة واستيراد مفتاح المزامنة الخاص بك هناك. ثم سيتم استعادة العلامات تلقائيًا.</translation>
+    </message>
+</context>
+<context>
+    <name>importer</name>
+    <message>
+        <source>Import Signature</source>
+        <translation>استيراد التوقيع</translation>
+    </message>
+    <name>importer</name>
+    <message>
+        <source>Import file</source>
+        <translation>استيراد ملف</translation>
+    </message>
+</context>
+<context>
+    <name>mytreeview</name>
+    <message>
+        <source>Export as CSV</source>
+        <translation>تصدير كملف CSV</translation>
+    </message>
+    <name>mytreeview</name>
+    <message>
+        <source>Type to filter</source>
+        <translation>اكتب للتصفية</translation>
+    </message>
+    <name>mytreeview</name>
+    <message>
+        <source>Visible columns</source>
+        <translation>الأعمدة المرئية</translation>
+    </message>
+</context>
+<context>
+    <name>net_conf</name>
+    <message>
+        <source>A good option is  {electrum_testnet4} and as block explorer {explorer_testnet4}. There is a {faucet} for free test coins.</source>
+        <translation>خيار جيد هو {electrum_testnet4} وكمتصفح للكتل {explorer_testnet4}. هناك {faucet} للحصول على عملات اختبار مجانية.</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>A good option is  {electrum_testnet} and as block explorer {explorer_testnet}</source>
+        <translation>خيار جيد هو {electrum_testnet}، ومُستكشف الكتل هو {explorer_testnet}</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>Compact Block Filters are a private and fast way to get all blockchain information. The wallet will connect directly to multiple bitcoin nodes and download block summaries (Compact Block Filters) from them.&lt;br&gt;You can configure preferred or exclusive peers in the &apos;Peer configuration&apos; section below.</source>
+        <translation>تُعد مرشحات الكتل المدمجة طريقة سريعة وتحافظ على الخصوصية للحصول على جميع معلومات سلسلة الكتل. ستتصل المحفظة مباشرةً بعُقد بيتكوين متعددة وتنزّل منها ملخصات الكتل (مرشحات الكتل المدمجة).&lt;br&gt;يمكنك إعداد الأقران المفضّلين أو الأقران المسموح بهم حصريًا في قسم &apos;إعدادات الأقران&apos; أدناه.</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=regtest&quot;</source>
+        <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=regtest&quot;</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=signet&quot;  </source>
+        <translation>شغّل bitcoind باستخدام &quot;bitcoind -chain=signet&quot;  </translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=test&quot;</source>
+        <translation>قم بتشغيل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=test&quot;</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>Run your bitcoind with &quot;bitcoind -chain=testnet4&quot;</source>
+        <translation>شغل bitcoind الخاص بك باستخدام &quot;bitcoind -chain=testnet4&quot;</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>Signet choose {electrum} and a block explorer on {mempool_url}. There is a {faucet} for free test coins.</source>
+        <translation>Signet يختار {electrum} ويستخدم مستعرض الكتل على {mempool_url}. يوجد {faucet} للحصول على عملات اختبار مجانية。</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>The server can associate your IP address with the wallet addresses.
 It is best to use your own server, such as {link}.</source>
-			<translation>يمكن للخادم ربط عنوان IP الخاص بك بعناوين المحفظة.
+        <translation>يمكن للخادم ربط عنوان IP الخاص بك بعناوين المحفظة.
 من الأفضل استخدام خادمك الخاص، مثل {link}.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>There is a {faucet} for free test coins.</source>
-			<translation>هناك {faucet} للحصول على عملات اختبار مجانية.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>You can connect your own Bitcoin node, such as {link}.</source>
-			<translation>يمكنك ربط عقدة البيتكوين الخاصة بك، مثل {link}.</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
-			<translation>يمكنك إعداد {electrum} بخادم إلكتروم على {server} ومستكشف البلوك على {explorer}</translation>
-		</message>
-		<name>net_conf</name>
-		<message>
-			<source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
-			<translation>يمكنك إعداد {setup} باستخدام خادم esplora على {server} ومستكشف الكتل على {explorer}</translation>
-		</message>
-	</context>
-	<context>
-		<name>network_config</name>
-		<message>
-			<source>{cbf_connections} bitcoin nodes via {server_type}</source>
-			<translation>{cbf_connections} عقد بيتكوين عبر {server_type}</translation>
-		</message>
-		<name>network_config</name>
-		<message>
-			<source>{server_name}</source>
-			<translation>{server_name}</translation>
-		</message>
-		<name>network_config</name>
-		<message>
-			<source>{server_name} via the proxy {proxy}</source>
-			<translation>{server_name} عبر البروكسي {proxy}</translation>
-		</message>
-	</context>
-	<context>
-		<name>open_file</name>
-		<message>
-			<source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
-			<translation>جميع الملفات (*);;PSBT (*.psbt);;معاملة (*.tx)</translation>
-		</message>
-		<name>open_file</name>
-		<message>
-			<source>Open Transaction/PSBT</source>
-			<translation>فتح المعاملة/PSBT</translation>
-		</message>
-	</context>
-	<context>
-		<name>p2p</name>
-		<message>
-			<source>Passively listen to the bitcoin p2p traffic (just like a bitcoin node), 
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>There is a {faucet} for free test coins.</source>
+        <translation>هناك {faucet} للحصول على عملات اختبار مجانية.</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>You can connect your own Bitcoin node, such as {link}.</source>
+        <translation>يمكنك ربط عقدة البيتكوين الخاصة بك، مثل {link}.</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>You can setup {electrum} with an electrum server on {server} and a block explorer on {explorer}</source>
+        <translation>يمكنك إعداد {electrum} بخادم إلكتروم على {server} ومستكشف البلوك على {explorer}</translation>
+    </message>
+    <name>net_conf</name>
+    <message>
+        <source>You can setup {setup} with an esplora server on {server} and a block explorer on {explorer}</source>
+        <translation>يمكنك إعداد {setup} باستخدام خادم esplora على {server} ومستكشف الكتل على {explorer}</translation>
+    </message>
+</context>
+<context>
+    <name>network_config</name>
+    <message>
+        <source>{cbf_connections} bitcoin nodes via {server_type}</source>
+        <translation>{cbf_connections} عقد بيتكوين عبر {server_type}</translation>
+    </message>
+    <name>network_config</name>
+    <message>
+        <source>{server_name}</source>
+        <translation>{server_name}</translation>
+    </message>
+    <name>network_config</name>
+    <message>
+        <source>{server_name} via the proxy {proxy}</source>
+        <translation>{server_name} عبر البروكسي {proxy}</translation>
+    </message>
+</context>
+<context>
+    <name>open_file</name>
+    <message>
+        <source>All Files (*);;PSBT (*.psbt);;Transaction (*.tx)</source>
+        <translation>جميع الملفات (*);;PSBT (*.psbt);;معاملة (*.tx)</translation>
+    </message>
+    <name>open_file</name>
+    <message>
+        <source>Open Transaction/PSBT</source>
+        <translation>فتح المعاملة/PSBT</translation>
+    </message>
+</context>
+<context>
+    <name>p2p</name>
+    <message>
+        <source>Passively listen to the bitcoin p2p traffic (just like a bitcoin node), 
 to detect newly broadcasted transactions immediately.
 This does not reveal anything about your wallet.
 Click here to learn more.</source>
-			<translation>الاستماع السلبي لحركة بيتكوين p2p (مثل عقدة بيتكوين)،  لاكتشاف المعاملات المُذاعة حديثًا فورًا.
+        <translation>الاستماع السلبي لحركة بيتكوين p2p (مثل عقدة بيتكوين)،  لاكتشاف المعاملات المُذاعة حديثًا فورًا.
 هذا لا يكشف أي شيء عن محفظتك.
 انقر هنا لمعرفة المزيد.</translation>
-		</message>
-	</context>
-	<context>
-		<name>pdf</name>
-		<message>
-			<source>1. Attach the 'Recovery sheet' ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
+    </message>
+</context>
+<context>
+    <name>pdf</name>
+    <message>
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put each paper in a different secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signers either a) together with the corresponding paper seed backup, or b)   each  in yet another secure  location (if available)   
                 </source>
-			<translation>1. ضع ورقة 'الاسترداد' ({number} كلمات) على هذه الورقة أو قم بتكرار 12/24 كلمة على هذه الورقة.&lt;br/&gt;                 2. طي هذه الورقة عند الخط أدناه &lt;br/&gt;                 3. ضع كل ورقة في مكان آمن مختلف، حيث يمكنك الوصول فقط&lt;br/&gt;                 4. يمكنك وضع الموقعين الصلبين إما a) مع النسخة الاحتياطية المقابلة للبذور الورقية، أو b) كل في مكان آمن آخر (إذا كان متاحًا)                </translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>1. Attach the 'Recovery sheet' ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
+        <translation>1. ضع ورقة &apos;الاسترداد&apos; ({number} كلمات) على هذه الورقة أو قم بتكرار 12/24 كلمة على هذه الورقة.&lt;br/&gt;                 2. طي هذه الورقة عند الخط أدناه &lt;br/&gt;                 3. ضع كل ورقة في مكان آمن مختلف، حيث يمكنك الوصول فقط&lt;br/&gt;                 4. يمكنك وضع الموقعين الصلبين إما a) مع النسخة الاحتياطية المقابلة للبذور الورقية، أو b) كل في مكان آمن آخر (إذا كان متاحًا)                </translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>1. Attach the &apos;Recovery sheet&apos; ({number} words) to this paper or duplicate the 12/24 words onto this paper.&lt;br/&gt;
                 2. Fold this  paper at the line below &lt;br/&gt;
                 3. Put this paper in a secure location, where only you have access&lt;br/&gt;
                 4. You can put the hardware signer either a) together with the paper seed backup, or b)   in another secure  location (if available)   
                 </source>
-			<translation>1. ضع ورقة 'الاسترداد' ({number} كلمات) على هذه الورقة أو قم بتكرار 12/24 كلمة على هذه الورقة.&lt;br/&gt;                 2. طي هذه الورقة عند الخط أدناه &lt;br/&gt;                 3. ضع هذه الورقة في مكان آمن، حيث يمكنك الوصول فقط&lt;br/&gt;                 4. يمكنك وضع الموقع الصلب إما a) مع النسخة الاحتياطية للبذور الورقية، أو b) في مكان آمن آخر (إذا كان متاحًا)                </translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>1. Choose a wallet on the right of the following pages.</source>
-			<translation>1. اختر محفظة على يمين الصفحات التالية.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>12 or 24</source>
-			<translation>12 أو 24</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>2. Find the required signers by following the lines to the left.</source>
-			<translation>2. اعثر على المُوقِّعين المطلوبين باتباع الخطوط نحو اليسار.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>3. Locate the signing devices or seed backups using the location fields.</source>
-			<translation>3. حدّد مواقع أجهزة التوقيع أو النسخ الاحتياطية للبذرة باستخدام حقول الموقع.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
-			<translation>4. استعد المحفظة باستخدام رمز QR الخاص بها في {app_name}، أو باستخدام محفظة من:</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>5. Use the required signers to authorize transactions.</source>
-			<translation>5. استخدم المُوقِّعين المطلوبين لتفويض المعاملات.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Address</source>
-			<translation>عنوان</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>BBQr QR</source>
-			<translation>BBQr QR</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>BITCOIN WALLETS</source>
-			<translation>محافظ بيتكوين</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Balance</source>
-			<translation>الرصيد</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Balance Statement of "{id}"</source>
-			<translation>كشف حساب الرصيد لـ"{id}"</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Balance Statement of {id}</source>
-			<translation>كشف حساب الرصيد لـ{id}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Balance: {balance}</source>
-			<translation>الرصيد: {balance}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Block explorer</source>
-			<translation>مستكشف الكتل</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Category</source>
-			<translation>فئة</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Created with</source>
-			<translation>تم الإنشاء بواسطة</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Cut out the labels below and attach each one to the matching hardware signer.</source>
-			<translation>اقصِ التصنيفات أدناه وأرفِق كل واحدة بجهاز التوقيع المادي المناسب.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Diagram</source>
-			<translation>رسم بياني</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
-			<translation>أدخل كلمات البذرة في جهاز توقيع فقط، ولا تدخلها مطلقًا في جهاز كمبيوتر أو هاتف محمول.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Fee</source>
-			<translation>رسوم</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Fee (estimated)</source>
-			<translation>الرسوم (تقديرية)</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>File not found!</source>
-			<translation>لم يتم العثور على الملف!</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Fingerprint: {fingerprint}</source>
-			<translation>البصمة: {fingerprint}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
-			<translation>اتبع الخطوط لمعرفة أجهزة التوقيع أو النسخ الاحتياطية للبذرة التي يمكن استخدامها لكل محفظة.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>HOW TO RECOVER A WALLET</source>
-			<translation>كيفية استعادة محفظة</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Hardware signer labels for wallet "{wallet_id}"</source>
-			<translation>تسميات جهاز التوقيع المادي للمحفظة «{wallet_id}»</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Hardware signer labels for {id}</source>
-			<translation>تسميات جهاز التوقيع المادي لـ {id}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Inheritance overview - {networks}</source>
-			<translation>نظرة عامة على الميراث - {networks}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Label</source>
-			<translation>ملصق</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Label syncronization backup key: {label_sync_nsec}</source>
-			<translation>مفتاح النسخ الاحتياطي لمزامنة العلامات: {label_sync_nsec}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Lines at page edges continue on the indicated page.</source>
-			<translation>تستمر الخطوط الموجودة عند حواف الصفحات في الصفحة المشار إليها.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>More notes follow the graph.</source>
-			<translation>توجد ملاحظات إضافية بعد المخطط.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Never share seed words or passphrases, or enter them into a website.</source>
-			<translation>لا تشارك كلمات البذرة أو عبارات المرور أبدًا، ولا تدخلها في أي موقع إلكتروني.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Never take a picture of your seed words.</source>
-			<translation>لا تلتقط صورة لكلمات البذرة مطلقًا.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>No QR data available</source>
-			<translation>لا توجد بيانات QR متاحة</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>No hardware signers configured yet.</source>
-			<translation>لم يتم تكوين جهاز توقيع مادي بعد.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Not available</source>
-			<translation>غير متوفر</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
-			<translation>عند إعادة فحص هذه المحفظة، افحص على الأقل حتى مؤشر العنوان {max_tip} لاكتشاف جميع العناوين الممولة.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Outputs</source>
-			<translation>المخرجات</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Please fold here!</source>
-			<translation>يرجى طي هنا!</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Requires 1 signer</source>
-			<translation>يتطلب مُوقِّعًا واحدًا</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Requires any {threshold} of these {count} signers</source>
-			<translation>يتطلب أي {threshold} من هؤلاء المُوقِّعين البالغ عددهم {count}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>SIGNING DEVICES &amp; SEED BACKUPS</source>
-			<translation>أجهزة التوقيع والنسخ الاحتياطية للبذرة</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Scan to restore wallet information.</source>
-			<translation>امسح لاستعادة معلومات المحفظة.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
-			<translation>كلمات بذور سرية لموقع توقيع الأجهزة: أبدًا لا تكتب على جهاز كمبيوتر. أبدًا لا تأخذ صورة.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Seed backup location:</source>
-			<translation>موقع النسخة الاحتياطية للبذرة:</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Seed backup of {id}</source>
-			<translation>نسخة احتياطية لبذور {id}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Serialized {label}:</source>
-			<translation>{label} المتسلسل:</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Signer notes continued</source>
-			<translation>تتمة ملاحظات المُوقِّع</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Signing device location:</source>
-			<translation>موقع جهاز التوقيع:</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
-			<translation>مُعرّف المحفظة (رمز QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; يسمح لك بإنشاء محفظة للمشاهدة فقط لعرض رصيدك. للإنفاق منها تحتاج إلى {number} كلمات سرية (Seed).</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
-			<translation>وصف المحفظة (رمز QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; يسمح لك بإنشاء محفظة للمشاهدة فقط لرؤية رصيدك. للإنفاق منها تحتاج إلى {threshold} بذور ووصف المحفظة.</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Total</source>
-			<translation>الإجمالي</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Transaction ID: {txid}</source>
-			<translation>معرّف المعاملة: {txid}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Transaction label: {label}</source>
-			<translation>تصنيف المعاملة: {label}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>UR QR</source>
-			<translation>UR QR</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Used by {count} wallets</source>
-			<translation>تستخدمه {count} محافظ</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>Wallet descriptor is too long to fit in a printable graph node</source>
-			<translation>واصف المحفظة أطول من أن يتسع داخل عقدة مخطط قابلة للطباعة</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>nLocktime: block height {height}</source>
-			<translation>nLocktime: ارتفاع الكتلة {height}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>nLocktime: {value} (local time)</source>
-			<translation>nLocktime: {value} (التوقيت المحلي)</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>unknown fingerprint</source>
-			<translation>بصمة غير معروفة</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>{balance} (test coins)</source>
-			<translation>{balance} (عملات اختبار)</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>{fingerprint}  see page {page}</source>
-			<translation>{fingerprint}  انظر الصفحة {page}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: "{id}"</source>
-			<translation>{i}. نسخة احتياطية لبذور محفظة متعددة التواقيع من {threshold} من {m}: "{id}"</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
-			<translation>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;تعليمات للورثة:</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
-			<translation>{keystore_label}: بصمة: {keystore_fingerprint}, أصل المفتاح: {keystore_key_origin}, {keystore_xpub}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>{signer}  |  Fingerprint: {fingerprint}</source>
-			<translation>{signer}  |  البصمة: {fingerprint}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>{title} (test coins have no monetary value)</source>
-			<translation>{title} (عملات الاختبار ليس لها قيمة نقدية)</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>{title}: Fragment {index} of {total}</source>
-			<translation>{title}: الجزء {index} من {total}</translation>
-		</message>
-		<name>pdf</name>
-		<message>
-			<source>{wallet_name} note: {note}</source>
-			<translation>ملاحظة {wallet_name}: {note}</translation>
-		</message>
-	</context>
-	<context>
-		<name>pgp</name>
-		<message>
-			<source>Could not import public key: {exc}</source>
-			<translation>تعذر استيراد المفتاح العام: {exc}</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>Could not parse signed message: {exc}</source>
-			<translation>تعذر تحليل الرسالة الموقعة: {exc}</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>Failed verification</source>
-			<translation>فشل التحقق</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>Message does not contain a signature.</source>
-			<translation>لا تحتوي الرسالة على توقيع.</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>No fingerprint in signature {s}</source>
-			<translation>لا توجد بصمة في التوقيع {s}</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>No good signatures</source>
-			<translation>لا توجد تواقيع صالحة</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>No signed message provided.</source>
-			<translation>لم يتم توفير رسالة موقعة.</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>Public key is expired.</source>
-			<translation>المفتاح العام منتهي الصلاحية.</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>Public key is revoked.</source>
-			<translation>تم إلغاء المفتاح العام.</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>Security note: verification uses a built-in &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</source>
-			<translation>ملاحظة أمنية: يستخدم التحقق مكتبة &lt;a href="https://github.com/wiktor-k/pysequoia"&gt;PySequoia&lt;/a&gt; مدمجة. وهي لا تراعي إعدادات الثقة أو عمليات الإبطال أو أوقات انتهاء الصلاحية من حلقة المفاتيح الخاصة بك. يُرجى التحقق من الرسائل عالية القيمة باستخدام &lt;a href="https://gnupg.org/"&gt;GPG&lt;/a&gt;.</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>Signature is expired.</source>
-			<translation>التوقيع منتهي الصلاحية.</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>Unsupported PGP hash algorithm.</source>
-			<translation>خوارزمية تجزئة PGP غير مدعومة.</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>Weak PGP hash algorithm.</source>
-			<translation>خوارزمية تجزئة PGP ضعيفة.</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>public key not present</source>
-			<translation>المفتاح العام غير موجود</translation>
-		</message>
-		<name>pgp</name>
-		<message>
-			<source>{t} not a PGPSignature</source>
-			<translation>{t} ليس PGPSignature</translation>
-		</message>
-	</context>
-	<context>
-		<name>plugin</name>
-		<message>
-			<source>Demo Subscription Plugin</source>
-			<translation>إضافة اشتراك تجريبية</translation>
-		</message>
-		<name>plugin</name>
-		<message>
-			<source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
-			<translation>إضافة نموذجية مبنية على PaidPluginClient. استخدمها للتحقق من التفعيل المقيّد بالاشتراك وإجراءات مدير الإضافات.</translation>
-		</message>
-	</context>
-	<context>
-		<name>recipients</name>
-		<message>
-			<source>Address Already Used</source>
-			<translation>العنوان مستخدم بالفعل</translation>
-		</message>
-	</context>
-	<context>
-		<name>signatures</name>
-		<message>
-			<source>Address does not match recovered public key.</source>
-			<translation>العنوان لا يطابق المفتاح العام المستعاد.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>BIP-0137 block is missing the message body.</source>
-			<translation>يفتقد كتلة BIP-0137 إلى نص الرسالة.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>BIP-0137 block must contain address and signature lines.</source>
-			<translation>يجب أن تحتوي كتلة BIP-0137 على سطور العنوان والتوقيع.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>BIP-0137 block order is invalid.</source>
-			<translation>ترتيب كتلة BIP-0137 غير صالح.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Could not parse the returned signed message.</source>
-			<translation>تعذّر تحليل الرسالة الموقّعة المُعادة.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Could not uniquely match the signature to a wallet signer.</source>
-			<translation>تعذّرت مطابقة التوقيع بشكل فريد مع أحد مُوقِّعي المحفظة.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Invalid bech32 address.</source>
-			<translation>عنوان bech32 غير صالح.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Invalid recovery id in signature.</source>
-			<translation>معرّف الاسترداد غير صالح في التوقيع.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
-			<translation>الرسالة احتوت مسافات حولها. تم التحقق بنجاح بعد تقليم الرسالة.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Message is not valid BIP-0137 armored text.</source>
-			<translation>الرسالة ليست نصًا مدرعًا صالحًا وفق BIP-0137.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Signature does not match message.</source>
-			<translation>التوقيع لا يطابق الرسالة.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Signature header byte is invalid.</source>
-			<translation>بايت رأس التوقيع غير صالح.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Signature is not valid base64.</source>
-			<translation>التوقيع ليس base64 صالحًا.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Signature must be 65 bytes long.</source>
-			<translation>يجب أن يكون التوقيع بطول 65 بايت.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Signature must use a compressed public key for SegWit addresses.</source>
-			<translation>يجب أن يستخدم التوقيع مفتاحًا عامًا مضغوطًا لعناوين SegWit.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Signature must use a compressed public key for nested SegWit addresses.</source>
-			<translation>يجب أن يستخدم التوقيع مفتاحًا عامًا مضغوطًا لعناوين SegWit المتداخلة.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>The returned address could not be verified.</source>
-			<translation>تعذّر التحقق من العنوان المُعاد.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>The returned message differs from the requested message.</source>
-			<translation>الرسالة المُعادة تختلف عن الرسالة المطلوبة.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>The signature or derivation path could not be verified.</source>
-			<translation>تعذّر التحقق من التوقيع أو مسار الاشتقاق.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>The signing address could not be derived.</source>
-			<translation>تعذّر اشتقاق عنوان التوقيع. |</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Unable to recover public key from signature.</source>
-			<translation>يتعذّر استرداد المفتاح العام من التوقيع.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Unknown bech32 network.</source>
-			<translation>شبكة bech32 غير معروفة.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Unsupported Base58 address length.</source>
-			<translation>طول عنوان Base58 غير مدعوم.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Unsupported Base58 address version.</source>
-			<translation>إصدار عنوان Base58 غير مدعوم.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Unsupported bech32 witness program length.</source>
-			<translation>طول برنامج الشاهد bech32 غير مدعوم.</translation>
-		</message>
-		<name>signatures</name>
-		<message>
-			<source>Unsupported bech32 witness version.</source>
-			<translation>إصدار الشاهد bech32 غير مدعوم.</translation>
-		</message>
-	</context>
-	<context>
-		<name>subscription</name>
-		<message>
-			<source>Business plan access is active.</source>
-			<translation>الوصول إلى خطة Business نشط.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Cancel</source>
-			<translation>إلغاء</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Close</source>
-			<translation>إغلاق</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Complete subscription setup</source>
-			<translation>إكمال إعداد الاشتراك</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Continue</source>
-			<translation>متابعة</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Could not determine the current subscription status.</source>
-			<translation>تعذر تحديد حالة الاشتراك الحالية.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Current status: {status}.</source>
-			<translation>الحالة الحالية: {status}.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Email address for subscription reminders and renewal notices:</source>
-			<translation>عنوان البريد الإلكتروني لتذكيرات الاشتراك وإشعارات التجديد:</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase did not return a management URL.</source>
-			<translation>لم تُرجع عملية شراء التجربة المجانية رابط URL لإدارة الاشتراك.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Free-trial purchase requires a wallet descriptor.</source>
-			<translation>تتطلب عملية شراء التجربة المجانية واصف محفظة.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Last checked: {checked_at}.</source>
-			<translation>آخر فحص: {checked_at}.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Last refresh error: {error}.</source>
-			<translation>آخر خطأ في التحديث: {error}.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Management URL</source>
-			<translation>عنوان URL للإدارة</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>No subscription has been activated yet.</source>
-			<translation>لم يتم تفعيل أي اشتراك بعد.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>No subscription was found for this wallet.</source>
-			<translation>لم يتم العثور على اشتراك لهذه المحفظة.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Open subscription</source>
-			<translation>فتح الاشتراك</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Paste management URL</source>
-			<translation>الصق عنوان URL للإدارة</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Please contact &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
-			<translation>يرجى التواصل مع &lt;a href="mailto:{email}"&gt;{email}&lt;/a&gt; للحصول على عنوان URL للإدارة، ثم الصقه في الحقل أدناه.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Please enter a valid HTTP(S) management URL.</source>
-			<translation>يرجى إدخال عنوان URL صالح للإدارة باستخدام HTTP(S).</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Please enter a valid email address.</source>
-			<translation>يرجى إدخال عنوان بريد إلكتروني صالح.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Refresh Subscription status</source>
-			<translation>تحديث حالة الاشتراك</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Subscription ID</source>
-			<translation>معرّف الاشتراك</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Subscription check failed.</source>
-			<translation>فشل التحقق من الاشتراك.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Subscription move failed.</source>
-			<translation>فشل نقل الاشتراك.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Subscription reminders</source>
-			<translation>تذكيرات الاشتراك</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Subscription required</source>
-			<translation>الاشتراك مطلوب</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Subscription status refresh failed.</source>
-			<translation>فشل تحديث حالة الاشتراك.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Subscription status refresh returned no result.</source>
-			<translation>لم يُرجع تحديث حالة الاشتراك أي نتيجة.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The free trial activation failed.</source>
-			<translation>فشل تفعيل التجربة المجانية.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The free trial activation timed out.</source>
-			<translation>انتهت مهلة تفعيل التجربة المجانية.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>The subscription management URL could not be fetched automatically.</source>
-			<translation>تعذّر جلب عنوان URL لإدارة الاشتراك تلقائياً.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
-			<translation>هذا المكون الإضافي غير نشط حاليًا. مدّد الاشتراك قبل تمكينه مرة أخرى.</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Use management URL</source>
-			<translation>استخدام عنوان URL للإدارة</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>Waiting for the free trial to be activated...</source>
-			<translation>في انتظار تفعيل التجربة المجانية...</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>name@example.com</source>
-			<translation>name@example.com</translation>
-		</message>
-		<name>subscription</name>
-		<message>
-			<source>{reason} Please retry later. If it still does not work, contact {email}.</source>
-			<translation>{reason} يرجى المحاولة مرة أخرى لاحقًا. إذا ظل لا يعمل، فاتصل بـ {email}.</translation>
-		</message>
-	</context>
-	<context>
-		<name>trezor</name>
-		<message>
-			<source>Enter the 6-digit pairing code shown on the Trezor:</source>
-			<translation>أدخل رمز الاقتران المكوّن من 6 أرقام المعروض على Trezor:</translation>
-		</message>
-		<name>trezor</name>
-		<message>
-			<source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
-			<translation>أدخل رقم PIN باستخدام تخطيط لوحة مفاتيح Trezor (7 8 9 / 4 5 6 / 1 2 3):</translation>
-		</message>
-		<name>trezor</name>
-		<message>
-			<source>Pair Trezor</source>
-			<translation>إقران Trezor</translation>
-		</message>
-		<name>trezor</name>
-		<message>
-			<source>Unlock Trezor</source>
-			<translation>إلغاء قفل Trezor</translation>
-		</message>
-	</context>
-	<context>
-		<name>tutorial</name>
-		<message>
-			<source>Never make a picture of them!</source>
-			<translation>لا تجعل صورة لهم!</translation>
-		</message>
-		<name>tutorial</name>
-		<message>
-			<source>Never share the {number} secret words with anyone!</source>
-			<translation>لا تشارك الكلمات السرية {number} مع أي شخص!</translation>
-		</message>
-		<name>tutorial</name>
-		<message>
-			<source>Never type them into any computer or cellphone!</source>
-			<translation>لا تكتبها أبدًا في أي جهاز كمبيوتر أو هاتف محمول!</translation>
-		</message>
-	</context>
-	<context>
-		<name>tx</name>
-		<message>
-			<source>Cannot CPFP the transaction because no receiving output could be found</source>
-			<translation>لا يمكن تنفيذ CPFP على المعاملة لأنه لم يتم العثور على مخرج استقبال</translation>
-		</message>
-		<name>tx</name>
-		<message>
-			<source>Speedup of {txid}</source>
-			<translation>تسريع المعاملة {txid}</translation>
-		</message>
-	</context>
-	<context>
-		<name>updater</name>
-		<message>
-			<source>Apply update</source>
-			<translation>تطبيق التحديث</translation>
-		</message>
-		<name>updater</name>
-		<message>
-			<source>Open download folder</source>
-			<translation>فتح مجلد التنزيل</translation>
-		</message>
-		<name>updater</name>
-		<message>
-			<source>Open update</source>
-			<translation>فتح التحديث</translation>
-		</message>
-		<name>updater</name>
-		<message>
-			<source>Start installer</source>
-			<translation>بدء برنامج التثبيت</translation>
-		</message>
-		<name>updater</name>
-		<message>
-			<source>Update verified. Do you want to apply the update now?</source>
-			<translation>تم التحقق من التحديث. هل تريد تطبيق التحديث الآن؟</translation>
-		</message>
-		<name>updater</name>
-		<message>
-			<source>Update verified. Do you want to open the update file now?</source>
-			<translation>تم التحقق من التحديث. هل تريد فتح ملف التحديث الآن؟</translation>
-		</message>
-		<name>updater</name>
-		<message>
-			<source>Update verified. Do you want to start the installer now?</source>
-			<translation>تم التحقق من التحديث. هل تريد بدء برنامج التثبيت الآن؟</translation>
-		</message>
-	</context>
-	<context>
-		<name>usb</name>
-		<message>
-			<source>Pair Bitbox02</source>
-			<translation>زوج Bitbox02</translation>
-		</message>
-		<name>usb</name>
-		<message>
-			<source>Please compare and confirm the pairing code on your BitBox02:
+        <translation>1. ضع ورقة &apos;الاسترداد&apos; ({number} كلمات) على هذه الورقة أو قم بتكرار 12/24 كلمة على هذه الورقة.&lt;br/&gt;                 2. طي هذه الورقة عند الخط أدناه &lt;br/&gt;                 3. ضع هذه الورقة في مكان آمن، حيث يمكنك الوصول فقط&lt;br/&gt;                 4. يمكنك وضع الموقع الصلب إما a) مع النسخة الاحتياطية للبذور الورقية، أو b) في مكان آمن آخر (إذا كان متاحًا)                </translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>1. Choose a wallet on the right of the following pages.</source>
+        <translation>1. اختر محفظة على يمين الصفحات التالية.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>12 or 24</source>
+        <translation>12 أو 24</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>2. Find the required signers by following the lines to the left.</source>
+        <translation>2. اعثر على المُوقِّعين المطلوبين باتباع الخطوط نحو اليسار.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>3. Locate the signing devices or seed backups using the location fields.</source>
+        <translation>3. حدّد مواقع أجهزة التوقيع أو النسخ الاحتياطية للبذرة باستخدام حقول الموقع.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>4. Restore the wallet using its QR code in {app_name}, or with a wallet from:</source>
+        <translation>4. استعد المحفظة باستخدام رمز QR الخاص بها في {app_name}، أو باستخدام محفظة من:</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>5. Use the required signers to authorize transactions.</source>
+        <translation>5. استخدم المُوقِّعين المطلوبين لتفويض المعاملات.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Address</source>
+        <translation>عنوان</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>BBQr QR</source>
+        <translation>BBQr QR</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>BITCOIN WALLETS</source>
+        <translation>محافظ بيتكوين</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Balance</source>
+        <translation>الرصيد</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Balance Statement of &quot;{id}&quot;</source>
+        <translation>كشف حساب الرصيد لـ&quot;{id}&quot;</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Balance Statement of {id}</source>
+        <translation>كشف حساب الرصيد لـ{id}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Balance: {balance}</source>
+        <translation>الرصيد: {balance}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Block explorer</source>
+        <translation>مستكشف الكتل</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Category</source>
+        <translation>فئة</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Created with</source>
+        <translation>تم الإنشاء بواسطة</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Cut out the labels below and attach each one to the matching hardware signer.</source>
+        <translation>اقصِ التصنيفات أدناه وأرفِق كل واحدة بجهاز التوقيع المادي المناسب.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Diagram</source>
+        <translation>رسم بياني</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Enter seed words only into a signing device, never into a computer or cellphone.</source>
+        <translation>أدخل كلمات البذرة في جهاز توقيع فقط، ولا تدخلها مطلقًا في جهاز كمبيوتر أو هاتف محمول.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Fee</source>
+        <translation>رسوم</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Fee (estimated)</source>
+        <translation>الرسوم (تقديرية)</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>File not found!</source>
+        <translation>لم يتم العثور على الملف!</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Fingerprint: {fingerprint}</source>
+        <translation>البصمة: {fingerprint}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Follow the lines to see which signing devices or seed backups can be used for each wallet.</source>
+        <translation>اتبع الخطوط لمعرفة أجهزة التوقيع أو النسخ الاحتياطية للبذرة التي يمكن استخدامها لكل محفظة.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>HOW TO RECOVER A WALLET</source>
+        <translation>كيفية استعادة محفظة</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Hardware signer labels for wallet &quot;{wallet_id}&quot;</source>
+        <translation>تسميات جهاز التوقيع المادي للمحفظة «{wallet_id}»</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Hardware signer labels for {id}</source>
+        <translation>تسميات جهاز التوقيع المادي لـ {id}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Inheritance overview - {networks}</source>
+        <translation>نظرة عامة على الميراث - {networks}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Label</source>
+        <translation>ملصق</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Label syncronization backup key: {label_sync_nsec}</source>
+        <translation>مفتاح النسخ الاحتياطي لمزامنة العلامات: {label_sync_nsec}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Lines at page edges continue on the indicated page.</source>
+        <translation>تستمر الخطوط الموجودة عند حواف الصفحات في الصفحة المشار إليها.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>More notes follow the graph.</source>
+        <translation>توجد ملاحظات إضافية بعد المخطط.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Never share seed words or passphrases, or enter them into a website.</source>
+        <translation>لا تشارك كلمات البذرة أو عبارات المرور أبدًا، ولا تدخلها في أي موقع إلكتروني.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Never take a picture of your seed words.</source>
+        <translation>لا تلتقط صورة لكلمات البذرة مطلقًا.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>No QR data available</source>
+        <translation>لا توجد بيانات QR متاحة</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>No hardware signers configured yet.</source>
+        <translation>لم يتم تكوين جهاز توقيع مادي بعد.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Not available</source>
+        <translation>غير متوفر</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>On rescanning this wallet, scan to at least address index {max_tip} to discover all funded addresses.</source>
+        <translation>عند إعادة فحص هذه المحفظة، افحص على الأقل حتى مؤشر العنوان {max_tip} لاكتشاف جميع العناوين الممولة.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Outputs</source>
+        <translation>المخرجات</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Please fold here!</source>
+        <translation>يرجى طي هنا!</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Requires 1 signer</source>
+        <translation>يتطلب مُوقِّعًا واحدًا</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Requires any {threshold} of these {count} signers</source>
+        <translation>يتطلب أي {threshold} من هؤلاء المُوقِّعين البالغ عددهم {count}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>SIGNING DEVICES &amp; SEED BACKUPS</source>
+        <translation>أجهزة التوقيع والنسخ الاحتياطية للبذرة</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Scan to restore wallet information.</source>
+        <translation>امسح لاستعادة معلومات المحفظة.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Secret seed words for a hardware signer: Never type into a computer. Never make a picture.</source>
+        <translation>كلمات بذور سرية لموقع توقيع الأجهزة: أبدًا لا تكتب على جهاز كمبيوتر. أبدًا لا تأخذ صورة.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Seed backup location:</source>
+        <translation>موقع النسخة الاحتياطية للبذرة:</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Seed backup of {id}</source>
+        <translation>نسخة احتياطية لبذور {id}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Serialized {label}:</source>
+        <translation>{label} المتسلسل:</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Signer notes continued</source>
+        <translation>تتمة ملاحظات المُوقِّع</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Signing device location:</source>
+        <translation>موقع جهاز التوقيع:</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need the secret {number} words (Seed).</source>
+        <translation>مُعرّف المحفظة (رمز QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; يسمح لك بإنشاء محفظة للمشاهدة فقط لعرض رصيدك. للإنفاق منها تحتاج إلى {number} كلمات سرية (Seed).</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>The wallet descriptor (QR Code) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; allows you to create a watch-only wallet to see your balance. To spent from it you need {threshold} Seeds and the wallet descriptor.</source>
+        <translation>وصف المحفظة (رمز QR) &lt;br/&gt;&lt;br/&gt;{wallet_descriptor_string}&lt;br/&gt;&lt;br/&gt; يسمح لك بإنشاء محفظة للمشاهدة فقط لرؤية رصيدك. للإنفاق منها تحتاج إلى {threshold} بذور ووصف المحفظة.</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Total</source>
+        <translation>الإجمالي</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Transaction ID: {txid}</source>
+        <translation>معرّف المعاملة: {txid}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Transaction label: {label}</source>
+        <translation>تصنيف المعاملة: {label}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>UR QR</source>
+        <translation>UR QR</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Used by {count} wallets</source>
+        <translation>تستخدمه {count} محافظ</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>Wallet descriptor is too long to fit in a printable graph node</source>
+        <translation>واصف المحفظة أطول من أن يتسع داخل عقدة مخطط قابلة للطباعة</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>nLocktime: block height {height}</source>
+        <translation>nLocktime: ارتفاع الكتلة {height}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>nLocktime: {value} (local time)</source>
+        <translation>nLocktime: {value} (التوقيت المحلي)</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>unknown fingerprint</source>
+        <translation>بصمة غير معروفة</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>{balance} (test coins)</source>
+        <translation>{balance} (عملات اختبار)</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>{fingerprint}  see page {page}</source>
+        <translation>{fingerprint}  انظر الصفحة {page}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>{i}. Seed backup of a {threshold} of {m} Multi-Sig Wallet: &quot;{id}&quot;</source>
+        <translation>{i}. نسخة احتياطية لبذور محفظة متعددة التواقيع من {threshold} من {m}: &quot;{id}&quot;</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;Instructions for the heirs:</source>
+        <translation>{keystore_label} ({keystore_fingerprint}): {keystore_description}&lt;br/&gt;&lt;br/&gt;تعليمات للورثة:</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>{keystore_label}: Fingerprint: {keystore_fingerprint}, Key origin: {keystore_key_origin}, {keystore_xpub}</source>
+        <translation>{keystore_label}: بصمة: {keystore_fingerprint}, أصل المفتاح: {keystore_key_origin}, {keystore_xpub}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>{signer}  |  Fingerprint: {fingerprint}</source>
+        <translation>{signer}  |  البصمة: {fingerprint}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>{title} (test coins have no monetary value)</source>
+        <translation>{title} (عملات الاختبار ليس لها قيمة نقدية)</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>{title}: Fragment {index} of {total}</source>
+        <translation>{title}: الجزء {index} من {total}</translation>
+    </message>
+    <name>pdf</name>
+    <message>
+        <source>{wallet_name} note: {note}</source>
+        <translation>ملاحظة {wallet_name}: {note}</translation>
+    </message>
+</context>
+<context>
+    <name>pgp</name>
+    <message>
+        <source>Could not import public key: {exc}</source>
+        <translation>تعذر استيراد المفتاح العام: {exc}</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>Could not parse signed message: {exc}</source>
+        <translation>تعذر تحليل الرسالة الموقعة: {exc}</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>Failed verification</source>
+        <translation>فشل التحقق</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>Message does not contain a signature.</source>
+        <translation>لا تحتوي الرسالة على توقيع.</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>No fingerprint in signature {s}</source>
+        <translation>لا توجد بصمة في التوقيع {s}</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>No good signatures</source>
+        <translation>لا توجد تواقيع صالحة</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>No signed message provided.</source>
+        <translation>لم يتم توفير رسالة موقعة.</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>Public key is expired.</source>
+        <translation>المفتاح العام منتهي الصلاحية.</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>Public key is revoked.</source>
+        <translation>تم إلغاء المفتاح العام.</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>Security note: verification uses a built-in &lt;a href=&quot;https://github.com/wiktor-k/pysequoia&quot;&gt;PySequoia&lt;/a&gt; library. It does not honor trust settings, revocations, or expiration times from your keyring. Please verify high value messages with &lt;a href=&quot;https://gnupg.org/&quot;&gt;GPG&lt;/a&gt;.</source>
+        <translation>ملاحظة أمنية: يستخدم التحقق مكتبة &lt;a href=&quot;https://github.com/wiktor-k/pysequoia&quot;&gt;PySequoia&lt;/a&gt; مدمجة. وهي لا تراعي إعدادات الثقة أو عمليات الإبطال أو أوقات انتهاء الصلاحية من حلقة المفاتيح الخاصة بك. يُرجى التحقق من الرسائل عالية القيمة باستخدام &lt;a href=&quot;https://gnupg.org/&quot;&gt;GPG&lt;/a&gt;.</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>Signature is expired.</source>
+        <translation>التوقيع منتهي الصلاحية.</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>Unsupported PGP hash algorithm.</source>
+        <translation>خوارزمية تجزئة PGP غير مدعومة.</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>Weak PGP hash algorithm.</source>
+        <translation>خوارزمية تجزئة PGP ضعيفة.</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>public key not present</source>
+        <translation>المفتاح العام غير موجود</translation>
+    </message>
+    <name>pgp</name>
+    <message>
+        <source>{t} not a PGPSignature</source>
+        <translation>{t} ليس PGPSignature</translation>
+    </message>
+</context>
+<context>
+    <name>plugin</name>
+    <message>
+        <source>Demo Subscription Plugin</source>
+        <translation>إضافة اشتراك تجريبية</translation>
+    </message>
+    <name>plugin</name>
+    <message>
+        <source>Example plugin based on PaidPluginClient. Use this to verify subscription-gated activation and plugin-manager actions.</source>
+        <translation>إضافة نموذجية مبنية على PaidPluginClient. استخدمها للتحقق من التفعيل المقيّد بالاشتراك وإجراءات مدير الإضافات.</translation>
+    </message>
+</context>
+<context>
+    <name>recipients</name>
+    <message>
+        <source>Address Already Used</source>
+        <translation>العنوان مستخدم بالفعل</translation>
+    </message>
+</context>
+<context>
+    <name>signatures</name>
+    <message>
+        <source>Address does not match recovered public key.</source>
+        <translation>العنوان لا يطابق المفتاح العام المستعاد.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>BIP-0137 block is missing the message body.</source>
+        <translation>يفتقد كتلة BIP-0137 إلى نص الرسالة.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>BIP-0137 block must contain address and signature lines.</source>
+        <translation>يجب أن تحتوي كتلة BIP-0137 على سطور العنوان والتوقيع.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>BIP-0137 block order is invalid.</source>
+        <translation>ترتيب كتلة BIP-0137 غير صالح.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Could not parse the returned signed message.</source>
+        <translation>تعذّر تحليل الرسالة الموقّعة المُعادة.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Could not uniquely match the signature to a wallet signer.</source>
+        <translation>تعذّرت مطابقة التوقيع بشكل فريد مع أحد مُوقِّعي المحفظة.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Invalid bech32 address.</source>
+        <translation>عنوان bech32 غير صالح.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Invalid recovery id in signature.</source>
+        <translation>معرّف الاسترداد غير صالح في التوقيع.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Message had surrounding whitespace. Verification succeeded after trimming the message.</source>
+        <translation>الرسالة احتوت مسافات حولها. تم التحقق بنجاح بعد تقليم الرسالة.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Message is not valid BIP-0137 armored text.</source>
+        <translation>الرسالة ليست نصًا مدرعًا صالحًا وفق BIP-0137.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Signature does not match message.</source>
+        <translation>التوقيع لا يطابق الرسالة.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Signature header byte is invalid.</source>
+        <translation>بايت رأس التوقيع غير صالح.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Signature is not valid base64.</source>
+        <translation>التوقيع ليس base64 صالحًا.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Signature must be 65 bytes long.</source>
+        <translation>يجب أن يكون التوقيع بطول 65 بايت.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Signature must use a compressed public key for SegWit addresses.</source>
+        <translation>يجب أن يستخدم التوقيع مفتاحًا عامًا مضغوطًا لعناوين SegWit.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Signature must use a compressed public key for nested SegWit addresses.</source>
+        <translation>يجب أن يستخدم التوقيع مفتاحًا عامًا مضغوطًا لعناوين SegWit المتداخلة.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>The returned address could not be verified.</source>
+        <translation>تعذّر التحقق من العنوان المُعاد.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>The returned message differs from the requested message.</source>
+        <translation>الرسالة المُعادة تختلف عن الرسالة المطلوبة.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>The signature or derivation path could not be verified.</source>
+        <translation>تعذّر التحقق من التوقيع أو مسار الاشتقاق.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>The signing address could not be derived.</source>
+        <translation>تعذّر اشتقاق عنوان التوقيع. |</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Unable to recover public key from signature.</source>
+        <translation>يتعذّر استرداد المفتاح العام من التوقيع.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Unknown bech32 network.</source>
+        <translation>شبكة bech32 غير معروفة.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Unsupported Base58 address length.</source>
+        <translation>طول عنوان Base58 غير مدعوم.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Unsupported Base58 address version.</source>
+        <translation>إصدار عنوان Base58 غير مدعوم.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Unsupported bech32 witness program length.</source>
+        <translation>طول برنامج الشاهد bech32 غير مدعوم.</translation>
+    </message>
+    <name>signatures</name>
+    <message>
+        <source>Unsupported bech32 witness version.</source>
+        <translation>إصدار الشاهد bech32 غير مدعوم.</translation>
+    </message>
+</context>
+<context>
+    <name>subscription</name>
+    <message>
+        <source>Business plan access is active.</source>
+        <translation>الوصول إلى خطة Business نشط.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Cancel</source>
+        <translation>إلغاء</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Close</source>
+        <translation>إغلاق</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Complete subscription setup</source>
+        <translation>إكمال إعداد الاشتراك</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Continue</source>
+        <translation>متابعة</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Could not determine the current subscription status.</source>
+        <translation>تعذر تحديد حالة الاشتراك الحالية.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Current status: {status}.</source>
+        <translation>الحالة الحالية: {status}.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Email address for subscription reminders and renewal notices:</source>
+        <translation>عنوان البريد الإلكتروني لتذكيرات الاشتراك وإشعارات التجديد:</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Free-trial purchase did not return a management URL.</source>
+        <translation>لم تُرجع عملية شراء التجربة المجانية رابط URL لإدارة الاشتراك.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Free-trial purchase requires a wallet descriptor.</source>
+        <translation>تتطلب عملية شراء التجربة المجانية واصف محفظة.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Last checked: {checked_at}.</source>
+        <translation>آخر فحص: {checked_at}.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Last refresh error: {error}.</source>
+        <translation>آخر خطأ في التحديث: {error}.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Management URL</source>
+        <translation>عنوان URL للإدارة</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>No subscription has been activated yet.</source>
+        <translation>لم يتم تفعيل أي اشتراك بعد.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>No subscription was found for this wallet.</source>
+        <translation>لم يتم العثور على اشتراك لهذه المحفظة.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Open subscription</source>
+        <translation>فتح الاشتراك</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Paste management URL</source>
+        <translation>الصق عنوان URL للإدارة</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Please contact &lt;a href=&quot;mailto:{email}&quot;&gt;{email}&lt;/a&gt; to get the management URL, then paste it in the field below.</source>
+        <translation>يرجى التواصل مع &lt;a href=&quot;mailto:{email}&quot;&gt;{email}&lt;/a&gt; للحصول على عنوان URL للإدارة، ثم الصقه في الحقل أدناه.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Please enter a valid HTTP(S) management URL.</source>
+        <translation>يرجى إدخال عنوان URL صالح للإدارة باستخدام HTTP(S).</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Please enter a valid email address.</source>
+        <translation>يرجى إدخال عنوان بريد إلكتروني صالح.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Refresh Subscription status</source>
+        <translation>تحديث حالة الاشتراك</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Subscription ID</source>
+        <translation>معرّف الاشتراك</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Subscription check failed.</source>
+        <translation>فشل التحقق من الاشتراك.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Subscription move failed.</source>
+        <translation>فشل نقل الاشتراك.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Subscription reminders</source>
+        <translation>تذكيرات الاشتراك</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Subscription required</source>
+        <translation>الاشتراك مطلوب</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Subscription status refresh failed.</source>
+        <translation>فشل تحديث حالة الاشتراك.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Subscription status refresh returned no result.</source>
+        <translation>لم يُرجع تحديث حالة الاشتراك أي نتيجة.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>The free trial activation failed.</source>
+        <translation>فشل تفعيل التجربة المجانية.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>The free trial activation timed out.</source>
+        <translation>انتهت مهلة تفعيل التجربة المجانية.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>The subscription management URL could not be fetched automatically.</source>
+        <translation>تعذّر جلب عنوان URL لإدارة الاشتراك تلقائياً.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>This plugin is currently inactive. Extend the subscription before enabling it again.</source>
+        <translation>هذا المكون الإضافي غير نشط حاليًا. مدّد الاشتراك قبل تمكينه مرة أخرى.</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Use management URL</source>
+        <translation>استخدام عنوان URL للإدارة</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>Waiting for the free trial to be activated...</source>
+        <translation>في انتظار تفعيل التجربة المجانية...</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>name@example.com</source>
+        <translation>name@example.com</translation>
+    </message>
+    <name>subscription</name>
+    <message>
+        <source>{reason} Please retry later. If it still does not work, contact {email}.</source>
+        <translation>{reason} يرجى المحاولة مرة أخرى لاحقًا. إذا ظل لا يعمل، فاتصل بـ {email}.</translation>
+    </message>
+</context>
+<context>
+    <name>trezor</name>
+    <message>
+        <source>Enter the 6-digit pairing code shown on the Trezor:</source>
+        <translation>أدخل رمز الاقتران المكوّن من 6 أرقام المعروض على Trezor:</translation>
+    </message>
+    <name>trezor</name>
+    <message>
+        <source>Enter the PIN using the Trezor keypad layout (7 8 9 / 4 5 6 / 1 2 3):</source>
+        <translation>أدخل رقم PIN باستخدام تخطيط لوحة مفاتيح Trezor (7 8 9 / 4 5 6 / 1 2 3):</translation>
+    </message>
+    <name>trezor</name>
+    <message>
+        <source>Pair Trezor</source>
+        <translation>إقران Trezor</translation>
+    </message>
+    <name>trezor</name>
+    <message>
+        <source>Unlock Trezor</source>
+        <translation>إلغاء قفل Trezor</translation>
+    </message>
+</context>
+<context>
+    <name>tutorial</name>
+    <message>
+        <source>Never make a picture of them!</source>
+        <translation>لا تجعل صورة لهم!</translation>
+    </message>
+    <name>tutorial</name>
+    <message>
+        <source>Never share the {number} secret words with anyone!</source>
+        <translation>لا تشارك الكلمات السرية {number} مع أي شخص!</translation>
+    </message>
+    <name>tutorial</name>
+    <message>
+        <source>Never type them into any computer or cellphone!</source>
+        <translation>لا تكتبها أبدًا في أي جهاز كمبيوتر أو هاتف محمول!</translation>
+    </message>
+</context>
+<context>
+    <name>tx</name>
+    <message>
+        <source>Cannot CPFP the transaction because no receiving output could be found</source>
+        <translation>لا يمكن تنفيذ CPFP على المعاملة لأنه لم يتم العثور على مخرج استقبال</translation>
+    </message>
+    <name>tx</name>
+    <message>
+        <source>Speedup of {txid}</source>
+        <translation>تسريع المعاملة {txid}</translation>
+    </message>
+</context>
+<context>
+    <name>updater</name>
+    <message>
+        <source>Apply update</source>
+        <translation>تطبيق التحديث</translation>
+    </message>
+    <name>updater</name>
+    <message>
+        <source>Open download folder</source>
+        <translation>فتح مجلد التنزيل</translation>
+    </message>
+    <name>updater</name>
+    <message>
+        <source>Open update</source>
+        <translation>فتح التحديث</translation>
+    </message>
+    <name>updater</name>
+    <message>
+        <source>Start installer</source>
+        <translation>بدء برنامج التثبيت</translation>
+    </message>
+    <name>updater</name>
+    <message>
+        <source>Update verified. Do you want to apply the update now?</source>
+        <translation>تم التحقق من التحديث. هل تريد تطبيق التحديث الآن؟</translation>
+    </message>
+    <name>updater</name>
+    <message>
+        <source>Update verified. Do you want to open the update file now?</source>
+        <translation>تم التحقق من التحديث. هل تريد فتح ملف التحديث الآن؟</translation>
+    </message>
+    <name>updater</name>
+    <message>
+        <source>Update verified. Do you want to start the installer now?</source>
+        <translation>تم التحقق من التحديث. هل تريد بدء برنامج التثبيت الآن؟</translation>
+    </message>
+</context>
+<context>
+    <name>usb</name>
+    <message>
+        <source>Pair Bitbox02</source>
+        <translation>زوج Bitbox02</translation>
+    </message>
+    <name>usb</name>
+    <message>
+        <source>Please compare and confirm the pairing code on your BitBox02:
 
 {code}</source>
-			<translation>يرجى مقارنة وتأكيد رمز الاقتران على BitBox02 الخاص بك:
+        <translation>يرجى مقارنة وتأكيد رمز الاقتران على BitBox02 الخاص بك:
 {code}</translation>
-		</message>
-	</context>
-	<context>
-		<name>util</name>
-		<message>
-			<source>1 second</source>
-			<translation>1 ثانية</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>1 second ago</source>
-			<translation>منذ 1 ثانية</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Attempts to double-spend the original transaction with a higher fee.
+    </message>
+</context>
+<context>
+    <name>util</name>
+    <message>
+        <source>1 second</source>
+        <translation>1 ثانية</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>1 second ago</source>
+        <translation>منذ 1 ثانية</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>Attempts to double-spend the original transaction with a higher fee.
 Only works on RBF-signaled transactions and is not guaranteed to succeed.</source>
-			<translation>يحاول إجراء إنفاق مزدوج للمعاملة الأصلية برسوم أعلى.
+        <translation>يحاول إجراء إنفاق مزدوج للمعاملة الأصلية برسوم أعلى.
 يعمل فقط على المعاملات التي تشير إلى RBF ولا يضمن النجاح.</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Balance: {amount}</source>
-			<translation>الرصيد: {amount}</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Child-Pays-For-Parent spends a change output of the pending transaction
+    </message>
+    <name>util</name>
+    <message>
+        <source>Balance: {amount}</source>
+        <translation>الرصيد: {amount}</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>Child-Pays-For-Parent spends a change output of the pending transaction
 with a higher fee to pull both into a block.
 Works only if you have an available change output and raise the combined fee rate.</source>
-			<translation>Child-Pays-For-Parent تنفق مخرج فكة من المعاملة المعلّقة برسوم أعلى لسحب كلتيهما إلى كتلة.
+        <translation>Child-Pays-For-Parent تنفق مخرج فكة من المعاملة المعلّقة برسوم أعلى لسحب كلتيهما إلى كتلة.
 يعمل فقط إذا كان لديك مخرج فكة متاح وقمت بزيادة معدل الرسوم المجمّع.</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Edit</source>
-			<translation>يحرر</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Prefill the sending dialog with this transactions information.</source>
-			<translation>املأ مربع حوار الإرسال مسبقًا بمعلومات هذه المعاملة.</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Replace with higher fee (RBF)</source>
-			<translation>الاستبدال برسوم أعلى (RBF)</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Replace-By-Fee creates a new version of this transaction with a higher fee.
+    </message>
+    <name>util</name>
+    <message>
+        <source>Edit</source>
+        <translation>يحرر</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>Prefill the sending dialog with this transactions information.</source>
+        <translation>املأ مربع حوار الإرسال مسبقًا بمعلومات هذه المعاملة.</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>Replace with higher fee (RBF)</source>
+        <translation>الاستبدال برسوم أعلى (RBF)</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>Replace-By-Fee creates a new version of this transaction with a higher fee.
 Use it to speed up confirmation when the original is still unconfirmed.
 Requires the original transaction to signal RBF and your wallet to own a change output.</source>
-			<translation>ينشئ Replace-By-Fee نسخة جديدة من هذه المعاملة برسوم أعلى.
+        <translation>ينشئ Replace-By-Fee نسخة جديدة من هذه المعاملة برسوم أعلى.
 استخدمه لتسريع التأكيد عندما تكون المعاملة الأصلية غير مؤكدة بعد.
 يتطلب أن تشير المعاملة الأصلية إلى RBF وأن تمتلك المحفظة مخرج فكة.</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Speed up with child (CPFP)</source>
-			<translation>التسريع بالفرعي (CPFP)</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Try cancel by double-spend (RBF)</source>
-			<translation>محاولة الإلغاء بالإنفاق المزدوج (RBF)</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>Unknown</source>
-			<translation>مجهول</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 day</source>
-			<translation>حوالي 1 يوم</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 day ago</source>
-			<translation>منذ حوالي يوم واحد</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 hour</source>
-			<translation>حوالي 1 ساعة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 hour ago</source>
-			<translation>منذ حوالي 1 ساعة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 minute</source>
-			<translation>حوالي 1 دقيقة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 minute ago</source>
-			<translation>منذ حوالي 1 دقيقة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 month</source>
-			<translation>حوالي 1 شهر</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 month ago</source>
-			<translation>قبل حوالي 1 شهر</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 year</source>
-			<translation>حوالي 1 سنة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about 1 year ago</source>
-			<translation>منذ حوالي سنة واحدة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} days</source>
-			<translation>حوالي {} أيام</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} days ago</source>
-			<translation>منذ حوالي {} أيام</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} hours</source>
-			<translation>حوالي {} ساعات</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} hours ago</source>
-			<translation>منذ حوالي {} ساعة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} minutes</source>
-			<translation>حوالي {} دقائق</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} minutes ago</source>
-			<translation>منذ {} دقيقة تقريبًا</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} months</source>
-			<translation>حوالي {} أشهر</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} months ago</source>
-			<translation>منذ حوالي {} أشهر</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} years</source>
-			<translation>حوالي {} سنوات</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>about {} years ago</source>
-			<translation>منذ حوالي {} سنوات</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in 1 second</source>
-			<translation>خلال 1 ثانية</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about 1 day</source>
-			<translation>في حوالي يوم واحد</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about 1 hour</source>
-			<translation>في حوالي 1 ساعة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about 1 minute</source>
-			<translation>خلال حوالي 1 دقيقة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about 1 month</source>
-			<translation>في حوالي شهر واحد</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about 1 year</source>
-			<translation>في حوالي 1 سنة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about {} days</source>
-			<translation>في حوالي {} أيام</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about {} hours</source>
-			<translation>في حوالي {} ساعة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about {} minutes</source>
-			<translation>في حوالي {} دقيقة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about {} months</source>
-			<translation>في حوالي {} شهرًا</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in about {} years</source>
-			<translation>خلال حوالي {} سنوات</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in less than a minute</source>
-			<translation>في أقل من دقيقة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in over {} years</source>
-			<translation>في أكثر من {} سنة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>in {} seconds</source>
-			<translation>في ثوان</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>less than a minute</source>
-			<translation>أقل من دقيقة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>less than a minute ago</source>
-			<translation>قبل أقل من دقيقة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>over {} years</source>
-			<translation>أكثر من {} سنوات</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>over {} years ago</source>
-			<translation>منذ أكثر من {} سنة</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>{} seconds</source>
-			<translation>{} ثوانٍ</translation>
-		</message>
-		<name>util</name>
-		<message>
-			<source>{} seconds ago</source>
-			<translation>{} منذ ثوانى</translation>
-		</message>
-	</context>
-	<context>
-		<name>utils</name>
-		<message>
-			<source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
+    </message>
+    <name>util</name>
+    <message>
+        <source>Speed up with child (CPFP)</source>
+        <translation>التسريع بالفرعي (CPFP)</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>Try cancel by double-spend (RBF)</source>
+        <translation>محاولة الإلغاء بالإنفاق المزدوج (RBF)</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>Unknown</source>
+        <translation>مجهول</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 day</source>
+        <translation>حوالي 1 يوم</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 day ago</source>
+        <translation>منذ حوالي يوم واحد</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 hour</source>
+        <translation>حوالي 1 ساعة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 hour ago</source>
+        <translation>منذ حوالي 1 ساعة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 minute</source>
+        <translation>حوالي 1 دقيقة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 minute ago</source>
+        <translation>منذ حوالي 1 دقيقة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 month</source>
+        <translation>حوالي 1 شهر</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 month ago</source>
+        <translation>قبل حوالي 1 شهر</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 year</source>
+        <translation>حوالي 1 سنة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about 1 year ago</source>
+        <translation>منذ حوالي سنة واحدة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} days</source>
+        <translation>حوالي {} أيام</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} days ago</source>
+        <translation>منذ حوالي {} أيام</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} hours</source>
+        <translation>حوالي {} ساعات</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} hours ago</source>
+        <translation>منذ حوالي {} ساعة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} minutes</source>
+        <translation>حوالي {} دقائق</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} minutes ago</source>
+        <translation>منذ {} دقيقة تقريبًا</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} months</source>
+        <translation>حوالي {} أشهر</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} months ago</source>
+        <translation>منذ حوالي {} أشهر</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} years</source>
+        <translation>حوالي {} سنوات</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>about {} years ago</source>
+        <translation>منذ حوالي {} سنوات</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in 1 second</source>
+        <translation>خلال 1 ثانية</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about 1 day</source>
+        <translation>في حوالي يوم واحد</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about 1 hour</source>
+        <translation>في حوالي 1 ساعة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about 1 minute</source>
+        <translation>خلال حوالي 1 دقيقة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about 1 month</source>
+        <translation>في حوالي شهر واحد</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about 1 year</source>
+        <translation>في حوالي 1 سنة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about {} days</source>
+        <translation>في حوالي {} أيام</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about {} hours</source>
+        <translation>في حوالي {} ساعة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about {} minutes</source>
+        <translation>في حوالي {} دقيقة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about {} months</source>
+        <translation>في حوالي {} شهرًا</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in about {} years</source>
+        <translation>خلال حوالي {} سنوات</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in less than a minute</source>
+        <translation>في أقل من دقيقة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in over {} years</source>
+        <translation>في أكثر من {} سنة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>in {} seconds</source>
+        <translation>في ثوان</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>less than a minute</source>
+        <translation>أقل من دقيقة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>less than a minute ago</source>
+        <translation>قبل أقل من دقيقة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>over {} years</source>
+        <translation>أكثر من {} سنوات</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>over {} years ago</source>
+        <translation>منذ أكثر من {} سنة</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>{} seconds</source>
+        <translation>{} ثوانٍ</translation>
+    </message>
+    <name>util</name>
+    <message>
+        <source>{} seconds ago</source>
+        <translation>{} منذ ثوانى</translation>
+    </message>
+</context>
+<context>
+    <name>utils</name>
+    <message>
+        <source>Child-Pays-For-Parent: This transaction speeds up the confirmation of the {parent_str}, 
 since it increases the total fee rate to {combined_rate}.</source>
-			<translation>Child-Pays-For-Parent: تسرّع هذه المعاملة تأكيد {parent_str}، لأنها تزيد معدل الرسوم الإجمالي إلى {combined_rate}.</translation>
-		</message>
-		<name>utils</name>
-		<message>
-			<source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
+        <translation>Child-Pays-For-Parent: تسرّع هذه المعاملة تأكيد {parent_str}، لأنها تزيد معدل الرسوم الإجمالي إلى {combined_rate}.</translation>
+    </message>
+    <name>utils</name>
+    <message>
+        <source>Child-Pays-For-Parent: This transactions fee is too low to speeds up the confirmation of the {parent_str}, 
 since it descreases the total fee rate to {combined_rate}. Pick at least {parent_rate}.</source>
-			<translation>Child-Pays-For-Parent: رسوم هذه المعاملة منخفضة جدًا لتسريع تأكيد {parent_str}، لأنها تُخفض معدل الرسوم الإجمالي إلى {combined_rate}. اختر على الأقل {parent_rate}.</translation>
-		</message>
-		<name>utils</name>
-		<message>
-			<source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
+        <translation>Child-Pays-For-Parent: رسوم هذه المعاملة منخفضة جدًا لتسريع تأكيد {parent_str}، لأنها تُخفض معدل الرسوم الإجمالي إلى {combined_rate}. اختر على الأقل {parent_rate}.</translation>
+    </message>
+    <name>utils</name>
+    <message>
+        <source>Replace-By-Fee: This transaction replaces transaction {txid} with fee rate {rate_org}. 
 Pick a fee above the minimum fee rate {rate_min}.</source>
-			<translation>Replace-By-Fee: تستبدل هذه المعاملة المعاملة {txid} بمعدل رسوم {rate_org}. اختر رسومًا أعلى من الحد الأدنى {rate_min}.</translation>
-		</message>
-		<name>utils</name>
-		<message>
-			<source>unconfirmed parent transaction</source>
-			<translation>معاملة أصل غير مؤكدة</translation>
-		</message>
-		<name>utils</name>
-		<message>
-			<source>unknown</source>
-			<translation>غير معروف</translation>
-		</message>
-		<name>utils</name>
-		<message>
-			<source>{number} unconfirmed parent transactions</source>
-			<translation>{number} معاملات أصل غير مؤكدة</translation>
-		</message>
-	</context>
-	<context>
-		<name>utxo_list</name>
-		<message>
-			<source>Confirmed UTXO</source>
-			<translation>UTXO مؤكد</translation>
-		</message>
-		<name>utxo_list</name>
-		<message>
-			<source>Copy as csv</source>
-			<translation>انسخ كملف CSV</translation>
-		</message>
-		<name>utxo_list</name>
-		<message>
-			<source>Open Address Details</source>
-			<translation>فتح تفاصيل العنوان</translation>
-		</message>
-		<name>utxo_list</name>
-		<message>
-			<source>Open transaction</source>
-			<translation>صفقة مفتوحة</translation>
-		</message>
-		<name>utxo_list</name>
-		<message>
-			<source>Unconfirmed UTXO</source>
-			<translation>UTXO غير مؤكد</translation>
-		</message>
-		<name>utxo_list</name>
-		<message>
-			<source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
-			<translation>يتم إنفاق UTXO غير المؤكد من خلال المعاملة {is_spent_by_txid}</translation>
-		</message>
-		<name>utxo_list</name>
-		<message>
-			<source>View on block explorer</source>
-			<translation>عرض على كتلة اكسبلورر</translation>
-		</message>
-	</context>
-	<context>
-		<name>video</name>
-		<message>
-			<source>Add RTSP Camera</source>
-			<translation>إضافة كاميرا RTSP</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Brightness (reduce for bright displays):</source>
-			<translation>السطوع (قلل للعروض المشرقة):</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Camera</source>
-			<translation>كاميرا</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Camera:</source>
-			<translation>الكاميرا:</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Enhance picture for detection</source>
-			<translation>تحسين الصورة للكشف</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Enter RTSP URL</source>
-			<translation>أدخل URL RTSP</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Error</source>
-			<translation>خطأ</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Postprocess</source>
-			<translation>ما بعد المعالجة</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>RTSP URL:</source>
-			<translation>URL RTSP:</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Screen</source>
-			<translation>شاشة</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Settings</source>
-			<translation>الإعدادات</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Show camera controls</source>
-			<translation>عرض عناصر تحكم الكاميرا</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>The camera could not be opened</source>
-			<translation>تعذر فتح الكاميرا</translation>
-		</message>
-		<name>video</name>
-		<message>
-			<source>Zoom:</source>
-			<translation>التكبير:</translation>
-		</message>
-	</context>
-	<context>
-		<name>wallet</name>
-		<message>
-			<source>Change of:</source>
-			<translation>تغيير من:</translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Confirmed</source>
-			<translation>مؤكد</translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Draft</source>
-			<translation>مسودة</translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Local</source>
-			<translation>محلي</translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>PSBT</source>
-			<translation>PSBT</translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Send to:</source>
-			<translation>أرسل إلى:</translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Sending to addresses: </source>
-			<translation>جارٍ الإرسال إلى العناوين: </translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Unconfirmed</source>
-			<translation>غير مؤكد</translation>
-		</message>
-		<name>wallet</name>
-		<message>
-			<source>Unknown</source>
-			<translation>مجهول</translation>
-		</message>
-	</context>
+        <translation>Replace-By-Fee: تستبدل هذه المعاملة المعاملة {txid} بمعدل رسوم {rate_org}. اختر رسومًا أعلى من الحد الأدنى {rate_min}.</translation>
+    </message>
+    <name>utils</name>
+    <message>
+        <source>unconfirmed parent transaction</source>
+        <translation>معاملة أصل غير مؤكدة</translation>
+    </message>
+    <name>utils</name>
+    <message>
+        <source>unknown</source>
+        <translation>غير معروف</translation>
+    </message>
+    <name>utils</name>
+    <message>
+        <source>{number} unconfirmed parent transactions</source>
+        <translation>{number} معاملات أصل غير مؤكدة</translation>
+    </message>
+</context>
+<context>
+    <name>utxo_list</name>
+    <message>
+        <source>Confirmed UTXO</source>
+        <translation>UTXO مؤكد</translation>
+    </message>
+    <name>utxo_list</name>
+    <message>
+        <source>Copy as csv</source>
+        <translation>انسخ كملف CSV</translation>
+    </message>
+    <name>utxo_list</name>
+    <message>
+        <source>Open Address Details</source>
+        <translation>فتح تفاصيل العنوان</translation>
+    </message>
+    <name>utxo_list</name>
+    <message>
+        <source>Open transaction</source>
+        <translation>صفقة مفتوحة</translation>
+    </message>
+    <name>utxo_list</name>
+    <message>
+        <source>Unconfirmed UTXO</source>
+        <translation>UTXO غير مؤكد</translation>
+    </message>
+    <name>utxo_list</name>
+    <message>
+        <source>Unconfirmed UTXO is spent by transaction {is_spent_by_txid}</source>
+        <translation>يتم إنفاق UTXO غير المؤكد من خلال المعاملة {is_spent_by_txid}</translation>
+    </message>
+    <name>utxo_list</name>
+    <message>
+        <source>View on block explorer</source>
+        <translation>عرض على كتلة اكسبلورر</translation>
+    </message>
+</context>
+<context>
+    <name>video</name>
+    <message>
+        <source>Add RTSP Camera</source>
+        <translation>إضافة كاميرا RTSP</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Brightness (reduce for bright displays):</source>
+        <translation>السطوع (قلل للعروض المشرقة):</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Camera</source>
+        <translation>كاميرا</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Camera:</source>
+        <translation>الكاميرا:</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Enhance picture for detection</source>
+        <translation>تحسين الصورة للكشف</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Enter RTSP URL</source>
+        <translation>أدخل URL RTSP</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Error</source>
+        <translation>خطأ</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Postprocess</source>
+        <translation>ما بعد المعالجة</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>RTSP URL:</source>
+        <translation>URL RTSP:</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Screen</source>
+        <translation>شاشة</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Settings</source>
+        <translation>الإعدادات</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Show camera controls</source>
+        <translation>عرض عناصر تحكم الكاميرا</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>The camera could not be opened</source>
+        <translation>تعذر فتح الكاميرا</translation>
+    </message>
+    <name>video</name>
+    <message>
+        <source>Zoom:</source>
+        <translation>التكبير:</translation>
+    </message>
+</context>
+<context>
+    <name>wallet</name>
+    <message>
+        <source>Change of:</source>
+        <translation>تغيير من:</translation>
+    </message>
+    <name>wallet</name>
+    <message>
+        <source>Confirmed</source>
+        <translation>مؤكد</translation>
+    </message>
+    <name>wallet</name>
+    <message>
+        <source>Draft</source>
+        <translation>مسودة</translation>
+    </message>
+    <name>wallet</name>
+    <message>
+        <source>Local</source>
+        <translation>محلي</translation>
+    </message>
+    <name>wallet</name>
+    <message>
+        <source>PSBT</source>
+        <translation>PSBT</translation>
+    </message>
+    <name>wallet</name>
+    <message>
+        <source>Send to:</source>
+        <translation>أرسل إلى:</translation>
+    </message>
+    <name>wallet</name>
+    <message>
+        <source>Sending to addresses: </source>
+        <translation>جارٍ الإرسال إلى العناوين: </translation>
+    </message>
+    <name>wallet</name>
+    <message>
+        <source>Unconfirmed</source>
+        <translation>غير مؤكد</translation>
+    </message>
+    <name>wallet</name>
+    <message>
+        <source>Unknown</source>
+        <translation>مجهول</translation>
+    </message>
+</context>
 </TS>
