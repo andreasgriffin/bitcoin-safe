@@ -205,12 +205,12 @@ def test_post_form_async_without_proxy_uses_plain_aiohttp_session(monkeypatch) -
 
 def test_post_form_async_with_socks_proxy_uses_proxy_connector(monkeypatch) -> None:
     _FakeClientSession.created_sessions.clear()
-    created_proxy_urls: list[str] = []
+    created_proxy_urls: list[tuple[str, bool]] = []
     connector = object()
     monkeypatch.setattr("bitcoin_safe.network_utils.aiohttp.ClientSession", _FakeClientSession)
     monkeypatch.setattr(
         "bitcoin_safe.network_utils.ProxyConnector.from_url",
-        lambda url: created_proxy_urls.append(url) or connector,
+        lambda url, rdns: created_proxy_urls.append((url, rdns)) or connector,
     )
 
     response = asyncio.run(
@@ -225,7 +225,7 @@ def test_post_form_async_with_socks_proxy_uses_proxy_connector(monkeypatch) -> N
 
     session = _FakeClientSession.created_sessions[-1]
     assert isinstance(response, AsyncHttpResponse)
-    assert created_proxy_urls == ["socks5h://127.0.0.1:9050"]
+    assert created_proxy_urls == [("socks5://127.0.0.1:9050", True)]
     assert session.kwargs["connector"] is connector
     assert "proxy" not in session.post_calls[-1]
 
@@ -253,3 +253,16 @@ def test_post_form_async_with_http_proxy_uses_request_proxy(monkeypatch) -> None
     assert isinstance(response, AsyncHttpResponse)
     assert "connector" not in session.kwargs
     assert session.post_calls[-1]["proxy"] == "http://127.0.0.1:8080"
+
+
+def test_socks5h_connector_keeps_remote_dns() -> None:
+    from bitcoin_safe.network_utils import ProxyInfo, _aiohttp_session_kwargs
+
+    async def check() -> None:
+        kwargs, request_kwargs = _aiohttp_session_kwargs(ProxyInfo.parse("socks5h://127.0.0.1:9050"), 5)
+        connector = kwargs["connector"]
+        assert connector._rdns is True
+        assert request_kwargs == {}
+        await connector.close()
+
+    asyncio.run(check())
