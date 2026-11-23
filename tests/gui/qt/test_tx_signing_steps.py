@@ -63,6 +63,7 @@ from bitcoin_safe.signer import (
 )
 
 from ...non_gui.test_psbt_util import (
+    mixed_input_no_signatures,
     mixed_input_no_signatures_partially_signed,
     mixed_inputs_finalized_and_nothing_signed_psbt,
     tr_psbt_singlesig,
@@ -121,6 +122,88 @@ class DummyDescriptor:
 class DummyMultipathDescriptor:
     def to_single_descriptors(self) -> tuple[DummyDescriptor, DummyDescriptor]:
         return DummyDescriptor(), DummyDescriptor()
+
+
+def test_foreign_first_input_keeps_wallet_seed_option(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    psbt = mixed_input_no_signatures
+    owned_input = SimplePSBT.from_psbt(psbt).inputs[2]
+    previous_txout = owned_input.previous_txout()
+    assert previous_txout
+    keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/84h/1h/0h"], network=bdk.Network.REGTEST
+    )[0]
+    keystore.fingerprint = owned_input.pubkeys[0].fingerprint
+    other_keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/84h/1h/1h"], network=bdk.Network.REGTEST, test_seed_offset=1
+    )[0]
+    other_keystore.mnemonic = None
+    wallet = DummyWallet(
+        id="seed-wallet", keystores=[keystore, other_keystore], owned_scripts={previous_txout.spk_hex}
+    )
+    wallet.multipath_descriptor = DummyMultipathDescriptor()
+    second_input = SimplePSBT.from_psbt(psbt).inputs[3]
+    second_txout = second_input.previous_txout()
+    assert second_txout
+    second_keystore = create_test_seed_keystores(
+        signers=1, key_origins=["m/84h/1h/2h"], network=bdk.Network.REGTEST, test_seed_offset=2
+    )[0]
+    second_keystore.fingerprint = second_input.pubkeys[0].fingerprint
+    second_wallet = DummyWallet(
+        id="second-wallet", keystores=[second_keystore], owned_scripts={second_txout.spk_hex}
+    )
+    second_wallet.multipath_descriptor = DummyMultipathDescriptor()
+    wallet_functions.get_wallets.connect(lambda: wallet, slot_name=wallet.id)
+    wallet_functions.get_wallets.connect(lambda: second_wallet, slot_name=second_wallet.id)
+    monkeypatch.setattr("bitcoin_safe.signer.SoftwareSigner", lambda **kwargs: object())
+
+    viewer = SimpleNamespace(
+        network=bdk.Network.REGTEST,
+        wallet_functions=wallet_functions,
+        signals=signals,
+        loop_in_thread=loop_in_thread,
+        tr=lambda text: text,
+        import_trusted_psbt=lambda psbt: None,
+        tx_received=lambda tx: None,
+    )
+    viewer._normalize_fingerprint = UITx_Viewer._normalize_fingerprint
+    viewer._normalize_fingerprints = UITx_Viewer._normalize_fingerprints.__get__(viewer, SimpleNamespace)
+    viewer._wallet_signing_fingerprints = UITx_Viewer._wallet_signing_fingerprints.__get__(
+        viewer, SimpleNamespace
+    )
+    viewer.enrich_simple_psbt_with_wallet_data = UITx_Viewer.enrich_simple_psbt_with_wallet_data.__get__(
+        viewer, SimpleNamespace
+    )
+    importers = UITx_Viewer.get_combined_signature_importers(viewer, psbt)
+    assert not any(
+        isinstance(importer, SignatureImporterWallet) for importer in next(iter(importers.values()))
+    )
+    wallet_importers = {
+        importer.wallet_id: importer
+        for group in importers.values()
+        for importer in group
+        if isinstance(importer, SignatureImporterWallet)
+    }
+    assert set(wallet_importers) == {wallet.id, second_wallet.id}
+    for importer in wallet_importers.values():
+        importer.sign = Mock()
+
+    widget = TxSigningSteps(importers, psbt, bdk.Network.REGTEST, wallet_functions, loop_in_thread)
+    qtbot.addWidget(widget)
+    widget.show()
+    step = widget.stacked_widget.widget(widget.current_index())
+    assert isinstance(step, TxSigningDeviceList)
+    non_seed_card = next(card for card in step.cards if card.device.fingerprint == other_keystore.fingerprint)
+    assert not any(button.text() == "Sign now" for button in non_seed_card.body.findChildren(QPushButton))
+    for seed_keystore, seed_wallet in [(keystore, wallet), (second_keystore, second_wallet)]:
+        card = next(card for card in step.cards if card.device.fingerprint == seed_keystore.fingerprint)
+        card.expand()
+        seed_button = next(
+            button for button in card.body.findChildren(QPushButton) if button.text() == "Sign now"
+        )
+        seed_button.click()
+        wallet_importers[seed_wallet.id].sign.assert_called_once_with(psbt)
 
 
 def test_signed_ui_is_shown_on_matching_device_card(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:

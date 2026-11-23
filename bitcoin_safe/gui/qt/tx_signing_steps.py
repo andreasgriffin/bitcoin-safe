@@ -591,7 +591,11 @@ class TxSigningDeviceCard(CardBase):
 
     def _wallet_importer(self) -> SignatureImporterWallet | None:
         for importer in self.signature_importers:
-            if isinstance(importer, SignatureImporterWallet):
+            if (
+                isinstance(importer, SignatureImporterWallet)
+                and importer.wallet_id in self.device.wallet_ids
+                and self.device.fingerprint in importer.signing_fingerprints
+            ):
                 return importer
         return None
 
@@ -763,9 +767,15 @@ class TxSigningSteps(StepProgressContainer):
         """Create the card-based signing widget for one progress step."""
         if not signature_importers:
             return QWidget()
+        wallet_importers = [
+            importer
+            for importers in self.signature_importer_dict.values()
+            for importer in importers
+            if isinstance(importer, SignatureImporterWallet) and importer not in signature_importers
+        ]
         return TxSigningDeviceList(
             devices=self.signing_devices,
-            signature_importers=signature_importers,
+            signature_importers=signature_importers + wallet_importers,
             psbt=self.psbt,
             network=self.network,
             wallet_functions=self.wallet_functions,
