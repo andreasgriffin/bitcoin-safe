@@ -580,10 +580,12 @@ class SimpleInput:
         if not pubkey or len(origins) != 1:
             return None
         _, (leaves, (fingerprint, path)) = origins[0]
-        if not fingerprint:
+        # Wallet enrichment can resolve a missing PSBT fingerprint on pubkey_info.
+        resolved_fingerprint = fingerprint or pubkey_info.fingerprint
+        if not resolved_fingerprint:
             return None
-        origin = PubKeyInfo(fingerprint, pubkey, path)
-        if pubkey_info.fingerprint != origin.fingerprint:
+        origin = PubKeyInfo(resolved_fingerprint, pubkey, path)
+        if fingerprint and pubkey_info.fingerprint != origin.fingerprint:
             return None
         if pubkey_info.derivation_path and pubkey_info.derivation_path != origin.derivation_path:
             return None

@@ -895,7 +895,7 @@ class TxSigningSteps(StepProgressContainer):
             for pubkey_info in simple_input.pubkeys:
                 if pubkey_info.signer_id not in devices or not pubkey_info.pubkey:
                     continue
-                partial_sig = simple_input.partial_sigs.get(pubkey_info.pubkey)
+                partial_sig = simple_input.signature_for_pubkey(pubkey_info)
                 if partial_sig:
                     devices[pubkey_info.signer_id].signatures[input_index] = partial_sig
 
