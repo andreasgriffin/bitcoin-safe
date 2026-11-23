@@ -28,10 +28,9 @@
 #
 """Attribute verified input signatures to the keystore fingerprints that produced them.
 
-The signature verifier returns the public keys behind valid ECDSA signatures. This
-module maps those keys back to wallet keystores by deriving each keystore's child key
-at the input's wallet derivation (keychain, index) and comparing the key hash to the
-signing key's hash. bdk performs the derivation, so no separate BIP32 implementation is needed.
+This module maps compressed public keys and Taproot x-only key origins back to
+wallet keystores. It uses bdk to derive each keystore's child key at the input's
+wallet derivation (keychain, index), then compares compressed public key hashes.
 """
 
 from __future__ import annotations
@@ -57,6 +56,24 @@ def derived_key_hash(keystore: KeyStore, keychain_index: bdk.KeychainAndIndex, n
     return script_pubkey[2:]
 
 
+def fingerprint_for_pubkey(
+    pubkey: bytes, keychain_index: bdk.KeychainAndIndex, keystores: Sequence[KeyStore], network: bdk.Network
+) -> str | None:
+    """Match a compressed or x-only derived public key to a wallet keystore."""
+    # Taproot key origins omit the Y parity of the derived internal key.
+    pubkey_hashes = (
+        {hash160(b"\x02" + pubkey), hash160(b"\x03" + pubkey)} if len(pubkey) == 32 else {hash160(pubkey)}
+    )
+    return next(
+        (
+            keystore.fingerprint
+            for keystore in keystores
+            if derived_key_hash(keystore, keychain_index, network) in pubkey_hashes
+        ),
+        None,
+    )
+
+
 def attribute_input_signers(
     result: InputResult,
     keychain_index: bdk.KeychainAndIndex | None,
@@ -72,11 +89,8 @@ def attribute_input_signers(
         return ()
     fingerprints: list[str] = []
     for signer_pubkey in result.signer_pubkeys:
-        signer_hash = hash160(signer_pubkey)
-        for keystore in keystores:
-            if derived_key_hash(keystore, keychain_index, network) == signer_hash:
-                fingerprints.append(keystore.fingerprint)
-                break
+        if fingerprint := fingerprint_for_pubkey(signer_pubkey, keychain_index, keystores, network):
+            fingerprints.append(fingerprint)
     return tuple(fingerprints)
 
 

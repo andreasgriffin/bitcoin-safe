@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from math import ceil
@@ -371,22 +372,48 @@ class SimpleInput:
     m_of_n: tuple[int, int] | None = None
     non_witness_utxo: dict[str, Any] | None = None
     witness_utxo: dict[str, Any] | None = None
-    sighash_type: int | None = None
+    sighash_type: int | str | None = None
     redeem_script: str | None = None
     ripemd160_preimages: dict[str, str] = field(default_factory=dict)
     sha256_preimages: dict[str, str] = field(default_factory=dict)
     hash160_preimages: dict[str, str] = field(default_factory=dict)
     hash256_preimages: dict[str, str] = field(default_factory=dict)
-    tap_key_sig: str | None = None
-    tap_script_sigs: dict[str, str] = field(default_factory=dict)
+    tap_key_sig: PartialSig | None = None
+    tap_script_sigs: dict[tuple[str, str], PartialSig] = field(default_factory=dict)
     tap_scripts: list[tuple[str, str, str]] = field(default_factory=list)
-    tap_key_origins: list[tuple[str, tuple[str, list[str]]]] = field(default_factory=list)
+    tap_key_origins: list[tuple[str, tuple[list[str], tuple[str, str]]]] = field(default_factory=list)
     tap_internal_key: str | None = None
     tap_merkle_root: str | None = None
 
     @classmethod
     def from_input(cls, input_data: dict[str, Any], txin: bdk.TxIn) -> SimpleInput:
         """From input."""
+        sighash_type = input_data.get("sighash_type")
+        if isinstance(sighash_type, dict):
+            sighash_type = sighash_type.get("inner")
+        tap_key_origins = cls._parse_taproot_origins(input_data.get("tap_key_origins"))
+        tap_key_sig = cls._parse_taproot_signature(input_data.get("tap_key_sig"))
+        tap_script_sigs: dict[tuple[str, str], PartialSig] = {}
+        script_signatures = input_data.get("tap_script_sigs")
+        for entry in script_signatures if isinstance(script_signatures, list) else []:
+            if not isinstance(entry, (list, tuple)) or len(entry) != 2:
+                continue
+            key, signature_data = entry
+            if not isinstance(key, (list, tuple)) or len(key) != 2:
+                continue
+            pubkey, leaf_hash = (cls._normalize_hex_32(part) for part in key)
+            signature = cls._parse_taproot_signature(signature_data)
+            if pubkey and leaf_hash and signature:
+                tap_script_sigs[(pubkey, leaf_hash)] = signature
+
+        if sighash_type is not None and not isinstance(sighash_type, (int, str)):
+            logger.warning("Invalid PSBT input sighash metadata")
+            sighash_type = None
+        if sighash_type is not None:
+            for signature in ([tap_key_sig] if tap_key_sig else []) + list(tap_script_sigs.values()):
+                if cls._format_sighash_type(signature.sighash_type) != cls._format_sighash_type(sighash_type):
+                    logger.warning("Taproot signature sighash conflicts with PSBT input sighash")
+
         self = cls(
             txin,
             witness_script=input_data.get("witness_script"),
@@ -401,16 +428,16 @@ class SimpleInput:
             final_script_witness=input_data.get("final_script_witness"),
             non_witness_utxo=input_data.get("non_witness_utxo"),
             witness_utxo=input_data.get("witness_utxo"),
-            sighash_type=input_data.get("sighash_type"),
+            sighash_type=sighash_type,
             redeem_script=input_data.get("redeem_script"),
             ripemd160_preimages=input_data.get("ripemd160_preimages", {}),
             sha256_preimages=input_data.get("sha256_preimages", {}),
             hash160_preimages=input_data.get("hash160_preimages", {}),
             hash256_preimages=input_data.get("hash256_preimages", {}),
-            tap_key_sig=input_data.get("tap_key_sig"),
-            tap_script_sigs={k: v for k, v in input_data.get("tap_script_sigs", [])},
+            tap_key_sig=tap_key_sig,
+            tap_script_sigs=tap_script_sigs,
             tap_scripts=input_data.get("tap_scripts", []),
-            tap_key_origins=input_data.get("tap_key_origins", []),
+            tap_key_origins=tap_key_origins,
             tap_internal_key=input_data.get("tap_internal_key"),
             tap_merkle_root=input_data.get("tap_merkle_root"),
         )
@@ -423,7 +450,7 @@ class SimpleInput:
             )
 
         for tap_key_origin in self.tap_key_origins:
-            pubkey, (unknown, (fingerprint, derivation_path)) = tap_key_origin
+            pubkey, (leaf_hashes, (fingerprint, derivation_path)) = tap_key_origin
             self.pubkeys.append(
                 PubKeyInfo(pubkey=pubkey, fingerprint=fingerprint, derivation_path=derivation_path)
             )
@@ -431,6 +458,53 @@ class SimpleInput:
         self._recover_finalized_singlesig_signer_data()
         self.m_of_n = self._get_m_of_n()
         return self
+
+    @staticmethod
+    def _parse_taproot_signature(signature_data: object) -> PartialSig | None:
+        """Read the Schnorr signature and sighash separated by BDK."""
+        if not isinstance(signature_data, dict):
+            return None
+        signature = signature_data.get("signature")
+        sighash_type = signature_data.get("sighash_type")
+        if (
+            not isinstance(signature, str)
+            or not re.fullmatch(r"[0-9a-fA-F]{128}", signature)
+            or not isinstance(sighash_type, str)
+            or not sighash_type
+        ):
+            return None
+        return PartialSig(
+            signature=signature.lower(),
+            sighash_type=SimpleInput._format_sighash_type(sighash_type),
+        )
+
+    @classmethod
+    def _parse_taproot_origins(cls, data: object) -> list[tuple[str, tuple[list[str], tuple[str, str]]]]:
+        origins: list[tuple[str, tuple[list[str], tuple[str, str]]]] = []
+        for entry in data if isinstance(data, list) else []:
+            if not isinstance(entry, (list, tuple)) or len(entry) != 2:
+                continue
+            key, origin = entry
+            key = cls._normalize_hex_32(key)
+            if not key or not isinstance(origin, (list, tuple)) or len(origin) != 2:
+                continue
+            leaves, source = origin
+            if not isinstance(leaves, list) or not isinstance(source, (list, tuple)) or len(source) != 2:
+                continue
+            fingerprint, path = source
+            if not isinstance(fingerprint, str) or (
+                fingerprint and not re.fullmatch(r"[0-9a-fA-F]{8}", fingerprint)
+            ):
+                continue
+            if not isinstance(path, str) or not re.fullmatch(r"(?:m(?:/|$))?(?:[0-9]+['hH]?(?:/|$))*", path):
+                continue
+            normalized_leaves = [cls._normalize_hex_32(leaf) for leaf in leaves]
+            if any(leaf is None for leaf in normalized_leaves):
+                continue
+            origins.append(
+                (key, ([leaf for leaf in normalized_leaves if leaf is not None], (fingerprint, path)))
+            )
+        return origins
 
     def _recover_finalized_singlesig_signer_data(self) -> None:
         """Recover signer data from finalized singlesig witnesses when derivation data is absent."""
@@ -479,6 +553,68 @@ class SimpleInput:
         return "unknown"
 
     @staticmethod
+    def _normalize_hex_32(value: object) -> str | None:
+        if not isinstance(value, str):
+            return None
+        value = value.lower()
+        if len(value) != 64:
+            return None
+        try:
+            if len(bytes.fromhex(value)) != 32:
+                return None
+        except ValueError:
+            return None
+        return value
+
+    def _taproot_keypath_signature_for_pubkey(self, pubkey_info: PubKeyInfo) -> PartialSig | None:
+        pubkey = self._normalize_hex_32(pubkey_info.pubkey)
+        if not self.tap_key_sig or not pubkey or self._normalize_hex_32(self.tap_internal_key) != pubkey:
+            return None
+        return self.tap_key_sig if self._taproot_origin_for_pubkey(pubkey_info) is not None else None
+
+    def set_verified_fingerprint(self, pubkey_info: PubKeyInfo, fingerprint: str) -> None:
+        """Record a wallet-verified fingerprint on the public key and its matching Taproot origin."""
+        if pubkey_info.fingerprint or not fingerprint:
+            return
+        pubkey_info.fingerprint = PubKeyInfo(fingerprint).fingerprint
+        pubkey = self._normalize_hex_32(pubkey_info.pubkey)
+        if not pubkey:
+            return
+        for index, (key, (leaves, (origin_fingerprint, path))) in enumerate(self.tap_key_origins):
+            if (
+                self._normalize_hex_32(key) == pubkey
+                and not origin_fingerprint
+                and PubKeyInfo("", key, path).derivation_path == pubkey_info.derivation_path
+            ):
+                self.tap_key_origins[index] = (key, (leaves, (pubkey_info.fingerprint, path)))
+
+    def _taproot_origin_for_pubkey(self, pubkey_info: PubKeyInfo) -> list[str] | None:
+        pubkey = self._normalize_hex_32(pubkey_info.pubkey)
+        origins = [
+            origin for origin in self._parse_taproot_origins(self.tap_key_origins) if origin[0] == pubkey
+        ]
+        if not pubkey or len(origins) != 1:
+            return None
+        _, (leaves, (fingerprint, path)) = origins[0]
+        if not fingerprint:
+            return None
+        origin = PubKeyInfo(fingerprint, pubkey, path)
+        if pubkey_info.fingerprint != origin.fingerprint:
+            return None
+        if pubkey_info.derivation_path and pubkey_info.derivation_path != origin.derivation_path:
+            return None
+        return leaves
+
+    def _taproot_scriptpath_signature_for_pubkey(self, pubkey_info: PubKeyInfo) -> PartialSig | None:
+        pubkey = self._normalize_hex_32(pubkey_info.pubkey)
+        leaves = self._taproot_origin_for_pubkey(pubkey_info)
+        if pubkey and leaves is not None:
+            for (signer_pubkey, leaf_hash), signature in self.tap_script_sigs.items():
+                if signer_pubkey == pubkey and leaf_hash in leaves:
+                    return signature
+        return None
+
+    @staticmethod
     def _format_sighash_type(sighash_type: int | str) -> str:
         """Format a sighash flag as a display string.
 
@@ -489,7 +625,10 @@ class SimpleInput:
           https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki#common-signature-message
         """
         if isinstance(sighash_type, str):
-            return sighash_type
+            normalized = sighash_type.upper().replace("SIGHASH_", "")
+            if normalized.isdecimal():
+                return SimpleInput._format_sighash_type(int(normalized))
+            return normalized
 
         base_names = {
             0: "DEFAULT",
@@ -497,6 +636,8 @@ class SimpleInput:
             2: "NONE",
             3: "SINGLE",
         }
+        if sighash_type not in (0, 1, 2, 3, 0x81, 0x82, 0x83):
+            return hex(sighash_type)
         base_type = sighash_type & 0x1F
         parts = [base_names.get(base_type, hex(sighash_type))]
         if sighash_type & 0x80:
@@ -521,6 +662,12 @@ class SimpleInput:
         partial_sig = self.partial_sigs.get(pubkey_info.pubkey)
         if partial_sig:
             return partial_sig
+
+        taproot_signature = self._taproot_keypath_signature_for_pubkey(
+            pubkey_info
+        ) or self._taproot_scriptpath_signature_for_pubkey(pubkey_info)
+        if taproot_signature:
+            return taproot_signature
 
         finalized_signature = self._finalized_singlesig_signature_and_pubkey()
         if not finalized_signature:
@@ -560,6 +707,9 @@ class SimpleInput:
         mn = self._get_m_of_n()
         if mn:
             return mn
+        if not self.pubkeys and not self.is_fully_signed():
+            # An unfinished input without signer metadata still needs a signing step.
+            return (1, 1)
         return (len(self.pubkeys), len(self.pubkeys))
 
     def _get_m_of_n(self) -> tuple[int, int] | None:
@@ -694,9 +844,11 @@ class InputGroup:
     def _signatures_for_pubkey(self, pubkey_info: PubKeyInfo) -> dict[int, PartialSig]:
         signatures: dict[int, PartialSig] = {}
         for input_index, simple_input in zip(self.input_indices, self.inputs, strict=False):
-            partial_sig = simple_input.signature_for_pubkey(pubkey_info)
-            if partial_sig:
-                signatures[input_index] = partial_sig
+            candidates = [key for key in simple_input.pubkeys if key.signer_id == pubkey_info.signer_id]
+            for candidate in candidates or [pubkey_info]:
+                if partial_sig := simple_input.signature_for_pubkey(candidate):
+                    signatures[input_index] = partial_sig
+                    break
         return signatures
 
     def signatures_by_identifier(self) -> dict[str, dict[int, PartialSig]]:
