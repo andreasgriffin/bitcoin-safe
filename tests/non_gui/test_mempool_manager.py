@@ -53,6 +53,23 @@ class FakeLoopInThread:
         return [await coro for coro in coros]
 
 
+def test_fee_rate_to_projected_block_index() -> None:
+    manager = MempoolManager(NetworkConfig(network=bdk.Network.SIGNET), SignalsMin(), FakeLoopInThread())
+    manager.data.mempool_blocks = [
+        {"feeRange": [20.0, 30.0]},
+        {"feeRange": [15.0, 24.0]},
+        {"feeRange": [8.0, 10.0]},
+    ]
+    manager.data.mempool_dict["vsize"] = 3_000_000
+    for rate, expected_index in [(35.0, 0), (24.0, 0), (19.0, 1), (12.0, 2), (0.5, 2)]:
+        assert manager.fee_rate_to_projected_block_index(rate) == expected_index
+
+    manager.data.mempool_dict["vsize"] = 2_000_000
+    assert manager.fee_rate_to_projected_block_index(0.5) == 1
+    manager.data.mempool_blocks = []
+    assert manager.fee_rate_to_projected_block_index(0.5) == 0
+
+
 def test_urljoin_handles_slashless_network_paths() -> None:
     assert (
         urljoin("https://mempool.space/signet/", "api/v1/fees/recommended")

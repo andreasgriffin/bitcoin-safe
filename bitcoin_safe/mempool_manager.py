@@ -512,10 +512,10 @@ class MempoolManager(QObject):
             self.signal_block_tip_height_changed.emit(height)
 
     def fee_rate_to_projected_block_index(self, fee_rate: float) -> int:
-        """Fee rate to projected block index."""
-        available_blocks = len(self.data.mempool_blocks)
-        for i in range(available_blocks):
-            v_min, v_max = self.fee_rates_min_max(i)
-            if fee_rate >= v_min:
+        """Find the matching projected block, or the closest upper fee limit."""
+        block_count = max(1, min(self.num_mempool_blocks(), len(self.data.mempool_blocks)))
+        ranges = [self.fee_rates_min_max(i) for i in range(block_count)]
+        for i, (v_min, v_max) in enumerate(ranges):
+            if v_min <= fee_rate <= v_max:
                 return i
-        return available_blocks
+        return min(range(block_count), key=lambda i: abs(ranges[i][1] - fee_rate))
