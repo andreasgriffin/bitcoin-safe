@@ -62,6 +62,17 @@ def test_describe_op_return(address: str, description: str | None) -> None:
     assert describe_op_return(address) == description
 
 
+def test_describe_op_return_with_new_unicode_emoji() -> None:
+    text = (
+        "\n\n❤️\n\nRed Heart\n😭\n\nLoudly Crying Face\n🥹\n\nFace Holding Back Tears\n✨\n\nSparkles"
+        "\n✅\n\nCheck Mark Button\n🔥\n\nFire\n👀\n\nEyes\n🫪\n\nDistorted Face\n🫶\n\nHeart Hands"
+        "\n🎄\n\nChristmas Tree\n🫂\n\nPeople Hugging\n💀\n\nSkull\n😂\n\nFace with Tears of Joy\n"
+    )
+    payload = text.encode("utf-8")
+    assert len(payload) == 256
+    assert describe_op_return("script:6a4d0001" + payload.hex()) == "OP_RETURN: " + text.replace("\n", "\\n")
+
+
 def test_recipient_header_updates_and_escapes_payload(qtbot: QtBot) -> None:
     box = RecipientBox(fx=None, wallet_functions=WalletFunctions(Signals()), network=bdk.Network.REGTEST)
     qtbot.addWidget(box)

@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import csv
 import logging
+import unicodedata
 from html import escape
 from typing import cast
 
@@ -116,7 +117,9 @@ def describe_op_return(address: str) -> str | None:
             text = data.decode("utf-8").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
         except UnicodeDecodeError:
             text = ""
-        parts.append(text if text and text.isprintable() else "0x" + data.hex())
+        # An emoji newer than Python's Unicode database can have category Cn, e.g. 🫪.
+        is_text = text and all(char.isprintable() or unicodedata.category(char) == "Cn" for char in text)
+        parts.append(text if is_text else "0x" + data.hex())
     return "OP_RETURN" + (": " + " | ".join(parts) if parts else "")
 
 
