@@ -443,10 +443,6 @@ class NotificationBarRecipient(NotificationBar):
         self.wallet_id = wallet_id
         self.updateUi()
 
-    def show_possible_change(self) -> None:
-        """Mark the current wallet address as possible change."""
-        self.icon_label.setText(self.icon_label.textLabel.text() + " " + self.tr("(possible change)"))
-
     def show_op_return(self, description: str) -> None:
         """Show an OP_RETURN description without storing a copy of the address."""
         short_description = description[:100] + "…" if len(description) > 100 else description
@@ -654,10 +650,7 @@ class RecipientBox(QWidget):
         address = self.recipient_widget.address_edit.address
         wallet = get_wallet_of_address(address, self.recipient_widget.wallet_functions)
         self.notification_bar.set_wallet_id(wallet.id if wallet else None)
-        if wallet is not None:
-            if wallet.is_change(address):
-                self.notification_bar.show_possible_change()
-        elif description := describe_op_return(address):
+        if wallet is None and (description := describe_op_return(address)):
             self.notification_bar.show_op_return(description)
 
     def close(self) -> bool:

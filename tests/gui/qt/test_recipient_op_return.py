@@ -94,14 +94,13 @@ def test_recipient_header_updates_and_escapes_payload(qtbot: QtBot) -> None:
 
     box.wallet_functions.get_wallets.connect(get_wallet, slot_name=wallet.id)
     box.autofill_wallet_id()
-    assert box.notification_bar.icon_label.textLabel.text() == (
-        "This address belongs to wallet: <b>My wallet</b> (possible change)"
+    assert (
+        box.notification_bar.icon_label.textLabel.text() == "This address belongs to wallet: <b>My wallet</b>"
     )
-    wallet.is_change.assert_called_with(box.address)
     assert box.notification_bar.icon_label.toolTip() == ""
     box.wallet_functions.signals.language_switch.emit()
-    assert box.notification_bar.icon_label.textLabel.text() == (
-        "This address belongs to wallet: <b>My wallet</b> (possible change)"
+    assert (
+        box.notification_bar.icon_label.textLabel.text() == "This address belongs to wallet: <b>My wallet</b>"
     )
     wallet.is_change.return_value = False
     box.autofill_wallet_id()
