@@ -212,7 +212,7 @@ def test_wallet_send(
                 assert tx_ui_infos.main_wallet_id == wallet.id
                 assert tx_ui_infos.spend_all_utxos is True
                 assert tx_ui_infos.hide_UTXO_selection is False
-                assert set(utxo.address for utxo in tx_ui_infos.utxo_dict.values()) == {target_address}
+                assert set(utxo.address for utxo in tx_ui_infos.selected_utxos()) == {target_address}
 
                 uitx_creator = qt_wallet.uitx_creator
                 assert qt_wallet.tabs.currentWidget() is uitx_creator
@@ -221,7 +221,7 @@ def test_wallet_send(
 
                 def _selection_matches() -> bool:
                     selected_outpoints = set(uitx_creator.utxo_list.get_selected_outpoints())
-                    return selected_outpoints == set(tx_ui_infos.utxo_dict.keys())
+                    return selected_outpoints == set(tx_ui_infos.inputs.keys())
 
                 qtbot.wait_until(_selection_matches)
                 assert _selection_matches()
@@ -482,6 +482,11 @@ def test_send_tab_complex_interactions(
         assert len(selected_category_infos) == 1
         assert selected_category_infos[0].category == first_funded_category
         assert selected_category_infos[0].utxo_balance > 0
+        category_total, _ = Satoshis(
+            selected_category_infos[0].utxo_balance, network=wallet.network
+        ).format_splitted(btc_symbol=uitx_creator.fx.config.bitcoin_symbol.value)
+        qtbot.waitUntil(lambda: uitx_creator.column_inputs.totals.c2.l2.text() == category_total)
+        assert uitx_creator.get_total_input_value() == selected_category_infos[0].utxo_balance
         shutter.save(main_window)
 
         # Reset should ignore a stale empty category selection and go back to the first funded one.

@@ -266,3 +266,16 @@ def test_socks5h_connector_keeps_remote_dns() -> None:
         await connector.close()
 
     asyncio.run(check())
+
+
+def test_socks5_connector_uses_local_dns() -> None:
+    from bitcoin_safe.network_utils import ProxyInfo, _aiohttp_session_kwargs
+
+    async def check() -> None:
+        kwargs, request_kwargs = _aiohttp_session_kwargs(ProxyInfo.parse("socks5://127.0.0.1:9050"), 5)
+        connector = kwargs["connector"]
+        assert connector._rdns is False
+        assert request_kwargs == {}
+        await connector.close()
+
+    asyncio.run(check())

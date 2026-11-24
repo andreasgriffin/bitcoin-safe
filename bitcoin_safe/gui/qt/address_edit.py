@@ -72,6 +72,7 @@ class AddressEdit(ButtonEdit):
         button_vertical_align: QtCore.Qt.AlignmentFlag | None = None,
         ask_to_replace_if_was_used=True,
         parent=None,
+        allow_scripts: bool = False,
     ) -> None:
         """Initialize instance."""
         self.wallet_functions = wallet_functions
@@ -96,7 +97,7 @@ class AddressEdit(ButtonEdit):
         self.copy_button = self.add_copy_button()
         self.mempool_button = self._add_mempool_button()
 
-        self.input_field.setAnalyzer(AddressAnalyzer(self.network, parent=self))
+        self.input_field.setAnalyzer(AddressAnalyzer(self.network, parent=self, allow_scripts=allow_scripts))
 
         # ensure that the address_edit is the minimum vertical size
         self.setMaximumHeight(self.input_field.height())

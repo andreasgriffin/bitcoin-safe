@@ -168,6 +168,15 @@ def calc_minimum_rbf_fee_info(
 
 
 @dataclass
+class TxInputInfo:
+    """UTXO and optional PSBT metadata included as an input in the transaction draft."""
+
+    utxo: PythonUtxo
+    psbt_input: bdk.Input | None = None
+    satisfaction_weight: int | None = None
+
+
+@dataclass
 class TxUiInfos(BaseSaveableClass):
     "A wrapper around tx_builder to collect even more infos"
 
@@ -180,8 +189,9 @@ class TxUiInfos(BaseSaveableClass):
         HiddenTxUiInfos.__name__: HiddenTxUiInfos,
     }
 
-    # {outpoint_string:utxo} It is Ok if outpoint_string:None
-    utxo_dict: dict[OutPoint, PythonUtxo] = field(default_factory=dict)
+    inputs: dict[OutPoint, TxInputInfo] = field(default_factory=dict)
+    # Transient original outpoints and optional PSBT metadata for transaction editing.
+    original_inputs: dict[OutPoint, bdk.Input | None] = field(default_factory=dict)
     fee_rate: float | None = None
     opportunistic_merge_utxos = True
     spend_all_utxos = False
@@ -222,7 +232,7 @@ class TxUiInfos(BaseSaveableClass):
         d["hide_UTXO_selection"] = self.hide_UTXO_selection
         d["recipient_read_only"] = self.recipient_read_only
         d["utxos_read_only"] = self.utxos_read_only
-        d["utxo_dict"] = {str(k): v for k, v in self.utxo_dict.items()}
+        d["utxo_dict"] = {str(k): item.utxo for k, item in self.inputs.items()}
         d["nlocktime"] = self.nlocktime
         d["categories"] = list(self.categories) if self.categories else None
         d["auto_create"] = self.auto_create
@@ -237,7 +247,7 @@ class TxUiInfos(BaseSaveableClass):
         dct["recipients"] = [Recipient(**filtered_for_init(r, Recipient)) for r in dct.get("recipients", [])]
 
         if isinstance(utxo_dict := dct.get("utxo_dict"), dict):
-            dct["utxo_dict"] = {OutPoint.from_str(k): v for k, v in utxo_dict.items()}
+            dct["inputs"] = {OutPoint.from_str(k): TxInputInfo(v) for k, v in utxo_dict.items()}
 
         return cls(**filtered_for_init(dct, cls))
 
@@ -258,10 +268,13 @@ class TxUiInfos(BaseSaveableClass):
             return cast(bdk.LockTime, bdk.LockTime.SECONDS(value))
         return cast(bdk.LockTime, bdk.LockTime.BLOCKS(value))
 
+    def selected_utxos(self) -> list[PythonUtxo]:
+        return [item.utxo for item in self.inputs.values()]
+
     def fill_utxo_dict_from_utxos(self, utxos: list[PythonUtxo]):
         """Fill utxo dict from utxos."""
         for utxo in utxos:
-            self.utxo_dict[OutPoint.from_bdk(utxo.outpoint)] = utxo
+            self.inputs[OutPoint.from_bdk(utxo.outpoint)] = TxInputInfo(utxo)
 
 
 class TxBuilderInfos:

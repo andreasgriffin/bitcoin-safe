@@ -33,9 +33,13 @@ import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import partial
+from html import escape
+from math import ceil
 from typing import Any, cast
 
+import bdkpython as bdk
 import numpy as np
+from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTools, SignalTracker
 from bitcoin_safe_lib.gui.qt.spinning_button import SpinningButton
@@ -47,6 +51,7 @@ from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QHBoxLayout,
+    QLabel,
     QPushButton,
     QSizePolicy,
     QSplitter,
@@ -55,6 +60,12 @@ from PyQt6.QtWidgets import (
 
 from bitcoin_safe.constants import APP_NAME, MIN_RELAY_FEE
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
+from bitcoin_safe.foreign_utxo import ForeignUtxo
+from bitcoin_safe.foreign_utxo_serialization import (
+    SerializedForeignInput,
+    dump_foreign_inputs,
+    load_foreign_inputs,
+)
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
@@ -64,17 +75,26 @@ from bitcoin_safe.gui.qt.ui_tx.columns import ColumnFee, ColumnInputs, ColumnRec
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_base import UITx_Base
 from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.warning_bars import LinkingWarningBar
+from bitcoin_safe.outpoint_parser import parse_outpoints
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
-from ....psbt_util import FeeInfo, FeeRate
-from ....pythonbdk_types import OutPoint, PythonUtxo, TransactionDetails, UtxosForInputs
+from ....psbt_util import FeeInfo, FeeRate, estimate_tx_weight, weight_to_vsize
+from ....pythonbdk_types import (
+    OutPoint,
+    PythonUtxo,
+    Recipient,
+    TransactionDetails,
+    TxOut,
+    UtxosForInputs,
+    is_address,
+)
 from ....signals import (
     UpdateFilter,
     UpdateFilterReason,
     WalletFunctions,
 )
-from ....tx import HiddenTxUiInfos, TxUiInfos, calc_minimum_rbf_fee_info
+from ....tx import HiddenTxUiInfos, TxInputInfo, TxUiInfos, calc_minimum_rbf_fee_info
 from ....wallet import (
     ToolsTxUiInfo,
     TxConfirmationStatus,
@@ -87,6 +107,7 @@ from ..dialog_import import ImportDialog
 from ..my_treeview import MyItemDataRole
 from ..util import HLine, Message, MessageType
 from ..utxo_list import UTXOList, UtxoListWithToolbar
+from ..wrappers import Menu
 from .recipients import RecipientBox, RecipientWidget
 
 logger = logging.getLogger(__name__)
@@ -97,6 +118,7 @@ class RefreshCounterKey(Enum):
     UTXO_SELECTION = "utxo_selection"
     CATEGORY_SELECTION = "category_selection"
     AMOUNT_CHANGE = "amount_change"
+    ADDRESS_CHANGE = "address_change"
 
 
 @dataclass
@@ -155,6 +177,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         tx_ui_infos: TxUiInfos | None = None,
         category_list: CategoryList | None = None,
         utxo_list_with_toolbar: UtxoListWithToolbar | None = None,
+        foreign_inputs: dict[str, SerializedForeignInput] | None = None,
+        selected_outpoints: list[str] | None = None,
+        selected_input_outpoints: list[str] | None = None,
         parent=None,
     ) -> None:
         """Initialize instance."""
@@ -205,9 +230,29 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
             self.utxo_list_with_toolbar = UtxoListWithToolbar(self.utxo_list, self.config, parent=self)
 
-        self.additional_outpoints: list[OutPoint] = []
-        self.utxo_list.outpoints = self.get_outpoints()
-        self.hidden_tx_infos = HiddenTxUiInfos()
+        self.foreign_inputs = load_foreign_inputs(foreign_inputs or {})
+        self._import_generation = 0
+        self._import_busy = False
+        self.utxo_list.signal_remove_foreign_inputs.connect(self.remove_foreign_inputs)
+        # The draft owns the selection, even when a row disappears from the UTXO list.
+        self.selected_outpoints: set[OutPoint] = set()
+        selected_input_outpoints = (
+            selected_outpoints if selected_outpoints is not None else selected_input_outpoints
+        )
+        if selected_input_outpoints is None and tx_ui_infos and not tx_ui_infos.hide_UTXO_selection:
+            self.selected_outpoints.update(tx_ui_infos.inputs)
+            self.selected_outpoints.update(tx_ui_infos.original_inputs)
+        for outpoint in selected_input_outpoints or []:
+            try:
+                self.selected_outpoints.add(OutPoint.from_str(outpoint))
+            except ValueError:
+                logger.warning("Ignoring invalid saved input selection: %s", outpoint)
+        self.hidden_tx_infos = tx_ui_infos.hidden if tx_ui_infos else HiddenTxUiInfos()
+        # The list projects this same set; selection updates must mutate it in place.
+        self.utxo_list.authoritative_selection = self.selected_outpoints
+        self.utxo_list.outpoints = list(
+            dict.fromkeys(self.get_outpoints() + sorted(self.selected_outpoints, key=str))
+        )
 
         self.searchable_list = self.utxo_list
 
@@ -227,10 +272,14 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             widget_utxo_with_toolbar=self.utxo_list_with_toolbar,
             fx=self.fx,
             parent=self,
+            allow_add_utxos=True,
         )
         self.column_inputs.checkBox_auto_opportunistic_coin_select.clicked.connect(
             self.on_checkBox_opportunistic_coin_select
         )
+        self.menu_add_source = Menu(self)
+        self.menu_add_source.aboutToShow.connect(self.update_add_source_menu)
+        self.column_inputs.button_add_source.setMenu(self.menu_add_source)
         self.splitter.addWidget(self.column_inputs)
 
         self.column_recipients = ColumnRecipients(
@@ -303,9 +352,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.coin_selection_checkbox_state_change
         )
         self.mempool_manager.signal_data_updated.connect(self.update_fee_rate_to_mempool)
-        self.utxo_list.signal_selection_changed.connect(
-            partial(self.on_input_changed, RefreshCounterKey.UTXO_SELECTION)
-        )
+        self.utxo_list.signal_selection_changed.connect(self.on_utxo_selection_changed)
         self.recipients.signal_amount_changed.connect(self.on_signal_amount_changed)
         self.recipients.signal_added_recipient.connect(self.on_recipients_added)
         self.recipients.signal_removed_recipient.connect(self.on_recipients_removed)
@@ -314,6 +361,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.column_fee.fee_group.signal_fee_rate_change.connect(self.on_fee_rate_change)
         self.signals.language_switch.connect(self.updateUi)
         self.signals.currency_switch.connect(self.update_all_totals)
+        self.signal_tracker.connect(self.signals.any_wallet_updated, self.on_wallet_updated)
 
         # must be after setting signals, to trigger signals when adding a recipient
         self.recipients.add_recipient()
@@ -355,7 +403,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         d["manual_coin_select"] = self.column_inputs.checkBox_manual_coin_select.isChecked()
         d["utxo_list_with_toolbar"] = self.utxo_list_with_toolbar
         d["category_list"] = self.category_list
-        d["tx_ui_infos"] = self.get_tx_ui_infos()
+        tx_infos = self.get_tx_ui_infos()
+        # Foreign snapshots are persisted once in foreign_inputs; selection is saved separately.
+        tx_infos.inputs = {op: item for op, item in tx_infos.inputs.items() if item.psbt_input is None}
+        d["tx_ui_infos"] = tx_infos
+        d["foreign_inputs"] = dump_foreign_inputs(self.foreign_inputs)
+        d["selected_outpoints"] = sorted(str(op) for op in self.selected_outpoints)
         return d
 
     @classmethod
@@ -368,7 +421,11 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         """Set category core."""
         self._signal_tracker_wallet_signals.disconnect_all()
         self.category_list.set_category_core(category_core)
-        self.wallet = category_core.wallet if category_core else None
+        wallet = category_core.wallet if category_core else None
+        if wallet is not self.wallet:
+            self._import_generation += 1
+            self._set_import_busy(False)
+        self.wallet = wallet
         if self.wallet and (_wallet_signals := self.wallet_functions.wallet_signals.get(self.wallet.id)):
             self._signal_tracker_wallet_signals.connect(_wallet_signals.updated, self.update_with_filter)
 
@@ -387,7 +444,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         """Refresh warning bars when the nLocktime inputs change."""
         tx_ui_infos = self.get_tx_ui_infos()
         self._set_warning_bars(
-            outpoints=list(tx_ui_infos.utxo_dict.keys()),
+            outpoints=list(tx_ui_infos.inputs.keys()),
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
             tx_status=self.get_tx_status(),
             nlocktime=tx_ui_infos.nlocktime,
@@ -421,9 +478,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             for reason in pending_reasons:
                 self._refresh_counters.bump(reason)
         fee_rate = self.column_fee.fee_group.spin_fee_rate.value()
+        tx_ui_infos = self.get_tx_ui_infos()
         # set max values
-        fee_info = self.estimate_fee_info(fee_rate=fee_rate)
-        self.reapply_max_amounts(fee_amount=fee_info.fee_amount)
+        fee_info = self.estimate_fee_info(fee_rate=fee_rate, txinfos=tx_ui_infos)
+        self.reapply_max_amounts(fee_amount=fee_info.fee_amount, txinfos=tx_ui_infos)
         self.column_fee.fee_group.set_fee_info(
             fee_info=fee_info,
         )
@@ -432,7 +490,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             selected_categories = set([c.category for c in self.category_list.get_selected_category_infos()])
             self.utxo_list.set_filter_categories(selected_categories if selected_categories else None)
 
-        tx_ui_infos = self.get_tx_ui_infos()
+        # Send-max can change recipient amounts without changing the input snapshot.
+        tx_ui_infos.recipients = self.recipients.recipients
+        updated_fee_info = self.estimate_fee_info(fee_rate=fee_rate, txinfos=tx_ui_infos)
 
         # update fee infos (dependent on output amounts)
         self.update_opportunistic_checkbox()
@@ -441,15 +501,16 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             max_reasonable_fee_rate=self.mempool_manager.max_reasonable_fee_rate(),
             confirmation_status=TxConfirmationStatus.LOCAL,
         )
-        self.handle_cpfp(txinfos=tx_ui_infos)
-        self.update_sending_source_totals()
+        self.handle_cpfp(txinfos=tx_ui_infos, fee_info=updated_fee_info)
+        self.update_sending_source_totals(tx_ui_infos)
         self.update_recipients_totals()
 
         self._set_warning_bars(
-            outpoints=list(tx_ui_infos.utxo_dict.keys()),
+            outpoints=list(tx_ui_infos.inputs.keys()),
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
             tx_status=self.get_tx_status(),
             nlocktime=tx_ui_infos.nlocktime,
+            fee_info=updated_fee_info,
         )
 
     def _set_warning_bars(
@@ -458,6 +519,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         recipient_addresses: list[str],
         tx_status: TxStatus,
         nlocktime: int | None = None,
+        fee_info: FeeInfo | None = None,
     ):
         """Set warning bars."""
         super()._set_warning_bars(
@@ -466,7 +528,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             tx_status=tx_status,
             nlocktime=nlocktime,
         )
-        self.update_high_fee_warning_label()
+        if fee_info is None:
+            self.update_high_fee_warning_label()
+        else:
+            self._update_high_fee_warning_label(
+                recipients=self.recipients, fee_info=fee_info, tx_status=tx_status
+            )
 
     def showEvent(self, a0: QShowEvent | None):
         """ShowEvent."""
@@ -476,10 +543,20 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 try:
                     # the initial_tx_ui_infos can cause problems since the wallet
                     # state can have changed in the meantime, such that it requires full rbf
-                    self.set_ui(tx_ui_infos=self.initial_tx_ui_infos)
+                    self.set_ui(
+                        tx_ui_infos=self.initial_tx_ui_infos,
+                        selected_outpoints=set(self.selected_outpoints),
+                    )
+                    if self.foreign_inputs:
+                        self.show_all_inputs()
                 except Exception as e:
                     logger.error(f"error in loading initial_tx_ui_infos {str(e)}")
                     self.clear_ui()
+            elif self.foreign_inputs:
+                selected = set(self.selected_outpoints)
+                self.set_ui(TxUiInfos())
+                self.show_all_inputs()
+                self.set_selected_outpoints(selected)
             else:
                 self.clear_ui()
         super().showEvent(a0)
@@ -502,7 +579,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         logger.debug(f"{self.__class__.__name__} update_with_filter")
         self.on_input_changed_and_categories(RefreshCounterKey.UTXO_SELECTION)
-        self.utxo_list.set_outpoints(self.get_outpoints())
+        self.refresh_inputs()
 
     def update_recipients_totals(self):
         """Update recipients totals."""
@@ -511,15 +588,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
         self.column_recipients.totals.set_amount(amount)
 
-    def update_sending_source_totals(self):
+    def update_sending_source_totals(self, txinfos: TxUiInfos | None = None) -> None:
         """Update sending source totals."""
-        selected_values = (
-            self.utxo_list.get_selected_values()
-            if self.column_inputs.checkBox_manual_coin_select.isChecked()
-            else self.category_list.get_selected_values()
-        )
-        amount = sum(selected_values)
-        self.column_inputs.totals.set_amount(amount)
+        self.column_inputs.totals.set_amount(self.get_total_input_value(txinfos))
 
     def update_all_totals(self):
         """Update all totals."""
@@ -573,10 +644,33 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
     def on_signal_address_text_changed(self, recipient_widget: RecipientWidget):
         """On signal address text changed."""
         self.update_categories()
+        self.on_input_changed(RefreshCounterKey.ADDRESS_CHANGE)
+
+    def on_utxo_selection_changed(self) -> None:
+        if self.utxo_list._currently_updating:
+            return
+        previous = set(self.selected_outpoints)
+        self.selected_outpoints.difference_update(self.utxo_list.get_displayed_outpoints())
+        self.selected_outpoints.update(self.utxo_list.get_selected_outpoints())
+        if (previous - self.selected_outpoints) - set(self.get_outpoints()):
+            QTimer.singleShot(0, self.refresh_inputs)
+        self.on_input_changed(RefreshCounterKey.UTXO_SELECTION)
+
+    def set_selected_outpoints(self, outpoints: set[OutPoint], *, scroll_to_last: bool = False) -> None:
+        outpoints = set(outpoints)
+        self.selected_outpoints.clear()
+        self.selected_outpoints.update(outpoints)
+        displayed = set(self.get_outpoints()) | self.foreign_inputs.keys() | self.selected_outpoints
+        if displayed != set(self.utxo_list.outpoints):
+            self.refresh_inputs()
+        else:
+            self.utxo_list.project_selection(scroll_to_last=scroll_to_last)
+            self.utxo_list_with_toolbar.update_labels()
+        self.on_input_changed(RefreshCounterKey.UTXO_SELECTION)
 
     def clear_utxo_list_selection(self):
         """Clear utxo list selection."""
-        self.utxo_list.select_rows([], self.utxo_list.key_column, role=MyItemDataRole.ROLE_KEY)
+        self.set_selected_outpoints(set())
 
     def on_category_selection_changed(self):
         """On category selection changed."""
@@ -584,8 +678,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.coin_selection_checkbox_state_change()
         else:
             self.on_input_changed_and_categories(RefreshCounterKey.CATEGORY_SELECTION)
-            # this hides rows in utxo_list
-            self.utxo_list.restrict_selection_to_non_hidden_rows()
 
     def on_recipients_added(self, recipient_tab_widget: RecipientBox):
         """On recipients added."""
@@ -622,13 +714,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             return
         tx_ui_infos = self.get_tx_ui_infos()
 
-        if not tx_ui_infos.utxo_dict:
+        if not tx_ui_infos.inputs:
             return
 
         addresses = clean_list([recipient.address for recipient in self.recipients.recipients])
         if not addresses:
             return
-        recipient_category = self.wallet.determine_recipient_category(tx_ui_infos.utxo_dict.values())
+        recipient_category = self.wallet.determine_recipient_category(tx_ui_infos.selected_utxos())
 
         if recipient_category == self._cache_last_category:
             return
@@ -639,7 +731,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
 
         self._set_warning_bars(
-            outpoints=list(tx_ui_infos.utxo_dict.keys()),
+            outpoints=list(tx_ui_infos.inputs.keys()),
             recipient_addresses=[recipient.address for recipient in self.recipients.recipients],
             tx_status=self.get_tx_status(),
             nlocktime=tx_ui_infos.nlocktime,
@@ -687,8 +779,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             )
 
         with BlockChangesSignals([self.utxo_list]):
-            self.additional_outpoints.clear()
-            self.utxo_list.set_outpoints(self.get_outpoints())
+            self._import_generation += 1
+            self._set_import_busy(False)
+            self.foreign_inputs.clear()
+            self.selected_outpoints.clear()
+            self.column_inputs.upper_widget_category_selection.setVisible(True)
+            self.refresh_inputs()
             self.set_ui(TxUiInfos())
             self.utxo_list.update_content()
         # Example: after reset, typing a new recipient address in the same category as the
@@ -699,7 +795,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
     def create_tx(self) -> None:
         """Create tx."""
-        if not self.wallet:
+        if not self.wallet or self._import_busy:
             return
         if (
             not self.column_inputs.checkBox_manual_coin_select.isChecked()
@@ -714,7 +810,19 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         tx_ui_infos = self.get_tx_ui_infos()
 
-        if self.column_inputs.checkBox_manual_coin_select.isChecked() and not tx_ui_infos.utxo_dict:
+        if self.column_inputs.checkBox_manual_coin_select.isChecked():
+            # Never silently fund a transaction from a subset of the intended inputs.
+            unresolved = self.selected_outpoints - tx_ui_infos.inputs.keys()
+            if unresolved:
+                Message(
+                    self.tr("Some selected inputs are unavailable."),
+                    parent=self,
+                    type=MessageType.Warning,
+                )
+                self.wallet_functions.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
+                return
+
+        if self.column_inputs.checkBox_manual_coin_select.isChecked() and not tx_ui_infos.inputs:
             Message(
                 self.tr(
                     "Select one or more UTXOs from the list on the left, "
@@ -728,6 +836,18 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             return
 
         wallets = get_wallets(self.wallet_functions)
+        # Recheck current spendability and previous-output consistency for foreign inputs.
+        foreign_outpoints = {op for op, item in tx_ui_infos.inputs.items() if item.psbt_input is not None}
+        known = Wallet.get_known_wallet_outputs(foreign_outpoints, [self.wallet, *wallets])
+        try:
+            for outpoint, result in known.items():
+                if isinstance(result, Exception):
+                    raise result
+                Wallet.validate_foreign_input(outpoint, tx_ui_infos.inputs[outpoint], result)
+        except Exception as exc:
+            Message(str(exc), parent=self, type=MessageType.Warning)
+            self.wallet_functions.wallet_signals[self.wallet.id].finished_psbt_creation.emit()
+            return
         minimum_fee_rate = (
             FeeRate.to_sats_per_vb(_fee_rate)
             if (_fee_rate := self.wallet.get_min_broadcast_fee_rate())
@@ -749,7 +869,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         # warn if multiple categories are combined
         category_dict = self.get_category_dict_of_addresses(
-            [utxo.address for utxo in tx_ui_infos.utxo_dict.values()], wallets=wallets
+            [utxo.address for utxo in tx_ui_infos.selected_utxos()], wallets=wallets
         )
         if len(category_dict) > 1:
             Message(
@@ -772,45 +892,344 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.reset_fee_rate()
         self.mempool_manager.signal_data_updated.disconnect(self.update_fee_rate_to_mempool)
 
-    def get_outpoints(self) -> list[OutPoint]:
-        """Get outpoints."""
+    def _spendable_inputs(self) -> dict[OutPoint, TxInputInfo]:
         if not self.wallet:
-            return []
-        return [utxo.outpoint for utxo in self.wallet.get_all_utxos()] + self.additional_outpoints
+            return {}
+        wallets = [self.wallet, *[w for w in get_wallets(self.wallet_functions) if w != self.wallet]]
+        known = (
+            Wallet.get_known_wallet_outputs(set(self.foreign_inputs), wallets) if self.foreign_inputs else {}
+        )
+        usable: dict[OutPoint, TxInputInfo] = {}
+        for op, foreign in self.foreign_inputs.items():
+            item = TxInputInfo(foreign.utxo, foreign.psbt_input, foreign.satisfaction_weight)
+            try:
+                evidence = known[op]
+                if isinstance(evidence, Exception):
+                    raise evidence
+                Wallet.validate_foreign_input(op, item, evidence)
+                usable[op] = item
+            except Exception as exc:
+                logger.debug("Foreign input %s unavailable: %s", op, exc)
+        # Native wallet inputs take precedence over imported copies.
+        usable.update({utxo.outpoint: TxInputInfo(utxo) for utxo in self.wallet.get_all_utxos()})
+        if replacement := self.hidden_tx_infos.replace_tx:
+            original = {OutPoint.from_bdk(txin.previous_output) for txin in replacement.input()}
+            txos = self.wallet.get_all_txos_dict()
+            usable.update({op: TxInputInfo(txos[str(op)]) for op in original if str(op) in txos})
+        return usable
+
+    def get_outpoints(self) -> list[OutPoint]:
+        return sorted(self._spendable_inputs(), key=str)
+
+    def _local_input_outpoints(self) -> set[OutPoint]:
+        active = {utxo.outpoint for utxo in self.wallet.get_all_utxos()} if self.wallet else set()
+        if replacement := self.hidden_tx_infos.replace_tx:
+            active.update(OutPoint.from_bdk(txin.previous_output) for txin in replacement.input())
+        return active
+
+    def on_wallet_updated(self, update_filter: UpdateFilter) -> None:
+        if self._ui_well_defined and self.foreign_inputs:
+            self.refresh_inputs()
+            self.on_input_changed(RefreshCounterKey.UTXO_SELECTION)
+
+    def refresh_inputs(self) -> None:
+        available = set(self.get_outpoints())
+        displayed = available | self.foreign_inputs.keys() | self.selected_outpoints
+        txouts = {op: item.utxo.txout for op, item in self.foreign_inputs.items()}
+        if self.initial_tx_ui_infos:
+            for op, info in self.initial_tx_ui_infos.inputs.items():
+                if op in displayed:
+                    txouts.setdefault(op, info.utxo.txout)
+        wallet_ids = {op: item.wallet_id for op, item in self.foreign_inputs.items()}
+        if self.wallet:
+            for op, txout in txouts.items():
+                if op not in wallet_ids and self.wallet.bdkwallet.is_mine(txout.script_pubkey):
+                    wallet_ids[op] = self.wallet.id
+        self.utxo_list.removable_outpoints = set(self.foreign_inputs)
+        self.utxo_list.set_utxos(sorted(displayed, key=str), txouts, wallet_ids, available)
+        if self.selected_outpoints - available:
+            self.utxo_list.set_column_hidden(UTXOList.Columns.OUTPOINT, False)
 
     def on_checkBox_opportunistic_coin_select(self):
         """On checkBox opportunistic coin select."""
         self.coin_selection_checkbox_state_change()
 
-    def add_outpoints(self, outpoints: list[OutPoint]) -> None:
-        """Add outpoints."""
-        old_outpoints = self.get_outpoints()
-        for outpoint in outpoints:
-            if outpoint not in old_outpoints:
-                self.additional_outpoints.append(outpoint)
-        self.utxo_list.set_outpoints(self.get_outpoints())
+    def update_add_source_menu(self) -> None:
+        self.menu_add_source.clear()
+        wallet_menu = self.menu_add_source.add_menu(self.tr("Import UTXOs from wallet"))
+        wallets = [wallet for wallet in get_wallets(self.wallet_functions) if wallet != self.wallet]
+        for wallet in wallets:
+            wallet_menu.add_action(wallet.id, partial(self.import_wallet_utxos, wallet))
+        wallet_menu.setEnabled(bool(wallets))
+        self.menu_add_source.add_action(self.tr("Add foreign UTXOs"), self.click_add_utxo)
+        self.menu_add_source.add_action(self.tr("Merge other PSBT"), self.click_merge_psbt)
+
+    def remove_foreign_inputs(self, outpoints: list[OutPoint]) -> None:
+        removed = set(outpoints) & self.foreign_inputs.keys()
+        if not removed:
+            return
+        self._import_generation += 1
+        self._set_import_busy(False)
+        for outpoint in removed:
+            del self.foreign_inputs[outpoint]
+        self.selected_outpoints.difference_update(removed - self._local_input_outpoints())
+        self.refresh_inputs()
+        if not self.foreign_inputs:
+            self.column_inputs.upper_widget_category_selection.setVisible(True)
+        self.on_input_changed_and_categories(RefreshCounterKey.UTXO_SELECTION)
+
+    def show_all_inputs(self) -> None:
+        selected = set(self.selected_outpoints)
+        with BlockChangesSignals([self.category_list]):
+            self.category_list.select_rows(
+                [], self.category_list.key_column, role=MyItemDataRole.ROLE_CLIPBOARD_DATA
+            )
+        self.column_inputs.checkBox_auto_opportunistic_coin_select.setChecked(False)
+        self.column_inputs.checkBox_manual_coin_select.setChecked(True)
+        self.utxo_list.set_filter_categories(None)
+        self.column_inputs.upper_widget_category_selection.setHidden(True)
+        self.set_selected_outpoints(selected)
+        self.utxo_list.set_column_hidden(UTXOList.Columns.WALLET_ID, False)
+        self.on_input_changed_and_categories(RefreshCounterKey.UTXO_SELECTION)
+
+    def import_wallet_utxos(self, wallet: Wallet) -> None:
+        outpoints = [utxo.outpoint for utxo in wallet.get_all_utxos()]
+        if not outpoints:
+            return
+        wallets = get_wallets(self.wallet_functions)
+        missing = any(
+            op not in self.foreign_inputs and not any(w.get_graph_transaction(op.txid) for w in wallets)
+            for op in outpoints
+        )
+        if missing and not question_dialog(
+            self.tr(
+                "Some previous transactions must be downloaded from the configured block explorer. "
+                "The explorer can see the requested transaction IDs. Download them?"
+            ),
+            title=self.tr("Download previous transactions"),
+            default_is_true_button=False,
+        ):
+            return
+        self.import_outpoints(outpoints, select=False)
+
+    def _add_foreign_inputs(self, imported: dict[OutPoint, ForeignUtxo]) -> None:
+        for op, item in imported.items():
+            existing = self.foreign_inputs.get(op)
+            if existing and existing.utxo.txout != item.utxo.txout:
+                raise ValueError(f"{op}: previous output conflicts with imported metadata")
+        for op, item in imported.items():
+            self.foreign_inputs.setdefault(op, item)
+
+    def _set_import_busy(self, busy: bool) -> None:
+        self._import_busy = busy
+        self.button_ok.setEnabled(not busy)
+        self.column_inputs.button_add_source.setEnabled(not busy)
+        self.column_inputs.setEnabled(
+            not busy and not (self.initial_tx_ui_infos and self.initial_tx_ui_infos.utxos_read_only)
+        )
+
+    def _restore_original_inputs(self, original_inputs: dict[OutPoint, bdk.Input | None]) -> None:
+        if not self.wallet:
+            return
+        wallet = self.wallet
+        foreign_points = list(
+            original_inputs.keys() - self._local_input_outpoints() - self.foreign_inputs.keys()
+        )
+        if not foreign_points:
+            return
+        supplied = {op: item for op, item in original_inputs.items() if item is not None}
+        wallets = [wallet] + [other for other in get_wallets(self.wallet_functions) if other != wallet]
+        generation = self._import_generation
+        self._set_import_busy(True)
+
+        def current() -> bool:
+            return generation == self._import_generation and self.wallet is wallet
+
+        def on_success(result: tuple[dict[OutPoint, ForeignUtxo], list[str]]) -> None:
+            if current():
+                self._add_foreign_inputs(result[0])
+                if result[0]:
+                    self.show_all_inputs()
+                self.refresh_inputs()
+                self.on_input_changed(RefreshCounterKey.UTXO_SELECTION)
+
+        def on_done(_: Any) -> None:
+            if current():
+                self._set_import_busy(False)
+
+        self.loop_in_thread.run_task(
+            wallet.resolve_foreign_outpoints(
+                foreign_points, wallets, None, supplied, dict(self.foreign_inputs)
+            ),
+            on_success=on_success,
+            on_done=on_done,
+        )
+
+    def import_outpoints(
+        self,
+        outpoints: list[OutPoint],
+        select: bool,
+        parse_errors: list[str] | None = None,
+        psbt: bdk.Psbt | None = None,
+    ) -> None:
+        if not self.wallet or not outpoints or self._import_busy:
+            return
+        wallet = self.wallet
+        wallets = [wallet] + [other for other in get_wallets(self.wallet_functions) if other != wallet]
+        local = {utxo.outpoint: utxo for utxo in wallet.get_all_utxos()}
+        psbt_inputs = {}
+        tx = psbt.extract_tx_unchecked_fee_rate() if psbt else None
+        if psbt:
+            psbt_inputs = dict(zip(outpoints, psbt.input(), strict=True))
+            if len(psbt_inputs) != len(outpoints):
+                raise ValueError("PSBT contains duplicate transaction inputs")
+            # Validate local inputs too, even though the wallet supplies their metadata.
+            for op in set(outpoints) & local.keys():
+                supplied = psbt_inputs[op]
+                if supplied.non_witness_utxo is not None:
+                    previous = ForeignUtxo.previous_output(op, supplied)
+                    if TxOut.from_bdk(previous) != local[op].txout:
+                        raise ValueError(f"{op}: PSBT previous output conflicts with wallet data")
+                if (
+                    supplied.witness_utxo is not None
+                    and TxOut.from_bdk(supplied.witness_utxo) != local[op].txout
+                ):
+                    raise ValueError(f"{op}: PSBT previous output conflicts with wallet data")
+        foreign_points = list(set(outpoints) - local.keys())
+        self._set_import_busy(True)
+        generation = self._import_generation
+
+        def current() -> bool:
+            return generation == self._import_generation and self.wallet is wallet
+
+        def on_success(result: tuple[dict[OutPoint, ForeignUtxo], list[str]]) -> None:
+            if not current():
+                return
+            imported, errors = result
+            try:
+                if psbt and (errors or set(imported) != set(foreign_points)):
+                    raise ValueError("\n".join(errors) or "Some inputs could not be resolved")
+                recipients = (
+                    [Recipient.from_txout(output, self.config.network) for output in tx.output()]
+                    if tx is not None
+                    else []
+                )
+                self._add_foreign_inputs(imported)
+                if imported or psbt:
+                    self.show_all_inputs()
+                    self.refresh_inputs()
+                if select:
+                    self.set_selected_outpoints(
+                        self.selected_outpoints | (set(outpoints) if psbt else imported.keys())
+                    )
+                if psbt:
+                    existing = [
+                        r
+                        for r in self.recipients.recipients
+                        if r.address or r.amount or r.label or r.checked_max_amount
+                    ]
+                    self.recipients.recipients = existing + recipients
+                    if not existing and not recipients:
+                        self.recipients.add_recipient()
+                    self._input_change_timer.stop()
+                    self._apply_input_changed()
+                if all_errors := (parse_errors or []) + errors:
+                    Message("\n".join(all_errors), parent=self, type=MessageType.Warning)
+            except Exception as exc:
+                Message(
+                    self.tr("Could not import inputs: {error}").format(error=exc),
+                    parent=self,
+                    type=MessageType.Warning,
+                )
+
+        def on_error(error: Any) -> None:
+            if current():
+                Message(
+                    self.tr("Could not import inputs: {error}").format(error=error[1]),
+                    parent=self,
+                    type=MessageType.Warning,
+                )
+
+        def on_done(_: Any) -> None:
+            if current():
+                self._set_import_busy(False)
+
+        self.loop_in_thread.run_task(
+            wallet.resolve_foreign_outpoints(
+                foreign_points, wallets, self.mempool_manager, psbt_inputs, dict(self.foreign_inputs)
+            ),
+            on_success=on_success,
+            on_error=on_error,
+            on_done=on_done,
+        )
+
+    def merge_psbt(self, psbt: bdk.Psbt) -> None:
+        outpoints = [
+            OutPoint.from_bdk(txin.previous_output) for txin in psbt.extract_tx_unchecked_fee_rate().input()
+        ]
+        self.import_outpoints(outpoints, select=True, psbt=psbt)
 
     def click_add_utxo(self) -> None:
-        """Click add utxo."""
+        self.open_input_import_dialog(psbt_only=False)
 
+    def click_merge_psbt(self) -> None:
+        self.open_input_import_dialog(psbt_only=True)
+
+    def open_input_import_dialog(self, psbt_only: bool) -> None:
         def process_input(s: str) -> None:
-            """Process input."""
-            outpoints = [OutPoint.from_str(row.strip()) for row in s.strip().split("\n")]
-            self.add_outpoints(outpoints)
-            self.utxo_list.update_content()
-            self.utxo_list.select_rows(
-                outpoints, self.utxo_list.key_column, role=MyItemDataRole.ROLE_KEY, scroll_to_last=True
+            if psbt_only:
+                try:
+                    data = Data.from_str(s, network=self.config.network, data_type=DataType.PSBT)
+                    if not isinstance(data.data, bdk.Psbt):
+                        raise ValueError(self.tr("Expected a PSBT"))
+                    self.merge_psbt(data.data)
+                except Exception as exc:
+                    Message(
+                        self.tr("Could not merge PSBT: {error}").format(error=exc),
+                        parent=self,
+                        type=MessageType.Warning,
+                    )
+                return
+            outpoints, parse_errors = parse_outpoints(s, set())
+            if outpoints:
+                self.import_outpoints(outpoints, select=True, parse_errors=parse_errors)
+            elif parse_errors:
+                Message("\n".join(parse_errors), parent=self, type=MessageType.Warning)
+
+        explorer_url = self.mempool_manager.network_config.mempool_url
+        notice_text = self.tr(
+            "Privacy notice: Bitcoin Safe first searches its locally available wallet data."
+        )
+        if explorer_url:
+            explorer = f'<a href="{escape(explorer_url, quote=True)}">{escape(explorer_url)}</a>'
+            notice_text += " " + self.tr(
+                "If a previous transaction is not available locally, it downloads it from the configured "
+                "block explorer ({explorer}). The server can see which transaction IDs are requested."
+            ).format(explorer=explorer)
+        else:
+            notice_text += " " + self.tr(
+                "No block explorer is configured, so missing transactions cannot be downloaded."
             )
+        notice = QLabel(notice_text)
+        notice.setWordWrap(True)
+        notice.setTextFormat(Qt.TextFormat.RichText)
+        notice.setTextInteractionFlags(Qt.TextInteractionFlag.TextBrowserInteraction)
+        notice.setOpenExternalLinks(True)
 
         self._attached_import_dialog = ImportDialog(
             self.config.network,
             on_open=process_input,
-            window_title=self.tr("Add Inputs"),
-            text_button_ok=self.tr("Load UTXOs"),
-            text_instruction_label=self.tr(
-                "Please paste UTXO here in the format  txid:outpoint\ntxid:outpoint"
+            window_title=self.tr("Merge other PSBT") if psbt_only else self.tr("Add foreign UTXOs"),
+            text_button_ok=self.tr("Load PSBT") if psbt_only else self.tr("Load UTXOs"),
+            text_instruction_label=(
+                self.tr("Paste a PSBT.")
+                if psbt_only
+                else self.tr("Enter one UTXO per line in the format txid:vout.")
             ),
-            text_placeholder=self.tr("Please paste UTXO here"),
+            instruction_widget=notice,
+            multiline=True,
+            text_placeholder=self.tr("Paste a PSBT") if psbt_only else "txid:vout",
+            file_filter=None if psbt_only else self.tr("Text files (*.txt);;All files (*)"),
             close_all_video_widgets=self.signals.close_all_video_widgets,
         )
         self._attached_import_dialog.show()
@@ -856,30 +1275,50 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             spend_all_utxos=utxos_for_input.spend_all_utxos,
         )
 
-    def estimate_fee_info(self, fee_rate: float | None = None) -> FeeInfo:
+    def estimate_fee_info(self, fee_rate: float | None = None, txinfos: TxUiInfos | None = None) -> FeeInfo:
         """Estimate fee info."""
-        sent_values = [r.amount for r in self.recipients.recipients]
-        # one more output for the change
-        num_outputs = len(sent_values) + 1
+        recipients = self.recipients.recipients
+        sent_values = [recipient.amount for recipient in recipients]
+        output_scripts: list[bdk.Script | None] = []
+        for recipient in recipients:
+            # Keep the estimate usable while an address or script is being edited.
+            if not recipient.address.startswith("script:") and not is_address(
+                recipient.address, self.config.network
+            ):
+                output_scripts.append(None)
+                continue
+            try:
+                output_scripts.append(recipient.script_pubkey(self.config.network))
+            except ValueError:
+                output_scripts.append(None)
+        if not any(recipient.checked_max_amount for recipient in recipients):
+            change_script = (
+                self.wallet.bdkwallet.peek_address(bdk.KeychainKind.INTERNAL, 0).address.script_pubkey()
+                if self.wallet
+                else None
+            )
+            output_scripts.append(change_script)
         if fee_rate is None:
             fee_rate = self.column_fee.fee_group.spin_fee_rate.value()
 
-        txinfos = self.get_tx_ui_infos()
+        txinfos = txinfos if txinfos is not None else self.get_tx_ui_infos()
 
         utxos_for_input = self._select_minimum_number_utxos_no_fee(
-            UtxosForInputs(list(txinfos.utxo_dict.values()), spend_all_utxos=txinfos.spend_all_utxos),
+            UtxosForInputs(txinfos.selected_utxos(), spend_all_utxos=txinfos.spend_all_utxos),
             send_value=sum(sent_values),
         )
 
         num_inputs = max(1, len(utxos_for_input.utxos))  # assume all inputs come from this wallet
-        fee_info = FeeInfo.estimate_from_num_inputs(
-            fee_rate,
-            input_mn_tuples=[
-                self.wallet.get_mn_tuple() if self.wallet else (1, 1) for i in range(num_inputs)
-            ],
-            num_outputs=num_outputs,
-        )
-        return fee_info
+        mn = self.wallet.get_mn_tuple() if self.wallet else (1, 1)
+        weight = estimate_tx_weight([mn] * num_inputs, output_scripts)
+        for utxo in utxos_for_input.utxos:
+            item = txinfos.inputs.get(utxo.outpoint)
+            if item and item.psbt_input is not None and item.satisfaction_weight is not None:
+                # Replace the wallet's estimated witness with BDK's maximum
+                # satisfaction weight, including any scriptSig for nested inputs.
+                weight += item.satisfaction_weight - (1 + mn[0] * 73 + mn[1] * 34)
+        vsize = weight_to_vsize(weight)
+        return FeeInfo(ceil(vsize * fee_rate), vsize, fee_amount_is_estimated=True, vsize_is_estimated=True)
 
     def get_tx_ui_infos(self, use_categories: bool | None = None) -> TxUiInfos:
         """Get tx ui infos."""
@@ -920,16 +1359,18 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             )
 
         if not use_categories:
-            ToolsTxUiInfo.fill_txo_dict_from_outpoints(
-                infos, self.utxo_list.get_selected_outpoints(), wallets
-            )
+            spendable = self._spendable_inputs()
+            infos.inputs = {op: spendable[op] for op in self.selected_outpoints if op in spendable}
+            infos.main_wallet_id = self.wallet.id
             infos.spend_all_utxos = True
             # Example: after reopening the app, `set_ui(...)` should show the advanced
             # UTXO picker again for a manual selection instead of switching back to categories.
             infos.hide_UTXO_selection = False
 
         infos.recipient_read_only = not self.recipients.allow_edit
-        infos.utxos_read_only = not self.utxo_list.allow_edit or not self.column_inputs.isEnabled()
+        infos.utxos_read_only = not self.utxo_list.allow_edit or (
+            not self._import_busy and not self.column_inputs.isEnabled()
+        )
         infos.nlocktime = self.column_fee.nlocktime()
         return infos
 
@@ -941,35 +1382,39 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             for keystore in wallet.keystores
         }
 
-    def reapply_max_amounts(self, fee_amount: int) -> None:
+    def reapply_max_amounts(self, fee_amount: int, txinfos: TxUiInfos | None = None) -> None:
         """Reapply max amounts."""
+        txinfos = txinfos if txinfos is not None else self.get_tx_ui_infos()
+        total_input_value = self.get_total_input_value(txinfos)
         recipient_group_boxes = self.recipients.get_recipient_group_boxes()
         for recipient_group_box in recipient_group_boxes:
-            recipient_group_box.recipient_widget.amount_spin_box.set_warning_maximum(
-                self.get_total_input_value()
-            )
+            recipient_group_box.recipient_widget.amount_spin_box.set_warning_maximum(total_input_value)
 
         recipient_group_boxes_max_checked = [
             recipient_group_box
             for recipient_group_box in recipient_group_boxes
             if recipient_group_box.recipient_widget.send_max_checkbox.isChecked()
         ]
-        total_change_amount = max(0, self.get_total_change_amount(include_max_checked=False) - fee_amount)
+        total_change_amount = max(
+            0, self.get_total_change_amount(include_max_checked=False, txinfos=txinfos) - fee_amount
+        )
         for recipient_group_box in recipient_group_boxes_max_checked:
             self.set_max_amount(
                 recipient_group_box, total_change_amount // len(recipient_group_boxes_max_checked)
             )
 
-    def get_total_input_value(self) -> int:
+    def get_total_input_value(self, txinfos: TxUiInfos | None = None) -> int:
         """Get total input value."""
-        txinfos = self.get_tx_ui_infos()
-        total_input_value = sum(utxo.value for utxo in txinfos.utxo_dict.values() if utxo)
+        txinfos = txinfos if txinfos is not None else self.get_tx_ui_infos()
+        total_input_value = sum(utxo.value for utxo in txinfos.selected_utxos() if utxo)
         return total_input_value
 
-    def get_total_change_amount(self, include_max_checked=False) -> int:
+    def get_total_change_amount(
+        self, include_max_checked: bool = False, txinfos: TxUiInfos | None = None
+    ) -> int:
         """Get total change amount."""
-        txinfos = self.get_tx_ui_infos()
-        total_input_value = sum(utxo.value for utxo in txinfos.utxo_dict.values() if utxo)
+        txinfos = txinfos if txinfos is not None else self.get_tx_ui_infos()
+        total_input_value = sum(utxo.value for utxo in txinfos.selected_utxos() if utxo)
 
         total_output_value = sum(
             recipient.amount
@@ -1014,18 +1459,18 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             return
         utxos_for_input = self.wallet.handle_opportunistic_merge_utxos(txinfos)
 
-        utxo_names = [utxo.outpoint for utxo in utxos_for_input.utxos]
-        self.utxo_list.select_rows(
-            utxo_names, column=self.utxo_list.key_column, role=MyItemDataRole.ROLE_KEY, scroll_to_last=True
-        )
+        self.set_selected_outpoints({utxo.outpoint for utxo in utxos_for_input.utxos}, scroll_to_last=True)
 
-    def handle_conflicting_utxo(self, txinfos: TxUiInfos) -> None:
+    def handle_conflicting_utxo(self, txinfos: TxUiInfos, available: set[OutPoint] | None = None) -> None:
         """Handle conflicting utxo."""
         if not self.wallet:
             return
         ##################
         # detect and handle rbf
-        conflicting_python_txos = self.wallet.get_conflicting_python_txos(txinfos.utxo_dict.keys())
+        outpoints = set(txinfos.inputs)
+        if available is not None:
+            outpoints &= available
+        conflicting_python_txos = self.wallet.get_conflicting_python_txos(outpoints)
 
         conflicting_txids = {
             conflicting_python_txo.is_spent_by_txid
@@ -1134,7 +1579,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.column_fee.fee_group.set_fee_infos(
                 fee_info=fee_info, tx_status=self.get_tx_status(), can_rbf_safely=False
             )  # False since, RBF doesnt apply for PSBT
-            self.add_outpoints([python_utxo.outpoint for python_utxo in txinfos.utxo_dict.values()])
+            self.refresh_inputs()
             self.set_rbf_labels(
                 conflicted_unconfirmed=conflicted_unconfirmed,
                 current_fee=fee_info,
@@ -1157,28 +1602,37 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             current_fee=current_fee, min_fee_rate=min_fee_rate, conflicing_txids=conflicing_txids
         )
 
-    def handle_cpfp(self, txinfos: TxUiInfos) -> None:
+    def handle_cpfp(self, txinfos: TxUiInfos, fee_info: FeeInfo | None = None) -> None:
         """Handle cpfp."""
         parent_txids = set()
         # only assume it can be cpfp if the utxos are selected --> spend_all_utxos=True
         if txinfos.spend_all_utxos:
-            utxos = list(self.get_tx_ui_infos().utxo_dict.values())
+            utxos = txinfos.selected_utxos()
             parent_txids = set(utxo.outpoint.txid_str for utxo in utxos)
 
         self.set_cpfp_labels(
             parent_txids=parent_txids,
-            this_fee_info=self.estimate_fee_info(),
+            this_fee_info=fee_info if fee_info is not None else self.estimate_fee_info(txinfos=txinfos),
             fee_group=self.column_fee.fee_group,
             chain_position=None,
         )
 
-    def set_ui(self, tx_ui_infos: TxUiInfos) -> None:
-        """Set ui."""
+    def set_ui(self, tx_ui_infos: TxUiInfos, selected_outpoints: set[OutPoint] | None = None) -> None:
+        """Set ui. An explicit selection from a saved draft takes precedence."""
+        restoring_draft = selected_outpoints is not None
+        if selected_outpoints is None:
+            selected_outpoints = set(tx_ui_infos.inputs) | set(tx_ui_infos.original_inputs)
+        self._import_generation += 1
+        self._set_import_busy(False)
         # prevent showEvent from interfering
         self._ui_well_defined = True
+        self.initial_tx_ui_infos = tx_ui_infos
         self.hidden_tx_infos = tx_ui_infos.hidden
 
-        self.handle_conflicting_utxo(txinfos=tx_ui_infos)
+        # Saved inputs may now be spent; keep them as unavailable draft rows,
+        # rather than interpreting them as a new replacement transaction.
+        available = set(self.get_outpoints()) if restoring_draft and not tx_ui_infos.replace_tx else None
+        self.handle_conflicting_utxo(txinfos=tx_ui_infos, available=available)
         self.handle_cpfp(tx_ui_infos)
 
         if tx_ui_infos.fee_rate is not None:
@@ -1204,12 +1658,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         #   so the filtered UTXO list still shows those rows after restore.
         # - Fresh send tab: no saved inputs -> fall back to the first funded category.
         categories = set(tx_ui_infos.categories or [])
-        if not categories and tx_ui_infos.utxo_dict and self.wallet:
-            for utxo in tx_ui_infos.utxo_dict.values():
+        if not categories and tx_ui_infos.inputs and self.wallet:
+            for utxo in tx_ui_infos.selected_utxos():
                 categories.add(self.wallet.labels.get_category(utxo.address))
                 categories.update(self.wallet.get_categories_for_txid(utxo.outpoint.txid_str))
         categories = clean_list(list(categories))
-        if tx_ui_infos.categories and not tx_ui_infos.utxo_dict:
+        if tx_ui_infos.categories and not tx_ui_infos.inputs and not selected_outpoints:
             hide_UTXO_selection = True
 
         self.column_inputs.checkBox_manual_coin_select.setChecked(not hide_UTXO_selection)
@@ -1224,15 +1678,11 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         else:
             self._ensure_default_funded_category_selection()
 
-        if tx_ui_infos.utxo_dict:
-            # Example: restoring a manual selection after reopening the app.
-            # Even if category lookup changes, the exact saved outpoints must win.
-            self.utxo_list.select_rows(
-                tx_ui_infos.utxo_dict.keys(),
-                self.utxo_list.key_column,
-                role=MyItemDataRole.ROLE_KEY,
-                scroll_to_last=True,
-            )
+        # The exact manual selection wins even when some rows are unavailable.
+        self.set_selected_outpoints(
+            selected_outpoints if not hide_UTXO_selection else set(), scroll_to_last=True
+        )
+        self.refresh_inputs()
 
         self.column_inputs.setVisible(not tx_ui_infos.hide_entire_input_column)
         if tx_ui_infos.hide_entire_input_column:
@@ -1247,9 +1697,15 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         self.utxo_list.set_allow_edit(not tx_ui_infos.utxos_read_only)
         self.column_inputs.setEnabled(not tx_ui_infos.utxos_read_only)
+        original_inputs = {
+            op: item for op, item in tx_ui_infos.original_inputs.items() if op in self.selected_outpoints
+        }
+        if original_inputs:
+            self._restore_original_inputs(original_inputs)
 
     def close(self):
         """Close."""
+        self._import_generation += 1
         self.signal_tracker.disconnect_all()
         self._signal_tracker_wallet_signals.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)

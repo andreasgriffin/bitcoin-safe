@@ -237,17 +237,24 @@ class DescriptorAnalyzer(BaseAnalyzer, QObject):
 
 
 class AddressAnalyzer(BaseAnalyzer, QObject):
-    def __init__(self, network: bdk.Network, parent: QObject | None) -> None:
+    def __init__(self, network: bdk.Network, parent: QObject | None, allow_scripts: bool = False) -> None:
         """Initialize instance."""
         BaseAnalyzer.__init__(self)
         QObject.__init__(self, parent=parent)
 
         self.network = network
+        self.allow_scripts = allow_scripts
 
     def analyze(self, input: str, pos: int = 0) -> AnalyzerMessage:
         """Analyze."""
         if not input:
             return AnalyzerMessage(self.tr("Missing Address"), AnalyzerState.Invalid)
+        if self.allow_scripts and input.startswith("script:"):
+            try:
+                bytes.fromhex(input.removeprefix("script:"))
+                return AnalyzerMessage(self.tr("Raw output script"), AnalyzerState.Valid)
+            except ValueError:
+                return AnalyzerMessage(self.tr("Invalid output script"), AnalyzerState.Invalid)
 
         is_valid = False
         try:

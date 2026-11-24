@@ -303,6 +303,6 @@ def test_address_list_filters_with_funding_and_quick_receive(
         assert tx_ui_infos.main_wallet_id == qt_wallet.wallet.id
         assert tx_ui_infos.spend_all_utxos is True
         assert tx_ui_infos.hide_UTXO_selection is False
-        assert {utxo.address for utxo in tx_ui_infos.utxo_dict.values()} == {initial_receive}
+        assert {utxo.address for utxo in tx_ui_infos.selected_utxos()} == {initial_receive}
 
         shutter.save(main_window)

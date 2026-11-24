@@ -209,7 +209,9 @@ class TxTools:
         this_tx_fee_info = FeeInfo.estimate_from_num_inputs(
             MIN_RELAY_FEE,
             input_mn_tuples=[wallet.get_mn_tuple() for i in range(1)],
-            num_outputs=1,
+            output_scripts=[
+                wallet.bdkwallet.peek_address(bdk.KeychainKind.EXTERNAL, 0).address.script_pubkey()
+            ],
         )
 
         cpfp_tools = CpfpTools(wallets=get_wallets(wallet_functions))

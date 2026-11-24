@@ -32,7 +32,7 @@ from __future__ import annotations
 import json
 import logging
 import re
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from math import ceil
 from typing import Any, cast
@@ -52,6 +52,8 @@ from .pythonbdk_types import (
 
 logger = logging.getLogger(__name__)
 VSIZE_OF_ZERO_FEE_TX = 200
+# Used only while an output script is unknown, such as an incomplete address.
+DEFAULT_OUTPUT_SCRIPT = bdk.Script(b"\x00\x14" + bytes(20))
 
 
 def parse_redeem_script(script_hex: str) -> tuple[int, list[str]]:
@@ -105,15 +107,28 @@ def weight_to_vsize(weight) -> int:
     return ceil(weight / 4)
 
 
+def compact_size_length(value: int) -> int:
+    """Return the number of bytes used by a Bitcoin CompactSize integer."""
+    if value < 253:
+        return 1
+    if value <= 0xFFFF:
+        return 3
+    if value <= 0xFFFFFFFF:
+        return 5
+    return 9
+
+
 def estimate_tx_weight(
-    input_mn_tuples: list[tuple[int, int]], num_outputs: int, include_signatures=True
+    input_mn_tuples: list[tuple[int, int]],
+    output_scripts: Sequence[bdk.Script | None],
+    include_signatures: bool = True,
 ) -> int:
     """Estimate the weight of a SegWit transaction in weight units, including support
     for multiple inputs with varying m-of-n multisignature configurations.
 
     Args:
     input_mn_tuples (list of tuples): A list where each tuple represents an input with (m, n) configuration.
-    num_outputs (int): Number of outputs in the transaction.
+    output_scripts: Output scripts, or None for an unknown script.
     include_signatures (bool): Whether to include the size of signatures in the estimate.
 
     Returns:
@@ -130,11 +145,11 @@ def estimate_tx_weight(
     sequence_size = 4  # Size of the sequence field
     base_input_size = outpoint_size + sequence_size  # Excluding scriptSig and witness
 
-    # Output components
-    output_value_size = 8  # Size of the value field
-    output_script_length_size = 1  # Size of the script length field
-    p2wpkh_script_size = 22  # P2WPKH script size
-    base_output_size = output_value_size + output_script_length_size + p2wpkh_script_size
+    # A 253-byte script uses a three-byte CompactSize prefix, not one byte.
+    script_lengths = [
+        len((script if script is not None else DEFAULT_OUTPUT_SCRIPT).to_bytes()) for script in output_scripts
+    ]
+    total_output_size = sum(8 + compact_size_length(size) + size for size in script_lengths)
 
     # Witness components
     witness_stack_items_size = 1  # Size byte for the number of witness stack items
@@ -153,15 +168,18 @@ def estimate_tx_weight(
     num_inputs = len(input_mn_tuples)
     base_tx_size_without_witness = (
         version_size
-        + segwit_marker_and_flag_size
         + locktime_size
+        + compact_size_length(num_inputs)
+        + compact_size_length(len(output_scripts))
         + num_inputs * (base_input_size + script_length_size)
-        + num_outputs * base_output_size
+        + total_output_size
     )
 
     # Calculate transaction weight
     # Non-witness data is weighted as 4 units per byte, witness data as 1 unit per byte
-    tx_weight: int = (base_tx_size_without_witness * 4) + total_witness_data_size
+    tx_weight: int = (
+        (base_tx_size_without_witness * 4) + segwit_marker_and_flag_size + total_witness_data_size
+    )
 
     return tx_weight
 
@@ -267,12 +285,8 @@ class FeeInfo:
         fallback_mn = (1, 1)
         input_mn_tuples = [(mn if mn else fallback_mn) for mn in full_input_mn_tuples]
 
-        # Estimate the size of the transaction
-        # This part requires the transaction size estimation logic,
-        # which might need information about inputs and outputs
-        # For simplicity, let's assume you have a function
-        # estimate_tx_size(psbt_data) that can estimate the size
-        vsize = weight_to_vsize(estimate_tx_weight(input_mn_tuples, len(psbt.extract_tx().output())))
+        output_scripts = [output.script_pubkey for output in psbt.extract_tx().output()]
+        vsize = weight_to_vsize(estimate_tx_weight(input_mn_tuples, output_scripts))
 
         return FeeInfo(psbt.fee(), vsize, vsize_is_estimated=True, fee_amount_is_estimated=False)
 
@@ -281,14 +295,14 @@ class FeeInfo:
         cls,
         fee_rate: float,
         input_mn_tuples: list[tuple[int, int]],
-        num_outputs: int,
-        include_signatures=True,
+        output_scripts: Sequence[bdk.Script | None],
+        include_signatures: bool = True,
     ) -> FeeInfo:
         "Estimation for segwit txs"
         vsize = weight_to_vsize(
             estimate_tx_weight(
                 input_mn_tuples=input_mn_tuples,
-                num_outputs=num_outputs,
+                output_scripts=output_scripts,
                 include_signatures=include_signatures,
             )
         )

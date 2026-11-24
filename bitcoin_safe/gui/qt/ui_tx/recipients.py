@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import csv
 import logging
+from html import escape
 from typing import cast
 
 import bdkpython as bdk
@@ -38,9 +39,12 @@ from bitcoin_qr_tools.data import Data, DataType
 from bitcoin_safe_lib.gui.qt.satoshis import BitcoinSymbol
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.util import is_int
+from btclib.script import parse as parse_script
+from btclib.script import serialize as serialize_script
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import (
     QEvent,
+    QPoint,
     Qt,
     pyqtSignal,
 )
@@ -51,6 +55,7 @@ from PyQt6.QtWidgets import (
     QFormLayout,
     QGroupBox,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QPushButton,
     QSizePolicy,
@@ -88,6 +93,33 @@ from .spinbox import BTCSpinBox, FiatSpinBox
 logger = logging.getLogger(__name__)
 
 
+def describe_op_return(address: str) -> str | None:
+    """Describe OP_RETURN script instructions without changing the original script."""
+    if not address.startswith("script:"):
+        return None
+    try:
+        script = bytes.fromhex(address.removeprefix("script:"))
+    except ValueError:
+        return None
+    if not script.startswith(b"\x6a"):
+        return None
+
+    parts = []
+    # For example, 6a026869 is OP_RETURN followed by a two-byte push of "hi".
+    for instruction in parse_script(script)[1:]:
+        try:
+            data = bytes.fromhex(instruction) if isinstance(instruction, str) else bytes(instruction)
+        except (ValueError, TypeError):
+            parts.append(str(instruction))
+            continue
+        try:
+            text = data.decode("utf-8").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
+        except UnicodeDecodeError:
+            text = ""
+        parts.append(text if text and text.isprintable() else "0x" + data.hex())
+    return "OP_RETURN" + (": " + " | ".join(parts) if parts else "")
+
+
 class RecipientWidget(QWidget):
     def __init__(
         self,
@@ -115,7 +147,11 @@ class RecipientWidget(QWidget):
         # self.form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignRight)
 
         self.address_edit = AddressEdit(
-            network=network, allow_edit=allow_edit, parent=self, wallet_functions=self.wallet_functions
+            network=network,
+            allow_edit=allow_edit,
+            parent=self,
+            wallet_functions=self.wallet_functions,
+            allow_scripts=True,
         )
         self.label_line_edit = WalletLabelAndCategoryEdit(
             wallet_functions=self.wallet_functions,
@@ -378,32 +414,42 @@ class NotificationBarRecipient(NotificationBar):
             has_close_button=has_close_button,
             parent=parent,
         )
-        self.signals_min = signals_min
         self.wallet_id: str | None = None
 
         self.closeButton.setFlat(True)
         self.optionalButton.hide()
 
         self.updateUi()
-        self.signals_min.language_switch.connect(self.updateUi)
+        signals_min.language_switch.connect(self.updateUi)
 
     def updateUi(self) -> None:
         """UpdateUi."""
         super().updateUi()
-        if self.wallet_id is None:
-            self.icon_label.setText("")
-            self.set_icon("bi--person-no-left-margin.svg")
-        else:
+        if self.wallet_id is not None:
             self.icon_label.setText(
                 self.tr("This address belongs to wallet: <b>{wallet_id}</b>").format(wallet_id=self.wallet_id)
             )
             self.set_icon("bi--wallet2.svg")
+        else:
+            self.icon_label.setText("")
+            self.set_icon("bi--person-no-left-margin.svg")
         self.icon_label.setToolTip("")
 
-    def set_wallet_id(self, wallet_id: str | None):
-        """Set wallet id."""
+    def set_wallet_id(self, wallet_id: str | None) -> None:
+        """Set the wallet that owns the address."""
         self.wallet_id = wallet_id
         self.updateUi()
+
+    def show_possible_change(self) -> None:
+        """Mark the current wallet address as possible change."""
+        self.icon_label.setText(self.icon_label.textLabel.text() + " " + self.tr("(possible change)"))
+
+    def show_op_return(self, description: str) -> None:
+        """Show an OP_RETURN description without storing a copy of the address."""
+        short_description = description[:100] + "…" if len(description) > 100 else description
+        self.icon_label.setText(escape(short_description))
+        self.icon_label.setToolTip(f"<p>{escape(description)}</p>")
+        self.set_icon("bi--text-left.svg")
 
 
 class HiddenRecipientsPlaceholder(QWidget):
@@ -491,6 +537,31 @@ class RecipientBox(QWidget):
         self.recipient_widget.send_max_checkbox.clicked.connect(self.on_send_max_button)
 
         self.recipient_widget.address_edit.signal_text_change.connect(self.on_address_text_changed)
+        # The bar refreshes its wallet text first; then restore the address-specific details.
+        self.recipient_widget.signal_tracker.connect(
+            wallet_functions.signals.language_switch, self.autofill_wallet_id
+        )
+        self.notification_bar.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.notification_bar.customContextMenuRequested.connect(self.show_header_context_menu)
+
+    def show_header_context_menu(self, position: QPoint) -> None:
+        """Offer OP_RETURN creation for an empty, editable recipient."""
+        if self.address or not self.recipient_widget.enabled:
+            return
+        menu = Menu(self.notification_bar)
+        menu.add_action(self.tr("Generate OP_RETURN"), self.generate_op_return)
+        menu.exec(self.notification_bar.mapToGlobal(position))
+
+    def generate_op_return(self) -> None:
+        """Turn entered UTF-8 text into a raw OP_RETURN output script."""
+        if self.address or not self.recipient_widget.enabled:
+            return
+        text, accepted = QInputDialog.getMultiLineText(
+            self, self.tr("Generate OP_RETURN"), self.tr("Text to include in the OP_RETURN output:")
+        )
+        if accepted and not self.address and self.recipient_widget.enabled:
+            script = serialize_script(["OP_RETURN", text.encode("utf-8")])
+            self.address = "script:" + script.hex()
 
     def on_close(self):
         """On close."""
@@ -580,6 +651,11 @@ class RecipientBox(QWidget):
         address = self.recipient_widget.address_edit.address
         wallet = get_wallet_of_address(address, self.recipient_widget.wallet_functions)
         self.notification_bar.set_wallet_id(wallet.id if wallet else None)
+        if wallet is not None:
+            if wallet.is_change(address):
+                self.notification_bar.show_possible_change()
+        elif description := describe_op_return(address):
+            self.notification_bar.show_op_return(description)
 
     def close(self) -> bool:
         self.recipient_widget.close()
@@ -790,7 +866,9 @@ class Recipients(QWidget):
             groupbox_style=True,
             fx=self.fx,
         )
+        recipient_box.recipient_widget.address_edit.ask_to_replace_if_was_used = False
         recipient_box.address = recipient.address
+        recipient_box.recipient_widget.address_edit.ask_to_replace_if_was_used = True
         recipient_box.amount = recipient.amount
         recipient_box.recipient_widget.set_max(recipient.checked_max_amount)
         if recipient.label is not None:

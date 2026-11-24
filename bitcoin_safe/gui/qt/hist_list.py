@@ -113,6 +113,7 @@ from .util import (
     category_color,
     sort_id_to_icon,
 )
+from .utxo_copy_menu import add_utxo_copy_menus
 
 logger = logging.getLogger(__name__)
 
@@ -682,6 +683,7 @@ class HistList(MyTreeView[str]):
         _selected_items = [self.item_from_index(item) for item in selected]
         selected_items = [item for item in _selected_items if item]
         txids = [item.text() for item in selected_items if item]
+        copy_menu: Menu | None = None
         if not multi_select:
             idx = self._p2s(self.indexAt(position))
             if not idx.isValid():
@@ -705,10 +707,28 @@ class HistList(MyTreeView[str]):
             #     self.Columns.LABEL
             # ).text()
             # addr_idx = idx.sibling(idx.row(), self.Columns.LABEL)
-            self.add_copy_menu(menu, idx, include_columns_even_if_hidden=[self.Columns.TXID])
+            copy_menu = self.add_copy_menu(menu, idx, include_columns_even_if_hidden=[self.Columns.TXID])
 
             #     menu.add_action(self.tr(  "Sign/verify message"), lambda: self.signals.sign_verify_message(txid))
             #     menu.add_action(self.tr(  "Encrypt/decrypt message"), lambda: self.signals.encrypt_message(txid))
+
+        wallet_txids: dict[str, set[str]] = {}
+        for item in selected_items:
+            wallet_item = self._source_model.item(item.row(), self.Columns.WALLET_ID)
+            if wallet_item:
+                wallet_txids.setdefault(wallet_item.text(), set()).add(item.text())
+        add_utxo_copy_menus(
+            menu,
+            [
+                (wallet, utxo)
+                for wallet in self.wallets
+                if wallet.id in wallet_txids
+                for utxo in wallet.get_all_utxos()
+                if utxo.outpoint.txid_str in wallet_txids[wallet.id]
+            ],
+            self.config,
+            copy_menu,
+        )
 
         menu.add_action(
             self.tr("Copy as csv"),

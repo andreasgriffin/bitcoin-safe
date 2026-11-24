@@ -1015,6 +1015,7 @@ class MyTreeView[T](ColorCorrectedTreeView, BaseSaveableClass):
         if not selection_model:
             return
 
+        was_updating = self._currently_updating
         self._currently_updating = True
         content_index: QModelIndex | None = None
 
@@ -1041,9 +1042,10 @@ class MyTreeView[T](ColorCorrectedTreeView, BaseSaveableClass):
 
         if viewport := self.viewport():
             viewport.update()
-        self._currently_updating = False
+        self._currently_updating = was_updating
 
-        self.signal_selection_changed.emit()
+        if not was_updating:
+            self.signal_selection_changed.emit()
 
     def scroll_to(
         self,

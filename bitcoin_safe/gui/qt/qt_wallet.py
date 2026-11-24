@@ -103,6 +103,7 @@ from bitcoin_safe.pythonbdk_types import (
     TxOut,
     get_prev_outpoints,
     python_utxo_balance,
+    robust_address_str_from_script,
 )
 from bitcoin_safe.tx import HiddenTxUiInfos, PostCreateEnum, TxBuilderInfos, TxUiInfos
 from bitcoin_safe.util import SATOSHIS_PER_BTC, filename_clean
@@ -1612,12 +1613,15 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     wallet._set_labels_for_change_outputs(builder_infos)
 
                 update_filter = UpdateFilter(
-                    addresses=set(
-                        [
-                            str(bdk.Address.from_script(output.script_pubkey, self.wallet.network))
-                            for output in builder_infos.psbt.extract_tx().output()
-                        ]
-                    ),
+                    addresses={
+                        address
+                        for output in builder_infos.psbt.extract_tx().output()
+                        if (
+                            address := robust_address_str_from_script(
+                                output.script_pubkey, self.wallet.network, on_error_return_hex=False
+                            )
+                        )
+                    },
                     reason=UpdateFilterReason.CreatePSBT,
                 )
                 self.wallet_signals.updated.emit(update_filter)

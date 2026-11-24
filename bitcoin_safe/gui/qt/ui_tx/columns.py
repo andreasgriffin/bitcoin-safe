@@ -37,7 +37,6 @@ from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import (
     QCheckBox,
     QGroupBox,
-    QPushButton,
     QSizePolicy,
     QSplitter,
     QToolButton,
@@ -78,6 +77,7 @@ class ColumnInputs(BaseColumn):
         widget_utxo_with_toolbar: UtxoListWithToolbar,
         fx: FX,
         parent: QWidget | None = None,
+        allow_add_utxos: bool = False,
     ) -> None:
         """Initialize instance."""
         super().__init__(parent=parent, fx=fx)
@@ -105,9 +105,9 @@ class ColumnInputs(BaseColumn):
         self.checkBox_manual_coin_select = QCheckBox()
         self.checkBox_auto_opportunistic_coin_select = QCheckBox()
 
+        self.upper_widget_category_selection = QWidget(self)
         if category_list:
-            upper_widget = QWidget(self)
-            upper_widget_layout = QVBoxLayout(upper_widget)
+            upper_widget_layout = QVBoxLayout(self.upper_widget_category_selection)
             set_margins(
                 upper_widget_layout,
                 {
@@ -122,8 +122,9 @@ class ColumnInputs(BaseColumn):
             upper_widget_layout.addWidget(self.checkBox_auto_opportunistic_coin_select)
             upper_widget_layout.addWidget(self.checkBox_manual_coin_select)
 
-            self.v_splitter.addWidget(upper_widget)
+            self.v_splitter.addWidget(self.upper_widget_category_selection)
         else:
+            self.upper_widget_category_selection.setHidden(True)
             self.checkBox_manual_coin_select.setHidden(True)
 
         self.lower_widget_utxo_selection = QWidget(self)
@@ -139,19 +140,25 @@ class ColumnInputs(BaseColumn):
         lower_widget_layout.addWidget(widget_utxo_with_toolbar)
         self.v_splitter.addWidget(self.lower_widget_utxo_selection)
 
-        # utxo list
-        self.button_add_utxo = QPushButton()
-        # if hasattr(bdk.TxBuilder(), "add_foreign_utxo"):
-        #     self.button_add_utxo.clicked.connect(self.click_add_utxo)
-        #     verticalLayout_inputs.addWidget(self.button_add_utxo)
+        self.button_add_source = QToolButton()
+        self.button_add_source.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.button_add_source.setPopupMode(QToolButton.ToolButtonPopupMode.InstantPopup)
+        self.button_add_source.setVisible(allow_add_utxos)
+        self.header_widget.h_laylout.addWidget(self.button_add_source)
 
     def updateUi(self) -> None:
         """UpdateUi."""
-        self.button_add_utxo.setText(self.tr("Add foreign UTXOs"))
+        self.button_add_source.setText(self.tr("Add"))
+        self.button_add_source.setIcon(svg_tools.get_QIcon("bi--plus-lg.svg"))
         if self.checkBox_manual_coin_select:
             self.checkBox_manual_coin_select.setText(self.tr("Select specific UTXOs"))
         self.header_widget.label_title.setText(self.tr("Sending source"))
         self.totals.c0.l2.setText(self.tr("Input total:"))
+
+    def changeEvent(self, a0: QEvent | None) -> None:
+        super().changeEvent(a0)
+        if should_process_theme_change(self, a0, include_style_change=True):
+            self.updateUi()
 
 
 class ColumnRecipients(BaseColumn):

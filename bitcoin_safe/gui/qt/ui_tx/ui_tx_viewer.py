@@ -728,6 +728,10 @@ class UITx_Viewer(UITx_Base):
             wallets,
             current_height=self._get_robust_height(),
         )
+        if isinstance(self.data.data, bdk.Psbt):
+            for txin, psbt_input in zip(tx.input(), self.data.data.input(), strict=True):
+                outpoint = OutPoint.from_bdk(txin.previous_output)
+                txinfos.original_inputs[outpoint] = psbt_input
         if new_fee_rate is not None:
             txinfos.fee_rate = new_fee_rate
 
@@ -743,6 +747,12 @@ class UITx_Viewer(UITx_Base):
         txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(
             new_fee_rate=new_fee_rate,
         )
+
+        if not wallet:
+            wallets = get_wallets(self.wallet_functions)
+            if wallets:
+                wallet = wallets[0]
+                txinfos.main_wallet_id = wallet.id
 
         if not wallet:
             Message(
@@ -1491,13 +1501,7 @@ class UITx_Viewer(UITx_Base):
             wallet_functions=self.wallet_functions,
         )
 
-        self.recipients.recipients = [
-            Recipient(
-                address=robust_address_str_from_txout(output, self.network),
-                amount=output.value.to_sat(),
-            )
-            for output in outputs
-        ]
+        self.recipients.recipients = [Recipient.from_txout(output, self.network) for output in outputs]
         self.set_visibility(chain_position=chain_position)
         self.set_psbt_already_broadcasted_bar()
         self.set_tab_properties(chain_position=chain_position)
@@ -1694,13 +1698,7 @@ class UITx_Viewer(UITx_Base):
             wallet_functions=self.wallet_functions,
         )
 
-        self.recipients.recipients = [
-            Recipient(
-                address=robust_address_str_from_txout(output, self.network),
-                amount=output.value.to_sat(),
-            )
-            for output in outputs
-        ]
+        self.recipients.recipients = [Recipient.from_txout(output, self.network) for output in outputs]
 
         self.tx_singning_steps = self.update_tx_progress()
         self.set_visibility(None)

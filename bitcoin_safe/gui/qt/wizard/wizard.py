@@ -49,7 +49,7 @@ from bitcoin_safe.gui.qt.wizard.wizard_base import WizardBase
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 
 from ....pythonbdk_types import Recipient
-from ....tx import PostBroadcastEnum, PostCreateEnum, TxBuilderInfos, TxUiInfos
+from ....tx import PostBroadcastEnum, PostCreateEnum, TxBuilderInfos, TxInputInfo, TxUiInfos
 from ..step_progress_bar import TutorialWidget
 from ..util import Message, MessageType
 from .wizard_step_distribution import DistributeSeeds, RegisterMultisig
@@ -676,7 +676,7 @@ class Wizard(WizardBase):
         funded_category = self.qt_wallet.wallet.labels.get_category(utxos[0].address)
 
         txinfos = TxUiInfos()
-        txinfos.utxo_dict = {utxo.outpoint: utxo for utxo in utxos}
+        txinfos.inputs = {utxo.outpoint: TxInputInfo(utxo) for utxo in utxos}
         txinfos.main_wallet_id = self.qt_wallet.wallet.id
 
         recipient_address = str(

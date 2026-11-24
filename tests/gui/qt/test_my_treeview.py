@@ -92,6 +92,20 @@ def test_mytreeview_filter_matches_clipboard_content(qtbot: QtBot, test_config: 
     assert not _is_hidden(tree_view, 3)
 
 
+def test_selection_restoration_keeps_the_model_update_guard(qtbot: QtBot, test_config: UserConfig) -> None:
+    tree_view = DummyTreeView(config=test_config)
+    qtbot.addWidget(tree_view)
+    tree_view.append_row(text="row", key="key", clipboard_data="key")
+
+    tree_view._currently_updating = True
+    with qtbot.assertNotEmitted(tree_view.signal_selection_changed):
+        tree_view.select_rows(["key"], tree_view.key_column, role=MyItemDataRole.ROLE_CLIPBOARD_DATA)
+    assert tree_view._currently_updating
+    tree_view._currently_updating = False
+    with qtbot.waitSignal(tree_view.signal_selection_changed, timeout=1_000):
+        tree_view.select_rows(["key"], tree_view.key_column, role=MyItemDataRole.ROLE_CLIPBOARD_DATA)
+
+
 def test_mytreeview_selection_override_not_applied_for_non_windows_style(
     monkeypatch, qtbot: QtBot, test_config: UserConfig
 ) -> None:
