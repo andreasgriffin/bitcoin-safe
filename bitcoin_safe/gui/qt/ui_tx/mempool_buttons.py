@@ -761,7 +761,6 @@ class MempoolButtons(VerticalButtonGroup):
         #     return
 
         block_index = self.mempool_manager.fee_rate_to_projected_block_index(self.fee_rate)
-        self.set_active(block_index)
         button_indices = self.calculate_button_indices(block_index)
 
         for index, button in zip(button_indices, self.buttons, strict=False):
@@ -830,7 +829,8 @@ class MempoolButtons(VerticalButtonGroup):
             return
         fee_rate = self.mempool_manager.median_block_fee_rate(i, decimal_precision=self.decimal_precision)
         logger.debug(f"Clicked button {i}: {fee_rate}")
-        self.set_active(i)
+        for button in self.buttons:
+            button.set_active(button.index == i)
         self.signal_click_median_fee.emit(i)
 
 
