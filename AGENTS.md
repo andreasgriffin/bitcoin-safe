@@ -15,6 +15,7 @@
 - Try to avoid  if TYPE_CHECKING:  imports. It hints that the structure/hirachy is not good, and perhaps functions are not at the right place or get too powerful arguments. Do not cheat by using a Protocol, but instead think of a better structure/placement/arguments/hirachy.
 - For important code that build the core of the application, add comments with  a simple example that explain the logic of the code
 - Avoid duplicate data structures that need to be kept in sync. Better to have 1 combined data structure as the source of truth.
+- Avoid hardcoding values, especially if it is not the correct file for it.
 
 ## App run + GUI interaction notes
 - Launch the app with `DISPLAY=desktop:0 poetry run python -m bitcoin_safe`.
