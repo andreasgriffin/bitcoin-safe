@@ -173,7 +173,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         tx_ui_infos: TxUiInfos | None = None,
         category_list: CategoryList | None = None,
         utxo_list_with_toolbar: UtxoListWithToolbar | None = None,
-        foreign_inputs: list[ForeignUtxo | None] | None = None,
+        foreign_inputs: dict[str, ForeignUtxo | None] | None = None,
         selected_outpoints: list[str] | None = None,
         selected_input_outpoints: list[str] | None = None,
         parent=None,
@@ -226,7 +226,14 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
             self.utxo_list_with_toolbar = UtxoListWithToolbar(self.utxo_list, self.config, parent=self)
 
-        self.foreign_inputs = {item.utxo.outpoint: item for item in foreign_inputs or [] if item is not None}
+        self.foreign_inputs: dict[OutPoint, ForeignUtxo] = {}
+        for outpoint, item in (foreign_inputs or {}).items():
+            if item is None:
+                continue
+            if outpoint != str(item.utxo.outpoint):
+                logger.warning("Saved foreign input key does not match outpoint: %s", outpoint)
+                continue
+            self.foreign_inputs[item.utxo.outpoint] = item
         self._import_generation = 0
         self._import_busy = False
         self.utxo_list.signal_remove_foreign_inputs.connect(self.remove_foreign_inputs)
@@ -403,7 +410,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         # Foreign snapshots are persisted once in foreign_inputs; selection is saved separately.
         tx_infos.inputs = {op: item for op, item in tx_infos.inputs.items() if item.psbt_input is None}
         d["tx_ui_infos"] = tx_infos
-        d["foreign_inputs"] = list(self.foreign_inputs.values())
+        d["foreign_inputs"] = {str(outpoint): item for outpoint, item in self.foreign_inputs.items()}
         d["selected_outpoints"] = sorted(str(op) for op in self.selected_outpoints)
         return d
 

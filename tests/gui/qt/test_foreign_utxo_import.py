@@ -779,8 +779,8 @@ def test_wallet_import_is_a_persistent_snapshot(
         finally:
             restored.close()
         saved_data = json.loads(saved)
-        saved_input = next(item for item in saved_data["foreign_inputs"] if item["outpoint"] == str(first))
-        saved_input["txout"][1] += 1
+        assert set(saved_data["foreign_inputs"]) == {str(first), str(second)}
+        saved_data["foreign_inputs"][str(first)]["txout"][1] += 1
         invalid = UITx_Creator._from_dumps(json.dumps(saved_data), class_kwargs=creator_class_kwargs(creator))
         invalid.set_category_core(qt_wallet.category_core)
         invalid.show()
@@ -790,6 +790,14 @@ def test_wallet_import_is_a_persistent_snapshot(
             assert first in invalid.selected_outpoints
             assert first in invalid.utxo_list.outpoints
             assert first not in invalid.get_outpoints()
+        finally:
+            invalid.close()
+        saved_data = json.loads(saved)
+        saved_data["foreign_inputs"]["ab" * 32 + ":0"] = saved_data["foreign_inputs"].pop(str(first))
+        invalid = UITx_Creator._from_dumps(json.dumps(saved_data), class_kwargs=creator_class_kwargs(creator))
+        try:
+            assert set(invalid.foreign_inputs) == {second}
+            assert invalid.selected_outpoints == {first}
         finally:
             invalid.close()
         fetch.assert_not_awaited()
