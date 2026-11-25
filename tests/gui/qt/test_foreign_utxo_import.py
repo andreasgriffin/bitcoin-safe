@@ -290,6 +290,64 @@ def test_edit_psbt_with_only_foreign_inputs_uses_open_wallet(
 
 
 @pytest.mark.marker_qt_2
+def test_import_outpoints_selects_local_and_resolved_foreign_inputs(
+    qtbot: QtBot, mytest_start_time: datetime, test_config: ConfigForTest, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_import_outpoints")
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        qt_wallet = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name="import_outpoints",
+            seed=test_seeds[0],
+        )
+        wallet = qt_wallet.wallet
+        creator = qt_wallet.uitx_creator
+        qt_wallet.tabs.setCurrentWidget(creator)
+        qtbot.waitUntil(creator.isVisible, timeout=10_000)
+        address = wallet.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+        local_tx = transaction([bytes(address.script_pubkey().to_bytes())] * 2)
+        wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=local_tx, last_seen=1)])
+        local_points = [OutPoint(txid=local_tx.compute_txid(), vout=i) for i in range(2)]
+        local_utxos = [
+            PythonUtxo(str(address), op, TxOut.from_bdk(local_tx.output()[op.vout])) for op in local_points
+        ]
+        monkeypatch.setattr(wallet, "get_all_utxos", lambda *args, **kwargs: local_utxos)
+        monkeypatch.setattr(
+            wallet, "get_all_txos_dict", lambda *args, **kwargs: {str(u.outpoint): u for u in local_utxos}
+        )
+        foreign_tx = transaction([b"\x00\x14" + b"\x42" * 20])
+        foreign_op = OutPoint(txid=foreign_tx.compute_txid(), vout=0)
+        missing = OutPoint.from_str("ab" * 32 + ":0")
+
+        async def fetch(txid: bdk.Txid) -> bdk.Transaction:
+            if txid == foreign_tx.compute_txid():
+                return foreign_tx
+            raise ValueError("offline")
+
+        monkeypatch.setattr(creator.mempool_manager, "fetch_transaction", fetch)
+        errors: list[str] = []
+        monkeypatch.setattr(
+            "bitcoin_safe.gui.qt.ui_tx.ui_tx_creator.Message", lambda text, **kwargs: errors.append(text)
+        )
+        creator.import_outpoints([local_points[0]], select=True)
+        qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+        assert creator.selected_outpoints == {local_points[0]}
+        assert creator.column_inputs.checkBox_manual_coin_select.isChecked()
+        assert set(creator.utxo_list.get_selected_outpoints()) == {local_points[0]}
+
+        creator.import_outpoints([local_points[1], foreign_op, missing], select=True)
+        qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+        expected = set(local_points) | {foreign_op}
+        assert errors and "offline" in errors[0]
+        assert creator.selected_outpoints == expected
+        assert set(creator.utxo_list.get_selected_outpoints()) == expected
+
+
+@pytest.mark.marker_qt_2
 def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
     qtbot: QtBot, mytest_start_time: datetime, test_config: ConfigForTest, monkeypatch: pytest.MonkeyPatch
 ) -> None:

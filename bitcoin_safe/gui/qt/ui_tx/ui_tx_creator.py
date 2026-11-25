@@ -1115,13 +1115,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                     else []
                 )
                 self._add_foreign_inputs(imported)
-                if imported or psbt:
+                valid_outpoints = (set(outpoints) & local.keys()) | imported.keys()
+                if imported or psbt or (select and valid_outpoints):
                     self.show_all_inputs()
                     self.refresh_inputs()
                 if select:
-                    self.set_selected_outpoints(
-                        self.selected_outpoints | (set(outpoints) if psbt else imported.keys())
-                    )
+                    self.set_selected_outpoints(self.selected_outpoints | valid_outpoints)
                 if psbt:
                     existing = [
                         r
