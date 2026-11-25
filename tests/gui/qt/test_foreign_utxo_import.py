@@ -729,6 +729,74 @@ def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
 
 
 @pytest.mark.marker_qt_2
+def test_import_utxos_from_all_open_wallets(
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: ConfigForTest,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_all_wallets")
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        qt_wallet = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name="all_wallets",
+            seed=test_seeds[0],
+        )
+        creator = qt_wallet.uitx_creator
+        qt_wallet.tabs.setCurrentWidget(creator)
+        qtbot.waitUntil(creator.isVisible, timeout=10_000)
+        other_wallets = [make_wallet(test_seeds[i], f"other_{i}") for i in (1, 2)]
+        outpoints = set()
+        for wallet in other_wallets:
+            wallet.labels = qt_wallet.wallet.labels
+            wallet.is_my_address.return_value = True
+            wallet.get_label_for_txid.return_value = ""
+            wallet.is_change.return_value = False
+            address = wallet.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+            tx = transaction([bytes(address.script_pubkey().to_bytes())])
+            wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=tx, last_seen=1)])
+            outpoint = OutPoint(txid=tx.compute_txid(), vout=0)
+            utxo = PythonUtxo(str(address), outpoint, TxOut.from_bdk(tx.output()[0]))
+            wallet.get_all_utxos.return_value = [utxo]
+            wallet.get_all_txos_dict.return_value = {str(outpoint): utxo}
+            outpoints.add(outpoint)
+
+        def get_first() -> MagicMock:
+            return other_wallets[0]
+
+        def get_second() -> MagicMock:
+            return other_wallets[1]
+
+        creator.wallet_functions.get_wallets.connect(get_first, slot_name=other_wallets[0].id)
+        creator.wallet_functions.get_wallets.connect(get_second, slot_name=other_wallets[1].id)
+        messages: list[str] = []
+        monkeypatch.setattr(
+            "bitcoin_safe.gui.qt.ui_tx.ui_tx_creator.Message", lambda text, **kwargs: messages.append(text)
+        )
+        try:
+            creator.update_add_source_menu()
+            menu = next(
+                action.menu()
+                for action in creator.menu_add_source.actions()
+                if action.text() == "Import UTXOs from wallet"
+            )
+            assert menu
+            assert menu.actions()[0].text() == "Add UTXOs from all open wallets"
+            menu.actions()[0].trigger()
+            qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+            assert not messages
+            assert set(creator.foreign_inputs) == outpoints
+            assert not creator.selected_outpoints
+        finally:
+            creator.wallet_functions.get_wallets.disconnect(get_first)
+            creator.wallet_functions.get_wallets.disconnect(get_second)
+
+
+@pytest.mark.marker_qt_2
 def test_wallet_import_is_a_persistent_snapshot(
     qtbot: QtBot, mytest_start_time: datetime, test_config: ConfigForTest, monkeypatch: pytest.MonkeyPatch
 ) -> None:

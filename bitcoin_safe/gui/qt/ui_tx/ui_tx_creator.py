@@ -951,6 +951,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.menu_add_source.clear()
         wallet_menu = self.menu_add_source.add_menu(self.tr("Import UTXOs from wallet"))
         wallets = [wallet for wallet in get_wallets(self.wallet_functions) if wallet != self.wallet]
+        wallet_menu.add_action(
+            self.tr("Add UTXOs from all open wallets"), partial(self.import_wallets_utxos, wallets)
+        )
+        wallet_menu.addSeparator()
         for wallet in wallets:
             wallet_menu.add_action(wallet.id, partial(self.import_wallet_utxos, wallet))
         wallet_menu.setEnabled(bool(wallets))
@@ -986,7 +990,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.on_input_changed_and_categories(RefreshCounterKey.UTXO_SELECTION)
 
     def import_wallet_utxos(self, wallet: Wallet) -> None:
-        outpoints = [utxo.outpoint for utxo in wallet.get_all_utxos()]
+        self.import_wallets_utxos([wallet])
+
+    def import_wallets_utxos(self, source_wallets: list[Wallet]) -> None:
+        outpoints = list(
+            dict.fromkeys(utxo.outpoint for wallet in source_wallets for utxo in wallet.get_all_utxos())
+        )
         if not outpoints:
             return
         wallets = get_wallets(self.wallet_functions)
