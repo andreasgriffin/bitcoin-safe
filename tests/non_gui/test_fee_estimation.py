@@ -566,3 +566,84 @@ def test_psbt_viewer_uses_size_estimate_instead_of_builder_target(
     assert fee_info.fee_amount == psbt.fee()
     assert fee_info.vsize == FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt).vsize
     assert fee_info.vsize_is_estimated
+
+
+def _taproot_psbt(script_path: bool, input_count: int = 1) -> tuple[bdk.Wallet, bdk.Psbt]:
+    from tests.non_gui.test_foreign_utxo import transaction
+
+    mnemonic = bdk.Mnemonic.from_string(
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+    )
+    key = bdk.DescriptorSecretKey(bdk.NetworkKind.TEST, mnemonic, "")
+    fixed_key = "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+
+    def descriptor(branch: int) -> bdk.Descriptor:
+        derived_key = f"{key}/{branch}/*"
+        internal, leaf = (fixed_key, derived_key) if script_path else (derived_key, fixed_key)
+        return bdk.Descriptor(f"tr({internal},pk({leaf}))", bdk.NetworkKind.TEST)
+
+    wallet = bdk.Wallet(descriptor(0), descriptor(1), bdk.Network.REGTEST, bdk.Persister.new_in_memory())
+    address = wallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+    funding = transaction([bytes(address.script_pubkey().to_bytes())] * input_count)
+    wallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=funding, last_seen=1)])
+    builder = bdk.TxBuilder().manually_selected_only().drain_to(address.script_pubkey())
+    for vout in range(input_count):
+        builder = builder.add_utxo(bdk.OutPoint(txid=funding.compute_txid(), vout=vout))
+    return wallet, builder.finish(wallet)
+
+
+def test_taproot_leaves_do_not_imply_script_path() -> None:
+    from hwilib.psbt import PSBT
+
+    wallet, psbt = _taproot_psbt(script_path=False)
+    hwi_psbt = PSBT()
+    hwi_psbt.deserialize(psbt.serialize())
+    assert hwi_psbt.inputs[0].tap_scripts
+    estimate = TxWeight.from_psbt(psbt)
+    assert estimate.inputs[0].weight() == 66
+    assert wallet.sign(psbt)
+    assert psbt.extract_tx().weight() <= estimate.estimate()
+
+
+def test_taproot_script_path_and_finalized_weight() -> None:
+    from hwilib.psbt import PSBT
+
+    wallet, psbt = _taproot_psbt(script_path=True)
+    options = bdk.SignOptions(
+        trust_witness_utxo=False,
+        assume_height=None,
+        allow_all_sighashes=False,
+        try_finalize=False,
+        sign_with_tap_internal_key=False,
+        allow_grinding=True,
+    )
+    wallet.sign(psbt, options)
+    hwi_psbt = PSBT()
+    hwi_psbt.deserialize(psbt.serialize())
+    assert hwi_psbt.inputs[0].tap_script_sigs
+    estimate = TxWeight.from_psbt(psbt).estimate()
+    finalized = psbt.finalize()
+    assert finalized.could_finalize
+    tx = finalized.psbt.extract_tx()
+    assert estimate == tx.weight() + 1  # Maximum 65-byte signature versus this 64-byte signature.
+    assert TxWeight.from_psbt(finalized.psbt).estimate() == tx.weight()
+    fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(finalized.psbt)
+    assert not fee_info.vsize_is_estimated
+    assert fee_info.vsize == tx.vsize()
+
+
+def test_mixed_psbt_preserves_finalized_input_weight() -> None:
+    from hwilib.psbt import PSBT
+
+    wallet, psbt = _taproot_psbt(script_path=False, input_count=2)
+    assert wallet.sign(psbt)
+    tx = psbt.extract_tx()
+    hwi_psbt = PSBT()
+    hwi_psbt.deserialize(psbt.serialize())
+    hwi_psbt.inputs[1].final_script_witness.scriptWitness.stack = []
+    mixed = bdk.Psbt(hwi_psbt.serialize())
+
+    weights = TxWeight.from_psbt(mixed)
+    assert weights.inputs[0].weight() == 65  # Actual 64-byte signature and its length byte.
+    assert weights.inputs[1].weight() == 66  # An unfinished signature may also include a sighash byte.
+    assert weights.estimate() == tx.weight() + 1
