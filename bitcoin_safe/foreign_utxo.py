@@ -43,6 +43,7 @@ from typing import Any
 import bdkpython as bdk
 from bitcoin_safe_lib.storage import BaseSaveableClass
 from bitcoin_safe_lib.util import network_kind
+from btclib.script.script_pub_key import is_p2wpkh
 
 from .pythonbdk_types import OutPoint, PythonUtxo, TxOut, robust_address_str_from_txout
 
@@ -115,7 +116,7 @@ class ForeignUtxo(BaseSaveableClass):
                 raise ValueError(f"Could not obtain the owning wallet's PSBT metadata: {exc}") from exc
             break
         if weight is None:
-            if len(script) == 22 and script[:2] == b"\x00\x14":
+            if is_p2wpkh(script):
                 # All P2WPKH descriptors have the same satisfaction weight; the key need not match.
                 weight = bdk.Descriptor(
                     P2WPKH_EXAMPLE_DESCRIPTOR, network_kind(network)

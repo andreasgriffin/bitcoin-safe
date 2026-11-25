@@ -50,6 +50,7 @@ from enum import Enum
 import bdkpython as bdk
 from btclib.exceptions import ScriptError
 from btclib.script.engine import verify_input
+from btclib.script.script_pub_key import is_p2tr, is_p2wpkh, is_p2wsh
 from btclib.script.sig_hash import ANYONECANPAY
 from btclib.tx import Tx, TxOut
 
@@ -102,15 +103,7 @@ def has_signature_material(tx: bdk.Transaction) -> bool:
 
 
 def _is_native_witness(script_pubkey: bytes) -> bool:
-    # Witness v0 (P2WPKH/P2WSH) and v1 (P2TR) programs are OP_n followed by a push of
-    # 20 or 32 bytes. Their scriptSig must be empty under consensus.
-    return (len(script_pubkey) == 22 and script_pubkey[:2] == b"\x00\x14") or (
-        len(script_pubkey) == 34 and script_pubkey[:2] in (b"\x00\x20", b"\x51\x20")
-    )
-
-
-def _is_taproot_program(script_pubkey: bytes) -> bool:
-    return len(script_pubkey) == 34 and script_pubkey[:2] == b"\x51\x20"
+    return is_p2wpkh(script_pubkey) or is_p2wsh(script_pubkey) or is_p2tr(script_pubkey)
 
 
 def _verify_external_input(tx: Tx, index: int, prevout: Prevout | None) -> InputVerdict:
@@ -146,7 +139,7 @@ def _verify_wallet_input(tx: Tx, index: int, prevouts: list[Prevout | None]) -> 
     # placeholders when no other input's data can reach this input's sighash: legacy
     # and SegWit v0 sighashes read only this input's prevout, and so do Taproot
     # ANYONECANPAY key-path sighashes. Other Taproot sighashes commit to every prevout.
-    sibling_placeholders_allowed = not _is_taproot_program(
+    sibling_placeholders_allowed = not is_p2tr(
         prevout.script_pubkey
     ) or _taproot_keypath_allows_unknown_siblings(tx, index)
     tx_outs: list[TxOut] = []
@@ -166,9 +159,7 @@ def _verify_wallet_input(tx: Tx, index: int, prevouts: list[Prevout | None]) -> 
     # hash_types also records failed ECDSA checks, so only verified ECDSA pairs count.
     # btclib does not collect successful Schnorr signatures, so for Taproot any recorded
     # check is the signal. Scripts that ran without a verified signature stay unchecked.
-    has_verified_signature = bool(signatures) or (
-        _is_taproot_program(prevout.script_pubkey) and bool(hash_types)
-    )
+    has_verified_signature = bool(signatures) or (is_p2tr(prevout.script_pubkey) and bool(hash_types))
     if not has_verified_signature:
         return InputResult(InputVerdict.unchecked)
     return InputResult(InputVerdict.valid, tuple(pub_key for pub_key, _ in signatures))

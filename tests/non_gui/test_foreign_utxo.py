@@ -231,9 +231,20 @@ def test_output_only_requires_download(wallets: tuple[MagicMock, MagicMock]) -> 
     manager.fetch_transaction.assert_awaited_once()
 
 
-def test_unsupported_script_is_rejected(wallets: tuple[MagicMock, MagicMock]) -> None:
+@pytest.mark.parametrize(
+    "script",
+    [
+        b"\x00\x20" + b"\x42" * 32,  # P2WSH
+        b"\x51\x20" + b"\x42" * 32,  # Taproot
+        b"\x00\x14" + b"\x42" * 19,
+        b"\x00\x14" + b"\x42" * 21,
+        b"\x51\x14" + b"\x42" * 20,
+        b"\x00\x15" + b"\x42" * 20,
+    ],
+)
+def test_unsupported_script_is_rejected(script: bytes, wallets: tuple[MagicMock, MagicMock]) -> None:
     active, _ = wallets
-    tx = transaction([b"\x00\x20" + b"\x42" * 32])
+    tx = transaction([script])
     op = OutPoint(txid=tx.compute_txid(), vout=0)
     with pytest.raises(ValueError, match="Unsupported or ambiguous"):
         foreign_utxo(op, tx.output()[0], tx, [active])
