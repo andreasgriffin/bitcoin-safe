@@ -76,7 +76,11 @@ class InputResult:
     """Verdict for one input, plus the public keys whose signatures the engine confirmed."""
 
     verdict: InputVerdict
-    signer_pubkeys: tuple[bytes, ...] = ()
+    signatures: tuple[tuple[bytes, bytes], ...] = ()
+
+    @property
+    def signer_pubkeys(self) -> tuple[bytes, ...]:
+        return tuple(pubkey for pubkey, _ in self.signatures)
 
 
 @dataclass(frozen=True)
@@ -162,7 +166,7 @@ def _verify_wallet_input(tx: Tx, index: int, prevouts: list[Prevout | None]) -> 
     has_verified_signature = bool(signatures) or (is_p2tr(prevout.script_pubkey) and bool(hash_types))
     if not has_verified_signature:
         return InputResult(InputVerdict.unchecked)
-    return InputResult(InputVerdict.valid, tuple(pub_key for pub_key, _ in signatures))
+    return InputResult(InputVerdict.valid, tuple(signatures))
 
 
 def verify_transaction(

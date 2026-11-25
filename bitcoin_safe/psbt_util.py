@@ -52,6 +52,7 @@ from btclib.script.script_pub_key import (
     p2ms_m_and_keys_var,
 )
 
+from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
 from .pythonbdk_types import (
     OutPoint,
     PythonUtxo,
@@ -502,6 +503,7 @@ class SimpleInput:
     hash160_preimages: dict[str, str] = field(default_factory=dict)
     hash256_preimages: dict[str, str] = field(default_factory=dict)
     tap_key_sig: PartialSig | None = None
+    verified_finalized_tap_key_sig: PartialSig | None = None
     tap_script_sigs: dict[tuple[str, str], PartialSig] = field(default_factory=dict)
     tap_scripts: list[tuple[str, str, str]] = field(default_factory=list)
     tap_key_origins: list[tuple[str, tuple[list[str], tuple[str, str]]]] = field(default_factory=list)
@@ -779,6 +781,15 @@ class SimpleInput:
         return str(len(self.get_pub_keys_with_signature()))
 
     def signature_for_pubkey(self, pubkey_info: PubKeyInfo) -> PartialSig | None:
+        # A verified Taproot key-path spend of a known 1-of-1 wallet has only one signer.
+        if (
+            self.verified_finalized_tap_key_sig
+            and self.m_of_n == (1, 1)
+            and len(self.pubkeys) == 1
+            and pubkey_info.fingerprint
+            and pubkey_info.fingerprint == self.pubkeys[0].fingerprint
+        ):
+            return self.verified_finalized_tap_key_sig
         if not pubkey_info.pubkey:
             return None
 
@@ -1028,6 +1039,7 @@ class SimplePSBT:
             SimpleInput.from_input(input_data, txin)
             for input_data, txin in zip(psbt_json.get("inputs", []), psbt.extract_tx().input(), strict=False)
         ]
+        instance._recover_finalized_signatures(psbt.extract_tx())
 
         outputs = psbt_json.get("outputs", [])
         unsigned_tx_outputs = psbt_json.get("unsigned_tx", {}).get("output", [])
@@ -1037,6 +1049,64 @@ class SimplePSBT:
             for output_data, unsigned_tx_output in zip(outputs, unsigned_tx_outputs, strict=False)
         ]
         return instance
+
+    def _recover_finalized_signatures(self, tx: bdk.Transaction) -> None:
+        # Finalization removes PSBT key origins and partial signatures. Verify the witness
+        # to identify the signer: in a 1-of-2 input, either key could have signed.
+        prevouts: list[Prevout | None] = []
+        verify_inputs: list[bool] = []
+        for item in self.inputs:
+            previous = item.previous_txout()
+            prevouts.append(
+                Prevout(bytes(previous.script_pubkey.to_bytes()), previous.value.to_sat())
+                if previous
+                else None
+            )
+            witness = item.final_script_witness
+            verify_inputs.append(
+                bool(
+                    item.is_fully_signed()
+                    and (
+                        (previous and is_p2pkh(bytes(previous.script_pubkey.to_bytes())))
+                        or (witness and is_p2ms_var(bytes.fromhex(witness[-1])))
+                        or (previous and witness and is_p2tr(bytes(previous.script_pubkey.to_bytes())))
+                    )
+                )
+            )
+        if not any(verify_inputs):
+            return
+        results = verify_transaction(tx, prevouts, verify_inputs).results
+        for item, result in zip(self.inputs, results, strict=True):
+            witness = item.final_script_witness
+            if (
+                result.verdict == InputVerdict.valid
+                and witness
+                and (previous := item.previous_txout())
+                and is_p2tr(bytes(previous.script_pubkey.to_bytes()))
+            ):
+                keypath_witness = (
+                    witness[:-1] if len(witness) == 2 and witness[-1].startswith("50") else witness
+                )
+                if len(keypath_witness) == 1 and len(keypath_witness[0]) in (128, 130):
+                    tap_signature = keypath_witness[0]
+                    item.verified_finalized_tap_key_sig = PartialSig(
+                        signature=tap_signature[:128],
+                        sighash_type=item._format_sighash_type(
+                            int(tap_signature[128:], 16) if len(tap_signature) == 130 else 0
+                        ),
+                    )
+            if result.signatures and item.final_script_witness:
+                script = bytes.fromhex(item.final_script_witness[-1])
+                if is_p2ms_var(script):
+                    threshold, keys = p2ms_m_and_keys_var(script)
+                    item.m_of_n = (threshold, len(keys))
+            for pubkey, signature in result.signatures:
+                pubkey_hex, signature_hex = pubkey.hex(), signature.hex()
+                if not any(info.pubkey == pubkey_hex for info in item.pubkeys):
+                    item.pubkeys.append(PubKeyInfo(fingerprint="", pubkey=pubkey_hex))
+                item.partial_sigs[pubkey_hex] = PartialSig(
+                    signature=signature_hex, sighash_type=item._recovered_sighash_type(signature_hex)
+                )
 
     def get_fingerprint_tuples(self) -> tuple[list[PubKeyInfo], list[PubKeyInfo]]:
         # set of all fingerprints of all inputs
