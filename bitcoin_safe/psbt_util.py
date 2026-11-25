@@ -208,27 +208,48 @@ class InputWeight:
         return witness_size - 1 + (35 * 4 if self.address_type == AddressTypes.p2sh_p2wsh else 0)
 
 
-def estimate_tx_weight(
-    inputs: Sequence[InputWeight],
-    output_scripts: Sequence[bdk.Script | None],
-) -> int:
-    """Estimate transaction weight, using native SegWit when input types are unknown."""
-    script_lengths = [
-        len((script if script is not None else DEFAULT_OUTPUT_SCRIPT).to_bytes()) for script in output_scripts
-    ]
-    output_size = sum(8 + compact_size_length(size) + size for size in script_lengths)
-    base_size = (
-        4
-        + 4
-        + compact_size_length(len(inputs))
-        + compact_size_length(len(output_scripts))
-        + 41 * len(inputs)
-        + output_size
-    )
-    has_witness = any(item.is_witness() for item in inputs)
-    # The marker/flag costs two weight units, plus one empty witness byte even
-    # for each legacy input in a mixed transaction.
-    return base_size * 4 + (2 + len(inputs) if has_witness else 0) + sum(item.weight() for item in inputs)
+@dataclass
+class TxWeight:
+    inputs: Sequence[InputWeight]
+    output_scripts: Sequence[bdk.Script | None]
+
+    @classmethod
+    def from_psbt(cls, psbt: bdk.Psbt) -> TxWeight:
+        """Build the estimate from the PSBT's inputs and previous outputs."""
+        tx = psbt.extract_tx_unchecked_fee_rate()
+        inputs = []
+        for txin, inp in zip(tx.input(), psbt.input(), strict=True):
+            prevout = inp.witness_utxo
+            if prevout is None and inp.non_witness_utxo is not None:
+                outputs = inp.non_witness_utxo.output()
+                if txin.previous_output.vout < len(outputs):
+                    prevout = outputs[txin.previous_output.vout]
+            inputs.append(InputWeight.from_psbt_input(prevout.script_pubkey if prevout else None, inp))
+        return cls(inputs, [output.script_pubkey for output in tx.output()])
+
+    def estimate(self) -> int:
+        """Estimate weight, using native SegWit when input types are unknown."""
+        script_lengths = [
+            len((script if script is not None else DEFAULT_OUTPUT_SCRIPT).to_bytes())
+            for script in self.output_scripts
+        ]
+        output_size = sum(8 + compact_size_length(size) + size for size in script_lengths)
+        base_size = (
+            4
+            + 4
+            + compact_size_length(len(self.inputs))
+            + compact_size_length(len(self.output_scripts))
+            + 41 * len(self.inputs)
+            + output_size
+        )
+        has_witness = any(item.is_witness() for item in self.inputs)
+        # The marker/flag costs two weight units, plus one empty witness byte even
+        # for each legacy input in a mixed transaction.
+        return (
+            base_size * 4
+            + (2 + len(self.inputs) if has_witness else 0)
+            + sum(item.weight() for item in self.inputs)
+        )
 
 
 class FeeRate(bdk.FeeRate):
@@ -323,16 +344,7 @@ class FeeInfo:
             inp.final_script_sig is not None or inp.final_script_witness is not None for inp in psbt_inputs
         ):
             return FeeInfo(psbt.fee(), tx.vsize(), vsize_is_estimated=False, fee_amount_is_estimated=False)
-        inputs = []
-        for txin, inp in zip(tx.input(), psbt_inputs, strict=True):
-            prevout = inp.witness_utxo
-            if prevout is None and inp.non_witness_utxo is not None:
-                outputs = inp.non_witness_utxo.output()
-                if txin.previous_output.vout < len(outputs):
-                    prevout = outputs[txin.previous_output.vout]
-            inputs.append(InputWeight.from_psbt_input(prevout.script_pubkey if prevout else None, inp))
-        output_scripts = [output.script_pubkey for output in tx.output()]
-        vsize = weight_to_vsize(estimate_tx_weight(inputs, output_scripts))
+        vsize = weight_to_vsize(TxWeight.from_psbt(psbt).estimate())
         return FeeInfo(psbt.fee(), vsize, vsize_is_estimated=True, fee_amount_is_estimated=False)
 
     def __add__(self, other: FeeInfo) -> FeeInfo:

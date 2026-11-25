@@ -29,14 +29,18 @@
 
 from __future__ import annotations
 
+from typing import cast
+from unittest.mock import MagicMock
+
 import bdkpython as bdk
 import pytest
+from bitcoin_usb.address_types import AddressTypes
 
 from bitcoin_safe.psbt_util import (
     FeeInfo,
     InputWeight,
+    TxWeight,
     compact_size_length,
-    estimate_tx_weight,
     weight_to_vsize,
 )
 from tests.non_gui.test_psbt_util import p2wsh_psbt_0_2of3
@@ -51,17 +55,17 @@ def test_compact_size_length(value: int, size: int) -> None:
 
 
 def test_estimate_accounts_for_script_and_output_count_lengths() -> None:
-    base = estimate_tx_weight([InputWeight()], [bdk.Script(bytes(22))])
-    assert estimate_tx_weight([InputWeight()], [bdk.Script(bytes(200))]) - base == 178 * 4
-    assert estimate_tx_weight([InputWeight()], [bdk.Script(bytes(252))]) - base == 230 * 4
-    assert estimate_tx_weight([InputWeight()], [bdk.Script(bytes(253))]) - base == 233 * 4
+    base = TxWeight([InputWeight()], [bdk.Script(bytes(22))]).estimate()
+    assert TxWeight([InputWeight()], [bdk.Script(bytes(200))]).estimate() - base == 178 * 4
+    assert TxWeight([InputWeight()], [bdk.Script(bytes(252))]).estimate() - base == 230 * 4
+    assert TxWeight([InputWeight()], [bdk.Script(bytes(253))]).estimate() - base == 233 * 4
     empty_script = bdk.Script(b"")
     assert (
-        estimate_tx_weight([InputWeight()], [empty_script] * 253)
-        - estimate_tx_weight([InputWeight()], [empty_script] * 252)
+        TxWeight([InputWeight()], [empty_script] * 253).estimate()
+        - TxWeight([InputWeight()], [empty_script] * 252).estimate()
         == 11 * 4
     )
-    assert estimate_tx_weight([InputWeight()], [None]) == base
+    assert TxWeight([InputWeight()], [None]).estimate() == base
 
 
 def test_psbt_fee_estimate_uses_output_scripts() -> None:
@@ -69,11 +73,48 @@ def test_psbt_fee_estimate_uses_output_scripts() -> None:
     assert [len(output.script_pubkey.to_bytes()) for output in psbt.extract_tx().output()] == [34, 34]
     estimate = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
     assert estimate.vsize == weight_to_vsize(
-        estimate_tx_weight(
+        TxWeight(
             [InputWeight((2, 3))], [output.script_pubkey for output in psbt.extract_tx().output()]
-        )
+        ).estimate()
     )
     assert estimate.fee_amount == psbt.fee()
+
+
+def test_tx_weight_from_psbt_uses_previous_outputs_and_unknown_fallback() -> None:
+    from bitcoin_safe.foreign_utxo import ForeignUtxo
+    from tests.non_gui.test_foreign_utxo import transaction
+
+    legacy = transaction([b"\x76\xa9\x14" + bytes(20) + b"\x88\xac"])
+    witness = transaction([b"\x00\x14" + bytes(20)])
+    witness_input = ForeignUtxo._empty_input(witness.output()[0], None)
+    legacy_input = ForeignUtxo._empty_input(legacy.output()[0], legacy)
+    legacy_input.witness_utxo = None
+    unknown_input = ForeignUtxo._empty_input(witness.output()[0], None)
+    unknown_input.witness_utxo = None
+
+    tx = transaction([b"\x51"])
+    psbt = MagicMock(spec=bdk.Psbt)
+    psbt.extract_tx_unchecked_fee_rate.return_value.input.return_value = tx.input() * 3
+    psbt.extract_tx_unchecked_fee_rate.return_value.output.return_value = tx.output()
+    psbt.input.return_value = [witness_input, legacy_input, unknown_input]
+
+    estimate = TxWeight.from_psbt(cast(bdk.Psbt, psbt))
+    assert [item.address_type for item in estimate.inputs] == [
+        AddressTypes.p2wpkh,
+        AddressTypes.p2pkh,
+        None,
+    ]
+    assert (
+        estimate.estimate()
+        == TxWeight(
+            [
+                InputWeight(address_type=AddressTypes.p2wpkh),
+                InputWeight(address_type=AddressTypes.p2pkh),
+                InputWeight(),
+            ],
+            [bdk.Script(b"\x51")],
+        ).estimate()
+    )
 
 
 @pytest.mark.parametrize(
@@ -121,14 +162,14 @@ def test_mixed_input_overhead_and_descriptor_weights() -> None:
     legacy = InputWeight(address_type=AddressTypes.p2pkh)
     witness = InputWeight(address_type=AddressTypes.p2wpkh)
     output = [bdk.Script(b"\x51")]
-    single_legacy = estimate_tx_weight([legacy], output)
-    single_witness = estimate_tx_weight([witness], output)
-    mixed = estimate_tx_weight([legacy, witness], output)
+    single_legacy = TxWeight([legacy], output).estimate()
+    single_witness = TxWeight([witness], output).estimate()
+    mixed = TxWeight([legacy, witness], output).estimate()
     # Adding a legacy input to a witness transaction adds an empty witness byte.
     assert mixed - single_witness == 41 * 4 + legacy.weight() + 1
     assert single_witness - single_legacy == witness.weight() + 3 - legacy.weight()
-    assert estimate_tx_weight([InputWeight()], output) == single_witness
-    assert estimate_tx_weight([InputWeight(satisfaction_weight=150)], output) == single_witness + 43
+    assert TxWeight([InputWeight()], output).estimate() == single_witness
+    assert TxWeight([InputWeight(satisfaction_weight=150)], output).estimate() == single_witness + 43
 
 
 @pytest.mark.parametrize("wrapper", ["pkh({key})", "wpkh({key})", "sh(wpkh({key}))", "tr({key})"])
@@ -154,7 +195,7 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
     )
     tx = psbt.extract_tx_unchecked_fee_rate()
     info = InputWeight.from_psbt_input(funding.output()[0].script_pubkey, psbt.input()[0])
-    estimate = estimate_tx_weight([info], [output.script_pubkey for output in tx.output()])
+    estimate = TxWeight([info], [output.script_pubkey for output in tx.output()]).estimate()
     viewer_estimate = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
     assert viewer_estimate.vsize == weight_to_vsize(estimate)
     assert wallet.sign(psbt)
@@ -225,7 +266,7 @@ def test_cpfp_uses_descriptor_estimate(monkeypatch: pytest.MonkeyPatch) -> None:
     descriptor = wallet.bdkwallet.public_descriptor(bdk.KeychainKind.EXTERNAL)
     expected.use_descriptor(descriptor, bdk.Network.REGTEST)
     output = wallet.bdkwallet.peek_address(bdk.KeychainKind.EXTERNAL, 0).address.script_pubkey()
-    expected_vsize = weight_to_vsize(estimate_tx_weight([expected], [output]))
+    expected_vsize = weight_to_vsize(TxWeight([expected], [output]).estimate())
     captured = []
 
     class FakeCpfpTools:

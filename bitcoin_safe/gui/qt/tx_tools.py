@@ -43,7 +43,7 @@ from bitcoin_safe.mempool_data import MIN_RELAY_FEE
 from bitcoin_safe.tx import TxUiInfos, short_tx_id
 from bitcoin_safe.wallet import TxStatus, Wallet, get_tx_details, get_wallets
 
-from ...psbt_util import FeeInfo, InputWeight, estimate_tx_weight, weight_to_vsize
+from ...psbt_util import FeeInfo, InputWeight, TxWeight, weight_to_vsize
 from ...pythonbdk_types import Recipient, TransactionDetails, _is_taproot_script
 from ...signals import WalletFunctions
 from .util import Message
@@ -214,7 +214,7 @@ class TxTools:
                 wallet.bdkwallet.public_descriptor(derivation.keychain), wallet.network
             )
         output_script = wallet.bdkwallet.peek_address(bdk.KeychainKind.EXTERNAL, 0).address.script_pubkey()
-        vsize = weight_to_vsize(estimate_tx_weight([input_weight], [output_script]))
+        vsize = weight_to_vsize(TxWeight([input_weight], [output_script]).estimate())
         this_tx_fee_info = FeeInfo(
             ceil(MIN_RELAY_FEE * vsize), vsize, fee_amount_is_estimated=True, vsize_is_estimated=True
         )

@@ -74,7 +74,7 @@ from bitcoin_safe.outpoint_parser import parse_outpoints
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
-from ....psbt_util import FeeInfo, FeeRate, InputWeight, estimate_tx_weight, weight_to_vsize
+from ....psbt_util import FeeInfo, FeeRate, InputWeight, TxWeight, weight_to_vsize
 from ....pythonbdk_types import (
     OutPoint,
     PythonUtxo,
@@ -1334,7 +1334,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 descriptor = self.wallet.bdkwallet.public_descriptor(bdk.KeychainKind.EXTERNAL)
                 info.use_descriptor(descriptor, self.config.network)
             inputs.append(info)
-        weight = estimate_tx_weight(inputs, output_scripts)
+        weight = TxWeight(inputs, output_scripts).estimate()
         vsize = weight_to_vsize(weight)
         return FeeInfo(ceil(vsize * fee_rate), vsize, fee_amount_is_estimated=True, vsize_is_estimated=True)
 

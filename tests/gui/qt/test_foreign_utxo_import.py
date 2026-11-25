@@ -50,7 +50,7 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import ColorScheme
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
-from bitcoin_safe.psbt_util import InputWeight, estimate_tx_weight, weight_to_vsize
+from bitcoin_safe.psbt_util import InputWeight, TxWeight, weight_to_vsize
 from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, Recipient, TxOut
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 from bitcoin_safe.tx import TxUiInfos
@@ -530,10 +530,10 @@ def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
         ]
         infos = creator.get_tx_ui_infos()
         mn = wallet.get_mn_tuple()
-        expected_weight = estimate_tx_weight(
+        expected_weight = TxWeight(
             [InputWeight(mn, satisfaction_weight=foreign.satisfaction_weight)] * 2,
             [bdk.Script(script) for script, _ in payments] + [bdk.Script(change_script)],
-        )
+        ).estimate()
         fee_estimate = creator.estimate_fee_info(2)
         assert fee_estimate.vsize == weight_to_vsize(expected_weight)
         assert fee_estimate.fee_amount == 2 * fee_estimate.vsize
