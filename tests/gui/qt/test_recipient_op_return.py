@@ -130,6 +130,28 @@ def test_header_refresh_reads_current_address(qtbot: QtBot) -> None:
     assert box.notification_bar.icon_label.textLabel.text() == "OP_RETURN: hi"
 
 
+def test_recipient_header_disconnects_on_close(qtbot: QtBot, monkeypatch: pytest.MonkeyPatch) -> None:
+    positions: list[QPoint] = []
+
+    def show_menu(box: RecipientBox, position: QPoint) -> None:
+        positions.append(position)
+
+    monkeypatch.setattr(RecipientBox, "show_header_context_menu", show_menu)
+    signals = Signals()
+    box = RecipientBox(fx=None, wallet_functions=WalletFunctions(signals), network=bdk.Network.REGTEST)
+    qtbot.addWidget(box)
+    box.address = "script:6a026869"
+    box.notification_bar.customContextMenuRequested.emit(QPoint(1, 2))
+    assert positions == [QPoint(1, 2)]
+
+    box.close()
+    box.notification_bar.icon_label.setText("closed")
+    signals.language_switch.emit()
+    box.notification_bar.customContextMenuRequested.emit(QPoint(3, 4))
+    assert box.notification_bar.icon_label.textLabel.text() == "closed"
+    assert positions == [QPoint(1, 2)]
+
+
 def test_generate_op_return_from_header_context_menu(qtbot: QtBot, monkeypatch: pytest.MonkeyPatch) -> None:
     box = RecipientBox(fx=None, wallet_functions=WalletFunctions(Signals()), network=bdk.Network.REGTEST)
     qtbot.addWidget(box)

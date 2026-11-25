@@ -417,13 +417,18 @@ class NotificationBarRecipient(NotificationBar):
             has_close_button=has_close_button,
             parent=parent,
         )
+        self.signal_tracker = SignalTracker()
         self.wallet_id: str | None = None
 
         self.closeButton.setFlat(True)
         self.optionalButton.hide()
 
         self.updateUi()
-        signals_min.language_switch.connect(self.updateUi)
+        self.signal_tracker.connect(signals_min.language_switch, self.updateUi)
+
+    def close(self) -> bool:
+        self.signal_tracker.disconnect_all()
+        return super().close()
 
     def updateUi(self) -> None:
         """UpdateUi."""
@@ -498,6 +503,7 @@ class RecipientBox(QWidget):
     ) -> None:
         """Initialize instance."""
         super().__init__(parent=parent)
+        self.signal_tracker = SignalTracker()
         self.wallet_functions = wallet_functions
         self.fx = fx
         self.main_layout = QVBoxLayout(self)
@@ -537,11 +543,12 @@ class RecipientBox(QWidget):
 
         self.recipient_widget.address_edit.signal_text_change.connect(self.on_address_text_changed)
         # The bar refreshes its wallet text first; then restore the address-specific details.
-        self.recipient_widget.signal_tracker.connect(
-            wallet_functions.signals.language_switch, self.autofill_wallet_id
-        )
+        self.signal_tracker.connect(wallet_functions.signals.language_switch, self.autofill_wallet_id)
         self.notification_bar.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.notification_bar.customContextMenuRequested.connect(self.show_header_context_menu)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[QPoint]], self.notification_bar.customContextMenuRequested),
+            self.show_header_context_menu,
+        )
 
     def show_header_context_menu(self, position: QPoint) -> None:
         """Offer OP_RETURN creation for an empty, editable recipient."""
@@ -654,6 +661,8 @@ class RecipientBox(QWidget):
             self.notification_bar.show_op_return(description)
 
     def close(self) -> bool:
+        self.signal_tracker.disconnect_all()
+        self.notification_bar.close()
         self.recipient_widget.close()
         return super().close()
 

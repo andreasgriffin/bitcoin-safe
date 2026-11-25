@@ -758,7 +758,6 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
             selection_model = QItemSelectionModel(self.utxo_list.model())
             self.utxo_list.setSelectionModel(selection_model)
         self.utxo_list.signal_selection_changed.connect(self.update_labels)
-        self.utxo_list.signal_finished_update.connect(self.update_labels)
         self.create_layout()
         self.utxo_list.signals.language_switch.connect(self.updateUi)
         self.utxo_list.signals.any_wallet_updated.connect(self.update_with_filter)

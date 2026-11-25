@@ -228,7 +228,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.foreign_inputs = {OutPoint.from_str(op): item for op, item in (foreign_inputs or {}).items()}
         self._import_generation = 0
         self._import_busy = False
-        self.utxo_list.signal_remove_foreign_inputs.connect(self.remove_foreign_inputs)
+        self.signal_tracker.connect(self.utxo_list.signal_remove_foreign_inputs, self.remove_foreign_inputs)
         # The draft owns the selection, even when a row disappears from the UTXO list.
         self.selected_outpoints: set[OutPoint] = set()
         if selected_outpoints is None and tx_ui_infos and not tx_ui_infos.hide_UTXO_selection:
@@ -270,7 +270,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.on_checkBox_opportunistic_coin_select
         )
         self.menu_add_source = Menu(self)
-        self.menu_add_source.aboutToShow.connect(self.update_add_source_menu)
+        self.signal_tracker.connect(
+            cast(SignalProtocol[[]], self.menu_add_source.aboutToShow), self.update_add_source_menu
+        )
         self.column_inputs.button_add_source.setMenu(self.menu_add_source)
         self.splitter.addWidget(self.column_inputs)
 
@@ -344,7 +346,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             self.coin_selection_checkbox_state_change
         )
         self.mempool_manager.signal_data_updated.connect(self.update_fee_rate_to_mempool)
-        self.utxo_list.signal_selection_changed.connect(self.on_utxo_selection_changed)
+        self.signal_tracker.connect(self.utxo_list.signal_selection_changed, self.on_utxo_selection_changed)
         self.recipients.signal_amount_changed.connect(self.on_signal_amount_changed)
         self.recipients.signal_added_recipient.connect(self.on_recipients_added)
         self.recipients.signal_removed_recipient.connect(self.on_recipients_removed)
