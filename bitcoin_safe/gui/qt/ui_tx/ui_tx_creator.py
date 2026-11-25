@@ -175,7 +175,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         utxo_list_with_toolbar: UtxoListWithToolbar | None = None,
         foreign_inputs: dict[str, ForeignUtxo] | None = None,
         selected_outpoints: list[str] | None = None,
-        selected_input_outpoints: list[str] | None = None,
         parent=None,
     ) -> None:
         """Initialize instance."""
@@ -232,13 +231,10 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.utxo_list.signal_remove_foreign_inputs.connect(self.remove_foreign_inputs)
         # The draft owns the selection, even when a row disappears from the UTXO list.
         self.selected_outpoints: set[OutPoint] = set()
-        selected_input_outpoints = (
-            selected_outpoints if selected_outpoints is not None else selected_input_outpoints
-        )
-        if selected_input_outpoints is None and tx_ui_infos and not tx_ui_infos.hide_UTXO_selection:
+        if selected_outpoints is None and tx_ui_infos and not tx_ui_infos.hide_UTXO_selection:
             self.selected_outpoints.update(tx_ui_infos.inputs)
             self.selected_outpoints.update(tx_ui_infos.source_tx_inputs)
-        for outpoint in selected_input_outpoints or []:
+        for outpoint in selected_outpoints or []:
             try:
                 self.selected_outpoints.add(OutPoint.from_str(outpoint))
             except ValueError:
