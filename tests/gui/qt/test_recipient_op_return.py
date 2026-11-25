@@ -51,7 +51,11 @@ from bitcoin_safe.signals import Signals, WalletFunctions
         ("script:6a02ff00", "OP_RETURN: 0xff00"),
         ("script:6a03610a62", "OP_RETURN: a\\nb"),
         ("script:6a51", "OP_RETURN: OP_1"),
-        ("script:6a4c05ff", "OP_RETURN: [error]"),
+        ("script:6a4c05ff", "OP_RETURN: 0x6a4c05ff"),
+        ("script:6a02ff", "OP_RETURN: 0x6a02ff"),
+        ("script:6a4c", "OP_RETURN: 0x6a4c"),
+        ("script:6a4d01", "OP_RETURN: 0x6a4d01"),
+        ("script:6a4e0100", "OP_RETURN: 0x6a4e0100"),
         ("script:6a", "OP_RETURN"),
         ("script:00146a026869", None),
         ("script:6a0", None),
@@ -60,6 +64,14 @@ from bitcoin_safe.signals import Signals, WalletFunctions
 )
 def test_describe_op_return(address: str, description: str | None) -> None:
     assert describe_op_return(address) == description
+
+
+def test_describe_op_return_handles_parser_exception(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(script: bytes) -> list[str]:
+        raise ValueError("malformed script")
+
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.recipients.parse_script", fail)
+    assert describe_op_return("script:6a02ff") == "OP_RETURN: 0x6a02ff"
 
 
 def test_describe_op_return_with_new_unicode_emoji() -> None:
@@ -219,3 +231,39 @@ def test_generate_op_return_does_not_overwrite_or_edit_read_only(
     box.generate_op_return()
     assert box.address == ""
     assert len(menus) == 1
+
+
+def test_malformed_op_return_callback_and_serialization_error(
+    qtbot: QtBot, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    box = RecipientBox(fx=None, wallet_functions=WalletFunctions(Signals()), network=bdk.Network.REGTEST)
+    qtbot.addWidget(box)
+    box.address = "script:6a02ff"
+    box.updateUi()
+    assert box.address == "script:6a02ff"
+    assert box.notification_bar.icon_label.textLabel.text() == "OP_RETURN: 0x6a02ff"
+    box.address = ""
+    errors = []
+    monkeypatch.setattr(QInputDialog, "getMultiLineText", lambda *args: ("text", True))
+
+    def fail(*args):
+        raise ValueError("invalid script")
+
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.recipients.serialize_script", fail)
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.ui_tx.recipients.Message", lambda text, **kwargs: errors.append(text)
+    )
+    box.generate_op_return()
+    assert errors == ["invalid script"]
+    assert box.address == ""
+
+
+def test_op_return_menu_disabled(qtbot: QtBot, monkeypatch: pytest.MonkeyPatch) -> None:
+    box = RecipientBox(fx=None, wallet_functions=WalletFunctions(Signals()), network=bdk.Network.REGTEST)
+    qtbot.addWidget(box)
+    menus = []
+    monkeypatch.setattr("bitcoin_safe.execute_config.ALLOW_OP_RETURN", False)
+    monkeypatch.setattr(Menu, "exec", lambda *args: menus.append(True))
+    box.show_header_context_menu(QPoint())
+    box.generate_op_return()
+    assert not menus and not box.address

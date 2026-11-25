@@ -73,6 +73,7 @@ from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
 from bitcoin_safe.network_config import PeerSelectionMode
 from bitcoin_safe.network_utils import ProxyInfo
+from bitcoin_safe.output_validation import validate_raw_output_script, validate_transaction_outputs
 from bitcoin_safe.persister.serialize_persistence import SerializePersistence
 from bitcoin_safe.psbt_util import FeeInfo, FeeRate, SimpleInput
 from bitcoin_safe.wallet_util import (
@@ -123,13 +124,6 @@ from .util import (
 _LOOKAHEAD_SENTINEL: Final = object()  # unique marker
 
 logger = logging.getLogger(__name__)
-
-
-def validate_op_return_amounts(psbt: bdk.Psbt) -> None:
-    """Reject outputs that would destroy bitcoin in an OP_RETURN script."""
-    for output in psbt.extract_tx_unchecked_fee_rate().output():
-        if output.value.to_sat() and bytes(output.script_pubkey.to_bytes()).startswith(b"\x6a"):
-            raise ValueError(translate("wallet", "OP_RETURN outputs must have an amount of zero."))
 
 
 class InconsistentBDKState(Exception):
@@ -2325,6 +2319,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             raise Exception("Cannot replace tx without txid")
         if txinfos.fee_rate is None:
             raise Exception("Cannot bump tx without feerate")
+        validate_transaction_outputs(txinfos.replace_tx, self.network)
 
         # check inputs consistent
         prev_outpoints = [
@@ -2367,7 +2362,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         except Exception as e:
             raise e
 
-        validate_op_return_amounts(psbt)
+        validate_transaction_outputs(psbt.extract_tx_unchecked_fee_rate(), self.network)
         self.persist()
 
         recipient_category = self.determine_recipient_category(utxos_for_input.utxos)
@@ -2387,6 +2382,11 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def create_psbt(self, txinfos: TxUiInfos) -> TxBuilderInfos:
         """Create a PSBT from the provided builder information."""
+        for recipient in txinfos.recipients:
+            if recipient.address.startswith("script:"):
+                validate_raw_output_script(
+                    bytes.fromhex(recipient.address.removeprefix("script:")), recipient.amount
+                )
         if txinfos.replace_tx:
             if any(item.psbt_input is not None for item in txinfos.inputs.values()):
                 raise ValueError("Fee bumping with foreign inputs is not supported")
@@ -2473,7 +2473,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             }
             if actual_outpoints != set_selected_outpoints:
                 raise ValueError("Created PSBT inputs do not match selected inputs")
-        validate_op_return_amounts(psbt)
+        validate_transaction_outputs(psbt.extract_tx_unchecked_fee_rate(), self.network)
         if selected_max_amount_recipient:
             drain_script = bytes(selected_max_amount_recipient.script_pubkey(self.network).to_bytes())
             expected_outputs = sum(

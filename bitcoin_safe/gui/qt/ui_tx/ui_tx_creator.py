@@ -74,7 +74,7 @@ from bitcoin_safe.outpoint_parser import parse_outpoints
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
-from ....psbt_util import FeeInfo, FeeRate, estimate_tx_weight, weight_to_vsize
+from ....psbt_util import FeeInfo, FeeRate, InputWeight, estimate_tx_weight, weight_to_vsize
 from ....pythonbdk_types import (
     OutPoint,
     PythonUtxo,
@@ -1312,15 +1312,29 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             send_value=sum(sent_values),
         )
 
-        num_inputs = max(1, len(utxos_for_input.utxos))  # assume all inputs come from this wallet
         mn = self.wallet.get_mn_tuple() if self.wallet else (1, 1)
-        weight = estimate_tx_weight([mn] * num_inputs, output_scripts)
+        inputs = []
         for utxo in utxos_for_input.utxos:
             item = txinfos.inputs.get(utxo.outpoint)
-            if item and item.psbt_input is not None and item.satisfaction_weight is not None:
-                # BDK's satisfaction weight excludes the one-byte empty witness already in a TxIn.
-                # It includes any scriptSig for nested inputs.
-                weight += item.satisfaction_weight + 1 - (1 + mn[0] * 73 + mn[1] * 34)
+            info = InputWeight.from_psbt_input(
+                utxo.txout.script_pubkey,
+                item.psbt_input if item else None,
+                mn,
+                item.satisfaction_weight if item else None,
+            )
+            if self.wallet and info.satisfaction_weight is None:
+                derivation = self.wallet.bdkwallet.derivation_of_spk(utxo.txout.script_pubkey)
+                if derivation is not None:
+                    descriptor = self.wallet.bdkwallet.public_descriptor(derivation.keychain)
+                    info.use_descriptor(descriptor, self.config.network)
+            inputs.append(info)
+        if not inputs:
+            info = InputWeight(mn)
+            if self.wallet:
+                descriptor = self.wallet.bdkwallet.public_descriptor(bdk.KeychainKind.EXTERNAL)
+                info.use_descriptor(descriptor, self.config.network)
+            inputs.append(info)
+        weight = estimate_tx_weight(inputs, output_scripts)
         vsize = weight_to_vsize(weight)
         return FeeInfo(ceil(vsize * fee_rate), vsize, fee_amount_is_estimated=True, vsize_is_estimated=True)
 

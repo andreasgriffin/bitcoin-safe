@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import logging
+from math import ceil
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import format_fee_rate
@@ -42,7 +43,7 @@ from bitcoin_safe.mempool_data import MIN_RELAY_FEE
 from bitcoin_safe.tx import TxUiInfos, short_tx_id
 from bitcoin_safe.wallet import TxStatus, Wallet, get_tx_details, get_wallets
 
-from ...psbt_util import FeeInfo
+from ...psbt_util import FeeInfo, InputWeight, estimate_tx_weight, weight_to_vsize
 from ...pythonbdk_types import Recipient, TransactionDetails, _is_taproot_script
 from ...signals import WalletFunctions
 from .util import Message
@@ -206,12 +207,16 @@ class TxTools:
         txinfos.hide_UTXO_selection = False
         txinfos.fill_utxo_dict_from_utxos(utxos=[utxo])
 
-        this_tx_fee_info = FeeInfo.estimate_from_num_inputs(
-            MIN_RELAY_FEE,
-            input_mn_tuples=[wallet.get_mn_tuple() for i in range(1)],
-            output_scripts=[
-                wallet.bdkwallet.peek_address(bdk.KeychainKind.EXTERNAL, 0).address.script_pubkey()
-            ],
+        input_weight = InputWeight.from_psbt_input(utxo.txout.script_pubkey, None, wallet.get_mn_tuple())
+        derivation = wallet.bdkwallet.derivation_of_spk(utxo.txout.script_pubkey)
+        if derivation is not None:
+            input_weight.use_descriptor(
+                wallet.bdkwallet.public_descriptor(derivation.keychain), wallet.network
+            )
+        output_script = wallet.bdkwallet.peek_address(bdk.KeychainKind.EXTERNAL, 0).address.script_pubkey()
+        vsize = weight_to_vsize(estimate_tx_weight([input_weight], [output_script]))
+        this_tx_fee_info = FeeInfo(
+            ceil(MIN_RELAY_FEE * vsize), vsize, fee_amount_is_estimated=True, vsize_is_estimated=True
         )
 
         cpfp_tools = CpfpTools(wallets=get_wallets(wallet_functions))

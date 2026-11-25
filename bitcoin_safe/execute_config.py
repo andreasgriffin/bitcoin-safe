@@ -30,6 +30,8 @@
 from __future__ import annotations
 
 IS_PRODUCTION = True  # change this for testing
+ALLOW_OP_RETURN = True
+ALLOW_ALL_SCRIPTS = not IS_PRODUCTION
 
 DEMO_MODE = False
 DEFAULT_MAINNET = IS_PRODUCTION

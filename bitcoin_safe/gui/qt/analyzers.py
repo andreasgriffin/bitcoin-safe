@@ -46,6 +46,7 @@ from bitcoin_safe.gui.qt.custom_edits import (
 )
 
 from ...keystore import KeyStore
+from ...output_validation import validate_raw_output_script
 from .util import Message
 
 logger = logging.getLogger(__name__)
@@ -251,7 +252,7 @@ class AddressAnalyzer(BaseAnalyzer, QObject):
             return AnalyzerMessage(self.tr("Missing Address"), AnalyzerState.Invalid)
         if self.allow_scripts and input.startswith("script:"):
             try:
-                bytes.fromhex(input.removeprefix("script:"))
+                validate_raw_output_script(bytes.fromhex(input.removeprefix("script:")))
                 return AnalyzerMessage(self.tr("Raw output script"), AnalyzerState.Valid)
             except ValueError:
                 return AnalyzerMessage(self.tr("Invalid output script"), AnalyzerState.Invalid)

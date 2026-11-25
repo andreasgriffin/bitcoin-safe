@@ -65,6 +65,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from bitcoin_safe import execute_config
 from bitcoin_safe.constants import FORM_LABEL_FIELD_SPACING
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.address_edit import AddressEdit
@@ -107,7 +108,13 @@ def describe_op_return(address: str) -> str | None:
 
     parts = []
     # For example, 6a026869 is OP_RETURN followed by a two-byte push of "hi".
-    for instruction in parse_script(script)[1:]:
+    try:
+        instructions = parse_script(script)
+    except Exception:
+        return "OP_RETURN: 0x" + script.hex()
+    if "[error]" in instructions:
+        return "OP_RETURN: 0x" + script.hex()
+    for instruction in instructions[1:]:
         try:
             data = bytes.fromhex(instruction) if isinstance(instruction, str) else bytes(instruction)
         except (ValueError, TypeError):
@@ -552,7 +559,7 @@ class RecipientBox(QWidget):
 
     def show_header_context_menu(self, position: QPoint) -> None:
         """Offer OP_RETURN creation for an empty, editable recipient."""
-        if self.address or not self.recipient_widget.enabled:
+        if not execute_config.ALLOW_OP_RETURN or self.address or not self.recipient_widget.enabled:
             return
         menu = Menu(self.notification_bar)
         menu.add_action(self.tr("Generate OP_RETURN"), self.generate_op_return)
@@ -560,13 +567,17 @@ class RecipientBox(QWidget):
 
     def generate_op_return(self) -> None:
         """Turn entered UTF-8 text into a raw OP_RETURN output script."""
-        if self.address or not self.recipient_widget.enabled:
+        if not execute_config.ALLOW_OP_RETURN or self.address or not self.recipient_widget.enabled:
             return
         text, accepted = QInputDialog.getMultiLineText(
             self, self.tr("Generate OP_RETURN"), self.tr("Text to include in the OP_RETURN output:")
         )
         if accepted and not self.address and self.recipient_widget.enabled:
-            script = serialize_script(["OP_RETURN", text.encode("utf-8")])
+            try:
+                script = serialize_script(["OP_RETURN", text.encode("utf-8")])
+            except Exception as exc:
+                Message(str(exc), type=MessageType.Error, parent=self)
+                return
             self.address = "script:" + script.hex()
 
     def on_close(self):

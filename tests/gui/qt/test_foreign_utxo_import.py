@@ -50,7 +50,7 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import ColorScheme
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
-from bitcoin_safe.psbt_util import estimate_tx_weight, weight_to_vsize
+from bitcoin_safe.psbt_util import InputWeight, estimate_tx_weight, weight_to_vsize
 from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, Recipient, TxOut
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 from bitcoin_safe.tx import TxUiInfos
@@ -531,9 +531,9 @@ def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
         infos = creator.get_tx_ui_infos()
         mn = wallet.get_mn_tuple()
         expected_weight = estimate_tx_weight(
-            [mn, mn], [bdk.Script(script) for script, _ in payments] + [bdk.Script(change_script)]
+            [InputWeight(mn, satisfaction_weight=foreign.satisfaction_weight)] * 2,
+            [bdk.Script(script) for script, _ in payments] + [bdk.Script(change_script)],
         )
-        expected_weight += foreign.satisfaction_weight + 1 - (1 + mn[0] * 73 + mn[1] * 34)
         fee_estimate = creator.estimate_fee_info(2)
         assert fee_estimate.vsize == weight_to_vsize(expected_weight)
         assert fee_estimate.fee_amount == 2 * fee_estimate.vsize
@@ -687,6 +687,45 @@ def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
             for r in creator.recipients.recipients
         ] == original_outputs
         confirm_change.assert_not_called()
+
+        # An imported nonstandard output stays visible and blocks a new transaction.
+        arbitrary = (
+            bdk.TxBuilder()
+            .add_utxo(local_op)
+            .manually_selected_only()
+            .add_recipient(bdk.Script(b"\x51"), bdk.Amount.from_sat(1_000))
+            .drain_to(change.script_pubkey())
+            .finish(wallet.bdkwallet)
+        )
+        creator.clear_ui()
+        creator.merge_psbt(arbitrary)
+        qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+        assert ("script:51", 1_000) in [(r.address, r.amount) for r in creator.recipients.recipients]
+        with pytest.raises(ValueError, match="output script is not allowed"):
+            wallet.create_psbt(creator.get_tx_ui_infos())
+        creation_errors.clear()
+        with qtbot.assertNotEmitted(qt_wallet.signal_psbt_created):
+            with qtbot.waitSignal(qt_wallet.wallet_signals.finished_psbt_creation, timeout=10_000):
+                creator.create_tx()
+        assert creation_errors == ["This output script is not allowed when creating a transaction."]
+        assert ("script:51", 1_000) in [(r.address, r.amount) for r in creator.recipients.recipients]
+        viewer.set_psbt(arbitrary)
+        assert any(r.address == "script:51" for r in viewer.recipients.recipients)
+
+        malformed = (
+            bdk.TxBuilder()
+            .add_utxo(local_op)
+            .manually_selected_only()
+            .add_recipient(bdk.Script(bytes.fromhex("6a02ff")), bdk.Amount.from_sat(0))
+            .drain_to(change.script_pubkey())
+            .finish(wallet.bdkwallet)
+        )
+        viewer.set_tx(malformed.extract_tx_unchecked_fee_rate())
+        raw_box = next(
+            box for box in viewer.recipients.get_recipient_group_boxes() if box.address.startswith("script:")
+        )
+        assert raw_box.address == "script:6a02ff"
+        assert raw_box.notification_bar.icon_label.textLabel.text() == "OP_RETURN: 0x6a02ff"
 
 
 @pytest.mark.marker_qt_2

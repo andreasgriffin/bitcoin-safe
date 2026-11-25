@@ -473,6 +473,7 @@ def test_fetch_transaction_verifies_txid(monkeypatch: pytest.MonkeyPatch) -> Non
 
 def test_foreign_only_witness_input_requires_previous_transaction(
     wallets: tuple[MagicMock, MagicMock],
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from bitcoin_safe.psbt_util import SimplePSBT
 
@@ -505,6 +506,13 @@ def test_foreign_only_witness_input_requires_previous_transaction(
     with pytest.raises(ValueError, match="OP_RETURN outputs must have an amount of zero"):
         Wallet.create_psbt(active, infos)
     assert infos.recipients[-1].amount == 1_000
+
+    infos.recipients = [Recipient("script:51", 1_000)]
+    with pytest.raises(ValueError, match="output script is not allowed"):
+        Wallet.create_psbt(active, infos)
+    monkeypatch.setattr("bitcoin_safe.execute_config.ALLOW_ALL_SCRIPTS", True)
+    built = Wallet.create_psbt(active, infos).psbt.extract_tx_unchecked_fee_rate()
+    assert any(bytes(output.script_pubkey.to_bytes()) == b"\x51" for output in built.output())
 
     # The final send-max value can be nonzero even when its initial estimate is zero.
     infos.recipients = [Recipient("script:6a026869", 0, checked_max_amount=True)]
