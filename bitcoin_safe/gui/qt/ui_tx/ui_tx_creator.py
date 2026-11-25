@@ -74,7 +74,7 @@ from bitcoin_safe.outpoint_parser import parse_outpoints
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager, TxPrio
-from ....psbt_util import FeeInfo, FeeRate, InputWeight, TxWeight, weight_to_vsize
+from ....psbt_util import FeeInfo, FeeRate, TxWeight, weight_to_vsize
 from ....pythonbdk_types import (
     OutPoint,
     PythonUtxo,
@@ -82,7 +82,6 @@ from ....pythonbdk_types import (
     TransactionDetails,
     TxOut,
     UtxosForInputs,
-    is_address,
 )
 from ....signals import (
     UpdateFilter,
@@ -1283,25 +1282,6 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         """Estimate fee info."""
         recipients = self.recipients.recipients
         sent_values = [recipient.amount for recipient in recipients]
-        output_scripts: list[bdk.Script | None] = []
-        for recipient in recipients:
-            # Keep the estimate usable while an address or script is being edited.
-            if not recipient.address.startswith("script:") and not is_address(
-                recipient.address, self.config.network
-            ):
-                output_scripts.append(None)
-                continue
-            try:
-                output_scripts.append(recipient.script_pubkey(self.config.network))
-            except ValueError:
-                output_scripts.append(None)
-        if not any(recipient.checked_max_amount for recipient in recipients):
-            change_script = (
-                self.wallet.bdkwallet.peek_address(bdk.KeychainKind.INTERNAL, 0).address.script_pubkey()
-                if self.wallet
-                else None
-            )
-            output_scripts.append(change_script)
         if fee_rate is None:
             fee_rate = self.column_fee.fee_group.spin_fee_rate.value()
 
@@ -1312,29 +1292,14 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             send_value=sum(sent_values),
         )
 
-        mn = self.wallet.get_mn_tuple() if self.wallet else (1, 1)
-        inputs = []
-        for utxo in utxos_for_input.utxos:
-            item = txinfos.inputs.get(utxo.outpoint)
-            info = InputWeight.from_psbt_input(
-                utxo.txout.script_pubkey,
-                item.psbt_input if item else None,
-                mn,
-                item.satisfaction_weight if item else None,
-            )
-            if self.wallet and info.satisfaction_weight is None:
-                derivation = self.wallet.bdkwallet.derivation_of_spk(utxo.txout.script_pubkey)
-                if derivation is not None:
-                    descriptor = self.wallet.bdkwallet.public_descriptor(derivation.keychain)
-                    info.use_descriptor(descriptor, self.config.network)
-            inputs.append(info)
-        if not inputs:
-            info = InputWeight(mn)
-            if self.wallet:
-                descriptor = self.wallet.bdkwallet.public_descriptor(bdk.KeychainKind.EXTERNAL)
-                info.use_descriptor(descriptor, self.config.network)
-            inputs.append(info)
-        weight = TxWeight(inputs, output_scripts).estimate()
+        inputs = [txinfos.inputs.get(utxo.outpoint) or TxInputInfo(utxo) for utxo in utxos_for_input.utxos]
+        weight = TxWeight.from_recipients(
+            inputs,
+            recipients,
+            self.config.network,
+            self.wallet.bdkwallet if self.wallet else None,
+            self.wallet.get_mn_tuple() if self.wallet else (1, 1),
+        ).estimate()
         vsize = weight_to_vsize(weight)
         return FeeInfo(ceil(vsize * fee_rate), vsize, fee_amount_is_estimated=True, vsize_is_estimated=True)
 

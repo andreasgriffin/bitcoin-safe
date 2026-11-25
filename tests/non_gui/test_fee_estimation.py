@@ -117,6 +117,58 @@ def test_tx_weight_from_psbt_uses_previous_outputs_and_unknown_fallback() -> Non
     )
 
 
+def test_tx_weight_from_inputs_prefers_supplied_weight_and_wallet_descriptor() -> None:
+    from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, TxInputInfo, TxOut
+    from tests.non_gui.test_foreign_utxo import make_wallet, transaction
+
+    wallet = make_wallet(
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        "estimation",
+    ).bdkwallet
+    address = wallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+    funding = transaction([bytes(address.script_pubkey().to_bytes())])
+    utxo = PythonUtxo(
+        str(address), OutPoint(txid=funding.compute_txid(), vout=0), TxOut.from_bdk(funding.output()[0])
+    )
+    estimate = TxWeight.from_inputs(
+        [TxInputInfo(utxo), TxInputInfo(utxo, satisfaction_weight=200)], [], wallet
+    )
+    descriptor = wallet.public_descriptor(bdk.KeychainKind.EXTERNAL)
+    expected = InputWeight()
+    expected.use_descriptor(descriptor, bdk.Network.REGTEST)
+    assert estimate.inputs[0].satisfaction_weight == expected.satisfaction_weight
+    assert estimate.inputs[1].satisfaction_weight == 200
+    assert TxWeight.from_inputs([], []).inputs == []
+
+
+def test_tx_weight_from_recipients_handles_change_and_incomplete_drafts() -> None:
+    from bitcoin_safe.pythonbdk_types import Recipient
+    from tests.non_gui.test_foreign_utxo import make_wallet
+
+    wallet = make_wallet(
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        "estimation",
+    ).bdkwallet
+    address = wallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+    recipients = [Recipient(str(address), 100), Recipient("script:6a00", 0), Recipient("script:0", 0)]
+    estimate = TxWeight.from_recipients([], recipients, bdk.Network.REGTEST, wallet)
+    assert len(estimate.inputs) == 1
+    assert estimate.inputs[0].satisfaction_weight is not None
+    assert [
+        bytes(script.to_bytes()) if script is not None else None for script in estimate.output_scripts
+    ] == [
+        bytes(address.script_pubkey().to_bytes()),
+        bytes.fromhex("6a00"),
+        None,
+        bytes(wallet.peek_address(bdk.KeychainKind.INTERNAL, 0).address.script_pubkey().to_bytes()),
+    ]
+    recipients[0].checked_max_amount = True
+    without_wallet = TxWeight.from_recipients([], recipients, bdk.Network.REGTEST)
+    assert len(without_wallet.output_scripts) == 3
+    assert without_wallet.inputs == [InputWeight()]
+    assert TxWeight.from_recipients([], [], bdk.Network.REGTEST).output_scripts == [None]
+
+
 @pytest.mark.parametrize(
     ("wrapper", "address_type", "mn", "legacy"),
     [

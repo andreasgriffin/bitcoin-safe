@@ -47,8 +47,11 @@ from btclib.script.script_pub_key import is_p2ms_var, is_p2pkh, is_p2sh, is_p2tr
 from .pythonbdk_types import (
     OutPoint,
     PythonUtxo,
+    Recipient,
     TransactionDetails,
+    TxInputInfo,
     TxOut,
+    is_address,
     robust_address_str_from_txout,
 )
 
@@ -212,6 +215,58 @@ class InputWeight:
 class TxWeight:
     inputs: Sequence[InputWeight]
     output_scripts: Sequence[bdk.Script | None]
+
+    @classmethod
+    def from_inputs(
+        cls,
+        inputs: Sequence[TxInputInfo],
+        output_scripts: Sequence[bdk.Script | None],
+        wallet: bdk.Wallet | None = None,
+        mn: tuple[int, int] = (1, 1),
+        assume_one_input: bool = False,
+    ) -> TxWeight:
+        """Estimate the selected inputs, using wallet descriptors where available."""
+        weights = []
+        for item in inputs:
+            script = item.utxo.txout.script_pubkey
+            weight = InputWeight.from_psbt_input(script, item.psbt_input, mn, item.satisfaction_weight)
+            if wallet and weight.satisfaction_weight is None:
+                derivation = wallet.derivation_of_spk(script)
+                if derivation is not None:
+                    weight.use_descriptor(wallet.public_descriptor(derivation.keychain), wallet.network())
+            weights.append(weight)
+        if not weights and assume_one_input:
+            weight = InputWeight(mn)
+            if wallet:
+                weight.use_descriptor(wallet.public_descriptor(bdk.KeychainKind.EXTERNAL), wallet.network())
+            weights.append(weight)
+        return cls(weights, output_scripts)
+
+    @classmethod
+    def from_recipients(
+        cls,
+        inputs: Sequence[TxInputInfo],
+        recipients: Sequence[Recipient],
+        network: bdk.Network,
+        wallet: bdk.Wallet | None = None,
+        mn: tuple[int, int] = (1, 1),
+    ) -> TxWeight:
+        """Estimate a draft, including change and incomplete recipient scripts."""
+        output_scripts: list[bdk.Script | None] = []
+        for recipient in recipients:
+            # An incomplete address still needs a placeholder output in the estimate.
+            if not recipient.address.startswith("script:") and not is_address(recipient.address, network):
+                output_scripts.append(None)
+                continue
+            try:
+                output_scripts.append(recipient.script_pubkey(network))
+            except ValueError:
+                output_scripts.append(None)
+        if not any(recipient.checked_max_amount for recipient in recipients):
+            output_scripts.append(
+                wallet.peek_address(bdk.KeychainKind.INTERNAL, 0).address.script_pubkey() if wallet else None
+            )
+        return cls.from_inputs(inputs, output_scripts, wallet, mn, assume_one_input=True)
 
     @classmethod
     def from_psbt(cls, psbt: bdk.Psbt) -> TxWeight:

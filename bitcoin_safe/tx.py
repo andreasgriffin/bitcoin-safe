@@ -49,6 +49,7 @@ from .pythonbdk_types import (
     OutPoint,
     PythonUtxo,
     Recipient,
+    TxInputInfo,
     TxOut,
     UtxosForInputs,
     robust_address_str_from_txout,
@@ -165,15 +166,6 @@ def calc_minimum_rbf_fee_info(
         vsize_is_estimated=vsize_is_estimated,
         fee_amount_is_estimated=fee_amount_is_estimated,
     )
-
-
-@dataclass
-class TxInputInfo:
-    """UTXO and optional PSBT metadata included as an input in the transaction draft."""
-
-    utxo: PythonUtxo
-    psbt_input: bdk.Input | None = None
-    satisfaction_weight: int | None = None
 
 
 @dataclass

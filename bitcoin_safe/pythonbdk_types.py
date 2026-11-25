@@ -294,6 +294,15 @@ class PythonUtxo(BaseSaveableClass):
         return self.txout.value.to_sat()
 
 
+@dataclass
+class TxInputInfo:
+    """UTXO and optional PSBT metadata included as an input in a transaction."""
+
+    utxo: PythonUtxo
+    psbt_input: bdk.Input | None = None
+    satisfaction_weight: int | None = None
+
+
 def python_utxo_balance(python_utxos: list[PythonUtxo]) -> int:
     """Python utxo balance."""
     return sum(python_utxo.value for python_utxo in python_utxos)
