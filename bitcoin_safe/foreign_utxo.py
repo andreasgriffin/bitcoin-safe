@@ -47,8 +47,6 @@ from btclib.script.script_pub_key import is_p2wpkh
 
 from .pythonbdk_types import OutPoint, PythonUtxo, TxOut, robust_address_str_from_txout
 
-P2WPKH_EXAMPLE_DESCRIPTOR = "wpkh(0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798)"
-
 
 @dataclass
 class ForeignUtxo(BaseSaveableClass):
@@ -68,6 +66,10 @@ class ForeignUtxo(BaseSaveableClass):
             wallet_id=self.wallet_id,
         )
         return d
+
+    @staticmethod
+    def _example_descriptor_for_serialization_only():
+        return "wpkh(0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798)"
 
     @classmethod
     def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> ForeignUtxo:
@@ -119,7 +121,7 @@ class ForeignUtxo(BaseSaveableClass):
             if is_p2wpkh(script):
                 # All P2WPKH descriptors have the same satisfaction weight; the key need not match.
                 weight = bdk.Descriptor(
-                    P2WPKH_EXAMPLE_DESCRIPTOR, network_kind(network)
+                    cls._example_descriptor_for_serialization_only(), network_kind(network)
                 ).max_weight_to_satisfy()
             else:
                 raise ValueError(
@@ -151,7 +153,7 @@ class ForeignUtxo(BaseSaveableClass):
     def _serialize_input(self) -> str:
         """Serialize the complete input map without persisting BDK runtime objects."""
         network = bdk.Network.REGTEST
-        receive = bdk.Descriptor(P2WPKH_EXAMPLE_DESCRIPTOR, network_kind(network))
+        receive = bdk.Descriptor(self._example_descriptor_for_serialization_only(), network_kind(network))
         change = bdk.Descriptor(
             "wpkh(02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5)",
             network_kind(network),
