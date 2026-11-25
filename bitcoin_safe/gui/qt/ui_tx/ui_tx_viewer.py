@@ -88,7 +88,7 @@ from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum, short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
-from ....psbt_util import FeeInfo, InputEnrichment, PubKeyInfo, SimplePSBT
+from ....psbt_util import FeeInfo, InputEnrichment, PubKeyInfo, SimplePSBT, unsigned_tx_bytes
 from ....pythonbdk_types import (
     OutPoint,
     PythonUtxo,
@@ -879,9 +879,9 @@ class UITx_Viewer(UITx_Base):
                 result = self.data.data.finalize()
                 finalized_tx = result.psbt.extract_tx() if result.could_finalize else None
                 if finalized_tx:
-                    assert finalized_tx.compute_txid() == self.data.data.extract_tx().compute_txid(), (
-                        "error. The txid should not be changed during finalizing/reloading"
-                    )
+                    assert unsigned_tx_bytes(finalized_tx) == unsigned_tx_bytes(
+                        self.data.data.extract_tx()
+                    ), "The transaction changed during finalization."
                     self.set_tx(
                         finalized_tx,
                         fee_info=self.fee_info,

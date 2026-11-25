@@ -89,7 +89,7 @@ def test_wallet_sign_shows_message_for_nonstandard_sighash(qtbot: QtBot) -> None
         patch("bitcoin_safe.signer.tx_of_psbt_to_hex", return_value="tx"),
         patch("bitcoin_safe.signer.caught_exception_message") as caught_message,
     ):
-        importer.sign(Mock(), None)
+        importer.sign(tr_psbt_singlesig, None)
 
     caught_message.assert_called_once()
     assert "non-standard sighash" in caught_message.call_args.kwargs["title"]

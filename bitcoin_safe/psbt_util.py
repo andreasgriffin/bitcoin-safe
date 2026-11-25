@@ -51,6 +51,7 @@ from btclib.script.script_pub_key import (
     is_p2wsh,
     p2ms_m_and_keys_var,
 )
+from btclib.tx import Tx
 
 from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
 from .pythonbdk_types import (
@@ -101,6 +102,14 @@ def weight_to_vsize(weight) -> int:
 def compact_size_length(value: int) -> int:
     """Return the number of bytes used by a Bitcoin CompactSize integer."""
     return len(var_int.serialize(value))
+
+
+def unsigned_tx_bytes(tx: bdk.Transaction) -> bytes:
+    """Serialize a transaction without input unlocking data, for signing compatibility checks."""
+    unsigned = Tx.parse(bytes(tx.serialize()), check_validity=False)
+    for txin in unsigned.vin:
+        txin.script_sig = b""
+    return unsigned.serialize(include_witness=False, check_validity=False)
 
 
 @dataclass
