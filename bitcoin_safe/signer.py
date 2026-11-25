@@ -284,27 +284,32 @@ class SignatureImporterWallet(AbstractSignatureImporter):
         self.wallet_id = wallet.id
 
         receive_descriptor, change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
-        self.software_signers = [
-            SoftwareSigner(
+        # Start with public descriptors so, for example, selecting seed B cannot also sign with seed A.
+        self.software_signers = {
+            keystore.fingerprint.upper(): SoftwareSigner(
                 mnemonic=keystore.mnemonic,
                 network=self.network,
-                receive_descriptor=receive_descriptor.to_string_with_secret(),
-                change_descriptor=change_descriptor.to_string_with_secret(),
+                receive_descriptor=str(receive_descriptor),
+                change_descriptor=str(change_descriptor),
             )
             for keystore in wallet.keystores
             if keystore.mnemonic
-        ]
+        }
 
     def can_sign(self) -> bool:
         """Can sign."""
         return bool(self.software_signers)
 
-    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
+    def sign(
+        self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None, fingerprint: str | None = None
+    ) -> None:
         """Sign."""
         original_psbt = psbt
         original_serialized_tx = tx_of_psbt_to_hex(psbt)
         try:
-            for software_signer in self.software_signers:
+            for signer_fingerprint, software_signer in self.software_signers.items():
+                if fingerprint is not None and signer_fingerprint != fingerprint.upper():
+                    continue
                 new_psbt = software_signer.sign_psbt(psbt)
                 if new_psbt:
                     psbt = new_psbt

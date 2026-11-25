@@ -44,8 +44,8 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.psbt_util import SimplePSBT
 from bitcoin_safe.pythonbdk_types import OutPoint
 from bitcoin_safe.signals import Signals, WalletFunctions
-from bitcoin_safe.signer import SignatureImporterWallet
 from tests.non_gui.test_foreign_utxo import NETWORK, make_wallet, transaction
+from tests.non_gui.test_seed_sign_message import _wallet as _multisig_wallet
 from tests.non_gui.utils import create_keystore
 
 SEEDS = (
@@ -140,15 +140,24 @@ def test_signing_two_open_wallets_updates_existing_signer_card(
     before = _steps(psbt, [active, other], loop_in_thread, qtbot)
     assert before.count() == 2
     wallets = [active, other]
-    first_importer = next(
-        importer
-        for step in before.signature_importer_steps
-        for importer in step
-        if isinstance(importer, SignatureImporterWallet) and importer.wallet_id == wallets[first_signer].id
+    first_list = before.stacked_widget.currentWidget()
+    assert isinstance(first_list, TxSigningDeviceList)
+    first_card = next(
+        card
+        for card in first_list.cards
+        if card.device.fingerprint == wallets[first_signer].keystores[0].fingerprint
     )
+    first_card.expand()
+    first_button = next(
+        button for button in first_card.body.findChildren(QPushButton) if button.text() == "Sign now"
+    )
+    first_importer = first_card._wallet_importer()
+    assert first_importer and first_importer.wallet_id == wallets[first_signer].id
     with qtbot.waitSignal(first_importer.signal_signature_added, timeout=5_000) as signal:
-        first_importer.sign(psbt)
+        first_button.click()
     psbt = signal.args[0]
+    for item in SimplePSBT.from_psbt(psbt).inputs:
+        assert item.is_fully_signed() == wallets[first_signer].owns_psbt_input(item)
     steps = _steps(psbt, [active, other], loop_in_thread, qtbot)
     assert steps.count() == 2
     assert steps.current_index() == 1
@@ -170,6 +179,37 @@ def test_signing_two_open_wallets_updates_existing_signer_card(
     with qtbot.waitSignal(remaining_importer.signal_signature_added, timeout=5_000) as signal:
         sign_button.click()
     assert all(item.is_fully_signed() for item in SimplePSBT.from_psbt(signal.args[0]).inputs)
+
+
+@pytest.mark.parametrize("signer_index", [0, 1])
+def test_seed_card_signs_only_its_fingerprint_in_multisig_wallet(
+    qtbot: QtBot, loop_in_thread, test_config, signer_index: int
+) -> None:
+    wallet = _multisig_wallet(signers=2, test_config=test_config, threshold=2)
+    address = wallet.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+    funding_tx = transaction([bytes(address.script_pubkey().to_bytes())])
+    wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=funding_tx, last_seen=1)])
+    psbt = (
+        bdk.TxBuilder()
+        .add_utxo(OutPoint(txid=funding_tx.compute_txid(), vout=0))
+        .manually_selected_only()
+        .add_recipient(address.script_pubkey(), bdk.Amount.from_sat(50_000))
+        .finish(wallet.bdkwallet)
+    )
+    steps = _steps(psbt, [wallet], loop_in_thread, qtbot)
+    device_list = steps.stacked_widget.currentWidget()
+    assert isinstance(device_list, TxSigningDeviceList)
+    keystore = wallet.keystores[signer_index]
+    card = next(card for card in device_list.cards if card.device.fingerprint == keystore.fingerprint)
+    card.expand()
+    button = next(button for button in card.body.findChildren(QPushButton) if button.text() == "Sign now")
+    importer = card._wallet_importer()
+    assert importer
+    with qtbot.waitSignal(importer.signal_signature_added, timeout=5_000) as signal:
+        button.click()
+    signed_input = SimplePSBT.from_psbt(signal.args[0]).inputs[0]
+    assert signed_input.fingerprint_has_signature(keystore.fingerprint)
+    assert not signed_input.fingerprint_has_signature(wallet.keystores[1 - signer_index].fingerprint)
 
 
 def test_unsigned_input_without_known_signer_has_a_signing_card(qtbot: QtBot, loop_in_thread) -> None:

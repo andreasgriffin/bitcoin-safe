@@ -79,7 +79,9 @@ from ...non_gui.utils import create_test_seed_keystores
 
 def test_wallet_sign_shows_message_for_nonstandard_sighash(qtbot: QtBot) -> None:
     importer = SignatureImporterWallet.__new__(SignatureImporterWallet)
-    importer.software_signers = [Mock(sign_psbt=Mock(side_effect=bdk.SignerError.NonStandardSighash()))]
+    importer.software_signers = {
+        "12345678": Mock(sign_psbt=Mock(side_effect=bdk.SignerError.NonStandardSighash()))
+    }
     importer._message_parent = Mock(return_value=None)
     importer.tr = lambda text: text
 
@@ -263,7 +265,9 @@ def test_foreign_first_input_keeps_wallet_seed_option(qtbot: QtBot, loop_in_thre
             button for button in card.body.findChildren(QPushButton) if button.text() == "Sign now"
         )
         seed_button.click()
-        wallet_importers[seed_wallet.id].sign.assert_called_once_with(psbt)
+        wallet_importers[seed_wallet.id].sign.assert_called_once_with(
+            psbt, fingerprint=seed_keystore.fingerprint
+        )
 
 
 def test_signed_ui_is_shown_on_matching_device_card(qtbot: QtBot, loop_in_thread, monkeypatch) -> None:
