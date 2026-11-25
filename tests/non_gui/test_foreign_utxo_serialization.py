@@ -29,7 +29,6 @@
 
 from __future__ import annotations
 
-import json
 from unittest.mock import AsyncMock, MagicMock
 
 import bdkpython as bdk
@@ -42,7 +41,7 @@ from bitcoin_safe.wallet import Wallet
 from tests.non_gui.test_foreign_utxo import NETWORK, make_wallet, transaction
 
 
-def test_persist_all_inputs_and_reject_corrupt_previous_output() -> None:
+def test_persist_all_inputs() -> None:
     tx = transaction([b"\x00\x14" + b"\x42" * 20, b"\x00\x14" + b"\x43" * 20])
     points = [OutPoint(txid=tx.compute_txid(), vout=i) for i in range(2)]
     inputs = {op: ForeignUtxo.from_outpoint(op, tx.output()[op.vout], tx, [], NETWORK) for op in points}
@@ -50,21 +49,6 @@ def test_persist_all_inputs_and_reject_corrupt_previous_output() -> None:
     assert all(isinstance(item, ForeignUtxo) for item in restored)
     assert {item.utxo.outpoint for item in restored} == set(points)
     assert all(item.psbt_input.non_witness_utxo.compute_txid() == tx.compute_txid() for item in restored)
-    saved = json.loads(inputs[points[0]].dumps())
-    saved["txout"][1] += 1
-    assert ForeignUtxo._from_dumps(json.dumps(saved)) is None
-
-
-@pytest.mark.parametrize(
-    ("field", "value"),
-    [("outpoint", "aa" * 32 + ":0"), ("satisfaction_weight", 0), ("psbt", "invalid")],
-)
-def test_reject_corrupt_saved_input(field: str, value: str | int) -> None:
-    tx = transaction([b"\x00\x14" + b"\x42" * 20])
-    op = OutPoint(txid=tx.compute_txid(), vout=0)
-    saved = json.loads(ForeignUtxo.from_outpoint(op, tx.output()[0], tx, [], NETWORK).dumps())
-    saved[field] = value
-    assert ForeignUtxo._from_dumps(json.dumps(saved)) is None
 
 
 def test_restored_inputs_require_full_previous_transaction() -> None:

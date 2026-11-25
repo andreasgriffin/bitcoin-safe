@@ -173,7 +173,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         tx_ui_infos: TxUiInfos | None = None,
         category_list: CategoryList | None = None,
         utxo_list_with_toolbar: UtxoListWithToolbar | None = None,
-        foreign_inputs: dict[str, ForeignUtxo | None] | None = None,
+        foreign_inputs: dict[str, ForeignUtxo] | None = None,
         selected_outpoints: list[str] | None = None,
         selected_input_outpoints: list[str] | None = None,
         parent=None,
@@ -226,14 +226,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
             self.utxo_list_with_toolbar = UtxoListWithToolbar(self.utxo_list, self.config, parent=self)
 
-        self.foreign_inputs: dict[OutPoint, ForeignUtxo] = {}
-        for outpoint, item in (foreign_inputs or {}).items():
-            if item is None:
-                continue
-            if outpoint != str(item.utxo.outpoint):
-                logger.warning("Saved foreign input key does not match outpoint: %s", outpoint)
-                continue
-            self.foreign_inputs[item.utxo.outpoint] = item
+        self.foreign_inputs = {OutPoint.from_str(op): item for op, item in (foreign_inputs or {}).items()}
         self._import_generation = 0
         self._import_busy = False
         self.utxo_list.signal_remove_foreign_inputs.connect(self.remove_foreign_inputs)

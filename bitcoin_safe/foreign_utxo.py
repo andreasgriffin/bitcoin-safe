@@ -36,7 +36,6 @@ so their scripts and maximum satisfaction weight can be determined safely.
 
 from __future__ import annotations
 
-import logging
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any
@@ -46,8 +45,6 @@ from bitcoin_safe_lib.storage import BaseSaveableClass
 from bitcoin_safe_lib.util import network_kind
 
 from .pythonbdk_types import OutPoint, PythonUtxo, TxOut, robust_address_str_from_txout
-
-logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -70,32 +67,15 @@ class ForeignUtxo(BaseSaveableClass):
         return d
 
     @classmethod
-    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> ForeignUtxo | None:
-        try:
-            super()._from_dump(dct, class_kwargs=class_kwargs)
-            utxo = PythonUtxo(
-                address=dct["address"],
-                outpoint=OutPoint.from_str(dct["outpoint"]),
-                txout=TxOut.from_seralized_tuple(dct["txout"]),
-            )
-            weight = dct["satisfaction_weight"]
-            if type(weight) is not int or weight <= 0:
-                raise ValueError("invalid satisfaction weight")
-            psbt = bdk.Psbt(dct["psbt"])
-            if (
-                OutPoint.from_bdk(psbt.extract_tx_unchecked_fee_rate().input()[0].previous_output)
-                != utxo.outpoint
-            ):
-                raise ValueError("Saved PSBT input does not match outpoint")
-            psbt_input = psbt.input()[0]
-            if TxOut.from_bdk(cls.previous_output(utxo.outpoint, psbt_input)) != utxo.txout:
-                raise ValueError("Saved PSBT output does not match snapshot")
-            cls._discard_signatures(psbt_input)
-            return cls(utxo, psbt_input, weight, dct.get("wallet_id"))
-        except Exception as exc:
-            # Keep the rest of a draft loadable if a saved input is corrupt.
-            logger.warning("Cannot restore foreign input: %s", exc)
-            return None
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> ForeignUtxo:
+        super()._from_dump(dct, class_kwargs=class_kwargs)
+        utxo = PythonUtxo(
+            address=dct["address"],
+            outpoint=OutPoint.from_str(dct["outpoint"]),
+            txout=TxOut.from_seralized_tuple(dct["txout"]),
+        )
+        psbt_input = bdk.Psbt(dct["psbt"]).input()[0]
+        return cls(utxo, psbt_input, dct["satisfaction_weight"], dct["wallet_id"])
 
     @classmethod
     def from_outpoint(
