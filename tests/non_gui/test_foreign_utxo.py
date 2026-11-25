@@ -326,6 +326,60 @@ def test_create_psbt_with_local_and_multiple_foreign(wallets: tuple[MagicMock, M
         Wallet.create_psbt(active, infos)
 
 
+@pytest.mark.parametrize(
+    ("manual", "selected_count", "actual_count", "reject"),
+    [(True, 2, 1, True), (True, 1, 2, True), (True, 1, 1, False), (False, 2, 1, False)],
+)
+def test_create_psbt_checks_manual_input_set(
+    wallets: tuple[MagicMock, MagicMock],
+    monkeypatch: pytest.MonkeyPatch,
+    manual: bool,
+    selected_count: int,
+    actual_count: int,
+    reject: bool,
+) -> None:
+    active, _ = wallets
+    address = active.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+    funding = transaction([bytes(address.script_pubkey().to_bytes())] * 2)
+    active.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=funding, last_seen=1)])
+    points = [OutPoint(txid=funding.compute_txid(), vout=i) for i in range(2)]
+    utxos = [PythonUtxo(str(address), op, TxOut.from_bdk(funding.output()[op.vout])) for op in points]
+
+    builder = bdk.TxBuilder().manually_selected_only()
+    for point in points[:actual_count]:
+        builder = builder.add_utxo(point)
+    psbt = builder.add_recipient(address.script_pubkey(), bdk.Amount.from_sat(50_000)).finish(
+        active.bdkwallet
+    )
+
+    builder_mock = MagicMock()
+    builder_mock.add_global_xpubs.return_value = builder_mock
+    builder_mock.fee_rate.return_value = builder_mock
+    builder_mock.manually_selected_only.return_value = builder_mock
+    builder_mock.add_utxo.return_value = builder_mock
+    builder_mock.drain_to.return_value = builder_mock
+    builder_mock.unspendable.return_value = builder_mock
+    builder_mock.add_recipient.return_value = builder_mock
+    builder_mock.finish.return_value = psbt
+    monkeypatch.setattr("bitcoin_safe.wallet.bdk.TxBuilder", lambda: builder_mock)
+    selected = utxos[:selected_count]
+    active.handle_opportunistic_merge_utxos.return_value = UtxosForInputs(selected, spend_all_utxos=manual)
+    active.get_address.return_value = active.bdkwallet.reveal_next_address(bdk.KeychainKind.INTERNAL)
+    active.determine_recipient_category.return_value = None
+    infos = TxUiInfos(
+        inputs={utxo.outpoint: TxInputInfo(utxo) for utxo in selected},
+        fee_rate=2,
+        recipients=[Recipient(str(address), 50_000)],
+    )
+    infos.spend_all_utxos = manual
+    if reject:
+        with pytest.raises(ValueError, match="Created PSBT inputs do not match selected inputs"):
+            Wallet.create_psbt(active, infos)
+        active.persist.assert_not_called()
+    else:
+        assert Wallet.create_psbt(active, infos).psbt is psbt
+
+
 def test_owner_output_only_requires_synchronized_wallet(wallets: tuple[MagicMock, MagicMock]) -> None:
     from bitcoin_safe.pythonbdk_types import PythonUtxo, TxOut
 

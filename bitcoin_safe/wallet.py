@@ -2466,6 +2466,13 @@ class Wallet(BaseSaveableClass, CacheManager):
 
         start_time = time()
         psbt = tx_builder.finish(self.bdkwallet)
+        if utxos_for_input.spend_all_utxos:
+            actual_outpoints = {
+                OutPoint.from_bdk(txin.previous_output)
+                for txin in psbt.extract_tx_unchecked_fee_rate().input()
+            }
+            if actual_outpoints != set_selected_outpoints:
+                raise ValueError("Created PSBT inputs do not match selected inputs")
         validate_op_return_amounts(psbt)
         if selected_max_amount_recipient:
             drain_script = bytes(selected_max_amount_recipient.script_pubkey(self.network).to_bytes())
