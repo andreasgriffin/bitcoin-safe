@@ -1657,15 +1657,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self, builder_infos: TxBuilderInfos, parent: QWidget | None = None
     ) -> UITx_Viewer:
         """Create a PSBT viewer widget for the given builder infos."""
-        fee_info = None
-        if builder_infos.fee_rate is not None:
-            fee_info = FeeInfo.from_fee_rate(
-                fee_amount=builder_infos.psbt.fee(),
-                fee_rate=builder_infos.fee_rate,
-                fee_rate_is_estimated=False,
-                fee_amount_is_estimated=False,
-            )
-
         return create_tx_viewer(
             config=self.config,
             wallet_functions=self.wallet_functions,
@@ -1676,7 +1667,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             outpoints=get_prev_outpoints(builder_infos.psbt.extract_tx()),
             client=self.wallet.client,
             parent=parent if parent is not None else self.tabs,
-            fee_info=fee_info,
+            fee_info=FeeInfo.estimate_segwit_fee_rate_from_psbt(builder_infos.psbt),
             txout_dict=SimplePSBT.from_psbt(builder_infos.psbt).get_prev_txouts(),
             hidden_tx_infos=builder_infos.hidden_tx_infos,
         )

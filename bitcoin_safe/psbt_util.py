@@ -40,9 +40,17 @@ from typing import Any, cast
 import bdkpython as bdk
 from bitcoin_safe_lib.tx_util import hex_to_script
 from bitcoin_safe_lib.util import network_kind, remove_duplicates_keep_order
-from bitcoin_usb.address_types import AddressType, AddressTypes, DescriptorInfo, SimplePubKeyProvider
+from bitcoin_usb.address_types import AddressType, AddressTypes, SimplePubKeyProvider
 from btclib import var_int
-from btclib.script.script_pub_key import is_p2ms_var, is_p2pkh, is_p2sh, is_p2tr, is_p2wpkh, is_p2wsh
+from btclib.script.script_pub_key import (
+    is_p2ms_var,
+    is_p2pkh,
+    is_p2sh,
+    is_p2tr,
+    is_p2wpkh,
+    is_p2wsh,
+    p2ms_m_and_keys_var,
+)
 
 from .pythonbdk_types import (
     OutPoint,
@@ -129,7 +137,8 @@ class InputWeight:
             redeem if redeem and not is_p2wpkh(redeem) and not is_p2wsh(redeem) else b""
         )
         if is_p2ms_var(multisig_script):
-            mn = (multisig_script[0] - 0x50, multisig_script[-2] - 0x50)
+            m, keys = p2ms_m_and_keys_var(multisig_script)
+            mn = (m, len(keys))
         address_type = None
         legacy_multisig = False
         if is_p2pkh(raw):
@@ -172,9 +181,15 @@ class InputWeight:
 
     def use_descriptor(self, descriptor: str, network: bdk.Network) -> None:
         """Prefer the descriptor's maximum satisfaction over metadata estimates."""
-        self.address_type = DescriptorInfo.from_str(descriptor).address_type
-        self.satisfaction_weight = bdk.Descriptor(descriptor, network_kind(network)).max_weight_to_satisfy()
-        self.legacy_multisig = False
+        desc = bdk.Descriptor(descriptor, network_kind(network))
+        self.satisfaction_weight = desc.max_weight_to_satisfy()
+        self.address_type = None
+        self.legacy_multisig = desc.desc_type() in (
+            bdk.DescriptorType.BARE,
+            bdk.DescriptorType.PKH,
+            bdk.DescriptorType.SH,
+            bdk.DescriptorType.SH_SORTED_MULTI,
+        )
 
     def is_witness(self) -> bool:
         return not (self.address_type == AddressTypes.p2pkh or self.legacy_multisig)

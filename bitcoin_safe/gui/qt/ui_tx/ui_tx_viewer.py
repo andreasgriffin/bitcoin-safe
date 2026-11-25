@@ -874,7 +874,7 @@ class UITx_Viewer(UITx_Base):
         logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         if self.data.data_type == DataType.PSBT:
-            self.set_psbt(self.data.data, fee_info=self.fee_info)
+            self.set_psbt(self.data.data)
             if isinstance(self.data.data, bdk.Psbt):
                 result = self.data.data.finalize()
                 finalized_tx = result.psbt.extract_tx() if result.could_finalize else None
@@ -1317,6 +1317,7 @@ class UITx_Viewer(UITx_Base):
         if all([inp.is_fully_signed() for inp in simple_psbt.inputs]):
             self.set_tx(
                 tx,
+                fee_info=FeeInfo(import_psbt.fee(), tx.vsize(), False, False),
             )
         else:
             self.set_psbt(import_psbt)
@@ -1463,10 +1464,12 @@ class UITx_Viewer(UITx_Base):
         chain_position: bdk.ChainPosition | None = None,
     ) -> None:
         """Set tx."""
-        self.data = Data.from_tx(tx, network=self.network)
         fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(str(tx.compute_txid()))
-        if fee_info is None or fee_info.any_is_estimated():
+        self.data = Data.from_tx(tx, network=self.network)
+        if fee_info is None or fee_info.fee_amount_is_estimated:
             fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
+        else:
+            fee_info = FeeInfo(fee_info.fee_amount, tx.vsize(), False, False)
         self.fee_info = fee_info
 
         # Always prefer the latest wallet view of chain position so open tx viewers
@@ -1653,33 +1656,18 @@ class UITx_Viewer(UITx_Base):
 
     def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:
         """Fetch cached feeinfo."""
-        if isinstance(self.data.data, bdk.Psbt) and self.data.data.extract_tx().compute_txid() == txid:
+        if isinstance(self.data.data, bdk.Psbt) and str(self.data.data.extract_tx().compute_txid()) == txid:
             return self.fee_info
-        elif isinstance(self.data.data, bdk.Transaction) and self.data.data.compute_txid() == txid:
+        elif isinstance(self.data.data, bdk.Transaction) and str(self.data.data.compute_txid()) == txid:
             return self.fee_info
         return None
 
-    def set_psbt(self, psbt: bdk.Psbt, fee_info: FeeInfo | None = None) -> None:
-        """_summary_
-
-        Args:
-            psbt (bdk.Psbt): _description_
-            fee_rate (_type_, optional): This is the exact fee_rate chosen in txbuilder. If not given it has
-                                        to be estimated with estimate_segwit_tx_size_from_psbt.
-        """
-        # check if any new signatures were added. If not tell the user
-
+    def set_psbt(self, psbt: bdk.Psbt) -> None:
+        """Show a PSBT and calculate its current fee and size."""
+        fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
         self.data = Data.from_psbt(psbt, network=self.network)
         tx = psbt.extract_tx()
-        txid = str(tx.compute_txid())
-        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(txid)
         tx_status = self.get_tx_status(chain_position=None)
-        # do not use calc_fee_info here, because calc_fee_info is for final tx only.
-
-        # if still no fee_info  available, then estimate it
-        if fee_info is None:
-            fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
-
         self.fee_info = fee_info
 
         self.column_fee.fee_group.set_fee_infos(
