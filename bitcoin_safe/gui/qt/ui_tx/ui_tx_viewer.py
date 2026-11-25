@@ -1694,7 +1694,8 @@ class UITx_Viewer(UITx_Base):
         self.set_tab_properties(chain_position=None)
         self.update_all_totals()
         self.export_data_simple.add_meta_data(self.recipients.get_address_labels_dict())
-        self.handle_cpfp(tx=psbt.extract_tx(), this_fee_info=fee_info, chain_position=None)
+        if fee_info is not None:
+            self.handle_cpfp(tx=psbt.extract_tx(), this_fee_info=fee_info, chain_position=None)
         self._update_txid_controls()
         self._set_warning_bars(
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],

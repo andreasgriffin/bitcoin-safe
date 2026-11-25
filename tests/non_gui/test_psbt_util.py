@@ -39,6 +39,7 @@ from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.tx_util import serialized_to_hex
+from btclib.script.script_pub_key import p2ms_m_and_keys_var
 from btclib.tx import OutPoint as BtclibOutPoint
 from btclib.tx import Tx, TxIn
 from btclib.tx import TxOut as BtclibTxOut
@@ -52,7 +53,6 @@ from bitcoin_safe.psbt_util import (
     SimpleInput,
     SimpleOutput,
     SimplePSBT,
-    parse_witness_script,
 )
 from bitcoin_safe.pythonbdk_types import TxOut
 from bitcoin_safe.signer import AbstractSignatureImporter
@@ -874,7 +874,8 @@ def test_group_inputs_for_mixed_finalized_and_partially_signed_psbt() -> None:
     assert {pubkey.pubkey for pubkey in finalized_input.pubkeys} == set(finalized_input.partial_sigs)
     assert finalized_input.m_of_n == (2, 3)
 
-    assert parse_witness_script(finalized_input.final_script_witness[-1]) == (
+    threshold, keys = p2ms_m_and_keys_var(bytes.fromhex(finalized_input.final_script_witness[-1]))
+    assert (threshold, [key.hex() for key in keys]) == (
         2,
         [
             "0250ca2af1e0f2552436c66078c24736e0396e36938c421fdbee6f4fe377e5f6af",
@@ -927,14 +928,34 @@ def test_finalized_multisig_signatures_are_recovered_when_key_origins_remain() -
     item = simple.inputs[0]
     verified_keys = set(item.partial_sigs)
     assert item.final_script_witness
-    _, keys = parse_witness_script(item.final_script_witness[-1])
-    item.pubkeys = [PubKeyInfo(fingerprint=f"{index + 1:08X}", pubkey=key) for index, key in enumerate(keys)]
+    _, keys = p2ms_m_and_keys_var(bytes.fromhex(item.final_script_witness[-1]))
+    item.pubkeys = [
+        PubKeyInfo(fingerprint=f"{index + 1:08X}", pubkey=key.hex()) for index, key in enumerate(keys)
+    ]
     item.partial_sigs.clear()
 
     simple._recover_finalized_signatures(psbt.extract_tx())
 
     assert set(item.partial_sigs) == verified_keys
     assert {key.pubkey for key in item.pubkeys if item.signature_for_pubkey(key)} == verified_keys
+    assert {key.pubkey for key in item.get_pub_keys_with_signature()} == verified_keys
+    for key in item.pubkeys:
+        assert item.fingerprint_has_signature(key.fingerprint) == (key.pubkey in verified_keys)
+
+
+@pytest.mark.parametrize("threshold", [2, 17, 20])
+def test_input_multisig_thresholds_above_sixteen(threshold: int) -> None:
+    key = bytes.fromhex("0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798")
+    count = bytes([0x50 + threshold]) if threshold <= 16 else bytes([1, threshold])
+    script = count + (bytes([len(key)]) + key) * 20 + bytes([1, 20, 0xAE])
+    item = SimpleInput(txin=tr_psbt_singlesig.extract_tx().input()[0], witness_script=script.hex())
+    assert item._get_m_of_n() == (threshold, 20)
+
+
+@pytest.mark.parametrize("script", ["0014" + "00" * 20, "51", "not hex"])
+def test_input_does_not_classify_unsupported_script_as_multisig(script: str) -> None:
+    item = SimpleInput(txin=tr_psbt_singlesig.extract_tx().input()[0], witness_script=script)
+    assert item._get_m_of_n() is None
 
 
 def test_group_inputs_prefers_wallet_id_over_signer_set() -> None:

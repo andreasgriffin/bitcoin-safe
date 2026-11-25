@@ -51,6 +51,7 @@ from btclib.script.script_pub_key import (
     is_p2wsh,
     p2ms_m_and_keys_var,
 )
+from btclib_wallet.psbt import Psbt, miniscript_sizer
 
 from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
 from .pythonbdk_types import (
@@ -68,29 +69,6 @@ logger = logging.getLogger(__name__)
 VSIZE_OF_ZERO_FEE_TX = 200
 # Used only while an output script is unknown, such as an incomplete address.
 DEFAULT_OUTPUT_SCRIPT = bdk.Script(b"\x00\x14" + bytes(20))
-
-
-def parse_witness_script(script_hex: str) -> tuple[int, list[str]]:
-    """Parses a witness script to extract the threshold (m) and public keys.
-
-    Parameters:
-    - script_hex (str): The hexadecimal string of the witness script.
-
-    Returns:
-    - Tuple[int, List[str]]: A tuple containing the threshold (m) and a list of public keys.
-    """
-    m = int(script_hex[:2], 16) - 80
-    script_body = script_hex[2:]
-    public_keys = []
-    while script_body:
-        if script_body[:2] == "21":
-            key = script_body[2:68]
-            public_keys.append(key)
-            script_body = script_body[68:]
-        else:
-            break
-
-    return m, public_keys
 
 
 def weight_to_vsize(weight) -> int:
@@ -406,17 +384,25 @@ class FeeInfo:
         return FeeInfo(fee, tx_details.vsize, vsize_is_estimated=False, fee_amount_is_estimated=False)
 
     @classmethod
-    def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.Psbt) -> FeeInfo:
+    def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.Psbt) -> FeeInfo | None:
         """Estimate the PSBT fee rate, or use its finalized transaction's actual size."""
 
         tx = psbt.extract_tx_unchecked_fee_rate()
-        psbt_inputs = psbt.input()
-        if psbt_inputs and all(
-            inp.final_script_sig is not None or inp.final_script_witness is not None for inp in psbt_inputs
-        ):
-            return FeeInfo(psbt.fee(), tx.vsize(), vsize_is_estimated=False, fee_amount_is_estimated=False)
-        vsize = weight_to_vsize(TxWeight.from_psbt(psbt).estimate())
-        return FeeInfo(psbt.fee(), vsize, vsize_is_estimated=True, fee_amount_is_estimated=False)
+        try:
+            analysis = Psbt.b64decode(psbt.serialize(), check_validity=False)
+            analysis.assert_valid()
+            fee = psbt.fee()
+            if analysis.inputs and all(
+                inp.final_script_sig or inp.final_script_witness for inp in analysis.inputs
+            ):
+                return FeeInfo(fee, tx.vsize(), vsize_is_estimated=False, fee_amount_is_estimated=False)
+            weight = analysis.weight_estimate(sizer=miniscript_sizer)
+        except (ValueError, bdk.CalculateFeeError, bdk.PsbtError) as exc:  # pyright: ignore[reportGeneralTypeIssues]
+            # A PSBT may be inspectable even when its inputs cannot be sized.
+            logger.info("Could not estimate PSBT weight with btclib: %s", exc)
+            return None
+        vsize = weight_to_vsize(weight)
+        return FeeInfo(fee, vsize, vsize_is_estimated=True, fee_amount_is_estimated=False)
 
     def __add__(self, other: FeeInfo) -> FeeInfo:
         """Add."""
@@ -821,16 +807,11 @@ class SimpleInput:
         return [pubkey_info for pubkey_info in self.pubkeys if not self.signature_for_pubkey(pubkey_info)]
 
     def get_pub_keys_with_signature(self) -> list[PubKeyInfo]:
-        # If the input is fully signed, all pubkeys are considered to have a signature
         """Get pub keys with signature."""
-        if self.is_fully_signed():
-            return self.pubkeys
         return [pubkey_info for pubkey_info in self.pubkeys if self.signature_for_pubkey(pubkey_info)]
 
     def fingerprint_has_signature(self, fingerprint: str) -> bool:
         """Fingerprint has signature."""
-        if self.is_fully_signed():
-            return True
         for pubkey_info in self.pubkeys:
             if pubkey_info.fingerprint == fingerprint and self.signature_for_pubkey(pubkey_info):
                 return True
@@ -851,12 +832,16 @@ class SimpleInput:
         if self.m_of_n:
             return self.m_of_n
 
-        if self.witness_script:
-            m, public_keys = parse_witness_script(self.witness_script)
-            return (m, len(public_keys))
-        if self.redeem_script:
-            m, public_keys = parse_witness_script(self.redeem_script)
-            return (m, len(public_keys))
+        for script_hex in (self.witness_script, self.redeem_script):
+            if not script_hex:
+                continue
+            try:
+                script = bytes.fromhex(script_hex)
+                if is_p2ms_var(script):
+                    m, public_keys = p2ms_m_and_keys_var(script)
+                    return (m, len(public_keys))
+            except ValueError:
+                logger.warning("Invalid multisig script for input %s", self.txin.previous_output)
         return None
 
     def get_prev_txouts(self) -> dict[str, TxOut]:

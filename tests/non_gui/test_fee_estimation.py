@@ -35,6 +35,8 @@ from unittest.mock import MagicMock
 import bdkpython as bdk
 import pytest
 from bitcoin_usb.address_types import AddressTypes
+from btclib.tx import TxOut as BtclibTxOut
+from btclib_wallet.psbt import Psbt
 
 from bitcoin_safe.psbt_util import (
     FeeInfo,
@@ -78,6 +80,42 @@ def test_psbt_fee_estimate_uses_output_scripts() -> None:
         ).estimate()
     )
     assert estimate.fee_amount == psbt.fee()
+
+
+@pytest.mark.parametrize("missing_utxo", [False, True])
+def test_psbt_estimate_preserves_original_and_unknown_fields(missing_utxo: bool) -> None:
+    parsed = Psbt.b64decode(p2wsh_psbt_0_2of3.serialize(), check_validity=False)
+    parsed.unknown[b"\xfc\x01x\x01"] = b"global metadata"
+    parsed.inputs[0].unknown[b"\xfc\x01x\x02"] = b"input metadata"
+    if missing_utxo:
+        parsed.inputs[0].witness_utxo = None
+        parsed.inputs[0].non_witness_utxo = None
+    psbt = bdk.Psbt(parsed.b64encode(check_validity=False))
+    before = psbt.serialize()
+
+    fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+
+    assert (fee_info is None) == missing_utxo
+    assert psbt.serialize() == before
+    after = Psbt.b64decode(psbt.serialize(), check_validity=False)
+    assert after.unknown[b"\xfc\x01x\x01"] == b"global metadata"
+    assert after.inputs[0].unknown[b"\xfc\x01x\x02"] == b"input metadata"
+
+
+def test_psbt_estimate_is_unavailable_for_unsupported_script() -> None:
+    parsed = Psbt.b64decode(p2wsh_psbt_0_2of3.serialize(), check_validity=False)
+    parsed.inputs[0].witness_script = b"\x6a"
+    psbt = bdk.Psbt(parsed.b64encode(check_validity=False))
+    assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt) is None
+
+
+def test_psbt_estimate_rejects_conflicting_previous_outputs() -> None:
+    parsed = Psbt.b64decode(p2wsh_psbt_0_2of3.serialize(), check_validity=False)
+    previous = parsed.inputs[0].witness_utxo
+    assert previous is not None
+    parsed.inputs[0].witness_utxo = BtclibTxOut(previous.value + 1, previous.script_pub_key)
+    psbt = bdk.Psbt(parsed.b64encode(check_validity=False))
+    assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt) is None
 
 
 def test_tx_weight_from_psbt_uses_previous_outputs_and_unknown_fallback() -> None:
@@ -249,10 +287,12 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
     info = InputWeight.from_psbt_input(funding.output()[0].script_pubkey, psbt.input()[0])
     estimate = TxWeight([info], [output.script_pubkey for output in tx.output()]).estimate()
     viewer_estimate = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
-    assert viewer_estimate.vsize == weight_to_vsize(estimate)
+    # BDK's default Taproot sighash omits the optional 65th signature byte.
+    assert viewer_estimate.vsize <= weight_to_vsize(estimate)
     assert wallet.sign(psbt)
     signed = psbt.extract_tx_unchecked_fee_rate()
     assert signed.weight() <= estimate
+    assert signed.vsize() <= viewer_estimate.vsize
     actual = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
     assert not actual.vsize_is_estimated
     assert actual.vsize == signed.vsize()
