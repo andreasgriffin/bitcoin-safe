@@ -32,8 +32,10 @@ from __future__ import annotations
 import json
 import logging
 import re
+from collections import Counter
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
+from hashlib import sha256
 from math import ceil
 from typing import Any, cast
 
@@ -52,6 +54,7 @@ from btclib.script.script_pub_key import (
     p2ms_m_and_keys_var,
 )
 from btclib.tx import Tx
+from hwilib.psbt import PSBT, PartiallySignedInput
 
 from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
 from .pythonbdk_types import (
@@ -112,6 +115,61 @@ def unsigned_tx_bytes(tx: bdk.Transaction) -> bytes:
     return unsigned.serialize(include_witness=False, check_validity=False)
 
 
+def witness_satisfaction_weight(item_sizes: Sequence[int]) -> int:
+    """Serialized witness weight minus the empty witness byte (BDK convention)."""
+    return (
+        compact_size_length(len(item_sizes))
+        - 1
+        + sum(compact_size_length(size) + size for size in item_sizes)
+    )
+
+
+def estimate_tapscript_weight(psbt_input: bdk.Input | PartiallySignedInput) -> int:
+    """Estimate signed Taproot leaves, not the protocol-wide stack limit."""
+    if isinstance(psbt_input, PartiallySignedInput):
+        signatures = Counter(leaf_hash.hex() for _, leaf_hash in psbt_input.tap_script_sigs)
+        leaves = [
+            (script, version, len(control))
+            for (script, version), controls in psbt_input.tap_scripts.items()
+            for control in controls
+        ]
+    else:
+        signatures = Counter(key.tap_leaf_hash for key in psbt_input.tap_script_sigs)
+        leaves = [
+            (bytes(entry.script.to_bytes()), entry.leaf_version, 33 + 32 * len(control.merkle_branch))
+            for control, entry in psbt_input.tap_scripts.items()
+        ]
+    tag = sha256(b"TapLeaf").digest()
+    weights = []
+    for script, version, control_size in leaves:
+        leaf_hash = sha256(tag + tag + bytes([version]) + var_int.serialize(len(script)) + script).hexdigest()
+        if leaf_hash not in signatures:
+            continue
+
+        # Common pk() and multi_a() leaves have only signature/empty stack items.
+        if re.fullmatch(rb"\x20.{32}\xac", script, re.DOTALL):
+            m = n = 1
+        elif re.fullmatch(rb"\x20.{32}\xac(?:\x20.{32}\xba)+[\x51-\x60]\x9c", script, re.DOTALL):
+            n = (len(script) - 2) // 34
+            m = min(n, script[-2] - 0x50)
+        else:
+            # For arbitrary scripts this is only a rough signature-based estimate.
+            sigops = sum(
+                op in ("OP_CHECKSIG", "OP_CHECKSIGVERIFY", "OP_CHECKSIGADD")
+                for op in str(bdk.Script(script)).split()
+            )
+            m = n = max(signatures[leaf_hash], sigops)
+            logger.warning("Rough Taproot weight estimate for unsupported leaf %s", leaf_hash)
+
+        weights.append(witness_satisfaction_weight([65] * m + [0] * (n - m) + [len(script), control_size]))
+
+    if weights:
+        return max(weights)
+    # No matching script/control block: estimate only the minimum witness shape.
+    logger.warning("Rough Taproot weight estimate: missing signed leaf metadata")
+    return witness_satisfaction_weight([65] * max(signatures.values(), default=1) + [0, 33])
+
+
 @dataclass
 class InputWeight:
     """Optional spend information; unknown inputs default to native SegWit.
@@ -126,23 +184,31 @@ class InputWeight:
     legacy_multisig: bool = False
     script_size: int | None = None
     tap_script_path: bool = False
-    tap_script_size: int = 0
+    tap_script_weight: int = 66
 
     @classmethod
     def from_psbt_input(
         cls,
         script: bdk.Script | None,
-        psbt_input: bdk.Input | None,
+        psbt_input: bdk.Input | PartiallySignedInput | None,
         mn: tuple[int, int] = (1, 1),
         satisfaction_weight: int | None = None,
     ) -> InputWeight:
         raw = bytes(script.to_bytes()) if script else b""
-        redeem = (
-            bytes(psbt_input.redeem_script.to_bytes()) if psbt_input and psbt_input.redeem_script else b""
-        )
-        witness = (
-            bytes(psbt_input.witness_script.to_bytes()) if psbt_input and psbt_input.witness_script else b""
-        )
+        if isinstance(psbt_input, PartiallySignedInput):
+            redeem = psbt_input.redeem_script
+            witness = psbt_input.witness_script
+            final_witness = psbt_input.final_script_witness.scriptWitness.stack or None
+        else:
+            redeem = (
+                bytes(psbt_input.redeem_script.to_bytes()) if psbt_input and psbt_input.redeem_script else b""
+            )
+            witness = (
+                bytes(psbt_input.witness_script.to_bytes())
+                if psbt_input and psbt_input.witness_script
+                else b""
+            )
+            final_witness = psbt_input.final_script_witness if psbt_input else None
         multisig_script = witness or (
             redeem if redeem and not is_p2wpkh(redeem) and not is_p2wsh(redeem) else b""
         )
@@ -166,19 +232,13 @@ class InputWeight:
                 address_type = AddressTypes.p2sh_p2wsh
             else:
                 legacy_multisig = True
-        tap_script_path = bool(psbt_input and (psbt_input.tap_scripts or psbt_input.tap_script_sigs))
-        # Without a descriptor a Taproot leaf may require arbitrary stack elements.
-        tap_script_size = (
-            max(
-                (
-                    len(entry.script.to_bytes()) + 33 + 32 * len(control.merkle_branch)
-                    for control, entry in psbt_input.tap_scripts.items()
-                ),
-                default=0,
-            )
-            if psbt_input
-            else 0
-        )
+        tap_script_path = bool(psbt_input and psbt_input.tap_script_sigs and not psbt_input.tap_key_sig)
+        tap_script_weight = 66
+        if address_type == AddressTypes.p2tr and psbt_input:
+            if final_witness is not None:
+                satisfaction_weight = witness_satisfaction_weight([len(item) for item in final_witness])
+            elif tap_script_path and satisfaction_weight is None:
+                tap_script_weight = estimate_tapscript_weight(psbt_input)
         return cls(
             mn,
             address_type,
@@ -186,7 +246,7 @@ class InputWeight:
             legacy_multisig,
             len(multisig_script) or None,
             tap_script_path,
-            tap_script_size,
+            tap_script_weight,
         )
 
     def use_descriptor(self, descriptor: str, network: bdk.Network) -> None:
@@ -214,10 +274,8 @@ class InputWeight:
         if self.address_type == AddressTypes.p2pkh:
             return 107 * 4
         if self.address_type == AddressTypes.p2tr:
-            if self.tap_script_path:
-                # The consensus stack limit bounds an unknown leaf's 520-byte elements.
-                return 1000 * (3 + 520) + self.tap_script_size + 10
-            return 66  # 65-byte signature and length, excluding the empty witness byte
+            # Leaves alone do not imply script-path spending.
+            return self.tap_script_weight if self.tap_script_path else 66
         if self.legacy_multisig:
             script_size = self.script_size or 3 + 34 * n
             push_size = 1 if script_size < 76 else 2 if script_size <= 255 else 3
@@ -298,13 +356,31 @@ class TxWeight:
         """Build the estimate from the PSBT's inputs and previous outputs."""
         tx = psbt.extract_tx_unchecked_fee_rate()
         inputs = []
-        for txin, inp in zip(tx.input(), psbt.input(), strict=True):
-            prevout = inp.witness_utxo
-            if prevout is None and inp.non_witness_utxo is not None:
-                outputs = inp.non_witness_utxo.output()
-                if txin.previous_output.vout < len(outputs):
-                    prevout = outputs[txin.previous_output.vout]
-            inputs.append(InputWeight.from_psbt_input(prevout.script_pubkey if prevout else None, inp))
+        try:
+            psbt_inputs: Sequence[bdk.Input | PartiallySignedInput] = psbt.input()
+        except TypeError as exc:
+            # BDK 3.1.1 exposes unhashable Python records as Taproot map keys.
+            if "unhashable type" not in str(exc):
+                raise
+            hwi_psbt = PSBT()
+            hwi_psbt.deserialize(psbt.serialize())
+            psbt_inputs = hwi_psbt.inputs
+        for txin, inp in zip(tx.input(), psbt_inputs, strict=True):
+            if isinstance(inp, PartiallySignedInput):
+                hwi_prevout = inp.witness_utxo
+                if hwi_prevout is None and inp.non_witness_utxo is not None:
+                    outputs_hwi = inp.non_witness_utxo.vout
+                    if txin.previous_output.vout < len(outputs_hwi):
+                        hwi_prevout = outputs_hwi[txin.previous_output.vout]
+                script = bdk.Script(hwi_prevout.scriptPubKey) if hwi_prevout is not None else None
+            else:
+                prevout = inp.witness_utxo
+                if prevout is None and inp.non_witness_utxo is not None:
+                    outputs = inp.non_witness_utxo.output()
+                    if txin.previous_output.vout < len(outputs):
+                        prevout = outputs[txin.previous_output.vout]
+                script = prevout.script_pubkey if prevout else None
+            inputs.append(InputWeight.from_psbt_input(script, inp))
         return cls(inputs, [output.script_pubkey for output in tx.output()])
 
     def estimate(self) -> int:
@@ -419,10 +495,8 @@ class FeeInfo:
         """Estimate the PSBT fee rate, or use its finalized transaction's actual size."""
 
         tx = psbt.extract_tx_unchecked_fee_rate()
-        psbt_inputs = psbt.input()
-        if psbt_inputs and all(
-            inp.final_script_sig is not None or inp.final_script_witness is not None for inp in psbt_inputs
-        ):
+        tx_inputs = tx.input()
+        if tx_inputs and all(txin.script_sig.to_bytes() or txin.witness for txin in tx_inputs):
             return FeeInfo(psbt.fee(), tx.vsize(), vsize_is_estimated=False, fee_amount_is_estimated=False)
         vsize = weight_to_vsize(TxWeight.from_psbt(psbt).estimate())
         return FeeInfo(psbt.fee(), vsize, vsize_is_estimated=True, fee_amount_is_estimated=False)

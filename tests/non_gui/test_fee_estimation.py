@@ -280,13 +280,69 @@ def test_input_types_are_inferred_from_prevout_and_scripts() -> None:
         info = InputWeight.from_psbt_input(bdk.Script(script), inp)
         assert info.address_type == address_type
         assert info.legacy_multisig == legacy
-    inp.tap_script_sigs = {"leaf": b"signature"}  # type: ignore[dict-item]
-    tap = InputWeight.from_psbt_input(bdk.Script(b"\x51\x20" + bytes(32)), inp)
-    assert tap.tap_script_path and tap.weight() > InputWeight(address_type=AddressTypes.p2tr).weight()
     assert (
         InputWeight.from_psbt_input(None, None).weight()
         == InputWeight(address_type=AddressTypes.p2wpkh).weight()
     )
+
+
+def test_taproot_weight_uses_signed_leaf_and_final_witness() -> None:
+    from hwilib.psbt import PSBT, PartiallySignedInput
+    from hwilib.tx import CTxOut
+
+    key = bytes.fromhex("79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798")
+    key2 = bytes.fromhex("c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5")
+    key3 = bytes.fromhex("f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9")
+    pk = b"\x20" + key + b"\xac"
+    multi_a = pk + b"\x20" + key2 + b"\xba\x20" + key3 + b"\xba\x52\x9c"
+    pk_hash = "763e9da064b9dc0471fb0f3c8fa2c84b4b84d2ca992497c12d2274386795aa8e"
+    multi_hash = "d98e12c453600f2b11ee3b7c0047b218477e0e328694177b3fa12a206eb4e95d"
+    script = bdk.Script(b"\x51\x20" + key)
+    inp = PartiallySignedInput(0)
+    inp.witness_utxo = CTxOut(100_000, bytes(script.to_bytes()))
+    pk_control = b"\xc0" + key + bytes(32)
+    multi_control = b"\xc0" + key + bytes.fromhex("11" * 32 + "22" * 32)
+    inp.tap_scripts = {(pk, 0xC0): {pk_control}, (multi_a, 0xC0): {multi_control}}
+
+    # Exercise the serialized PSBT path, not just an in-memory record.
+    hwi_psbt = PSBT()
+    hwi_psbt.deserialize(p2wsh_psbt_0_2of3.serialize())
+    hwi_psbt.inputs[0] = inp
+
+    def estimated_weight() -> int:
+        psbt = bdk.Psbt(hwi_psbt.serialize())
+        estimate = TxWeight.from_psbt(psbt)
+        return estimate.inputs[0].weight()
+
+    # Merely disclosing leaves must not inflate the key-path estimate.
+    assert estimated_weight() == 66
+
+    # Only the signed leaf contributes, even if a larger unsigned leaf is disclosed.
+    inp.tap_script_sigs = {(key, bytes.fromhex(pk_hash)): bytes(64)}
+    assert estimated_weight() == 66 + 35 + 66
+    psbt = bdk.Psbt(hwi_psbt.serialize())
+    assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt).vsize == weight_to_vsize(
+        TxWeight.from_psbt(psbt).estimate()
+    )
+
+    # Partially signed 2-of-3 multi_a: two signatures, one empty item.
+    inp.tap_script_sigs = {(key, bytes.fromhex(multi_hash)): bytes(64)}
+    assert estimated_weight() == 2 * 66 + 1 + 105 + 98
+    assert InputWeight.from_psbt_input(script, inp, satisfaction_weight=400).weight() == 400
+
+    # An available key-path signature takes precedence over leaf signatures.
+    inp.tap_key_sig = bytes(64)
+    assert estimated_weight() == 66
+
+    # A finalized input uses its actual witness, even in a partially finalized PSBT.
+    inp.final_script_witness.scriptWitness.stack = [bytes(64), pk, pk_control]
+    assert InputWeight.from_psbt_input(script, inp).weight() == 65 + 35 + 66
+
+    inp.final_script_witness.scriptWitness.stack = []
+    inp.tap_key_sig = b""
+    inp.tap_scripts = {}
+    # Missing leaf metadata is only a rough estimate, not a protocol maximum.
+    assert InputWeight.from_psbt_input(script, inp).weight() == 66 + 1 + 34
 
 
 def test_cpfp_uses_descriptor_estimate(monkeypatch: pytest.MonkeyPatch) -> None:
