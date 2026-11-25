@@ -61,11 +61,6 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.constants import APP_NAME, MIN_RELAY_FEE
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.foreign_utxo import ForeignUtxo
-from bitcoin_safe.foreign_utxo_serialization import (
-    SerializedForeignInput,
-    dump_foreign_inputs,
-    load_foreign_inputs,
-)
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
@@ -146,6 +141,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         UtxoListWithToolbar.__name__: UtxoListWithToolbar,
         CategoryList.__name__: CategoryList,
         TxUiInfos.__name__: TxUiInfos,
+        ForeignUtxo.__name__: ForeignUtxo,
     }
 
     signal_input_changed = cast(SignalProtocol[[]], pyqtSignal())
@@ -177,7 +173,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         tx_ui_infos: TxUiInfos | None = None,
         category_list: CategoryList | None = None,
         utxo_list_with_toolbar: UtxoListWithToolbar | None = None,
-        foreign_inputs: dict[str, SerializedForeignInput] | None = None,
+        foreign_inputs: list[ForeignUtxo | None] | None = None,
         selected_outpoints: list[str] | None = None,
         selected_input_outpoints: list[str] | None = None,
         parent=None,
@@ -230,7 +226,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
             self.utxo_list_with_toolbar = UtxoListWithToolbar(self.utxo_list, self.config, parent=self)
 
-        self.foreign_inputs = load_foreign_inputs(foreign_inputs or {})
+        self.foreign_inputs = {item.utxo.outpoint: item for item in foreign_inputs or [] if item is not None}
         self._import_generation = 0
         self._import_busy = False
         self.utxo_list.signal_remove_foreign_inputs.connect(self.remove_foreign_inputs)
@@ -407,7 +403,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         # Foreign snapshots are persisted once in foreign_inputs; selection is saved separately.
         tx_infos.inputs = {op: item for op, item in tx_infos.inputs.items() if item.psbt_input is None}
         d["tx_ui_infos"] = tx_infos
-        d["foreign_inputs"] = dump_foreign_inputs(self.foreign_inputs)
+        d["foreign_inputs"] = list(self.foreign_inputs.values())
         d["selected_outpoints"] = sorted(str(op) for op in self.selected_outpoints)
         return d
 

@@ -36,21 +36,66 @@ so their scripts and maximum satisfaction weight can be determined safely.
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Sequence
 from dataclasses import dataclass
+from typing import Any
 
 import bdkpython as bdk
+from bitcoin_safe_lib.storage import BaseSaveableClass
 from bitcoin_safe_lib.util import network_kind
 
 from .pythonbdk_types import OutPoint, PythonUtxo, TxOut, robust_address_str_from_txout
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass
-class ForeignUtxo:
+class ForeignUtxo(BaseSaveableClass):
     utxo: PythonUtxo
     psbt_input: bdk.Input
     satisfaction_weight: int
     wallet_id: str | None
+
+    def dump(self) -> dict[str, Any]:
+        d = super().dump()
+        d.update(
+            outpoint=str(self.utxo.outpoint),
+            address=self.utxo.address,
+            txout=self.utxo.txout.seralized_tuple(),
+            psbt=self._serialize_input(),
+            satisfaction_weight=self.satisfaction_weight,
+            wallet_id=self.wallet_id,
+        )
+        return d
+
+    @classmethod
+    def from_dump(cls, dct: dict, class_kwargs: dict | None = None) -> ForeignUtxo | None:
+        try:
+            super()._from_dump(dct, class_kwargs=class_kwargs)
+            utxo = PythonUtxo(
+                address=dct["address"],
+                outpoint=OutPoint.from_str(dct["outpoint"]),
+                txout=TxOut.from_seralized_tuple(dct["txout"]),
+            )
+            weight = dct["satisfaction_weight"]
+            if type(weight) is not int or weight <= 0:
+                raise ValueError("invalid satisfaction weight")
+            psbt = bdk.Psbt(dct["psbt"])
+            if (
+                OutPoint.from_bdk(psbt.extract_tx_unchecked_fee_rate().input()[0].previous_output)
+                != utxo.outpoint
+            ):
+                raise ValueError("Saved PSBT input does not match outpoint")
+            psbt_input = psbt.input()[0]
+            if TxOut.from_bdk(cls.previous_output(utxo.outpoint, psbt_input)) != utxo.txout:
+                raise ValueError("Saved PSBT output does not match snapshot")
+            cls._discard_signatures(psbt_input)
+            return cls(utxo, psbt_input, weight, dct.get("wallet_id"))
+        except Exception as exc:
+            # Keep the rest of a draft loadable if a saved input is corrupt.
+            logger.warning("Cannot restore foreign input: %s", exc)
+            return None
 
     @classmethod
     def from_outpoint(
@@ -117,8 +162,18 @@ class ForeignUtxo:
             raise ValueError(f"{outpoint}: conflicting previous outputs")
         return output
 
-    def serialize_input(self, bdk_wallet: bdk.Wallet) -> str:
+    def _serialize_input(self) -> str:
         """Serialize the complete input map without persisting BDK runtime objects."""
+        network = bdk.Network.REGTEST
+        receive = bdk.Descriptor(
+            "wpkh(0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798)",
+            network_kind(network),
+        )
+        change = bdk.Descriptor(
+            "wpkh(02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5)",
+            network_kind(network),
+        )
+        bdk_wallet = bdk.Wallet(receive, change, network, bdk.Persister.new_in_memory())
         builder = bdk.TxBuilder().add_foreign_utxo(
             self.utxo.outpoint, self.psbt_input, self.satisfaction_weight
         )
@@ -130,22 +185,6 @@ class ForeignUtxo:
             .finish(bdk_wallet)
             .serialize()
         )
-
-    @classmethod
-    def from_serialized_input(
-        cls, utxo: PythonUtxo, serialized: str, index: int, satisfaction_weight: int, wallet_id: str | None
-    ) -> ForeignUtxo:
-        psbt = bdk.Psbt(serialized)
-        if (
-            OutPoint.from_bdk(psbt.extract_tx_unchecked_fee_rate().input()[index].previous_output)
-            != utxo.outpoint
-        ):
-            raise ValueError("Saved PSBT input does not match outpoint")
-        psbt_input = psbt.input()[index]
-        if TxOut.from_bdk(cls.previous_output(utxo.outpoint, psbt_input)) != utxo.txout:
-            raise ValueError("Saved PSBT output does not match snapshot")
-        cls._discard_signatures(psbt_input)
-        return cls(utxo, psbt_input, satisfaction_weight, wallet_id)
 
     @staticmethod
     def _discard_signatures(psbt_input: bdk.Input) -> None:

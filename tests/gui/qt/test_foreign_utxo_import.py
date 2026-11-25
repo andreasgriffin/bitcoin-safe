@@ -779,7 +779,8 @@ def test_wallet_import_is_a_persistent_snapshot(
         finally:
             restored.close()
         saved_data = json.loads(saved)
-        saved_data["foreign_inputs"][str(first)]["txout"][1] += 1
+        saved_input = next(item for item in saved_data["foreign_inputs"] if item["outpoint"] == str(first))
+        saved_input["txout"][1] += 1
         invalid = UITx_Creator._from_dumps(json.dumps(saved_data), class_kwargs=creator_class_kwargs(creator))
         invalid.set_category_core(qt_wallet.category_core)
         invalid.show()

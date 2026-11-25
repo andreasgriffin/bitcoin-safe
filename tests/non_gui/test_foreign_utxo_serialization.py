@@ -36,7 +36,6 @@ import bdkpython as bdk
 import pytest
 
 from bitcoin_safe.foreign_utxo import ForeignUtxo
-from bitcoin_safe.foreign_utxo_serialization import dump_foreign_inputs, load_foreign_inputs
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.pythonbdk_types import OutPoint
 from bitcoin_safe.wallet import Wallet
@@ -47,14 +46,25 @@ def test_persist_all_inputs_and_reject_corrupt_previous_output() -> None:
     tx = transaction([b"\x00\x14" + b"\x42" * 20, b"\x00\x14" + b"\x43" * 20])
     points = [OutPoint(txid=tx.compute_txid(), vout=i) for i in range(2)]
     inputs = {op: ForeignUtxo.from_outpoint(op, tx.output()[op.vout], tx, [], NETWORK) for op in points}
-    saved = json.loads(json.dumps(dump_foreign_inputs(inputs)))
-    restored = load_foreign_inputs(saved)
-    assert set(restored) == set(points)
-    assert all(
-        item.psbt_input.non_witness_utxo.compute_txid() == tx.compute_txid() for item in restored.values()
-    )
-    saved[str(points[0])]["txout"][1] += 1
-    assert set(load_foreign_inputs(saved)) == {points[1]}
+    restored = [ForeignUtxo._from_dumps(item.dumps()) for item in inputs.values()]
+    assert all(isinstance(item, ForeignUtxo) for item in restored)
+    assert {item.utxo.outpoint for item in restored} == set(points)
+    assert all(item.psbt_input.non_witness_utxo.compute_txid() == tx.compute_txid() for item in restored)
+    saved = json.loads(inputs[points[0]].dumps())
+    saved["txout"][1] += 1
+    assert ForeignUtxo._from_dumps(json.dumps(saved)) is None
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [("outpoint", "aa" * 32 + ":0"), ("satisfaction_weight", 0), ("psbt", "invalid")],
+)
+def test_reject_corrupt_saved_input(field: str, value: str | int) -> None:
+    tx = transaction([b"\x00\x14" + b"\x42" * 20])
+    op = OutPoint(txid=tx.compute_txid(), vout=0)
+    saved = json.loads(ForeignUtxo.from_outpoint(op, tx.output()[0], tx, [], NETWORK).dumps())
+    saved[field] = value
+    assert ForeignUtxo._from_dumps(json.dumps(saved)) is None
 
 
 def test_restored_inputs_require_full_previous_transaction() -> None:
@@ -111,7 +121,8 @@ def test_taproot_wallet_input_survives_restoration() -> None:
         Wallet.resolve_foreign_outpoints(active, [point], [active, other], manager)
     )
     assert not errors
-    restored = load_foreign_inputs(dump_foreign_inputs(imported))[point]
+    restored = ForeignUtxo._from_dumps(imported[point].dumps())
+    assert isinstance(restored, ForeignUtxo)
     assert restored.psbt_input.non_witness_utxo.compute_txid() == funding.compute_txid()
     assert restored.psbt_input.tap_internal_key is not None
     assert restored.psbt_input.tap_key_origins
