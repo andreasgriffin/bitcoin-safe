@@ -29,29 +29,131 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import bdkpython as bdk
 import pytest
 from bitcoin_safe_lib.util import network_kind
+from bitcoin_usb.address_types import AddressTypes
 from PyQt6.QtWidgets import QPushButton
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.foreign_utxo import ForeignUtxo
+from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningDeviceList, TxSigningSteps
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.psbt_util import SimplePSBT
-from bitcoin_safe.pythonbdk_types import OutPoint
+from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, Recipient
 from bitcoin_safe.signals import Signals, WalletFunctions
+from bitcoin_safe.wallet import ProtoWallet, Wallet
+from tests.gui.qt.helpers import Shutter, main_window_context, setup_single_sig_wallet
+from tests.helpers import TestConfig as ConfigForTest
 from tests.non_gui.test_foreign_utxo import NETWORK, make_wallet, transaction
 from tests.non_gui.test_seed_sign_message import _wallet as _multisig_wallet
+from tests.non_gui.test_signers import test_seeds
 from tests.non_gui.utils import create_keystore
 
 SEEDS = (
     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
     "legal winner thank year wave sausage worth useful legal winner thank yellow",
 )
+
+
+@pytest.mark.marker_qt_2
+def test_viewer_signs_inputs_from_two_open_seed_wallets(
+    qtbot: QtBot, mytest_start_time: datetime, test_config: ConfigForTest, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_two_seed_wallets")
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        first = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name="signer_0",
+            seed=SEEDS[0],
+        )
+        keystores = [create_keystore(seed, "m/48h/1h/0h/1h", "signer") for seed in (SEEDS[1], test_seeds[2])]
+        protowallet = ProtoWallet("nested", 2, NETWORK, keystores, AddressTypes.p2sh_p2wsh)
+        nested_wallet = Wallet.from_protowallet(protowallet, test_config, main_window.loop_in_thread)
+        second = QTWallet(
+            wallet=nested_wallet,
+            config=test_config,
+            wallet_functions=main_window.wallet_functions,
+            mempool_manager=main_window.mempool_manager,
+            fx=main_window.fx,
+            loop_in_thread=main_window.loop_in_thread,
+            file_path=str(Path(test_config.config_dir) / "nested.wallet"),
+        )
+        second.save_to(second.file_path)
+        main_window.add_qt_wallet(second)
+        qt_wallets = [first, second]
+        wallets = [qt_wallet.wallet for qt_wallet in qt_wallets]
+        wallets[1].bdkwallet.reveal_addresses_to(bdk.KeychainKind.EXTERNAL, 50)
+        funding_psbt = _mixed_psbt(wallets[0], wallets[1], other_open=True)
+        points = []
+        for wallet in wallets:
+            item = next(
+                item for item in SimplePSBT.from_psbt(funding_psbt).inputs if wallet.owns_psbt_input(item)
+            )
+            point = OutPoint.from_bdk(item.txin.previous_output)
+            previous = item.previous_txout()
+            assert previous
+            utxo = PythonUtxo(
+                str(bdk.Address.from_script(previous.script_pubkey, wallet.network)), point, previous
+            )
+            monkeypatch.setattr(wallet, "get_all_utxos", MagicMock(return_value=[utxo]))
+            monkeypatch.setattr(
+                wallet, "get_all_txos_dict", MagicMock(return_value={str(utxo.outpoint): utxo})
+            )
+            points.append(point)
+        creator = qt_wallets[0].uitx_creator
+        creator.import_wallet_utxos(wallets[1])
+        qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+        assert points[1] in creator.foreign_inputs
+        creator.set_selected_outpoints(set(points))
+        destination = wallets[0].bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+        creator.recipients.recipients = [Recipient(str(destination), 150_000)]
+        psbt = wallets[0].create_psbt(creator.get_tx_ui_infos(use_categories=False)).psbt
+        main_window.open_tx_like_in_tab(psbt)
+        viewer = main_window.tab_wallets.currentWidget()
+        assert isinstance(viewer, UITx_Viewer)
+
+        for index, fingerprint in enumerate(
+            [
+                wallets[0].keystores[0].fingerprint,
+                *[keystore.fingerprint for keystore in wallets[1].keystores],
+            ]
+        ):
+            assert viewer.tx_singning_steps
+            device_list = viewer.tx_singning_steps.stacked_widget.currentWidget()
+            assert isinstance(device_list, TxSigningDeviceList)
+            card = next(card for card in device_list.cards if card.device.fingerprint == fingerprint)
+            card.expand()
+            button = next(
+                button for button in card.body.findChildren(QPushButton) if button.text() == "Sign now"
+            )
+            button.click()
+            if index == 0:
+                assert isinstance(viewer.data.data, bdk.Psbt)
+                for item in SimplePSBT.from_psbt(viewer.data.data).inputs:
+                    assert item.is_fully_signed() == wallets[index].owns_psbt_input(item)
+            if index == 1:
+                assert isinstance(viewer.data.data, bdk.Psbt)
+                nested_input = next(
+                    item
+                    for item in SimplePSBT.from_psbt(viewer.data.data).inputs
+                    if wallets[1].owns_psbt_input(item)
+                )
+                assert nested_input.fingerprint_has_signature(fingerprint)
+                assert not nested_input.is_fully_signed()
+
+        assert isinstance(viewer.data.data, bdk.Transaction)
+        assert all(txin.witness for txin in viewer.data.data.input())
 
 
 def _wallet(seed: str, wallet_id: str) -> MagicMock:
@@ -70,7 +172,7 @@ def _wallet(seed: str, wallet_id: str) -> MagicMock:
     return wallet
 
 
-def _mixed_psbt(active: MagicMock, other: MagicMock, other_open: bool) -> bdk.Psbt:
+def _mixed_psbt(active: Wallet | MagicMock, other: Wallet | MagicMock, other_open: bool) -> bdk.Psbt:
     active_address = active.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
     other_address = other.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
     local_tx = transaction([bytes(active_address.script_pubkey().to_bytes())])
@@ -96,7 +198,7 @@ def _mixed_psbt(active: MagicMock, other: MagicMock, other_open: bool) -> bdk.Ps
     )
 
 
-def _steps(psbt: bdk.Psbt, wallets: list[MagicMock], loop_in_thread, qtbot: QtBot) -> TxSigningSteps:
+def _steps(psbt: bdk.Psbt, wallets: list[Wallet | MagicMock], loop_in_thread, qtbot: QtBot) -> TxSigningSteps:
     signals = Signals()
     wallet_functions = WalletFunctions(signals)
     for wallet in wallets:
