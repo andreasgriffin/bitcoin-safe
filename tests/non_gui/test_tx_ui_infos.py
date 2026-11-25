@@ -109,20 +109,24 @@ def test_create_bump_fee_psbt_preserves_hidden_tx_infos(monkeypatch) -> None:
     assert labels == [("new-txid", "draft tx", "now")]
 
 
-def test_bump_fee_rejects_nonzero_op_return_output(monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.mark.parametrize("invalid_original", [True, False])
+def test_bump_fee_rejects_nonzero_op_return_output(
+    monkeypatch: pytest.MonkeyPatch, invalid_original: bool
+) -> None:
     output = bdk.TxOut(value=bdk.Amount.from_sat(1), script_pubkey=bdk.Script(bytes.fromhex("6a026869")))
     replacement = MagicMock()
     replacement.input.return_value = []
-    replacement.output.return_value = []
+    replacement.output.return_value = [output] if invalid_original else []
     psbt = MagicMock()
     psbt.extract_tx_unchecked_fee_rate.return_value.output.return_value = [output]
     builder = MagicMock()
     builder.finish.return_value = psbt
     monkeypatch.setattr("bitcoin_safe.wallet.bdk.BumpFeeTxBuilder", lambda **kwargs: builder)
-    wallet = SimpleNamespace(bdkwallet=object(), persist=MagicMock())
+    wallet = SimpleNamespace(network=bdk.Network.REGTEST, bdkwallet=object(), persist=MagicMock())
     infos = TxUiInfos(fee_rate=2.0)
     infos.replace_tx = replacement
 
     with pytest.raises(ValueError, match="OP_RETURN outputs must have an amount of zero"):
         Wallet.create_bump_fee_psbt(wallet, infos)
+    assert builder.finish.call_count == (0 if invalid_original else 1)
     wallet.persist.assert_not_called()
