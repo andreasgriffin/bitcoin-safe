@@ -930,10 +930,180 @@ def test_psbt_merge_is_atomic_when_an_input_cannot_be_resolved(
         monkeypatch.setattr(creator.mempool_manager, "fetch_transaction", fetch_all)
         errors.clear()
         output_count = len(original.extract_tx_unchecked_fee_rate().output())
-        for count in (1, 2):
+        creator.merge_psbt(psbt)
+        qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+        assert not errors
+        assert set(creator.foreign_inputs) == set(points)
+        assert creator.selected_outpoints == set(points)
+        assert len(creator.recipients.recipients) == 1 + output_count
+        with pytest.raises(ValueError, match="already selected"):
+            creator.merge_psbt(psbt)
+        assert len(creator.recipients.recipients) == 1 + output_count
+
+
+@pytest.mark.marker_qt_2
+def test_psbt_merge_rejects_selected_inputs_and_allows_unselected_inputs(
+    qtbot: QtBot, mytest_start_time: datetime, test_config: ConfigForTest, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_psbt_conflicts")
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        qt_wallet = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name="psbt_conflicts",
+            seed=test_seeds[0],
+        )
+        creator = qt_wallet.uitx_creator
+        wallet = qt_wallet.wallet
+        qt_wallet.tabs.setCurrentWidget(creator)
+        qtbot.waitUntil(creator.isVisible, timeout=10_000)
+        destination = wallet.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+        local_tx = transaction([bytes(destination.script_pubkey().to_bytes())])
+        wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=local_tx, last_seen=1)])
+        local = OutPoint(txid=local_tx.compute_txid(), vout=0)
+        local_utxo = PythonUtxo(str(destination), local, TxOut.from_bdk(local_tx.output()[0]))
+        monkeypatch.setattr(wallet, "get_all_utxos", lambda *args, **kwargs: [local_utxo])
+        monkeypatch.setattr(wallet, "get_all_txos_dict", lambda *args, **kwargs: {str(local): local_utxo})
+        foreign_txs = [transaction([b"\x00\x14" + bytes([n]) * 20]) for n in (0x42, 0x43)]
+        foreign = [OutPoint(txid=tx.compute_txid(), vout=0) for tx in foreign_txs]
+        foreign_items = {
+            op: ForeignUtxo.from_outpoint(op, tx.output()[0], tx, [], wallet.network)
+            for op, tx in zip(foreign, foreign_txs, strict=True)
+        }
+
+        def make_psbt(points: list[OutPoint]) -> bdk.Psbt:
+            builder = bdk.TxBuilder()
+            for op in points:
+                if op == local:
+                    builder = builder.add_utxo(op)
+                else:
+                    item = foreign_items[op]
+                    builder = builder.add_foreign_utxo(op, item.psbt_input, item.satisfaction_weight)
+            return (
+                builder.manually_selected_only()
+                .add_recipient(destination.script_pubkey(), bdk.Amount.from_sat(50_000))
+                .finish(wallet.bdkwallet)
+            )
+
+        def merge(psbt: bdk.Psbt) -> None:
             creator.merge_psbt(psbt)
             qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
-            assert not errors
-            assert set(creator.foreign_inputs) == set(points)
-            assert creator.selected_outpoints == set(points)
-            assert len(creator.recipients.recipients) == 1 + count * output_count
+
+        errors: list[str] = []
+        monkeypatch.setattr(
+            "bitcoin_safe.gui.qt.ui_tx.ui_tx_creator.Message", lambda text, **kwargs: errors.append(text)
+        )
+        local_psbt = make_psbt([local])
+        foreign_psbt = make_psbt([foreign[0]])
+        merge(local_psbt)
+        merge(foreign_psbt)
+        assert not errors
+        assert creator.selected_outpoints == {local, foreign[0]}
+        assert set(creator.foreign_inputs) == {foreign[0]}
+        qtbot.waitUntil(lambda: not creator._input_change_timer.isActive(), timeout=10_000)
+        before = creator.dumps()
+        outputs_before = [
+            (bytes(r.script_pubkey(wallet.network).to_bytes()), r.amount)
+            for r in creator.recipients.recipients
+        ]
+        assert outputs_before == [
+            (bytes(output.script_pubkey.to_bytes()), output.value.to_sat())
+            for psbt in (local_psbt, foreign_psbt)
+            for output in psbt.extract_tx_unchecked_fee_rate().output()
+        ]
+        for psbt, conflict in (
+            (local_psbt, local),
+            (foreign_psbt, foreign[0]),
+            (make_psbt([local, foreign[1]]), local),
+            (make_psbt(foreign), foreign[0]),
+        ):
+            with pytest.raises(ValueError, match="already selected") as exc:
+                creator.merge_psbt(psbt)
+            assert str(conflict) in str(exc.value)
+            assert creator.dumps() == before
+            assert [
+                (bytes(r.script_pubkey(wallet.network).to_bytes()), r.amount)
+                for r in creator.recipients.recipients
+            ] == outputs_before
+
+        # Individual outpoint imports remain idempotent even when already selected.
+        for _ in range(2):
+            creator.import_outpoints([local, foreign[0]], select=True)
+            qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+        assert not errors
+        assert creator.selected_outpoints == {local, foreign[0]}
+        assert set(creator.foreign_inputs) == {foreign[0]}
+        assert len(creator.recipients.recipients) == len(outputs_before)
+
+        creator.set_selected_outpoints({local})
+        merge(foreign_psbt)
+        assert not errors
+        assert creator.selected_outpoints == {local, foreign[0]}
+        assert set(creator.foreign_inputs) == {foreign[0]}
+        assert len(creator.recipients.recipients) == len(outputs_before) + len(
+            foreign_psbt.extract_tx_unchecked_fee_rate().output()
+        )
+
+
+@pytest.mark.marker_qt_2
+def test_psbt_merge_rechecks_selection_after_resolution(
+    qtbot: QtBot, mytest_start_time: datetime, test_config: ConfigForTest, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_late_psbt_conflict")
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        qt_wallet = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name="late_psbt_conflict",
+            seed=test_seeds[0],
+        )
+        creator = qt_wallet.uitx_creator
+        wallet = qt_wallet.wallet
+        qt_wallet.tabs.setCurrentWidget(creator)
+        qtbot.waitUntil(creator.isVisible, timeout=10_000)
+        tx = transaction([b"\x00\x14" + b"\x42" * 20])
+        op = OutPoint(txid=tx.compute_txid(), vout=0)
+        item = ForeignUtxo.from_outpoint(op, tx.output()[0], tx, [], wallet.network)
+        destination = wallet.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+        psbt = (
+            bdk.TxBuilder()
+            .add_foreign_utxo(op, item.psbt_input, item.satisfaction_weight)
+            .manually_selected_only()
+            .add_recipient(destination.script_pubkey(), bdk.Amount.from_sat(50_000))
+            .finish(wallet.bdkwallet)
+        )
+        started, release = Event(), Event()
+        resolve = wallet.resolve_foreign_outpoints
+
+        async def delayed_resolve(*args, **kwargs):
+            started.set()
+            while not release.is_set():
+                await asyncio.sleep(0.01)
+            return await resolve(*args, **kwargs)
+
+        monkeypatch.setattr(wallet, "resolve_foreign_outpoints", delayed_resolve)
+        errors: list[str] = []
+        monkeypatch.setattr(
+            "bitcoin_safe.gui.qt.ui_tx.ui_tx_creator.Message", lambda text, **kwargs: errors.append(text)
+        )
+        creator.recipients.recipients = [Recipient(str(destination), 10_000)]
+        creator.merge_psbt(psbt)
+        try:
+            qtbot.waitUntil(started.is_set, timeout=10_000)
+            creator.set_selected_outpoints({op})
+            qtbot.waitUntil(lambda: not creator._input_change_timer.isActive(), timeout=10_000)
+            before = creator.dumps()
+        finally:
+            release.set()
+        qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+        assert errors and "already selected" in errors[0] and str(op) in errors[0]
+        assert creator.dumps() == before
+        assert creator.selected_outpoints == {op}
+        assert not creator.foreign_inputs
+        assert [(r.address, r.amount) for r in creator.recipients.recipients] == [(str(destination), 10_000)]

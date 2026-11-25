@@ -1070,6 +1070,16 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
     ) -> None:
         if not self.wallet or not outpoints or self._import_busy:
             return
+
+        def check_psbt_conflicts() -> None:
+            if psbt is not None and (conflicts := set(outpoints) & self.selected_outpoints):
+                raise ValueError(
+                    self.tr(
+                        "The PSBT contains inputs already selected in the current transaction: {outpoints}"
+                    ).format(outpoints=", ".join(sorted(map(str, conflicts))))
+                )
+
+        check_psbt_conflicts()
         wallet = self.wallet
         wallets = [wallet] + [other for other in get_wallets(self.wallet_functions) if other != wallet]
         local = {utxo.outpoint: utxo for utxo in wallet.get_all_utxos()}
@@ -1110,6 +1120,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                     if tx is not None
                     else []
                 )
+                check_psbt_conflicts()
                 self._add_foreign_inputs(imported)
                 valid_outpoints = (set(outpoints) & local.keys()) | imported.keys()
                 if imported or psbt or (select and valid_outpoints):
