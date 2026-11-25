@@ -797,6 +797,76 @@ def test_import_utxos_from_all_open_wallets(
 
 
 @pytest.mark.marker_qt_2
+def test_wallet_import_skips_outputs_spent_by_unconfirmed_transaction(
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: ConfigForTest,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_unconfirmed_wallet_import")
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        qt_wallet = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name="unconfirmed_wallet_import",
+            seed=test_seeds[0],
+        )
+        creator = qt_wallet.uitx_creator
+        qt_wallet.tabs.setCurrentWidget(creator)
+        qtbot.waitUntil(creator.isVisible, timeout=10_000)
+        other = make_wallet(test_seeds[1], "other_wallet")
+        other.labels = qt_wallet.wallet.labels
+        other.is_my_address.return_value = True
+        other.get_label_for_txid.return_value = ""
+        other.get_label_for_address.return_value = ""
+        other.is_change.return_value = False
+        address = other.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+        funding = transaction([bytes(address.script_pubkey().to_bytes())] * 2)
+        other.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=funding, last_seen=1)])
+        spent, remaining = [OutPoint(txid=funding.compute_txid(), vout=i) for i in range(2)]
+        utxos = [
+            PythonUtxo(str(address), op, TxOut.from_bdk(funding.output()[op.vout]))
+            for op in (spent, remaining)
+        ]
+        other.get_all_utxos.return_value = utxos
+        other.get_all_txos_dict.return_value = {str(utxo.outpoint): utxo for utxo in utxos}
+
+        # Only the active wallet has seen the transaction spending the first output.
+        destination = qt_wallet.wallet.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+        child = (
+            bdk.TxBuilder()
+            .add_utxo(spent)
+            .manually_selected_only()
+            .drain_to(destination.script_pubkey())
+            .finish(other.bdkwallet)
+            .extract_tx()
+        )
+        qt_wallet.wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=child, last_seen=2)])
+        qt_wallet.wallet.clear_cache()
+        assert str(spent) in qt_wallet.wallet.get_dict_fulltxdetail()[str(child.compute_txid())].inputs
+        messages: list[str] = []
+        monkeypatch.setattr(
+            "bitcoin_safe.gui.qt.ui_tx.ui_tx_creator.Message", lambda text, **kwargs: messages.append(text)
+        )
+
+        def get_other() -> MagicMock:
+            return other
+
+        creator.wallet_functions.get_wallets.connect(get_other, slot_name=other.id)
+        try:
+            creator.import_wallet_utxos(other)
+            qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+            assert not messages
+            assert set(creator.foreign_inputs) == {remaining}
+            assert not creator.selected_outpoints
+        finally:
+            creator.wallet_functions.get_wallets.disconnect(get_other)
+
+
+@pytest.mark.marker_qt_2
 def test_wallet_import_is_a_persistent_snapshot(
     qtbot: QtBot, mytest_start_time: datetime, test_config: ConfigForTest, monkeypatch: pytest.MonkeyPatch
 ) -> None:

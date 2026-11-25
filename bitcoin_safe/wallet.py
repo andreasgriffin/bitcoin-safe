@@ -718,6 +718,10 @@ class WalletInputsInconsistentError(Exception):
     pass
 
 
+class SpentWalletOutputError(ValueError):
+    """An open wallet knows that an output has already been spent."""
+
+
 class ProgressLogger:
     def update(self, progress: float, message: str | None):
         """Log progress updates produced by long-running operations."""
@@ -2996,7 +3000,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                     continue
                 try:
                     if str(op) in spent:
-                        raise ValueError(f"{op}: output is already spent by {spent[str(op)]}")
+                        raise SpentWalletOutputError(f"{op}: output is already spent by {spent[str(op)]}")
                     outputs: list[bdk.TxOut] = []
                     if transaction := transactions[op.txid_str]:
                         if transaction.compute_txid() != op.txid or not 0 <= op.vout < len(
@@ -3012,7 +3016,9 @@ class Wallet(BaseSaveableClass, CacheManager):
                         outputs.append(output)
                     if known := txos.get(str(op)):
                         if known.is_spent_by_txid:
-                            raise ValueError(f"{op}: output is already spent by {known.is_spent_by_txid}")
+                            raise SpentWalletOutputError(
+                                f"{op}: output is already spent by {known.is_spent_by_txid}"
+                            )
                         outputs.append(known.txout)
                     for output in outputs:
                         previous = results[op]
@@ -3032,8 +3038,13 @@ class Wallet(BaseSaveableClass, CacheManager):
         mempool_manager: MempoolManager | None,
         psbt_inputs: dict[OutPoint, bdk.Input] | None = None,
         existing_inputs: dict[OutPoint, ForeignUtxo] | None = None,
+        skip_spent: bool = False,
     ) -> tuple[dict[OutPoint, ForeignUtxo], list[str]]:
-        """Resolve each funding transaction once; pass no mempool manager to use local data only."""
+        """Resolve each funding transaction once; pass no mempool manager to use local data only.
+
+        Wallet snapshots can lag behind another wallet's unconfirmed spends. Skip those
+        entries when importing a wallet's UTXOs, but reject explicitly requested inputs.
+        """
         resolved: dict[OutPoint, ForeignUtxo] = {}
         errors: list[str] = []
         transactions: dict[str, bdk.Transaction | Exception] = {}
@@ -3051,6 +3062,8 @@ class Wallet(BaseSaveableClass, CacheManager):
         for outpoint in dict.fromkeys(outpoints):
             try:
                 known = known_outputs[outpoint]
+                if skip_spent and isinstance(known, SpentWalletOutputError):
+                    continue
                 if isinstance(known, Exception):
                     raise known
                 supplied = supplied_inputs.get(outpoint)

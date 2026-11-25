@@ -135,6 +135,53 @@ def test_known_spent_foreign_input_is_rejected(wallets: tuple[MagicMock, MagicMo
     assert not resolved
     assert "already spent" in errors[0]
     manager.fetch_transaction.assert_not_awaited()
+    resolved, errors = asyncio.run(
+        Wallet.resolve_foreign_outpoints(active, [point], [active, other], manager, skip_spent=True)
+    )
+    assert not resolved
+    assert not errors
+    manager.fetch_transaction.assert_not_awaited()
+
+
+def test_import_wallet_utxos_after_parent_transaction_update(wallets: tuple[MagicMock, MagicMock]) -> None:
+    from tests.helpers import TestConfig
+    from tests.non_gui.utils import create_multisig_protowallet
+
+    config = TestConfig()
+    config.network = NETWORK
+    protowallet = create_multisig_protowallet(1, 1, ["m/84h/1h/0h"], network=NETWORK)
+    other = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
+    active, _ = wallets
+    try:
+        address = other.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+        funding = transaction([bytes(address.script_pubkey().to_bytes())] * 2)
+        other.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=funding, last_seen=0)])
+        other.clear_cache()
+        spent = OutPoint(txid=funding.compute_txid(), vout=0)
+        remaining = OutPoint(txid=funding.compute_txid(), vout=1)
+        child = (
+            bdk.TxBuilder()
+            .add_utxo(spent)
+            .manually_selected_only()
+            .drain_to(address.script_pubkey())
+            .finish(other.bdkwallet)
+            .extract_tx()
+        )
+        other.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=child, last_seen=0)])
+        other.clear_cache()
+        child_outpoint = OutPoint(txid=child.compute_txid(), vout=0)
+        assert {utxo.outpoint for utxo in other.get_all_utxos()} == {remaining, child_outpoint}
+
+        # The parent moves from locally stored to seen in the mempool; the child is unchanged.
+        other.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=funding, last_seen=2)])
+        other.clear_cache()
+        outpoints = [utxo.outpoint for utxo in other.get_all_utxos()]
+        assert set(outpoints) == {remaining, child_outpoint}
+        resolved, errors = asyncio.run(resolve_outpoints(outpoints, [active, other], active, None))
+        assert not errors
+        assert set(resolved) == {remaining, child_outpoint}
+    finally:
+        other.close()
 
 
 def test_resolve_other_wallet_transaction_and_sign(wallets: tuple[MagicMock, MagicMock]) -> None:

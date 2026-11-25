@@ -1012,7 +1012,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             default_is_true_button=False,
         ):
             return
-        self.import_outpoints(outpoints, select=False)
+        self.import_outpoints(outpoints, select=False, skip_spent=True)
 
     def _add_foreign_inputs(self, imported: dict[OutPoint, ForeignUtxo]) -> None:
         for op, item in imported.items():
@@ -1073,6 +1073,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         select: bool,
         parse_errors: list[str] | None = None,
         psbt: bdk.Psbt | None = None,
+        skip_spent: bool = False,
     ) -> None:
         if not self.wallet or not outpoints or self._import_busy:
             return
@@ -1168,7 +1169,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         self.loop_in_thread.run_task(
             wallet.resolve_foreign_outpoints(
-                foreign_points, wallets, self.mempool_manager, psbt_inputs, dict(self.foreign_inputs)
+                foreign_points,
+                wallets,
+                self.mempool_manager,
+                psbt_inputs,
+                dict(self.foreign_inputs),
+                skip_spent=skip_spent,
             ),
             on_success=on_success,
             on_error=on_error,
