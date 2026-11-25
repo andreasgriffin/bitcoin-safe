@@ -731,7 +731,7 @@ class UITx_Viewer(UITx_Base):
         if isinstance(self.data.data, bdk.Psbt):
             for txin, psbt_input in zip(tx.input(), self.data.data.input(), strict=True):
                 outpoint = OutPoint.from_bdk(txin.previous_output)
-                txinfos.original_inputs[outpoint] = psbt_input
+                txinfos.source_tx_inputs[outpoint] = psbt_input
         if new_fee_rate is not None:
             txinfos.fee_rate = new_fee_rate
 

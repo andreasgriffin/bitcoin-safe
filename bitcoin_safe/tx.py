@@ -191,7 +191,7 @@ class TxUiInfos(BaseSaveableClass):
 
     inputs: dict[OutPoint, TxInputInfo] = field(default_factory=dict)
     # Transient original outpoints and optional PSBT metadata for transaction editing.
-    original_inputs: dict[OutPoint, bdk.Input | None] = field(default_factory=dict)
+    source_tx_inputs: dict[OutPoint, bdk.Input | None] = field(default_factory=dict)
     fee_rate: float | None = None
     opportunistic_merge_utxos = True
     spend_all_utxos = False

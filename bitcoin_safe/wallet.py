@@ -3345,7 +3345,7 @@ class ToolsTxUiInfo:
         txinfos = TxUiInfos()
         # inputs
         ToolsTxUiInfo.fill_txo_dict_from_outpoints(txinfos, outpoints, wallets=wallets)
-        txinfos.original_inputs = {op: None for op in outpoints}
+        txinfos.source_tx_inputs = {op: None for op in outpoints}
         txinfos.spend_all_utxos = True
         # outputs
         checked_max_amount = len(tx.output()) == 1  # if there is only 1 recipient, there is no change address

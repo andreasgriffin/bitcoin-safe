@@ -402,11 +402,11 @@ def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
         monkeypatch.setattr(creator.mempool_manager, "fetch_transaction", fetch)
         missing = OutPoint.from_str("ab" * 32 + ":0")
         edit_infos = TxUiInfos(hide_UTXO_selection=False)
-        edit_infos.original_inputs = {
+        edit_infos.source_tx_inputs = {
             OutPoint.from_bdk(txin.previous_output): psbt_input
             for txin, psbt_input in zip(original_tx.input(), original.input(), strict=True)
         }
-        edit_infos.original_inputs[missing] = None
+        edit_infos.source_tx_inputs[missing] = None
         edit_infos.recipients = [Recipient(str(address), 12_000)]
         edited = UITx_Creator(
             **UITx_Creator.cls_kwargs(
@@ -874,7 +874,7 @@ def test_reset_discards_late_foreign_import(
         assert creator.button_ok.isEnabled()
         assert creator.column_inputs.isEnabled()
         edited = TxUiInfos(hide_UTXO_selection=False)
-        edited.original_inputs[op] = None
+        edited.source_tx_inputs[op] = None
         creator.set_ui(edited)
         assert creator.selected_outpoints == {op}
         assert op in creator.utxo_list.outpoints

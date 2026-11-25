@@ -241,7 +241,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         )
         if selected_input_outpoints is None and tx_ui_infos and not tx_ui_infos.hide_UTXO_selection:
             self.selected_outpoints.update(tx_ui_infos.inputs)
-            self.selected_outpoints.update(tx_ui_infos.original_inputs)
+            self.selected_outpoints.update(tx_ui_infos.source_tx_inputs)
         for outpoint in selected_input_outpoints or []:
             try:
                 self.selected_outpoints.add(OutPoint.from_str(outpoint))
@@ -1028,16 +1028,16 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             not busy and not (self.initial_tx_ui_infos and self.initial_tx_ui_infos.utxos_read_only)
         )
 
-    def _restore_original_inputs(self, original_inputs: dict[OutPoint, bdk.Input | None]) -> None:
+    def _restore_source_tx_inputs(self, source_tx_inputs: dict[OutPoint, bdk.Input | None]) -> None:
         if not self.wallet:
             return
         wallet = self.wallet
         foreign_points = list(
-            original_inputs.keys() - self._local_input_outpoints() - self.foreign_inputs.keys()
+            source_tx_inputs.keys() - self._local_input_outpoints() - self.foreign_inputs.keys()
         )
         if not foreign_points:
             return
-        supplied = {op: item for op, item in original_inputs.items() if item is not None}
+        supplied = {op: item for op, item in source_tx_inputs.items() if item is not None}
         wallets = [wallet] + [other for other in get_wallets(self.wallet_functions) if other != wallet]
         generation = self._import_generation
         self._set_import_busy(True)
@@ -1620,7 +1620,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         """Set ui. An explicit selection from a saved draft takes precedence."""
         restoring_draft = selected_outpoints is not None
         if selected_outpoints is None:
-            selected_outpoints = set(tx_ui_infos.inputs) | set(tx_ui_infos.original_inputs)
+            selected_outpoints = set(tx_ui_infos.inputs) | set(tx_ui_infos.source_tx_inputs)
         self._import_generation += 1
         self._set_import_busy(False)
         # prevent showEvent from interfering
@@ -1696,11 +1696,11 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
 
         self.utxo_list.set_allow_edit(not tx_ui_infos.utxos_read_only)
         self.column_inputs.setEnabled(not tx_ui_infos.utxos_read_only)
-        original_inputs = {
-            op: item for op, item in tx_ui_infos.original_inputs.items() if op in self.selected_outpoints
+        source_tx_inputs = {
+            op: item for op, item in tx_ui_infos.source_tx_inputs.items() if op in self.selected_outpoints
         }
-        if original_inputs:
-            self._restore_original_inputs(original_inputs)
+        if source_tx_inputs:
+            self._restore_source_tx_inputs(source_tx_inputs)
 
     def close(self):
         """Close."""
