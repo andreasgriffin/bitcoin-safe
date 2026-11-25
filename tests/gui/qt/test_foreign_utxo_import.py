@@ -533,7 +533,7 @@ def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
         expected_weight = estimate_tx_weight(
             [mn, mn], [bdk.Script(script) for script, _ in payments] + [bdk.Script(change_script)]
         )
-        expected_weight += foreign.satisfaction_weight - (1 + mn[0] * 73 + mn[1] * 34)
+        expected_weight += foreign.satisfaction_weight + 1 - (1 + mn[0] * 73 + mn[1] * 34)
         fee_estimate = creator.estimate_fee_info(2)
         assert fee_estimate.vsize == weight_to_vsize(expected_weight)
         assert fee_estimate.fee_amount == 2 * fee_estimate.vsize

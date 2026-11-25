@@ -1316,9 +1316,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         for utxo in utxos_for_input.utxos:
             item = txinfos.inputs.get(utxo.outpoint)
             if item and item.psbt_input is not None and item.satisfaction_weight is not None:
-                # Replace the wallet's estimated witness with BDK's maximum
-                # satisfaction weight, including any scriptSig for nested inputs.
-                weight += item.satisfaction_weight - (1 + mn[0] * 73 + mn[1] * 34)
+                # BDK's satisfaction weight excludes the one-byte empty witness already in a TxIn.
+                # It includes any scriptSig for nested inputs.
+                weight += item.satisfaction_weight + 1 - (1 + mn[0] * 73 + mn[1] * 34)
         vsize = weight_to_vsize(weight)
         return FeeInfo(ceil(vsize * fee_rate), vsize, fee_amount_is_estimated=True, vsize_is_estimated=True)
 

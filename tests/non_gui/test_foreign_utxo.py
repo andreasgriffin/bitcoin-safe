@@ -180,7 +180,11 @@ def test_resolve_download_once_with_mixed_failures(wallets: tuple[MagicMock, Mag
     assert set(resolved) == set(ops[:2])
     assert "output index" in errors[0]
     assert manager.fetch_transaction.await_count == 1
-    assert all(item.satisfaction_weight == 109 for item in resolved.values())
+    descriptor = bdk.Descriptor(
+        other.bdkwallet.public_descriptor(bdk.KeychainKind.EXTERNAL), network_kind(NETWORK)
+    )
+    assert descriptor.max_weight_to_satisfy() == 107
+    assert all(item.satisfaction_weight == descriptor.max_weight_to_satisfy() for item in resolved.values())
 
 
 def test_resolve_rejects_conflicting_psbt_previous_output(wallets: tuple[MagicMock, MagicMock]) -> None:

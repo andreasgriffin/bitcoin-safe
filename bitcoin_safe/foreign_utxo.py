@@ -46,6 +46,8 @@ from bitcoin_safe_lib.util import network_kind
 
 from .pythonbdk_types import OutPoint, PythonUtxo, TxOut, robust_address_str_from_txout
 
+P2WPKH_EXAMPLE_DESCRIPTOR = "wpkh(0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798)"
+
 
 @dataclass
 class ForeignUtxo(BaseSaveableClass):
@@ -114,7 +116,10 @@ class ForeignUtxo(BaseSaveableClass):
             break
         if weight is None:
             if len(script) == 22 and script[:2] == b"\x00\x14":
-                weight = 109  # P2WPKH: maximum DER signature and compressed public key
+                # All P2WPKH descriptors have the same satisfaction weight; the key need not match.
+                weight = bdk.Descriptor(
+                    P2WPKH_EXAMPLE_DESCRIPTOR, network_kind(network)
+                ).max_weight_to_satisfy()
             else:
                 raise ValueError(
                     "Unsupported or ambiguous output script (including P2WSH and Taproot); "
@@ -145,10 +150,7 @@ class ForeignUtxo(BaseSaveableClass):
     def _serialize_input(self) -> str:
         """Serialize the complete input map without persisting BDK runtime objects."""
         network = bdk.Network.REGTEST
-        receive = bdk.Descriptor(
-            "wpkh(0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798)",
-            network_kind(network),
-        )
+        receive = bdk.Descriptor(P2WPKH_EXAMPLE_DESCRIPTOR, network_kind(network))
         change = bdk.Descriptor(
             "wpkh(02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5)",
             network_kind(network),
