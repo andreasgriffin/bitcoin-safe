@@ -1271,7 +1271,7 @@ class UITx_Viewer(UITx_Base):
             logger.error("data is not of type bdk.Psbt")
             return
 
-        if self.data.data and tx.compute_txid() != self.data.data.extract_tx().compute_txid():
+        if self.data.data and unsigned_tx_bytes(tx) != unsigned_tx_bytes(self.data.data.extract_tx()):
             Message(
                 self.tr("The txid of the signed psbt doesnt match the original txid"),
                 type=MessageType.Error,
