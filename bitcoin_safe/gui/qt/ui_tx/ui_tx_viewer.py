@@ -1279,9 +1279,8 @@ class UITx_Viewer(UITx_Base):
             )
             return
 
-        self.set_tx(
-            tx,
-        )
+        # Signing legacy and nested SegWit inputs changes the txid, but not the fee.
+        self.set_tx(tx, fee_info=self.fee_info)
 
     def _get_any_signature_importer(self) -> AbstractSignatureImporter | None:
         """Get any signature importer."""

@@ -563,6 +563,78 @@ def test_viewer_refreshes_fee_info_when_psbt_changes(monkeypatch: pytest.MonkeyP
     assert viewer.fee_info.vsize_is_estimated
 
 
+@pytest.mark.parametrize("wrapper", ["pkh({key})", "sh(wpkh({key}))"])
+def test_tx_received_preserves_fee_when_signing_changes_txid(
+    wrapper: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from types import SimpleNamespace
+
+    from bitcoin_qr_tools.data import Data
+
+    from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+    from tests.non_gui.test_foreign_utxo import transaction
+
+    mnemonic = bdk.Mnemonic.from_string(
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+    )
+    key = bdk.DescriptorSecretKey(bdk.NetworkKind.TEST, mnemonic, "")
+    receive = bdk.Descriptor(wrapper.format(key=f"{key}/0/*"), bdk.NetworkKind.TEST)
+    change = bdk.Descriptor(wrapper.format(key=f"{key}/1/*"), bdk.NetworkKind.TEST)
+    wallet = bdk.Wallet(receive, change, bdk.Network.REGTEST, bdk.Persister.new_in_memory())
+    address = wallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+    funding = transaction([bytes(address.script_pubkey().to_bytes())])
+    wallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=funding, last_seen=1)])
+    psbt = (
+        bdk.TxBuilder()
+        .add_utxo(bdk.OutPoint(txid=funding.compute_txid(), vout=0))
+        .manually_selected_only()
+        .drain_to(address.script_pubkey())
+        .finish(wallet)
+    )
+    initial = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+    assert initial.vsize_is_estimated
+
+    # An external signer returns a transaction without modifying the viewer's PSBT.
+    signed_psbt = bdk.Psbt(psbt.serialize())
+    assert wallet.sign(signed_psbt)
+    tx = signed_psbt.extract_tx()
+    assert str(tx.compute_txid()) != str(psbt.extract_tx().compute_txid())
+
+    # The viewer has no open wallet containing the foreign previous output.
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.get_wallets", lambda _: [])
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.get_tx_details", lambda **kwargs: (None, None)
+    )
+    stop = RuntimeError("stop after fee update")
+    viewer = SimpleNamespace(
+        data=Data.from_psbt(psbt, network=bdk.Network.REGTEST),
+        network=bdk.Network.REGTEST,
+        fee_info=initial,
+        wallet_functions=MagicMock(),
+        get_chain_position=MagicMock(return_value=None),
+        get_tx_status=MagicMock(),
+        txid=MagicMock(return_value=str(tx.compute_txid())),
+        column_fee=SimpleNamespace(fee_group=SimpleNamespace(set_fee_infos=MagicMock(side_effect=stop))),
+    )
+    viewer._fetch_cached_feeinfo = lambda txid: UITx_Viewer._fetch_cached_feeinfo(viewer, txid)
+    viewer.calc_finalized_tx_fee_info = lambda tx, tx_has_final_size: UITx_Viewer.calc_finalized_tx_fee_info(
+        viewer,
+        tx,
+        tx_has_final_size,  # type: ignore[arg-type]
+    )
+    viewer.set_tx = lambda tx, fee_info=None: UITx_Viewer.set_tx(viewer, tx, fee_info)  # type: ignore[arg-type]
+    assert viewer._fetch_cached_feeinfo(str(tx.compute_txid())) is None
+
+    with pytest.raises(RuntimeError, match="stop after fee update"):
+        UITx_Viewer.tx_received(viewer, tx)  # type: ignore[arg-type]
+
+    assert viewer.fee_info is not None
+    assert viewer.fee_info.fee_amount == initial.fee_amount == psbt.fee()
+    assert viewer.fee_info.vsize == tx.vsize()
+    assert not viewer.fee_info.vsize_is_estimated
+    assert not viewer.fee_info.fee_amount_is_estimated
+
+
 @pytest.mark.parametrize("wallet_fee", [None, 0, 200])
 @pytest.mark.parametrize("explicit_fee", [False, True])
 @pytest.mark.parametrize("fee_estimated", [False, True])
