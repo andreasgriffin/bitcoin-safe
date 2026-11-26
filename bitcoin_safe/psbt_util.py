@@ -43,7 +43,7 @@ from bitcoin_safe_lib.util import network_kind
 from bitcoin_usb.address_types import AddressType, AddressTypes, SimplePubKeyProvider
 from btclib import var_int
 from btclib.hashes import hash160, sha256
-from btclib.script import Witness
+from btclib.script import Witness, serialize
 from btclib.script.script_pub_key import (
     is_p2ms_var,
     is_p2pkh,
@@ -324,7 +324,20 @@ class InputWeight:
 
     @classmethod
     def from_native(cls, inp: PsbtIn, txin: BtclibTxIn, raw: bytes) -> InputWeight:
-        sizes = estimated_input_sizes(input_for_sizing(inp, raw), txin, sizer=input_sizer)
+        sized = input_for_sizing(inp, raw)
+        script = sized.witness_script or sized.redeem_script or raw
+        if not input_is_finalized(inp, raw) and is_p2ms_var(script):
+            m, _ = p2ms_m_and_keys_var(script)
+            if m > 16:
+                # The upstream classifier recognizes pushed counts such as 17,
+                # but its estimator treats the first byte as OP_1..OP_16.
+                signatures = [b"", *[bytes(SIG_SIZE)] * m]
+                if sized.witness_script:
+                    wrapper = [sized.redeem_script] if sized.redeem_script else []
+                    return cls.from_sizes(len(serialize(wrapper)), [0, *[SIG_SIZE] * m, len(script)])
+                wrapper = [sized.redeem_script] if sized.redeem_script else []
+                return cls.from_sizes(len(serialize(signatures + wrapper)), [])
+        sizes = estimated_input_sizes(sized, txin, sizer=input_sizer)
         return cls.from_sizes(*sizes)
 
     @classmethod

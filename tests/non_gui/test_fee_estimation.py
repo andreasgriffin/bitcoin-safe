@@ -473,6 +473,29 @@ def test_large_multisig_thresholds(m: int) -> None:
     )
 
 
+@pytest.mark.parametrize("kind", ["bare", "p2sh", "nested"])
+def test_large_multisig_wrappers(kind: str) -> None:
+    key = bytes.fromhex("0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798")
+    script = b"\x01\x11" + (b"\x21" + key) * 20 + b"\x01\x14\xae"
+    witness_program = b"\x00\x20" + sha256(script)
+    redeem = script if kind == "p2sh" else witness_program if kind == "nested" else b""
+    raw = b"\xa9\x14" + hash160(redeem) + b"\x87" if redeem else script
+    inp = PsbtIn(
+        witness_utxo=BtclibTxOut(100_000, raw),
+        redeem_script=redeem,
+        witness_script=script if kind == "nested" else b"",
+        check_validity=False,
+    )
+    info = InputWeight.from_native(inp, BtclibTxIn(check_validity=False), raw)
+    if kind == "nested":
+        assert info.witness
+        assert info.satisfaction_weight == 35 * 4 + 1 + 17 * 73 + 3 + len(script)
+    else:
+        assert not info.witness
+        script_size = 1 + 17 * 73 + (3 + len(script) if redeem else 0)
+        assert info.satisfaction_weight == 4 * (script_size + compact_size_length(script_size) - 1)
+
+
 @pytest.mark.parametrize(
     ("wrapper", "witness"),
     [("wsh(and_v(v:pk({}),older(10)))", True), ("sh(pk({}))", False), ("pkh({})", False)],
@@ -874,6 +897,8 @@ def test_mixed_psbt_uses_finalized_unlocking_data(
     first.witness_script = b""
     first.final_script_sig = script_sig
     first.final_script_witness.scriptWitness.stack = witness
+    # A key-path signature selects that path even though a script leaf is disclosed.
+    second.tap_key_sig = bytes(64)
     second.final_script_witness.scriptWitness.stack = [bytes(64)]
     full_tx = bdk.Psbt(hwi_psbt.serialize()).extract_tx_unchecked_fee_rate()
 

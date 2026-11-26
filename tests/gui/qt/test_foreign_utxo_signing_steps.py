@@ -45,7 +45,7 @@ from bitcoin_safe.foreign_utxo import ForeignUtxo
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningDeviceList, TxSigningSteps
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
-from bitcoin_safe.psbt_util import SigningProgress
+from bitcoin_safe.psbt_util import SigningProgress, previous_txout
 from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, Recipient, TxOut
 from bitcoin_safe.signals import Signals, WalletFunctions
 from bitcoin_safe.wallet import ProtoWallet, Wallet
@@ -260,8 +260,8 @@ def _wallet(seed: str, wallet_id: str) -> MagicMock:
     wallet.multipath_descriptor = SimpleNamespace(to_single_descriptors=lambda: descriptors)
     wallet.get_mn_tuple.return_value = (1, 1)
     wallet.signer_fallback_name.side_effect = lambda index: wallet_id
-    wallet.owns_psbt_input.side_effect = lambda simple_input: bool(
-        (previous := simple_input.previous_txout()) and wallet.bdkwallet.is_mine(previous.script_pubkey)
+    wallet.owns_psbt_input.side_effect = lambda psbt_input: bool(
+        (previous := previous_txout(psbt_input)) and wallet.bdkwallet.is_mine(previous.script_pubkey)
     )
     return wallet
 

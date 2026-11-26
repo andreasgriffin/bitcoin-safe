@@ -1296,7 +1296,8 @@ def test_grouped_wallet_importer_uses_input_script_when_wallets_share_seed(
     ]
 
     simple_input = simple_psbt.inputs[0]
-    simple_input.witness_utxo = None
+    simple_input.source.witness_utxo = None
+    simple_input.source.non_witness_utxo = None
     simple_input.wallet_id = None
     simple_input.m_of_n = (1, 2)
 

@@ -48,6 +48,7 @@ from bitcoin_safe.psbt_util import (
     psbt_prev_txouts,
     read_psbt,
 )
+from bitcoin_safe.pythonbdk_types import OutPoint
 from tests.non_gui.test_psbt_util import (
     electrum_psbt,
     mixed_inputs_finalized_and_partially_signed_psbt,
@@ -267,7 +268,7 @@ def test_native_prevouts_and_finalization_do_not_build_signing_progress(
     psbt = p2wsh_psbt_0_2of3
     native = read_psbt(psbt)
     tx = psbt.extract_tx_unchecked_fee_rate()
-    expected_points = {str(inp.previous_output) for inp in tx.input()}
+    expected_points = {str(OutPoint.from_bdk(inp.previous_output)) for inp in tx.input()}
     spent = psbt_prev_txouts(native)
     assert set(spent) == expected_points
     utxos = psbt_input_utxos(native, bdk.Network.REGTEST)
