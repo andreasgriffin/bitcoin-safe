@@ -508,6 +508,7 @@ def test_viewer_refreshes_fee_info_when_psbt_changes(monkeypatch: pytest.MonkeyP
     # Cached fee amounts remain useful when transitioning to a finalized transaction.
     viewer._fetch_cached_feeinfo = lambda txid: UITx_Viewer._fetch_cached_feeinfo(viewer, txid)
     viewer.get_chain_position = MagicMock(return_value=None)
+    viewer.calc_finalized_tx_fee_info = MagicMock(return_value=None)
     viewer.wallet_functions = MagicMock()
     viewer.txid = lambda: original_txid
     monkeypatch.setattr(
@@ -530,6 +531,52 @@ def test_viewer_refreshes_fee_info_when_psbt_changes(monkeypatch: pytest.MonkeyP
     update()
     assert viewer.fee_info.fee_amount == psbt.fee()
     assert viewer.fee_info.vsize_is_estimated
+
+
+@pytest.mark.parametrize("wallet_fee", [None, 0, 200])
+@pytest.mark.parametrize("explicit_fee", [False, True])
+@pytest.mark.parametrize("fee_estimated", [False, True])
+def test_finalized_viewer_prefers_wallet_fee_and_uses_actual_size(
+    wallet_fee: int | None, explicit_fee: bool, fee_estimated: bool, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from types import SimpleNamespace
+
+    from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+
+    wallet, psbt = _taproot_psbt(script_path=False)
+    assert wallet.sign(psbt)
+    tx = psbt.extract_tx()
+    fallback = FeeInfo(100, 999, fee_estimated, True)
+    known_wallet = SimpleNamespace(
+        get_tx=MagicMock(return_value=SimpleNamespace(fee=wallet_fee) if wallet_fee is not None else None),
+        get_all_txos_dict=MagicMock(return_value={}),
+    )
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.get_wallets", lambda _: [known_wallet])
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.get_tx_details", lambda **kwargs: (None, None)
+    )
+    stop = RuntimeError("stop after fee update")
+    viewer = SimpleNamespace(
+        network=bdk.Network.REGTEST,
+        wallet_functions=MagicMock(),
+        _fetch_cached_feeinfo=MagicMock(return_value=fallback),
+        get_chain_position=MagicMock(return_value=None),
+        get_tx_status=MagicMock(),
+        txid=MagicMock(return_value=str(tx.compute_txid())),
+        column_fee=SimpleNamespace(fee_group=SimpleNamespace(set_fee_infos=MagicMock(side_effect=stop))),
+    )
+    viewer.calc_finalized_tx_fee_info = lambda tx, tx_has_final_size: UITx_Viewer.calc_finalized_tx_fee_info(
+        viewer,
+        tx,
+        tx_has_final_size,  # type: ignore[arg-type]
+    )
+    with pytest.raises(RuntimeError, match="stop after fee update"):
+        UITx_Viewer.set_tx(viewer, tx, fallback if explicit_fee else None)  # type: ignore[arg-type]
+
+    assert viewer.fee_info.fee_amount == (wallet_fee if wallet_fee is not None else fallback.fee_amount)
+    assert viewer.fee_info.fee_amount_is_estimated is (fee_estimated if wallet_fee is None else False)
+    assert viewer.fee_info.vsize == tx.vsize()
+    assert not viewer.fee_info.vsize_is_estimated
 
 
 @pytest.mark.parametrize("embedded", [False, True])

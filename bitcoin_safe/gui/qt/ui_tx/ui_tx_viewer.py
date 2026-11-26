@@ -1417,7 +1417,7 @@ class UITx_Viewer(UITx_Base):
         # try via tx details
         for wallet_ in wallets:
             txdetails = wallet_.get_tx(str(tx.compute_txid()))
-            if txdetails and txdetails.fee:
+            if txdetails and txdetails.fee is not None:
                 return FeeInfo(
                     fee_amount=txdetails.fee,
                     vsize=tx.vsize(),
@@ -1466,10 +1466,9 @@ class UITx_Viewer(UITx_Base):
         """Set tx."""
         fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(str(tx.compute_txid()))
         self.data = Data.from_tx(tx, network=self.network)
-        if fee_info is None or fee_info.fee_amount_is_estimated:
-            fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
-        else:
-            fee_info = FeeInfo(fee_info.fee_amount, tx.vsize(), False, False)
+        fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True) or fee_info
+        if fee_info is not None:
+            fee_info = FeeInfo(fee_info.fee_amount, tx.vsize(), fee_info.fee_amount_is_estimated, False)
         self.fee_info = fee_info
 
         # Always prefer the latest wallet view of chain position so open tx viewers
