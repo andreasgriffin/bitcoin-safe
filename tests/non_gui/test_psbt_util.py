@@ -35,6 +35,7 @@ from typing import cast
 
 import bdkpython as bdk
 import pytest
+from bip32_descriptors.bip32.key_origin import BIP32KeyOrigin
 from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
@@ -42,6 +43,7 @@ from bitcoin_safe_lib.tx_util import serialized_to_hex
 from btclib.tx import OutPoint as BtclibOutPoint
 from btclib.tx import Tx, TxIn
 from btclib.tx import TxOut as BtclibTxOut
+from btclib_wallet.psbt import PsbtIn
 from PyQt6.QtCore import QObject, pyqtSignal
 from pytestqt.qtbot import QtBot
 
@@ -214,18 +216,17 @@ def test_psbt_0_2of3() -> None:
 def test_psbt_optional_fields() -> None:
     """Test psbt optional fields."""
     psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_2of2)
-    # Verify optional fields are parsed from PSBT.
-    assert psbt.inputs[0].non_witness_utxo
-    assert psbt.inputs[0].non_witness_utxo.get("input", {}) == [
-        {
-            "previous_output": "a873ec7d905086acf870db501cfe4b6fa6e4e9d00b68c663127f7a5f637cf5aa:0",
-            "script_sig": "",
-            "sequence": 4294967293,
-            "witness": [
-                "304402202b5b33ee680a0a3f1c9d5c29830694aa5ca43daf5cfec43d57fbd76ce2af771702202012e5abaf9690ee9d11a64db63eefd4cf58e5308f5df2e5bad0ba4b44f72c6b01",
-                "02fc3fb5d4ff77155ac2bae16a0f8666fd8881eb76b120e4416196ba45368fb45a",
-            ],
-        }
+    # The upstream map retains the whole previous transaction, not a JSON copy.
+    previous = psbt.inputs[0].source.non_witness_utxo
+    assert previous is not None
+    vin = previous.vin[0]
+    assert vin.prev_out.tx_id.hex() == "a873ec7d905086acf870db501cfe4b6fa6e4e9d00b68c663127f7a5f637cf5aa"
+    assert vin.prev_out.vout == 0
+    assert vin.script_sig == b""
+    assert vin.sequence == 4294967293
+    assert [item.hex() for item in vin.script_witness.stack] == [
+        "304402202b5b33ee680a0a3f1c9d5c29830694aa5ca43daf5cfec43d57fbd76ce2af771702202012e5abaf9690ee9d11a64db63eefd4cf58e5308f5df2e5bad0ba4b44f72c6b01",
+        "02fc3fb5d4ff77155ac2bae16a0f8666fd8881eb76b120e4416196ba45368fb45a",
     ]
 
     assert psbt.outputs[0].value == 9999850
@@ -263,11 +264,7 @@ def test_p2sh() -> None:
 
 def test_to_txout() -> None:
     """Test to txout."""
-    output_data = {"value": 1000, "script_pubkey": ""}
-    unsigned_tx = {"value": 1000, "script_pubkey": ""}
-
-    # Convert a simple output into a TxOut instance.
-    simple_output = SimpleOutput.from_output(output_data, unsigned_tx)
+    simple_output = SimpleOutput(value=1000, script_pubkey="")
 
     txout = simple_output.to_txout()
 
@@ -486,26 +483,18 @@ def test_taproot_key_signature_only_belongs_to_internal_key(internal_key: str | 
 
 
 @pytest.mark.parametrize(
-    "origins",
-    [
-        None,
-        {},
-        [None],
-        [[_TAP_PUBKEY]],
-        [[_TAP_PUBKEY, [None, ["aabbccdd", "m/0"]]]],
-        [[_TAP_PUBKEY, [["zz" * 32], ["aabbccdd", "m/0"]]]],
-        [[_TAP_PUBKEY, [[], ["bad", "m/0"]]]],
-        [[_TAP_PUBKEY, [[], ["aabbccdd", []]]]],
-        [[_TAP_PUBKEY, [[], ["aabbccdd", "m/nope"]]]],
-    ],
+    ("key_size", "leaf_size", "fingerprint_size"),
+    [(31, 32, 4), (33, 32, 4), (32, 31, 4), (32, 33, 4), (32, 32, 3)],
 )
-def test_taproot_malformed_origins_are_ignored(origins: object) -> None:
-    data = {
-        "tap_key_sig": {"signature": "11" * 64, "sighash_type": "SIGHASH_DEFAULT"},
-        "tap_internal_key": _TAP_PUBKEY,
-        "tap_key_origins": origins,
-    }
-    simple_input = SimpleInput.from_input(data, tr_psbt_singlesig.extract_tx().input()[0])
+def test_taproot_malformed_origins_are_ignored(key_size: int, leaf_size: int, fingerprint_size: int) -> None:
+    origin = BIP32KeyOrigin(bytes(fingerprint_size), [0], check_validity=False)
+    source = PsbtIn(
+        taproot_key_spend_signature=bytes.fromhex("11" * 64),
+        taproot_internal_key=bytes.fromhex(_TAP_PUBKEY),
+        taproot_hd_key_paths={bytes(key_size): ([bytes(leaf_size)], origin)},
+        check_validity=False,
+    )
+    simple_input = SimpleInput.from_btclib(source, tr_psbt_singlesig.extract_tx().input()[0])
     assert simple_input.tap_key_sig == PartialSig("11" * 64, "DEFAULT")
     assert not simple_input.tap_key_origins
     assert simple_input.signature_for_pubkey(PubKeyInfo("AABBCCDD", _TAP_PUBKEY)) is None
@@ -513,13 +502,15 @@ def test_taproot_malformed_origins_are_ignored(origins: object) -> None:
 
 def test_taproot_script_signature_requires_matching_origin_and_leaf() -> None:
     leaf = "33" * 32
-    signature = {"signature": "11" * 64, "sighash_type": "SIGHASH_DEFAULT"}
-    data = {
-        "tap_script_sigs": [[[_TAP_PUBKEY, leaf], signature]],
-        "tap_key_origins": [[_TAP_PUBKEY, [["44" * 32], ["aabbccdd", "m/0"]]]],
-    }
-    txin = tr_psbt_singlesig.extract_tx().input()[0]
-    simple_input = SimpleInput.from_input(data, txin)
+    key = bytes.fromhex(_TAP_PUBKEY)
+    source = PsbtIn(
+        taproot_script_spend_signatures={key + bytes.fromhex(leaf): bytes.fromhex("11" * 64)},
+        taproot_hd_key_paths={
+            key: ([bytes.fromhex("44" * 32)], BIP32KeyOrigin(bytes.fromhex("aabbccdd"), [0]))
+        },
+        check_validity=False,
+    )
+    simple_input = SimpleInput.from_btclib(source, tr_psbt_singlesig.extract_tx().input()[0])
     signer = simple_input.pubkeys[0]
     assert simple_input.tap_script_sigs[(_TAP_PUBKEY, leaf)] == PartialSig("11" * 64, "DEFAULT")
     assert simple_input.signature_for_pubkey(signer) is None
@@ -532,13 +523,12 @@ def test_taproot_script_signature_requires_matching_origin_and_leaf() -> None:
 
 
 def test_taproot_missing_fingerprint_preserves_key_without_attribution() -> None:
-    simple_input = SimpleInput.from_input(
-        {
-            "tap_key_sig": {"signature": "11" * 64, "sighash_type": "SIGHASH_DEFAULT"},
-            "tap_internal_key": _TAP_PUBKEY,
-            "tap_key_origins": [[_TAP_PUBKEY, [[], ["", "m/0"]]]],
-        },
-        tr_psbt_singlesig.extract_tx().input()[0],
+    simple_input = SimpleInput(
+        txin=tr_psbt_singlesig.extract_tx().input()[0],
+        tap_internal_key=_TAP_PUBKEY,
+        tap_key_sig=PartialSig("11" * 64, "DEFAULT"),
+        pubkeys=[PubKeyInfo("", _TAP_PUBKEY, "m/0")],
+        tap_key_origins=[(_TAP_PUBKEY, ([], ("", "m/0")))],
     )
     assert simple_input.pubkeys[0].pubkey == _TAP_PUBKEY
     assert simple_input.tap_key_sig is not None
@@ -567,37 +557,27 @@ def test_verified_fingerprint_preserves_unrelated_taproot_origins() -> None:
 
 
 @pytest.mark.parametrize(
-    ("raw", "sighash", "expected"),
-    [
-        ("AA" * 64, "SIGHASH_DEFAULT", PartialSig("aa" * 64, "DEFAULT")),
-        ("11" * 64, "SIGHASH_ALL", PartialSig("11" * 64, "ALL")),
-        (
-            "11" * 64,
-            "SIGHASH_SINGLE|SIGHASH_ANYONECANPAY",
-            PartialSig("11" * 64, "SINGLE|ANYONECANPAY"),
-        ),
-    ],
+    ("suffix", "expected"), [("", "DEFAULT"), ("01", "ALL"), ("83", "SINGLE|ANYONECANPAY")]
 )
-def test_taproot_signature_encoding(raw: str, sighash: str, expected: PartialSig) -> None:
-    assert SimpleInput._parse_taproot_signature({"signature": raw, "sighash_type": sighash}) == expected
+def test_taproot_signature_encoding(suffix: str, expected: str) -> None:
+    assert SimpleInput._taproot_signature(bytes.fromhex("AA" * 64 + suffix)) == PartialSig(
+        "aa" * 64, expected
+    )
 
 
 def test_group_finds_taproot_signatures_for_distinct_derived_keys() -> None:
     txin = tr_psbt_singlesig.extract_tx().input()[0]
     inputs = []
-    for index, key in enumerate([_TAP_PUBKEY, _TAP_PUBKEY_2]):
-        inputs.append(
-            SimpleInput.from_input(
-                {
-                    "tap_internal_key": key,
-                    "tap_key_sig": {"signature": "11" * 64, "sighash_type": "SIGHASH_DEFAULT"},
-                    "tap_key_origins": [[key, [[], ["aabbccdd", f"m/0/{index}"]]]],
-                },
-                txin,
-            )
+    for index, key_hex in enumerate([_TAP_PUBKEY, _TAP_PUBKEY_2]):
+        key = bytes.fromhex(key_hex)
+        source = PsbtIn(
+            taproot_internal_key=key,
+            taproot_key_spend_signature=bytes.fromhex("11" * 64),
+            taproot_hd_key_paths={key: ([], BIP32KeyOrigin(bytes.fromhex("aabbccdd"), [0, index]))},
+            check_validity=False,
         )
-    psbt = SimplePSBT("test", inputs=inputs)
-    group = psbt.group_inputs()[0]
+        inputs.append(SimpleInput.from_btclib(source, txin))
+    group = SimplePSBT("test", inputs=inputs).group_inputs()[0]
     assert group.signatures_by_identifier() == {
         "AABBCCDD": {0: inputs[0].tap_key_sig, 1: inputs[1].tap_key_sig}
     }
@@ -606,52 +586,32 @@ def test_group_finds_taproot_signatures_for_distinct_derived_keys() -> None:
 
 
 @pytest.mark.parametrize(
-    "signature_data",
-    [
-        None,
-        {},
-        {"signature": "11" * 64},
-        {"sighash_type": "SIGHASH_DEFAULT"},
-        {"signature": "11" * 63, "sighash_type": "SIGHASH_DEFAULT"},
-        {"signature": "11" * 65, "sighash_type": "SIGHASH_ALL"},
-        {"signature": "zz" * 64, "sighash_type": "SIGHASH_DEFAULT"},
-        {"signature": "11" * 64, "sighash_type": ""},
-        {"signature": "11" * 64, "sighash_type": []},
-        {"signature": "11" * 64, "sighash_type": 1},
-        {"signature": "11" * 63 + "  ", "sighash_type": "SIGHASH_DEFAULT"},
-    ],
+    "raw", [b"", bytes(63), bytes(65), bytes(66), bytes(64) + b"\x04", bytes(64) + b"\x80"]
 )
-def test_taproot_invalid_signature_data_is_ignored(signature_data: object) -> None:
-    data = {
-        "tap_key_sig": signature_data,
-        "tap_script_sigs": [[[_TAP_PUBKEY, "33" * 32], signature_data]],
-        "tap_internal_key": _TAP_PUBKEY,
-        "tap_key_origins": [[_TAP_PUBKEY, [[], ["aabbccdd", "m/0"]]]],
-    }
-    simple_input = SimpleInput.from_input(data, tr_psbt_singlesig.extract_tx().input()[0])
+def test_taproot_invalid_signature_data_is_ignored(raw: bytes) -> None:
+    key = bytes.fromhex(_TAP_PUBKEY)
+    source = PsbtIn(
+        taproot_key_spend_signature=raw,
+        taproot_script_spend_signatures={key + bytes(32): raw},
+        taproot_internal_key=key,
+        taproot_hd_key_paths={key: ([], BIP32KeyOrigin(bytes.fromhex("aabbccdd"), [0]))},
+        check_validity=False,
+    )
+    simple_input = SimpleInput.from_btclib(source, tr_psbt_singlesig.extract_tx().input()[0])
     assert simple_input.tap_key_sig is None
     assert not simple_input.tap_script_sigs
     assert not simple_input.fingerprint_has_signature("AABBCCDD")
 
 
-@pytest.mark.parametrize(
-    "key",
-    [
-        [],
-        [_TAP_PUBKEY],
-        [_TAP_PUBKEY, "33" * 32, "44" * 32],
-        ["11" * 31, "33" * 32],
-        [_TAP_PUBKEY, "zz" * 32],
-        ["02" + _TAP_PUBKEY, "33" * 32],
-        "bad",
-    ],
-)
-def test_taproot_invalid_script_signature_keys_are_ignored(key: object) -> None:
-    data = {
-        "tap_script_sigs": [[key, {"signature": "11" * 64, "sighash_type": "SIGHASH_DEFAULT"}]],
-        "tap_key_origins": [[_TAP_PUBKEY, [["33" * 32], ["aabbccdd", "m/0"]]]],
-    }
-    simple_input = SimpleInput.from_input(data, tr_psbt_singlesig.extract_tx().input()[0])
+@pytest.mark.parametrize("key_size", [0, 31, 32, 63, 65, 96])
+def test_taproot_invalid_script_signature_keys_are_ignored(key_size: int) -> None:
+    key = bytes.fromhex(_TAP_PUBKEY)
+    source = PsbtIn(
+        taproot_script_spend_signatures={bytes(key_size): bytes.fromhex("11" * 64)},
+        taproot_hd_key_paths={key: ([bytes(32)], BIP32KeyOrigin(bytes.fromhex("aabbccdd"), [0]))},
+        check_validity=False,
+    )
+    simple_input = SimpleInput.from_btclib(source, tr_psbt_singlesig.extract_tx().input()[0])
     assert not simple_input.tap_script_sigs
     assert not simple_input.fingerprint_has_signature("AABBCCDD")
 
@@ -687,7 +647,7 @@ def test_previous_txout_supports_segwit_witness_and_non_witness_utxo() -> None:
     witness_txout = simple_input.previous_txout()
     assert witness_txout
 
-    simple_input.witness_utxo = None
+    simple_input.source.witness_utxo = None
     non_witness_txout = simple_input.previous_txout()
 
     assert non_witness_txout == witness_txout
@@ -698,14 +658,12 @@ def test_previous_txout_supports_non_segwit_utxo() -> None:
     script_pubkey = "76a914" + "11" * 20 + "88ac"
     simple_input = SimpleInput(
         txin=tr_psbt_singlesig.extract_tx().input()[0],
-        non_witness_utxo={
-            "output": [
-                {
-                    "value": 100_000,
-                    "script_pubkey": script_pubkey,
-                }
-            ]
-        },
+        source=PsbtIn(
+            non_witness_utxo=Tx(
+                vout=[BtclibTxOut(100_000, bytes.fromhex(script_pubkey))], check_validity=False
+            ),
+            check_validity=False,
+        ),
     )
 
     previous_txout = simple_input.previous_txout()
@@ -783,11 +741,11 @@ def test_previous_txout_supports_non_segwit_utxo_p2wsh() -> None:
 def test_previous_txout_returns_none_for_incomplete_utxo_data() -> None:
     simple_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
 
-    simple_input.witness_utxo = {"script_pubkey": "0014deadbeef"}
+    simple_input.source.witness_utxo = None
+    simple_input.source.non_witness_utxo = None
     assert simple_input.previous_txout() is None
 
-    simple_input.witness_utxo = None
-    simple_input.non_witness_utxo = {"output": []}
+    simple_input.source.non_witness_utxo = Tx(vout=[], check_validity=False)
     assert simple_input.previous_txout() is None
 
 

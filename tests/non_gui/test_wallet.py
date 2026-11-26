@@ -32,6 +32,8 @@ from __future__ import annotations
 import logging
 
 import pytest
+from btclib.tx import TxOut as BtclibTxOut
+from btclib_wallet.psbt import PsbtIn
 
 from bitcoin_safe.psbt_util import PubKeyInfo, SimpleInput
 from bitcoin_safe.signals import Signals, WalletFunctions
@@ -66,7 +68,9 @@ def test_owns_psbt_input_uses_descriptor_path_beyond_lookahead(
     script_pubkey = receive_descriptor.derive_address(address_index, test_config.network).script_pubkey()
     simple_input = SimpleInput(
         txin=tr_psbt_singlesig.extract_tx().input()[0],
-        witness_utxo={"value": 100_000, "script_pubkey": bytes(script_pubkey.to_bytes()).hex()},
+        source=PsbtIn(
+            witness_utxo=BtclibTxOut(100_000, bytes(script_pubkey.to_bytes())), check_validity=False
+        ),
         pubkeys=[PubKeyInfo(fingerprint="", derivation_path=f"m/0/{address_index}")],
     )
 
@@ -95,7 +99,9 @@ def test_get_wallet_for_psbt_input_returns_first_match(test_config: TestConfig, 
     script_pubkey = receive_descriptor.derive_address(0, test_config.network).script_pubkey()
     simple_input = SimpleInput(
         txin=tr_psbt_singlesig.extract_tx().input()[0],
-        witness_utxo={"value": 100_000, "script_pubkey": bytes(script_pubkey.to_bytes()).hex()},
+        source=PsbtIn(
+            witness_utxo=BtclibTxOut(100_000, bytes(script_pubkey.to_bytes())), check_validity=False
+        ),
     )
     wallet_functions = WalletFunctions(Signals())
     wallet_functions.get_wallets.connect(lambda: first_wallet, slot_name="first")

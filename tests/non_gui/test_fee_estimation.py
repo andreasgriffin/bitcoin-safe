@@ -29,12 +29,14 @@
 
 from __future__ import annotations
 
-from typing import cast
 from unittest.mock import MagicMock
 
 import bdkpython as bdk
 import pytest
 from bitcoin_usb.address_types import AddressTypes
+from btclib.tx import Tx as BtclibTx
+from btclib.tx import TxOut as BtclibTxOut
+from btclib_wallet.psbt import Psbt, PsbtIn, PsbtOut
 
 from bitcoin_safe.psbt_util import (
     FeeInfo,
@@ -81,24 +83,23 @@ def test_psbt_fee_estimate_uses_output_scripts() -> None:
 
 
 def test_tx_weight_from_psbt_uses_previous_outputs_and_unknown_fallback() -> None:
-    from bitcoin_safe.foreign_utxo import ForeignUtxo
     from tests.non_gui.test_foreign_utxo import transaction
 
     legacy = transaction([b"\x76\xa9\x14" + bytes(20) + b"\x88\xac"])
-    witness = transaction([b"\x00\x14" + bytes(20)])
-    witness_input = ForeignUtxo._empty_input(witness.output()[0], None)
-    legacy_input = ForeignUtxo._empty_input(legacy.output()[0], legacy)
-    legacy_input.witness_utxo = None
-    unknown_input = ForeignUtxo._empty_input(witness.output()[0], None)
-    unknown_input.witness_utxo = None
-
-    tx = transaction([b"\x51"])
-    psbt = MagicMock(spec=bdk.Psbt)
-    psbt.extract_tx_unchecked_fee_rate.return_value.input.return_value = tx.input() * 3
-    psbt.extract_tx_unchecked_fee_rate.return_value.output.return_value = tx.output()
-    psbt.input.return_value = [witness_input, legacy_input, unknown_input]
-
-    estimate = TxWeight.from_psbt(cast(bdk.Psbt, psbt))
+    previous = BtclibTx.parse(bytes(legacy.serialize()), check_validity=False)
+    parsed = Psbt.b64decode(p2wsh_psbt_0_2of3.serialize(), check_validity=False)
+    parsed.inputs = [
+        PsbtIn(
+            previous_tx_id=bytes.fromhex("11" * 32),
+            output_index=0,
+            witness_utxo=BtclibTxOut(1000, b"\x00\x14" + bytes(20)),
+            check_validity=False,
+        ),
+        PsbtIn(previous_tx_id=previous.id, output_index=0, non_witness_utxo=previous, check_validity=False),
+        PsbtIn(previous_tx_id=bytes.fromhex("22" * 32), output_index=0, check_validity=False),
+    ]
+    parsed.outputs = [PsbtOut(amount=0, script_pub_key=b"\x51", check_validity=False)]
+    estimate = TxWeight.from_psbt(bdk.Psbt(parsed.b64encode(check_validity=False)))
     assert [item.address_type for item in estimate.inputs] == [
         AddressTypes.p2wpkh,
         AddressTypes.p2pkh,
@@ -251,11 +252,18 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
     info = InputWeight.from_psbt_input(funding.output()[0].script_pubkey, psbt.input()[0])
     estimate = TxWeight([info], [output.script_pubkey for output in tx.output()]).estimate()
     viewer_estimate = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
-    assert viewer_estimate.vsize == weight_to_vsize(estimate)
+    assert viewer_estimate is not None
+    if wrapper == "tr({key})":
+        # SIGHASH_DEFAULT has no trailing sighash byte.
+        assert viewer_estimate.vsize in (weight_to_vsize(estimate), weight_to_vsize(estimate - 1))
+    else:
+        assert viewer_estimate.vsize == weight_to_vsize(estimate)
     assert wallet.sign(psbt)
     signed = psbt.extract_tx_unchecked_fee_rate()
     assert signed.weight() <= estimate
+    assert signed.vsize() <= viewer_estimate.vsize
     actual = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+    assert actual is not None
     assert not actual.vsize_is_estimated
     assert actual.vsize == signed.vsize()
 
@@ -387,7 +395,12 @@ def test_taproot_weight_uses_signed_leaf_and_final_witness() -> None:
     # Partially signed 2-of-3 multi_a: two signatures, one empty item.
     inp.tap_script_sigs = {(key, bytes.fromhex(multi_hash)): bytes(64)}
     assert estimated_weight() == 2 * 66 + 1 + 105 + 98
-    assert InputWeight.from_psbt_input(script, inp, satisfaction_weight=400).weight() == 400
+    assert (
+        InputWeight.from_psbt_input(
+            script, PsbtIn.parse(inp.serialize(), check_validity=False), satisfaction_weight=400
+        ).weight()
+        == 400
+    )
 
     # An available key-path signature takes precedence over leaf signatures.
     inp.tap_key_sig = bytes(64)
@@ -395,13 +408,19 @@ def test_taproot_weight_uses_signed_leaf_and_final_witness() -> None:
 
     # A finalized input uses its actual witness, even in a partially finalized PSBT.
     inp.final_script_witness.scriptWitness.stack = [bytes(64), pk, pk_control]
-    assert InputWeight.from_psbt_input(script, inp).weight() == 65 + 35 + 66
+    assert (
+        InputWeight.from_psbt_input(script, PsbtIn.parse(inp.serialize(), check_validity=False)).weight()
+        == 65 + 35 + 66
+    )
 
     inp.final_script_witness.scriptWitness.stack = []
     inp.tap_key_sig = b""
     inp.tap_scripts = {}
     # Missing leaf metadata is only a rough estimate, not a protocol maximum.
-    assert InputWeight.from_psbt_input(script, inp).weight() == 66 + 1 + 34
+    assert (
+        InputWeight.from_psbt_input(script, PsbtIn.parse(inp.serialize(), check_validity=False)).weight()
+        == 66 + 1 + 34
+    )
 
 
 def test_cpfp_uses_descriptor_estimate(monkeypatch: pytest.MonkeyPatch) -> None:

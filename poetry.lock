@@ -533,6 +533,51 @@ files = [
 ]
 
 [[package]]
+name = "bip32-descriptors"
+version = "2026.11.17"
+description = "BIP32 keys, output script descriptors and miniscript, built on btclib"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "bip32_descriptors-2026.11.17-py3-none-any.whl", hash = "sha256:d144c0755ba0609f6cbe7a0d17ecaa0072631db5b6e3d2c2ba16722e569f7d36"},
+    {file = "bip32_descriptors-2026.11.17.tar.gz", hash = "sha256:8fed5929200b1827d1ba80898d3e8a8751c393c473ca617755f1ae0f5ba49876"},
+]
+
+[package.dependencies]
+base58-bech32 = ">=2026.10.23"
+btclib = ">=2026.11.10"
+ecc = ">=2026.11.8"
+typing-extensions = ">=4.4"
+
+[package.extras]
+secp256k1 = ["ecc[secp256k1] (>=2026.11.8)"]
+
+[[package]]
+name = "bip39-slip39"
+version = "2026.11.13"
+description = "BIP39, SLIP-0039 and Electrum mnemonic codes, from entropy to seed, on the standard library alone"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "bip39_slip39-2026.11.13-py3-none-any.whl", hash = "sha256:dbeeb118430d4e03086cff18685609009e99180118a5b0a4c08c06a1d3a87661"},
+    {file = "bip39_slip39-2026.11.13.tar.gz", hash = "sha256:fa23c0b33b0f2d0f66a6e5c886283792e1553368f1cb8707ec3d924a6642bb11"},
+]
+
+[[package]]
+name = "bitcoin-core-rpc"
+version = "2026.11.15"
+description = "A standalone JSON-RPC client against Bitcoin Core"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "bitcoin_core_rpc-2026.11.15-py3-none-any.whl", hash = "sha256:9c34f1ab77c56b71837463ca5959ec8805bd66e8cef7d75cdfd97c5a0abdb5d3"},
+    {file = "bitcoin_core_rpc-2026.11.15.tar.gz", hash = "sha256:deb872a702653f6db0d430d9e7b2ecb5b51b14f66d06111f65899eb53a52eea1"},
+]
+
+[[package]]
 name = "bitcoin-nostr-chat"
 version = "2.1.6"
 description = "A Nostr Chat with participant discovery"
@@ -684,6 +729,32 @@ typing-extensions = ">=4.10"
 bip324 = ["cryptography (>=42.0.0)"]
 secp256k1 = ["ecc[secp256k1] (>=2026.11.11)"]
 testing = ["hypothesis (>=6.168.0)"]
+
+[[package]]
+name = "btclib-wallet"
+version = "2026.11.19"
+description = "Bitcoin wallet functionality built on btclib"
+optional = false
+python-versions = ">=3.11"
+groups = ["main"]
+files = [
+    {file = "btclib_wallet-2026.11.19-py3-none-any.whl", hash = "sha256:f9a43a6beb2d273904826f9efa3638cc69a0222ab31338ca4d600c4f74fae1d0"},
+    {file = "btclib_wallet-2026.11.19.tar.gz", hash = "sha256:2f4720e0c7d5dd480ef868c84d6ec53f3e1ed9c1310672638f0c5fe96c043de0"},
+]
+
+[package.dependencies]
+base58-bech32 = ">=2026.10.23"
+bip32-descriptors = ">=2026.11.17"
+bip39-slip39 = ">=2026.11.2"
+bitcoin-core-rpc = ">=2026.11.15"
+btclib = ">=2026.11.10"
+cryptography = {version = ">=47.0.0", markers = "platform_machine != \"ARM64\" or sys_platform != \"win32\""}
+ecc = ">=2026.11.8"
+typing-extensions = ">=4.10"
+
+[package.extras]
+encryption = ["cryptography (>=47.0.0)"]
+secp256k1 = ["btclib-secp256k1 (>=0.8.0.13)", "btclib[secp256k1] (>=2026.11.10)"]
 
 [[package]]
 name = "btcpay-tools"
@@ -5632,4 +5703,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "17cf95bafff3c7c9a1b3ffa6cac4f13a2b90710e5b6ee624c02fcd06704687f1"
+content-hash = "199aedb1025f1a4b342e0c3ee7b16aadee1a743b49f1f3d9136126e8e5b89965"

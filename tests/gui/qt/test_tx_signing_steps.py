@@ -1225,7 +1225,7 @@ def test_grouped_wallet_importer_uses_input_script_when_wallets_share_seed(
         inputs=[
             SimpleInput(
                 txin=source_input.txin,
-                witness_utxo=source_input.witness_utxo,
+                source=source_input.source,
                 pubkeys=[
                     PubKeyInfo(pubkey="pubkey-1", fingerprint=keystores[0].fingerprint),
                     PubKeyInfo(pubkey="pubkey-2", fingerprint=keystores[1].fingerprint),
