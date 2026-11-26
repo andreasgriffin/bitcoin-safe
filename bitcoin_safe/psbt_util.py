@@ -32,49 +32,46 @@ from __future__ import annotations
 import json
 import logging
 import re
-from collections.abc import Iterable
+from collections import Counter
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
+from hashlib import sha256
 from math import ceil
 from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.tx_util import hex_to_script
-from bitcoin_safe_lib.util import remove_duplicates_keep_order
-from bitcoin_usb.address_types import SimplePubKeyProvider
+from bitcoin_safe_lib.util import network_kind, remove_duplicates_keep_order
+from bitcoin_usb.address_types import AddressType, AddressTypes, SimplePubKeyProvider
+from btclib import var_int
+from btclib.script.script_pub_key import (
+    is_p2ms_var,
+    is_p2pkh,
+    is_p2sh,
+    is_p2tr,
+    is_p2wpkh,
+    is_p2wsh,
+    p2ms_m_and_keys_var,
+)
+from btclib.tx import Tx
+from hwilib.psbt import PSBT, PartiallySignedInput
 
+from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
 from .pythonbdk_types import (
     OutPoint,
     PythonUtxo,
+    Recipient,
     TransactionDetails,
+    TxInputInfo,
     TxOut,
+    is_address,
     robust_address_str_from_txout,
 )
 
 logger = logging.getLogger(__name__)
 VSIZE_OF_ZERO_FEE_TX = 200
-
-
-def parse_redeem_script(script_hex: str) -> tuple[int, list[str]]:
-    """Parses a redeem script to extract the threshold (m) and public keys.
-
-    Parameters:
-    - script_hex (str): The hexadecimal string of the redeem script.
-
-    Returns:
-    - Tuple[int, List[str]]: A tuple containing the threshold (m) and a list of public keys.
-    """
-    m = int(script_hex[:2], 16) - 80
-    script_body = script_hex[2:]
-    public_keys = []
-    while script_body:
-        if script_body[:2] == "21":
-            key = script_body[2:68]
-            public_keys.append(key)
-            script_body = script_body[68:]
-        else:
-            break
-
-    return m, public_keys
+# Used only while an output script is unknown, such as an incomplete address.
+DEFAULT_OUTPUT_SCRIPT = bdk.Script(b"\x00\x14" + bytes(20))
 
 
 def parse_witness_script(script_hex: str) -> tuple[int, list[str]]:
@@ -105,65 +102,352 @@ def weight_to_vsize(weight) -> int:
     return ceil(weight / 4)
 
 
-def estimate_tx_weight(
-    input_mn_tuples: list[tuple[int, int]], num_outputs: int, include_signatures=True
-) -> int:
-    """Estimate the weight of a SegWit transaction in weight units, including support
-    for multiple inputs with varying m-of-n multisignature configurations.
+def compact_size_length(value: int) -> int:
+    """Return the number of bytes used by a Bitcoin CompactSize integer."""
+    return len(var_int.serialize(value))
 
-    Args:
-    input_mn_tuples (list of tuples): A list where each tuple represents an input with (m, n) configuration.
-    num_outputs (int): Number of outputs in the transaction.
-    include_signatures (bool): Whether to include the size of signatures in the estimate.
 
-    Returns:
-    int: Estimated transaction weight in weight units.
-    """
-    # Transaction overheads
-    version_size = 4
-    segwit_marker_and_flag_size = 2
-    locktime_size = 4
+def unsigned_tx_bytes(tx: bdk.Transaction) -> bytes:
+    """Serialize a transaction without input unlocking data, for signing compatibility checks."""
+    unsigned = Tx.parse(bytes(tx.serialize()), check_validity=False)
+    for txin in unsigned.vin:
+        txin.script_sig = b""
+    return unsigned.serialize(include_witness=False, check_validity=False)
 
-    # Input components
-    outpoint_size = 36  # txid (32 bytes) + vout index (4 bytes)
-    script_length_size = 1  # Size of the script length field
-    sequence_size = 4  # Size of the sequence field
-    base_input_size = outpoint_size + sequence_size  # Excluding scriptSig and witness
 
-    # Output components
-    output_value_size = 8  # Size of the value field
-    output_script_length_size = 1  # Size of the script length field
-    p2wpkh_script_size = 22  # P2WPKH script size
-    base_output_size = output_value_size + output_script_length_size + p2wpkh_script_size
-
-    # Witness components
-    witness_stack_items_size = 1  # Size byte for the number of witness stack items
-    average_signature_size = 72  # Approximate size of a signature
-    average_pubkey_size = 33  # Size of a compressed public key
-
-    # Calculate total witness data size
-    total_witness_data_size = 0
-    for m, n in input_mn_tuples:
-        witness_data_size_per_input = (
-            witness_stack_items_size + (m * (1 + average_signature_size)) + (n * (1 + average_pubkey_size))
-        )
-        total_witness_data_size += witness_data_size_per_input if include_signatures else 0
-
-    # Calculate base transaction size (excluding witness data)
-    num_inputs = len(input_mn_tuples)
-    base_tx_size_without_witness = (
-        version_size
-        + segwit_marker_and_flag_size
-        + locktime_size
-        + num_inputs * (base_input_size + script_length_size)
-        + num_outputs * base_output_size
+def witness_satisfaction_weight(item_sizes: Sequence[int]) -> int:
+    """Serialized witness weight minus the empty witness byte (BDK convention)."""
+    return (
+        compact_size_length(len(item_sizes))
+        - 1
+        + sum(compact_size_length(size) + size for size in item_sizes)
     )
 
-    # Calculate transaction weight
-    # Non-witness data is weighted as 4 units per byte, witness data as 1 unit per byte
-    tx_weight: int = (base_tx_size_without_witness * 4) + total_witness_data_size
 
-    return tx_weight
+def estimate_tapscript_weight(psbt_input: bdk.Input | PartiallySignedInput) -> int:
+    """Estimate signed Taproot leaves, not the protocol-wide stack limit."""
+    if isinstance(psbt_input, PartiallySignedInput):
+        signatures = Counter(leaf_hash.hex() for _, leaf_hash in psbt_input.tap_script_sigs)
+        leaves = [
+            (script, version, len(control))
+            for (script, version), controls in psbt_input.tap_scripts.items()
+            for control in controls
+        ]
+    else:
+        signatures = Counter(key.tap_leaf_hash for key in psbt_input.tap_script_sigs)
+        leaves = [
+            (bytes(entry.script.to_bytes()), entry.leaf_version, 33 + 32 * len(control.merkle_branch))
+            for control, entry in psbt_input.tap_scripts.items()
+        ]
+    tag = sha256(b"TapLeaf").digest()
+    weights = []
+    for script, version, control_size in leaves:
+        leaf_hash = sha256(tag + tag + bytes([version]) + var_int.serialize(len(script)) + script).hexdigest()
+        if leaf_hash not in signatures:
+            continue
+
+        # Common pk() and multi_a() leaves have only signature/empty stack items.
+        if re.fullmatch(rb"\x20.{32}\xac", script, re.DOTALL):
+            m = n = 1
+        elif re.fullmatch(rb"\x20.{32}\xac(?:\x20.{32}\xba)+[\x51-\x60]\x9c", script, re.DOTALL):
+            n = (len(script) - 2) // 34
+            m = min(n, script[-2] - 0x50)
+        else:
+            # For arbitrary scripts this is only a rough signature-based estimate.
+            sigops = sum(
+                op in ("OP_CHECKSIG", "OP_CHECKSIGVERIFY", "OP_CHECKSIGADD")
+                for op in str(bdk.Script(script)).split()
+            )
+            m = n = max(signatures[leaf_hash], sigops)
+            logger.warning("Rough Taproot weight estimate for unsupported leaf %s", leaf_hash)
+
+        weights.append(witness_satisfaction_weight([65] * m + [0] * (n - m) + [len(script), control_size]))
+
+    if weights:
+        return max(weights)
+    # No matching script/control block: estimate only the minimum witness shape.
+    logger.warning("Rough Taproot weight estimate: missing signed leaf metadata")
+    return witness_satisfaction_weight([65] * max(signatures.values(), default=1) + [0, 33])
+
+
+def input_address_type(raw: bytes, redeem: bytes, final_script_sig: bytes) -> AddressType | None:
+    """Infer the spend type, including a nested witness program in final scriptSig."""
+    if is_p2pkh(raw):
+        return AddressTypes.p2pkh
+    if is_p2wpkh(raw):
+        return AddressTypes.p2wpkh
+    if is_p2wsh(raw):
+        return AddressTypes.p2wsh
+    if is_p2tr(raw):
+        return AddressTypes.p2tr
+    if not raw or is_p2sh(raw):
+        # A finalizer may remove redeem_script, leaving only its canonical push.
+        if not redeem and final_script_sig[:1] in (b"\x16", b"\x22"):
+            program = final_script_sig[1:]
+            if final_script_sig[0] == len(program):
+                redeem = program
+        if is_p2wpkh(redeem):
+            return AddressTypes.p2sh_p2wpkh
+        if is_p2wsh(redeem):
+            return AddressTypes.p2sh_p2wsh
+    return None
+
+
+def has_finalized_unlocking_data(
+    address_type: AddressType | None, has_script_sig: bool, has_witness: bool, legacy_p2sh: bool
+) -> bool:
+    """Check for the required unlocking fields, not cryptographic validity."""
+    if address_type in (AddressTypes.p2sh_p2wpkh, AddressTypes.p2sh_p2wsh):
+        return has_script_sig and has_witness
+    if address_type in (AddressTypes.p2wpkh, AddressTypes.p2wsh, AddressTypes.p2tr):
+        return has_witness
+    if address_type == AddressTypes.p2pkh or legacy_p2sh:
+        return has_script_sig
+    # Retain the existing heuristic for other or unknown script types.
+    return has_script_sig or has_witness
+
+
+@dataclass
+class InputWeight:
+    """Optional spend information; unknown inputs default to native SegWit.
+
+    satisfaction_weight uses BDK's convention: it excludes the empty witness
+    byte and includes the increase in scriptSig weight.
+    """
+
+    mn: tuple[int, int] = (1, 1)
+    address_type: AddressType | None = None
+    satisfaction_weight: int | None = None
+    legacy_multisig: bool = False
+    script_size: int | None = None
+    tap_script_path: bool = False
+    tap_script_weight: int = 66
+    finalized_witness: bool | None = None
+
+    @classmethod
+    def from_psbt_input(
+        cls,
+        script: bdk.Script | None,
+        psbt_input: bdk.Input | PartiallySignedInput | None,
+        mn: tuple[int, int] = (1, 1),
+        satisfaction_weight: int | None = None,
+    ) -> InputWeight:
+        raw = bytes(script.to_bytes()) if script else b""
+        if isinstance(psbt_input, PartiallySignedInput):
+            redeem = psbt_input.redeem_script
+            witness = psbt_input.witness_script
+            final_script_sig = psbt_input.final_script_sig
+            final_witness = psbt_input.final_script_witness.scriptWitness.stack or None
+        else:
+            redeem = (
+                bytes(psbt_input.redeem_script.to_bytes()) if psbt_input and psbt_input.redeem_script else b""
+            )
+            witness = (
+                bytes(psbt_input.witness_script.to_bytes())
+                if psbt_input and psbt_input.witness_script
+                else b""
+            )
+            final_script_sig = (
+                bytes(psbt_input.final_script_sig.to_bytes())
+                if psbt_input and psbt_input.final_script_sig
+                else b""
+            )
+            final_witness = psbt_input.final_script_witness if psbt_input else None
+        multisig_script = witness or (
+            redeem if redeem and not is_p2wpkh(redeem) and not is_p2wsh(redeem) else b""
+        )
+        if is_p2ms_var(multisig_script):
+            m, keys = p2ms_m_and_keys_var(multisig_script)
+            mn = (m, len(keys))
+        address_type = input_address_type(raw, redeem, final_script_sig)
+        legacy_multisig = is_p2sh(raw) and address_type is None
+        tap_script_path = bool(psbt_input and psbt_input.tap_script_sigs and not psbt_input.tap_key_sig)
+        tap_script_weight = 66
+        if address_type == AddressTypes.p2tr and psbt_input:
+            if final_witness is not None:
+                satisfaction_weight = witness_satisfaction_weight([len(item) for item in final_witness])
+            elif tap_script_path and satisfaction_weight is None:
+                tap_script_weight = estimate_tapscript_weight(psbt_input)
+        return cls(
+            mn,
+            address_type,
+            satisfaction_weight,
+            legacy_multisig,
+            len(multisig_script) or None,
+            tap_script_path,
+            tap_script_weight,
+        )
+
+    def use_descriptor(self, descriptor: str, network: bdk.Network) -> None:
+        """Prefer the descriptor's maximum satisfaction over metadata estimates."""
+        desc = bdk.Descriptor(descriptor, network_kind(network))
+        self.satisfaction_weight = desc.max_weight_to_satisfy()
+        self.address_type = None
+        self.legacy_multisig = desc.desc_type() in (
+            bdk.DescriptorType.BARE,
+            bdk.DescriptorType.PKH,
+            bdk.DescriptorType.SH,
+            bdk.DescriptorType.SH_SORTED_MULTI,
+        )
+
+    def is_witness(self) -> bool:
+        if self.finalized_witness is not None:
+            return self.finalized_witness
+        return not (self.address_type == AddressTypes.p2pkh or self.legacy_multisig)
+
+    def weight(self) -> int:
+        if self.satisfaction_weight is not None:
+            return self.satisfaction_weight
+        m, n = self.mn
+        # BDK's maximum compressed-key satisfaction uses a 72-byte ECDSA
+        # signature: its length byte, signature, length byte and 33-byte key
+        # total 107 bytes. Legacy scriptSig bytes count four times.
+        if self.address_type == AddressTypes.p2pkh:
+            return 107 * 4
+        if self.address_type == AddressTypes.p2tr:
+            # Leaves alone do not imply script-path spending.
+            return self.tap_script_weight if self.tap_script_path else 66
+        if self.legacy_multisig:
+            script_size = self.script_size or 3 + 34 * n
+            push_size = 1 if script_size < 76 else 2 if script_size <= 255 else 3
+            script_sig_size = 1 + m * 73 + push_size + script_size
+            return 4 * (compact_size_length(script_sig_size) - 1 + script_sig_size)
+        if self.address_type in (AddressTypes.p2wpkh, AddressTypes.p2sh_p2wpkh) or (
+            self.address_type is None and (m, n) == (1, 1)
+        ):
+            # Nested P2WPKH adds a 23-byte scriptSig containing the witness program.
+            return 107 + (23 * 4 if self.address_type == AddressTypes.p2sh_p2wpkh else 0)
+        script_size = self.script_size or 3 + 34 * n
+        # A 2-of-3 witness has an item count, a dummy, two signatures, and the script.
+        witness_size = (
+            compact_size_length(m + 2) + 1 + m * 73 + compact_size_length(script_size) + script_size
+        )
+        return witness_size - 1 + (35 * 4 if self.address_type == AddressTypes.p2sh_p2wsh else 0)
+
+
+@dataclass
+class TxWeight:
+    inputs: Sequence[InputWeight]
+    output_scripts: Sequence[bdk.Script | None]
+
+    @classmethod
+    def from_inputs(
+        cls,
+        inputs: Sequence[TxInputInfo],
+        output_scripts: Sequence[bdk.Script | None],
+        wallet: bdk.Wallet | None = None,
+        mn: tuple[int, int] = (1, 1),
+        assume_one_input: bool = False,
+    ) -> TxWeight:
+        """Estimate the selected inputs, using wallet descriptors where available."""
+        weights = []
+        for item in inputs:
+            script = item.utxo.txout.script_pubkey
+            weight = InputWeight.from_psbt_input(script, item.psbt_input, mn, item.satisfaction_weight)
+            if wallet and weight.satisfaction_weight is None:
+                derivation = wallet.derivation_of_spk(script)
+                if derivation is not None:
+                    weight.use_descriptor(wallet.public_descriptor(derivation.keychain), wallet.network())
+            weights.append(weight)
+        if not weights and assume_one_input:
+            weight = InputWeight(mn)
+            if wallet:
+                weight.use_descriptor(wallet.public_descriptor(bdk.KeychainKind.EXTERNAL), wallet.network())
+            weights.append(weight)
+        return cls(weights, output_scripts)
+
+    @classmethod
+    def from_recipients(
+        cls,
+        inputs: Sequence[TxInputInfo],
+        recipients: Sequence[Recipient],
+        network: bdk.Network,
+        wallet: bdk.Wallet | None = None,
+        mn: tuple[int, int] = (1, 1),
+    ) -> TxWeight:
+        """Estimate a draft, including change and incomplete recipient scripts."""
+        output_scripts: list[bdk.Script | None] = []
+        for recipient in recipients:
+            # An incomplete address still needs a placeholder output in the estimate.
+            if not recipient.address.startswith("script:") and not is_address(recipient.address, network):
+                output_scripts.append(None)
+                continue
+            try:
+                output_scripts.append(recipient.script_pubkey(network))
+            except ValueError:
+                output_scripts.append(None)
+        if not any(recipient.checked_max_amount for recipient in recipients):
+            output_scripts.append(
+                wallet.peek_address(bdk.KeychainKind.INTERNAL, 0).address.script_pubkey() if wallet else None
+            )
+        return cls.from_inputs(inputs, output_scripts, wallet, mn, assume_one_input=True)
+
+    @classmethod
+    def from_psbt(cls, psbt: bdk.Psbt) -> TxWeight:
+        """Build the estimate from the PSBT's inputs and previous outputs."""
+        tx = psbt.extract_tx_unchecked_fee_rate()
+        inputs = []
+        try:
+            psbt_inputs: Sequence[bdk.Input | PartiallySignedInput] = psbt.input()
+        except TypeError as exc:
+            # BDK 3.1.1 exposes unhashable Python records as Taproot map keys.
+            if "unhashable type" not in str(exc):
+                raise
+            hwi_psbt = PSBT()
+            hwi_psbt.deserialize(psbt.serialize())
+            psbt_inputs = hwi_psbt.inputs
+        for txin, inp in zip(tx.input(), psbt_inputs, strict=True):
+            if isinstance(inp, PartiallySignedInput):
+                hwi_prevout = inp.witness_utxo
+                if hwi_prevout is None and inp.non_witness_utxo is not None:
+                    outputs_hwi = inp.non_witness_utxo.vout
+                    if txin.previous_output.vout < len(outputs_hwi):
+                        hwi_prevout = outputs_hwi[txin.previous_output.vout]
+                script = bdk.Script(hwi_prevout.scriptPubKey) if hwi_prevout is not None else None
+            else:
+                prevout = inp.witness_utxo
+                if prevout is None and inp.non_witness_utxo is not None:
+                    outputs = inp.non_witness_utxo.output()
+                    if txin.previous_output.vout < len(outputs):
+                        prevout = outputs[txin.previous_output.vout]
+                script = prevout.script_pubkey if prevout else None
+            weight = InputWeight.from_psbt_input(script, inp)
+            script_sig_size = len(txin.script_sig.to_bytes())
+            if has_finalized_unlocking_data(
+                weight.address_type, bool(script_sig_size), bool(txin.witness), weight.legacy_multisig
+            ):
+                # The base input already includes an empty scriptSig and witness.
+                # A 253-byte scriptSig adds 253 bytes plus two CompactSize bytes.
+                weight.satisfaction_weight = 4 * (
+                    compact_size_length(script_sig_size) - 1 + script_sig_size
+                ) + witness_satisfaction_weight([len(item) for item in txin.witness])
+                weight.finalized_witness = bool(txin.witness)
+            inputs.append(weight)
+        return cls(inputs, [output.script_pubkey for output in tx.output()])
+
+    def estimate(self) -> int:
+        """Estimate weight, using native SegWit when input types are unknown."""
+        script_lengths = [
+            len((script if script is not None else DEFAULT_OUTPUT_SCRIPT).to_bytes())
+            for script in self.output_scripts
+        ]
+        output_size = sum(8 + compact_size_length(size) + size for size in script_lengths)
+        base_size = (
+            4
+            + 4
+            + compact_size_length(len(self.inputs))
+            + compact_size_length(len(self.output_scripts))
+            + 41 * len(self.inputs)
+            + output_size
+        )
+        has_witness = any(item.is_witness() for item in self.inputs)
+        # The marker/flag costs two weight units, plus one empty witness byte even
+        # for each legacy input in a mixed transaction.
+        return (
+            base_size * 4
+            + (2 + len(self.inputs) if has_witness else 0)
+            + sum(item.weight() for item in self.inputs)
+        )
 
 
 class FeeRate(bdk.FeeRate):
@@ -250,49 +534,14 @@ class FeeInfo:
 
     @classmethod
     def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.Psbt) -> FeeInfo:
-        """Estimate the fee rate of a SegWit transaction from a serialized PSBT JSON.
+        """Estimate the PSBT fee rate, or use its finalized transaction's actual size."""
 
-        Args:
-        psbt_json_str (str): The serialized PSBT JSON string.
-
-        Returns:
-        float: Estimated fee rate in satoshis per byte.
-        """
-
-        # Get the simplified JSON representation of the PSBT
-        simple_psbt = SimplePSBT.from_psbt(psbt)
-
-        # for the input where i can determine the (m,n) use them:
-        full_input_mn_tuples = [inp._get_m_of_n() for inp in simple_psbt.inputs]
-        fallback_mn = (1, 1)
-        input_mn_tuples = [(mn if mn else fallback_mn) for mn in full_input_mn_tuples]
-
-        # Estimate the size of the transaction
-        # This part requires the transaction size estimation logic,
-        # which might need information about inputs and outputs
-        # For simplicity, let's assume you have a function
-        # estimate_tx_size(psbt_data) that can estimate the size
-        vsize = weight_to_vsize(estimate_tx_weight(input_mn_tuples, len(psbt.extract_tx().output())))
-
+        tx = psbt.extract_tx_unchecked_fee_rate()
+        weight = TxWeight.from_psbt(psbt)
+        if weight.inputs and all(item.finalized_witness is not None for item in weight.inputs):
+            return FeeInfo(psbt.fee(), tx.vsize(), vsize_is_estimated=False, fee_amount_is_estimated=False)
+        vsize = weight_to_vsize(weight.estimate())
         return FeeInfo(psbt.fee(), vsize, vsize_is_estimated=True, fee_amount_is_estimated=False)
-
-    @classmethod
-    def estimate_from_num_inputs(
-        cls,
-        fee_rate: float,
-        input_mn_tuples: list[tuple[int, int]],
-        num_outputs: int,
-        include_signatures=True,
-    ) -> FeeInfo:
-        "Estimation for segwit txs"
-        vsize = weight_to_vsize(
-            estimate_tx_weight(
-                input_mn_tuples=input_mn_tuples,
-                num_outputs=num_outputs,
-                include_signatures=include_signatures,
-            )
-        )
-        return FeeInfo(ceil(fee_rate * vsize), vsize, vsize_is_estimated=True, fee_amount_is_estimated=True)
 
     def __add__(self, other: FeeInfo) -> FeeInfo:
         """Add."""
@@ -379,6 +628,7 @@ class SimpleInput:
     hash160_preimages: dict[str, str] = field(default_factory=dict)
     hash256_preimages: dict[str, str] = field(default_factory=dict)
     tap_key_sig: PartialSig | None = None
+    verified_finalized_tap_key_sig: PartialSig | None = None
     tap_script_sigs: dict[tuple[str, str], PartialSig] = field(default_factory=dict)
     tap_scripts: list[tuple[str, str, str]] = field(default_factory=list)
     tap_key_origins: list[tuple[str, tuple[list[str], tuple[str, str]]]] = field(default_factory=list)
@@ -645,10 +895,20 @@ class SimpleInput:
         return "|".join(parts)
 
     def is_fully_signed(self) -> bool:
-        # This heuristic assumes the presence of final_script_sig or
-        # final_script_witness indicates full signing
-        """Is fully signed."""
-        return bool(self.final_script_sig or self.final_script_witness)
+        """Whether the input has all required final unlocking fields."""
+        if not (self.final_script_sig or self.final_script_witness):
+            return False
+        previous = self.previous_txout()
+        raw = bytes(previous.script_pubkey.to_bytes()) if previous else b""
+        redeem = bytes.fromhex(self.redeem_script or "")
+        script_sig = bytes.fromhex(self.final_script_sig or "")
+        address_type = input_address_type(raw, redeem, script_sig)
+        return has_finalized_unlocking_data(
+            address_type,
+            bool(script_sig),
+            bool(self.final_script_witness),
+            is_p2sh(raw) and address_type is None,
+        )
 
     def signature_count(self) -> str:
         # Just return the count of partial signatures, as we can't determine the total required
@@ -656,6 +916,15 @@ class SimpleInput:
         return str(len(self.get_pub_keys_with_signature()))
 
     def signature_for_pubkey(self, pubkey_info: PubKeyInfo) -> PartialSig | None:
+        # A verified Taproot key-path spend of a known 1-of-1 wallet has only one signer.
+        if (
+            self.verified_finalized_tap_key_sig
+            and self.m_of_n == (1, 1)
+            and len(self.pubkeys) == 1
+            and pubkey_info.fingerprint
+            and pubkey_info.fingerprint == self.pubkeys[0].fingerprint
+        ):
+            return self.verified_finalized_tap_key_sig
         if not pubkey_info.pubkey:
             return None
 
@@ -721,7 +990,7 @@ class SimpleInput:
             m, public_keys = parse_witness_script(self.witness_script)
             return (m, len(public_keys))
         if self.redeem_script:
-            m, public_keys = parse_redeem_script(self.redeem_script)
+            m, public_keys = parse_witness_script(self.redeem_script)
             return (m, len(public_keys))
         return None
 
@@ -905,6 +1174,7 @@ class SimplePSBT:
             SimpleInput.from_input(input_data, txin)
             for input_data, txin in zip(psbt_json.get("inputs", []), psbt.extract_tx().input(), strict=False)
         ]
+        instance._recover_finalized_signatures(psbt.extract_tx())
 
         outputs = psbt_json.get("outputs", [])
         unsigned_tx_outputs = psbt_json.get("unsigned_tx", {}).get("output", [])
@@ -914,6 +1184,64 @@ class SimplePSBT:
             for output_data, unsigned_tx_output in zip(outputs, unsigned_tx_outputs, strict=False)
         ]
         return instance
+
+    def _recover_finalized_signatures(self, tx: bdk.Transaction) -> None:
+        # Finalization removes PSBT key origins and partial signatures. Verify the witness
+        # to identify the signer: in a 1-of-2 input, either key could have signed.
+        prevouts: list[Prevout | None] = []
+        verify_inputs: list[bool] = []
+        for item in self.inputs:
+            previous = item.previous_txout()
+            prevouts.append(
+                Prevout(bytes(previous.script_pubkey.to_bytes()), previous.value.to_sat())
+                if previous
+                else None
+            )
+            witness = item.final_script_witness
+            verify_inputs.append(
+                bool(
+                    item.is_fully_signed()
+                    and (
+                        (previous and is_p2pkh(bytes(previous.script_pubkey.to_bytes())))
+                        or (witness and is_p2ms_var(bytes.fromhex(witness[-1])))
+                        or (previous and witness and is_p2tr(bytes(previous.script_pubkey.to_bytes())))
+                    )
+                )
+            )
+        if not any(verify_inputs):
+            return
+        results = verify_transaction(tx, prevouts, verify_inputs).results
+        for item, result in zip(self.inputs, results, strict=True):
+            witness = item.final_script_witness
+            if (
+                result.verdict == InputVerdict.valid
+                and witness
+                and (previous := item.previous_txout())
+                and is_p2tr(bytes(previous.script_pubkey.to_bytes()))
+            ):
+                keypath_witness = (
+                    witness[:-1] if len(witness) == 2 and witness[-1].startswith("50") else witness
+                )
+                if len(keypath_witness) == 1 and len(keypath_witness[0]) in (128, 130):
+                    tap_signature = keypath_witness[0]
+                    item.verified_finalized_tap_key_sig = PartialSig(
+                        signature=tap_signature[:128],
+                        sighash_type=item._format_sighash_type(
+                            int(tap_signature[128:], 16) if len(tap_signature) == 130 else 0
+                        ),
+                    )
+            if result.signatures and item.final_script_witness:
+                script = bytes.fromhex(item.final_script_witness[-1])
+                if is_p2ms_var(script):
+                    threshold, keys = p2ms_m_and_keys_var(script)
+                    item.m_of_n = (threshold, len(keys))
+            for pubkey, signature in result.signatures:
+                pubkey_hex, signature_hex = pubkey.hex(), signature.hex()
+                if not any(info.pubkey == pubkey_hex for info in item.pubkeys):
+                    item.pubkeys.append(PubKeyInfo(fingerprint="", pubkey=pubkey_hex))
+                item.partial_sigs[pubkey_hex] = PartialSig(
+                    signature=signature_hex, sighash_type=item._recovered_sighash_type(signature_hex)
+                )
 
     def get_fingerprint_tuples(self) -> tuple[list[PubKeyInfo], list[PubKeyInfo]]:
         # set of all fingerprints of all inputs

@@ -33,6 +33,7 @@ import logging
 import random
 from collections import defaultdict
 from collections.abc import Callable, Iterable, Mapping
+from copy import copy
 from pathlib import Path
 from time import time
 from typing import (
@@ -72,6 +73,7 @@ from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
 from bitcoin_safe.network_config import PeerSelectionMode
 from bitcoin_safe.network_utils import ProxyInfo
+from bitcoin_safe.output_validation import validate_raw_output_script, validate_transaction_outputs
 from bitcoin_safe.persister.serialize_persistence import SerializePersistence
 from bitcoin_safe.psbt_util import FeeInfo, FeeRate, SimpleInput
 from bitcoin_safe.wallet_util import (
@@ -87,11 +89,13 @@ from .descriptors import (
     descriptor_from_keystores,
     get_default_address_type,
 )
+from .foreign_utxo import ForeignUtxo
 from .i18n import translate
 from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
 from .input_signer_attribution import signers_per_input
 from .keystore import KeyStore
 from .labels import Labels, LabelType
+from .mempool_manager import MempoolManager
 from .pythonbdk_types import (
     AddressInfoMin,
     Balance,
@@ -106,10 +110,9 @@ from .pythonbdk_types import (
     enum,
     is_local,
     robust_address_str_from_script,
-    robust_address_str_from_txout,
 )
 from .signals import UpdateFilter, WalletFunctions
-from .tx import TxBuilderInfos, TxUiInfos, short_tx_id
+from .tx import TxBuilderInfos, TxInputInfo, TxUiInfos, short_tx_id
 from .util import (
     AddressBalanceDict,
     CacheManager,
@@ -715,6 +718,10 @@ class WalletInputsInconsistentError(Exception):
     pass
 
 
+class SpentWalletOutputError(ValueError):
+    """An open wallet knows that an output has already been spent."""
+
+
 class ProgressLogger:
     def update(self, progress: float, message: str | None):
         """Log progress updates produced by long-running operations."""
@@ -747,7 +754,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def __init__(
         self,
-        id,
+        id: str,
         descriptor_str: str,
         keystores: list[KeyStore],
         network: bdk.Network,
@@ -2195,9 +2202,7 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def handle_opportunistic_merge_utxos(self, txinfos: TxUiInfos) -> UtxosForInputs:
         "This does the initial coin selection if opportunistic_merge_utxos"
-        utxos_for_input = UtxosForInputs(
-            list(txinfos.utxo_dict.values()), spend_all_utxos=txinfos.spend_all_utxos
-        )
+        utxos_for_input = UtxosForInputs(txinfos.selected_utxos(), spend_all_utxos=txinfos.spend_all_utxos)
 
         if not utxos_for_input.utxos:
             logger.warning("No utxos or categories for coin selection")
@@ -2318,15 +2323,17 @@ class Wallet(BaseSaveableClass, CacheManager):
             raise Exception("Cannot replace tx without txid")
         if txinfos.fee_rate is None:
             raise Exception("Cannot bump tx without feerate")
+        validate_transaction_outputs(txinfos.replace_tx, self.network)
 
         # check inputs consistent
         prev_outpoints = [
             str(OutPoint.from_bdk(prev_out.previous_output)) for prev_out in txinfos.replace_tx.input()
         ]
-        utxos = [utxo for utxo in txinfos.utxo_dict.values() if str(utxo.outpoint) in prev_outpoints]
-        assert len(prev_outpoints) == len(utxos), (
-            f"Inconsistent TxUiInfos:Not all utxos could be found for the {len(prev_outpoints)} inputs"
-        )
+        utxos = [utxo for utxo in txinfos.selected_utxos() if str(utxo.outpoint) in prev_outpoints]
+        if len(prev_outpoints) != len(utxos) or any(
+            not self.bdkwallet.is_mine(utxo.txout.script_pubkey) for utxo in utxos
+        ):
+            raise ValueError("Fee bumping requires all original inputs to belong to this wallet")
         utxos_for_input = UtxosForInputs(utxos=utxos, spend_all_utxos=txinfos.spend_all_utxos)
 
         # check recipients    consistent
@@ -2335,8 +2342,10 @@ class Wallet(BaseSaveableClass, CacheManager):
             "Inconsistent TxUiInfos:too many recipients"
         )
         for output in txinfos.replace_tx.output():
-            output_address = str(bdk.Address.from_script(script=output.script_pubkey, network=self.network))
-            if output_address in self.get_receiving_addresses():
+            output_address = robust_address_str_from_script(
+                output.script_pubkey, self.network, on_error_return_hex=False
+            )
+            if output_address and output_address in self.get_receiving_addresses():
                 assert output_address in recipient_addresses, (
                     "Inconsistent TxUiInfos: Outpoint Address not in recipient list"
                 )
@@ -2357,6 +2366,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         except Exception as e:
             raise e
 
+        validate_transaction_outputs(psbt.extract_tx_unchecked_fee_rate(), self.network)
         self.persist()
 
         recipient_category = self.determine_recipient_category(utxos_for_input.utxos)
@@ -2376,7 +2386,14 @@ class Wallet(BaseSaveableClass, CacheManager):
 
     def create_psbt(self, txinfos: TxUiInfos) -> TxBuilderInfos:
         """Create a PSBT from the provided builder information."""
+        for recipient in txinfos.recipients:
+            if recipient.address.startswith("script:"):
+                validate_raw_output_script(
+                    bytes.fromhex(recipient.address.removeprefix("script:")), recipient.amount
+                )
         if txinfos.replace_tx:
+            if any(item.psbt_input is not None for item in txinfos.inputs.values()):
+                raise ValueError("Fee bumping with foreign inputs is not supported")
             return self.create_bump_fee_psbt(txinfos=txinfos)
 
         recipients = txinfos.recipients.copy()
@@ -2387,8 +2404,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         # the last set checked_max_amount will get what is left over.
         #  that could be a little more or a little less than the estimated recipient.amount
 
-        # this has the positive side effect, that if spend_all_utxos was set,
-        # the previously chosen drain_to(change address), because of spend_all_utxos will be overrwritten
         max_amount_recipients = [
             recipient for recipient in txinfos.recipients if recipient.checked_max_amount
         ]
@@ -2417,11 +2432,25 @@ class Wallet(BaseSaveableClass, CacheManager):
             tx_builder = tx_builder.manually_selected_only()
             # add coins that MUST be spend
             for outpoint in selected_outpoints:
-                tx_builder = tx_builder.add_utxo(outpoint)
-                # TODO no add_foreign_utxo yet: see https://github.com/bitcoindevkit/bdk-ffi/issues/329 https://docs.rs/bdk/latest/bdk/wallet/tx_builder/struct.TxBuilder.html#method.add_foreign_utxo
-            # ensure all utxos are spent (so we get a change address)
-            tx_builder = tx_builder.drain_to(self.get_address(is_change=True).address.script_pubkey())
+                if (
+                    (item := txinfos.inputs.get(outpoint))
+                    and item.psbt_input is not None
+                    and not self.bdkwallet.get_utxo(outpoint)
+                ):
+                    # Defense in depth for callers supplying TxInputInfo directly.
+                    known = Wallet.find_known_wallet_output(outpoint, [self])
+                    Wallet.validate_foreign_input(outpoint, item, known)
+                    psbt_input, weight = copy(item.psbt_input), item.satisfaction_weight
+                    psbt_input.sighash_type = None
+                    assert weight is not None
+                    tx_builder = tx_builder.add_foreign_utxo(outpoint, psbt_input, weight)
+                else:
+                    tx_builder = tx_builder.add_utxo(outpoint)
+            if not selected_max_amount_recipient:
+                tx_builder = tx_builder.drain_to(self.get_address(is_change=True).address.script_pubkey())
         else:
+            if any(item.psbt_input is not None for item in txinfos.inputs.values()):
+                raise ValueError("Foreign inputs require manual coin selection")
             # exclude all other coins, to leave only selected_outpoints to choose from
             unspendable_outpoints = [
                 utxo.outpoint
@@ -2431,25 +2460,47 @@ class Wallet(BaseSaveableClass, CacheManager):
             tx_builder = tx_builder.unspendable(unspendable_outpoints)
 
         for recipient in txinfos.recipients:
-            if recipient == selected_max_amount_recipient:
-                tx_builder = tx_builder.drain_to(
-                    bdk.Address(recipient.address, network=self.network).script_pubkey()
-                )
+            if recipient is selected_max_amount_recipient:
+                tx_builder = tx_builder.drain_to(recipient.script_pubkey(self.network))
             else:
                 tx_builder = tx_builder.add_recipient(
-                    bdk.Address(recipient.address, network=self.network).script_pubkey(),
+                    recipient.script_pubkey(self.network),
                     bdk.Amount.from_sat(recipient.amount),
                 )
 
         start_time = time()
         psbt = tx_builder.finish(self.bdkwallet)
+        if utxos_for_input.spend_all_utxos:
+            actual_outpoints = {
+                OutPoint.from_bdk(txin.previous_output)
+                for txin in psbt.extract_tx_unchecked_fee_rate().input()
+            }
+            if actual_outpoints != set_selected_outpoints:
+                raise ValueError("Created PSBT inputs do not match selected inputs")
+        validate_transaction_outputs(psbt.extract_tx_unchecked_fee_rate(), self.network)
+        if selected_max_amount_recipient:
+            drain_script = bytes(selected_max_amount_recipient.script_pubkey(self.network).to_bytes())
+            expected_outputs = sum(
+                bytes(recipient.script_pubkey(self.network).to_bytes()) == drain_script
+                for recipient in txinfos.recipients
+            )
+            actual_outputs = sum(
+                bytes(output.script_pubkey.to_bytes()) == drain_script
+                for output in psbt.extract_tx_unchecked_fee_rate().output()
+            )
+            if actual_outputs < expected_outputs:
+                raise ValueError("The send-max output is too small to include in the transaction")
         self.persist()
         logger.debug(f"{self.id} tx_builder.finish  in {time() - start_time}s")
 
         # inputs: List[bdk.TxIn] = builder_result.psbt.extract_tx().input()
 
         logger.info(f"Created PSBT {str(psbt.extract_tx().compute_txid())[:4]=}")
-        fee_rate = self.bdkwallet.calculate_fee_rate(psbt.extract_tx())
+        fee_rate = (
+            self.bdkwallet.calculate_fee_rate(psbt.extract_tx())
+            if not any(item.psbt_input is not None for item in txinfos.inputs.values())
+            else None
+        )
         if fee_rate is not None:
             logger.info(f"psbt fee after finalized {FeeRate.to_sats_per_vb(FeeRate.from_fee_rate(fee_rate))}")
 
@@ -2877,6 +2928,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.persist()
 
     def get_hidden_txs_in_tx_graph(self) -> dict[str, bdk.Transaction]:
+        """Return persisted graph transactions that are not in the visible wallet history."""
         hidden_txs: dict[str, bdk.Transaction] = {}
 
         visible_txids = {tx.txid for tx in self.sorted_delta_list_transactions()}
@@ -2886,6 +2938,183 @@ class Wallet(BaseSaveableClass, CacheManager):
                 continue
             hidden_txs[txid] = tx
         return hidden_txs
+
+    def get_graph_transaction(self, txid: bdk.Txid) -> bdk.Transaction | None:
+        """Look up a transaction in canonical, staged, or persisted graph data."""
+        if canonical := self.bdkwallet.get_tx(txid):
+            return canonical.transaction
+        for changeset in (self.bdkwallet.staged(), self.serialize_persistence.change_set):
+            if changeset:
+                for transaction in changeset.tx_graph_changeset().txs:
+                    if str(transaction.compute_txid()) == str(txid):
+                        return transaction
+        return None
+
+    def get_graph_txout(self, outpoint: OutPoint) -> bdk.TxOut | None:
+        """Find a standalone previous output in the wallet's transaction graph."""
+        key = bdk.HashableOutPoint(outpoint)
+        for changeset in (self.bdkwallet.staged(), self.serialize_persistence.change_set):
+            if changeset and (txout := changeset.tx_graph_changeset().txouts.get(key)):
+                return txout
+        return None
+
+    @staticmethod
+    def find_known_wallet_output(outpoint: OutPoint, wallets: list[Wallet]) -> bdk.TxOut | None:
+        """Find wallet evidence for a prevout and reject inconsistent wallet data."""
+        output = Wallet.get_known_wallet_outputs({outpoint}, wallets)[outpoint]
+        if isinstance(output, Exception):
+            raise output
+        return output
+
+    @staticmethod
+    def validate_foreign_input(outpoint: OutPoint, item: TxInputInfo, known: bdk.TxOut | None) -> None:
+        """Require PSBT, draft and independently known previous outputs to agree."""
+        if item.utxo.outpoint != outpoint or item.psbt_input is None:
+            raise ValueError(f"{outpoint}: inconsistent input metadata")
+        previous = TxOut.from_bdk(ForeignUtxo.previous_output(outpoint, item.psbt_input))
+        if previous != item.utxo.txout:
+            raise ValueError(f"{outpoint}: inconsistent input metadata")
+        if known is not None and TxOut.from_bdk(known) != previous:
+            raise ValueError(f"{outpoint}: conflicting wallet output")
+
+    @staticmethod
+    def get_known_wallet_outputs(
+        outpoints: set[OutPoint], wallets: list[Wallet]
+    ) -> dict[OutPoint, bdk.TxOut | Exception | None]:
+        """Collect wallet evidence once per refresh, including known spending transactions."""
+        if not outpoints:
+            return {}
+        results: dict[OutPoint, bdk.TxOut | Exception | None] = {op: None for op in outpoints}
+        for wallet in wallets:
+            txos = wallet.get_all_txos_dict(include_not_mine=True)
+            utxos = {utxo.outpoint: utxo.txout for utxo in wallet.get_all_utxos()}
+            spent = {
+                point: txid
+                for txid, detail in wallet.get_dict_fulltxdetail().items()
+                for point in detail.inputs
+            }
+            txids = {op.txid_str: op.txid for op in outpoints}
+            transactions = {txid: wallet.get_graph_transaction(value) for txid, value in txids.items()}
+            for op in outpoints:
+                if isinstance(results[op], Exception):
+                    continue
+                try:
+                    if str(op) in spent:
+                        raise SpentWalletOutputError(f"{op}: output is already spent by {spent[str(op)]}")
+                    outputs: list[bdk.TxOut] = []
+                    if transaction := transactions[op.txid_str]:
+                        if transaction.compute_txid() != op.txid or not 0 <= op.vout < len(
+                            transaction.output()
+                        ):
+                            raise ValueError(f"{op}: invalid wallet transaction or output index")
+                        outputs.append(transaction.output()[op.vout])
+                    if output := wallet.bdkwallet.get_utxo(op):
+                        outputs.append(output.txout)
+                    if op in utxos:
+                        outputs.append(utxos[op])
+                    if output := wallet.get_graph_txout(op):
+                        outputs.append(output)
+                    if known := txos.get(str(op)):
+                        if known.is_spent_by_txid:
+                            raise SpentWalletOutputError(
+                                f"{op}: output is already spent by {known.is_spent_by_txid}"
+                            )
+                        outputs.append(known.txout)
+                    for output in outputs:
+                        previous = results[op]
+                        if isinstance(previous, Exception):
+                            raise previous
+                        if previous is not None and TxOut.from_bdk(previous) != TxOut.from_bdk(output):
+                            raise ValueError(f"{op}: conflicting wallet previous outputs")
+                        results[op] = output
+                except Exception as exc:
+                    results[op] = exc
+        return results
+
+    async def resolve_foreign_outpoints(
+        self,
+        outpoints: list[OutPoint],
+        wallets: list[Wallet],
+        mempool_manager: MempoolManager | None,
+        psbt_inputs: dict[OutPoint, bdk.Input] | None = None,
+        existing_inputs: dict[OutPoint, ForeignUtxo] | None = None,
+        skip_spent: bool = False,
+    ) -> tuple[dict[OutPoint, ForeignUtxo], list[str]]:
+        """Resolve each funding transaction once; pass no mempool manager to use local data only.
+
+        Wallet snapshots can lag behind another wallet's unconfirmed spends. Skip those
+        entries when importing a wallet's UTXOs, but reject explicitly requested inputs.
+        """
+        resolved: dict[OutPoint, ForeignUtxo] = {}
+        errors: list[str] = []
+        transactions: dict[str, bdk.Transaction | Exception] = {}
+        supplied_inputs = psbt_inputs or {}
+        descriptors = [(wallet.id, wallet.bdkwallet) for wallet in wallets]
+        known_outputs = Wallet.get_known_wallet_outputs(set(outpoints), wallets)
+        # A saved input or PSBT can provide the funding transaction for another
+        # requested output of the same transaction.
+        for point, item in (existing_inputs or {}).items():
+            if item.psbt_input.non_witness_utxo is not None:
+                transactions[point.txid_str] = item.psbt_input.non_witness_utxo
+        for point, psbt_input in supplied_inputs.items():
+            if psbt_input.non_witness_utxo is not None:
+                transactions[point.txid_str] = psbt_input.non_witness_utxo
+        for outpoint in dict.fromkeys(outpoints):
+            try:
+                known = known_outputs[outpoint]
+                if skip_spent and isinstance(known, SpentWalletOutputError):
+                    continue
+                if isinstance(known, Exception):
+                    raise known
+                supplied = supplied_inputs.get(outpoint)
+                transaction = transactions.get(outpoint.txid_str)
+                if transaction is None:
+                    transaction = next(
+                        (tx for wallet in wallets if (tx := wallet.get_graph_transaction(outpoint.txid))),
+                        None,
+                    )
+                    if transaction is None:
+                        if mempool_manager is None:
+                            raise ValueError("full previous transaction is not available locally")
+                        try:
+                            transaction = await mempool_manager.fetch_transaction(outpoint.txid)
+                        except Exception as exc:
+                            transaction = exc
+                    transactions[outpoint.txid_str] = transaction
+                if isinstance(transaction, Exception):
+                    raise ValueError(f"Could not obtain full previous transaction: {transaction}")
+                if transaction.compute_txid() != outpoint.txid or not 0 <= outpoint.vout < len(
+                    transaction.output()
+                ):
+                    raise ValueError("invalid previous transaction or output index")
+                txout = transaction.output()[outpoint.vout]
+                if known is not None and TxOut.from_bdk(known) != TxOut.from_bdk(txout):
+                    raise ValueError("previous output conflicts with wallet data")
+                if supplied:
+                    if supplied.non_witness_utxo is not None:
+                        ForeignUtxo.previous_output(outpoint, supplied)
+                    if supplied.witness_utxo is not None and TxOut.from_bdk(
+                        supplied.witness_utxo
+                    ) != TxOut.from_bdk(txout):
+                        raise ValueError("PSBT previous output conflicts with transaction")
+                if self.bdkwallet.is_mine(txout.script_pubkey):
+                    raise ValueError("This output belongs to the active wallet but is not spendable")
+                existing = (existing_inputs or {}).get(outpoint)
+                if existing:
+                    if existing.utxo.txout != TxOut.from_bdk(txout):
+                        raise ValueError("previous output conflicts with imported metadata")
+                    ForeignUtxo.previous_output(outpoint, existing.psbt_input)
+                    resolved[outpoint] = existing
+                    continue
+                item = ForeignUtxo.from_outpoint(outpoint, txout, transaction, descriptors, self.network)
+                # Wallet descriptors are authoritative; imported signatures belong to the old transaction.
+                if supplied and item.wallet_id is None:
+                    item.use_imported_input(copy(supplied))
+                ForeignUtxo.previous_output(outpoint, item.psbt_input)
+                resolved[outpoint] = item
+            except Exception as exc:
+                errors.append(f"{outpoint}: {exc}")
+        return resolved, errors
 
     def apply_unconfirmed_txs(
         self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
@@ -3060,7 +3289,7 @@ class ToolsTxUiInfo:
             for op_str in hits:
                 pyutxo = txos_dict[op_str]
                 txuiinfos.main_wallet_id = wallet.id
-                txuiinfos.utxo_dict[pyutxo.outpoint] = pyutxo
+                txuiinfos.inputs[pyutxo.outpoint] = TxInputInfo(pyutxo)
                 wanted.remove(op_str)
             if not wanted:
                 break
@@ -3076,7 +3305,7 @@ class ToolsTxUiInfo:
             for utxo in wallet.get_all_utxos():
                 address = utxo.address
                 if wallet.labels.get_category(address) in categories:
-                    txuiinfos.utxo_dict[utxo.outpoint] = utxo
+                    txuiinfos.inputs[utxo.outpoint] = TxInputInfo(utxo)
 
     @staticmethod
     def get_likely_source_wallet(txuiinfos: TxUiInfos, wallet_functions: WalletFunctions) -> Wallet | None:
@@ -3090,7 +3319,7 @@ class ToolsTxUiInfo:
             if wallet:
                 return wallet
 
-        input_outpoints = [outpoint for outpoint in txuiinfos.utxo_dict.keys()]
+        input_outpoints = [outpoint for outpoint in txuiinfos.inputs.keys()]
         return get_wallet_of_outpoints(input_outpoints, wallet_functions)
 
     @staticmethod
@@ -3129,14 +3358,14 @@ class ToolsTxUiInfo:
         txinfos = TxUiInfos()
         # inputs
         ToolsTxUiInfo.fill_txo_dict_from_outpoints(txinfos, outpoints, wallets=wallets)
+        txinfos.source_tx_inputs = {op: None for op in outpoints}
         txinfos.spend_all_utxos = True
         # outputs
         checked_max_amount = len(tx.output()) == 1  # if there is only 1 recipient, there is no change address
         for txout in tx.output():
-            out_address = robust_address_str_from_txout(TxOut.from_bdk(txout), network)
-            txinfos.recipients.append(
-                Recipient(out_address, txout.value.to_sat(), checked_max_amount=checked_max_amount)
-            )
+            recipient = Recipient.from_txout(txout, network)
+            recipient.checked_max_amount = checked_max_amount
+            txinfos.recipients.append(recipient)
         # fee rate
         txinfos.fee_rate = fee_info.fee_rate() if fee_info else None
         locktime = tx.lock_time()

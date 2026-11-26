@@ -569,7 +569,7 @@ class TxSigningDeviceCard(CardBase):
     def _sign_with_seed(self) -> None:
         wallet_importer = self._wallet_importer()
         if wallet_importer:
-            wallet_importer.sign(self.psbt)
+            wallet_importer.sign(self.psbt, fingerprint=self.device.fingerprint)
 
     def _preferred_qr_type(self) -> QrExportType | None:
         return preferred_psbt_qr_type(self.device.hardware_signer)

@@ -141,7 +141,7 @@ from bitcoin_safe.wallet_util import get_default_categories
 from ...config import UserConfig
 from ...fx import FX
 from ...mempool_manager import MempoolManager
-from ...psbt_util import FeeInfo, FeeRate, SimplePSBT
+from ...psbt_util import FeeInfo, SimplePSBT
 from ...pythonbdk_types import (
     BlockchainType,
     TransactionDetails,
@@ -2117,7 +2117,6 @@ class MainWindow(UnlockableMainWindow):
     ):
         """Open psbt in tab."""
         psbt: bdk.Psbt | None = None
-        fee_info: FeeInfo | None = None
         hidden_tx_infos: HiddenTxUiInfos | None = None
 
         logger.debug(f"tx is of type {type(tx)}")
@@ -2125,14 +2124,6 @@ class MainWindow(UnlockableMainWindow):
         try:
             # converting to TxBuilderResult
             if isinstance(tx, TxBuilderInfos):
-                if not fee_info and (tx.fee_rate is not None):
-                    fee_info = FeeInfo.from_fee_rate(
-                        fee_amount=tx.psbt.fee(),
-                        fee_rate=tx.fee_rate,
-                        fee_rate_is_estimated=False,
-                        fee_amount_is_estimated=False,
-                    )
-
                 hidden_tx_infos = tx.hidden_tx_infos
                 tx = tx.psbt
                 logger.debug(f"Converted TxBuilderInfos --> {type(tx)}")
@@ -2140,14 +2131,10 @@ class MainWindow(UnlockableMainWindow):
             if isinstance(tx, bdk.Psbt):
                 logger.debug("Got a PartiallySignedTransaction")
                 psbt = tx
-                if not fee_info:
-                    fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
 
             if isinstance(tx, str):
                 psbt = bdk.Psbt(tx)
                 logger.debug(f"Converted str to {type(tx)}")
-                if not fee_info:
-                    fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
 
             if isinstance(tx, TransactionDetails):
                 logger.debug("is bdk.TransactionDetails")
@@ -2158,25 +2145,7 @@ class MainWindow(UnlockableMainWindow):
                 return None
 
             data = Data.from_psbt(psbt, network=self.config.network)
-
-            # check if any wallet has all the inputs for the tx, then i can calulate the fee_rate approximately
-            if not fee_info:
-                for root in self.tab_wallets.roots:
-                    if isinstance(root, QTWallet):
-                        wallet = root.wallet
-                        try:
-                            fee_rate = FeeRate.from_fee_rate(
-                                wallet.bdkwallet.calculate_fee_rate(tx=psbt.extract_tx())
-                            )
-                            fee_amount = psbt.fee()
-                            fee_info = FeeInfo.from_fee_rate(
-                                fee_amount=fee_amount,
-                                fee_rate=FeeRate.to_sats_per_vb(fee_rate),
-                                fee_rate_is_estimated=False,
-                                fee_amount_is_estimated=False,
-                            )
-                        except Exception:
-                            pass
+            fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
         except bdk.ExtractTxError.MissingInputValue as e:
             Message(
                 self.tr("Could not open PSBT, because it lacks the input UTXOs.")

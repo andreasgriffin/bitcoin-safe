@@ -103,6 +103,7 @@ from bitcoin_safe.pythonbdk_types import (
     TxOut,
     get_prev_outpoints,
     python_utxo_balance,
+    robust_address_str_from_script,
 )
 from bitcoin_safe.tx import HiddenTxUiInfos, PostCreateEnum, TxBuilderInfos, TxUiInfos
 from bitcoin_safe.util import SATOSHIS_PER_BTC, filename_clean
@@ -1612,12 +1613,15 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
                     wallet._set_labels_for_change_outputs(builder_infos)
 
                 update_filter = UpdateFilter(
-                    addresses=set(
-                        [
-                            str(bdk.Address.from_script(output.script_pubkey, self.wallet.network))
-                            for output in builder_infos.psbt.extract_tx().output()
-                        ]
-                    ),
+                    addresses={
+                        address
+                        for output in builder_infos.psbt.extract_tx().output()
+                        if (
+                            address := robust_address_str_from_script(
+                                output.script_pubkey, self.wallet.network, on_error_return_hex=False
+                            )
+                        )
+                    },
                     reason=UpdateFilterReason.CreatePSBT,
                 )
                 self.wallet_signals.updated.emit(update_filter)
@@ -1653,15 +1657,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self, builder_infos: TxBuilderInfos, parent: QWidget | None = None
     ) -> UITx_Viewer:
         """Create a PSBT viewer widget for the given builder infos."""
-        fee_info = None
-        if builder_infos.fee_rate is not None:
-            fee_info = FeeInfo.from_fee_rate(
-                fee_amount=builder_infos.psbt.fee(),
-                fee_rate=builder_infos.fee_rate,
-                fee_rate_is_estimated=False,
-                fee_amount_is_estimated=False,
-            )
-
         return create_tx_viewer(
             config=self.config,
             wallet_functions=self.wallet_functions,
@@ -1672,7 +1667,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             outpoints=get_prev_outpoints(builder_infos.psbt.extract_tx()),
             client=self.wallet.client,
             parent=parent if parent is not None else self.tabs,
-            fee_info=fee_info,
+            fee_info=FeeInfo.estimate_segwit_fee_rate_from_psbt(builder_infos.psbt),
             txout_dict=SimplePSBT.from_psbt(builder_infos.psbt).get_prev_txouts(),
             hidden_tx_infos=builder_infos.hidden_tx_infos,
         )

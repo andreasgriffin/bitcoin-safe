@@ -870,9 +870,9 @@ def test_group_inputs_for_mixed_finalized_and_partially_signed_psbt() -> None:
     finalized_input = simple_psbt.inputs[0]
     assert finalized_input.is_fully_signed()
     assert isinstance(finalized_input.final_script_witness, list)
-    assert len(finalized_input.partial_sigs) == 0
-    assert finalized_input.pubkeys == []
-    assert finalized_input.m_of_n is None
+    assert len(finalized_input.partial_sigs) == 2
+    assert {pubkey.pubkey for pubkey in finalized_input.pubkeys} == set(finalized_input.partial_sigs)
+    assert finalized_input.m_of_n == (2, 3)
 
     assert parse_witness_script(finalized_input.final_script_witness[-1]) == (
         2,
@@ -896,15 +896,45 @@ def test_group_inputs_for_mixed_finalized_and_partially_signed_psbt() -> None:
     groups = simple_psbt.group_inputs()
 
     assert len(groups) == 2
-    assert groups[0].group_id == "Input 0"
-    assert groups[0].m_of_n == (0, 0)
-    assert groups[0].signed_signer_identifiers == []
+    assert groups[0].m_of_n == (2, 3)
+    assert set(groups[0].signed_signer_identifiers) == set(finalized_input.partial_sigs)
     assert groups[0].unsigned_signer_identifiers == []
 
     assert groups[1].group_id == "75B600B9, 836DA7F8"
     assert groups[1].m_of_n == (1, 2)
     assert groups[1].signed_signer_identifiers == ["75B600B9"]
     assert groups[1].unsigned_signer_identifiers == ["836DA7F8"]
+
+
+def test_invalid_finalized_multisig_witness_does_not_attribute_signers() -> None:
+    psbt = mixed_inputs_finalized_and_partially_signed_psbt
+    witness = SimplePSBT.from_psbt(psbt).inputs[0].final_script_witness
+    assert witness
+    signature = bytes.fromhex(witness[1])
+    corrupted = signature[:-2] + bytes([signature[-2] ^ 1]) + signature[-1:]
+    serialized = base64.b64decode(psbt.serialize())
+    assert serialized.count(signature) == 1
+    invalid = bdk.Psbt(base64.b64encode(serialized.replace(signature, corrupted)).decode())
+
+    item = SimplePSBT.from_psbt(invalid).inputs[0]
+    assert not item.pubkeys
+    assert not item.partial_sigs
+
+
+def test_finalized_multisig_signatures_are_recovered_when_key_origins_remain() -> None:
+    psbt = mixed_inputs_finalized_and_partially_signed_psbt
+    simple = SimplePSBT.from_psbt(psbt)
+    item = simple.inputs[0]
+    verified_keys = set(item.partial_sigs)
+    assert item.final_script_witness
+    _, keys = parse_witness_script(item.final_script_witness[-1])
+    item.pubkeys = [PubKeyInfo(fingerprint=f"{index + 1:08X}", pubkey=key) for index, key in enumerate(keys)]
+    item.partial_sigs.clear()
+
+    simple._recover_finalized_signatures(psbt.extract_tx())
+
+    assert set(item.partial_sigs) == verified_keys
+    assert {key.pubkey for key in item.pubkeys if item.signature_for_pubkey(key)} == verified_keys
 
 
 def test_group_inputs_prefers_wallet_id_over_signer_set() -> None:

@@ -75,7 +75,6 @@ from bitcoin_safe.gui.qt.qt_wallet import QTProtoWallet, QTWallet
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningDeviceList
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.hardware_signers import HardwareSigners
-from bitcoin_safe.signer import SignatureImporterWallet
 from bitcoin_safe.wallet import TxStatus
 
 from ...faucet import Faucet
@@ -254,20 +253,27 @@ def sign_tx(qtbot: QtBot, shutter: Shutter, viewer: UITx_Viewer, qt_wallet: QTWa
         "SignatureImporterUSB",
     ]
 
-    assert viewer.tx_singning_steps
-    widget = viewer.tx_singning_steps.stacked_widget.currentWidget()
-    assert isinstance(widget, TxSigningDeviceList)
-    seed_importer = next(importer for importer in importers if isinstance(importer, SignatureImporterWallet))
-    seed_card = next(card for card in widget.cards if card.device.has_seed)
-    seed_card.expand()
-    seed_button = next(
-        button for button in seed_card.findChildren(QPushButton) if button.text() == "Sign now"
-    )
-    assert seed_button.isEnabled()
-    with qtbot.waitSignal(seed_importer.signal_signature_added, timeout=10_000):
-        seed_button.click()
+    for _ in qt_wallet.wallet.keystores:
+        if viewer.button_send.isEnabled():
+            break
+        assert viewer.tx_singning_steps
+        widget = viewer.tx_singning_steps.stacked_widget.currentWidget()
+        assert isinstance(widget, TxSigningDeviceList)
+        seed_card = next(
+            card
+            for card in widget.cards
+            if card.device.has_seed and not card.device.signature_available and card.guidance.expandable
+        )
+        seed_card.expand()
+        seed_button = next(
+            button for button in seed_card.findChildren(QPushButton) if button.text() == "Sign now"
+        )
+        seed_importer = seed_card._wallet_importer()
+        assert seed_importer and seed_button.isEnabled()
+        with qtbot.waitSignal(seed_importer.signal_signature_added, timeout=10_000):
+            seed_button.click()
 
-    assert viewer.button_send.isVisible()
+    assert viewer.button_send.isVisible() and viewer.button_send.isEnabled()
 
     # send it away now
     shutter.save(viewer)

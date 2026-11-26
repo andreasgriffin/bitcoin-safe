@@ -89,7 +89,7 @@ from bitcoin_safe.gui.qt.util import svg_tools
 from bitcoin_safe.gui.qt.wrappers import Menu
 from bitcoin_safe.plugin_framework.plugins.chat_sync.constants import SYNC_CHAT_ICON_NAME
 from bitcoin_safe.pythonbdk_types import Balance, PythonUtxo
-from bitcoin_safe.tx import TxUiInfos
+from bitcoin_safe.tx import TxInputInfo, TxUiInfos
 from bitcoin_safe.wallet import TxStatus, Wallet
 
 from ...config import UserConfig
@@ -124,6 +124,7 @@ from .util import (
     do_copy,
     sort_id_to_icon,
 )
+from .utxo_copy_menu import add_utxo_copy_menus
 
 logger = logging.getLogger(__name__)
 
@@ -844,8 +845,22 @@ class AddressList(MyTreeView[str]):
         self._add_category_menu(menu, addrs)
 
         menu.addSeparator()
-        if selected and not multi_select:
+        copy_menu = (
             self.add_copy_menu(menu, selected[0], include_columns_even_if_hidden=[self.key_column])
+            if selected and not multi_select
+            else None
+        )
+        add_utxo_copy_menus(
+            menu,
+            [
+                (wallet, utxo)
+                for wallet_id, addresses in self._group_addresses_by_wallet(selected_items).items()
+                if (wallet := self.wallets.get(wallet_id))
+                for utxo in self._utxos_for_addresses(wallet, addresses)
+            ],
+            self.config,
+            copy_menu,
+        )
 
         address_list = [item.data(MySortModel.role_drag_key) for item in selected_items if item]
         menu.add_action(
@@ -971,7 +986,7 @@ class AddressList(MyTreeView[str]):
             return
 
         tx_ui_infos = TxUiInfos(
-            utxo_dict={utxo.outpoint: utxo for utxo in utxos},
+            inputs={utxo.outpoint: TxInputInfo(utxo) for utxo in utxos},
             hide_UTXO_selection=False,
             main_wallet_id=wallet.id,
         )

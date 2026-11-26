@@ -77,6 +77,20 @@ class Recipient:
     checked_max_amount: bool = False
     read_only: bool = False
 
+    @classmethod
+    def from_txout(cls, txout: bdk.TxOut, network: bdk.Network) -> Recipient:
+        """Preserve scripts without addresses in the format accepted by script_pubkey."""
+        address = robust_address_str_from_script(txout.script_pubkey, network, on_error_return_hex=False)
+        if not address:
+            address = "script:" + bytes(txout.script_pubkey.to_bytes()).hex()
+        return cls(address, txout.value.to_sat())
+
+    def script_pubkey(self, network: bdk.Network) -> bdk.Script:
+        """Return the address script or the explicitly imported raw script."""
+        if self.address.startswith("script:"):
+            return bdk.Script(bytes.fromhex(self.address.removeprefix("script:")))
+        return bdk.Address(self.address, network).script_pubkey()
+
     def clone(self) -> Recipient:
         """Clone."""
         return Recipient(
@@ -278,6 +292,15 @@ class PythonUtxo(BaseSaveableClass):
     def value(self):
         """Value."""
         return self.txout.value.to_sat()
+
+
+@dataclass
+class TxInputInfo:
+    """UTXO and optional PSBT metadata included as an input in a transaction."""
+
+    utxo: PythonUtxo
+    psbt_input: bdk.Input | None = None
+    satisfaction_weight: int | None = None
 
 
 def python_utxo_balance(python_utxos: list[PythonUtxo]) -> int:

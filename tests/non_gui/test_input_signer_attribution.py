@@ -82,7 +82,7 @@ def test_compressed_key_with_wrong_parity_is_not_attributed() -> None:
 
 
 def test_valid_signature_is_attributed_to_keystore_at_derivation() -> None:
-    result = InputResult(InputVerdict.valid, (_CHILD_0_5,))
+    result = InputResult(InputVerdict.valid, ((_CHILD_0_5, b""),))
     keychain_index = bdk.KeychainAndIndex(keychain=bdk.KeychainKind.EXTERNAL, index=5)
 
     signers = attribute_input_signers(result, keychain_index, [_KEYSTORE], _NETWORK)
@@ -91,20 +91,20 @@ def test_valid_signature_is_attributed_to_keystore_at_derivation() -> None:
 
 
 def test_key_not_derived_from_keystore_is_not_attributed() -> None:
-    result = InputResult(InputVerdict.valid, (_OTHER_KEY,))
+    result = InputResult(InputVerdict.valid, ((_OTHER_KEY, b""),))
     keychain_index = bdk.KeychainAndIndex(keychain=bdk.KeychainKind.EXTERNAL, index=5)
 
     assert attribute_input_signers(result, keychain_index, [_KEYSTORE], _NETWORK) == ()
 
 
 def test_wrong_index_is_not_attributed() -> None:
-    result = InputResult(InputVerdict.valid, (_CHILD_0_5,))
+    result = InputResult(InputVerdict.valid, ((_CHILD_0_5, b""),))
     keychain_index = bdk.KeychainAndIndex(keychain=bdk.KeychainKind.EXTERNAL, index=6)
 
     assert attribute_input_signers(result, keychain_index, [_KEYSTORE], _NETWORK) == ()
 
 
 def test_unowned_input_has_no_fingerprints() -> None:
-    result = InputResult(InputVerdict.valid, (_CHILD_0_5,))
+    result = InputResult(InputVerdict.valid, ((_CHILD_0_5, b""),))
 
     assert attribute_input_signers(result, None, [_KEYSTORE], _NETWORK) == ()

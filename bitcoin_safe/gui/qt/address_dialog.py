@@ -217,7 +217,7 @@ class AddressDialog(QWidget):
             groupbox_style=False,
         )
         self.recipient_tabs.addTab(self.recipient_box, "")
-        self.recipient_box.notification_bar.set_wallet_id(wallet_id=wallet.id)
+        self.recipient_box.notification_bar.set_wallet_id(wallet.id)
         self.recipient_box.address = self.address
         label = wallet.labels.get_label(self.address)
         self.recipient_box.label = label if label else ""

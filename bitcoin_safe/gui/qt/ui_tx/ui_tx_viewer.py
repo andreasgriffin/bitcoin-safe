@@ -88,7 +88,7 @@ from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum, short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
-from ....psbt_util import FeeInfo, InputEnrichment, PubKeyInfo, SimplePSBT
+from ....psbt_util import FeeInfo, InputEnrichment, PubKeyInfo, SimplePSBT, unsigned_tx_bytes
 from ....pythonbdk_types import (
     OutPoint,
     PythonUtxo,
@@ -728,6 +728,10 @@ class UITx_Viewer(UITx_Base):
             wallets,
             current_height=self._get_robust_height(),
         )
+        if isinstance(self.data.data, bdk.Psbt):
+            for txin, psbt_input in zip(tx.input(), self.data.data.input(), strict=True):
+                outpoint = OutPoint.from_bdk(txin.previous_output)
+                txinfos.source_tx_inputs[outpoint] = psbt_input
         if new_fee_rate is not None:
             txinfos.fee_rate = new_fee_rate
 
@@ -743,6 +747,12 @@ class UITx_Viewer(UITx_Base):
         txid, wallet, tx_details, txinfos = self._infos_for_edit_or_rbf(
             new_fee_rate=new_fee_rate,
         )
+
+        if not wallet:
+            wallets = get_wallets(self.wallet_functions)
+            if wallets:
+                wallet = wallets[0]
+                txinfos.main_wallet_id = wallet.id
 
         if not wallet:
             Message(
@@ -864,14 +874,14 @@ class UITx_Viewer(UITx_Base):
         logger.debug(f"{self.__class__.__name__} update_with_filter")
 
         if self.data.data_type == DataType.PSBT:
-            self.set_psbt(self.data.data, fee_info=self.fee_info)
+            self.set_psbt(self.data.data)
             if isinstance(self.data.data, bdk.Psbt):
                 result = self.data.data.finalize()
                 finalized_tx = result.psbt.extract_tx() if result.could_finalize else None
                 if finalized_tx:
-                    assert finalized_tx.compute_txid() == self.data.data.extract_tx().compute_txid(), (
-                        "error. The txid should not be changed during finalizing/reloading"
-                    )
+                    assert unsigned_tx_bytes(finalized_tx) == unsigned_tx_bytes(
+                        self.data.data.extract_tx()
+                    ), "The transaction changed during finalization."
                     self.set_tx(
                         finalized_tx,
                         fee_info=self.fee_info,
@@ -1261,7 +1271,7 @@ class UITx_Viewer(UITx_Base):
             logger.error("data is not of type bdk.Psbt")
             return
 
-        if self.data.data and tx.compute_txid() != self.data.data.extract_tx().compute_txid():
+        if self.data.data and unsigned_tx_bytes(tx) != unsigned_tx_bytes(self.data.data.extract_tx()):
             Message(
                 self.tr("The txid of the signed psbt doesnt match the original txid"),
                 type=MessageType.Error,
@@ -1269,9 +1279,8 @@ class UITx_Viewer(UITx_Base):
             )
             return
 
-        self.set_tx(
-            tx,
-        )
+        # Signing legacy and nested SegWit inputs changes the txid, but not the fee.
+        self.set_tx(tx, fee_info=self.fee_info)
 
     def _get_any_signature_importer(self) -> AbstractSignatureImporter | None:
         """Get any signature importer."""
@@ -1304,9 +1313,10 @@ class UITx_Viewer(UITx_Base):
 
         tx = import_psbt.extract_tx()
 
-        if all([inp.is_fully_signed() for inp in simple_psbt.inputs]):
+        if simple_psbt.inputs and all(inp.is_fully_signed() for inp in simple_psbt.inputs):
             self.set_tx(
                 tx,
+                fee_info=FeeInfo(import_psbt.fee(), tx.vsize(), False, False),
             )
         else:
             self.set_psbt(import_psbt)
@@ -1406,7 +1416,7 @@ class UITx_Viewer(UITx_Base):
         # try via tx details
         for wallet_ in wallets:
             txdetails = wallet_.get_tx(str(tx.compute_txid()))
-            if txdetails and txdetails.fee:
+            if txdetails and txdetails.fee is not None:
                 return FeeInfo(
                     fee_amount=txdetails.fee,
                     vsize=tx.vsize(),
@@ -1453,10 +1463,11 @@ class UITx_Viewer(UITx_Base):
         chain_position: bdk.ChainPosition | None = None,
     ) -> None:
         """Set tx."""
-        self.data = Data.from_tx(tx, network=self.network)
         fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(str(tx.compute_txid()))
-        if fee_info is None or fee_info.any_is_estimated():
-            fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True)
+        self.data = Data.from_tx(tx, network=self.network)
+        fee_info = self.calc_finalized_tx_fee_info(tx, tx_has_final_size=True) or fee_info
+        if fee_info is not None:
+            fee_info = FeeInfo(fee_info.fee_amount, tx.vsize(), fee_info.fee_amount_is_estimated, False)
         self.fee_info = fee_info
 
         # Always prefer the latest wallet view of chain position so open tx viewers
@@ -1491,13 +1502,7 @@ class UITx_Viewer(UITx_Base):
             wallet_functions=self.wallet_functions,
         )
 
-        self.recipients.recipients = [
-            Recipient(
-                address=robust_address_str_from_txout(output, self.network),
-                amount=output.value.to_sat(),
-            )
-            for output in outputs
-        ]
+        self.recipients.recipients = [Recipient.from_txout(output, self.network) for output in outputs]
         self.set_visibility(chain_position=chain_position)
         self.set_psbt_already_broadcasted_bar()
         self.set_tab_properties(chain_position=chain_position)
@@ -1649,33 +1654,18 @@ class UITx_Viewer(UITx_Base):
 
     def _fetch_cached_feeinfo(self, txid: str) -> FeeInfo | None:
         """Fetch cached feeinfo."""
-        if isinstance(self.data.data, bdk.Psbt) and self.data.data.extract_tx().compute_txid() == txid:
+        if isinstance(self.data.data, bdk.Psbt) and str(self.data.data.extract_tx().compute_txid()) == txid:
             return self.fee_info
-        elif isinstance(self.data.data, bdk.Transaction) and self.data.data.compute_txid() == txid:
+        elif isinstance(self.data.data, bdk.Transaction) and str(self.data.data.compute_txid()) == txid:
             return self.fee_info
         return None
 
-    def set_psbt(self, psbt: bdk.Psbt, fee_info: FeeInfo | None = None) -> None:
-        """_summary_
-
-        Args:
-            psbt (bdk.Psbt): _description_
-            fee_rate (_type_, optional): This is the exact fee_rate chosen in txbuilder. If not given it has
-                                        to be estimated with estimate_segwit_tx_size_from_psbt.
-        """
-        # check if any new signatures were added. If not tell the user
-
+    def set_psbt(self, psbt: bdk.Psbt) -> None:
+        """Show a PSBT and calculate its current fee and size."""
+        fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
         self.data = Data.from_psbt(psbt, network=self.network)
         tx = psbt.extract_tx()
-        txid = str(tx.compute_txid())
-        fee_info = fee_info if fee_info else self._fetch_cached_feeinfo(txid)
         tx_status = self.get_tx_status(chain_position=None)
-        # do not use calc_fee_info here, because calc_fee_info is for final tx only.
-
-        # if still no fee_info  available, then estimate it
-        if fee_info is None:
-            fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
-
         self.fee_info = fee_info
 
         self.column_fee.fee_group.set_fee_infos(
@@ -1694,13 +1684,7 @@ class UITx_Viewer(UITx_Base):
             wallet_functions=self.wallet_functions,
         )
 
-        self.recipients.recipients = [
-            Recipient(
-                address=robust_address_str_from_txout(output, self.network),
-                amount=output.value.to_sat(),
-            )
-            for output in outputs
-        ]
+        self.recipients.recipients = [Recipient.from_txout(output, self.network) for output in outputs]
 
         self.tx_singning_steps = self.update_tx_progress()
         self.set_visibility(None)

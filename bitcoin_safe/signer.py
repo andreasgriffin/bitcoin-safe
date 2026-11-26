@@ -54,7 +54,7 @@ from bitcoin_safe.constants import LOGO_NAME
 from bitcoin_safe.descriptors import get_simple_pubkey_providers
 from bitcoin_safe.gui.qt.util import Message, MessageType, caught_exception_message, svg_tools
 from bitcoin_safe.i18n import translate
-from bitcoin_safe.psbt_util import PartialSig
+from bitcoin_safe.psbt_util import PartialSig, unsigned_tx_bytes
 
 from .gui.qt.dialog_import import ImportDialog
 from .keystore import KeyStoreImporterTypes
@@ -180,14 +180,6 @@ class AbstractSignatureImporter(QObject):
         """Can sign."""
         return False
 
-    def txids_match(
-        self,
-        psbt1: bdk.Psbt,
-        psbt2: bdk.Psbt,
-    ) -> bool:
-        """Txids match."""
-        return bool(psbt1.extract_tx().compute_txid() == psbt2.extract_tx().compute_txid())
-
     def handle_string_input(self, original_psbt: bdk.Psbt, s: str):
         """Handle string input."""
         self.handle_data_input(original_psbt, Data.from_str(s, network=self.network))
@@ -217,8 +209,8 @@ class AbstractSignatureImporter(QObject):
                 finalize_result = psbt2.finalize()
                 if finalize_result.could_finalize:
                     finalized_tx = finalize_result.psbt.extract_tx()
-                    assert finalized_tx.compute_txid() == original_psbt.extract_tx().compute_txid(), self.tr(
-                        "bdk libary error. The txid should not be changed during finalizing"
+                    assert unsigned_tx_bytes(finalized_tx) == unsigned_tx_bytes(original_psbt.extract_tx()), (
+                        self.tr("The transaction changed during finalization.")
                     )
                     self.signal_final_tx_received.emit(finalized_tx)
                     return
@@ -228,9 +220,9 @@ class AbstractSignatureImporter(QObject):
 
             elif data.data_type == DataType.Tx:
                 scanned_tx: bdk.Transaction = data.data
-                if scanned_tx.compute_txid() != original_psbt.extract_tx().compute_txid():
+                if unsigned_tx_bytes(scanned_tx) != unsigned_tx_bytes(original_psbt.extract_tx()):
                     Message(
-                        self.tr("The txid of the signed psbt doesnt match the original txid"),
+                        self.tr("The signed transaction does not match the original transaction."),
                         type=MessageType.Error,
                         parent=self._message_parent(),
                     )
@@ -284,27 +276,32 @@ class SignatureImporterWallet(AbstractSignatureImporter):
         self.wallet_id = wallet.id
 
         receive_descriptor, change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
-        self.software_signers = [
-            SoftwareSigner(
+        # Start with public descriptors so, for example, selecting seed B cannot also sign with seed A.
+        self.software_signers = {
+            keystore.fingerprint.upper(): SoftwareSigner(
                 mnemonic=keystore.mnemonic,
                 network=self.network,
-                receive_descriptor=receive_descriptor.to_string_with_secret(),
-                change_descriptor=change_descriptor.to_string_with_secret(),
+                receive_descriptor=str(receive_descriptor),
+                change_descriptor=str(change_descriptor),
             )
             for keystore in wallet.keystores
             if keystore.mnemonic
-        ]
+        }
 
     def can_sign(self) -> bool:
         """Can sign."""
         return bool(self.software_signers)
 
-    def sign(self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None):
+    def sign(
+        self, psbt: bdk.Psbt, sign_options: bdk.SignOptions | None = None, fingerprint: str | None = None
+    ) -> None:
         """Sign."""
-        original_psbt = psbt
+        original_unsigned_tx = unsigned_tx_bytes(psbt.extract_tx())
         original_serialized_tx = tx_of_psbt_to_hex(psbt)
         try:
-            for software_signer in self.software_signers:
+            for signer_fingerprint, software_signer in self.software_signers.items():
+                if fingerprint is not None and signer_fingerprint != fingerprint.upper():
+                    continue
                 new_psbt = software_signer.sign_psbt(psbt)
                 if new_psbt:
                     psbt = new_psbt
@@ -330,9 +327,9 @@ class SignatureImporterWallet(AbstractSignatureImporter):
             caught_exception_message(e, parent=self._message_parent())
             return
 
-        if not self.txids_match(original_psbt, psbt):
+        if original_unsigned_tx != unsigned_tx_bytes(psbt.extract_tx()):
             Message(
-                self.tr("The txid of the signed psbt doesnt match the original txid. Aborting"),
+                self.tr("The signed transaction does not match the original transaction. Aborting."),
                 parent=self._message_parent(),
             )
             return

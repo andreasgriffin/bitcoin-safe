@@ -39,6 +39,7 @@ from typing import Any, Literal, cast
 from urllib.parse import urljoin
 
 import aiohttp
+import bdkpython as bdk
 import numpy as np
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
@@ -50,7 +51,7 @@ from bitcoin_safe.network_config import NetworkConfig
 from bitcoin_safe.signals import SignalsMin
 from bitcoin_safe.util import default_timeout
 
-from .network_utils import ProxyInfo
+from .network_utils import ProxyInfo, _aiohttp_session_kwargs
 
 logger = logging.getLogger(__name__)
 
@@ -381,6 +382,26 @@ class MempoolManager(QObject):
         if self._owns_loop_in_thread:
             self.loop_in_thread.stop()
         logger.debug(f"{self.__class__.__name__} close")
+
+    async def fetch_transaction(self, txid: bdk.Txid) -> bdk.Transaction:
+        """Fetch and verify a transaction from the configured block explorer."""
+        base_url = self.network_config.mempool_url
+        if not base_url:
+            raise ValueError("No block explorer is configured")
+        proxy = ProxyInfo.parse(self.network_config.proxy_url) if self.network_config.proxy_url else None
+        session_kwargs, request_kwargs = _aiohttp_session_kwargs(proxy, default_timeout(proxy))
+        url = urljoin(base_url.rstrip("/") + "/", f"api/tx/{txid}/hex")
+        try:
+            async with aiohttp.ClientSession(**session_kwargs) as session:
+                async with session.get(url, allow_redirects=False, **request_kwargs) as response:
+                    response.raise_for_status()
+                    raw = await response.text()
+            transaction = bdk.Transaction(bytes.fromhex(raw.strip()))
+        except Exception as exc:
+            raise ValueError(f"Previous transaction could not be downloaded or parsed: {exc}") from exc
+        if str(transaction.compute_txid()) != str(txid):
+            raise ValueError("Downloaded transaction ID does not match the requested transaction")
+        return transaction
 
     def set_data_from_mempoolspace(self, force=False) -> None:
         """Set data from mempoolspace."""

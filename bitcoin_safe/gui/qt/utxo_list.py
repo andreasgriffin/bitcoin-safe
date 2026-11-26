@@ -60,15 +60,16 @@ import enum
 import logging
 from collections.abc import Iterable
 from functools import partial
-from typing import Any
+from typing import Any, cast
 
 import bdkpython as bdk
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.storage import BaseSaveableClass
 from bitcoin_safe_lib.util import clean_list, fast_version, time_logger
 from bitcoin_safe_lib.util_os import webopen
-from PyQt6.QtCore import QModelIndex, QPoint, Qt
-from PyQt6.QtGui import QStandardItem
+from PyQt6.QtCore import QModelIndex, QPoint, Qt, pyqtSignal
+from PyQt6.QtGui import QBrush, QStandardItem
 from PyQt6.QtWidgets import QAbstractItemView, QHeaderView, QWidget
 
 from bitcoin_safe.fx import FX
@@ -79,7 +80,7 @@ from bitcoin_safe.wallet import TxStatus, Wallet, get_wallets
 
 from ...config import UserConfig
 from ...i18n import translate
-from ...pythonbdk_types import OutPoint, PythonUtxo, TxOut
+from ...pythonbdk_types import OutPoint, PythonUtxo, TxOut, robust_address_str_from_script
 from ...signals import UpdateFilter, UpdateFilterReason, WalletFunctions
 from .my_treeview import (
     MyItemDataRole,
@@ -117,6 +118,7 @@ def tooltip_text_of_utxo(is_spent_by_txid: str | None, chain_position: bdk.Chain
 
 
 class UTXOList(MyTreeView[OutPoint]):
+    signal_remove_foreign_inputs = cast(SignalProtocol[[list[OutPoint]]], pyqtSignal(list))
     VERSION = "0.0.2"
     known_classes = {
         **BaseSaveableClass.known_classes,
@@ -225,10 +227,15 @@ class UTXOList(MyTreeView[OutPoint]):
         self.fx = fx
         self.outpoints = outpoints if outpoints else []
         self.wallet_functions = wallet_functions
-        self.txout_dict: dict[str, bdk.TxOut] | dict[str, TxOut] = txout_dict if txout_dict else {}
+        self.txout_dict: dict[OutPoint, bdk.TxOut | TxOut] = {
+            OutPoint.from_str(key): value for key, value in (txout_dict or {}).items()
+        }
         self._pythonutxo_dict: dict[str, PythonUtxo] = {}  # outpoint --> txdetails
         self._wallet_dict: dict[str, Wallet] = {}  # outpoint --> wallet
         self.current_categories_filter: set[str] | None = None
+        self.supplied_wallet_ids: dict[OutPoint, str | None] = {}
+        self.spendable_outpoints: set[OutPoint] | None = None
+        self.removable_outpoints: set[OutPoint] = set()
         self._signers_by_outpoint: dict[OutPoint, dict[str, str]] = {}
 
         self.setTextElideMode(Qt.TextElideMode.ElideMiddle)
@@ -236,6 +243,9 @@ class UTXOList(MyTreeView[OutPoint]):
             key_column=self.key_column,
             parent=self,
         )
+        # Only transaction creators supply an authoritative selection. Other lists
+        # retain the normal MyTreeView selection behavior.
+        self.authoritative_selection: set[OutPoint] | None = None
         self.proxy = MySortModel(
             Columns=self.Columns,
             drag_key="outpoints",
@@ -280,6 +290,20 @@ class UTXOList(MyTreeView[OutPoint]):
         self.outpoints = outpoints
         self.update_content()
 
+    def set_utxos(
+        self,
+        outpoints: list[OutPoint],
+        txout_dict: dict[OutPoint, TxOut],
+        wallet_ids: dict[OutPoint, str | None],
+        spendable_outpoints: set[OutPoint],
+    ) -> None:
+        """Replace the supplied rows and their optional display information."""
+        self.txout_dict.clear()
+        self.txout_dict.update(txout_dict)
+        self.supplied_wallet_ids = wallet_ids
+        self.spendable_outpoints = spendable_outpoints
+        self.set_outpoints(outpoints)
+
     def set_signers_by_outpoint(self, signers_by_outpoint: dict[OutPoint, dict[str, str]]):
         """Set the signers per outpoint, shown in the "Signed by" column."""
         self._signers_by_outpoint = signers_by_outpoint
@@ -312,6 +336,13 @@ class UTXOList(MyTreeView[OutPoint]):
 
         outpoints: list[OutPoint] = [item.data(role=MyItemDataRole.ROLE_KEY) for item in selected]
 
+        removable = [outpoint for outpoint in outpoints if outpoint in self.removable_outpoints]
+        if removable:
+            menu.add_action(
+                self.tr("Remove foreign inputs"),
+                partial(self.signal_remove_foreign_inputs.emit, removable),
+            )
+
         if not multi_select:
             idx = self._p2s(self.indexAt(position))
             if not idx.isValid():
@@ -326,7 +357,8 @@ class UTXOList(MyTreeView[OutPoint]):
                     partial(self.signals.open_tx_like.emit, outpoints[0].txid_str),
                 )
 
-            txid_URL = block_explorer_URL(self.config.network_config.mempool_url, "tx", outpoints[0].txid_str)
+            explorer_url = self.config.network_config.mempool_url
+            txid_URL = block_explorer_URL(explorer_url, "tx", outpoints[0].txid_str) if explorer_url else None
             if txid_URL:
                 menu.add_action(
                     translate("utxo_list", "View on block explorer"),
@@ -346,11 +378,12 @@ class UTXOList(MyTreeView[OutPoint]):
                     for item in self.selected_in_column(self.Columns.ADDRESS)
                 ]
             )
-            if wallet_ids and addresses:
+            wallet_signal = self.wallet_functions.wallet_signals.get(wallet_ids[0]) if wallet_ids else None
+            if wallet_signal and addresses:
                 menu.add_action(
                     translate("utxo_list", "Open Address Details"),
                     partial(
-                        self.wallet_functions.wallet_signals[wallet_ids[0]].show_address.emit,
+                        wallet_signal.show_address.emit,
                         addresses[0],
                         wallet_ids[0],
                     ),
@@ -385,10 +418,12 @@ class UTXOList(MyTreeView[OutPoint]):
             satoshis = Satoshis(python_utxo.value, self.config.network)
             address = python_utxo.address
         else:
-            txout = self.txout_dict.get(str(outpoint))
+            txout = self.txout_dict.get(outpoint)
             if txout:
                 satoshis = Satoshis(txout.value.to_sat(), self.config.network)
-                address = str(bdk.Address.from_script(txout.script_pubkey, self.config.network))
+                address = robust_address_str_from_script(
+                    txout.script_pubkey, self.config.network, on_error_return_hex=False
+                )
         return wallet, python_utxo, address, satoshis
 
     def get_headers(self) -> dict[MyTreeView.Columns, QStandardItem]:
@@ -451,10 +486,6 @@ class UTXOList(MyTreeView[OutPoint]):
         if self.maybe_defer_update():
             return
 
-        def str_format(v):
-            """Str format."""
-            return str(v) if v else "Unknown"
-
         self._before_update_content()
 
         # build dicts to look up the outpoints later (fast)
@@ -463,8 +494,13 @@ class UTXOList(MyTreeView[OutPoint]):
         self._pythonutxo_dict = {}  # outpoint_str:PythonUTXO
         for wallet_ in get_wallets(self.wallet_functions):
             txos_dict = wallet_.get_all_txos_dict(include_not_mine=True)
-            self._pythonutxo_dict.update(txos_dict)
-            self._wallet_dict.update({outpoint_str: wallet_ for outpoint_str in txos_dict.keys()})
+            for outpoint_str, txo in txos_dict.items():
+                existing_wallet = self._wallet_dict.get(outpoint_str)
+                # Both sender and recipient may know an output; keep its owner's category.
+                if existing_wallet and existing_wallet.is_my_address(txo.address):
+                    continue
+                self._pythonutxo_dict[outpoint_str] = txo
+                self._wallet_dict[outpoint_str] = wallet_
 
         self._source_model.clear()
         self.update_headers(self.get_headers())
@@ -474,8 +510,11 @@ class UTXOList(MyTreeView[OutPoint]):
 
             labels = [""] * len(self.Columns)
             labels[self.Columns.OUTPOINT] = str(outpoint)
-            labels[self.Columns.ADDRESS] = str_format(address)
-            labels[self.Columns.AMOUNT] = str_format(satoshis)
+            unavailable = self.spendable_outpoints is not None and outpoint not in self.spendable_outpoints
+            labels[self.Columns.ADDRESS] = str(address) if address else ("" if unavailable else "Unknown")
+            labels[self.Columns.AMOUNT] = (
+                str(satoshis) if satoshis is not None else ("" if unavailable else "Unknown")
+            )
             items = [QStandardItem(x) for x in labels]
             self.set_editability(items)
             items[self.Columns.OUTPOINT].setText(str(outpoint))
@@ -492,7 +531,7 @@ class UTXOList(MyTreeView[OutPoint]):
             items[self.Columns.ADDRESS].setToolTip(labels[self.Columns.ADDRESS])
             # items[self.Columns.AMOUNT].setFont(QFont(MONOSPACE_FONT))
             items[self.Columns.AMOUNT].setData(
-                satoshis.value if satoshis else str_format(satoshis), MyItemDataRole.ROLE_CLIPBOARD_DATA
+                satoshis.value if satoshis is not None else None, MyItemDataRole.ROLE_CLIPBOARD_DATA
             )
 
             # add item
@@ -504,6 +543,8 @@ class UTXOList(MyTreeView[OutPoint]):
             header.setSectionResizeMode(self.Columns.ADDRESS, QHeaderView.ResizeMode.Interactive)
 
         self._after_update_content()
+        if self.spendable_outpoints is not None and set(self.outpoints) - self.spendable_outpoints:
+            self.resizeColumnToContents(self.Columns.STATUS)
         super().update_content()
 
     def refresh_row(self, key: bdk.OutPoint, row: int):
@@ -569,6 +610,30 @@ class UTXOList(MyTreeView[OutPoint]):
                 )
                 items[self.Columns.ADDRESS].setBackground(color)
 
+        if outpoint in self.supplied_wallet_ids:
+            wallet_id = self.supplied_wallet_ids[outpoint] or (
+                ""
+                if self.spendable_outpoints is not None and outpoint not in self.spendable_outpoints
+                else self.tr("Unknown")
+            )
+            items[self.Columns.WALLET_ID].setText(wallet_id)
+            items[self.Columns.WALLET_ID].setData(wallet_id, MyItemDataRole.ROLE_CLIPBOARD_DATA)
+
+        status_text = (
+            self.tr("Unavailable")
+            if self.spendable_outpoints is not None and outpoint not in self.spendable_outpoints
+            else ""
+        )
+        if status_text and wallet and python_utxo and python_utxo.is_spent_by_txid:
+            status_text = self.tr("Spent")
+        items[self.Columns.STATUS].setText(status_text)
+        items[self.Columns.STATUS].setForeground(
+            QBrush(ColorScheme.RED.as_color()) if status_text else QBrush()
+        )
+        if status_text:
+            items[self.Columns.STATUS].setIcon(svg_tools.get_QIcon("error.svg"))
+            items[self.Columns.STATUS].setToolTip(status_text)
+
         signed_by = self._format_signers(self._signers_by_outpoint.get(outpoint, {}))
         items[self.Columns.SIGNED_BY].setText(signed_by)
         items[self.Columns.SIGNED_BY].setData(signed_by, MyItemDataRole.ROLE_CLIPBOARD_DATA)
@@ -589,10 +654,53 @@ class UTXOList(MyTreeView[OutPoint]):
         items = self.selected_in_column(self.Columns.OUTPOINT)
         return [x.data(MyItemDataRole.ROLE_KEY) for x in items]
 
+    def get_displayed_outpoints(self) -> set[OutPoint]:
+        """Outpoints in the materialized model, including filtered rows."""
+        return {
+            item.data(MyItemDataRole.ROLE_KEY)
+            for row in range(self._source_model.rowCount())
+            if (item := self._source_model.item(row, self.key_column)) is not None
+        }
+
+    def project_selection(self, scroll_to_last: bool = False) -> None:
+        """Display the intended selection without treating it as a user edit."""
+        if self.authoritative_selection is None:
+            return
+        was_updating = self._currently_updating
+        self._currently_updating = True
+        try:
+            self.select_rows(
+                self.authoritative_selection,
+                self.key_column,
+                role=MyItemDataRole.ROLE_KEY,
+                scroll_to_last=scroll_to_last,
+                retry_next_time=False,
+            )
+            self._selected_ids_for_next_update = None
+        finally:
+            self._currently_updating = was_updating
+
+    def _restore_selection(self) -> None:
+        if self.authoritative_selection is None:
+            super()._restore_selection()
+            return
+        if (scrollbar := self.verticalScrollBar()) and self._scroll_position is not None:
+            scrollbar.setValue(self._scroll_position)
+        self.project_selection()
+
     def get_selected_values(self) -> list[int]:
         """Get selected values."""
         items = self.selected_in_column(self.Columns.AMOUNT)
-        return [x.data(MyItemDataRole.ROLE_CLIPBOARD_DATA) for x in items]
+        return [
+            value
+            for item in items
+            if (
+                self.spendable_outpoints is None
+                or item.sibling(item.row(), self.Columns.OUTPOINT).data(MyItemDataRole.ROLE_KEY)
+                in self.spendable_outpoints
+            )
+            and isinstance(value := item.data(MyItemDataRole.ROLE_CLIPBOARD_DATA), int)
+        ]
 
     def on_double_click(self, source_idx: QModelIndex):
         """On double click."""
@@ -618,7 +726,13 @@ class UTXOList(MyTreeView[OutPoint]):
         for row in range(model.rowCount()):
             category = model.data(model.index(row, self.Columns.CATEGORY))
 
-            if self.current_categories_filter is not None and category not in self.current_categories_filter:
+            outpoint = model.data(model.index(row, self.Columns.OUTPOINT), role=MyItemDataRole.ROLE_KEY)
+            if (
+                self.current_categories_filter is not None
+                and category not in self.current_categories_filter
+                and outpoint not in self.txout_dict
+                and (self.spendable_outpoints is None or outpoint in self.spendable_outpoints)
+            ):
                 hidden_rows.add(row)
 
         return hidden_rows

@@ -193,6 +193,8 @@ class ImportDialog(QWidget):
         text_instruction_label="Please paste your Bitcoin Transaction or PSBT in here, or drop a file",
         instruction_widget: QWidget | None = None,
         text_placeholder="Paste your Bitcoin Transaction or PSBT in here or drop a file",
+        multiline: bool = False,
+        file_filter: str | None = None,
     ) -> None:
         """Initialize instance."""
         super().__init__()
@@ -206,9 +208,10 @@ class ImportDialog(QWidget):
         self.instruction_label = QLabel(text_instruction_label)
         self.text_edit = DragAndDropButtonEdit(
             network=network,
-            callback_enter=self.on_ok_button,
+            callback_enter=None if multiline else self.on_ok_button,
             callback_esc=self.close,
             close_all_video_widgets=close_all_video_widgets,
+            file_filter=file_filter,
         )
         self.text_edit.setPlaceholderText(text_placeholder)
 
@@ -233,7 +236,7 @@ class ImportDialog(QWidget):
 
         layout.addWidget(self.buttonBox)
 
-        shortcut = QShortcut(QKeySequence("Return"), self)
+        shortcut = QShortcut(QKeySequence("Ctrl+Return" if multiline else "Return"), self)
         shortcut.activated.connect(self.on_ok_button)
         self.shortcut_close = QShortcut(QKeySequence("Ctrl+W"), self)
         self.shortcut_close.activated.connect(self.close)

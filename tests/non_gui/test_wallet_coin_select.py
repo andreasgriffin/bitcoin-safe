@@ -45,7 +45,7 @@ from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.pythonbdk_types import Recipient
-from bitcoin_safe.tx import TxUiInfos, transaction_to_dict
+from bitcoin_safe.tx import TxInputInfo, TxUiInfos, transaction_to_dict
 from bitcoin_safe.wallet import Wallet
 
 from ..faucet import Faucet
@@ -236,12 +236,12 @@ def test_manual_coin_selection(
     # Select only "Private" UTXOs for the spend.
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
-    txinfos.utxo_dict = {
-        str(utxo.outpoint): utxo
+    txinfos.inputs = {
+        utxo.outpoint: TxInputInfo(utxo)
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    assert len(txinfos.utxo_dict) == test_wallet_config.num_private
+    assert len(txinfos.inputs) == test_wallet_config.num_private
     txinfos.fee_rate = 3
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
@@ -311,12 +311,12 @@ def test_manual_coin_selection_1_max(
     # Spend all private UTXOs with one max recipient (no change).
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
-    txinfos.utxo_dict = {
-        str(utxo.outpoint): utxo
+    txinfos.inputs = {
+        utxo.outpoint: TxInputInfo(utxo)
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    assert len(txinfos.utxo_dict) == test_wallet_config.num_private
+    assert len(txinfos.inputs) == test_wallet_config.num_private
     txinfos.fee_rate = 3
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
@@ -358,7 +358,7 @@ def test_manual_coin_selection_1_max(
     )
     # BDK output order is not deterministic; compare sorted values instead.
     # If utxo_value_private != utxo_value_kyc, this also validates category selection.
-    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.selected_utxos()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
 
     expected_output_values = sorted(
@@ -393,14 +393,14 @@ def test_manual_coin_selection_2_max(
     # Spend all private UTXOs with two max recipients (no change).
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
-    txinfos.utxo_dict = {
-        str(utxo.outpoint): utxo
+    txinfos.inputs = {
+        utxo.outpoint: TxInputInfo(utxo)
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.selected_utxos()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
-    assert len(txinfos.utxo_dict) == test_wallet_config.num_private
+    assert len(txinfos.inputs) == test_wallet_config.num_private
     txinfos.fee_rate = 3
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
@@ -484,14 +484,14 @@ def test_category_coin_selection(
     # Select only private UTXOs, but allow coin selection to pick minimal inputs.
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = False
-    txinfos.utxo_dict = {
-        str(utxo.outpoint): utxo
+    txinfos.inputs = {
+        utxo.outpoint: TxInputInfo(utxo)
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.selected_utxos()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
-    assert len(txinfos.utxo_dict) == test_wallet_config.num_private
+    assert len(txinfos.inputs) == test_wallet_config.num_private
     txinfos.fee_rate = 3
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
@@ -562,14 +562,14 @@ def test_category_coin_selection_1_max(
     # Select private UTXOs with one max recipient (no change).
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = False
-    txinfos.utxo_dict = {
-        str(utxo.outpoint): utxo
+    txinfos.inputs = {
+        utxo.outpoint: TxInputInfo(utxo)
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.selected_utxos()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
-    assert len(txinfos.utxo_dict) == test_wallet_config.num_private
+    assert len(txinfos.inputs) == test_wallet_config.num_private
     txinfos.fee_rate = 3
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
@@ -647,14 +647,14 @@ def test_category_coin_selection_2_max(
     # Spend all private UTXOs with two max recipients (no change).
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
-    txinfos.utxo_dict = {
-        str(utxo.outpoint): utxo
+    txinfos.inputs = {
+        utxo.outpoint: TxInputInfo(utxo)
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.selected_utxos()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
-    assert len(txinfos.utxo_dict) == test_wallet_config.num_private
+    assert len(txinfos.inputs) == test_wallet_config.num_private
     txinfos.fee_rate = 3
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
@@ -737,14 +737,14 @@ def test_category_coin_selection_6_max(
     # Spend all private UTXOs with six max recipients.
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = True
-    txinfos.utxo_dict = {
-        str(utxo.outpoint): utxo
+    txinfos.inputs = {
+        utxo.outpoint: TxInputInfo(utxo)
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.selected_utxos()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
-    assert len(txinfos.utxo_dict) == test_wallet_config.num_private
+    assert len(txinfos.inputs) == test_wallet_config.num_private
     txinfos.fee_rate = 3
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
@@ -835,14 +835,14 @@ def test_category_coin_selection_opportunistic(
 
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = False
-    txinfos.utxo_dict = {
-        str(utxo.outpoint): utxo
+    txinfos.inputs = {
+        utxo.outpoint: TxInputInfo(utxo)
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.selected_utxos()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
-    assert len(txinfos.utxo_dict) == test_wallet_config.num_private
+    assert len(txinfos.inputs) == test_wallet_config.num_private
     txinfos.fee_rate = 3
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
@@ -917,14 +917,14 @@ def test_category_coin_selection_opportunistic_different_seed(
 
     txinfos = TxUiInfos()
     txinfos.spend_all_utxos = False
-    txinfos.utxo_dict = {
-        str(utxo.outpoint): utxo
+    txinfos.inputs = {
+        utxo.outpoint: TxInputInfo(utxo)
         for utxo in wallet.get_all_utxos()
         if wallet.labels.get_category(utxo.address) == "Private"
     }
-    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.utxo_dict.values()])
+    input_value = sum([utxo.txout.value.to_sat() for utxo in txinfos.selected_utxos()])
     assert input_value == test_wallet_config.num_private * test_wallet_config.utxo_value_private
-    assert len(txinfos.utxo_dict) == test_wallet_config.num_private
+    assert len(txinfos.inputs) == test_wallet_config.num_private
     txinfos.fee_rate = 3
     txinfos.opportunistic_merge_utxos = test_coin_control_config.opportunistic_merge_utxos
     txinfos.main_wallet_id = wallet.id
