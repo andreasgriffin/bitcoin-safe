@@ -59,7 +59,7 @@ cryptography = [
 btclib = "^2026.11.13"
 networkx = ">=3.4,<4"
 pypdf = ">=5,<7"
-btclib-wallet = "^2026.11.19"
+btclib-wallet = { git = "https://github.com/btclib-org/btclib-wallet.git", rev = "main" }
 
 
 

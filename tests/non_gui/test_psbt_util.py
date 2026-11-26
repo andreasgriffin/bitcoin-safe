@@ -40,7 +40,6 @@ from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.tx_util import serialized_to_hex
-from btclib.script import Witness
 from btclib.script.script_pub_key import p2ms_m_and_keys_var
 from btclib.tx import OutPoint as BtclibOutPoint
 from btclib.tx import Tx, TxIn
@@ -974,30 +973,25 @@ def test_partially_signed_psbt_recovers_finalized_singlesig_signers() -> None:
     }
 
 
-def test_recovered_finalized_singlesig_uses_signature_sighash_when_psbt_field_missing() -> None:
-    recovered = SigningInput(
-        PsbtIn(
-            final_script_witness=Witness(
-                [
-                    bytes.fromhex(item)
-                    for item in [
-                        "3044022044b81929698da033c1c3b041c7f05eb29449ab50d44246a8f51fa242eba4f3a602206243884e4160acdd109889224506b91ef5c0df3afdcc5b07db2e90494f08852183",
-                        "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae",
-                    ]
-                ]
-            ),
-            check_validity=False,
-        )
+def test_recovered_signature_uses_signature_sighash_when_psbt_field_missing() -> None:
+    item = SigningInput(PsbtIn(check_validity=False))
+    raw = bytes.fromhex(
+        "3044022044b81929698da033c1c3b041c7f05eb29449ab50d44246a8f51fa242eba4f3a602206243884e4160acdd109889224506b91ef5c0df3afdcc5b07db2e90494f08852183"
     )
+    assert item._recovered_sig(raw) == PartialSig(raw.hex(), "SINGLE|ANYONECANPAY")
 
-    recovered._recover_finalized_singlesig_signer_data()
 
-    assert recovered.recovered_signatures == {
-        "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae": PartialSig(
-            signature="3044022044b81929698da033c1c3b041c7f05eb29449ab50d44246a8f51fa242eba4f3a602206243884e4160acdd109889224506b91ef5c0df3afdcc5b07db2e90494f08852183",
-            sighash_type="SINGLE|ANYONECANPAY",
-        )
-    }
+def test_invalid_finalized_singlesig_witness_does_not_attribute_signer() -> None:
+    psbt = p2wsh_psbt_1_1of1
+    native = read_psbt(psbt)
+    signature = native.inputs[0].final_script_witness.stack[0]
+    corrupt = signature[:-2] + bytes([signature[-2] ^ 1]) + signature[-1:]
+    encoded = base64.b64decode(psbt.serialize())
+    assert encoded.count(signature) == 1
+    invalid = bdk.Psbt(base64.b64encode(encoded.replace(signature, corrupt)).decode())
+    item = SigningProgress.from_psbt(invalid).inputs[0]
+    assert not item.recovered_signatures
+    assert all(item.signature_for_pubkey(key) is None for key in item.pubkeys)
 
 
 def test_group_inputs_mixed_input_no_signatures_is_stable() -> None:

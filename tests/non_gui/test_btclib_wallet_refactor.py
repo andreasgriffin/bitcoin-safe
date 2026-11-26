@@ -220,15 +220,24 @@ def test_standard_psbt_fee_uses_upstream_estimator(monkeypatch: pytest.MonkeyPat
     parsed = Psbt.b64decode(psbt.serialize())
     expected = parsed.vsize_estimate(sizer=miniscript_sizer)
 
-    def unexpected_fallback(*args, **kwargs):
-        pytest.fail("standard PSBT should use upstream sizing")
+    from bitcoin_safe import psbt_util
 
-    monkeypatch.setattr(TxWeight, "from_psbt", unexpected_fallback)
+    calls = []
+    real_sizer = psbt_util.estimated_input_sizes
+
+    def record(inp, txin, **kwargs):
+        calls.append(inp)
+        return real_sizer(inp, txin, **kwargs)
+
+    monkeypatch.setattr(psbt_util, "estimated_input_sizes", record)
+    before = psbt.serialize()
     info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
     assert info is not None
     assert info.vsize == expected
     assert info.fee_amount == psbt.fee()
     assert info.vsize_is_estimated
+    assert len(calls) == len(parsed.inputs)
+    assert psbt.serialize() == before
 
 
 @pytest.mark.parametrize("threshold", [2, 17, 20])

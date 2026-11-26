@@ -604,9 +604,8 @@ def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
             (script, 0 if script == bytes(raw_script.to_bytes()) else value) for script, value in payments
         ]
         infos = creator.get_tx_ui_infos()
-        mn = wallet.get_mn_tuple()
         expected_weight = TxWeight(
-            [InputWeight(mn, satisfaction_weight=foreign.satisfaction_weight)] * 2,
+            [InputWeight(foreign.satisfaction_weight)] * 2,
             [bdk.Script(script) for script, _ in payments] + [bdk.Script(change_script)],
         ).estimate()
         fee_estimate = creator.estimate_fee_info(2)

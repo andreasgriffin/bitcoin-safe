@@ -30,19 +30,21 @@
 from __future__ import annotations
 
 import logging
-from collections import Counter
 from collections.abc import Iterable, Sequence
+from copy import copy
 from dataclasses import dataclass, field
+from functools import cached_property
 from math import ceil
 from typing import cast
 
 import bdkpython as bdk
+from bip32_descriptors.bip32.der_path import str_from_der_path
 from bip32_descriptors.bip32.key_origin import BIP32KeyOrigin
-from bip32_descriptors.descriptors import miniscript
 from bitcoin_safe_lib.util import network_kind
 from bitcoin_usb.address_types import AddressType, AddressTypes, SimplePubKeyProvider
 from btclib import var_int
-from btclib.script import Witness, serialize
+from btclib.hashes import hash160, sha256
+from btclib.script import Witness
 from btclib.script.script_pub_key import (
     is_p2ms_var,
     is_p2pkh,
@@ -56,8 +58,9 @@ from btclib.script.sig_hash import SIG_HASH_TYPES
 from btclib.tx import Tx
 from btclib.tx import TxIn as BtclibTxIn
 from btclib.tx import TxOut as BtclibTxOut
-from btclib_wallet.psbt import Psbt, PsbtIn, miniscript_sizer, prevouts
-from btclib_wallet.psbt.psbt_size import COMPRESSED_PUB_KEY_SIZE, SCHNORR_SIG_SIZE, SIG_SIZE
+from btclib_wallet.psbt import Psbt, PsbtIn, estimated_input_sizes, miniscript_sizer, prevouts
+from btclib_wallet.psbt.psbt_in import ValidSigHashType
+from btclib_wallet.psbt.psbt_size import COMPRESSED_PUB_KEY_SIZE, SIG_SIZE
 from ecc.hashes import tagged_hash
 
 from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
@@ -99,47 +102,6 @@ def unsigned_tx_bytes(tx: bdk.Transaction) -> bytes:
 def witness_satisfaction_weight(item_sizes: Sequence[int]) -> int:
     """BDK satisfaction delta relative to an empty witness."""
     return len(Witness([bytes(size) for size in item_sizes]).serialize()) - 1
-
-
-def estimate_tapscript_weight(psbt_input: bdk.Input | PsbtIn) -> int:
-    """Estimate signed Taproot leaves, not the protocol-wide stack limit."""
-    if isinstance(psbt_input, PsbtIn):
-        signatures = Counter(key[32:].hex() for key in psbt_input.taproot_script_spend_signatures)
-        leaves = [
-            (script, version, len(control))
-            for control, (script, version) in psbt_input.taproot_leaf_scripts.items()
-        ]
-    else:
-        signatures = Counter(key.tap_leaf_hash for key in psbt_input.tap_script_sigs)
-        leaves = [
-            (bytes(entry.script.to_bytes()), entry.leaf_version, 33 + 32 * len(control.merkle_branch))
-            for control, entry in psbt_input.tap_scripts.items()
-        ]
-    weights = []
-    for script, version, control_size in leaves:
-        leaf_hash = tagged_hash(b"TapLeaf", bytes([version]) + var_int.serialize(len(script)) + script).hex()
-        if leaf_hash not in signatures:
-            continue
-
-        try:
-            stack = miniscript.from_script(script, miniscript.TAPSCRIPT).max_witness_stack
-        except ValueError:
-            stack = None
-        if stack is None:
-            # Unknown custom script: retain the previous rough draft estimate.
-            sigops = sum(
-                op in ("OP_CHECKSIG", "OP_CHECKSIGVERIFY", "OP_CHECKSIGADD")
-                for op in str(bdk.Script(script)).split()
-            )
-            stack = (SCHNORR_SIG_SIZE + 1,) * max(signatures[leaf_hash], sigops)
-            logger.warning("Rough Taproot weight estimate for unsupported leaf %s", leaf_hash)
-        weights.append(witness_satisfaction_weight([*stack, len(script), control_size]))
-
-    if weights:
-        return max(weights)
-    # No matching script/control block: estimate only the minimum witness shape.
-    logger.warning("Rough Taproot weight estimate: missing signed leaf metadata")
-    return witness_satisfaction_weight([SCHNORR_SIG_SIZE + 1] * max(signatures.values(), default=1) + [0, 33])
 
 
 def input_address_type(raw: bytes, redeem: bytes, final_script_sig: bytes) -> AddressType | None:
@@ -255,120 +217,124 @@ def psbt_is_finalized(psbt: Psbt) -> bool:
     )
 
 
-@dataclass
+def input_sizer(inp: PsbtIn, txin: BtclibTxIn) -> list[int] | None:
+    # The pinned upstream standard-script classifier recognizes OP_1..OP_16.
+    # CHECKMULTISIG allows up to 20 keys; delegate its parsing to btclib.
+    script = inp.witness_script or inp.redeem_script
+    if is_p2ms_var(script):
+        m, _ = p2ms_m_and_keys_var(script)
+        return [0, *[SIG_SIZE] * m, *([len(script)] if inp.witness_script else [])]
+    return miniscript_sizer(inp, txin)
+
+
+def input_for_sizing(inp: PsbtIn, raw: bytes) -> PsbtIn:
+    """Adapt incomplete final fields and preserve the signed-leaf selection policy."""
+    if input_is_finalized(inp, raw):
+        return inp
+    sized = copy(inp)
+    if is_p2sh(raw) and not sized.redeem_script:
+        # Recover a nested witness program from its surviving canonical push,
+        # or from the witness when the push has not yet been provided.
+        pushed = inp.final_script_sig[1:]
+        if (is_p2wpkh(pushed) or is_p2wsh(pushed)) and inp.final_script_sig[:1] == bytes([len(pushed)]):
+            candidates = [pushed]
+        else:
+            stack = inp.final_script_witness.stack
+            candidates = [b"\x00\x14" + hash160(stack[-1]), b"\x00\x20" + sha256(stack[-1])] if stack else []
+        sized.redeem_script = next((program for program in candidates if hash160(program) == raw[2:-1]), b"")
+    if is_p2wsh(sized.redeem_script or raw) and not sized.witness_script and inp.final_script_witness.stack:
+        script = inp.final_script_witness.stack[-1]
+        if sha256(script) == (sized.redeem_script or raw)[2:]:
+            sized.witness_script = script
+    sized.final_script_sig = b""
+    sized.final_script_witness = Witness()
+    if is_p2tr(raw):
+        if inp.taproot_key_spend_signature or not inp.taproot_script_spend_signatures:
+            # Disclosing a leaf alone is not evidence that the script path is used.
+            sized.taproot_leaf_scripts = {}
+            if sized.sig_hash_type is None and len(inp.taproot_key_spend_signature) == 65:
+                flag = inp.taproot_key_spend_signature[-1]
+                if flag == 0 or flag not in SIG_HASH_TYPES:
+                    raise ValueError("Invalid Taproot signature sighash type")
+                sized.sig_hash_type = cast(ValidSigHashType, flag)
+        else:
+            hashes = {key[32:] for key in inp.taproot_script_spend_signatures if len(key) == 64}
+            sized.taproot_leaf_scripts = {
+                control: (script, version)
+                for control, (script, version) in inp.taproot_leaf_scripts.items()
+                if tagged_hash(b"TapLeaf", bytes([version]) + var_int.serialize(len(script)) + script)
+                in hashes
+            }
+            if not sized.taproot_leaf_scripts:
+                raise ValueError("Missing signed Taproot leaf metadata")
+    return sized
+
+
+@dataclass(frozen=True)
 class InputWeight:
-    """Optional spend information; unknown inputs default to native SegWit.
+    """Weight delta from an empty input, plus whether it uses the witness."""
 
-    satisfaction_weight uses BDK's convention: it excludes the empty witness
-    byte and includes the increase in scriptSig weight.
-    """
-
-    mn: tuple[int, int] = (1, 1)
-    address_type: AddressType | None = None
-    satisfaction_weight: int | None = None
-    legacy_multisig: bool = False
-    script_size: int | None = None
-    tap_script_path: bool = False
-    tap_script_weight: int = 66
-    finalized_witness: bool | None = None
+    satisfaction_weight: int = SIG_SIZE + COMPRESSED_PUB_KEY_SIZE + 2
+    witness: bool = True
 
     @classmethod
-    def from_psbt_input(
-        cls,
-        script: bdk.Script | None,
-        psbt_input: bdk.Input | PsbtIn | None,
-        mn: tuple[int, int] = (1, 1),
-        satisfaction_weight: int | None = None,
-    ) -> InputWeight:
-        raw = bytes(script.to_bytes()) if script else b""
-        if isinstance(psbt_input, PsbtIn):
-            redeem = psbt_input.redeem_script
-            witness = psbt_input.witness_script
-            final_script_sig = psbt_input.final_script_sig
-            final_witness = psbt_input.final_script_witness.stack or None
-        else:
-            redeem = (
-                bytes(psbt_input.redeem_script.to_bytes()) if psbt_input and psbt_input.redeem_script else b""
-            )
-            witness = (
-                bytes(psbt_input.witness_script.to_bytes())
-                if psbt_input and psbt_input.witness_script
-                else b""
-            )
-            final_script_sig = (
-                bytes(psbt_input.final_script_sig.to_bytes())
-                if psbt_input and psbt_input.final_script_sig
-                else b""
-            )
-            final_witness = psbt_input.final_script_witness if psbt_input else None
-        multisig_script = witness or (
-            redeem if redeem and not is_p2wpkh(redeem) and not is_p2wsh(redeem) else b""
-        )
-        if is_p2ms_var(multisig_script):
-            m, keys = p2ms_m_and_keys_var(multisig_script)
-            mn = (m, len(keys))
-        address_type = input_address_type(raw, redeem, final_script_sig)
-        legacy_multisig = is_p2sh(raw) and address_type is None
-        tap_script_path = (
-            bool(psbt_input.taproot_script_spend_signatures and not psbt_input.taproot_key_spend_signature)
-            if isinstance(psbt_input, PsbtIn)
-            else bool(psbt_input and psbt_input.tap_script_sigs and not psbt_input.tap_key_sig)
-        )
-        tap_script_weight = 66
-        if address_type == AddressTypes.p2tr and psbt_input:
-            if final_witness is not None:
-                satisfaction_weight = witness_satisfaction_weight([len(item) for item in final_witness])
-            elif tap_script_path and satisfaction_weight is None:
-                tap_script_weight = estimate_tapscript_weight(psbt_input)
+    def from_sizes(cls, script_size: int, stack: Sequence[int]) -> InputWeight:
         return cls(
-            mn,
-            address_type,
-            satisfaction_weight,
-            legacy_multisig,
-            len(multisig_script) or None,
-            tap_script_path,
-            tap_script_weight,
+            4 * (script_size + compact_size_length(script_size) - 1) + witness_satisfaction_weight(stack),
+            bool(stack),
         )
 
-    def use_descriptor(self, descriptor: str, network: bdk.Network) -> None:
-        """Prefer the descriptor's maximum satisfaction over metadata estimates."""
+    @classmethod
+    def from_descriptor(cls, descriptor: str, network: bdk.Network) -> InputWeight:
         desc = bdk.Descriptor(descriptor, network_kind(network))
-        self.satisfaction_weight = desc.max_weight_to_satisfy()
-        self.address_type = None
-        self.legacy_multisig = desc.desc_type() in (
-            bdk.DescriptorType.BARE,
-            bdk.DescriptorType.PKH,
-            bdk.DescriptorType.SH,
-            bdk.DescriptorType.SH_SORTED_MULTI,
+        return cls(
+            desc.max_weight_to_satisfy(),
+            desc.desc_type()
+            not in (
+                bdk.DescriptorType.BARE,
+                bdk.DescriptorType.PKH,
+                bdk.DescriptorType.SH,
+                bdk.DescriptorType.SH_SORTED_MULTI,
+            ),
         )
 
-    def is_witness(self) -> bool:
-        if self.finalized_witness is not None:
-            return self.finalized_witness
-        return not (self.address_type == AddressTypes.p2pkh or self.legacy_multisig)
+    @classmethod
+    def from_native(cls, inp: PsbtIn, txin: BtclibTxIn, raw: bytes) -> InputWeight:
+        sizes = estimated_input_sizes(input_for_sizing(inp, raw), txin, sizer=input_sizer)
+        return cls.from_sizes(*sizes)
 
-    def weight(self) -> int:
-        if self.satisfaction_weight is not None:
-            return self.satisfaction_weight
-        m, n = self.mn
-        if self.address_type == AddressTypes.p2tr:
-            return self.tap_script_weight if self.tap_script_path else SCHNORR_SIG_SIZE + 2
-        script_size = self.script_size or 3 + (COMPRESSED_PUB_KEY_SIZE + 1) * n
-        if self.legacy_multisig:
-            pushes = [b"", *[bytes(SIG_SIZE)] * m, bytes(script_size)]
-            size = len(serialize(pushes))
-            return 4 * (size + compact_size_length(size) - 1)
-        if self.address_type == AddressTypes.p2pkh:
-            return 4 * len(serialize([bytes(SIG_SIZE), bytes(COMPRESSED_PUB_KEY_SIZE)]))
-        if self.address_type in (AddressTypes.p2wpkh, AddressTypes.p2sh_p2wpkh) or (
-            self.address_type is None and (m, n) == (1, 1)
-        ):
-            return witness_satisfaction_weight([SIG_SIZE, COMPRESSED_PUB_KEY_SIZE]) + (
-                23 * 4 if self.address_type == AddressTypes.p2sh_p2wpkh else 0
-            )
-        return witness_satisfaction_weight([0, *[SIG_SIZE] * m, script_size]) + (
-            35 * 4 if self.address_type == AddressTypes.p2sh_p2wsh else 0
+    @classmethod
+    def assumed(cls, mn: tuple[int, int] = (1, 1)) -> InputWeight:
+        # No script yet: the editor assumes a native single-key or multisig spend.
+        # This is a draft policy, never a fallback for a real PSBT.
+        m, n = mn
+        if mn == (1, 1):
+            return cls()
+        script_size = 3 + (COMPRESSED_PUB_KEY_SIZE + 1) * n + int(m > 16) + int(n > 16)
+        return cls.from_sizes(0, [0, *[SIG_SIZE] * m, script_size])
+
+    @classmethod
+    def from_draft(cls, item: TxInputInfo, mn: tuple[int, int]) -> InputWeight:
+        raw = item.utxo.txout.spk_bytes
+        metadata = item.psbt_input
+        redeem = bytes(metadata.redeem_script.to_bytes()) if metadata and metadata.redeem_script else b""
+        witness = bytes(metadata.witness_script.to_bytes()) if metadata and metadata.witness_script else b""
+        kind = input_address_type(raw, redeem, b"")
+        if item.satisfaction_weight is not None:
+            return cls(item.satisfaction_weight, kind not in (None, AddressTypes.p2pkh))
+        # Only used for a draft without a supplied weight or a wallet descriptor.
+        txin = BtclibTxIn(check_validity=False)
+        inp = PsbtIn(
+            witness_utxo=BtclibTxOut(item.utxo.value, raw, check_validity=False),
+            redeem_script=redeem,
+            witness_script=witness,
+            check_validity=False,
         )
+        try:
+            return cls.from_native(inp, txin, raw)
+        except ValueError:
+            # The editor can still show a rough estimate before metadata exists.
+            return cls.assumed(mn)
 
 
 @dataclass
@@ -388,18 +354,22 @@ class TxWeight:
         """Estimate the selected inputs, using wallet descriptors where available."""
         weights = []
         for item in inputs:
-            script = item.utxo.txout.script_pubkey
-            weight = InputWeight.from_psbt_input(script, item.psbt_input, mn, item.satisfaction_weight)
-            if wallet and weight.satisfaction_weight is None:
-                derivation = wallet.derivation_of_spk(script)
-                if derivation is not None:
-                    weight.use_descriptor(wallet.public_descriptor(derivation.keychain), wallet.network())
+            derivation = wallet.derivation_of_spk(item.utxo.txout.script_pubkey) if wallet else None
+            if wallet and derivation is not None and item.satisfaction_weight is None:
+                weight = InputWeight.from_descriptor(
+                    wallet.public_descriptor(derivation.keychain), wallet.network()
+                )
+            else:
+                weight = InputWeight.from_draft(item, mn)
             weights.append(weight)
         if not weights and assume_one_input:
-            weight = InputWeight(mn)
-            if wallet:
-                weight.use_descriptor(wallet.public_descriptor(bdk.KeychainKind.EXTERNAL), wallet.network())
-            weights.append(weight)
+            weights.append(
+                InputWeight.from_descriptor(
+                    wallet.public_descriptor(bdk.KeychainKind.EXTERNAL), wallet.network()
+                )
+                if wallet
+                else InputWeight.assumed(mn)
+            )
         return cls(weights, output_scripts)
 
     @classmethod
@@ -429,26 +399,14 @@ class TxWeight:
         return cls.from_inputs(inputs, output_scripts, wallet, mn, assume_one_input=True)
 
     @classmethod
-    def from_psbt(cls, psbt: bdk.Psbt, analysis: Psbt | None = None) -> TxWeight:
-        """Draft fallback for incomplete metadata, using the same upstream parser."""
-        analysis = (
-            analysis if analysis is not None else Psbt.b64decode(psbt.serialize(), check_validity=False)
-        )
-        tx = analysis.tx
+    def from_psbt(cls, psbt: Psbt) -> TxWeight:
+        """Use the same upstream estimator for every input, including finalized ones."""
+        tx = psbt.tx
         inputs = []
-        for txin, inp in zip(tx.vin, analysis.inputs, strict=True):
-            prev = previous_output(inp, txin.prev_out.vout)
-            script = bdk.Script(prev.script_pub_key.script) if prev is not None else None
-            weight = InputWeight.from_psbt_input(script, inp)
-            size, witness = len(inp.final_script_sig), inp.final_script_witness.stack
-            if has_finalized_unlocking_data(
-                weight.address_type, bool(size), bool(witness), weight.legacy_multisig
-            ):
-                weight.satisfaction_weight = 4 * (
-                    compact_size_length(size) - 1 + size
-                ) + witness_satisfaction_weight([len(item) for item in witness])
-                weight.finalized_witness = bool(witness)
-            inputs.append(weight)
+        for txin, inp in zip(tx.vin, psbt.inputs, strict=True):
+            previous = previous_output(inp, txin.prev_out.vout)
+            raw = previous.script_pub_key.script if previous is not None else b""
+            inputs.append(InputWeight.from_native(inp, txin, raw))
         return cls(inputs, [bdk.Script(out.script_pub_key.script) for out in tx.vout])
 
     def estimate(self) -> int:
@@ -459,7 +417,7 @@ class TxWeight:
         tx = Tx(
             vin=[
                 BtclibTxIn(
-                    script_witness=Witness([b""]) if item.is_witness() else Witness(),
+                    script_witness=Witness([b""]) if item.witness else Witness(),
                     check_validity=False,
                 )
                 for item in self.inputs
@@ -474,7 +432,7 @@ class TxWeight:
             ],
             check_validity=False,
         )
-        return tx.weight + sum(item.weight() - int(item.is_witness()) for item in self.inputs)
+        return tx.weight + sum(item.satisfaction_weight - int(item.witness) for item in self.inputs)
 
 
 class FeeRate(bdk.FeeRate):
@@ -569,31 +527,15 @@ class FeeInfo:
             fee = psbt.fee()
             if not analysis.inputs or fee < 0:
                 return None
-            finalized = []
-            needs_legacy_estimator = False
-            for inp, spent in zip(analysis.inputs, spent_outputs, strict=True):
-                raw = spent.script_pub_key.script
-                has_final_fields = bool(inp.final_script_sig or inp.final_script_witness)
-                complete = input_is_finalized(inp, raw)
-                finalized.append(complete)
-                # The pinned upstream release treats any final field as a complete
-                # spend and does not choose a Taproot leaf. Retain main's existing
-                # estimator for these specific cases until upstream supports them.
-                needs_legacy_estimator |= (has_final_fields and not complete) or (
-                    not complete
-                    and is_p2tr(raw)
-                    and bool(inp.taproot_leaf_scripts or inp.taproot_script_spend_signatures)
-                )
-            if all(finalized):
-                vsize = psbt.extract_tx_unchecked_fee_rate().vsize()
-            elif needs_legacy_estimator:
-                vsize = weight_to_vsize(TxWeight.from_psbt(psbt, analysis).estimate())
-            else:
-                vsize = analysis.vsize_estimate(sizer=miniscript_sizer)
+            finalized = all(
+                input_is_finalized(inp, spent.script_pub_key.script)
+                for inp, spent in zip(analysis.inputs, spent_outputs, strict=True)
+            )
+            vsize = weight_to_vsize(TxWeight.from_psbt(analysis).estimate())
         except (ValueError, bdk.CalculateFeeError, bdk.PsbtError) as exc:  # pyright: ignore[reportGeneralTypeIssues]
             logger.info("Could not estimate PSBT weight with btclib: %s", exc)
             return None
-        return FeeInfo(fee, vsize, vsize_is_estimated=not all(finalized), fee_amount_is_estimated=False)
+        return FeeInfo(fee, vsize, vsize_is_estimated=not finalized, fee_amount_is_estimated=False)
 
     def __add__(self, other: FeeInfo) -> FeeInfo:
         """Add."""
@@ -639,7 +581,9 @@ class PubKeyInfo:
     @classmethod
     def from_origin(cls, key: bytes, origin: BIP32KeyOrigin) -> PubKeyInfo:
         return cls(
-            origin.master_fingerprint.hex(), key.hex(), origin.description.partition("/")[2].replace("h", "'")
+            origin.master_fingerprint.hex(),
+            key.hex(),
+            str_from_der_path(origin.der_path, hardening="'") if origin.der_path else None,
         )
 
     @property
@@ -677,25 +621,31 @@ class SigningInput:
     verified_finalized_tap_key_sig: PartialSig | None = None
     verified_fingerprints: dict[bytes, str] = field(default_factory=dict, repr=False)
 
+    @staticmethod
+    def _taproot_origin(key: bytes, leaves: Sequence[bytes], origin: BIP32KeyOrigin) -> PubKeyInfo | None:
+        if (
+            len(key) != 32
+            or len(origin.master_fingerprint) not in (0, 4)
+            or any(len(leaf) != 32 for leaf in leaves)
+        ):
+            return None
+        try:
+            return PubKeyInfo.from_origin(key, origin)
+        except ValueError:
+            return None
+
     @classmethod
     def from_btclib(cls, inp: PsbtIn) -> SigningInput:
         item = cls(inp, [PubKeyInfo.from_origin(key, origin) for key, origin in inp.hd_key_paths.items()])
         for key, (leaves, origin) in inp.taproot_hd_key_paths.items():
-            if len(key) != 32 or any(len(leaf) != 32 for leaf in leaves):
-                continue
-            if len(origin.master_fingerprint) not in (0, 4):
-                continue
-            try:
-                item.pubkeys.append(PubKeyInfo.from_origin(key, origin))
-            except ValueError:
-                continue
+            if info := cls._taproot_origin(key, leaves, origin):
+                item.pubkeys.append(info)
         if inp.sig_hash_type is not None and any(
             sig.sighash_type != cls._format_sighash_type(inp.sig_hash_type)
             for raw in (inp.taproot_key_spend_signature, *inp.taproot_script_spend_signatures.values())
             if (sig := cls._taproot_signature(raw)) is not None
         ):
             logger.warning("Taproot signature sighash conflicts with PSBT input sighash")
-        item._recover_finalized_singlesig_signer_data()
         item.m_of_n = item._get_m_of_n()
         return item
 
@@ -724,21 +674,6 @@ class SigningInput:
         if flag is None and raw:
             flag = raw[-1]
         return PartialSig(raw.hex(), self._format_sighash_type(flag) if flag is not None else "unknown")
-
-    def _finalized_singlesig(self) -> tuple[str, PartialSig] | None:
-        # Preserve the existing display-only heuristic for the common two-item
-        # finalized singlesig witness. This is not script verification.
-        stack = self.source.final_script_witness.stack
-        if len(stack) == 2 and len(stack[1]) == 33 and stack[1][0] in (2, 3):
-            return stack[1].hex(), self._recovered_sig(stack[0])
-        return None
-
-    def _recover_finalized_singlesig_signer_data(self) -> None:
-        if not self.pubkeys and not self.source.partial_sigs and (recovered := self._finalized_singlesig()):
-            key, sig = recovered
-            self.pubkeys.append(PubKeyInfo("", key))
-            self.recovered_signatures[key] = sig
-            self.m_of_n = (1, 1)
 
     def set_verified_fingerprint(self, pubkey_info: PubKeyInfo, fingerprint: str) -> None:
         """Wallet-verified display metadata does not modify the native key origin."""
@@ -783,11 +718,7 @@ class SigningInput:
             return PartialSig(raw[:-1].hex(), "SIGHASH_" + flag)
         if len(key) == 32 and (entry := self.source.taproot_hd_key_paths.get(key)) is not None:
             leaves, origin = entry
-            if len(origin.master_fingerprint) not in (0, 4) or any(len(leaf) != 32 for leaf in leaves):
-                return None
-            try:
-                origin_info = PubKeyInfo.from_origin(key, origin)
-            except ValueError:
+            if (origin_info := self._taproot_origin(key, leaves, origin)) is None:
                 return None
             fingerprint = self.verified_fingerprints.get(key, origin_info.fingerprint)
             if not fingerprint or fingerprint != pubkey_info.fingerprint:
@@ -802,8 +733,6 @@ class SigningInput:
                     self.source.taproot_script_spend_signatures.get(key + leaf, b"")
                 ):
                     return sig
-        if (recovered2 := self._finalized_singlesig()) and recovered2[0] == pubkey_info.pubkey:
-            return recovered2[1]
         return None
 
     def is_fully_signed(self) -> bool:
@@ -869,15 +798,19 @@ class InputGroup:
                     break
         return signatures
 
-    def signatures_by_identifier(self) -> dict[str, dict[int, PartialSig]]:
+    @cached_property
+    def _signatures(self) -> dict[str, dict[int, PartialSig]]:
         return {
             signer_identifier: signatures
             for signer_identifier, pubkey_info in self.signer_identifiers.items()
             if (signatures := self._signatures_for_pubkey(pubkey_info))
         }
 
+    def signatures_by_identifier(self) -> dict[str, dict[int, PartialSig]]:
+        return self._signatures
+
     def signed_signers(self) -> list[tuple[str, PubKeyInfo, dict[int, PartialSig]]]:
-        signatures_by_identifier = self.signatures_by_identifier()
+        signatures_by_identifier = self._signatures
         return [
             (signer_identifier, pubkey_info, signatures_by_identifier[signer_identifier])
             for signer_identifier, pubkey_info in self.signer_identifiers.items()
@@ -885,7 +818,7 @@ class InputGroup:
         ]
 
     def unsigned_signers(self) -> list[tuple[str, PubKeyInfo]]:
-        signatures_by_identifier = self.signatures_by_identifier()
+        signatures_by_identifier = self._signatures
         return [
             (signer_identifier, pubkey_info)
             for signer_identifier, pubkey_info in self.signer_identifiers.items()
@@ -913,18 +846,7 @@ class SigningProgress:
         spent = [item.previous_txout() for item in self.inputs]
         prev = [Prevout(out.spk_bytes, out.value.to_sat()) if out else None for out in spent]
         verify = [
-            bool(
-                item.is_fully_signed()
-                and (
-                    (out and is_p2pkh(out.spk_bytes))
-                    or (
-                        item.source.final_script_witness
-                        and is_p2ms_var(item.source.final_script_witness.stack[-1])
-                    )
-                    or (out and item.source.final_script_witness and is_p2tr(out.spk_bytes))
-                )
-            )
-            for item, out in zip(self.inputs, spent, strict=True)
+            item.is_fully_signed() and out is not None for item, out in zip(self.inputs, spent, strict=True)
         ]
         if not any(verify):
             return
@@ -935,6 +857,8 @@ class SigningProgress:
                 keypath = witness[:-1] if len(witness) == 2 and witness[-1].startswith(b"\x50") else witness
                 if len(keypath) == 1:
                     item.verified_finalized_tap_key_sig = item._taproot_signature(keypath[0])
+            if result.verdict != InputVerdict.valid:
+                continue
             if result.signatures and witness and is_p2ms_var(witness[-1]):
                 m, keys = p2ms_m_and_keys_var(witness[-1])
                 item.m_of_n = (m, len(keys))

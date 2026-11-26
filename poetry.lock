@@ -737,10 +737,8 @@ description = "Bitcoin wallet functionality built on btclib"
 optional = false
 python-versions = ">=3.11"
 groups = ["main"]
-files = [
-    {file = "btclib_wallet-2026.11.19-py3-none-any.whl", hash = "sha256:f9a43a6beb2d273904826f9efa3638cc69a0222ab31338ca4d600c4f74fae1d0"},
-    {file = "btclib_wallet-2026.11.19.tar.gz", hash = "sha256:2f4720e0c7d5dd480ef868c84d6ec53f3e1ed9c1310672638f0c5fe96c043de0"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 base58-bech32 = ">=2026.10.23"
@@ -748,13 +746,19 @@ bip32-descriptors = ">=2026.11.17"
 bip39-slip39 = ">=2026.11.2"
 bitcoin-core-rpc = ">=2026.11.15"
 btclib = ">=2026.11.10"
-cryptography = {version = ">=47.0.0", markers = "platform_machine != \"ARM64\" or sys_platform != \"win32\""}
+cryptography = {version = ">=47.0.0", markers = "sys_platform != \"win32\" or platform_machine != \"ARM64\""}
 ecc = ">=2026.11.8"
 typing-extensions = ">=4.10"
 
 [package.extras]
 encryption = ["cryptography (>=47.0.0)"]
 secp256k1 = ["btclib-secp256k1 (>=0.8.0.13)", "btclib[secp256k1] (>=2026.11.10)"]
+
+[package.source]
+type = "git"
+url = "https://github.com/btclib-org/btclib-wallet.git"
+reference = "main"
+resolved_reference = "600f86172fab50b996401004fdb71c66749d1d41"
 
 [[package]]
 name = "btcpay-tools"
@@ -5703,4 +5707,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "199aedb1025f1a4b342e0c3ee7b16aadee1a743b49f1f3d9136126e8e5b89965"
+content-hash = "90e52324d3da05ece68cf58a73ffd1fd1f4e830c746d64950ae6dfc99599e8cf"

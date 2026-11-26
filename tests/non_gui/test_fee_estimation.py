@@ -34,7 +34,9 @@ from unittest.mock import MagicMock
 import bdkpython as bdk
 import pytest
 from bitcoin_usb.address_types import AddressTypes
+from btclib.hashes import hash160, sha256
 from btclib.tx import Tx as BtclibTx
+from btclib.tx import TxIn as BtclibTxIn
 from btclib.tx import TxOut as BtclibTxOut
 from btclib_wallet.psbt import Psbt, PsbtIn, PsbtOut
 
@@ -43,9 +45,14 @@ from bitcoin_safe.psbt_util import (
     InputWeight,
     TxWeight,
     compact_size_length,
+    input_address_type,
     weight_to_vsize,
 )
 from tests.non_gui.test_psbt_util import p2wsh_psbt_0_2of3
+
+
+def psbt_weight(psbt: bdk.Psbt) -> TxWeight:
+    return TxWeight.from_psbt(Psbt.b64decode(psbt.serialize(), check_validity=False))
 
 
 @pytest.mark.parametrize(
@@ -76,13 +83,13 @@ def test_psbt_fee_estimate_uses_output_scripts() -> None:
     estimate = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
     assert estimate.vsize == weight_to_vsize(
         TxWeight(
-            [InputWeight((2, 3))], [output.script_pubkey for output in psbt.extract_tx().output()]
+            [InputWeight.assumed((2, 3))], [output.script_pubkey for output in psbt.extract_tx().output()]
         ).estimate()
     )
     assert estimate.fee_amount == psbt.fee()
 
 
-def test_tx_weight_from_psbt_uses_previous_outputs_and_unknown_fallback() -> None:
+def test_tx_weight_from_psbt_uses_previous_outputs_and_refuses_unknown() -> None:
     from tests.non_gui.test_foreign_utxo import transaction
 
     legacy = transaction([b"\x76\xa9\x14" + bytes(20) + b"\x88\xac"])
@@ -99,23 +106,13 @@ def test_tx_weight_from_psbt_uses_previous_outputs_and_unknown_fallback() -> Non
         PsbtIn(previous_tx_id=bytes.fromhex("22" * 32), output_index=0, check_validity=False),
     ]
     parsed.outputs = [PsbtOut(amount=0, script_pub_key=b"\x51", check_validity=False)]
-    estimate = TxWeight.from_psbt(bdk.Psbt(parsed.b64encode(check_validity=False)))
-    assert [item.address_type for item in estimate.inputs] == [
-        AddressTypes.p2wpkh,
-        AddressTypes.p2pkh,
-        None,
-    ]
-    assert (
-        estimate.estimate()
-        == TxWeight(
-            [
-                InputWeight(address_type=AddressTypes.p2wpkh),
-                InputWeight(address_type=AddressTypes.p2pkh),
-                InputWeight(),
-            ],
-            [bdk.Script(b"\x51")],
-        ).estimate()
-    )
+    # A real PSBT with missing spend data is not an estimateable draft.
+    with pytest.raises(ValueError):
+        psbt_weight(bdk.Psbt(parsed.b64encode(check_validity=False)))
+    parsed.inputs.pop()
+    estimate = psbt_weight(bdk.Psbt(parsed.b64encode(check_validity=False)))
+    assert estimate.inputs == [InputWeight(), InputWeight(428, False)]
+    assert estimate.estimate() == TxWeight(estimate.inputs, [bdk.Script(b"\x51")]).estimate()
 
 
 def test_tx_weight_from_inputs_prefers_supplied_weight_and_wallet_descriptor() -> None:
@@ -135,8 +132,7 @@ def test_tx_weight_from_inputs_prefers_supplied_weight_and_wallet_descriptor() -
         [TxInputInfo(utxo), TxInputInfo(utxo, satisfaction_weight=200)], [], wallet
     )
     descriptor = wallet.public_descriptor(bdk.KeychainKind.EXTERNAL)
-    expected = InputWeight()
-    expected.use_descriptor(descriptor, bdk.Network.REGTEST)
+    expected = InputWeight.from_descriptor(descriptor, bdk.Network.REGTEST)
     assert estimate.inputs[0].satisfaction_weight == expected.satisfaction_weight
     assert estimate.inputs[1].satisfaction_weight == 200
     assert TxWeight.from_inputs([], []).inputs == []
@@ -184,43 +180,48 @@ def test_tx_weight_from_recipients_handles_change_and_incomplete_drafts() -> Non
 )
 def test_input_satisfaction_matches_bdk_descriptor(wrapper, address_type, mn, legacy) -> None:
     from bitcoin_safe_lib.util import network_kind
-    from bitcoin_usb.address_types import AddressTypes
-
-    from bitcoin_safe.psbt_util import InputWeight
 
     keys = [
         "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
         "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
         "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
     ]
-    types = {
-        "p2pkh": AddressTypes.p2pkh,
-        "p2wpkh": AddressTypes.p2wpkh,
-        "p2sh_p2wpkh": AddressTypes.p2sh_p2wpkh,
-        "p2wsh": AddressTypes.p2wsh,
-        "p2sh_p2wsh": AddressTypes.p2sh_p2wsh,
-        "p2tr": AddressTypes.p2tr,
-        None: None,
-    }
     descriptor = wrapper.format(key=keys[0], xkey=keys[0][2:], multi=f"multi(2,{','.join(keys)})")
-    weight = bdk.Descriptor(descriptor, network_kind(bdk.Network.REGTEST)).max_weight_to_satisfy()
-    assert InputWeight(mn, types[address_type], legacy_multisig=legacy).weight() == weight
+    desc = bdk.Descriptor(descriptor, network_kind(bdk.Network.REGTEST))
+    raw = bytes(desc.derive_address(0, bdk.Network.REGTEST).script_pubkey().to_bytes())
+    multisig = b"\x52" + b"".join(b"\x21" + bytes.fromhex(key) for key in keys) + b"\x53\xae"
+    witness = multisig if "wsh(" in wrapper else b""
+    redeem = b""
+    if wrapper.startswith("sh("):
+        redeem = (
+            b"\x00\x14" + hash160(bytes.fromhex(keys[0]))
+            if "wpkh(" in wrapper
+            else b"\x00\x20" + sha256(witness)
+            if witness
+            else multisig
+        )
+    inp = PsbtIn(
+        witness_utxo=BtclibTxOut(100_000, raw),
+        redeem_script=redeem,
+        witness_script=witness,
+        check_validity=False,
+    )
+    weight = InputWeight.from_native(inp, BtclibTxIn(check_validity=False), raw)
+    expected = desc.max_weight_to_satisfy()
+    assert weight.satisfaction_weight == expected - int(wrapper.startswith("tr("))
+    assert weight.witness == (not legacy and address_type != "p2pkh")
 
 
 def test_mixed_input_overhead_and_descriptor_weights() -> None:
-    from bitcoin_usb.address_types import AddressTypes
-
-    from bitcoin_safe.psbt_util import InputWeight
-
-    legacy = InputWeight(address_type=AddressTypes.p2pkh)
-    witness = InputWeight(address_type=AddressTypes.p2wpkh)
+    legacy = InputWeight(428, False)
+    witness = InputWeight()
     output = [bdk.Script(b"\x51")]
     single_legacy = TxWeight([legacy], output).estimate()
     single_witness = TxWeight([witness], output).estimate()
     mixed = TxWeight([legacy, witness], output).estimate()
     # Adding a legacy input to a witness transaction adds an empty witness byte.
-    assert mixed - single_witness == 41 * 4 + legacy.weight() + 1
-    assert single_witness - single_legacy == witness.weight() + 3 - legacy.weight()
+    assert mixed - single_witness == 41 * 4 + legacy.satisfaction_weight + 1
+    assert single_witness - single_legacy == witness.satisfaction_weight + 3 - legacy.satisfaction_weight
     assert TxWeight([InputWeight()], output).estimate() == single_witness
     assert TxWeight([InputWeight(satisfaction_weight=150)], output).estimate() == single_witness + 43
 
@@ -248,9 +249,7 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
         .drain_to(address.script_pubkey())
         .finish(wallet)
     )
-    tx = psbt.extract_tx_unchecked_fee_rate()
-    info = InputWeight.from_psbt_input(funding.output()[0].script_pubkey, psbt.input()[0])
-    estimate = TxWeight([info], [output.script_pubkey for output in tx.output()]).estimate()
+    estimate = psbt_weight(psbt).estimate()
     viewer_estimate = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
     assert viewer_estimate is not None
     if wrapper == "tr({key})":
@@ -298,16 +297,21 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
         partial_tx = partial.extract_tx_unchecked_fee_rate()
         assert partial_tx.input()[0].script_sig.to_bytes()
         assert not partial_tx.input()[0].witness
-        partial_weight = TxWeight.from_psbt(partial)
-        assert partial_weight.inputs[0].address_type == info.address_type
-        assert partial_weight.inputs[0].finalized_witness is None
-        assert partial_weight.inputs[0].is_witness()
-        assert partial_weight.estimate() == estimate
-        assert partial_weight.estimate() >= signed.weight()
         partial_fee = FeeInfo.estimate_segwit_fee_rate_from_psbt(partial)
-        assert partial_fee.vsize_is_estimated
-        assert partial_fee.vsize == weight_to_vsize(estimate)
-        assert partial_fee.fee_amount == actual.fee_amount
+        if "wsh(" in wrapper:
+            # No witness script remains: its threshold/size cannot be recovered
+            # from the hash. Refuse rather than assume a 1-of-1 script.
+            with pytest.raises(ValueError):
+                psbt_weight(partial)
+            assert partial_fee is None
+        else:
+            partial_weight = psbt_weight(partial)
+            assert partial_weight.inputs[0].witness
+            assert partial_weight.estimate() == estimate
+            assert partial_weight.estimate() >= signed.weight()
+            assert partial_fee is not None and partial_fee.vsize_is_estimated
+            assert partial_fee.vsize == weight_to_vsize(estimate)
+            assert partial_fee.fee_amount == actual.fee_amount
         assert not psbt_is_finalized(read_psbt(partial))
         UITx_Viewer.import_trusted_psbt(viewer, partial)  # type: ignore[arg-type]
         viewer.set_psbt.assert_called_once_with(partial)
@@ -319,38 +323,26 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
         inp.final_script_witness.scriptWitness.stack = final_witness
         partial = bdk.Psbt(hwi_psbt.serialize())
         assert not psbt_is_finalized(read_psbt(partial))
-        assert TxWeight.from_psbt(partial).inputs[0].finalized_witness is None
+        assert psbt_weight(partial).inputs[0].witness
+        assert psbt_weight(partial).estimate() >= signed.weight()
         UITx_Viewer.import_trusted_psbt(viewer, partial)  # type: ignore[arg-type]
         viewer.set_psbt.assert_called_once_with(partial)
         viewer.set_tx.assert_not_called()
 
 
 def test_input_types_are_inferred_from_prevout_and_scripts() -> None:
-    from bitcoin_usb.address_types import AddressTypes
 
-    from bitcoin_safe.foreign_utxo import ForeignUtxo
-    from bitcoin_safe.psbt_util import InputWeight
-
-    output = bdk.TxOut(value=bdk.Amount.from_sat(100_000), script_pubkey=bdk.Script(b"\x00\x14" + bytes(20)))
-    inp = ForeignUtxo._empty_input(output, None)
     cases = [
-        (b"\x76\xa9\x14" + bytes(20) + b"\x88\xac", b"", AddressTypes.p2pkh, False),
-        (b"\x00\x14" + bytes(20), b"", AddressTypes.p2wpkh, False),
-        (b"\xa9\x14" + bytes(20) + b"\x87", b"\x00\x14" + bytes(20), AddressTypes.p2sh_p2wpkh, False),
-        (b"\x00\x20" + bytes(32), b"", AddressTypes.p2wsh, False),
-        (b"\xa9\x14" + bytes(20) + b"\x87", b"\x00\x20" + bytes(32), AddressTypes.p2sh_p2wsh, False),
-        (b"\xa9\x14" + bytes(20) + b"\x87", b"\x51\x51\xae", None, True),
-        (b"\x51\x20" + bytes(32), b"", AddressTypes.p2tr, False),
+        (b"\x76\xa9\x14" + bytes(20) + b"\x88\xac", b"", AddressTypes.p2pkh),
+        (b"\x00\x14" + bytes(20), b"", AddressTypes.p2wpkh),
+        (b"\xa9\x14" + bytes(20) + b"\x87", b"\x00\x14" + bytes(20), AddressTypes.p2sh_p2wpkh),
+        (b"\x00\x20" + bytes(32), b"", AddressTypes.p2wsh),
+        (b"\xa9\x14" + bytes(20) + b"\x87", b"\x00\x20" + bytes(32), AddressTypes.p2sh_p2wsh),
+        (b"\xa9\x14" + bytes(20) + b"\x87", b"\x51\x51\xae", None),
+        (b"\x51\x20" + bytes(32), b"", AddressTypes.p2tr),
     ]
-    for script, redeem, address_type, legacy in cases:
-        inp.redeem_script = bdk.Script(redeem) if redeem else None
-        info = InputWeight.from_psbt_input(bdk.Script(script), inp)
-        assert info.address_type == address_type
-        assert info.legacy_multisig == legacy
-    assert (
-        InputWeight.from_psbt_input(None, None).weight()
-        == InputWeight(address_type=AddressTypes.p2wpkh).weight()
-    )
+    for script, redeem, expected in cases:
+        assert input_address_type(script, redeem, b"") == expected
 
 
 def test_taproot_weight_uses_signed_leaf_and_final_witness() -> None:
@@ -378,49 +370,37 @@ def test_taproot_weight_uses_signed_leaf_and_final_witness() -> None:
 
     def estimated_weight() -> int:
         psbt = bdk.Psbt(hwi_psbt.serialize())
-        estimate = TxWeight.from_psbt(psbt)
-        return estimate.inputs[0].weight()
+        estimate = psbt_weight(psbt)
+        return estimate.inputs[0].satisfaction_weight
 
     # Merely disclosing leaves must not inflate the key-path estimate.
-    assert estimated_weight() == 66
+    assert estimated_weight() == 65
 
     # Only the signed leaf contributes, even if a larger unsigned leaf is disclosed.
     inp.tap_script_sigs = {(key, bytes.fromhex(pk_hash)): bytes(64)}
     assert estimated_weight() == 66 + 35 + 66
     psbt = bdk.Psbt(hwi_psbt.serialize())
     assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt).vsize == weight_to_vsize(
-        TxWeight.from_psbt(psbt).estimate()
+        psbt_weight(psbt).estimate()
     )
 
     # Partially signed 2-of-3 multi_a: two signatures, one empty item.
     inp.tap_script_sigs = {(key, bytes.fromhex(multi_hash)): bytes(64)}
     assert estimated_weight() == 2 * 66 + 1 + 105 + 98
-    assert (
-        InputWeight.from_psbt_input(
-            script, PsbtIn.parse(inp.serialize(), check_validity=False), satisfaction_weight=400
-        ).weight()
-        == 400
-    )
-
     # An available key-path signature takes precedence over leaf signatures.
     inp.tap_key_sig = bytes(64)
-    assert estimated_weight() == 66
+    assert estimated_weight() == 65
 
     # A finalized input uses its actual witness, even in a partially finalized PSBT.
     inp.final_script_witness.scriptWitness.stack = [bytes(64), pk, pk_control]
-    assert (
-        InputWeight.from_psbt_input(script, PsbtIn.parse(inp.serialize(), check_validity=False)).weight()
-        == 65 + 35 + 66
-    )
+    assert estimated_weight() == 65 + 35 + 66
 
     inp.final_script_witness.scriptWitness.stack = []
     inp.tap_key_sig = b""
     inp.tap_scripts = {}
-    # Missing leaf metadata is only a rough estimate, not a protocol maximum.
-    assert (
-        InputWeight.from_psbt_input(script, PsbtIn.parse(inp.serialize(), check_validity=False)).weight()
-        == 66 + 1 + 34
-    )
+    # Missing signed leaf metadata cannot establish the eventual spend size.
+    with pytest.raises(ValueError, match="Missing signed Taproot leaf metadata"):
+        estimated_weight()
 
 
 def test_cpfp_uses_descriptor_estimate(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -448,9 +428,8 @@ def test_cpfp_uses_descriptor_estimate(monkeypatch: pytest.MonkeyPatch) -> None:
     wallet.labels = SimpleNamespace(default_category="default")
     functions = MagicMock()
     details = SimpleNamespace(transaction=funding, txid=str(funding.compute_txid()))
-    expected = InputWeight()
     descriptor = wallet.bdkwallet.public_descriptor(bdk.KeychainKind.EXTERNAL)
-    expected.use_descriptor(descriptor, bdk.Network.REGTEST)
+    expected = InputWeight.from_descriptor(descriptor, bdk.Network.REGTEST)
     output = wallet.bdkwallet.peek_address(bdk.KeychainKind.EXTERNAL, 0).address.script_pubkey()
     expected_vsize = weight_to_vsize(TxWeight([expected], [output]).estimate())
     captured = []
@@ -478,20 +457,15 @@ def test_cpfp_uses_descriptor_estimate(monkeypatch: pytest.MonkeyPatch) -> None:
 
 @pytest.mark.parametrize("m", [2, 17, 20])
 def test_large_multisig_thresholds(m: int) -> None:
-    from bitcoin_safe.foreign_utxo import ForeignUtxo
-
     key = bytes.fromhex("0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798")
     count = bytes([0x50 + m]) if m <= 16 else bytes([1, m])
     script = count + (bytes([len(key)]) + key) * 20 + bytes([1, 20, 0xAE])
-    output = bdk.TxOut(value=bdk.Amount.from_sat(100_000), script_pubkey=bdk.Script(b"\x00\x20" + bytes(32)))
-    inp = ForeignUtxo._empty_input(output, None)
-    inp.witness_script = bdk.Script(script)
-    info = InputWeight.from_psbt_input(output.script_pubkey, inp)
-    assert info.mn == (m, 20)
-    assert info.script_size == len(script)
-    assert (
-        info.weight()
-        == compact_size_length(m + 2) + 1 + m * 73 + compact_size_length(len(script)) + len(script) - 1
+    raw = b"\x00\x20" + sha256(script)
+    inp = PsbtIn(witness_utxo=BtclibTxOut(100_000, raw), witness_script=script, check_validity=False)
+    info = InputWeight.from_native(inp, BtclibTxIn(check_validity=False), raw)
+    assert info.witness
+    assert info.satisfaction_weight == (
+        compact_size_length(m + 2) + 1 + m * 73 + compact_size_length(len(script)) + len(script) - 1
     )
 
 
@@ -502,10 +476,11 @@ def test_large_multisig_thresholds(m: int) -> None:
 def test_descriptor_weight_does_not_require_application_template(wrapper: str, witness: bool) -> None:
     key = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
     descriptor = wrapper.format(key)
-    info = InputWeight()
-    info.use_descriptor(descriptor, bdk.Network.REGTEST)
-    assert info.weight() == bdk.Descriptor(descriptor, bdk.NetworkKind.TEST).max_weight_to_satisfy()
-    assert info.is_witness() is witness
+    info = InputWeight.from_descriptor(descriptor, bdk.Network.REGTEST)
+    assert (
+        info.satisfaction_weight == bdk.Descriptor(descriptor, bdk.NetworkKind.TEST).max_weight_to_satisfy()
+    )
+    assert info.witness is witness
 
 
 def test_viewer_refreshes_fee_info_when_psbt_changes(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -796,8 +771,8 @@ def test_taproot_leaves_do_not_imply_script_path() -> None:
     hwi_psbt = PSBT()
     hwi_psbt.deserialize(psbt.serialize())
     assert hwi_psbt.inputs[0].tap_scripts
-    estimate = TxWeight.from_psbt(psbt)
-    assert estimate.inputs[0].weight() == 66
+    estimate = psbt_weight(psbt)
+    assert estimate.inputs[0].satisfaction_weight == 65
     assert wallet.sign(psbt)
     assert psbt.extract_tx().weight() <= estimate.estimate()
 
@@ -818,12 +793,12 @@ def test_taproot_script_path_and_finalized_weight() -> None:
     hwi_psbt = PSBT()
     hwi_psbt.deserialize(psbt.serialize())
     assert hwi_psbt.inputs[0].tap_script_sigs
-    estimate = TxWeight.from_psbt(psbt).estimate()
+    estimate = psbt_weight(psbt).estimate()
     finalized = psbt.finalize()
     assert finalized.could_finalize
     tx = finalized.psbt.extract_tx()
     assert estimate == tx.weight() + 1  # Maximum 65-byte signature versus this 64-byte signature.
-    assert TxWeight.from_psbt(finalized.psbt).estimate() == tx.weight()
+    assert psbt_weight(finalized.psbt).estimate() == tx.weight()
     fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(finalized.psbt)
     assert not fee_info.vsize_is_estimated
     assert fee_info.vsize == tx.vsize()
@@ -840,10 +815,10 @@ def test_mixed_psbt_preserves_finalized_input_weight() -> None:
     hwi_psbt.inputs[1].final_script_witness.scriptWitness.stack = []
     mixed = bdk.Psbt(hwi_psbt.serialize())
 
-    weights = TxWeight.from_psbt(mixed)
-    assert weights.inputs[0].weight() == 65  # Actual 64-byte signature and its length byte.
-    assert weights.inputs[1].weight() == 66  # An unfinished signature may also include a sighash byte.
-    assert weights.estimate() == tx.weight() + 1
+    weights = psbt_weight(mixed)
+    assert weights.inputs[0].satisfaction_weight == 65  # Actual 64-byte signature and its length byte.
+    assert weights.inputs[1].satisfaction_weight == 65  # SIGHASH_DEFAULT has no suffix.
+    assert weights.estimate() == tx.weight()
 
 
 @pytest.mark.parametrize(
@@ -867,6 +842,7 @@ def test_mixed_psbt_uses_finalized_unlocking_data(
     hwi_psbt = PSBT()
     hwi_psbt.deserialize(psbt.serialize())
     first, second = hwi_psbt.inputs
+    first.non_witness_utxo = None
     first.witness_utxo = CTxOut(100_000, prevout_script) if prevout_script is not None else None
     first.redeem_script = b""
     first.witness_script = b""
@@ -877,11 +853,10 @@ def test_mixed_psbt_uses_finalized_unlocking_data(
 
     second.final_script_witness.scriptWitness.stack = []
     mixed = bdk.Psbt(hwi_psbt.serialize())
-    weights = TxWeight.from_psbt(mixed)
-    assert weights.inputs[0].is_witness() is bool(witness)
-    assert weights.inputs[1].weight() == 66
-    # The second input's 64-byte signature grows by one byte in the estimate.
-    assert weights.estimate() == full_tx.weight() + 1
+    weights = psbt_weight(mixed)
+    assert weights.inputs[0].witness is bool(witness)
+    assert weights.inputs[1].satisfaction_weight == 65
+    assert weights.estimate() == full_tx.weight()
 
 
 def test_mixed_legacy_psbt_has_no_witness_overhead() -> None:
@@ -892,9 +867,22 @@ def test_mixed_legacy_psbt_has_no_witness_overhead() -> None:
     hwi_psbt = PSBT()
     hwi_psbt.deserialize(psbt.serialize())
     for inp in hwi_psbt.inputs:
+        inp.non_witness_utxo = None
         inp.witness_utxo = CTxOut(100_000, b"\x76\xa9\x14" + bytes(20) + b"\x88\xac")
         inp.final_script_sig = bytes(100)
     full_tx = bdk.Psbt(hwi_psbt.serialize()).extract_tx_unchecked_fee_rate()
     hwi_psbt.inputs[1].final_script_sig = b""
-    weights = TxWeight.from_psbt(bdk.Psbt(hwi_psbt.serialize()))
+    weights = psbt_weight(bdk.Psbt(hwi_psbt.serialize()))
     assert weights.estimate() == full_tx.weight() + 4 * (107 - 100)
+
+
+def test_taproot_nondefault_sighash_uses_extra_byte_without_mutating_input() -> None:
+    raw = bytes.fromhex("512079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798")
+    inp = PsbtIn(
+        witness_utxo=BtclibTxOut(100_000, raw),
+        taproot_key_spend_signature=bytes(64) + b"\x01",
+        check_validity=False,
+    )
+    assert inp.sig_hash_type is None
+    assert InputWeight.from_native(inp, BtclibTxIn(check_validity=False), raw).satisfaction_weight == 66
+    assert inp.sig_hash_type is None
