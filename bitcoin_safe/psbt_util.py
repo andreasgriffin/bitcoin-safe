@@ -185,6 +185,7 @@ class InputWeight:
     script_size: int | None = None
     tap_script_path: bool = False
     tap_script_weight: int = 66
+    finalized_witness: bool | None = None
 
     @classmethod
     def from_psbt_input(
@@ -262,6 +263,8 @@ class InputWeight:
         )
 
     def is_witness(self) -> bool:
+        if self.finalized_witness is not None:
+            return self.finalized_witness
         return not (self.address_type == AddressTypes.p2pkh or self.legacy_multisig)
 
     def weight(self) -> int:
@@ -380,7 +383,16 @@ class TxWeight:
                     if txin.previous_output.vout < len(outputs):
                         prevout = outputs[txin.previous_output.vout]
                 script = prevout.script_pubkey if prevout else None
-            inputs.append(InputWeight.from_psbt_input(script, inp))
+            weight = InputWeight.from_psbt_input(script, inp)
+            script_sig_size = len(txin.script_sig.to_bytes())
+            if script_sig_size or txin.witness:
+                # The base input already includes an empty scriptSig and witness.
+                # A 253-byte scriptSig adds 253 bytes plus two CompactSize bytes.
+                weight.satisfaction_weight = 4 * (
+                    compact_size_length(script_sig_size) - 1 + script_sig_size
+                ) + witness_satisfaction_weight([len(item) for item in txin.witness])
+                weight.finalized_witness = bool(txin.witness)
+            inputs.append(weight)
         return cls(inputs, [output.script_pubkey for output in tx.output()])
 
     def estimate(self) -> int:

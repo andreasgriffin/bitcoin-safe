@@ -647,3 +647,57 @@ def test_mixed_psbt_preserves_finalized_input_weight() -> None:
     assert weights.inputs[0].weight() == 65  # Actual 64-byte signature and its length byte.
     assert weights.inputs[1].weight() == 66  # An unfinished signature may also include a sighash byte.
     assert weights.estimate() == tx.weight() + 1
+
+
+@pytest.mark.parametrize(
+    ("prevout_script", "script_sig", "witness"),
+    [
+        (b"\x00\x20" + bytes(32), b"", [b"", bytes(71), bytes(72), bytes(105)]),
+        (b"\xa9\x14" + bytes(20) + b"\x87", bytes(35), [b"", bytes(71), bytes(72), bytes(105)]),
+        (b"\xa9\x14" + bytes(20) + b"\x87", bytes(252), []),
+        (b"\xa9\x14" + bytes(20) + b"\x87", bytes(253), []),
+        (b"\x00\x20" + bytes(32), b"", [bytes(253)]),
+        (None, bytes(107), []),
+    ],
+)
+def test_mixed_psbt_uses_finalized_unlocking_data(
+    prevout_script: bytes | None, script_sig: bytes, witness: list[bytes]
+) -> None:
+    from hwilib.psbt import PSBT
+    from hwilib.tx import CTxOut
+
+    _, psbt = _taproot_psbt(script_path=False, input_count=2)
+    hwi_psbt = PSBT()
+    hwi_psbt.deserialize(psbt.serialize())
+    first, second = hwi_psbt.inputs
+    first.witness_utxo = CTxOut(100_000, prevout_script) if prevout_script is not None else None
+    first.redeem_script = b""
+    first.witness_script = b""
+    first.final_script_sig = script_sig
+    first.final_script_witness.scriptWitness.stack = witness
+    second.final_script_witness.scriptWitness.stack = [bytes(64)]
+    full_tx = bdk.Psbt(hwi_psbt.serialize()).extract_tx_unchecked_fee_rate()
+
+    second.final_script_witness.scriptWitness.stack = []
+    mixed = bdk.Psbt(hwi_psbt.serialize())
+    weights = TxWeight.from_psbt(mixed)
+    assert weights.inputs[0].is_witness() is bool(witness)
+    assert weights.inputs[1].weight() == 66
+    # The second input's 64-byte signature grows by one byte in the estimate.
+    assert weights.estimate() == full_tx.weight() + 1
+
+
+def test_mixed_legacy_psbt_has_no_witness_overhead() -> None:
+    from hwilib.psbt import PSBT
+    from hwilib.tx import CTxOut
+
+    _, psbt = _taproot_psbt(script_path=False, input_count=2)
+    hwi_psbt = PSBT()
+    hwi_psbt.deserialize(psbt.serialize())
+    for inp in hwi_psbt.inputs:
+        inp.witness_utxo = CTxOut(100_000, b"\x76\xa9\x14" + bytes(20) + b"\x88\xac")
+        inp.final_script_sig = bytes(100)
+    full_tx = bdk.Psbt(hwi_psbt.serialize()).extract_tx_unchecked_fee_rate()
+    hwi_psbt.inputs[1].final_script_sig = b""
+    weights = TxWeight.from_psbt(bdk.Psbt(hwi_psbt.serialize()))
+    assert weights.estimate() == full_tx.weight() + 4 * (107 - 100)
