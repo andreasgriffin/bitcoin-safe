@@ -83,6 +83,80 @@ def creator_class_kwargs(creator: UITx_Creator) -> dict:
 
 
 @pytest.mark.marker_qt_2
+@pytest.mark.parametrize("custom_category", [False, True])
+def test_unconfirmed_receiving_output_keeps_owning_wallet_category(
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: ConfigForTest,
+    monkeypatch: pytest.MonkeyPatch,
+    custom_category: bool,
+) -> None:
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_unconfirmed_category_{custom_category}")
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        qt_wallet = setup_single_sig_wallet(
+            main_window=main_window,
+            qtbot=qtbot,
+            shutter=shutter,
+            test_config=test_config,
+            wallet_name=f"unconfirmed_category_{custom_category}",
+            seed=test_seeds[0],
+        )
+        wallet = qt_wallet.wallet
+        creator = qt_wallet.uitx_creator
+        qt_wallet.tabs.setCurrentWidget(creator)
+        qtbot.waitUntil(creator.isVisible, timeout=10_000)
+        address = wallet.bdkwallet.peek_address(bdk.KeychainKind.EXTERNAL, 0).address
+        category = "Savings" if custom_category else wallet.labels.get_default_category()
+        if custom_category:
+            wallet.labels.set_addr_category(ref=str(address), category=category)
+        tx = transaction([bytes(address.script_pubkey().to_bytes())])
+        wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=tx, last_seen=1)])
+        wallet.clear_cache()
+        outpoint = OutPoint(txid=tx.compute_txid(), vout=0)
+        utxo = wallet.get_all_txos_dict()[str(outpoint)]
+        assert utxo.address == str(address)
+
+        # The sending wallet also knows this output, but does not own its address.
+        other = make_wallet(test_seeds[1], "other_wallet")
+        other.get_all_txos_dict.return_value = {str(outpoint): utxo}
+        other.is_my_address.return_value = False
+        other.get_tx.return_value = None
+        other.get_label_for_txid.return_value = ""
+
+        def get_other() -> MagicMock:
+            return other
+
+        creator.wallet_functions.get_wallets.connect(get_other, slot_name=other.id)
+        try:
+            creator.column_inputs.checkBox_manual_coin_select.setChecked(True)
+            creator.refresh_inputs()
+            view = creator.utxo_list
+            row = view.find_row_by_key(outpoint)
+            assert row is not None
+            model = view._source_model
+            view.set_filter_categories({category})
+            index = view.proxy.mapFromSource(model.index(row, UTXOList.Columns.OUTPOINT))
+            assert model.item(row, UTXOList.Columns.CATEGORY).text() == category
+            assert model.item(row, UTXOList.Columns.WALLET_ID).text() == wallet.id
+            assert not view.isRowHidden(index.row(), index.parent())
+            view.set_filter_categories({"Other"})
+            assert view.isRowHidden(index.row(), index.parent())
+            view.set_filter_categories(None)
+            assert not view.isRowHidden(index.row(), index.parent())
+
+            # Ownership must win regardless of the order in which wallets are visited.
+            monkeypatch.setattr("bitcoin_safe.gui.qt.utxo_list.get_wallets", lambda _: [other, wallet])
+            view.update_content()
+            row = view.find_row_by_key(outpoint)
+            assert row is not None
+            assert model.item(row, UTXOList.Columns.CATEGORY).text() == category
+            assert model.item(row, UTXOList.Columns.WALLET_ID).text() == wallet.id
+        finally:
+            creator.wallet_functions.get_wallets.disconnect(get_other)
+
+
+@pytest.mark.marker_qt_2
 def test_spent_selection_stays_visible_and_can_be_deselected(
     qtbot: QtBot,
     mytest_start_time: datetime,

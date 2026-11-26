@@ -494,8 +494,13 @@ class UTXOList(MyTreeView[OutPoint]):
         self._pythonutxo_dict = {}  # outpoint_str:PythonUTXO
         for wallet_ in get_wallets(self.wallet_functions):
             txos_dict = wallet_.get_all_txos_dict(include_not_mine=True)
-            self._pythonutxo_dict.update(txos_dict)
-            self._wallet_dict.update({outpoint_str: wallet_ for outpoint_str in txos_dict.keys()})
+            for outpoint_str, txo in txos_dict.items():
+                existing_wallet = self._wallet_dict.get(outpoint_str)
+                # Both sender and recipient may know an output; keep its owner's category.
+                if existing_wallet and existing_wallet.is_my_address(txo.address):
+                    continue
+                self._pythonutxo_dict[outpoint_str] = txo
+                self._wallet_dict[outpoint_str] = wallet_
 
         self._source_model.clear()
         self.update_headers(self.get_headers())
