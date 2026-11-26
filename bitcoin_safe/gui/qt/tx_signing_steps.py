@@ -75,7 +75,7 @@ from bitcoin_safe.hardware_signers import FeatureLevel, HardwareSigner, Hardware
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.plugin_framework.plugins.chat_sync.constants import SYNC_CHAT_ICON_NAME
-from bitcoin_safe.psbt_util import PartialSig, SimplePSBT
+from bitcoin_safe.psbt_util import PartialSig, SigningProgress, read_psbt
 from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.signer import (
     AbstractSignatureImporter,
@@ -844,14 +844,14 @@ class TxSigningSteps(StepProgressContainer):
             for importer in importers
             if isinstance(importer, SignatureImporterWallet)
         }
-        for simple_input in SimplePSBT.from_psbt(self.psbt).inputs:
-            if wallet := get_wallet_for_psbt_input(simple_input, self.wallet_functions):
+        for inp in read_psbt(self.psbt).inputs:
+            if wallet := get_wallet_for_psbt_input(inp, self.wallet_functions):
                 involved_wallets.setdefault(wallet.id, wallet)
         return list(involved_wallets.values())
 
     def _collect_generic_psbt_devices(self) -> dict[str, SigningDevice]:
         devices: dict[str, SigningDevice] = {}
-        simple_psbt = SimplePSBT.from_psbt(self.psbt)
+        simple_psbt = SigningProgress.from_psbt(self.psbt)
         for simple_input in simple_psbt.inputs:
             for pubkey_info in simple_input.pubkeys:
                 if not pubkey_info.signer_id or pubkey_info.signer_id in devices:
@@ -890,7 +890,7 @@ class TxSigningSteps(StepProgressContainer):
                         devices[device_id].signatures.update(importer.signatures)
 
     def _apply_psbt_signature_details(self, devices: dict[str, SigningDevice]) -> None:
-        simple_psbt = SimplePSBT.from_psbt(self.psbt)
+        simple_psbt = SigningProgress.from_psbt(self.psbt)
         for input_index, simple_input in enumerate(simple_psbt.inputs):
             for pubkey_info in simple_input.pubkeys:
                 if pubkey_info.signer_id not in devices or not pubkey_info.pubkey:

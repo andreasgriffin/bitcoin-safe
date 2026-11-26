@@ -142,7 +142,7 @@ from bitcoin_safe.wallet_util import get_default_categories
 from ...config import UserConfig
 from ...fx import FX
 from ...mempool_manager import MempoolManager
-from ...psbt_util import FeeInfo, SimplePSBT
+from ...psbt_util import FeeInfo, psbt_prev_txouts, read_psbt
 from ...pythonbdk_types import (
     BlockchainType,
     TransactionDetails,
@@ -2192,7 +2192,7 @@ class MainWindow(UnlockableMainWindow):
             client=self.get_client_of_any_wallet(),
             parent=self.tab_wallets,
             fee_info=fee_info,
-            txout_dict=SimplePSBT.from_psbt(psbt).get_prev_txouts(),
+            txout_dict=psbt_prev_txouts(read_psbt(psbt)),
             hidden_tx_infos=hidden_tx_infos,
         )
 

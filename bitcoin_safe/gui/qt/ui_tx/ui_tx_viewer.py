@@ -88,7 +88,15 @@ from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum, short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
-from ....psbt_util import FeeInfo, InputEnrichment, PubKeyInfo, SimplePSBT, unsigned_tx_bytes
+from ....psbt_util import (
+    FeeInfo,
+    PubKeyInfo,
+    SigningProgress,
+    psbt_input_utxos,
+    psbt_is_finalized,
+    read_psbt,
+    unsigned_tx_bytes,
+)
 from ....pythonbdk_types import (
     OutPoint,
     PythonUtxo,
@@ -1048,11 +1056,10 @@ class UITx_Viewer(UITx_Base):
         logger.debug(f"queuing broadcast tx {short_tx_id(tx.compute_txid())}")
         self._broadcast(tx)
 
-    def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
-        """Enrich simple psbt with wallet data."""
-        outpoint_dict: dict[str, InputEnrichment] = {}
+    def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SigningProgress) -> SigningProgress:
+        """Enrich signing progress with local wallet data."""
         for simple_input in simple_psbt.inputs:
-            wallet = get_wallet_for_psbt_input(simple_input, self.wallet_functions)
+            wallet = get_wallet_for_psbt_input(simple_input.source, self.wallet_functions)
             if not wallet:
                 continue
             unresolved = [info for info in simple_input.pubkeys if info.pubkey and not info.fingerprint]
@@ -1076,13 +1083,9 @@ class UITx_Viewer(UITx_Base):
                 )
                 for keystore in wallet.keystores
             ]
-            outpoint_dict[str(simple_input.txin.previous_output)] = InputEnrichment(
-                wallet_id=wallet.id,
-                m_of_n=wallet.get_mn_tuple(),
-                pubkeys=wallet_pubkeys,
-            )
+            simple_input.enrich(wallet.id, wallet.get_mn_tuple(), wallet_pubkeys)
 
-        return simple_psbt.enrich_with_outpoint_data(outpoint_dict)
+        return simple_psbt
 
     @staticmethod
     def _normalize_fingerprint(fingerprint: str | None) -> str:
@@ -1128,7 +1131,7 @@ class UITx_Viewer(UITx_Base):
                     result.append((wallet, matching_fingerprints))
             return result
 
-        simple_psbt = SimplePSBT.from_psbt(psbt)
+        simple_psbt = SigningProgress.from_psbt(psbt)
         simple_psbt = self.enrich_simple_psbt_with_wallet_data(simple_psbt)
 
         wallets: list[Wallet] = get_wallets(self.wallet_functions)
@@ -1139,7 +1142,7 @@ class UITx_Viewer(UITx_Base):
             m, _n = input_group.m_of_n
             signed_signers = list(input_group.signed_signers())
             unsigned_signers = list(input_group.unsigned_signers())
-            unsigned_signer_identifiers = list(input_group.unsigned_signer_identifiers)
+            unsigned_signer_identifiers = [identifier for identifier, _ in unsigned_signers]
             unsigned_fingerprints = self._normalize_fingerprints(unsigned_signer_identifiers)
 
             # only add a maximum of m *(all_signature_importers) for each wallet
@@ -1180,7 +1183,7 @@ class UITx_Viewer(UITx_Base):
                         SignatureImporterWallet(
                             wallet_with_seed,
                             self.network,
-                            display_label=input_group.display_label,
+                            display_label=input_group.group_id,
                             signer_identities=[
                                 SignerIdentity(id=fingerprint, fingerprint=fingerprint)
                                 for fingerprint in matching_fingerprints
@@ -1214,7 +1217,7 @@ class UITx_Viewer(UITx_Base):
                     signer_list.append(
                         cls(
                             self.network,
-                            display_label=input_group.display_label,
+                            display_label=input_group.group_id,
                             signer_identities=signer_identities,
                             loop_in_thread=self.loop_in_thread,
                             close_all_video_widgets=self.signals.close_all_video_widgets,
@@ -1309,11 +1312,9 @@ class UITx_Viewer(UITx_Base):
 
     def import_trusted_psbt(self, import_psbt: bdk.Psbt) -> None:
         """Import trusted psbt."""
-        simple_psbt = SimplePSBT.from_psbt(import_psbt)
-
         tx = import_psbt.extract_tx()
 
-        if simple_psbt.inputs and all(inp.is_fully_signed() for inp in simple_psbt.inputs):
+        if psbt_is_finalized(read_psbt(import_psbt)):
             self.set_tx(
                 tx,
                 fee_info=FeeInfo(import_psbt.fee(), tx.vsize(), False, False),
@@ -1701,7 +1702,7 @@ class UITx_Viewer(UITx_Base):
             tx_status=tx_status,
             nlocktime=tx.lock_time(),
         )
-        txo_dict = SimplePSBT.from_psbt(psbt).outpoints_as_python_utxo_dict(self.network)
+        txo_dict = psbt_input_utxos(read_psbt(psbt), self.network)
         txo_dict.update(self._get_python_txos())
         self.set_sankey(tx, fee_info=fee_info, txo_dict=txo_dict)
         self._set_signed_by_column(tx)

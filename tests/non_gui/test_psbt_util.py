@@ -40,6 +40,8 @@ from bitcoin_qr_tools.data import Data
 from bitcoin_safe_lib.async_tools.loop_in_thread import LoopInThread
 from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.tx_util import serialized_to_hex
+from btclib.script import Witness
+from btclib.script.script_pub_key import p2ms_m_and_keys_var
 from btclib.tx import OutPoint as BtclibOutPoint
 from btclib.tx import Tx, TxIn
 from btclib.tx import TxOut as BtclibTxOut
@@ -48,15 +50,13 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.psbt_util import (
-    InputEnrichment,
     PartialSig,
     PubKeyInfo,
-    SimpleInput,
-    SimpleOutput,
-    SimplePSBT,
-    parse_witness_script,
+    SigningInput,
+    SigningProgress,
+    address_derivations,
+    read_psbt,
 )
-from bitcoin_safe.pythonbdk_types import TxOut
 from bitcoin_safe.signer import AbstractSignatureImporter
 
 p2wsh_psbt_0_2of3 = bdk.Psbt(
@@ -124,13 +124,43 @@ mixed_inputs_finalized_and_partially_signed_psbt = bdk.Psbt(
 )
 
 
+def source_for_txin(txin: bdk.TxIn, **kwargs) -> PsbtIn:
+    point = txin.previous_output
+    return PsbtIn(
+        previous_tx_id=bytes.fromhex(str(point.txid)),
+        output_index=point.vout,
+        check_validity=False,
+        **kwargs,
+    )
+
+
+def signed_keys(item: SigningInput) -> list[PubKeyInfo]:
+    return [key for key in item.pubkeys if item.signature_for_pubkey(key) is not None]
+
+
+def unsigned_keys(item: SigningInput) -> list[PubKeyInfo]:
+    return [key for key in item.pubkeys if item.signature_for_pubkey(key) is None]
+
+
+def has_signature(item: SigningInput, fingerprint: str) -> bool:
+    return any(key.fingerprint == fingerprint for key in signed_keys(item))
+
+
+def signed_ids(group) -> list[str]:
+    return [identifier for identifier, _, _ in group.signed_signers()]
+
+
+def unsigned_ids(group) -> list[str]:
+    return [identifier for identifier, _ in group.unsigned_signers()]
+
+
 def _make_simple_input(
     txin: bdk.TxIn,
     fingerprints: list[str],
     signed_fingerprints: set[str] | None = None,
     wallet_id: str | None = None,
     m_of_n: tuple[int, int] | None = None,
-) -> SimpleInput:
+) -> SigningInput:
     signed_fingerprints = signed_fingerprints if signed_fingerprints is not None else set()
     pubkeys = [
         PubKeyInfo(
@@ -144,10 +174,10 @@ def _make_simple_input(
         for pubkey_info in pubkeys
         if pubkey_info.pubkey and pubkey_info.fingerprint in signed_fingerprints
     }
-    return SimpleInput(
-        txin=txin,
+    return SigningInput(
+        source=source_for_txin(txin),
         pubkeys=pubkeys,
-        partial_sigs=partial_sigs,
+        recovered_signatures=partial_sigs,
         wallet_id=wallet_id,
         m_of_n=m_of_n if m_of_n else (len(fingerprints), len(fingerprints)),
     )
@@ -156,21 +186,21 @@ def _make_simple_input(
 # Test function for psbt_0_1of1
 def test_psbt_0_1of1() -> None:
     """Test psbt 0 1of1."""
-    psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_1of1)
+    psbt = SigningProgress.from_psbt(p2wsh_psbt_0_1of1)
     input_ = psbt.inputs[0]
     # Unsigned 1-of-1 should have no signatures and not be fully signed.
-    assert input_._get_m_of_n
-    assert len(input_.partial_sigs) == 0, "psbt_0_1of1 should have 0 signatures"
+    assert input_.get_estimated_m_of_n() == (1, 1)
+    assert len(input_.source.partial_sigs) == 0, "psbt_0_1of1 should have 0 signatures"
     assert not input_.is_fully_signed(), "psbt_0_1of1 should not be fully signed"
 
 
 # Test function for psbt_1_1of1
 def test_psbt_1_1of1() -> None:
     """Test psbt 1 1of1."""
-    psbt = SimplePSBT.from_psbt(p2wsh_psbt_1_1of1)
+    psbt = SigningProgress.from_psbt(p2wsh_psbt_1_1of1)
     input_ = psbt.inputs[0]
     # Fully signed 1-of-1 should include final witness data.
-    assert input_.final_script_witness, "psbt_1_1of1 should have 1 signature"
+    assert input_.source.final_script_witness, "psbt_1_1of1 should have 1 signature"
     assert input_.is_fully_signed(), "psbt_1_1of1 should be fully signed"
     pubkey_info = input_.pubkeys[0]
     assert input_.signature_for_pubkey(pubkey_info) == PartialSig(
@@ -192,10 +222,10 @@ def test_psbt_1_1of1() -> None:
 # Test function for psbt_1_2of3
 def test_psbt_1_2of3() -> None:
     """Test psbt 1 2of3."""
-    psbt = SimplePSBT.from_psbt(p2wsh_psbt_1_2of3)
+    psbt = SigningProgress.from_psbt(p2wsh_psbt_1_2of3)
     input_ = psbt.inputs[0]
     # 2-of-3 with one signature should not be fully signed.
-    assert len(input_.partial_sigs) == 1, "psbt_1_2of3 should have 1 signature"
+    assert len(input_.source.partial_sigs) == 1, "psbt_1_2of3 should have 1 signature"
     assert not input_.is_fully_signed(), (
         "psbt_1_2of3 should not be fully signed considering it's a 2 of 3 multisig"
     )
@@ -204,10 +234,10 @@ def test_psbt_1_2of3() -> None:
 # Test function for psbt_0_2of3
 def test_psbt_0_2of3() -> None:
     """Test psbt 0 2of3."""
-    psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_2of3)
+    psbt = SigningProgress.from_psbt(p2wsh_psbt_0_2of3)
     input_ = psbt.inputs[0]
     # 2-of-3 with no signatures should not be fully signed.
-    assert len(input_.partial_sigs) == 0, "psbt_0_2of3 should have 0 signatures"
+    assert len(input_.source.partial_sigs) == 0, "psbt_0_2of3 should have 0 signatures"
     assert not input_.is_fully_signed(), (
         "psbt_0_2of3 should not be fully signed considering it's a 2 of 3 multisig"
     )
@@ -215,7 +245,7 @@ def test_psbt_0_2of3() -> None:
 
 def test_psbt_optional_fields() -> None:
     """Test psbt optional fields."""
-    psbt = SimplePSBT.from_psbt(p2wsh_psbt_0_2of2)
+    psbt = SigningProgress.from_psbt(p2wsh_psbt_0_2of2)
     # The upstream map retains the whole previous transaction, not a JSON copy.
     previous = psbt.inputs[0].source.non_witness_utxo
     assert previous is not None
@@ -229,77 +259,72 @@ def test_psbt_optional_fields() -> None:
         "02fc3fb5d4ff77155ac2bae16a0f8666fd8881eb76b120e4416196ba45368fb45a",
     ]
 
-    assert psbt.outputs[0].value == 9999850
+    native = read_psbt(p2wsh_psbt_0_2of2)
+    output = native.outputs[0]
+    assert output.amount == 9999850
+    assert output.script_pub_key == bytes.fromhex(
+        "00206fcddedc8359bc8f6b05fea029d4132f8b6e565a71b5e6328062d2739c9efe02"
+    )
+    assert output.witness_script.hex() == (
+        "522102729c4c6093da33fe4c21ff5181e896ede27dab3b64da9fe704d1dcc3616dd1ea21029065858503bee197c9ba5bb2f5f37171cc6fe36292361ede4aa9f31bd732878952ae"
+    )
+    origins = output.hd_key_paths
     assert (
-        psbt.outputs[0].script_pubkey
-        == "00206fcddedc8359bc8f6b05fea029d4132f8b6e565a71b5e6328062d2739c9efe02"
+        origins[
+            bytes.fromhex("02729c4c6093da33fe4c21ff5181e896ede27dab3b64da9fe704d1dcc3616dd1ea")
+        ].master_fingerprint.hex()
+        == "5b3730fb"
     )
     assert (
-        psbt.outputs[0].witness_script
-        == "522102729c4c6093da33fe4c21ff5181e896ede27dab3b64da9fe704d1dcc3616dd1ea21029065858503bee197c9ba5bb2f5f37171cc6fe36292361ede4aa9f31bd732878952ae"
+        origins[
+            bytes.fromhex("029065858503bee197c9ba5bb2f5f37171cc6fe36292361ede4aa9f31bd7328789")
+        ].master_fingerprint.hex()
+        == "2597e429"
     )
-
-    assert psbt.outputs[0].bip32_derivation[0].__dict__ == {
-        "fingerprint": "5B3730FB",
-        "pubkey": "02729c4c6093da33fe4c21ff5181e896ede27dab3b64da9fe704d1dcc3616dd1ea",
-        "derivation_path": "m/48'/1'/0'/2'/0/2",
-        "label": "",
-    }
-    assert psbt.outputs[0].bip32_derivation[1].__dict__ == {
-        "fingerprint": "2597E429",
-        "pubkey": "029065858503bee197c9ba5bb2f5f37171cc6fe36292361ede4aa9f31bd7328789",
-        "derivation_path": "m/48'/1'/0'/2'/0/2",
-        "label": "",
-    }
+    assert all(
+        origin.der_path == (0x80000030, 0x80000001, 0x80000000, 0x80000002, 0, 2)
+        for origin in origins.values()
+    )
 
 
 def test_p2sh() -> None:
     """Test p2sh."""
-    psbt = SimplePSBT.from_psbt(p2sh_0_2of3)
+    psbt = SigningProgress.from_psbt(p2sh_0_2of3)
     # P2SH multisig should expose pubkeys and outputs.
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 3
-    assert len(psbt.outputs) == 2
-
-
-def test_to_txout() -> None:
-    """Test to txout."""
-    simple_output = SimpleOutput(value=1000, script_pubkey="")
-
-    txout = simple_output.to_txout()
-
-    assert isinstance(txout, TxOut)  # Should return a TxOut object
+    assert len(read_psbt(p2sh_0_2of3).outputs) == 2
 
 
 def test_electrum_psbt() -> None:
     """Test electrum psbt."""
-    psbt = SimplePSBT.from_psbt(electrum_psbt)
+    psbt = SigningProgress.from_psbt(electrum_psbt)
     # Electrum PSBT should parse with single input key and two outputs.
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 1
-    assert len(psbt.outputs) == 2
+    assert len(read_psbt(electrum_psbt).outputs) == 2
 
 
 def test_psbt_sparrow_2of2() -> None:
     """Test psbt sparrow 2of2."""
-    psbt = SimplePSBT.from_psbt(psbt_sparrow_2of2)
+    psbt = SigningProgress.from_psbt(psbt_sparrow_2of2)
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 2
-    assert len(psbt.outputs) == 2
+    assert len(read_psbt(psbt_sparrow_2of2).outputs) == 2
     input_ = psbt.inputs[0]
     # This example PSBT for a 2-of-2 multisig should have two partial signatures (fully signed)
-    assert len(input_.partial_sigs) == 0, "Expected 0 signatures"
+    assert len(input_.source.partial_sigs) == 0, "Expected 0 signatures"
     assert not input_.is_fully_signed(), "PSBT 2of2 should be fully signed"
 
 
 def test_tr_psbt() -> None:
     """Test tr psbt."""
-    psbt = SimplePSBT.from_psbt(tr_psbt_singlesig)
+    psbt = SigningProgress.from_psbt(tr_psbt_singlesig)
     # Taproot single-sig should parse with one pubkey and two outputs.
     assert len(psbt.inputs) == 1
     assert len(psbt.inputs[0].pubkeys) == 1
-    assert len(psbt.outputs) == 2
-    assert not psbt.inputs[0].get_pub_keys_with_signature()
+    assert len(read_psbt(tr_psbt_singlesig).outputs) == 2
+    assert not signed_keys(psbt.inputs[0])
 
 
 def _psbt_with_taproot_entries(entries: list[tuple[bytes, bytes]]) -> bdk.Psbt:
@@ -375,13 +400,13 @@ def test_bdk_signed_taproot_keypath_psbt() -> None:
     )
     input_data = json.loads(psbt.json_serialize())["inputs"][0]
     assert input_data["tap_key_sig"]["sighash_type"] == "SIGHASH_DEFAULT"
-    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+    simple_input = SigningProgress.from_psbt(psbt).inputs[0]
     signer = simple_input.pubkeys[0]
     signature = simple_input.signature_for_pubkey(signer)
     assert signature == PartialSig(input_data["tap_key_sig"]["signature"], "DEFAULT")
     assert len(bytes.fromhex(signature.signature)) == 64
-    assert signer.pubkey == simple_input.tap_internal_key
-    assert simple_input.fingerprint_has_signature(signer.fingerprint)
+    assert signer.pubkey == simple_input.source.taproot_internal_key.hex()
+    assert has_signature(simple_input, signer.fingerprint)
     assert not simple_input.is_fully_signed()
 
 
@@ -409,16 +434,16 @@ def test_taproot_key_signature_parsed_and_attributed(suffix: str, expected: str)
     )
     bdk_signature = json.loads(psbt.json_serialize())["inputs"][0]["tap_key_sig"]
     assert bdk_signature["signature"] == signature
-    assert SimpleInput._format_sighash_type(bdk_signature["sighash_type"]) == expected
-    simple_psbt = SimplePSBT.from_psbt(psbt)
+    assert SigningInput._format_sighash_type(bdk_signature["sighash_type"]) == expected
+    simple_psbt = SigningProgress.from_psbt(psbt)
     simple_input = simple_psbt.inputs[0]
     signer = next(pubkey for pubkey in simple_input.pubkeys if pubkey.pubkey == _TAP_PUBKEY)
 
     assert not simple_input.is_fully_signed()
     assert simple_input.signature_for_pubkey(signer) == PartialSig(signature, expected)
-    assert simple_input.fingerprint_has_signature("AABBCCDD")
-    assert signer in simple_input.get_pub_keys_with_signature()
-    assert simple_input.signature_count() == "1"
+    assert has_signature(simple_input, "AABBCCDD")
+    assert signer in signed_keys(simple_input)
+    assert len(signed_keys(simple_input)) == 1
     group = simple_psbt.group_inputs()[0]
     assert group.signatures_by_identifier()[signer.signer_id] == {0: PartialSig(signature, expected)}
 
@@ -438,22 +463,21 @@ def test_taproot_script_signatures_parse_multiple_leaves_and_count_one_signer() 
     serialized_input = json.loads(psbt.json_serialize())["inputs"][0]
     assert serialized_input["tap_script_sigs"][0][0] == [_TAP_PUBKEY, leaves[0].hex()]
 
-    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+    simple_input = SigningProgress.from_psbt(psbt).inputs[0]
     first = next(pubkey for pubkey in simple_input.pubkeys if pubkey.pubkey == _TAP_PUBKEY)
     second = next(pubkey for pubkey in simple_input.pubkeys if pubkey.pubkey == _TAP_PUBKEY_2)
-    assert len(simple_input.tap_script_sigs) == 2
-    assert set(simple_input.tap_script_sigs) == {(_TAP_PUBKEY, leaf.hex()) for leaf in leaves}
+    assert set(simple_input.source.taproot_script_spend_signatures) == {key + leaf for leaf in leaves}
     assert serialized_input["tap_script_sigs"][0][1] == {
         "signature": "22" * 64,
         "sighash_type": "SIGHASH_ALL",
     }
     assert simple_input.signature_for_pubkey(first) == PartialSig("22" * 64, "ALL")
     assert simple_input.signature_for_pubkey(second) is None
-    assert simple_input.fingerprint_has_signature(first.fingerprint)
-    assert not simple_input.fingerprint_has_signature(second.fingerprint)
-    assert simple_input.get_pub_keys_with_signature() == [first]
-    assert second in simple_input.get_pub_keys_without_signature()
-    assert simple_input.signature_count() == "1"
+    assert has_signature(simple_input, first.fingerprint)
+    assert not has_signature(simple_input, second.fingerprint)
+    assert signed_keys(simple_input) == [first]
+    assert second in unsigned_keys(simple_input)
+    assert len(signed_keys(simple_input)) == 1
     assert not simple_input.is_fully_signed()
 
 
@@ -461,25 +485,34 @@ def test_taproot_script_signatures_parse_multiple_leaves_and_count_one_signer() 
 def test_taproot_key_signature_only_belongs_to_internal_key(internal_key: str | None) -> None:
     first = PubKeyInfo(fingerprint="AABBCCDD", pubkey=_TAP_PUBKEY.upper())
     second = PubKeyInfo(fingerprint="11223344", pubkey=_TAP_PUBKEY_2)
-    simple_input = SimpleInput(
-        txin=tr_psbt_singlesig.extract_tx().input()[0],
-        pubkeys=[first, second],
-        tap_internal_key=internal_key,
-        tap_key_sig=PartialSig("11" * 64, "DEFAULT"),
-        tap_key_origins=[
-            (_TAP_PUBKEY, ([], ("aabbccdd", "m/0"))),
-            (_TAP_PUBKEY_2, (["33" * 32], ("11223344", "m/0"))),
-        ],
+    key, other = bytes.fromhex(_TAP_PUBKEY), bytes.fromhex(_TAP_PUBKEY_2)
+    source = PsbtIn(
+        taproot_internal_key=bytes.fromhex(internal_key or ""),
+        taproot_key_spend_signature=bytes.fromhex("11" * 64),
+        taproot_hd_key_paths={
+            key: ([], BIP32KeyOrigin(bytes.fromhex("aabbccdd"), [0])),
+            other: ([bytes.fromhex("33" * 32)], BIP32KeyOrigin(bytes.fromhex("11223344"), [0])),
+        },
+        check_validity=False,
     )
+    simple_input = SigningInput(source, [first, second])
     assert bool(simple_input.signature_for_pubkey(first)) == (internal_key == _TAP_PUBKEY)
     assert bool(simple_input.signature_for_pubkey(second)) == (internal_key == _TAP_PUBKEY_2)
     assert simple_input.signature_for_pubkey(PubKeyInfo("AABBCCDD", "02" + _TAP_PUBKEY)) is None
     assert simple_input.signature_for_pubkey(PubKeyInfo("11223344", _TAP_PUBKEY)) is None
-    simple_input.tap_internal_key = _TAP_PUBKEY
-    simple_input.tap_key_origins.append((_TAP_PUBKEY, ([], ("11223344", "m/1"))))
+    source.taproot_internal_key = key
+    source.taproot_hd_key_paths[key] = ([], BIP32KeyOrigin(bytes.fromhex("11223344"), [1]))
     assert simple_input.signature_for_pubkey(first) is None
-    simple_input.tap_key_origins = []
+    source.taproot_hd_key_paths.clear()
     assert simple_input.signature_for_pubkey(first) is None
+
+
+def test_duplicate_taproot_origins_are_rejected_on_the_wire() -> None:
+    key = bytes.fromhex(_TAP_PUBKEY)
+    entry = b"\x21\x16" + key + b"\x05\x00"
+    duplicate = entry + bytes.fromhex("aabbccdd") + entry + bytes.fromhex("11223344") + b"\x00"
+    with pytest.raises(ValueError):
+        PsbtIn.parse(duplicate, check_validity=False)
 
 
 @pytest.mark.parametrize(
@@ -494,9 +527,11 @@ def test_taproot_malformed_origins_are_ignored(key_size: int, leaf_size: int, fi
         taproot_hd_key_paths={bytes(key_size): ([bytes(leaf_size)], origin)},
         check_validity=False,
     )
-    simple_input = SimpleInput.from_btclib(source, tr_psbt_singlesig.extract_tx().input()[0])
-    assert simple_input.tap_key_sig == PartialSig("11" * 64, "DEFAULT")
-    assert not simple_input.tap_key_origins
+    simple_input = SigningInput.from_btclib(source)
+    assert simple_input._taproot_signature(source.taproot_key_spend_signature) == PartialSig(
+        "11" * 64, "DEFAULT"
+    )
+    assert not simple_input.pubkeys
     assert simple_input.signature_for_pubkey(PubKeyInfo("AABBCCDD", _TAP_PUBKEY)) is None
 
 
@@ -510,63 +545,61 @@ def test_taproot_script_signature_requires_matching_origin_and_leaf() -> None:
         },
         check_validity=False,
     )
-    simple_input = SimpleInput.from_btclib(source, tr_psbt_singlesig.extract_tx().input()[0])
+    simple_input = SigningInput.from_btclib(source)
     signer = simple_input.pubkeys[0]
-    assert simple_input.tap_script_sigs[(_TAP_PUBKEY, leaf)] == PartialSig("11" * 64, "DEFAULT")
     assert simple_input.signature_for_pubkey(signer) is None
-    simple_input.tap_key_origins = [(_TAP_PUBKEY, ([leaf.upper()], ("aabbccdd", "m/0")))]
+    source.taproot_hd_key_paths[key] = ([bytes.fromhex(leaf)], BIP32KeyOrigin(bytes.fromhex("aabbccdd"), [0]))
     assert simple_input.signature_for_pubkey(signer) == PartialSig("11" * 64, "DEFAULT")
     assert simple_input.signature_for_pubkey(PubKeyInfo("11223344", _TAP_PUBKEY, "m/0")) is None
     assert simple_input.signature_for_pubkey(PubKeyInfo("AABBCCDD", _TAP_PUBKEY, "m/1")) is None
-    simple_input.tap_key_origins.append((_TAP_PUBKEY, ([leaf], ("11223344", "m/1"))))
+    source.taproot_hd_key_paths[key] = ([bytes.fromhex(leaf)], BIP32KeyOrigin(bytes.fromhex("11223344"), [1]))
     assert simple_input.signature_for_pubkey(signer) is None
 
 
 def test_taproot_missing_fingerprint_preserves_key_without_attribution() -> None:
-    simple_input = SimpleInput(
-        txin=tr_psbt_singlesig.extract_tx().input()[0],
-        tap_internal_key=_TAP_PUBKEY,
-        tap_key_sig=PartialSig("11" * 64, "DEFAULT"),
-        pubkeys=[PubKeyInfo("", _TAP_PUBKEY, "m/0")],
-        tap_key_origins=[(_TAP_PUBKEY, ([], ("", "m/0")))],
+    key = bytes.fromhex(_TAP_PUBKEY)
+    origin = BIP32KeyOrigin(b"", [0], check_validity=False)
+    source = PsbtIn(
+        taproot_internal_key=key,
+        taproot_key_spend_signature=bytes.fromhex("11" * 64),
+        taproot_hd_key_paths={key: ([], origin)},
+        check_validity=False,
     )
+    simple_input = SigningInput.from_btclib(source)
     assert simple_input.pubkeys[0].pubkey == _TAP_PUBKEY
-    assert simple_input.tap_key_sig is not None
     assert simple_input.signature_for_pubkey(PubKeyInfo("AABBCCDD", _TAP_PUBKEY, "m/0")) is None
 
 
-def test_verified_fingerprint_preserves_unrelated_taproot_origins() -> None:
-    simple_input = SimpleInput(
-        txin=tr_psbt_singlesig.extract_tx().input()[0],
-        tap_key_origins=[
-            (_TAP_PUBKEY, (["33" * 32], ("", "m/0"))),
-            (_TAP_PUBKEY, ([], ("11223344", "m/0"))),
-            (_TAP_PUBKEY, ([], ("11223344", "m/1"))),
-            (_TAP_PUBKEY, ([], ("", "m/2"))),
-            (_TAP_PUBKEY_2, ([], ("", "m/0"))),
-        ],
+def test_verified_fingerprint_preserves_native_origins() -> None:
+    key, other = bytes.fromhex(_TAP_PUBKEY), bytes.fromhex(_TAP_PUBKEY_2)
+    source = PsbtIn(
+        taproot_hd_key_paths={
+            key: ([bytes.fromhex("33" * 32)], BIP32KeyOrigin(b"", [0], check_validity=False)),
+            other: ([], BIP32KeyOrigin(bytes.fromhex("11223344"), [1])),
+        },
+        check_validity=False,
     )
-    simple_input.set_verified_fingerprint(PubKeyInfo("", _TAP_PUBKEY, "m/0"), "aabbccdd")
-    assert simple_input.tap_key_origins == [
-        (_TAP_PUBKEY, (["33" * 32], ("AABBCCDD", "m/0"))),
-        (_TAP_PUBKEY, ([], ("11223344", "m/0"))),
-        (_TAP_PUBKEY, ([], ("11223344", "m/1"))),
-        (_TAP_PUBKEY, ([], ("", "m/2"))),
-        (_TAP_PUBKEY_2, ([], ("", "m/0"))),
-    ]
+    simple_input = SigningInput.from_btclib(source)
+    original = dict(source.taproot_hd_key_paths)
+    simple_input.set_verified_fingerprint(PubKeyInfo("", _TAP_PUBKEY, "m/2"), "aabbccdd")
+    assert not simple_input.verified_fingerprints
+    info = next(info for info in simple_input.pubkeys if info.pubkey == _TAP_PUBKEY)
+    simple_input.set_verified_fingerprint(info, "aabbccdd")
+    assert info.fingerprint == "AABBCCDD"
+    assert simple_input.verified_fingerprints == {key: "AABBCCDD"}
+    assert source.taproot_hd_key_paths == original
 
 
 @pytest.mark.parametrize(
     ("suffix", "expected"), [("", "DEFAULT"), ("01", "ALL"), ("83", "SINGLE|ANYONECANPAY")]
 )
 def test_taproot_signature_encoding(suffix: str, expected: str) -> None:
-    assert SimpleInput._taproot_signature(bytes.fromhex("AA" * 64 + suffix)) == PartialSig(
+    assert SigningInput._taproot_signature(bytes.fromhex("AA" * 64 + suffix)) == PartialSig(
         "aa" * 64, expected
     )
 
 
 def test_group_finds_taproot_signatures_for_distinct_derived_keys() -> None:
-    txin = tr_psbt_singlesig.extract_tx().input()[0]
     inputs = []
     for index, key_hex in enumerate([_TAP_PUBKEY, _TAP_PUBKEY_2]):
         key = bytes.fromhex(key_hex)
@@ -576,10 +609,10 @@ def test_group_finds_taproot_signatures_for_distinct_derived_keys() -> None:
             taproot_hd_key_paths={key: ([], BIP32KeyOrigin(bytes.fromhex("aabbccdd"), [0, index]))},
             check_validity=False,
         )
-        inputs.append(SimpleInput.from_btclib(source, txin))
-    group = SimplePSBT("test", inputs=inputs).group_inputs()[0]
+        inputs.append(SigningInput.from_btclib(source))
+    group = SigningProgress(inputs=inputs).group_inputs()[0]
     assert group.signatures_by_identifier() == {
-        "AABBCCDD": {0: inputs[0].tap_key_sig, 1: inputs[1].tap_key_sig}
+        "AABBCCDD": {0: PartialSig("11" * 64, "DEFAULT"), 1: PartialSig("11" * 64, "DEFAULT")}
     }
     assert len(group.signed_signers()) == 1
     assert not group.unsigned_signers()
@@ -597,10 +630,9 @@ def test_taproot_invalid_signature_data_is_ignored(raw: bytes) -> None:
         taproot_hd_key_paths={key: ([], BIP32KeyOrigin(bytes.fromhex("aabbccdd"), [0]))},
         check_validity=False,
     )
-    simple_input = SimpleInput.from_btclib(source, tr_psbt_singlesig.extract_tx().input()[0])
-    assert simple_input.tap_key_sig is None
-    assert not simple_input.tap_script_sigs
-    assert not simple_input.fingerprint_has_signature("AABBCCDD")
+    simple_input = SigningInput.from_btclib(source)
+    assert simple_input._taproot_signature(raw) is None
+    assert not has_signature(simple_input, "AABBCCDD")
 
 
 @pytest.mark.parametrize("key_size", [0, 31, 32, 63, 65, 96])
@@ -611,9 +643,8 @@ def test_taproot_invalid_script_signature_keys_are_ignored(key_size: int) -> Non
         taproot_hd_key_paths={key: ([bytes(32)], BIP32KeyOrigin(bytes.fromhex("aabbccdd"), [0]))},
         check_validity=False,
     )
-    simple_input = SimpleInput.from_btclib(source, tr_psbt_singlesig.extract_tx().input()[0])
-    assert not simple_input.tap_script_sigs
-    assert not simple_input.fingerprint_has_signature("AABBCCDD")
+    simple_input = SigningInput.from_btclib(source)
+    assert not has_signature(simple_input, "AABBCCDD")
 
 
 @pytest.mark.parametrize("script_path", [False, True])
@@ -633,8 +664,8 @@ def test_taproot_psbt_sighash_conflict_preserves_signature_sighash(
             (b"\x03", declared.to_bytes(4, "little")),
         ]
     )
-    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
-    assert simple_input.sighash_type == declared
+    simple_input = SigningProgress.from_psbt(psbt).inputs[0]
+    assert simple_input.source.sig_hash_type == declared
     assert simple_input.signature_for_pubkey(PubKeyInfo("AABBCCDD", _TAP_PUBKEY)) == PartialSig(
         "11" * 64, "ALL|ANYONECANPAY"
     )
@@ -642,7 +673,7 @@ def test_taproot_psbt_sighash_conflict_preserves_signature_sighash(
 
 
 def test_previous_txout_supports_segwit_witness_and_non_witness_utxo() -> None:
-    simple_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
+    simple_input = SigningProgress.from_psbt(tr_psbt_singlesig).inputs[0]
 
     witness_txout = simple_input.previous_txout()
     assert witness_txout
@@ -651,18 +682,17 @@ def test_previous_txout_supports_segwit_witness_and_non_witness_utxo() -> None:
     non_witness_txout = simple_input.previous_txout()
 
     assert non_witness_txout == witness_txout
-    assert simple_input.address_derivations() == {(bdk.KeychainKind.EXTERNAL, 0)}
+    assert address_derivations(simple_input.source) == {(bdk.KeychainKind.EXTERNAL, 0)}
 
 
 def test_previous_txout_supports_non_segwit_utxo() -> None:
     script_pubkey = "76a914" + "11" * 20 + "88ac"
-    simple_input = SimpleInput(
-        txin=tr_psbt_singlesig.extract_tx().input()[0],
-        source=PsbtIn(
+    simple_input = SigningInput(
+        source=source_for_txin(
+            tr_psbt_singlesig.extract_tx().input()[0],
             non_witness_utxo=Tx(
                 vout=[BtclibTxOut(100_000, bytes.fromhex(script_pubkey))], check_validity=False
             ),
-            check_validity=False,
         ),
     )
 
@@ -677,7 +707,7 @@ def test_previous_txout_supports_non_segwit_utxo_p2pkh() -> None:
     psbt = bdk.Psbt(
         "cHNidP8BAHcCAAAAAcEbTpasSIaqZeuN6E+1T0TsFk5aB00DBcSqlNRavlqyAAAAAAD9////Am6kZQAAAAAAGXapFOcabkXwQz55UVWCPcxfrHxR8KxfiKxQwwAAAAAAABl2qRSiwOhv7TtbV6W8P6UUL9pPp8xYaIisPwEAAE8BBDWHzwNeGBBSgAAAAEff4n8z9XoCjOs2QLsPc1fi/8ncVnMYUP+Mr2zYBMQ6A/+tjAmSnhl6N3EHCMSGLadE+ZMlByew2AKZAJEeSYdiEGYn8gosAACAAQAAgAAAAIAAAQB3AgAAAAH15yjVqmJZuFcO4wGTYRv1sljC6GVWVh1uCtQMLGsCkQAAAAAA/v///wKgaGYAAAAAABl2qRRCDVrGhywaRTbX4k4mL6lShWJpe4iszYifKQEAAAAZdqkUIFPHov3TI6kO8dm27Eg/I3kUS2eIrAAAAAABAwQBAAAAIgYC6DA5/EuUgNuK/Bhlnoxl+wR9mXurAV6o4//r1k7vCc8YZifyCiwAAIABAACAAAAAgAAAAAAAAAAAACICAwXPLddTsGfSM+QQh2hFZqse7jCGESxK31zTvQEnhHXTGGYn8gosAACAAQAAgAAAAIABAAAAAAAAAAAiAgM+cnvK0nekUF8fq7mLs/l+3GWqRQqfavjzFd5pd/ChLRhmJ/IKLAAAgAEAAIAAAACAAAAAAAEAAAAA"
     )
-    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+    simple_input = SigningProgress.from_psbt(psbt).inputs[0]
 
     previous_txout = simple_input.previous_txout()
 
@@ -690,7 +720,7 @@ def test_previous_txout_supports_non_segwit_utxo_p2sh_p2wpkh() -> None:
     psbt = bdk.Psbt(
         "cHNidP8BAHMCAAAAAWjyrUwtust7IGLKru9Etqqikw1aO4WcWPZZvr/NUKfrAAAAAAD9////AjGvKgAAAAAAF6kUK/n9KYNW+kggnA3gSUzQgIrmZVeHsxUAAAAAAAAXqRTEBDQO5ZmhnvxJWkmvIkMWRNM8y4c/AQAATwEENYfPA/6283CAAAAAY++bkKJ7XF/g5fvYoU4RBTF3GCFRRydFGAV8W+hqH6ACHVvp+2WzcViLbwFBUD5+cC5kB9zv1eD9zgK1ja8AFY0QOLGeODEAAIABAACAAAAAgAABAHMCAAAAAdIAuzf/Nhzf5KWY9FsUazih8KgE6u62ydDZSR+nSpMeAQAAAAD+////AorFKgAAAAAAF6kUuUXp4hpiKUEVWSfltVUxMtyl+ZiHOQiVlAAAAAAXqRShkhHPvDDqmNgQz1uRV/AU70jXF4f1AAAAAQEgisUqAAAAAAAXqRS5ReniGmIpQRVZJ+W1VTEy3KX5mIcBAwQBAAAAAQQWABRD+vw6VFQ123f00H01MXI7MjjByiIGAuo25ZCLMt2PE+46OQQ8oxAb/aZMuFO0CoC11hJhTElnGDixnjgxAACAAQAAgAAAAIAAAAAAAAAAAAABABYAFHo5ESRRxshhdpgUqtgGWAj/1YlfIgICjy2vd7m0YioQjfqbHK+esM9FJc8JsvT05AOq7HUY9dEYOLGeODEAAIABAACAAAAAgAEAAAAAAAAAAAEAFgAUXeSgtt3kKF+sJEDvvE63aaXrW2IiAgOv5eoo5TcRjH2m/SRev1xHvX9N+BBX3MKO0TTIZ97ayRg4sZ44MQAAgAEAAIAAAACAAAAAAAEAAAAA"
     )
-    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+    simple_input = SigningProgress.from_psbt(psbt).inputs[0]
 
     previous_txout = simple_input.previous_txout()
 
@@ -703,7 +733,7 @@ def test_previous_txout_supports_non_segwit_utxo_p2wpkh() -> None:
     psbt = bdk.Psbt(
         "cHNidP8BAHECAAAAAdALg8+HNhwaGnDkQ/ldwQSa4igRtpGQcMue4sEwY/LOAAAAAAD9////AomsdwAAAAAAFgAU3BrOuRK0tuKjOkbypVMjSw+2iSGt1AAAAAAAABYAFHDEQjnbJHB7w2tkpKMGuc0my5qCPwEAAE8BBDWHzwNk81yrgAAAAKg/o0jtNM+jVfsgeXJlW/kbYc8zlwDWqnnpsEVELlx6A0GaLSNJTWePUZRvGdYjdIzmjOU6hP3T+awjsnW1nJVhEDixnjhUAACAAQAAgAAAAIAAAQBxAgAAAAEkUfiwcLocQYlsHS6JOfkJWvUL1dIWf3aTxH/oJfuIRQAAAAAA/v///wLDgXgAAAAAABYAFGVobs7Dn9iW6j9TCRTgI3bRxH+asHaKlAAAAAAWABSH6oGOb/DDOhbEDvif5cYhsL58kz8BAAABAR/DgXgAAAAAABYAFGVobs7Dn9iW6j9TCRTgI3bRxH+aAQMEAQAAACIGAp2Fg07Vjjs5wUuRGr+AHm0zz0MBKxzk9MgmA58N011bGDixnjhUAACAAQAAgAAAAIAAAAAAAAAAAAAiAgPvRpVC/2pba7hfQAZICE9bThD8Nm3ZWbi/mD8wsOtzMxg4sZ44VAAAgAEAAIAAAACAAQAAAAAAAAAAIgIDE6qNOwJulSArcn8uaDf6qfANfRmLNeN2XQtrA++NHLUYOLGeOFQAAIABAACAAAAAgAAAAAABAAAAAA=="
     )
-    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+    simple_input = SigningProgress.from_psbt(psbt).inputs[0]
 
     previous_txout = simple_input.previous_txout()
 
@@ -716,7 +746,7 @@ def test_previous_txout_supports_non_segwit_utxo_p2tr() -> None:
     psbt = bdk.Psbt(
         "cHNidP8BAIkCAAAAASZB5ReeMm2fh5Ya1RNzHLgAoynp+2d2fIgGC5EHBUssAQAAAAD9////Ar+KZQAAAAAAIlEgXLMntg0lioASWpfRLJJqPNnO0PYKalRCJCusaXFmrTK4DSIAAAAAACJRILuyMA8vqLIzMSEVFUiyPvBGU9Yf+FBdYlhOrQE/O4qpPwEAAE8BBDWHzwPo8QhTgAAAAN/zCExM2f6ov/gghsXbxa67yuf+Ty5u4T9QGzIQrBbpAoIOGVBGbl2hRL1NZb3eK/2YRHt813baBdgPE/MoONCTEDixnjhWAACAAQAAgAAAAIAAAQErEpmHAAAAAAAiUSB0R3JOtdihq3D9o6DIcAMg4nlOvCGxpQtGz3jl5P1A4AEDBAAAAAAhFjN4vAcykkpsar4TLeXytpbrxrqkYWGQB/ylbDvn0FM5GQA4sZ44VgAAgAEAAIAAAACAAAAAAAAAAAABFyAzeLwHMpJKbGq+Ey3l8raW68a6pGFhkAf8pWw759BTOQAhByUPqXp2JmtIwFtnmJZRs9dY3w6ckNgh8fR9/AqmRivXGQA4sZ44VgAAgAEAAIAAAACAAAAAAAEAAAABBSAlD6l6diZrSMBbZ5iWUbPXWN8OnJDYIfH0ffwKpkYr1wAhB8guMXgxKZ7DpXUZfLtTsxuJM+hJeywL86QH8Z51+2elGQA4sZ44VgAAgAEAAIAAAACAAQAAAAAAAAABBSDILjF4MSmew6V1GXy7U7MbiTPoSXssC/OkB/GedftnpQA="
     )
-    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+    simple_input = SigningProgress.from_psbt(psbt).inputs[0]
 
     previous_txout = simple_input.previous_txout()
 
@@ -729,7 +759,7 @@ def test_previous_txout_supports_non_segwit_utxo_p2wsh() -> None:
     psbt = bdk.Psbt(
         "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"
     )
-    simple_input = SimplePSBT.from_psbt(psbt).inputs[0]
+    simple_input = SigningProgress.from_psbt(psbt).inputs[0]
 
     previous_txout = simple_input.previous_txout()
 
@@ -739,7 +769,7 @@ def test_previous_txout_supports_non_segwit_utxo_p2wsh() -> None:
 
 
 def test_previous_txout_returns_none_for_incomplete_utxo_data() -> None:
-    simple_input = SimplePSBT.from_psbt(tr_psbt_singlesig).inputs[0]
+    simple_input = SigningProgress.from_psbt(tr_psbt_singlesig).inputs[0]
 
     simple_input.source.witness_utxo = None
     simple_input.source.non_witness_utxo = None
@@ -756,8 +786,7 @@ def test_group_inputs_by_signer_set() -> None:
     fingerprint_b = "BBBBCCCC"
     fingerprint_c = "CCCCDDDD"
 
-    simple_psbt = SimplePSBT(
-        txid="grouped",
+    simple_psbt = SigningProgress(
         inputs=[
             _make_simple_input(txin, [fingerprint_a], signed_fingerprints={fingerprint_a}, m_of_n=(1, 1)),
             _make_simple_input(txin, [fingerprint_b, fingerprint_a], m_of_n=(2, 2)),
@@ -786,8 +815,7 @@ def test_group_inputs_collect_derived_group_data() -> None:
     fingerprint_b = "BBBBCCCC"
     fingerprint_c = "CCCCDDDD"
 
-    simple_psbt = SimplePSBT(
-        txid="grouped",
+    simple_psbt = SigningProgress(
         inputs=[
             _make_simple_input(txin, [fingerprint_a], signed_fingerprints={fingerprint_a}, m_of_n=(1, 1)),
             _make_simple_input(txin, [fingerprint_b, fingerprint_a], m_of_n=(2, 2)),
@@ -800,26 +828,26 @@ def test_group_inputs_collect_derived_group_data() -> None:
 
     groups = simple_psbt.group_inputs()
 
-    assert groups[0].display_label == fingerprint_a
-    assert not groups[0].has_wallet_id
+    assert groups[0].group_id == fingerprint_a
+    assert not groups[0].wallet_id
     assert groups[0].m_of_n == (1, 1)
-    assert groups[0].signed_signer_identifiers == [fingerprint_a]
-    assert groups[0].unsigned_signer_identifiers == []
+    assert signed_ids(groups[0]) == [fingerprint_a]
+    assert unsigned_ids(groups[0]) == []
 
     assert groups[1].m_of_n == (2, 2)
-    assert groups[1].signed_signer_identifiers == []
-    assert groups[1].unsigned_signer_identifiers == [fingerprint_b, fingerprint_a]
+    assert signed_ids(groups[1]) == []
+    assert unsigned_ids(groups[1]) == [fingerprint_b, fingerprint_a]
 
     assert groups[2].m_of_n == (2, 2)
-    assert groups[2].signed_signer_identifiers == [fingerprint_c]
-    assert groups[2].unsigned_signer_identifiers == [fingerprint_a]
+    assert signed_ids(groups[2]) == [fingerprint_c]
+    assert unsigned_ids(groups[2]) == [fingerprint_a]
     assert groups[2].signatures_by_identifier() == {
         fingerprint_c: {2: PartialSig(signature=f"sig-{fingerprint_c}", sighash_type="ALL")}
     }
 
 
 def test_group_inputs_for_mixed_finalized_and_partially_signed_psbt() -> None:
-    simple_psbt = SimplePSBT.from_psbt(mixed_inputs_finalized_and_partially_signed_psbt)
+    simple_psbt = SigningProgress.from_psbt(mixed_inputs_finalized_and_partially_signed_psbt)
 
     # TODO: once https://github.com/bitcoindevkit/bdk/issues/2204 is solved
     # then this should evalute to true
@@ -827,12 +855,13 @@ def test_group_inputs_for_mixed_finalized_and_partially_signed_psbt() -> None:
 
     finalized_input = simple_psbt.inputs[0]
     assert finalized_input.is_fully_signed()
-    assert isinstance(finalized_input.final_script_witness, list)
-    assert len(finalized_input.partial_sigs) == 2
-    assert {pubkey.pubkey for pubkey in finalized_input.pubkeys} == set(finalized_input.partial_sigs)
+    assert finalized_input.source.final_script_witness.stack
+    assert len(finalized_input.recovered_signatures) == 2
+    assert {pubkey.pubkey for pubkey in finalized_input.pubkeys} == set(finalized_input.recovered_signatures)
     assert finalized_input.m_of_n == (2, 3)
 
-    assert parse_witness_script(finalized_input.final_script_witness[-1]) == (
+    threshold, keys = p2ms_m_and_keys_var(finalized_input.source.final_script_witness.stack[-1])
+    assert (threshold, [key.hex() for key in keys]) == (
         2,
         [
             "0250ca2af1e0f2552436c66078c24736e0396e36938c421fdbee6f4fe377e5f6af",
@@ -844,54 +873,52 @@ def test_group_inputs_for_mixed_finalized_and_partially_signed_psbt() -> None:
     partially_signed_input = simple_psbt.inputs[1]
     assert partially_signed_input.m_of_n == (1, 2)
     assert not partially_signed_input.is_fully_signed()
-    assert [pubkey.fingerprint for pubkey in partially_signed_input.get_pub_keys_with_signature()] == [
-        "75B600B9"
-    ]
-    assert [pubkey.fingerprint for pubkey in partially_signed_input.get_pub_keys_without_signature()] == [
-        "836DA7F8"
-    ]
+    assert [pubkey.fingerprint for pubkey in signed_keys(partially_signed_input)] == ["75B600B9"]
+    assert [pubkey.fingerprint for pubkey in unsigned_keys(partially_signed_input)] == ["836DA7F8"]
 
     groups = simple_psbt.group_inputs()
 
     assert len(groups) == 2
     assert groups[0].m_of_n == (2, 3)
-    assert set(groups[0].signed_signer_identifiers) == set(finalized_input.partial_sigs)
-    assert groups[0].unsigned_signer_identifiers == []
+    assert set(signed_ids(groups[0])) == set(finalized_input.recovered_signatures)
+    assert unsigned_ids(groups[0]) == []
 
     assert groups[1].group_id == "75B600B9, 836DA7F8"
     assert groups[1].m_of_n == (1, 2)
-    assert groups[1].signed_signer_identifiers == ["75B600B9"]
-    assert groups[1].unsigned_signer_identifiers == ["836DA7F8"]
+    assert signed_ids(groups[1]) == ["75B600B9"]
+    assert unsigned_ids(groups[1]) == ["836DA7F8"]
 
 
 def test_invalid_finalized_multisig_witness_does_not_attribute_signers() -> None:
     psbt = mixed_inputs_finalized_and_partially_signed_psbt
-    witness = SimplePSBT.from_psbt(psbt).inputs[0].final_script_witness
+    witness = read_psbt(psbt).inputs[0].final_script_witness.stack
     assert witness
-    signature = bytes.fromhex(witness[1])
+    signature = witness[1]
     corrupted = signature[:-2] + bytes([signature[-2] ^ 1]) + signature[-1:]
     serialized = base64.b64decode(psbt.serialize())
     assert serialized.count(signature) == 1
     invalid = bdk.Psbt(base64.b64encode(serialized.replace(signature, corrupted)).decode())
 
-    item = SimplePSBT.from_psbt(invalid).inputs[0]
+    item = SigningProgress.from_psbt(invalid).inputs[0]
     assert not item.pubkeys
-    assert not item.partial_sigs
+    assert not item.recovered_signatures
 
 
 def test_finalized_multisig_signatures_are_recovered_when_key_origins_remain() -> None:
     psbt = mixed_inputs_finalized_and_partially_signed_psbt
-    simple = SimplePSBT.from_psbt(psbt)
+    simple = SigningProgress.from_psbt(psbt)
     item = simple.inputs[0]
-    verified_keys = set(item.partial_sigs)
-    assert item.final_script_witness
-    _, keys = parse_witness_script(item.final_script_witness[-1])
-    item.pubkeys = [PubKeyInfo(fingerprint=f"{index + 1:08X}", pubkey=key) for index, key in enumerate(keys)]
-    item.partial_sigs.clear()
+    verified_keys = set(item.recovered_signatures)
+    assert item.source.final_script_witness.stack
+    _, keys = p2ms_m_and_keys_var(item.source.final_script_witness.stack[-1])
+    item.pubkeys = [
+        PubKeyInfo(fingerprint=f"{index + 1:08X}", pubkey=key.hex()) for index, key in enumerate(keys)
+    ]
+    item.recovered_signatures.clear()
 
     simple._recover_finalized_signatures(psbt.extract_tx())
 
-    assert set(item.partial_sigs) == verified_keys
+    assert set(item.recovered_signatures) == verified_keys
     assert {key.pubkey for key in item.pubkeys if item.signature_for_pubkey(key)} == verified_keys
 
 
@@ -900,8 +927,7 @@ def test_group_inputs_prefers_wallet_id_over_signer_set() -> None:
     txin = txins[0]
     wallet_id = "wallet-ac"
 
-    simple_psbt = SimplePSBT(
-        txid="wallet-grouped",
+    simple_psbt = SigningProgress(
         inputs=[
             _make_simple_input(txin, ["AAAABBBB", "BBBBCCCC"], wallet_id=wallet_id, m_of_n=(2, 2)),
             _make_simple_input(txin, ["AAAABBBB", "CCCCDDDD"], wallet_id=wallet_id, m_of_n=(2, 2)),
@@ -912,13 +938,13 @@ def test_group_inputs_prefers_wallet_id_over_signer_set() -> None:
 
     assert len(groups) == 1
     assert groups[0].group_id == wallet_id
-    assert groups[0].has_wallet_id
+    assert groups[0].wallet_id
     assert groups[0].wallet_id == wallet_id
     assert groups[0].input_indices == [0, 1]
 
 
 def test_partially_signed_psbt_recovers_finalized_singlesig_signers() -> None:
-    psbt = SimplePSBT.from_psbt(mixed_input_no_signatures_partially_signed)
+    psbt = SigningProgress.from_psbt(mixed_input_no_signatures_partially_signed)
 
     recovered_input_2 = psbt.inputs[2]
     recovered_input_3 = psbt.inputs[3]
@@ -928,7 +954,7 @@ def test_partially_signed_psbt_recovers_finalized_singlesig_signers() -> None:
         recovered_input_2.pubkeys[0].pubkey
         == "024fca90bed935ed290f7f387f7ed1985cf89cb1b3ac6e6af41f29ac85210ee1d0"
     )
-    assert recovered_input_2.partial_sigs == {
+    assert recovered_input_2.recovered_signatures == {
         "024fca90bed935ed290f7f387f7ed1985cf89cb1b3ac6e6af41f29ac85210ee1d0": PartialSig(
             signature="30440220044718089b2bd3f84d52370b9c7f0bf5de86168cce1e594b8e5e212c8ce2330b022022262d65692694dc4ac46917b385c254a3d645ceb4b1774b72a50f9f23b53a5401",
             sighash_type="ALL",
@@ -940,7 +966,7 @@ def test_partially_signed_psbt_recovers_finalized_singlesig_signers() -> None:
         recovered_input_3.pubkeys[0].pubkey
         == "0349a1e96a3b266ab85a5a282875ce86e6c5189289b125766433005a4d9c3ed806"
     )
-    assert recovered_input_3.partial_sigs == {
+    assert recovered_input_3.recovered_signatures == {
         "0349a1e96a3b266ab85a5a282875ce86e6c5189289b125766433005a4d9c3ed806": PartialSig(
             signature="304402201ad5a603aa4705a478cf0fc21702fe3594556141667727e5daccf0c6b5d376af02203441d1e993727e32aff9153c9ebec0e814e7eae32253ed6c2a999dce89c2d7c101",
             sighash_type="ALL",
@@ -949,17 +975,24 @@ def test_partially_signed_psbt_recovers_finalized_singlesig_signers() -> None:
 
 
 def test_recovered_finalized_singlesig_uses_signature_sighash_when_psbt_field_missing() -> None:
-    recovered = SimpleInput(
-        txin=p2wsh_psbt_1_1of1.extract_tx().input()[0],
-        final_script_witness=[
-            "3044022044b81929698da033c1c3b041c7f05eb29449ab50d44246a8f51fa242eba4f3a602206243884e4160acdd109889224506b91ef5c0df3afdcc5b07db2e90494f08852183",
-            "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae",
-        ],
+    recovered = SigningInput(
+        PsbtIn(
+            final_script_witness=Witness(
+                [
+                    bytes.fromhex(item)
+                    for item in [
+                        "3044022044b81929698da033c1c3b041c7f05eb29449ab50d44246a8f51fa242eba4f3a602206243884e4160acdd109889224506b91ef5c0df3afdcc5b07db2e90494f08852183",
+                        "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae",
+                    ]
+                ]
+            ),
+            check_validity=False,
+        )
     )
 
     recovered._recover_finalized_singlesig_signer_data()
 
-    assert recovered.partial_sigs == {
+    assert recovered.recovered_signatures == {
         "0388c1e77bc15763e74de9af69cdb895119221cdc145f137f9e2af433b9355dcae": PartialSig(
             signature="3044022044b81929698da033c1c3b041c7f05eb29449ab50d44246a8f51fa242eba4f3a602206243884e4160acdd109889224506b91ef5c0df3afdcc5b07db2e90494f08852183",
             sighash_type="SINGLE|ANYONECANPAY",
@@ -968,7 +1001,7 @@ def test_recovered_finalized_singlesig_uses_signature_sighash_when_psbt_field_mi
 
 
 def test_group_inputs_mixed_input_no_signatures_is_stable() -> None:
-    psbt = SimplePSBT.from_psbt(mixed_input_no_signatures)
+    psbt = SigningProgress.from_psbt(mixed_input_no_signatures)
 
     groups = psbt.group_inputs()
 
@@ -985,10 +1018,10 @@ def test_group_inputs_mixed_input_no_signatures_is_stable() -> None:
 
     multisig_group, singlesig_group_1, singlesig_group_2 = groups
 
-    assert not multisig_group.has_wallet_id
+    assert not multisig_group.wallet_id
     assert multisig_group.wallet_id is None
-    assert multisig_group.signed_signer_identifiers == []
-    assert multisig_group.unsigned_signer_identifiers == ["95AF25EF", "ED64DE75", "D5B43540"]
+    assert signed_ids(multisig_group) == []
+    assert unsigned_ids(multisig_group) == ["95AF25EF", "ED64DE75", "D5B43540"]
     assert multisig_group.signatures_by_identifier() == {}
     assert set(multisig_group.signer_identifiers) == {"95AF25EF", "ED64DE75", "D5B43540"}
     assert multisig_group.signer_identifiers["95AF25EF"].pubkey == (
@@ -1001,16 +1034,16 @@ def test_group_inputs_mixed_input_no_signatures_is_stable() -> None:
         "02cee29ca85c2161cdca3e787609dade4f782e8540414b5b9befa5a6ee007d942f"
     )
 
-    assert singlesig_group_1.signed_signer_identifiers == []
-    assert singlesig_group_1.unsigned_signer_identifiers == ["BD5F995D"]
+    assert signed_ids(singlesig_group_1) == []
+    assert unsigned_ids(singlesig_group_1) == ["BD5F995D"]
     assert singlesig_group_1.signatures_by_identifier() == {}
     assert set(singlesig_group_1.signer_identifiers) == {"BD5F995D"}
     assert singlesig_group_1.signer_identifiers["BD5F995D"].pubkey == (
         "024fca90bed935ed290f7f387f7ed1985cf89cb1b3ac6e6af41f29ac85210ee1d0"
     )
 
-    assert singlesig_group_2.signed_signer_identifiers == []
-    assert singlesig_group_2.unsigned_signer_identifiers == ["25915F07"]
+    assert signed_ids(singlesig_group_2) == []
+    assert unsigned_ids(singlesig_group_2) == ["25915F07"]
     assert singlesig_group_2.signatures_by_identifier() == {}
     assert set(singlesig_group_2.signer_identifiers) == {"25915F07"}
     assert singlesig_group_2.signer_identifiers["25915F07"].pubkey == (
@@ -1019,7 +1052,7 @@ def test_group_inputs_mixed_input_no_signatures_is_stable() -> None:
 
 
 def test_partially_signed_psbt_grouping_keeps_stable_signer_steps() -> None:
-    psbt = SimplePSBT.from_psbt(mixed_input_no_signatures_partially_signed)
+    psbt = SigningProgress.from_psbt(mixed_input_no_signatures_partially_signed)
 
     groups = psbt.group_inputs()
 
@@ -1029,16 +1062,12 @@ def test_partially_signed_psbt_grouping_keeps_stable_signer_steps() -> None:
         "024fca90bed935ed290f7f387f7ed1985cf89cb1b3ac6e6af41f29ac85210ee1d0",
         "0349a1e96a3b266ab85a5a282875ce86e6c5189289b125766433005a4d9c3ed806",
     ]
-    assert groups[1].signed_signer_identifiers == [
-        "024fca90bed935ed290f7f387f7ed1985cf89cb1b3ac6e6af41f29ac85210ee1d0"
-    ]
-    assert groups[2].signed_signer_identifiers == [
-        "0349a1e96a3b266ab85a5a282875ce86e6c5189289b125766433005a4d9c3ed806"
-    ]
+    assert signed_ids(groups[1]) == ["024fca90bed935ed290f7f387f7ed1985cf89cb1b3ac6e6af41f29ac85210ee1d0"]
+    assert signed_ids(groups[2]) == ["0349a1e96a3b266ab85a5a282875ce86e6c5189289b125766433005a4d9c3ed806"]
 
 
 def test_group_inputs_mixed_input_no_signatures_partially_signed_is_stable() -> None:
-    psbt = SimplePSBT.from_psbt(mixed_input_no_signatures_partially_signed)
+    psbt = SigningProgress.from_psbt(mixed_input_no_signatures_partially_signed)
 
     groups = psbt.group_inputs()
 
@@ -1055,17 +1084,17 @@ def test_group_inputs_mixed_input_no_signatures_partially_signed_is_stable() -> 
 
     multisig_group, signed_singlesig_group_1, signed_singlesig_group_2 = groups
 
-    assert not multisig_group.has_wallet_id
+    assert not multisig_group.wallet_id
     assert multisig_group.wallet_id is None
-    assert multisig_group.signed_signer_identifiers == []
-    assert multisig_group.unsigned_signer_identifiers == ["95AF25EF", "ED64DE75", "D5B43540"]
+    assert signed_ids(multisig_group) == []
+    assert unsigned_ids(multisig_group) == ["95AF25EF", "ED64DE75", "D5B43540"]
     assert multisig_group.signatures_by_identifier() == {}
     assert set(multisig_group.signer_identifiers) == {"95AF25EF", "ED64DE75", "D5B43540"}
 
-    assert signed_singlesig_group_1.signed_signer_identifiers == [
+    assert signed_ids(signed_singlesig_group_1) == [
         "024fca90bed935ed290f7f387f7ed1985cf89cb1b3ac6e6af41f29ac85210ee1d0"
     ]
-    assert signed_singlesig_group_1.unsigned_signer_identifiers == []
+    assert unsigned_ids(signed_singlesig_group_1) == []
     assert set(signed_singlesig_group_1.signer_identifiers) == {
         "024fca90bed935ed290f7f387f7ed1985cf89cb1b3ac6e6af41f29ac85210ee1d0"
     }
@@ -1083,10 +1112,10 @@ def test_group_inputs_mixed_input_no_signatures_partially_signed_is_stable() -> 
         }
     }
 
-    assert signed_singlesig_group_2.signed_signer_identifiers == [
+    assert signed_ids(signed_singlesig_group_2) == [
         "0349a1e96a3b266ab85a5a282875ce86e6c5189289b125766433005a4d9c3ed806"
     ]
-    assert signed_singlesig_group_2.unsigned_signer_identifiers == []
+    assert unsigned_ids(signed_singlesig_group_2) == []
     assert set(signed_singlesig_group_2.signer_identifiers) == {
         "0349a1e96a3b266ab85a5a282875ce86e6c5189289b125766433005a4d9c3ed806"
     }
@@ -1105,57 +1134,42 @@ def test_group_inputs_mixed_input_no_signatures_partially_signed_is_stable() -> 
     }
 
 
-def test_enrich_with_outpoint_data_fills_missing_pubkeys() -> None:
-    txin = tr_psbt_singlesig.extract_tx().input()[0]
-    simple_psbt = SimplePSBT(txid="enriched", inputs=[SimpleInput(txin=txin)])
-
-    enrichment = InputEnrichment(
-        wallet_id="wallet-a",
-        m_of_n=(2, 3),
-        pubkeys=[
+def test_enrich_fills_missing_pubkeys() -> None:
+    item = SigningInput(PsbtIn(check_validity=False))
+    item.enrich(
+        "wallet-a",
+        (2, 3),
+        [
             PubKeyInfo(fingerprint="AAAABBBB", label="Signer A"),
             PubKeyInfo(fingerprint="BBBBCCCC", label="Signer B"),
         ],
     )
-
-    enriched_psbt = simple_psbt.enrich_with_outpoint_data({str(txin.previous_output): enrichment})
-
-    assert enriched_psbt.inputs[0].wallet_id == "wallet-a"
-    assert enriched_psbt.inputs[0].m_of_n == (2, 3)
-    assert [pubkey.fingerprint for pubkey in enriched_psbt.inputs[0].pubkeys] == ["AAAABBBB", "BBBBCCCC"]
-    assert [pubkey.label for pubkey in enriched_psbt.inputs[0].pubkeys] == ["Signer A", "Signer B"]
+    assert item.wallet_id == "wallet-a"
+    assert item.m_of_n == (2, 3)
+    assert [key.fingerprint for key in item.pubkeys] == ["AAAABBBB", "BBBBCCCC"]
+    assert [key.label for key in item.pubkeys] == ["Signer A", "Signer B"]
 
 
-def test_enrich_with_outpoint_data_updates_existing_pubkey_labels() -> None:
-    txin = tr_psbt_singlesig.extract_tx().input()[0]
-    simple_psbt = SimplePSBT(
-        txid="enriched",
-        inputs=[
-            SimpleInput(
-                txin=txin,
-                pubkeys=[
-                    PubKeyInfo(fingerprint="AAAABBBB", pubkey="pubkey-a"),
-                    PubKeyInfo(fingerprint="BBBBCCCC", pubkey="pubkey-b", label="keep-me"),
-                ],
-            )
+def test_enrich_updates_existing_pubkey_labels() -> None:
+    item = SigningInput(
+        PsbtIn(check_validity=False),
+        pubkeys=[
+            PubKeyInfo(fingerprint="AAAABBBB", pubkey="pubkey-a"),
+            PubKeyInfo(fingerprint="BBBBCCCC", pubkey="pubkey-b", label="keep-me"),
         ],
     )
-
-    enrichment = InputEnrichment(
-        wallet_id="wallet-b",
-        m_of_n=(1, 2),
-        pubkeys=[
+    item.enrich(
+        "wallet-b",
+        (1, 2),
+        [
             PubKeyInfo(fingerprint="AAAABBBB", label="Signer A"),
             PubKeyInfo(fingerprint="BBBBCCCC", label="Signer B"),
         ],
     )
-
-    enriched_psbt = simple_psbt.enrich_with_outpoint_data({str(txin.previous_output): enrichment})
-
-    assert enriched_psbt.inputs[0].wallet_id == "wallet-b"
-    assert enriched_psbt.inputs[0].m_of_n == (1, 2)
-    assert [pubkey.label for pubkey in enriched_psbt.inputs[0].pubkeys] == ["Signer A", "Signer B"]
-    assert [pubkey.pubkey for pubkey in enriched_psbt.inputs[0].pubkeys] == ["pubkey-a", "pubkey-b"]
+    assert item.wallet_id == "wallet-b"
+    assert item.m_of_n == (1, 2)
+    assert [key.label for key in item.pubkeys] == ["Signer A", "Signer B"]
+    assert [key.pubkey for key in item.pubkeys] == ["pubkey-a", "pubkey-b"]
 
 
 def test_p2sh_2of3_fully_signed(
@@ -1169,10 +1183,10 @@ def test_p2sh_2of3_fully_signed(
 
     """Test p2sh 2of3 fully signed."""
     network = bdk.Network.REGTEST
-    psbt = SimplePSBT.from_psbt(p2sh_2_2of3)
+    psbt = SigningProgress.from_psbt(p2sh_2_2of3)
     input_ = psbt.inputs[0]
     # Two signatures should be present in a fully signed 2-of-3 PSBT.
-    assert len(input_.partial_sigs) == 2, "Expected 2 signatures for fully signed 2of3"
+    assert len(input_.source.partial_sigs) == 2, "Expected 2 signatures for fully signed 2of3"
     # assert   input_.is_fully_signed(), "PSBT should be fully signed"
 
     signer = AbstractSignatureImporter(

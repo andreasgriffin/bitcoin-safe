@@ -32,15 +32,14 @@ from __future__ import annotations
 import logging
 
 import pytest
+from bip32_descriptors.bip32.key_origin import BIP32KeyOrigin
 from btclib.tx import TxOut as BtclibTxOut
 from btclib_wallet.psbt import PsbtIn
 
-from bitcoin_safe.psbt_util import PubKeyInfo, SimpleInput
 from bitcoin_safe.signals import Signals, WalletFunctions
 from bitcoin_safe.wallet import Wallet, WalletInputsInconsistentError, get_wallet_for_psbt_input
 
 from ..helpers import TestConfig
-from .test_psbt_util import tr_psbt_singlesig
 from .utils import (
     create_multisig_protowallet,
     create_test_seed_keystores,
@@ -66,12 +65,14 @@ def test_owns_psbt_input_uses_descriptor_path_beyond_lookahead(
     receive_descriptor, _change_descriptor = wallet.multipath_descriptor.to_single_descriptors()
     address_index = wallet.calc_best_lookahead() + 10
     script_pubkey = receive_descriptor.derive_address(address_index, test_config.network).script_pubkey()
-    simple_input = SimpleInput(
-        txin=tr_psbt_singlesig.extract_tx().input()[0],
-        source=PsbtIn(
-            witness_utxo=BtclibTxOut(100_000, bytes(script_pubkey.to_bytes())), check_validity=False
-        ),
-        pubkeys=[PubKeyInfo(fingerprint="", derivation_path=f"m/0/{address_index}")],
+    simple_input = PsbtIn(
+        witness_utxo=BtclibTxOut(100_000, bytes(script_pubkey.to_bytes())),
+        hd_key_paths={
+            bytes.fromhex(
+                "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+            ): BIP32KeyOrigin(bytes(4), [0, address_index]),
+        },
+        check_validity=False,
     )
 
     assert not wallet.bdkwallet.is_mine(script_pubkey)
@@ -97,11 +98,8 @@ def test_get_wallet_for_psbt_input_returns_first_match(test_config: TestConfig, 
     )
     receive_descriptor, _change_descriptor = first_wallet.multipath_descriptor.to_single_descriptors()
     script_pubkey = receive_descriptor.derive_address(0, test_config.network).script_pubkey()
-    simple_input = SimpleInput(
-        txin=tr_psbt_singlesig.extract_tx().input()[0],
-        source=PsbtIn(
-            witness_utxo=BtclibTxOut(100_000, bytes(script_pubkey.to_bytes())), check_validity=False
-        ),
+    simple_input = PsbtIn(
+        witness_utxo=BtclibTxOut(100_000, bytes(script_pubkey.to_bytes())), check_validity=False
     )
     wallet_functions = WalletFunctions(Signals())
     wallet_functions.get_wallets.connect(lambda: first_wallet, slot_name="first")

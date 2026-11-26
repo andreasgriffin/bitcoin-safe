@@ -34,9 +34,20 @@ import json
 import bdkpython as bdk
 import pytest
 from btclib.tx import TxOut as BtclibTxOut
-from btclib_wallet.psbt import Psbt, miniscript_sizer
+from btclib_wallet.psbt import Psbt, PsbtIn, miniscript_sizer
 
-from bitcoin_safe.psbt_util import FeeInfo, InputWeight, SimpleInput, SimplePSBT, TxWeight
+from bitcoin_safe.psbt_util import (
+    FeeInfo,
+    InputWeight,
+    PubKeyInfo,
+    SigningInput,
+    SigningProgress,
+    TxWeight,
+    psbt_input_utxos,
+    psbt_is_finalized,
+    psbt_prev_txouts,
+    read_psbt,
+)
 from tests.non_gui.test_psbt_util import (
     electrum_psbt,
     mixed_inputs_finalized_and_partially_signed_psbt,
@@ -73,27 +84,26 @@ from tests.non_gui.test_psbt_util import (
 def test_upstream_projection_preserves_legacy_display(original: bdk.Psbt) -> None:
     psbt = bdk.Psbt(original.serialize())
     before = psbt.serialize()
-    tx = psbt.extract_tx_unchecked_fee_rate()
     data = json.loads(psbt.json_serialize())
-    actual = SimplePSBT.from_psbt(psbt)
-    assert actual.txid == str(tx.compute_txid())
-    assert len(actual.outputs) == len(data["outputs"])
+    native = read_psbt(psbt)
+    actual = SigningProgress.from_psbt(psbt)
+    assert len(native.outputs) == len(data["outputs"])
     for got, expected, unsigned in zip(
-        actual.outputs, data["outputs"], data["unsigned_tx"]["output"], strict=True
+        native.outputs, data["outputs"], data["unsigned_tx"]["output"], strict=True
     ):
-        assert got.value == unsigned["value"]
-        assert got.script_pubkey == unsigned["script_pubkey"]
-        assert (got.witness_script or "") == (expected.get("witness_script") or "")
-        assert (got.redeem_script or "") == (expected.get("redeem_script") or "")
-        assert (got.tap_internal_key or "") == (expected.get("tap_internal_key") or "")
-        assert [key.pubkey for key in got.bip32_derivation] == [
+        assert got.amount == unsigned["value"]
+        assert got.script_pub_key.hex() == unsigned["script_pubkey"]
+        assert got.witness_script.hex() == (expected.get("witness_script") or "")
+        assert got.redeem_script.hex() == (expected.get("redeem_script") or "")
+        assert got.taproot_internal_key.hex() == (expected.get("tap_internal_key") or "")
+        assert [key.hex() for key in got.hd_key_paths] == [
             key for key, _ in expected.get("bip32_derivation", [])
         ]
     assert len(actual.inputs) == len(data["inputs"])
     for got, expected in zip(actual.inputs, data["inputs"], strict=True):
         prev = expected.get("witness_utxo")
         if prev is None and expected.get("non_witness_utxo"):
-            prev = expected["non_witness_utxo"]["output"][got.txin.previous_output.vout]
+            prev = expected["non_witness_utxo"]["output"][got.outpoint.vout]
         out = got.previous_txout()
         if prev is None:
             assert out is None
@@ -101,12 +111,16 @@ def test_upstream_projection_preserves_legacy_display(original: bdk.Psbt) -> Non
             assert out is not None
             assert out.value.to_sat() == prev["value"]
             assert out.spk_hex == prev["script_pubkey"]
-        assert (got.final_script_sig or "") == (expected.get("final_script_sig") or "")
-        assert (got.final_script_witness or []) == (expected.get("final_script_witness") or [])
+        assert got.source.final_script_sig.hex() == (expected.get("final_script_sig") or "")
+        assert [item.hex() for item in got.source.final_script_witness.stack] == (
+            expected.get("final_script_witness") or []
+        )
         if not got.is_fully_signed():
             for key, sig in expected.get("partial_sigs", {}).items():
-                assert got.partial_sigs[key].signature == sig["signature"]
-                assert got.partial_sigs[key].sighash_type == sig["sighash_type"]
+                displayed = got.signature_for_pubkey(PubKeyInfo("", key))
+                assert displayed is not None
+                assert displayed.signature == sig["signature"]
+                assert displayed.sighash_type == sig["sighash_type"]
         for key, (fingerprint, _) in expected.get("bip32_derivation", []):
             assert any(k.pubkey == key and k.fingerprint == fingerprint.upper() for k in got.pubkeys)
     assert psbt.serialize() == before
@@ -126,12 +140,12 @@ def test_simple_psbt_does_not_require_fee_or_bdk_json(monkeypatch: pytest.Monkey
         pytest.fail("typed PSBT projection must not depend on BDK JSON")
 
     monkeypatch.setattr(bdk.Psbt, "json_serialize", unexpected_json)
-    simple = SimplePSBT.from_psbt(psbt)
+    simple = SigningProgress.from_psbt(psbt)
     assert simple.inputs[0].previous_txout() is None
     assert simple.inputs[0].source.unknown[b"\xfc\x01x\x02"] == b"input metadata"
-    assert simple.outputs[0].source.unknown[b"\xfc\x01x\x03"] == b"output metadata"
+    assert read_psbt(psbt).outputs[0].unknown[b"\xfc\x01x\x03"] == b"output metadata"
     assert simple.inputs[0].m_of_n == (2, 3)
-    assert len(simple.outputs) == 2
+    assert len(read_psbt(psbt).outputs) == 2
     assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt) is None
     assert psbt.serialize() == before
 
@@ -145,7 +159,7 @@ def test_upstream_decode_refusal_is_not_silently_reinterpreted(monkeypatch: pyte
 
     monkeypatch.setattr(Psbt, "b64decode", refuse)
     with pytest.raises(ValueError, match="upstream cannot decode"):
-        SimplePSBT.from_psbt(psbt)
+        SigningProgress.from_psbt(psbt)
     assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt) is None
     assert psbt.serialize() == before
 
@@ -222,5 +236,35 @@ def test_multisig_thresholds_above_sixteen(threshold: int) -> None:
     key = bytes.fromhex("0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798")
     count = bytes([0x50 + threshold]) if threshold <= 16 else bytes([1, threshold])
     script = count + (bytes([len(key)]) + key) * 20 + bytes([1, 20, 0xAE])
-    item = SimpleInput(txin=tr_psbt_singlesig.extract_tx().input()[0], witness_script=script.hex())
+    item = SigningInput(PsbtIn(witness_script=script, check_validity=False))
     assert item._get_m_of_n() == (threshold, 20)
+
+
+def test_native_prevouts_and_finalization_do_not_build_signing_progress(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def unexpected(*args, **kwargs):
+        pytest.fail("protocol-only consumers must not construct signer UI state")
+
+    monkeypatch.setattr(SigningProgress, "from_psbt", unexpected)
+    psbt = p2wsh_psbt_0_2of3
+    native = read_psbt(psbt)
+    tx = psbt.extract_tx_unchecked_fee_rate()
+    expected_points = {str(inp.previous_output) for inp in tx.input()}
+    spent = psbt_prev_txouts(native)
+    assert set(spent) == expected_points
+    utxos = psbt_input_utxos(native, bdk.Network.REGTEST)
+    assert set(utxos) == expected_points
+    for point, utxo in utxos.items():
+        assert str(utxo.outpoint) == point
+        assert utxo.txout == spent[point]
+    assert not psbt_is_finalized(native)
+    assert psbt_is_finalized(read_psbt(p2wsh_psbt_1_1of1))
+
+
+def test_missing_utxo_does_not_invent_an_outpoint() -> None:
+    native = read_psbt(p2wsh_psbt_0_2of3)
+    native.inputs[0].witness_utxo = None
+    native.inputs[0].non_witness_utxo = None
+    assert not psbt_prev_txouts(native)
+    assert not psbt_input_utxos(native, bdk.Network.REGTEST)

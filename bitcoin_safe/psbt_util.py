@@ -39,8 +39,7 @@ from typing import cast
 import bdkpython as bdk
 from bip32_descriptors.bip32.key_origin import BIP32KeyOrigin
 from bip32_descriptors.descriptors import miniscript
-from bitcoin_safe_lib.tx_util import hex_to_script
-from bitcoin_safe_lib.util import network_kind, remove_duplicates_keep_order
+from bitcoin_safe_lib.util import network_kind
 from bitcoin_usb.address_types import AddressType, AddressTypes, SimplePubKeyProvider
 from btclib import var_int
 from btclib.script import Witness, serialize
@@ -53,10 +52,11 @@ from btclib.script.script_pub_key import (
     is_p2wsh,
     p2ms_m_and_keys_var,
 )
+from btclib.script.sig_hash import SIG_HASH_TYPES
 from btclib.tx import Tx
 from btclib.tx import TxIn as BtclibTxIn
 from btclib.tx import TxOut as BtclibTxOut
-from btclib_wallet.psbt import Psbt, PsbtIn, PsbtOut, miniscript_sizer, prevouts
+from btclib_wallet.psbt import Psbt, PsbtIn, miniscript_sizer, prevouts
 from btclib_wallet.psbt.psbt_size import COMPRESSED_PUB_KEY_SIZE, SCHNORR_SIG_SIZE, SIG_SIZE
 from ecc.hashes import tagged_hash
 
@@ -76,12 +76,6 @@ logger = logging.getLogger(__name__)
 VSIZE_OF_ZERO_FEE_TX = 200
 # Used only while an output script is unknown, such as an incomplete address.
 DEFAULT_OUTPUT_SCRIPT = bdk.Script(b"\x00\x14" + bytes(20))
-
-
-def parse_witness_script(script_hex: str) -> tuple[int, list[str]]:
-    """Return the threshold and keys of a standard multisig script."""
-    threshold, keys = p2ms_m_and_keys_var(bytes.fromhex(script_hex))
-    return threshold, [key.hex() for key in keys]
 
 
 def weight_to_vsize(weight) -> int:
@@ -192,6 +186,73 @@ def previous_output(inp: PsbtIn, vout: int) -> BtclibTxOut | None:
     if inp.non_witness_utxo is not None and 0 <= vout < len(inp.non_witness_utxo.vout):
         return inp.non_witness_utxo.vout[vout]
     return None
+
+
+def read_psbt(psbt: bdk.Psbt) -> Psbt:
+    """Decode for inspection, including incomplete PSBTs."""
+    return Psbt.b64decode(psbt.serialize(), check_validity=False)
+
+
+def input_outpoint(inp: PsbtIn) -> OutPoint:
+    point = inp.prev_out
+    return OutPoint(txid=bdk.Txid.from_string(point.tx_id.hex()), vout=point.vout)
+
+
+def previous_txout(inp: PsbtIn) -> TxOut | None:
+    out = previous_output(inp, inp.output_index if inp.output_index is not None else -1)
+    if out is not None:
+        try:
+            return TxOut(
+                value=bdk.Amount.from_sat(out.value), script_pubkey=bdk.Script(out.script_pub_key.script)
+            )
+        except (OverflowError, ValueError):
+            pass
+    return None
+
+
+def address_derivations(inp: PsbtIn) -> set[tuple[bdk.KeychainKind, int]]:
+    """Standard receive/change suffixes from native BIP32 origins."""
+    result: set[tuple[bdk.KeychainKind, int]] = set()
+    for origin in (*inp.hd_key_paths.values(), *(origin for _, origin in inp.taproot_hd_key_paths.values())):
+        path = origin.der_path
+        if len(path) >= 2 and path[-2] in (0, 1) and 0 <= path[-1] < 0x80000000:
+            kind = bdk.KeychainKind.INTERNAL if path[-2] else bdk.KeychainKind.EXTERNAL
+            result.add((kind, path[-1]))
+    return result
+
+
+def psbt_prev_txouts(psbt: Psbt) -> dict[str, TxOut]:
+    """Available spent outputs, indexed by their actual outpoints."""
+    return {str(input_outpoint(inp)): out for inp in psbt.inputs if (out := previous_txout(inp)) is not None}
+
+
+def psbt_input_utxos(psbt: Psbt, network: bdk.Network) -> dict[str, PythonUtxo]:
+    return {
+        point: PythonUtxo(
+            address=robust_address_str_from_txout(out, network=network),
+            txout=out,
+            outpoint=OutPoint.from_str(point),
+        )
+        for point, out in psbt_prev_txouts(psbt).items()
+    }
+
+
+def input_is_finalized(inp: PsbtIn, raw: bytes) -> bool:
+    # Upstream 2026.11.19 accepts either final field, even for incomplete
+    # nested SegWit. Keep the spend-type-aware check at this boundary.
+    address_type = input_address_type(raw, inp.redeem_script, inp.final_script_sig)
+    return has_finalized_unlocking_data(
+        address_type,
+        bool(inp.final_script_sig),
+        bool(inp.final_script_witness),
+        is_p2sh(raw) and address_type is None,
+    )
+
+
+def psbt_is_finalized(psbt: Psbt) -> bool:
+    return bool(psbt.inputs) and all(
+        input_is_finalized(inp, out.spk_bytes if (out := previous_txout(inp)) else b"") for inp in psbt.inputs
+    )
 
 
 @dataclass
@@ -502,7 +563,7 @@ class FeeInfo:
     def estimate_segwit_fee_rate_from_psbt(cls, psbt: bdk.Psbt) -> FeeInfo | None:
         """Estimate the PSBT fee rate, or use its finalized transaction's actual size."""
         try:
-            analysis = Psbt.b64decode(psbt.serialize(), check_validity=False)
+            analysis = read_psbt(psbt)
             # prevouts validates the PSBT, including conflicting UTXO fields.
             spent_outputs = prevouts(analysis)
             fee = psbt.fee()
@@ -512,14 +573,8 @@ class FeeInfo:
             needs_legacy_estimator = False
             for inp, spent in zip(analysis.inputs, spent_outputs, strict=True):
                 raw = spent.script_pub_key.script
-                address_type = input_address_type(raw, inp.redeem_script, inp.final_script_sig)
                 has_final_fields = bool(inp.final_script_sig or inp.final_script_witness)
-                complete = has_finalized_unlocking_data(
-                    address_type,
-                    bool(inp.final_script_sig),
-                    bool(inp.final_script_witness),
-                    is_p2sh(raw) and address_type is None,
-                )
+                complete = input_is_finalized(inp, raw)
                 finalized.append(complete)
                 # The pinned upstream release treats any final field as a complete
                 # spend and does not choose a Taproot leaf. Retain main's existing
@@ -611,250 +666,100 @@ class PartialSig:
 
 
 @dataclass
-class SimpleInput:
-    txin: bdk.TxIn
-    witness_script: str | None = None
-    # partial_sigs example: {"0232397cde66eb78039694c8c356272d0ea71e621abbaf74f068c16ef5ad5435a6": "304402202976966c2996b3c17005342eebb60133741286460b135020dcb4f2089629d851022044402ada00dc6acb4040f44099f537a138f4558cb10f874656d9d544a19b0f6e"}    # noqa: E501
-    # {pubkey: signature}
-    partial_sigs: dict[str, PartialSig] = field(default_factory=dict)
-    final_script_sig: str | None = None
-    final_script_witness: list[str] | None = None
+class SigningInput:
+    """UI-only annotations for one native PSBT input; never rewrites the PSBT."""
+
+    source: PsbtIn
     pubkeys: list[PubKeyInfo] = field(default_factory=list)
     wallet_id: str | None = None
     m_of_n: tuple[int, int] | None = None
-    source: PsbtIn = field(default_factory=lambda: PsbtIn(check_validity=False), repr=False)
-    sighash_type: int | str | None = None
-    redeem_script: str | None = None
-    tap_key_sig: PartialSig | None = None
+    recovered_signatures: dict[str, PartialSig] = field(default_factory=dict)
     verified_finalized_tap_key_sig: PartialSig | None = None
-    tap_script_sigs: dict[tuple[str, str], PartialSig] = field(default_factory=dict)
-    tap_key_origins: list[tuple[str, tuple[list[str], tuple[str, str]]]] = field(default_factory=list)
-    tap_internal_key: str | None = None
-    tap_merkle_root: str | None = None
+    verified_fingerprints: dict[bytes, str] = field(default_factory=dict, repr=False)
 
     @classmethod
-    def from_btclib(cls, inp: PsbtIn, txin: bdk.TxIn) -> SimpleInput:
-        """Project only the fields the UI needs; keep the complete upstream map."""
-        self = cls(
-            txin=txin,
-            source=inp,
-            witness_script=inp.witness_script.hex() or None,
-            redeem_script=inp.redeem_script.hex() or None,
-            final_script_sig=inp.final_script_sig.hex() or None,
-            final_script_witness=[item.hex() for item in inp.final_script_witness.stack] or None,
-            sighash_type=inp.sig_hash_type,
-            tap_internal_key=inp.taproot_internal_key.hex() or None,
-            tap_merkle_root=inp.taproot_merkle_root.hex() or None,
-            partial_sigs={
-                key.hex(): PartialSig(
-                    sig[:-1].hex(), "SIGHASH_" + cls._format_sighash_type(sig[-1]).replace("|", "|SIGHASH_")
-                )
-                for key, sig in sorted(inp.partial_sigs.items())
-                if sig
-            },
-            pubkeys=[PubKeyInfo.from_origin(key, origin) for key, origin in inp.hd_key_paths.items()],
-            tap_key_sig=cls._taproot_signature(inp.taproot_key_spend_signature),
-        )
-        for key, sig in sorted(inp.taproot_script_spend_signatures.items()):
-            signature = cls._taproot_signature(sig)
-            if len(key) == 64 and signature is not None:
-                self.tap_script_sigs[(key[:32].hex(), key[32:].hex())] = signature
+    def from_btclib(cls, inp: PsbtIn) -> SigningInput:
+        item = cls(inp, [PubKeyInfo.from_origin(key, origin) for key, origin in inp.hd_key_paths.items()])
         for key, (leaves, origin) in inp.taproot_hd_key_paths.items():
-            try:
-                origin.assert_valid()
-            except ValueError:
-                continue
             if len(key) != 32 or any(len(leaf) != 32 for leaf in leaves):
                 continue
-            pubkey = PubKeyInfo.from_origin(key, origin)
-            self.pubkeys.append(pubkey)
-            self.tap_key_origins.append(
-                (
-                    key.hex(),
-                    (
-                        [leaf.hex() for leaf in leaves],
-                        (origin.master_fingerprint.hex(), pubkey.derivation_path or ""),
-                    ),
-                )
-            )
-        if self.sighash_type is not None and any(
-            sig and sig.sighash_type != cls._format_sighash_type(self.sighash_type)
-            for sig in [self.tap_key_sig, *self.tap_script_sigs.values()]
+            if len(origin.master_fingerprint) not in (0, 4):
+                continue
+            try:
+                item.pubkeys.append(PubKeyInfo.from_origin(key, origin))
+            except ValueError:
+                continue
+        if inp.sig_hash_type is not None and any(
+            sig.sighash_type != cls._format_sighash_type(inp.sig_hash_type)
+            for raw in (inp.taproot_key_spend_signature, *inp.taproot_script_spend_signatures.values())
+            if (sig := cls._taproot_signature(raw)) is not None
         ):
             logger.warning("Taproot signature sighash conflicts with PSBT input sighash")
-        self._recover_finalized_singlesig_signer_data()
-        self.m_of_n = self._get_m_of_n()
-        return self
-
-    @classmethod
-    def _taproot_signature(cls, raw: bytes) -> PartialSig | None:
-        if len(raw) not in (64, 65) or (len(raw) == 65 and raw[-1] not in (1, 2, 3, 0x81, 0x82, 0x83)):
-            return None
-        return PartialSig(raw[:64].hex(), cls._format_sighash_type(raw[64] if len(raw) == 65 else 0))
-
-    def _recover_finalized_singlesig_signer_data(self) -> None:
-        """Recover signer data from finalized singlesig witnesses when derivation data is absent."""
-        if self.pubkeys or self.partial_sigs:
-            return
-
-        finalized_signature = self._finalized_singlesig_signature_and_pubkey()
-        if not finalized_signature:
-            return
-
-        signature, pubkey = finalized_signature
-
-        self.pubkeys.append(PubKeyInfo(fingerprint="", pubkey=pubkey))
-        self.partial_sigs[pubkey] = PartialSig(
-            signature=signature, sighash_type=self._recovered_sighash_type(signature)
-        )
-        # Heuristic: recover the common finalized singlesig witness shape as 1-of-1.
-        self.m_of_n = (1, 1)
-
-    def _finalized_singlesig_signature_and_pubkey(self) -> tuple[str, str] | None:
-        """Return ``(signature, pubkey)`` for a likely finalized singlesig witness.
-
-        This treats a 2-item ``final_script_witness`` whose second item is a
-        compressed pubkey as the common finalized singlesig pattern.
-
-        It only inspects witness shape. It does not validate script semantics,
-        recover the fingerprint, or rule out custom scripts that look similar.
-        """
-        if self.final_script_witness and len(self.final_script_witness) == 2:
-            signature, pubkey = self.final_script_witness
-            if len(pubkey) == 66 and pubkey.startswith(("02", "03")):
-                return signature, pubkey
-
-        return None
-
-    def _recovered_sighash_type(self, signature: str) -> str:
-        """Resolve the sighash flag for recovered finalized signatures.
-
-        Prefer the PSBT input's explicit ``sighash_type`` when present. If it is
-        absent, fall back to the sighash byte appended to the DER signature.
-        """
-        if self.sighash_type is not None:
-            return self._format_sighash_type(self.sighash_type)
-        if len(signature) >= 2:
-            return self._format_sighash_type(int(signature[-2:], 16))
-        return "unknown"
-
-    @staticmethod
-    def _normalize_hex_32(value: object) -> str | None:
-        if not isinstance(value, str):
-            return None
-        value = value.lower()
-        if len(value) != 64:
-            return None
-        try:
-            if len(bytes.fromhex(value)) != 32:
-                return None
-        except ValueError:
-            return None
-        return value
-
-    def _taproot_keypath_signature_for_pubkey(self, pubkey_info: PubKeyInfo) -> PartialSig | None:
-        pubkey = self._normalize_hex_32(pubkey_info.pubkey)
-        if not self.tap_key_sig or not pubkey or self._normalize_hex_32(self.tap_internal_key) != pubkey:
-            return None
-        return self.tap_key_sig if self._taproot_origin_for_pubkey(pubkey_info) is not None else None
-
-    def set_verified_fingerprint(self, pubkey_info: PubKeyInfo, fingerprint: str) -> None:
-        """Record a wallet-verified fingerprint on the public key and its matching Taproot origin."""
-        if pubkey_info.fingerprint or not fingerprint:
-            return
-        pubkey_info.fingerprint = PubKeyInfo(fingerprint).fingerprint
-        pubkey = self._normalize_hex_32(pubkey_info.pubkey)
-        if not pubkey:
-            return
-        for index, (key, (leaves, (origin_fingerprint, path))) in enumerate(self.tap_key_origins):
-            if (
-                self._normalize_hex_32(key) == pubkey
-                and not origin_fingerprint
-                and PubKeyInfo("", key, path).derivation_path == pubkey_info.derivation_path
-            ):
-                self.tap_key_origins[index] = (key, (leaves, (pubkey_info.fingerprint, path)))
-
-    def _taproot_origin_for_pubkey(self, pubkey_info: PubKeyInfo) -> list[str] | None:
-        pubkey = self._normalize_hex_32(pubkey_info.pubkey)
-        origins = [origin for origin in self.tap_key_origins if self._normalize_hex_32(origin[0]) == pubkey]
-        if not pubkey or len(origins) != 1:
-            return None
-        _, (leaves, (fingerprint, path)) = origins[0]
-        if not fingerprint:
-            return None
-        origin = PubKeyInfo(fingerprint, pubkey, path)
-        if pubkey_info.fingerprint != origin.fingerprint:
-            return None
-        if pubkey_info.derivation_path and pubkey_info.derivation_path != origin.derivation_path:
-            return None
-        return (
-            [leaf.lower() for leaf in leaves]
-            if all(self._normalize_hex_32(leaf) for leaf in leaves)
-            else None
-        )
-
-    def _taproot_scriptpath_signature_for_pubkey(self, pubkey_info: PubKeyInfo) -> PartialSig | None:
-        pubkey = self._normalize_hex_32(pubkey_info.pubkey)
-        leaves = self._taproot_origin_for_pubkey(pubkey_info)
-        if pubkey and leaves is not None:
-            for (signer_pubkey, leaf_hash), signature in self.tap_script_sigs.items():
-                if signer_pubkey == pubkey and leaf_hash in leaves:
-                    return signature
-        return None
+        item._recover_finalized_singlesig_signer_data()
+        item.m_of_n = item._get_m_of_n()
+        return item
 
     @staticmethod
     def _format_sighash_type(sighash_type: int | str) -> str:
-        """Format a sighash flag as a display string.
-
-        References:
-        - BIP 143 for ALL/NONE/SINGLE and ANYONECANPAY semantics:
-          https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki
-        - BIP 341 for the taproot DEFAULT sighash value:
-          https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki#common-signature-message
-        """
         if isinstance(sighash_type, str):
             normalized = sighash_type.upper().replace("SIGHASH_", "")
-            if normalized.isdecimal():
-                return SimpleInput._format_sighash_type(int(normalized))
-            return normalized
-
-        base_names = {
-            0: "DEFAULT",
-            1: "ALL",
-            2: "NONE",
-            3: "SINGLE",
-        }
-        if sighash_type not in (0, 1, 2, 3, 0x81, 0x82, 0x83):
+            return (
+                SigningInput._format_sighash_type(int(normalized)) if normalized.isdecimal() else normalized
+            )
+        if sighash_type not in SIG_HASH_TYPES:
             return hex(sighash_type)
-        base_type = sighash_type & 0x1F
-        parts = [base_names.get(base_type, hex(sighash_type))]
-        if sighash_type & 0x80:
-            parts.append("ANYONECANPAY")
-        return "|".join(parts)
+        base = ("DEFAULT", "ALL", "NONE", "SINGLE")[sighash_type & 3]
+        return base + ("|ANYONECANPAY" if sighash_type & 0x80 else "")
 
-    def is_fully_signed(self) -> bool:
-        """Whether the input has all required final unlocking fields."""
-        if not (self.final_script_sig or self.final_script_witness):
-            return False
-        previous = self.previous_txout()
-        raw = bytes(previous.script_pubkey.to_bytes()) if previous else b""
-        redeem = bytes.fromhex(self.redeem_script or "")
-        script_sig = bytes.fromhex(self.final_script_sig or "")
-        address_type = input_address_type(raw, redeem, script_sig)
-        return has_finalized_unlocking_data(
-            address_type,
-            bool(script_sig),
-            bool(self.final_script_witness),
-            is_p2sh(raw) and address_type is None,
-        )
+    @classmethod
+    def _taproot_signature(cls, raw: bytes) -> PartialSig | None:
+        if len(raw) == 64:
+            return PartialSig(raw.hex(), "DEFAULT")
+        if len(raw) == 65 and raw[-1] and raw[-1] in SIG_HASH_TYPES:
+            return PartialSig(raw[:-1].hex(), cls._format_sighash_type(raw[-1]))
+        return None
 
-    def signature_count(self) -> str:
-        # Just return the count of partial signatures, as we can't determine the total required
-        """Signature count."""
-        return str(len(self.get_pub_keys_with_signature()))
+    def _recovered_sig(self, raw: bytes) -> PartialSig:
+        flag = self.source.sig_hash_type
+        if flag is None and raw:
+            flag = raw[-1]
+        return PartialSig(raw.hex(), self._format_sighash_type(flag) if flag is not None else "unknown")
+
+    def _finalized_singlesig(self) -> tuple[str, PartialSig] | None:
+        # Preserve the existing display-only heuristic for the common two-item
+        # finalized singlesig witness. This is not script verification.
+        stack = self.source.final_script_witness.stack
+        if len(stack) == 2 and len(stack[1]) == 33 and stack[1][0] in (2, 3):
+            return stack[1].hex(), self._recovered_sig(stack[0])
+        return None
+
+    def _recover_finalized_singlesig_signer_data(self) -> None:
+        if not self.pubkeys and not self.source.partial_sigs and (recovered := self._finalized_singlesig()):
+            key, sig = recovered
+            self.pubkeys.append(PubKeyInfo("", key))
+            self.recovered_signatures[key] = sig
+            self.m_of_n = (1, 1)
+
+    def set_verified_fingerprint(self, pubkey_info: PubKeyInfo, fingerprint: str) -> None:
+        """Wallet-verified display metadata does not modify the native key origin."""
+        if pubkey_info.fingerprint or not fingerprint:
+            return
+        pubkey_info.fingerprint = PubKeyInfo(fingerprint).fingerprint
+        if not pubkey_info.pubkey:
+            return
+        try:
+            key = bytes.fromhex(pubkey_info.pubkey)
+        except ValueError:
+            return
+        if (entry := self.source.taproot_hd_key_paths.get(key)) is not None:
+            try:
+                origin = PubKeyInfo.from_origin(key, entry[1])
+            except ValueError:
+                return
+            if not origin.fingerprint and origin.derivation_path == pubkey_info.derivation_path:
+                self.verified_fingerprints[key] = pubkey_info.fingerprint
 
     def signature_for_pubkey(self, pubkey_info: PubKeyInfo) -> PartialSig | None:
-        # A verified Taproot key-path spend of a known 1-of-1 wallet has only one signer.
         if (
             self.verified_finalized_tap_key_sig
             and self.m_of_n == (1, 1)
@@ -865,162 +770,94 @@ class SimpleInput:
             return self.verified_finalized_tap_key_sig
         if not pubkey_info.pubkey:
             return None
-
-        partial_sig = self.partial_sigs.get(pubkey_info.pubkey)
-        if partial_sig:
-            return partial_sig
-
-        taproot_signature = self._taproot_keypath_signature_for_pubkey(
-            pubkey_info
-        ) or self._taproot_scriptpath_signature_for_pubkey(pubkey_info)
-        if taproot_signature:
-            return taproot_signature
-
-        finalized_signature = self._finalized_singlesig_signature_and_pubkey()
-        if not finalized_signature:
+        if recovered := self.recovered_signatures.get(pubkey_info.pubkey):
+            return recovered
+        try:
+            key = bytes.fromhex(pubkey_info.pubkey)
+        except ValueError:
             return None
-
-        signature, finalized_pubkey = finalized_signature
-        if finalized_pubkey != pubkey_info.pubkey:
+        if pubkey_info.pubkey.lower() != key.hex():
             return None
-
-        return PartialSig(signature=signature, sighash_type=self._recovered_sighash_type(signature))
-
-    def get_pub_keys_without_signature(self) -> list[PubKeyInfo]:
-        # If the input is fully signed, there are no pubkeys without a signature
-        """Get pub keys without signature."""
-        if self.is_fully_signed():
-            return []
-        return [pubkey_info for pubkey_info in self.pubkeys if not self.signature_for_pubkey(pubkey_info)]
-
-    def get_pub_keys_with_signature(self) -> list[PubKeyInfo]:
-        # If the input is fully signed, all pubkeys are considered to have a signature
-        """Get pub keys with signature."""
-        if self.is_fully_signed():
-            return self.pubkeys
-        return [pubkey_info for pubkey_info in self.pubkeys if self.signature_for_pubkey(pubkey_info)]
-
-    def fingerprint_has_signature(self, fingerprint: str) -> bool:
-        """Fingerprint has signature."""
-        if self.is_fully_signed():
-            return True
-        for pubkey_info in self.pubkeys:
-            if pubkey_info.fingerprint == fingerprint and self.signature_for_pubkey(pubkey_info):
-                return True
-        return False
-
-    def get_estimated_m_of_n(self) -> tuple[int, int]:
-        """Get estimated m of n."""
-        mn = self._get_m_of_n()
-        if mn:
-            return mn
-        if not self.pubkeys and not self.is_fully_signed():
-            # An unfinished input without signer metadata still needs a signing step.
-            return (1, 1)
-        return (len(self.pubkeys), len(self.pubkeys))
-
-    def _get_m_of_n(self) -> tuple[int, int] | None:
-        """Get m of n."""
-        if self.m_of_n:
-            return self.m_of_n
-
-        for script_hex in (self.witness_script, self.redeem_script):
-            if not script_hex:
-                continue
+        if raw := self.source.partial_sigs.get(key):
+            flag = self._format_sighash_type(raw[-1]).replace("|", "|SIGHASH_")
+            return PartialSig(raw[:-1].hex(), "SIGHASH_" + flag)
+        if len(key) == 32 and (entry := self.source.taproot_hd_key_paths.get(key)) is not None:
+            leaves, origin = entry
+            if len(origin.master_fingerprint) not in (0, 4) or any(len(leaf) != 32 for leaf in leaves):
+                return None
             try:
-                script = bytes.fromhex(script_hex)
-                if is_p2ms_var(script):
-                    m, public_keys = p2ms_m_and_keys_var(script)
-                    return (m, len(public_keys))
+                origin_info = PubKeyInfo.from_origin(key, origin)
             except ValueError:
-                logger.warning("Invalid multisig script for input %s", self.txin.previous_output)
+                return None
+            fingerprint = self.verified_fingerprints.get(key, origin_info.fingerprint)
+            if not fingerprint or fingerprint != pubkey_info.fingerprint:
+                return None
+            if pubkey_info.derivation_path and pubkey_info.derivation_path != origin_info.derivation_path:
+                return None
+            if key == self.source.taproot_internal_key:
+                if sig := self._taproot_signature(self.source.taproot_key_spend_signature):
+                    return sig
+            for leaf in sorted(leaves):
+                if sig := self._taproot_signature(
+                    self.source.taproot_script_spend_signatures.get(key + leaf, b"")
+                ):
+                    return sig
+        if (recovered2 := self._finalized_singlesig()) and recovered2[0] == pubkey_info.pubkey:
+            return recovered2[1]
         return None
 
-    def get_prev_txouts(self) -> dict[str, TxOut]:
-        "Returns {str(outpoint): List[TxOut]}"
-        previous_txout = self.previous_txout()
-        if not previous_txout:
-            return {}
-        return {str(OutPoint.from_bdk(self.txin.previous_output)): previous_txout}
+    def is_fully_signed(self) -> bool:
+        out = self.previous_txout()
+        return input_is_finalized(self.source, out.spk_bytes if out else b"")
+
+    def _get_m_of_n(self) -> tuple[int, int] | None:
+        if self.m_of_n:
+            return self.m_of_n
+        for script in (self.source.witness_script, self.source.redeem_script):
+            if is_p2ms_var(script):
+                m, keys = p2ms_m_and_keys_var(script)
+                return m, len(keys)
+        return None
+
+    def get_estimated_m_of_n(self) -> tuple[int, int]:
+        if mn := self._get_m_of_n():
+            return mn
+        n = len(self.pubkeys)
+        if not n and not self.is_fully_signed():
+            n = 1
+        return n, n
+
+    @property
+    def outpoint(self) -> OutPoint:
+        return input_outpoint(self.source)
 
     def previous_txout(self) -> TxOut | None:
-        """Return available previous-output metadata from the typed PSBT map."""
-        out = previous_output(self.source, self.txin.previous_output.vout)
-        if out is None:
-            return None
-        try:
-            return TxOut(
-                value=bdk.Amount.from_sat(out.value), script_pubkey=bdk.Script(out.script_pub_key.script)
-            )
-        except (OverflowError, ValueError):
-            return None
+        return previous_txout(self.source)
 
-    def address_derivations(self) -> set[tuple[bdk.KeychainKind, int]]:
-        """Return standard descriptor keychain/index pairs encoded in the PSBT."""
-        derivations: set[tuple[bdk.KeychainKind, int]] = set()
-        for pubkey in self.pubkeys:
-            if not pubkey.derivation_path:
-                continue
-            components = pubkey.derivation_path.removeprefix("m/").split("/")
-            if len(components) < 2:
-                continue
-            keychain, index = components[-2:]
-            if keychain not in {"0", "1"} or not index.isdecimal():
-                continue
-            derivations.add(
-                (
-                    bdk.KeychainKind.INTERNAL if keychain == "1" else bdk.KeychainKind.EXTERNAL,
-                    int(index),
-                )
-            )
-        return derivations
-
-
-@dataclass
-class SimpleOutput:
-    value: int = 0
-    script_pubkey: str = ""
-    witness_script: str | None = None
-    redeem_script: str | None = None
-    bip32_derivation: list[PubKeyInfo] = field(default_factory=list)
-    tap_internal_key: str | None = None
-    source: PsbtOut = field(default_factory=lambda: PsbtOut(check_validity=False), repr=False)
-
-    @classmethod
-    def from_btclib(cls, out: PsbtOut, txout: BtclibTxOut) -> SimpleOutput:
-        return cls(
-            value=txout.value,
-            script_pubkey=txout.script_pub_key.script.hex(),
-            witness_script=out.witness_script.hex() or None,
-            redeem_script=out.redeem_script.hex() or None,
-            tap_internal_key=out.taproot_internal_key.hex() or None,
-            bip32_derivation=[
-                PubKeyInfo.from_origin(key, origin) for key, origin in out.hd_key_paths.items()
-            ],
-            source=out,
-        )
-
-    def to_txout(self) -> TxOut:
-        """To txout."""
-        return TxOut(value=bdk.Amount.from_sat(self.value), script_pubkey=hex_to_script(self.script_pubkey))
+    def enrich(self, wallet_id: str, m_of_n: tuple[int, int], pubkeys: list[PubKeyInfo]) -> None:
+        self.wallet_id, self.m_of_n = wallet_id, m_of_n
+        if not self.pubkeys:
+            self.pubkeys = [key.clone() for key in pubkeys]
+            return
+        for key in self.pubkeys:
+            match = next((candidate for candidate in pubkeys if candidate.signer_id == key.signer_id), None)
+            if not match and key.pubkey:
+                match = next((candidate for candidate in pubkeys if candidate.pubkey == key.pubkey), None)
+            if match:
+                key.fingerprint = key.fingerprint or match.fingerprint
+                key.pubkey = key.pubkey or match.pubkey
+                key.derivation_path = key.derivation_path or match.derivation_path
+                key.label = match.label or key.label
 
 
 @dataclass
 class InputGroup:
     group_id: str
-    inputs: list[SimpleInput]
+    inputs: list[SigningInput]
     input_indices: list[int]
     wallet_id: str | None
     m_of_n: tuple[int, int]
     signer_identifiers: dict[str, PubKeyInfo]
-
-    @property
-    def display_label(self) -> str:
-        return self.group_id
-
-    @property
-    def has_wallet_id(self) -> bool:
-        return bool(self.wallet_id)
 
     def _signatures_for_pubkey(self, pubkey_info: PubKeyInfo) -> dict[int, PartialSig]:
         signatures: dict[int, PartialSig] = {}
@@ -1055,136 +892,60 @@ class InputGroup:
             if signer_identifier not in signatures_by_identifier
         ]
 
-    @property
-    def signed_signer_identifiers(self) -> list[str]:
-        return [signer_identifier for signer_identifier, _pubkey_info, _signatures in self.signed_signers()]
-
-    @property
-    def unsigned_signer_identifiers(self) -> list[str]:
-        return [signer_identifier for signer_identifier, _pubkey_info in self.unsigned_signers()]
-
 
 @dataclass
-class InputEnrichment:
-    wallet_id: str
-    m_of_n: tuple[int, int]
-    pubkeys: list[PubKeyInfo]
+class SigningProgress:
+    """Only signer UI state, not another PSBT model."""
 
-
-@dataclass
-class SimplePSBT:
-    txid: str
-    inputs: list[SimpleInput] = field(default_factory=list)
-    outputs: list[SimpleOutput] = field(default_factory=list)
+    inputs: list[SigningInput] = field(default_factory=list)
 
     @classmethod
-    def from_psbt(cls, psbt: bdk.Psbt) -> SimplePSBT:
-        """Read the typed PSBT once; keep BDK only at the UI/signing boundary."""
-        parsed = Psbt.b64decode(psbt.serialize(), check_validity=False)
-        tx = psbt.extract_tx_unchecked_fee_rate()
-        instance = cls(
-            txid=str(tx.compute_txid()),
-            inputs=[
-                SimpleInput.from_btclib(inp, txin)
-                for inp, txin in zip(parsed.inputs, tx.input(), strict=True)
-            ],
-            outputs=[
-                SimpleOutput.from_btclib(out, txout)
-                for out, txout in zip(parsed.outputs, parsed.tx.vout, strict=True)
-            ],
-        )
-        instance._recover_finalized_signatures(tx)
-        return instance
+    def from_psbt(cls, psbt: bdk.Psbt) -> SigningProgress:
+        parsed = read_psbt(psbt)
+        progress = cls([SigningInput.from_btclib(inp) for inp in parsed.inputs])
+        if any(inp.final_script_sig or inp.final_script_witness for inp in parsed.inputs):
+            progress._recover_finalized_signatures(psbt.extract_tx_unchecked_fee_rate())
+        return progress
 
     def _recover_finalized_signatures(self, tx: bdk.Transaction) -> None:
-        # Finalization removes PSBT key origins and partial signatures. Verify the witness
-        # to identify the signer: in a 1-of-2 input, either key could have signed.
-        prevouts: list[Prevout | None] = []
-        verify_inputs: list[bool] = []
-        for item in self.inputs:
-            previous = item.previous_txout()
-            prevouts.append(
-                Prevout(bytes(previous.script_pubkey.to_bytes()), previous.value.to_sat())
-                if previous
-                else None
-            )
-            witness = item.final_script_witness
-            verify_inputs.append(
-                bool(
-                    item.is_fully_signed()
-                    and (
-                        (previous and is_p2pkh(bytes(previous.script_pubkey.to_bytes())))
-                        or (witness and is_p2ms_var(bytes.fromhex(witness[-1])))
-                        or (previous and witness and is_p2tr(bytes(previous.script_pubkey.to_bytes())))
+        # Finalization removes key origins and partial signatures. Attribute
+        # multisig/legacy/Taproot spends only to keys verified by the script engine.
+        spent = [item.previous_txout() for item in self.inputs]
+        prev = [Prevout(out.spk_bytes, out.value.to_sat()) if out else None for out in spent]
+        verify = [
+            bool(
+                item.is_fully_signed()
+                and (
+                    (out and is_p2pkh(out.spk_bytes))
+                    or (
+                        item.source.final_script_witness
+                        and is_p2ms_var(item.source.final_script_witness.stack[-1])
                     )
+                    or (out and item.source.final_script_witness and is_p2tr(out.spk_bytes))
                 )
             )
-        if not any(verify_inputs):
+            for item, out in zip(self.inputs, spent, strict=True)
+        ]
+        if not any(verify):
             return
-        results = verify_transaction(tx, prevouts, verify_inputs).results
-        for item, result in zip(self.inputs, results, strict=True):
-            witness = item.final_script_witness
-            if (
-                result.verdict == InputVerdict.valid
-                and witness
-                and (previous := item.previous_txout())
-                and is_p2tr(bytes(previous.script_pubkey.to_bytes()))
-            ):
-                keypath_witness = (
-                    witness[:-1] if len(witness) == 2 and witness[-1].startswith("50") else witness
-                )
-                if len(keypath_witness) == 1 and len(keypath_witness[0]) in (128, 130):
-                    tap_signature = keypath_witness[0]
-                    item.verified_finalized_tap_key_sig = PartialSig(
-                        signature=tap_signature[:128],
-                        sighash_type=item._format_sighash_type(
-                            int(tap_signature[128:], 16) if len(tap_signature) == 130 else 0
-                        ),
-                    )
-            if result.signatures and item.final_script_witness:
-                script = bytes.fromhex(item.final_script_witness[-1])
-                if is_p2ms_var(script):
-                    threshold, keys = p2ms_m_and_keys_var(script)
-                    item.m_of_n = (threshold, len(keys))
+        results = verify_transaction(tx, prev, verify).results
+        for item, out, result in zip(self.inputs, spent, results, strict=True):
+            witness = item.source.final_script_witness.stack
+            if result.verdict == InputVerdict.valid and witness and out and is_p2tr(out.spk_bytes):
+                keypath = witness[:-1] if len(witness) == 2 and witness[-1].startswith(b"\x50") else witness
+                if len(keypath) == 1:
+                    item.verified_finalized_tap_key_sig = item._taproot_signature(keypath[0])
+            if result.signatures and witness and is_p2ms_var(witness[-1]):
+                m, keys = p2ms_m_and_keys_var(witness[-1])
+                item.m_of_n = (m, len(keys))
             for pubkey, signature in result.signatures:
-                pubkey_hex, signature_hex = pubkey.hex(), signature.hex()
-                if not any(info.pubkey == pubkey_hex for info in item.pubkeys):
-                    item.pubkeys.append(PubKeyInfo(fingerprint="", pubkey=pubkey_hex))
-                item.partial_sigs[pubkey_hex] = PartialSig(
-                    signature=signature_hex, sighash_type=item._recovered_sighash_type(signature_hex)
-                )
-
-    def get_fingerprint_tuples(self) -> tuple[list[PubKeyInfo], list[PubKeyInfo]]:
-        # set of all fingerprints of all inputs
-        # sorted_pubkeys = remove_duplicates_keep_order(
-        #     sum(
-        #         [simple_input.pubkeys for simple_input in self.inputs ],
-        #         [],
-        #     )
-        # )
-
-        """Get fingerprint tuples."""
-        pubkeys_not_fully_signed = remove_duplicates_keep_order(
-            sum(
-                [simple_input.get_pub_keys_without_signature() for simple_input in self.inputs],
-                [],
-            )
-        )
-        pubkeys_fully_signed = remove_duplicates_keep_order(
-            sum(
-                [simple_input.get_pub_keys_with_signature() for simple_input in self.inputs],
-                [],
-            )
-        )
-
-        return (
-            # sorted_pubkeys,
-            pubkeys_fully_signed,
-            pubkeys_not_fully_signed,
-        )
+                key = pubkey.hex()
+                if not any(info.pubkey == key for info in item.pubkeys):
+                    item.pubkeys.append(PubKeyInfo("", key))
+                item.recovered_signatures[key] = item._recovered_sig(signature)
 
     @staticmethod
-    def _input_group_id(simple_input: SimpleInput, index: int) -> str:
+    def _input_group_id(simple_input: SigningInput, index: int) -> str:
         if simple_input.wallet_id and simple_input.m_of_n:
             return simple_input.wallet_id
         if simple_input.pubkeys:
@@ -1200,50 +961,8 @@ class SimplePSBT:
                     pubkeys[pubkey.signer_id] = pubkey
         return pubkeys
 
-    def enrich_with_outpoint_data(
-        self,
-        outpoint_dict: dict[str, InputEnrichment],
-    ) -> SimplePSBT:
-        for simple_input in self.inputs:
-            outpoint_str = str(simple_input.txin.previous_output)
-            enrichment = outpoint_dict.get(outpoint_str)
-            if not enrichment:
-                continue
-
-            simple_input.wallet_id = enrichment.wallet_id
-            simple_input.m_of_n = enrichment.m_of_n
-
-            if not simple_input.pubkeys:
-                simple_input.pubkeys = [pubkey.clone() for pubkey in enrichment.pubkeys]
-                continue
-
-            enrichment_pubkeys = self._pubkeys_by_signer_id([enrichment.pubkeys])
-            for pubkey in simple_input.pubkeys:
-                enrichment_pubkey = enrichment_pubkeys.get(pubkey.signer_id)
-                if not enrichment_pubkey and pubkey.pubkey:
-                    enrichment_pubkey = next(
-                        (
-                            candidate
-                            for candidate in enrichment.pubkeys
-                            if candidate.pubkey and candidate.pubkey == pubkey.pubkey
-                        ),
-                        None,
-                    )
-                if not enrichment_pubkey:
-                    continue
-                if not pubkey.fingerprint and enrichment_pubkey.fingerprint:
-                    pubkey.fingerprint = enrichment_pubkey.fingerprint
-                if not pubkey.pubkey and enrichment_pubkey.pubkey:
-                    pubkey.pubkey = enrichment_pubkey.pubkey
-                if not pubkey.derivation_path:
-                    pubkey.derivation_path = enrichment_pubkey.derivation_path
-                if enrichment_pubkey.label:
-                    pubkey.label = enrichment_pubkey.label
-
-        return self
-
     def group_inputs(self) -> list[InputGroup]:
-        grouped_inputs: dict[str, list[tuple[int, SimpleInput]]] = {}
+        grouped_inputs: dict[str, list[tuple[int, SigningInput]]] = {}
         for index, simple_input in enumerate(self.inputs):
             group_id = self._input_group_id(simple_input, index)
             grouped_inputs.setdefault(group_id, []).append((index, simple_input))
@@ -1269,26 +988,3 @@ class SimplePSBT:
             )
 
         return result
-
-    def get_prev_txouts(self) -> dict[str, TxOut]:
-        """Get prev txouts."""
-        d = self.inputs[0].get_prev_txouts()
-        for inp in self.inputs[1:]:
-            d.update(inp.get_prev_txouts())
-
-        return d
-
-    def outpoints_as_python_utxo_dict(self, network: bdk.Network) -> dict[str, PythonUtxo]:
-        "Returns {str(outpoint) : python_utxo}  for all outpoints"
-        txout_dict = self.get_prev_txouts()
-
-        python_txos = [
-            PythonUtxo(
-                address=robust_address_str_from_txout(txout, network=network),
-                txout=txout,
-                outpoint=OutPoint(vout=vout, txid=bdk.Txid.from_string(self.txid)),
-            )
-            for vout, txout in enumerate(txout_dict.values())
-        ]
-
-        return {str(python_txo.outpoint): python_txo for python_txo in python_txos}

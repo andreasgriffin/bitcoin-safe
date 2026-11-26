@@ -95,7 +95,7 @@ from bitcoin_safe.plugin_framework.external_plugin_registry import ExternalPlugi
 from bitcoin_safe.plugin_framework.plugin_client import PluginClient
 from bitcoin_safe.plugin_framework.plugin_manager import PluginManager, PluginManagerWidget
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
-from bitcoin_safe.psbt_util import FeeInfo, SimplePSBT
+from bitcoin_safe.psbt_util import FeeInfo, psbt_prev_txouts, read_psbt
 from bitcoin_safe.pythonbdk_types import (
     Balance,
     BlockchainType,
@@ -1669,7 +1669,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
             client=self.wallet.client,
             parent=parent if parent is not None else self.tabs,
             fee_info=FeeInfo.estimate_segwit_fee_rate_from_psbt(builder_infos.psbt),
-            txout_dict=SimplePSBT.from_psbt(builder_infos.psbt).get_prev_txouts(),
+            txout_dict=psbt_prev_txouts(read_psbt(builder_infos.psbt)),
             hidden_tx_infos=builder_infos.hidden_tx_infos,
         )
 

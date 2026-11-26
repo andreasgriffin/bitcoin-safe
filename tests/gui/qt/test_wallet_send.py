@@ -52,7 +52,6 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import svg_tools_hardware_signer
 from bitcoin_safe.hardware_signers import HardwareSigner, HardwareSigners
 from bitcoin_safe.mempool_manager import TxPrio
-from bitcoin_safe.psbt_util import SimplePSBT
 from bitcoin_safe.pythonbdk_types import OutPoint, TxOut, robust_address_str_from_txout
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 from bitcoin_safe.signer import SignatureImporterWallet
@@ -713,8 +712,7 @@ def test_send_tab_complex_interactions(
         psbt = ui_tx_viewer.data.data
         assert psbt
 
-        simple_psbt = SimplePSBT.from_psbt(psbt)
-        input_outpoints = {OutPoint.from_bdk(inp.txin.previous_output) for inp in simple_psbt.inputs}
+        input_outpoints = _outpoints_from_psbt(psbt)
         wallet_utxos = {OutPoint.from_bdk(utxo.outpoint): utxo for utxo in wallet.get_all_utxos()}
         input_categories = {
             wallet.labels.get_category(wallet_utxos[outpoint].address)
