@@ -199,6 +199,7 @@ class InputWeight:
         if isinstance(psbt_input, PartiallySignedInput):
             redeem = psbt_input.redeem_script
             witness = psbt_input.witness_script
+            final_script_sig = psbt_input.final_script_sig
             final_witness = psbt_input.final_script_witness.scriptWitness.stack or None
         else:
             redeem = (
@@ -209,7 +210,18 @@ class InputWeight:
                 if psbt_input and psbt_input.witness_script
                 else b""
             )
+            final_script_sig = (
+                bytes(psbt_input.final_script_sig.to_bytes())
+                if psbt_input and psbt_input.final_script_sig
+                else b""
+            )
             final_witness = psbt_input.final_script_witness if psbt_input else None
+        # Finalization may remove redeem_script while leaving its single push in
+        # scriptSig (0x16 <22-byte P2WPKH> or 0x22 <34-byte P2WSH>).
+        if is_p2sh(raw) and not redeem and final_script_sig[:1] in (b"\x16", b"\x22"):
+            program = final_script_sig[1:]
+            if final_script_sig[0] == len(program) and (is_p2wpkh(program) or is_p2wsh(program)):
+                redeem = program
         multisig_script = witness or (
             redeem if redeem and not is_p2wpkh(redeem) and not is_p2wsh(redeem) else b""
         )
@@ -385,7 +397,13 @@ class TxWeight:
                 script = prevout.script_pubkey if prevout else None
             weight = InputWeight.from_psbt_input(script, inp)
             script_sig_size = len(txin.script_sig.to_bytes())
-            if script_sig_size or txin.witness:
+            finalized = bool(script_sig_size or txin.witness)
+            if weight.address_type in (AddressTypes.p2sh_p2wpkh, AddressTypes.p2sh_p2wsh):
+                # Nested SegWit needs both the witness program and its witness.
+                finalized = bool(script_sig_size and txin.witness)
+            elif weight.address_type in (AddressTypes.p2wpkh, AddressTypes.p2wsh, AddressTypes.p2tr):
+                finalized = bool(txin.witness)
+            if finalized:
                 # The base input already includes an empty scriptSig and witness.
                 # A 253-byte scriptSig adds 253 bytes plus two CompactSize bytes.
                 weight.satisfaction_weight = 4 * (
@@ -507,10 +525,10 @@ class FeeInfo:
         """Estimate the PSBT fee rate, or use its finalized transaction's actual size."""
 
         tx = psbt.extract_tx_unchecked_fee_rate()
-        tx_inputs = tx.input()
-        if tx_inputs and all(txin.script_sig.to_bytes() or txin.witness for txin in tx_inputs):
+        weight = TxWeight.from_psbt(psbt)
+        if weight.inputs and all(item.finalized_witness is not None for item in weight.inputs):
             return FeeInfo(psbt.fee(), tx.vsize(), vsize_is_estimated=False, fee_amount_is_estimated=False)
-        vsize = weight_to_vsize(TxWeight.from_psbt(psbt).estimate())
+        vsize = weight_to_vsize(weight.estimate())
         return FeeInfo(psbt.fee(), vsize, vsize_is_estimated=True, fee_amount_is_estimated=False)
 
     def __add__(self, other: FeeInfo) -> FeeInfo:

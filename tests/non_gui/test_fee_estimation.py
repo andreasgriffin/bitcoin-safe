@@ -224,7 +224,9 @@ def test_mixed_input_overhead_and_descriptor_weights() -> None:
     assert TxWeight([InputWeight(satisfaction_weight=150)], output).estimate() == single_witness + 43
 
 
-@pytest.mark.parametrize("wrapper", ["pkh({key})", "wpkh({key})", "sh(wpkh({key}))", "tr({key})"])
+@pytest.mark.parametrize(
+    "wrapper", ["pkh({key})", "wpkh({key})", "sh(wpkh({key}))", "sh(wsh(multi(1,{key})))", "tr({key})"]
+)
 def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
     from tests.non_gui.test_foreign_utxo import transaction
 
@@ -256,6 +258,34 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
     actual = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
     assert not actual.vsize_is_estimated
     assert actual.vsize == signed.vsize()
+
+    if wrapper.startswith("sh("):
+        from hwilib.psbt import PSBT
+
+        hwi_psbt = PSBT()
+        hwi_psbt.deserialize(psbt.serialize())
+        inp = hwi_psbt.inputs[0]
+        assert inp.final_script_sig
+        assert inp.final_script_witness.scriptWitness.stack
+        # A finalized scriptSig alone is not a complete nested SegWit spend.
+        # Remove the witness and the redeem script metadata, as a finalizer may do.
+        inp.final_script_witness.scriptWitness.stack = []
+        inp.redeem_script = b""
+        inp.witness_script = b""
+        partial = bdk.Psbt(hwi_psbt.serialize())
+        partial_tx = partial.extract_tx_unchecked_fee_rate()
+        assert partial_tx.input()[0].script_sig.to_bytes()
+        assert not partial_tx.input()[0].witness
+        partial_weight = TxWeight.from_psbt(partial)
+        assert partial_weight.inputs[0].address_type == info.address_type
+        assert partial_weight.inputs[0].finalized_witness is None
+        assert partial_weight.inputs[0].is_witness()
+        assert partial_weight.estimate() == estimate
+        assert partial_weight.estimate() >= signed.weight()
+        partial_fee = FeeInfo.estimate_segwit_fee_rate_from_psbt(partial)
+        assert partial_fee.vsize_is_estimated
+        assert partial_fee.vsize == weight_to_vsize(estimate)
+        assert partial_fee.fee_amount == actual.fee_amount
 
 
 def test_input_types_are_inferred_from_prevout_and_scripts() -> None:
