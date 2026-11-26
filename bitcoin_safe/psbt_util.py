@@ -32,7 +32,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Iterable, Sequence
 from copy import copy
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from math import ceil
 from typing import cast
 
@@ -597,23 +597,20 @@ class FeeInfo:
         return combined_info
 
 
+@dataclass(eq=False)
 class PubKeyInfo:
-    def __init__(
-        self,
-        fingerprint: str,
-        pubkey: str | None = None,
-        derivation_path: str | None = None,
-        label: str = "",
-    ) -> None:
-        """Initialize instance."""
-        self.fingerprint = SimplePubKeyProvider.format_fingerprint(fingerprint) if fingerprint else ""
-        self.pubkey = pubkey
-        self.derivation_path = (
-            (derivation_path if derivation_path.startswith("m/") else "m/" + derivation_path)
-            if derivation_path
-            else None
+    fingerprint: str
+    pubkey: str | None = None
+    derivation_path: str | None = None
+    label: str = ""
+
+    def __post_init__(self) -> None:
+        self.fingerprint = (
+            SimplePubKeyProvider.format_fingerprint(self.fingerprint) if self.fingerprint else ""
         )
-        self.label = label
+        if self.derivation_path and not self.derivation_path.startswith("m/"):
+            self.derivation_path = "m/" + self.derivation_path
+        self.derivation_path = self.derivation_path or None
 
     @classmethod
     def from_origin(cls, key: bytes, origin: BIP32KeyOrigin) -> PubKeyInfo:
@@ -630,14 +627,6 @@ class PubKeyInfo:
         if self.pubkey:
             return self.pubkey
         return self.label
-
-    def clone(self) -> PubKeyInfo:
-        return PubKeyInfo(
-            fingerprint=self.fingerprint,
-            pubkey=self.pubkey,
-            derivation_path=self.derivation_path,
-            label=self.label,
-        )
 
 
 @dataclass
@@ -803,7 +792,7 @@ class SigningInput:
     def enrich(self, wallet_id: str, m_of_n: tuple[int, int], pubkeys: list[PubKeyInfo]) -> None:
         self.wallet_id, self.m_of_n = wallet_id, m_of_n
         if not self.pubkeys:
-            self.pubkeys = [key.clone() for key in pubkeys]
+            self.pubkeys = [replace(key) for key in pubkeys]
             return
         for key in self.pubkeys:
             match = next((candidate for candidate in pubkeys if candidate.signer_id == key.signer_id), None)
@@ -817,139 +806,106 @@ class SigningInput:
 
 
 @dataclass
-class InputGroup:
+class SigningGroup:
+    """A snapshot of the signer steps for one wallet or signer set."""
+
     group_id: str
-    inputs: list[SigningInput]
     input_indices: list[int]
     wallet_id: str | None
     m_of_n: tuple[int, int]
     signer_identifiers: dict[str, PubKeyInfo]
+    signatures: dict[str, dict[int, PartialSig]]
+    completed_signers: dict[str, dict[int, PartialSig]]
 
-    def _signatures_for_pubkey(self, pubkey_info: PubKeyInfo) -> dict[int, PartialSig]:
-        signatures: dict[int, PartialSig] = {}
-        for input_index, simple_input in zip(self.input_indices, self.inputs, strict=False):
-            candidates = [key for key in simple_input.pubkeys if key.signer_id == pubkey_info.signer_id]
-            for candidate in candidates or [pubkey_info]:
-                if partial_sig := simple_input.signature_for_pubkey(candidate):
-                    signatures[input_index] = partial_sig
-                    break
-        return signatures
+    @property
+    def pending_signers(self) -> list[str]:
+        return [
+            identifier for identifier in self.signer_identifiers if identifier not in self.completed_signers
+        ]
 
-    def signatures_by_identifier(self) -> dict[str, dict[int, PartialSig]]:
-        return {
-            signer_identifier: signatures
-            for signer_identifier, pubkey_info in self.signer_identifiers.items()
-            if (signatures := self._signatures_for_pubkey(pubkey_info))
-        }
 
-    def signed_signers(self) -> list[tuple[str, PubKeyInfo, dict[int, PartialSig]]]:
-        # Only count a signer as complete when all inputs still needing finalization
-        # have its signature. A finalized input needs no further signatures.
-        required = {
-            index
-            for index, item in zip(self.input_indices, self.inputs, strict=True)
+def analyze_signing_inputs(psbt: bdk.Psbt) -> list[SigningInput]:
+    parsed = read_psbt(psbt)
+    inputs = [SigningInput.from_btclib(inp) for inp in parsed.inputs]
+    if any(inp.final_script_sig or inp.final_script_witness for inp in parsed.inputs):
+        recover_finalized_signatures(inputs, psbt.extract_tx_unchecked_fee_rate())
+    return inputs
+
+
+def recover_finalized_signatures(inputs: list[SigningInput], tx: bdk.Transaction) -> None:
+    # Finalization removes key origins and partial signatures. Attribute
+    # multisig/legacy/Taproot spends only to keys verified by the script engine.
+    spent = [item.previous_txout() for item in inputs]
+    prev = [Prevout(out.spk_bytes, out.value.to_sat()) if out else None for out in spent]
+    verify = [item.is_fully_signed() and out is not None for item, out in zip(inputs, spent, strict=True)]
+    if not any(verify):
+        return
+    results = verify_transaction(tx, prev, verify).results
+    for item, out, result in zip(inputs, spent, results, strict=True):
+        witness = item.source.final_script_witness.stack
+        if result.verdict == InputVerdict.valid and witness and out and is_p2tr(out.spk_bytes):
+            keypath = witness[:-1] if len(witness) == 2 and witness[-1].startswith(b"\x50") else witness
+            if len(keypath) == 1:
+                item.verified_finalized_tap_key_sig = item._taproot_signature(keypath[0])
+        if result.verdict != InputVerdict.valid:
+            continue
+        if result.signatures and witness and is_p2ms_var(witness[-1]):
+            m, keys = p2ms_m_and_keys_var(witness[-1])
+            item.m_of_n = (m, len(keys))
+        for pubkey, signature in result.signatures:
+            key = pubkey.hex()
+            if not any(info.pubkey == key for info in item.pubkeys):
+                item.pubkeys.append(PubKeyInfo("", key))
+            item.recovered_signatures[key] = item._recovered_sig(signature)
+
+
+def group_signing_inputs(inputs: list[SigningInput]) -> list[SigningGroup]:
+    grouped: dict[str, list[int]] = {}
+    for index, item in enumerate(inputs):
+        group_id = (
+            item.wallet_id
+            if item.wallet_id and item.m_of_n
+            else ", ".join(sorted(key.signer_id for key in item.pubkeys)) or f"Input {index}"
+        )
+        grouped.setdefault(group_id, []).append(index)
+
+    groups: list[SigningGroup] = []
+    for group_id, indices in grouped.items():
+        signers: dict[str, PubKeyInfo] = {}
+        required: set[int] = set()
+        for index in indices:
+            item = inputs[index]
+            for key in item.pubkeys:
+                if key.signer_id:
+                    signers.setdefault(key.signer_id, key)
             if not (
                 item.is_fully_signed() and (item.recovered_signatures or item.verified_finalized_tap_key_sig)
+            ):
+                required.add(index)
+
+        signatures: dict[str, dict[int, PartialSig]] = {}
+        for identifier, key in signers.items():
+            for index in indices:
+                item = inputs[index]
+                candidates = [candidate for candidate in item.pubkeys if candidate.signer_id == identifier]
+                for candidate in candidates or [key]:
+                    if signature := item.signature_for_pubkey(candidate):
+                        signatures.setdefault(identifier, {})[index] = signature
+                        break
+
+        groups.append(
+            SigningGroup(
+                group_id=group_id,
+                input_indices=indices,
+                wallet_id=next(
+                    (inputs[index].wallet_id for index in indices if inputs[index].wallet_id), None
+                ),
+                m_of_n=inputs[indices[0]].get_estimated_m_of_n(),
+                signer_identifiers=signers,
+                signatures=signatures,
+                completed_signers={
+                    identifier: found for identifier, found in signatures.items() if required <= found.keys()
+                },
             )
-        }
-        return [
-            (identifier, self.signer_identifiers[identifier], signatures)
-            for identifier, signatures in self.signatures_by_identifier().items()
-            if required <= signatures.keys()
-        ]
-
-    def unsigned_signers(self) -> list[tuple[str, PubKeyInfo]]:
-        complete = {identifier for identifier, _, _ in self.signed_signers()}
-        return [
-            (identifier, info)
-            for identifier, info in self.signer_identifiers.items()
-            if identifier not in complete
-        ]
-
-
-@dataclass
-class SigningProgress:
-    """Only signer UI state, not another PSBT model."""
-
-    inputs: list[SigningInput] = field(default_factory=list)
-
-    @classmethod
-    def from_psbt(cls, psbt: bdk.Psbt) -> SigningProgress:
-        parsed = read_psbt(psbt)
-        progress = cls([SigningInput.from_btclib(inp) for inp in parsed.inputs])
-        if any(inp.final_script_sig or inp.final_script_witness for inp in parsed.inputs):
-            progress._recover_finalized_signatures(psbt.extract_tx_unchecked_fee_rate())
-        return progress
-
-    def _recover_finalized_signatures(self, tx: bdk.Transaction) -> None:
-        # Finalization removes key origins and partial signatures. Attribute
-        # multisig/legacy/Taproot spends only to keys verified by the script engine.
-        spent = [item.previous_txout() for item in self.inputs]
-        prev = [Prevout(out.spk_bytes, out.value.to_sat()) if out else None for out in spent]
-        verify = [
-            item.is_fully_signed() and out is not None for item, out in zip(self.inputs, spent, strict=True)
-        ]
-        if not any(verify):
-            return
-        results = verify_transaction(tx, prev, verify).results
-        for item, out, result in zip(self.inputs, spent, results, strict=True):
-            witness = item.source.final_script_witness.stack
-            if result.verdict == InputVerdict.valid and witness and out and is_p2tr(out.spk_bytes):
-                keypath = witness[:-1] if len(witness) == 2 and witness[-1].startswith(b"\x50") else witness
-                if len(keypath) == 1:
-                    item.verified_finalized_tap_key_sig = item._taproot_signature(keypath[0])
-            if result.verdict != InputVerdict.valid:
-                continue
-            if result.signatures and witness and is_p2ms_var(witness[-1]):
-                m, keys = p2ms_m_and_keys_var(witness[-1])
-                item.m_of_n = (m, len(keys))
-            for pubkey, signature in result.signatures:
-                key = pubkey.hex()
-                if not any(info.pubkey == key for info in item.pubkeys):
-                    item.pubkeys.append(PubKeyInfo("", key))
-                item.recovered_signatures[key] = item._recovered_sig(signature)
-
-    @staticmethod
-    def _input_group_id(simple_input: SigningInput, index: int) -> str:
-        if simple_input.wallet_id and simple_input.m_of_n:
-            return simple_input.wallet_id
-        if simple_input.pubkeys:
-            return ", ".join(sorted([pubkey.signer_id for pubkey in simple_input.pubkeys]))
-        return f"Input {index}"
-
-    @staticmethod
-    def _pubkeys_by_signer_id(pubkeys_of_inputs: list[list[PubKeyInfo]]) -> dict[str, PubKeyInfo]:
-        pubkeys: dict[str, PubKeyInfo] = {}
-        for pubkeys_of_input in pubkeys_of_inputs:
-            for pubkey in pubkeys_of_input:
-                if pubkey.signer_id and pubkey.signer_id not in pubkeys:
-                    pubkeys[pubkey.signer_id] = pubkey
-        return pubkeys
-
-    def group_inputs(self) -> list[InputGroup]:
-        grouped_inputs: dict[str, list[tuple[int, SigningInput]]] = {}
-        for index, simple_input in enumerate(self.inputs):
-            group_id = self._input_group_id(simple_input, index)
-            grouped_inputs.setdefault(group_id, []).append((index, simple_input))
-
-        result: list[InputGroup] = []
-        for group_id, entries in grouped_inputs.items():
-            input_indices = [index for index, _ in entries]
-            inputs = [simple_input for _, simple_input in entries]
-            signer_identifiers = self._pubkeys_by_signer_id([simple_input.pubkeys for simple_input in inputs])
-            wallet_id = next(
-                (simple_input.wallet_id for simple_input in inputs if simple_input.wallet_id), None
-            )
-
-            result.append(
-                InputGroup(
-                    group_id=group_id,
-                    inputs=inputs,
-                    input_indices=input_indices,
-                    wallet_id=wallet_id,
-                    m_of_n=inputs[0].get_estimated_m_of_n(),
-                    signer_identifiers=signer_identifiers,
-                )
-            )
-
-        return result
+        )
+    return groups

@@ -75,7 +75,7 @@ from bitcoin_safe.hardware_signers import FeatureLevel, HardwareSigner, Hardware
 from bitcoin_safe.keystore import KeyStore, KeyStoreImporterTypes
 from bitcoin_safe.plugin_framework.plugins.chat_sync.client import SyncClient
 from bitcoin_safe.plugin_framework.plugins.chat_sync.constants import SYNC_CHAT_ICON_NAME
-from bitcoin_safe.psbt_util import PartialSig, SigningProgress, read_psbt
+from bitcoin_safe.psbt_util import PartialSig, SigningInput, analyze_signing_inputs
 from bitcoin_safe.signals import WalletFunctions
 from bitcoin_safe.signer import (
     AbstractSignatureImporter,
@@ -703,6 +703,8 @@ class TxSigningSteps(StepProgressContainer):
         wizard_send_test_signer_groups: list[list[str]] | None = None,
         wizard_send_test_index: int | None = None,
         parent: QWidget | None = None,
+        *,
+        signing_inputs: list[SigningInput] | None = None,
     ) -> None:
         """Initialize instance."""
         step_labels = [self.tr("Signature {n}").format(n=i + 1) for i in range(len(signature_importer_dict))]
@@ -723,6 +725,7 @@ class TxSigningSteps(StepProgressContainer):
         self.wallet_functions = wallet_functions
         self.signature_importer_dict = signature_importer_dict
         self.signature_importer_steps = list(signature_importer_dict.values())
+        self.signing_inputs = signing_inputs if signing_inputs is not None else analyze_signing_inputs(psbt)
         self.signing_devices = self._collect_signing_devices()
         self.wizard_send_test_signer_groups = wizard_send_test_signer_groups or []
         self.wizard_send_test_index = wizard_send_test_index
@@ -845,15 +848,14 @@ class TxSigningSteps(StepProgressContainer):
             for importer in importers
             if isinstance(importer, SignatureImporterWallet)
         }
-        for inp in read_psbt(self.psbt).inputs:
-            if wallet := get_wallet_for_psbt_input(inp, self.wallet_functions):
+        for item in self.signing_inputs:
+            if wallet := get_wallet_for_psbt_input(item.source, self.wallet_functions):
                 involved_wallets.setdefault(wallet.id, wallet)
         return list(involved_wallets.values())
 
     def _collect_generic_psbt_devices(self) -> dict[str, SigningDevice]:
         devices: dict[str, SigningDevice] = {}
-        simple_psbt = SigningProgress.from_psbt(self.psbt)
-        for simple_input in simple_psbt.inputs:
+        for simple_input in self.signing_inputs:
             for pubkey_info in simple_input.pubkeys:
                 if not pubkey_info.signer_id or pubkey_info.signer_id in devices:
                     continue
@@ -898,8 +900,7 @@ class TxSigningSteps(StepProgressContainer):
                 devices[device_id].needs_signature = True
 
     def _apply_psbt_signature_details(self, devices: dict[str, SigningDevice]) -> None:
-        simple_psbt = SigningProgress.from_psbt(self.psbt)
-        for input_index, simple_input in enumerate(simple_psbt.inputs):
+        for input_index, simple_input in enumerate(self.signing_inputs):
             for pubkey_info in simple_input.pubkeys:
                 if pubkey_info.signer_id not in devices or not pubkey_info.pubkey:
                     continue

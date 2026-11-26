@@ -41,8 +41,8 @@ from bitcoin_safe.psbt_util import (
     InputWeight,
     PubKeyInfo,
     SigningInput,
-    SigningProgress,
     TxWeight,
+    analyze_signing_inputs,
     psbt_input_utxos,
     psbt_is_finalized,
     psbt_prev_txouts,
@@ -87,7 +87,7 @@ def test_upstream_projection_preserves_legacy_display(original: bdk.Psbt) -> Non
     before = psbt.serialize()
     data = json.loads(psbt.json_serialize())
     native = read_psbt(psbt)
-    actual = SigningProgress.from_psbt(psbt)
+    actual = analyze_signing_inputs(psbt)
     assert len(native.outputs) == len(data["outputs"])
     for got, expected, unsigned in zip(
         native.outputs, data["outputs"], data["unsigned_tx"]["output"], strict=True
@@ -100,8 +100,8 @@ def test_upstream_projection_preserves_legacy_display(original: bdk.Psbt) -> Non
         assert [key.hex() for key in got.hd_key_paths] == [
             key for key, _ in expected.get("bip32_derivation", [])
         ]
-    assert len(actual.inputs) == len(data["inputs"])
-    for got, expected in zip(actual.inputs, data["inputs"], strict=True):
+    assert len(actual) == len(data["inputs"])
+    for got, expected in zip(actual, data["inputs"], strict=True):
         prev = expected.get("witness_utxo")
         if prev is None and expected.get("non_witness_utxo"):
             prev = expected["non_witness_utxo"]["output"][got.outpoint.vout]
@@ -141,11 +141,11 @@ def test_simple_psbt_does_not_require_fee_or_bdk_json(monkeypatch: pytest.Monkey
         pytest.fail("typed PSBT projection must not depend on BDK JSON")
 
     monkeypatch.setattr(bdk.Psbt, "json_serialize", unexpected_json)
-    simple = SigningProgress.from_psbt(psbt)
-    assert simple.inputs[0].previous_txout() is None
-    assert simple.inputs[0].source.unknown[b"\xfc\x01x\x02"] == b"input metadata"
+    simple = analyze_signing_inputs(psbt)
+    assert simple[0].previous_txout() is None
+    assert simple[0].source.unknown[b"\xfc\x01x\x02"] == b"input metadata"
     assert read_psbt(psbt).outputs[0].unknown[b"\xfc\x01x\x03"] == b"output metadata"
-    assert simple.inputs[0].m_of_n == (2, 3)
+    assert simple[0].m_of_n == (2, 3)
     assert len(read_psbt(psbt).outputs) == 2
     assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt) is None
     assert psbt.serialize() == before
@@ -160,7 +160,7 @@ def test_upstream_decode_refusal_is_not_silently_reinterpreted(monkeypatch: pyte
 
     monkeypatch.setattr(Psbt, "b64decode", refuse)
     with pytest.raises(ValueError, match="upstream cannot decode"):
-        SigningProgress.from_psbt(psbt)
+        analyze_signing_inputs(psbt)
     assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt) is None
     assert psbt.serialize() == before
 
@@ -264,7 +264,7 @@ def test_native_prevouts_and_finalization_do_not_build_signing_progress(
     def unexpected(*args, **kwargs):
         pytest.fail("protocol-only consumers must not construct signer UI state")
 
-    monkeypatch.setattr(SigningProgress, "from_psbt", unexpected)
+    monkeypatch.setattr("bitcoin_safe.psbt_util.analyze_signing_inputs", unexpected)
     psbt = p2wsh_psbt_0_2of3
     native = read_psbt(psbt)
     tx = psbt.extract_tx_unchecked_fee_rate()

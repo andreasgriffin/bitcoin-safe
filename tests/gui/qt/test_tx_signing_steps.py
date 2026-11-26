@@ -59,11 +59,11 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.hardware_signers import HardwareSigners
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.psbt_util import (
-    InputGroup,
     PartialSig,
     PubKeyInfo,
+    SigningGroup,
     SigningInput,
-    SigningProgress,
+    analyze_signing_inputs,
     previous_txout,
     read_psbt,
 )
@@ -202,9 +202,9 @@ def test_taproot_origin_without_fingerprint_is_enriched_from_wallet(script_path:
     wallet_functions = WalletFunctions(Signals())
     wallet_functions.get_wallets.connect(lambda: wallet, slot_name=wallet.id)
     viewer = SimpleNamespace(wallet_functions=wallet_functions)
-    simple_psbt = SigningProgress(inputs=[simple_input])
+    simple_psbt = [simple_input]
 
-    UITx_Viewer.enrich_simple_psbt_with_wallet_data(viewer, simple_psbt)
+    UITx_Viewer.enrich_signing_inputs(viewer, simple_psbt)
 
     info = next(info for info in simple_input.pubkeys if info.pubkey == pubkey)
     assert info.fingerprint == keystore.fingerprint
@@ -220,7 +220,7 @@ def test_foreign_first_input_keeps_wallet_seed_option(qtbot: QtBot, loop_in_thre
     signals = Signals()
     wallet_functions = WalletFunctions(signals)
     psbt = mixed_input_no_signatures
-    owned_input = SigningProgress.from_psbt(psbt).inputs[2]
+    owned_input = analyze_signing_inputs(psbt)[2]
     previous_txout = owned_input.previous_txout()
     assert previous_txout
     keystore = create_test_seed_keystores(
@@ -235,7 +235,7 @@ def test_foreign_first_input_keeps_wallet_seed_option(qtbot: QtBot, loop_in_thre
         id="seed-wallet", keystores=[keystore, other_keystore], owned_scripts={previous_txout.spk_hex}
     )
     wallet.multipath_descriptor = DummyMultipathDescriptor()
-    second_input = SigningProgress.from_psbt(psbt).inputs[3]
+    second_input = analyze_signing_inputs(psbt)[3]
     second_txout = second_input.previous_txout()
     assert second_txout
     second_keystore = create_test_seed_keystores(
@@ -264,9 +264,7 @@ def test_foreign_first_input_keeps_wallet_seed_option(qtbot: QtBot, loop_in_thre
     viewer._wallet_signing_fingerprints = UITx_Viewer._wallet_signing_fingerprints.__get__(
         viewer, SimpleNamespace
     )
-    viewer.enrich_simple_psbt_with_wallet_data = UITx_Viewer.enrich_simple_psbt_with_wallet_data.__get__(
-        viewer, SimpleNamespace
-    )
+    viewer.enrich_signing_inputs = UITx_Viewer.enrich_signing_inputs.__get__(viewer, SimpleNamespace)
     importers = UITx_Viewer.get_combined_signature_importers(viewer, psbt)
     assert not any(
         isinstance(importer, SignatureImporterWallet) for importer in next(iter(importers.values()))
@@ -382,8 +380,10 @@ def test_taproot_signature_populates_signed_and_unsigned_signing_steps(
     source.hd_key_paths.clear()
     simple_input = SigningInput.from_btclib(source)
     simple_input.m_of_n = (2, 2)
-    simple_psbt = SigningProgress(inputs=[simple_input])
-    monkeypatch.setattr(SigningProgress, "from_psbt", classmethod(lambda cls, psbt: simple_psbt))
+    simple_psbt = [simple_input]
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.analyze_signing_inputs", lambda psbt: simple_psbt
+    )
     wallet = DummyWallet(id="multisig", keystores=keystores)
     monkeypatch.setattr(TxSigningSteps, "_involved_wallets", lambda self: [wallet])
     viewer = SimpleNamespace(
@@ -394,7 +394,7 @@ def test_taproot_signature_populates_signed_and_unsigned_signing_steps(
         tr=lambda text: text,
         import_trusted_psbt=lambda psbt: None,
         tx_received=lambda tx: None,
-        enrich_simple_psbt_with_wallet_data=lambda psbt: psbt,
+        enrich_signing_inputs=lambda psbt: psbt,
     )
     viewer._normalize_fingerprint = UITx_Viewer._normalize_fingerprint
     viewer._normalize_fingerprints = UITx_Viewer._normalize_fingerprints.__get__(viewer, SimpleNamespace)
@@ -411,7 +411,12 @@ def test_taproot_signature_populates_signed_and_unsigned_signing_steps(
     assert not simple_input.is_fully_signed()
 
     widget = TxSigningSteps(
-        importers, tr_psbt_singlesig, bdk.Network.REGTEST, wallet_functions, loop_in_thread
+        importers,
+        tr_psbt_singlesig,
+        bdk.Network.REGTEST,
+        wallet_functions,
+        loop_in_thread,
+        signing_inputs=simple_psbt,
     )
     qtbot.addWidget(widget)
     widget.show()
@@ -506,7 +511,7 @@ def test_non_seed_wallet_importer_keeps_hardware_signer_device_identity(qtbot: Q
     keystore = keystores[0]
     keystore.hardware_signer_id = HardwareSigners.jade.id
     keystore.mnemonic = None
-    previous_txout = SigningProgress.from_psbt(tr_psbt_singlesig).inputs[0].previous_txout()
+    previous_txout = analyze_signing_inputs(tr_psbt_singlesig)[0].previous_txout()
     assert previous_txout
     wallet = DummyWallet(id="multisig", keystores=[keystore], owned_scripts={previous_txout.spk_hex})
     wallet_functions.get_wallets.connect(lambda: wallet)
@@ -559,7 +564,7 @@ def test_shared_signer_does_not_add_devices_from_uninvolved_wallet(qtbot: QtBot,
     for keystore in keystores:
         keystore.mnemonic = None
 
-    previous_txout = SigningProgress.from_psbt(tr_psbt_singlesig).inputs[0].previous_txout()
+    previous_txout = analyze_signing_inputs(tr_psbt_singlesig)[0].previous_txout()
     assert previous_txout
     involved_wallet = DummyWallet(
         id="involved",
@@ -614,7 +619,7 @@ def test_inputs_from_two_wallets_include_all_wallet_signers(qtbot: QtBot, loop_i
         network=bdk.Network.REGTEST,
         test_seed_offset=2,
     )
-    simple_inputs = SigningProgress.from_psbt(mixed_inputs_finalized_and_nothing_signed_psbt).inputs
+    simple_inputs = analyze_signing_inputs(mixed_inputs_finalized_and_nothing_signed_psbt)
     first_txout = simple_inputs[0].previous_txout()
     second_txout = simple_inputs[1].previous_txout()
     assert first_txout
@@ -1178,36 +1183,36 @@ def test_grouped_wallet_importer_only_uses_wallet_signable_unsigned_fingerprints
     fake_viewer._wallet_signing_fingerprints = UITx_Viewer._wallet_signing_fingerprints.__get__(
         fake_viewer, SimpleNamespace
     )
-    fake_viewer.enrich_simple_psbt_with_wallet_data = lambda simple_psbt: simple_psbt
-    simple_psbt = SigningProgress(
-        inputs=[
-            SigningInput(
-                source=read_psbt(tr_psbt_singlesig).inputs[0],
-                pubkeys=[
-                    PubKeyInfo(pubkey="pubkey-1", fingerprint=keystores[0].fingerprint),
-                    PubKeyInfo(pubkey="pubkey-2", fingerprint=keystores[1].fingerprint),
-                    PubKeyInfo(pubkey="pubkey-3", fingerprint=keystores[2].fingerprint),
-                ],
-                wallet_id=wallet.id,
-                m_of_n=(1, 3),
-            )
-        ],
-    )
-    monkeypatch.setattr(SigningProgress, "from_psbt", classmethod(lambda cls, psbt: simple_psbt))
+    fake_viewer.enrich_signing_inputs = lambda simple_psbt: simple_psbt
+    simple_psbt = [
+        SigningInput(
+            source=read_psbt(tr_psbt_singlesig).inputs[0],
+            pubkeys=[
+                PubKeyInfo(pubkey="pubkey-1", fingerprint=keystores[0].fingerprint),
+                PubKeyInfo(pubkey="pubkey-2", fingerprint=keystores[1].fingerprint),
+                PubKeyInfo(pubkey="pubkey-3", fingerprint=keystores[2].fingerprint),
+            ],
+            wallet_id=wallet.id,
+            m_of_n=(1, 3),
+        )
+    ]
     monkeypatch.setattr(
-        SigningProgress,
-        "group_inputs",
-        lambda self: [
-            InputGroup(
+        "bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.analyze_signing_inputs", lambda psbt: simple_psbt
+    )
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.group_signing_inputs",
+        lambda inputs: [
+            SigningGroup(
                 group_id="43666, 42645, 45757",
-                inputs=self.inputs,
+                signatures={},
+                completed_signers={},
                 input_indices=[0],
                 wallet_id=wallet.id,
                 m_of_n=(1, 3),
                 signer_identifiers={
-                    keystores[0].fingerprint: self.inputs[0].pubkeys[0],
-                    keystores[1].fingerprint: self.inputs[0].pubkeys[1],
-                    keystores[2].fingerprint: self.inputs[0].pubkeys[2],
+                    keystores[0].fingerprint: inputs[0].pubkeys[0],
+                    keystores[1].fingerprint: inputs[0].pubkeys[1],
+                    keystores[2].fingerprint: inputs[0].pubkeys[2],
                 },
             )
         ],
@@ -1234,7 +1239,7 @@ def test_grouped_wallet_importer_uses_input_script_when_wallets_share_seed(
         key_origins=["m/48h/1h/0h/2h", "m/48h/1h/1h/2h", "m/48h/1h/2h/2h"],
         network=bdk.Network.REGTEST,
     )
-    source_input = SigningProgress.from_psbt(tr_psbt_singlesig).inputs[0]
+    source_input = analyze_signing_inputs(tr_psbt_singlesig)[0]
     previous_txout = source_input.previous_txout()
     assert previous_txout
     involved_wallet = DummyWallet(
@@ -1249,18 +1254,18 @@ def test_grouped_wallet_importer_uses_input_script_when_wallets_share_seed(
     wallet_functions.get_wallets.connect(lambda: involved_wallet, slot_name=involved_wallet.id)
     monkeypatch.setattr("bitcoin_safe.signer.SoftwareSigner", lambda **kwargs: object())
 
-    simple_psbt = SigningProgress(
-        inputs=[
-            SigningInput(
-                source=source_input.source,
-                pubkeys=[
-                    PubKeyInfo(pubkey="pubkey-1", fingerprint=keystores[0].fingerprint),
-                    PubKeyInfo(pubkey="pubkey-2", fingerprint=keystores[1].fingerprint),
-                ],
-            )
-        ],
+    simple_psbt = [
+        SigningInput(
+            source=source_input.source,
+            pubkeys=[
+                PubKeyInfo(pubkey="pubkey-1", fingerprint=keystores[0].fingerprint),
+                PubKeyInfo(pubkey="pubkey-2", fingerprint=keystores[1].fingerprint),
+            ],
+        )
+    ]
+    monkeypatch.setattr(
+        "bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.analyze_signing_inputs", lambda psbt: simple_psbt
     )
-    monkeypatch.setattr(SigningProgress, "from_psbt", classmethod(lambda cls, psbt: simple_psbt))
 
     fake_viewer = SimpleNamespace(
         network=bdk.Network.REGTEST,
@@ -1278,7 +1283,7 @@ def test_grouped_wallet_importer_uses_input_script_when_wallets_share_seed(
     fake_viewer._wallet_signing_fingerprints = UITx_Viewer._wallet_signing_fingerprints.__get__(
         fake_viewer, SimpleNamespace
     )
-    fake_viewer.enrich_simple_psbt_with_wallet_data = UITx_Viewer.enrich_simple_psbt_with_wallet_data.__get__(
+    fake_viewer.enrich_signing_inputs = UITx_Viewer.enrich_signing_inputs.__get__(
         fake_viewer, SimpleNamespace
     )
 
@@ -1295,7 +1300,7 @@ def test_grouped_wallet_importer_uses_input_script_when_wallets_share_seed(
         keystores[1].fingerprint,
     ]
 
-    simple_input = simple_psbt.inputs[0]
+    simple_input = simple_psbt[0]
     simple_input.source.witness_utxo = None
     simple_input.source.non_witness_utxo = None
     simple_input.wallet_id = None
@@ -1330,7 +1335,7 @@ def test_partially_signed_psbt_keeps_stable_steps_and_signed_cards(qtbot: QtBot,
     fake_viewer._wallet_signing_fingerprints = UITx_Viewer._wallet_signing_fingerprints.__get__(
         fake_viewer, SimpleNamespace
     )
-    fake_viewer.enrich_simple_psbt_with_wallet_data = lambda simple_psbt: simple_psbt
+    fake_viewer.enrich_signing_inputs = lambda simple_psbt: simple_psbt
 
     importers = UITx_Viewer.get_combined_signature_importers(
         fake_viewer, mixed_input_no_signatures_partially_signed

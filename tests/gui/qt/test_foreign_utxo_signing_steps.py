@@ -45,7 +45,7 @@ from bitcoin_safe.foreign_utxo import ForeignUtxo
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.gui.qt.tx_signing_steps import TxSigningDeviceList, TxSigningSteps
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
-from bitcoin_safe.psbt_util import SigningProgress, previous_txout
+from bitcoin_safe.psbt_util import analyze_signing_inputs, previous_txout
 from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, Recipient, TxOut
 from bitcoin_safe.signals import Signals, WalletFunctions
 from bitcoin_safe.wallet import ProtoWallet, Wallet
@@ -141,7 +141,7 @@ def test_mixed_wallet_signing_progress_after_each_signature(
             if step < 3:
                 assert isinstance(viewer.data.data, bdk.Psbt)
                 assert viewer.tx_singning_steps
-                for item in SigningProgress.from_psbt(viewer.data.data).inputs:
+                for item in analyze_signing_inputs(viewer.data.data):
                     owner = next(i for i, wallet in enumerate(wallets) if wallet.owns_psbt_input(item.source))
                     assert item.is_fully_signed() == (owner in signing_order[: step + 1])
                 assert viewer.tx_singning_steps.current_index() == step + 1
@@ -190,9 +190,7 @@ def test_viewer_signs_inputs_from_two_open_seed_wallets(
         points = []
         for wallet in wallets:
             item = next(
-                item
-                for item in SigningProgress.from_psbt(funding_psbt).inputs
-                if wallet.owns_psbt_input(item.source)
+                item for item in analyze_signing_inputs(funding_psbt) if wallet.owns_psbt_input(item.source)
             )
             point = item.outpoint
             previous = item.previous_txout()
@@ -234,13 +232,13 @@ def test_viewer_signs_inputs_from_two_open_seed_wallets(
             button.click()
             if index == 0:
                 assert isinstance(viewer.data.data, bdk.Psbt)
-                for item in SigningProgress.from_psbt(viewer.data.data).inputs:
+                for item in analyze_signing_inputs(viewer.data.data):
                     assert item.is_fully_signed() == wallets[index].owns_psbt_input(item.source)
             if index == 1:
                 assert isinstance(viewer.data.data, bdk.Psbt)
                 nested_input = next(
                     item
-                    for item in SigningProgress.from_psbt(viewer.data.data).inputs
+                    for item in analyze_signing_inputs(viewer.data.data)
                     if wallets[1].owns_psbt_input(item.source)
                 )
                 assert has_signature(nested_input, fingerprint)
@@ -311,9 +309,7 @@ def _steps(psbt: bdk.Psbt, wallets: list[Wallet | MagicMock], loop_in_thread, qt
     viewer._wallet_signing_fingerprints = UITx_Viewer._wallet_signing_fingerprints.__get__(
         viewer, SimpleNamespace
     )
-    viewer.enrich_simple_psbt_with_wallet_data = UITx_Viewer.enrich_simple_psbt_with_wallet_data.__get__(
-        viewer, SimpleNamespace
-    )
+    viewer.enrich_signing_inputs = UITx_Viewer.enrich_signing_inputs.__get__(viewer, SimpleNamespace)
     importers = UITx_Viewer.get_combined_signature_importers(viewer, psbt)
     steps = TxSigningSteps(importers, psbt, NETWORK, wallet_functions, loop_in_thread)
     qtbot.addWidget(steps)
@@ -329,7 +325,7 @@ def test_signing_two_open_wallets_updates_existing_signer_card(
     for _ in range(50):
         active, other = [_wallet(seed, name) for seed, name in zip(SEEDS, ("active", "other"), strict=True)]
         psbt = _mixed_psbt(active, other, other_open=True)
-        inputs = SigningProgress.from_psbt(psbt).inputs
+        inputs = analyze_signing_inputs(psbt)
         if other.owns_psbt_input(inputs[0].source):
             break
     assert other.owns_psbt_input(inputs[0].source) and active.owns_psbt_input(inputs[1].source)
@@ -352,7 +348,7 @@ def test_signing_two_open_wallets_updates_existing_signer_card(
     with qtbot.waitSignal(first_importer.signal_signature_added, timeout=5_000) as signal:
         first_button.click()
     psbt = signal.args[0]
-    for item in SigningProgress.from_psbt(psbt).inputs:
+    for item in analyze_signing_inputs(psbt):
         assert item.is_fully_signed() == wallets[first_signer].owns_psbt_input(item.source)
     steps = _steps(psbt, [active, other], loop_in_thread, qtbot)
     assert steps.count() == 2
@@ -374,7 +370,7 @@ def test_signing_two_open_wallets_updates_existing_signer_card(
     assert remaining_importer and remaining_importer.wallet_id == wallets[1 - first_signer].id
     with qtbot.waitSignal(remaining_importer.signal_signature_added, timeout=5_000) as signal:
         sign_button.click()
-    assert all(item.is_fully_signed() for item in SigningProgress.from_psbt(signal.args[0]).inputs)
+    assert all(item.is_fully_signed() for item in analyze_signing_inputs(signal.args[0]))
 
 
 @pytest.mark.parametrize("signer_index", [0, 1])
@@ -403,7 +399,7 @@ def test_seed_card_signs_only_its_fingerprint_in_multisig_wallet(
     assert importer
     with qtbot.waitSignal(importer.signal_signature_added, timeout=5_000) as signal:
         button.click()
-    signed_input = SigningProgress.from_psbt(signal.args[0]).inputs[0]
+    signed_input = analyze_signing_inputs(signal.args[0])[0]
     assert has_signature(signed_input, keystore.fingerprint)
     assert not has_signature(signed_input, wallet.keystores[1 - signer_index].fingerprint)
 

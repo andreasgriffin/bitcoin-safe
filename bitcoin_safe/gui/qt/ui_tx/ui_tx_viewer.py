@@ -91,7 +91,9 @@ from ....mempool_manager import MempoolManager
 from ....psbt_util import (
     FeeInfo,
     PubKeyInfo,
-    SigningProgress,
+    SigningInput,
+    analyze_signing_inputs,
+    group_signing_inputs,
     psbt_input_utxos,
     psbt_is_finalized,
     read_psbt,
@@ -1056,9 +1058,9 @@ class UITx_Viewer(UITx_Base):
         logger.debug(f"queuing broadcast tx {short_tx_id(tx.compute_txid())}")
         self._broadcast(tx)
 
-    def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SigningProgress) -> SigningProgress:
+    def enrich_signing_inputs(self, inputs: list[SigningInput]) -> list[SigningInput]:
         """Enrich signing progress with local wallet data."""
-        for simple_input in simple_psbt.inputs:
+        for simple_input in inputs:
             wallet = get_wallet_for_psbt_input(simple_input.source, self.wallet_functions)
             if not wallet:
                 continue
@@ -1085,7 +1087,7 @@ class UITx_Viewer(UITx_Base):
             ]
             simple_input.enrich(wallet.id, wallet.get_mn_tuple(), wallet_pubkeys)
 
-        return simple_psbt
+        return inputs
 
     @staticmethod
     def _normalize_fingerprint(fingerprint: str | None) -> str:
@@ -1110,7 +1112,9 @@ class UITx_Viewer(UITx_Base):
         requested_fingerprints = set(self._normalize_fingerprints(fingerprints))
         return [fingerprint for fingerprint in signing_fingerprints if fingerprint in requested_fingerprints]
 
-    def get_combined_signature_importers(self, psbt: bdk.Psbt) -> dict[str, list[AbstractSignatureImporter]]:
+    def get_combined_signature_importers(
+        self, psbt: bdk.Psbt, *, signing_inputs: list[SigningInput] | None = None
+    ) -> dict[str, list[AbstractSignatureImporter]]:
         """Get combined signature importers."""
         signature_importers: dict[str, list[AbstractSignatureImporter]] = {}
         completed_steps: list[tuple[str, list[AbstractSignatureImporter]]] = []
@@ -1131,26 +1135,23 @@ class UITx_Viewer(UITx_Base):
                     result.append((wallet, matching_fingerprints))
             return result
 
-        simple_psbt = SigningProgress.from_psbt(psbt)
-        simple_psbt = self.enrich_simple_psbt_with_wallet_data(simple_psbt)
+        if signing_inputs is None:
+            signing_inputs = self.enrich_signing_inputs(analyze_signing_inputs(psbt))
 
         wallets: list[Wallet] = get_wallets(self.wallet_functions)
 
-        for input_group in simple_psbt.group_inputs():
-            if not input_group.inputs:
-                continue
+        for input_group in group_signing_inputs(signing_inputs):
             m, _n = input_group.m_of_n
-            signed_signers = list(input_group.signed_signers())
-            unsigned_signers = list(input_group.unsigned_signers())
-            unsigned_signer_identifiers = [identifier for identifier, _ in unsigned_signers]
-            unsigned_fingerprints = self._normalize_fingerprints(unsigned_signer_identifiers)
+            signed_signers = list(input_group.completed_signers.items())
+            unsigned_signers = input_group.pending_signers
+            unsigned_fingerprints = self._normalize_fingerprints(unsigned_signers)
 
             # only add a maximum of m *(all_signature_importers) for each wallet
             for i in range(m):
                 signer_list: list[AbstractSignatureImporter] = []
                 step_key = f"{input_group.group_id}.{i}"
                 if signed_signers:
-                    signer_id, _pubkey_info, signatures = signed_signers.pop(0)
+                    signer_id, signatures = signed_signers.pop(0)
                     normalized_fingerprint = self._normalize_fingerprint(signer_id)
                     display_label = normalized_fingerprint or signer_id
                     signer_identity = SignerIdentity(
@@ -1208,7 +1209,7 @@ class UITx_Viewer(UITx_Base):
                             fingerprint=self._normalize_fingerprint(signer_identifier),
                             label=signer_identifier,
                         )
-                        for signer_identifier, _pubkey_info in unsigned_signers
+                        for signer_identifier in unsigned_signers
                     ]
                     if not signer_identities:
                         signer_identities = [
@@ -1247,10 +1248,14 @@ class UITx_Viewer(UITx_Base):
         # to problems with multithreading.
         clear_layout(self.tx_singning_steps_container_layout)
 
-        signature_importers = self.get_combined_signature_importers(self.data.data)
+        signing_inputs = self.enrich_signing_inputs(analyze_signing_inputs(self.data.data))
+        signature_importers = self.get_combined_signature_importers(
+            self.data.data, signing_inputs=signing_inputs
+        )
 
         tx_singning_steps = TxSigningSteps(
             signature_importer_dict=signature_importers,
+            signing_inputs=signing_inputs,
             psbt=self.data.data,
             network=self.network,
             wallet_functions=self.wallet_functions,
