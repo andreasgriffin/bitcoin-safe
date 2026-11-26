@@ -260,13 +260,27 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
     assert actual.vsize == signed.vsize()
 
     if wrapper.startswith("sh("):
+        from types import SimpleNamespace
+
         from hwilib.psbt import PSBT
+
+        from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
+        from bitcoin_safe.psbt_util import SimplePSBT
+
+        # A fully finalized nested spend must still be imported as a transaction.
+        viewer = SimpleNamespace(set_tx=MagicMock(), set_psbt=MagicMock())
+        assert SimplePSBT.from_psbt(psbt).inputs[0].is_fully_signed()
+        UITx_Viewer.import_trusted_psbt(viewer, psbt)  # type: ignore[arg-type]
+        viewer.set_tx.assert_called_once()
+        viewer.set_psbt.assert_not_called()
+        viewer.set_tx.reset_mock()
 
         hwi_psbt = PSBT()
         hwi_psbt.deserialize(psbt.serialize())
         inp = hwi_psbt.inputs[0]
         assert inp.final_script_sig
-        assert inp.final_script_witness.scriptWitness.stack
+        final_witness = inp.final_script_witness.scriptWitness.stack
+        assert final_witness
         # A finalized scriptSig alone is not a complete nested SegWit spend.
         # Remove the witness and the redeem script metadata, as a finalizer may do.
         inp.final_script_witness.scriptWitness.stack = []
@@ -286,6 +300,21 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
         assert partial_fee.vsize_is_estimated
         assert partial_fee.vsize == weight_to_vsize(estimate)
         assert partial_fee.fee_amount == actual.fee_amount
+        assert not SimplePSBT.from_psbt(partial).inputs[0].is_fully_signed()
+        UITx_Viewer.import_trusted_psbt(viewer, partial)  # type: ignore[arg-type]
+        viewer.set_psbt.assert_called_once_with(partial)
+        viewer.set_tx.assert_not_called()
+        viewer.set_psbt.reset_mock()
+
+        # A witness without the P2SH redeem-program push is also incomplete.
+        inp.final_script_sig = b""
+        inp.final_script_witness.scriptWitness.stack = final_witness
+        partial = bdk.Psbt(hwi_psbt.serialize())
+        assert not SimplePSBT.from_psbt(partial).inputs[0].is_fully_signed()
+        assert TxWeight.from_psbt(partial).inputs[0].finalized_witness is None
+        UITx_Viewer.import_trusted_psbt(viewer, partial)  # type: ignore[arg-type]
+        viewer.set_psbt.assert_called_once_with(partial)
+        viewer.set_tx.assert_not_called()
 
 
 def test_input_types_are_inferred_from_prevout_and_scripts() -> None:

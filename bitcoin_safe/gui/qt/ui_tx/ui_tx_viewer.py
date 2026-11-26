@@ -1313,7 +1313,7 @@ class UITx_Viewer(UITx_Base):
 
         tx = import_psbt.extract_tx()
 
-        if all([inp.is_fully_signed() for inp in simple_psbt.inputs]):
+        if simple_psbt.inputs and all(inp.is_fully_signed() for inp in simple_psbt.inputs):
             self.set_tx(
                 tx,
                 fee_info=FeeInfo(import_psbt.fee(), tx.vsize(), False, False),

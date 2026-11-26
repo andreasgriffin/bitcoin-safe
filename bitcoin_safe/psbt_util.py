@@ -170,6 +170,43 @@ def estimate_tapscript_weight(psbt_input: bdk.Input | PartiallySignedInput) -> i
     return witness_satisfaction_weight([65] * max(signatures.values(), default=1) + [0, 33])
 
 
+def input_address_type(raw: bytes, redeem: bytes, final_script_sig: bytes) -> AddressType | None:
+    """Infer the spend type, including a nested witness program in final scriptSig."""
+    if is_p2pkh(raw):
+        return AddressTypes.p2pkh
+    if is_p2wpkh(raw):
+        return AddressTypes.p2wpkh
+    if is_p2wsh(raw):
+        return AddressTypes.p2wsh
+    if is_p2tr(raw):
+        return AddressTypes.p2tr
+    if not raw or is_p2sh(raw):
+        # A finalizer may remove redeem_script, leaving only its canonical push.
+        if not redeem and final_script_sig[:1] in (b"\x16", b"\x22"):
+            program = final_script_sig[1:]
+            if final_script_sig[0] == len(program):
+                redeem = program
+        if is_p2wpkh(redeem):
+            return AddressTypes.p2sh_p2wpkh
+        if is_p2wsh(redeem):
+            return AddressTypes.p2sh_p2wsh
+    return None
+
+
+def has_finalized_unlocking_data(
+    address_type: AddressType | None, has_script_sig: bool, has_witness: bool, legacy_p2sh: bool
+) -> bool:
+    """Check for the required unlocking fields, not cryptographic validity."""
+    if address_type in (AddressTypes.p2sh_p2wpkh, AddressTypes.p2sh_p2wsh):
+        return has_script_sig and has_witness
+    if address_type in (AddressTypes.p2wpkh, AddressTypes.p2wsh, AddressTypes.p2tr):
+        return has_witness
+    if address_type == AddressTypes.p2pkh or legacy_p2sh:
+        return has_script_sig
+    # Retain the existing heuristic for other or unknown script types.
+    return has_script_sig or has_witness
+
+
 @dataclass
 class InputWeight:
     """Optional spend information; unknown inputs default to native SegWit.
@@ -216,35 +253,14 @@ class InputWeight:
                 else b""
             )
             final_witness = psbt_input.final_script_witness if psbt_input else None
-        # Finalization may remove redeem_script while leaving its single push in
-        # scriptSig (0x16 <22-byte P2WPKH> or 0x22 <34-byte P2WSH>).
-        if is_p2sh(raw) and not redeem and final_script_sig[:1] in (b"\x16", b"\x22"):
-            program = final_script_sig[1:]
-            if final_script_sig[0] == len(program) and (is_p2wpkh(program) or is_p2wsh(program)):
-                redeem = program
         multisig_script = witness or (
             redeem if redeem and not is_p2wpkh(redeem) and not is_p2wsh(redeem) else b""
         )
         if is_p2ms_var(multisig_script):
             m, keys = p2ms_m_and_keys_var(multisig_script)
             mn = (m, len(keys))
-        address_type = None
-        legacy_multisig = False
-        if is_p2pkh(raw):
-            address_type = AddressTypes.p2pkh
-        elif is_p2wpkh(raw):
-            address_type = AddressTypes.p2wpkh
-        elif is_p2wsh(raw):
-            address_type = AddressTypes.p2wsh
-        elif is_p2tr(raw):
-            address_type = AddressTypes.p2tr
-        elif is_p2sh(raw):
-            if is_p2wpkh(redeem):
-                address_type = AddressTypes.p2sh_p2wpkh
-            elif is_p2wsh(redeem):
-                address_type = AddressTypes.p2sh_p2wsh
-            else:
-                legacy_multisig = True
+        address_type = input_address_type(raw, redeem, final_script_sig)
+        legacy_multisig = is_p2sh(raw) and address_type is None
         tap_script_path = bool(psbt_input and psbt_input.tap_script_sigs and not psbt_input.tap_key_sig)
         tap_script_weight = 66
         if address_type == AddressTypes.p2tr and psbt_input:
@@ -397,13 +413,9 @@ class TxWeight:
                 script = prevout.script_pubkey if prevout else None
             weight = InputWeight.from_psbt_input(script, inp)
             script_sig_size = len(txin.script_sig.to_bytes())
-            finalized = bool(script_sig_size or txin.witness)
-            if weight.address_type in (AddressTypes.p2sh_p2wpkh, AddressTypes.p2sh_p2wsh):
-                # Nested SegWit needs both the witness program and its witness.
-                finalized = bool(script_sig_size and txin.witness)
-            elif weight.address_type in (AddressTypes.p2wpkh, AddressTypes.p2wsh, AddressTypes.p2tr):
-                finalized = bool(txin.witness)
-            if finalized:
+            if has_finalized_unlocking_data(
+                weight.address_type, bool(script_sig_size), bool(txin.witness), weight.legacy_multisig
+            ):
                 # The base input already includes an empty scriptSig and witness.
                 # A 253-byte scriptSig adds 253 bytes plus two CompactSize bytes.
                 weight.satisfaction_weight = 4 * (
@@ -883,10 +895,20 @@ class SimpleInput:
         return "|".join(parts)
 
     def is_fully_signed(self) -> bool:
-        # This heuristic assumes the presence of final_script_sig or
-        # final_script_witness indicates full signing
-        """Is fully signed."""
-        return bool(self.final_script_sig or self.final_script_witness)
+        """Whether the input has all required final unlocking fields."""
+        if not (self.final_script_sig or self.final_script_witness):
+            return False
+        previous = self.previous_txout()
+        raw = bytes(previous.script_pubkey.to_bytes()) if previous else b""
+        redeem = bytes.fromhex(self.redeem_script or "")
+        script_sig = bytes.fromhex(self.final_script_sig or "")
+        address_type = input_address_type(raw, redeem, script_sig)
+        return has_finalized_unlocking_data(
+            address_type,
+            bool(script_sig),
+            bool(self.final_script_witness),
+            is_p2sh(raw) and address_type is None,
+        )
 
     def signature_count(self) -> str:
         # Just return the count of partial signatures, as we can't determine the total required
