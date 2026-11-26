@@ -373,8 +373,8 @@ def test_taproot_weight_uses_signed_leaf_and_final_witness() -> None:
         estimate = psbt_weight(psbt)
         return estimate.inputs[0].satisfaction_weight
 
-    # Merely disclosing leaves must not inflate the key-path estimate.
-    assert estimated_weight() == 65
+    # Before signing, the spend path is unknown. Size the largest disclosed leaf.
+    assert estimated_weight() == 2 * 66 + 1 + 105 + 98
 
     # Only the signed leaf contributes, even if a larger unsigned leaf is disclosed.
     inp.tap_script_sigs = {(key, bytes.fromhex(pk_hash)): bytes(64)}
@@ -397,8 +397,12 @@ def test_taproot_weight_uses_signed_leaf_and_final_witness() -> None:
 
     inp.final_script_witness.scriptWitness.stack = []
     inp.tap_key_sig = b""
+    # Even one missing signed leaf must not be silently ignored.
+    inp.tap_script_sigs[(key, bytes.fromhex(pk_hash))] = bytes(64)
+    inp.tap_scripts = {(pk, 0xC0): {pk_control}}
+    with pytest.raises(ValueError, match="Missing signed Taproot leaf metadata"):
+        estimated_weight()
     inp.tap_scripts = {}
-    # Missing signed leaf metadata cannot establish the eventual spend size.
     with pytest.raises(ValueError, match="Missing signed Taproot leaf metadata"):
         estimated_weight()
 
@@ -481,6 +485,24 @@ def test_descriptor_weight_does_not_require_application_template(wrapper: str, w
         info.satisfaction_weight == bdk.Descriptor(descriptor, bdk.NetworkKind.TEST).max_weight_to_satisfy()
     )
     assert info.witness is witness
+
+
+def test_viewer_handles_native_psbt_decode_failure(monkeypatch: pytest.MonkeyPatch) -> None:
+    from types import SimpleNamespace
+
+    from bitcoin_safe.gui.qt.ui_tx import ui_tx_viewer
+
+    message = MagicMock()
+    monkeypatch.setattr(ui_tx_viewer, "Message", message)
+    monkeypatch.setattr(ui_tx_viewer, "read_psbt", MagicMock(side_effect=ValueError("Cannot decode PSBT")))
+    original = object()
+    viewer = SimpleNamespace(data=original, tr=lambda text: text, set_tx=MagicMock(), set_psbt=MagicMock())
+    ui_tx_viewer.UITx_Viewer.set_psbt(viewer, p2wsh_psbt_0_2of3)  # type: ignore[arg-type]
+    ui_tx_viewer.UITx_Viewer.import_trusted_psbt(viewer, p2wsh_psbt_0_2of3)  # type: ignore[arg-type]
+    assert viewer.data is original
+    viewer.set_tx.assert_not_called()
+    viewer.set_psbt.assert_not_called()
+    assert message.call_count == 2
 
 
 def test_viewer_refreshes_fee_info_when_psbt_changes(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -764,16 +786,20 @@ def _taproot_psbt(script_path: bool, input_count: int = 1) -> tuple[bdk.Wallet, 
     return wallet, builder.finish(wallet)
 
 
-def test_taproot_leaves_do_not_imply_script_path() -> None:
-    from hwilib.psbt import PSBT
-
-    wallet, psbt = _taproot_psbt(script_path=False)
-    hwi_psbt = PSBT()
-    hwi_psbt.deserialize(psbt.serialize())
-    assert hwi_psbt.inputs[0].tap_scripts
+@pytest.mark.parametrize("script_path", [False, True])
+def test_unsigned_taproot_estimate_covers_possible_script_path(script_path: bool) -> None:
+    wallet, psbt = _taproot_psbt(script_path=script_path)
     estimate = psbt_weight(psbt)
-    assert estimate.inputs[0].satisfaction_weight == 65
-    assert wallet.sign(psbt)
+    assert estimate.inputs[0].satisfaction_weight > 65
+    options = bdk.SignOptions(
+        trust_witness_utxo=False,
+        assume_height=None,
+        allow_all_sighashes=False,
+        try_finalize=True,
+        sign_with_tap_internal_key=not script_path,
+        allow_grinding=True,
+    )
+    assert wallet.sign(psbt, options)
     assert psbt.extract_tx().weight() <= estimate.estimate()
 
 
@@ -886,3 +912,12 @@ def test_taproot_nondefault_sighash_uses_extra_byte_without_mutating_input() -> 
     assert inp.sig_hash_type is None
     assert InputWeight.from_native(inp, BtclibTxIn(check_validity=False), raw).satisfaction_weight == 66
     assert inp.sig_hash_type is None
+
+    inp.sig_hash_type = 0
+    with pytest.raises(ValueError, match="Conflicting Taproot signature sighash type"):
+        InputWeight.from_native(inp, BtclibTxIn(check_validity=False), raw)
+    assert inp.sig_hash_type == 0
+    inp.sig_hash_type = None
+    inp.taproot_key_spend_signature = bytes(65)
+    with pytest.raises(ValueError, match="Invalid Taproot signature sighash type"):
+        InputWeight.from_native(inp, BtclibTxIn(check_validity=False), raw)

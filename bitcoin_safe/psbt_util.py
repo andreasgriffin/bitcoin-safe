@@ -33,7 +33,6 @@ import logging
 from collections.abc import Iterable, Sequence
 from copy import copy
 from dataclasses import dataclass, field
-from functools import cached_property
 from math import ceil
 from typing import cast
 
@@ -142,12 +141,19 @@ def has_finalized_unlocking_data(
 
 
 def previous_output(inp: PsbtIn, vout: int) -> BtclibTxOut | None:
-    """Read available metadata; fee estimation separately validates with prevouts()."""
-    if inp.witness_utxo is not None:
-        return inp.witness_utxo
-    if inp.non_witness_utxo is not None and 0 <= vout < len(inp.non_witness_utxo.vout):
-        return inp.non_witness_utxo.vout[vout]
-    return None
+    """Read consistent UTXO metadata, allowing an absent (but not contradictory) prevout."""
+    witness = inp.witness_utxo
+    previous = inp.non_witness_utxo
+    if previous is None:
+        return witness
+    if previous.id != inp.previous_tx_id or not 0 <= vout < len(previous.vout):
+        raise ValueError("Invalid non-witness UTXO outpoint")
+    spent = previous.vout[vout]
+    if witness is not None and (
+        witness.value != spent.value or witness.script_pub_key.script != spent.script_pub_key.script
+    ):
+        raise ValueError("Conflicting PSBT UTXO metadata")
+    return spent
 
 
 def read_psbt(psbt: bdk.Psbt) -> Psbt:
@@ -161,14 +167,14 @@ def input_outpoint(inp: PsbtIn) -> OutPoint:
 
 
 def previous_txout(inp: PsbtIn) -> TxOut | None:
-    out = previous_output(inp, inp.output_index if inp.output_index is not None else -1)
-    if out is not None:
-        try:
+    try:
+        out = previous_output(inp, inp.output_index if inp.output_index is not None else -1)
+        if out is not None:
             return TxOut(
                 value=bdk.Amount.from_sat(out.value), script_pubkey=bdk.Script(out.script_pub_key.script)
             )
-        except (OverflowError, ValueError):
-            pass
+    except (OverflowError, ValueError) as exc:
+        logger.warning("Ignoring invalid PSBT previous output: %s", exc)
     return None
 
 
@@ -212,9 +218,14 @@ def input_is_finalized(inp: PsbtIn, raw: bytes) -> bool:
 
 
 def psbt_is_finalized(psbt: Psbt) -> bool:
-    return bool(psbt.inputs) and all(
-        input_is_finalized(inp, out.spk_bytes if (out := previous_txout(inp)) else b"") for inp in psbt.inputs
-    )
+    try:
+        for inp in psbt.inputs:
+            out = previous_output(inp, inp.output_index if inp.output_index is not None else -1)
+            if not input_is_finalized(inp, out.script_pub_key.script if out is not None else b""):
+                return False
+    except ValueError:
+        return False
+    return bool(psbt.inputs)
 
 
 def input_sizer(inp: PsbtIn, txin: BtclibTxIn) -> list[int] | None:
@@ -249,24 +260,37 @@ def input_for_sizing(inp: PsbtIn, raw: bytes) -> PsbtIn:
     sized.final_script_sig = b""
     sized.final_script_witness = Witness()
     if is_p2tr(raw):
-        if inp.taproot_key_spend_signature or not inp.taproot_script_spend_signatures:
-            # Disclosing a leaf alone is not evidence that the script path is used.
+        if signature := inp.taproot_key_spend_signature:
+            # Finalization prefers an available key-path signature.
+            flag = signature[-1] if len(signature) == 65 else 0
+            if (
+                len(signature) not in (64, 65)
+                or (len(signature) == 65 and not flag)
+                or flag not in SIG_HASH_TYPES
+            ):
+                raise ValueError("Invalid Taproot signature sighash type")
+            if sized.sig_hash_type is not None and sized.sig_hash_type != flag:
+                raise ValueError("Conflicting Taproot signature sighash type")
+            sized.sig_hash_type = cast(ValidSigHashType, flag)
             sized.taproot_leaf_scripts = {}
-            if sized.sig_hash_type is None and len(inp.taproot_key_spend_signature) == 65:
-                flag = inp.taproot_key_spend_signature[-1]
-                if flag == 0 or flag not in SIG_HASH_TYPES:
-                    raise ValueError("Invalid Taproot signature sighash type")
-                sized.sig_hash_type = cast(ValidSigHashType, flag)
-        else:
-            hashes = {key[32:] for key in inp.taproot_script_spend_signatures if len(key) == 64}
+        elif inp.taproot_script_spend_signatures:
+            hashes = {key[32:] for key in inp.taproot_script_spend_signatures}
+            leaves = {
+                control: (
+                    script,
+                    version,
+                    tagged_hash(b"TapLeaf", bytes([version]) + var_int.serialize(len(script)) + script),
+                )
+                for control, (script, version) in inp.taproot_leaf_scripts.items()
+            }
+            if not hashes <= {leaf_hash for _, _, leaf_hash in leaves.values()}:
+                raise ValueError("Missing signed Taproot leaf metadata")
             sized.taproot_leaf_scripts = {
                 control: (script, version)
-                for control, (script, version) in inp.taproot_leaf_scripts.items()
-                if tagged_hash(b"TapLeaf", bytes([version]) + var_int.serialize(len(script)) + script)
-                in hashes
+                for control, (script, version, leaf_hash) in leaves.items()
+                if leaf_hash in hashes
             }
-            if not sized.taproot_leaf_scripts:
-                raise ValueError("Missing signed Taproot leaf metadata")
+        # Without a signature, retain all leaves: upstream sizes the largest spend.
     return sized
 
 
@@ -670,10 +694,10 @@ class SigningInput:
         return None
 
     def _recovered_sig(self, raw: bytes) -> PartialSig:
-        flag = self.source.sig_hash_type
-        if flag is None and raw:
-            flag = raw[-1]
-        return PartialSig(raw.hex(), self._format_sighash_type(flag) if flag is not None else "unknown")
+        flag = raw[-1]  # The script engine verified the actual signature, not the declared PSBT field.
+        if self.source.sig_hash_type is not None and self.source.sig_hash_type != flag:
+            logger.warning("Recovered signature sighash conflicts with PSBT input sighash")
+        return PartialSig(raw.hex(), self._format_sighash_type(flag))
 
     def set_verified_fingerprint(self, pubkey_info: PubKeyInfo, fingerprint: str) -> None:
         """Wallet-verified display metadata does not modify the native key origin."""
@@ -798,31 +822,35 @@ class InputGroup:
                     break
         return signatures
 
-    @cached_property
-    def _signatures(self) -> dict[str, dict[int, PartialSig]]:
+    def signatures_by_identifier(self) -> dict[str, dict[int, PartialSig]]:
         return {
             signer_identifier: signatures
             for signer_identifier, pubkey_info in self.signer_identifiers.items()
             if (signatures := self._signatures_for_pubkey(pubkey_info))
         }
 
-    def signatures_by_identifier(self) -> dict[str, dict[int, PartialSig]]:
-        return self._signatures
-
     def signed_signers(self) -> list[tuple[str, PubKeyInfo, dict[int, PartialSig]]]:
-        signatures_by_identifier = self._signatures
+        # Only count a signer as complete when all inputs still needing finalization
+        # have its signature. A finalized input needs no further signatures.
+        required = {
+            index
+            for index, item in zip(self.input_indices, self.inputs, strict=True)
+            if not (
+                item.is_fully_signed() and (item.recovered_signatures or item.verified_finalized_tap_key_sig)
+            )
+        }
         return [
-            (signer_identifier, pubkey_info, signatures_by_identifier[signer_identifier])
-            for signer_identifier, pubkey_info in self.signer_identifiers.items()
-            if signer_identifier in signatures_by_identifier
+            (identifier, self.signer_identifiers[identifier], signatures)
+            for identifier, signatures in self.signatures_by_identifier().items()
+            if required <= signatures.keys()
         ]
 
     def unsigned_signers(self) -> list[tuple[str, PubKeyInfo]]:
-        signatures_by_identifier = self._signatures
+        complete = {identifier for identifier, _, _ in self.signed_signers()}
         return [
-            (signer_identifier, pubkey_info)
-            for signer_identifier, pubkey_info in self.signer_identifiers.items()
-            if signer_identifier not in signatures_by_identifier
+            (identifier, info)
+            for identifier, info in self.signer_identifiers.items()
+            if identifier not in complete
         ]
 
 

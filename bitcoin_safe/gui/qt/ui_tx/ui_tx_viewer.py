@@ -1312,9 +1312,14 @@ class UITx_Viewer(UITx_Base):
 
     def import_trusted_psbt(self, import_psbt: bdk.Psbt) -> None:
         """Import trusted psbt."""
-        tx = import_psbt.extract_tx()
+        try:
+            parsed = read_psbt(import_psbt)
+        except ValueError as exc:
+            Message(self.tr("Could not open PSBT") + f"\n{exc}", type=MessageType.Error, parent=self)
+            return
 
-        if psbt_is_finalized(read_psbt(import_psbt)):
+        if psbt_is_finalized(parsed):
+            tx = import_psbt.extract_tx()
             self.set_tx(
                 tx,
                 fee_info=FeeInfo(import_psbt.fee(), tx.vsize(), False, False),
@@ -1663,6 +1668,11 @@ class UITx_Viewer(UITx_Base):
 
     def set_psbt(self, psbt: bdk.Psbt) -> None:
         """Show a PSBT and calculate its current fee and size."""
+        try:
+            parsed = read_psbt(psbt)
+        except ValueError as exc:
+            Message(self.tr("Could not open PSBT") + f"\n{exc}", type=MessageType.Error, parent=self)
+            return
         fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
         self.data = Data.from_psbt(psbt, network=self.network)
         tx = psbt.extract_tx_unchecked_fee_rate()
@@ -1702,7 +1712,7 @@ class UITx_Viewer(UITx_Base):
             tx_status=tx_status,
             nlocktime=tx.lock_time(),
         )
-        txo_dict = psbt_input_utxos(read_psbt(psbt), self.network)
+        txo_dict = psbt_input_utxos(parsed, self.network)
         txo_dict.update(self._get_python_txos())
         self.set_sankey(tx, fee_info=fee_info, txo_dict=txo_dict)
         self._set_signed_by_column(tx)

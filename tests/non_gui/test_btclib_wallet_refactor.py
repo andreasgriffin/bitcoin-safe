@@ -205,12 +205,20 @@ def test_draft_weight_input_count_boundary(n: int) -> None:
 
 
 def test_conflicting_utxo_refuses_fee_estimate() -> None:
+    from bitcoin_safe.psbt_util import previous_output, previous_txout
+
     parsed = Psbt.b64decode(p2wsh_psbt_0_2of3.serialize(), check_validity=False)
-    previous = parsed.inputs[0].witness_utxo
+    inp = parsed.inputs[0]
+    previous = inp.witness_utxo
     assert previous is not None
-    parsed.inputs[0].witness_utxo = BtclibTxOut(previous.value + 1, previous.script_pub_key)
+    assert previous_txout(inp) is not None
+    inp.witness_utxo = BtclibTxOut(previous.value + 1, previous.script_pub_key)
     psbt = bdk.Psbt(parsed.b64encode(check_validity=False))
     before = psbt.serialize()
+    with pytest.raises(ValueError, match="Conflicting PSBT UTXO metadata"):
+        previous_output(inp, inp.prev_out.vout)
+    assert previous_txout(inp) is None
+    assert not psbt_prev_txouts(parsed)
     assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt) is None
     assert psbt.serialize() == before
 

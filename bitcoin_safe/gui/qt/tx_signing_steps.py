@@ -99,11 +99,12 @@ class SigningDevice:
     wallet_ids: list[str] = field(default_factory=list)
     has_seed: bool = False
     signatures: dict[int, PartialSig] = field(default_factory=dict)
+    needs_signature: bool = False
 
     @property
     def signature_available(self) -> bool:
-        """Whether this device already signed at least one input."""
-        return bool(self.signatures)
+        """Whether this device signed and has no outstanding signing step."""
+        return bool(self.signatures) and not self.needs_signature
 
     @property
     def subtitle(self) -> str:
@@ -888,6 +889,8 @@ class TxSigningSteps(StepProgressContainer):
                         )
                     if importer.signatures:
                         devices[device_id].signatures.update(importer.signatures)
+                    else:
+                        devices[device_id].needs_signature = True
 
     def _apply_psbt_signature_details(self, devices: dict[str, SigningDevice]) -> None:
         simple_psbt = SigningProgress.from_psbt(self.psbt)

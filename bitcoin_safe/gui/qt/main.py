@@ -2148,6 +2148,7 @@ class MainWindow(UnlockableMainWindow):
                 return None
 
             data = Data.from_psbt(psbt, network=self.config.network)
+            txout_dict = psbt_prev_txouts(read_psbt(psbt))
             fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
         except bdk.ExtractTxError.MissingInputValue as e:
             Message(
@@ -2192,7 +2193,7 @@ class MainWindow(UnlockableMainWindow):
             client=self.get_client_of_any_wallet(),
             parent=self.tab_wallets,
             fee_info=fee_info,
-            txout_dict=psbt_prev_txouts(read_psbt(psbt)),
+            txout_dict=txout_dict,
             hidden_tx_infos=hidden_tx_infos,
         )
 

@@ -88,6 +88,23 @@ from ...non_gui.test_psbt_util import (
 from ...non_gui.utils import create_test_seed_keystores
 
 
+def test_partially_signed_device_remains_available_for_pending_step() -> None:
+    fingerprint = "AABBCCDD"
+    signature = PartialSig("signature", "ALL")
+    identity = SignerIdentity(id=fingerprint, fingerprint=fingerprint)
+    completed = SimpleNamespace(signatures={0: signature}, signer_identities=[identity])
+    pending = SimpleNamespace(signatures={}, signer_identities=[identity])
+    widget = SimpleNamespace(
+        signature_importer_dict={"wallet.0": [completed], "wallet.1": [pending]},
+        _normalize_fingerprint=TxSigningSteps._normalize_fingerprint,
+    )
+    devices = {fingerprint: SigningDevice(fingerprint, fingerprint, HardwareSigners.generic)}
+    TxSigningSteps._apply_signature_importer_details(widget, devices)  # type: ignore[arg-type]
+    assert devices[fingerprint].signatures == {0: signature}
+    assert devices[fingerprint].needs_signature
+    assert not devices[fingerprint].signature_available
+
+
 def test_wallet_sign_shows_message_for_nonstandard_sighash(qtbot: QtBot) -> None:
     importer = SignatureImporterWallet.__new__(SignatureImporterWallet)
     importer.software_signers = {

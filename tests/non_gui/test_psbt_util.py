@@ -686,13 +686,9 @@ def test_previous_txout_supports_segwit_witness_and_non_witness_utxo() -> None:
 
 def test_previous_txout_supports_non_segwit_utxo() -> None:
     script_pubkey = "76a914" + "11" * 20 + "88ac"
+    previous = Tx(vout=[BtclibTxOut(100_000, bytes.fromhex(script_pubkey))], check_validity=False)
     simple_input = SigningInput(
-        source=source_for_txin(
-            tr_psbt_singlesig.extract_tx().input()[0],
-            non_witness_utxo=Tx(
-                vout=[BtclibTxOut(100_000, bytes.fromhex(script_pubkey))], check_validity=False
-            ),
-        ),
+        PsbtIn(previous_tx_id=previous.id, output_index=0, non_witness_utxo=previous, check_validity=False)
     )
 
     previous_txout = simple_input.previous_txout()
@@ -700,6 +696,9 @@ def test_previous_txout_supports_non_segwit_utxo() -> None:
     assert previous_txout
     assert previous_txout.value.to_sat() == 100_000
     assert previous_txout.spk_hex == script_pubkey
+
+    simple_input.source.previous_tx_id = bytes(32)
+    assert simple_input.previous_txout() is None
 
 
 def test_previous_txout_supports_non_segwit_utxo_p2pkh() -> None:
@@ -838,11 +837,36 @@ def test_group_inputs_collect_derived_group_data() -> None:
     assert unsigned_ids(groups[1]) == [fingerprint_b, fingerprint_a]
 
     assert groups[2].m_of_n == (2, 2)
-    assert signed_ids(groups[2]) == [fingerprint_c]
-    assert unsigned_ids(groups[2]) == [fingerprint_a]
+    assert signed_ids(groups[2]) == []
+    assert unsigned_ids(groups[2]) == [fingerprint_c, fingerprint_a]
     assert groups[2].signatures_by_identifier() == {
         fingerprint_c: {2: PartialSig(signature=f"sig-{fingerprint_c}", sighash_type="ALL")}
     }
+
+
+def test_disjoint_partial_signatures_do_not_complete_wallet_steps() -> None:
+    a, b, c = "AAAABBBB", "BBBBCCCC", "CCCCDDDD"
+    txin = tr_psbt_singlesig.extract_tx().input()[0]
+    group = SigningProgress(
+        [
+            _make_simple_input(txin, [a, b, c], {a}, "wallet", (2, 3)),
+            _make_simple_input(txin, [a, b, c], {b}, "wallet", (2, 3)),
+        ]
+    ).group_inputs()[0]
+    assert signed_ids(group) == []
+    assert unsigned_ids(group) == [a, b, c]
+    assert set(group.signatures_by_identifier()) == {a, b}
+    # A later signature must not be hidden by a cached result.
+    key = group.inputs[1].pubkeys[0].pubkey
+    assert key is not None
+    group.inputs[1].recovered_signatures[key] = PartialSig("sig-a", "ALL")
+    assert signed_ids(group) == [a]
+    assert unsigned_ids(group) == [b, c]
+
+
+def test_recovered_signature_uses_actual_sighash_byte() -> None:
+    item = SigningInput(PsbtIn(sig_hash_type=1, check_validity=False))
+    assert item._recovered_sig(b"\x30\x83").sighash_type == "SINGLE|ANYONECANPAY"
 
 
 def test_group_inputs_for_mixed_finalized_and_partially_signed_psbt() -> None:
