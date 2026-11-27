@@ -37,6 +37,7 @@ so their scripts and maximum satisfaction weight can be determined safely.
 from __future__ import annotations
 
 from collections.abc import Sequence
+from copy import copy
 from dataclasses import dataclass
 from typing import Any
 
@@ -136,14 +137,62 @@ class ForeignUtxo(BaseSaveableClass):
             wallet_id,
         )
 
+    @classmethod
+    def from_transaction(
+        cls,
+        outpoint: OutPoint,
+        transaction: bdk.Transaction,
+        descriptors: Sequence[tuple[str, bdk.Wallet]],
+        network: bdk.Network,
+        *,
+        known: bdk.TxOut | None = None,
+        supplied: bdk.Input | None = None,
+        existing: ForeignUtxo | None = None,
+    ) -> ForeignUtxo:
+        """Validate a funding output and construct or reuse its foreign input metadata.
+
+        Callers are responsible for checking spendability and whether the output
+        belongs to their active wallet.
+        """
+        txout = cls.transaction_output(outpoint, transaction)
+        if known is not None and TxOut.from_bdk(known) != TxOut.from_bdk(txout):
+            raise ValueError("previous output conflicts with wallet data")
+        if supplied:
+            if supplied.non_witness_utxo is not None:
+                cls.previous_output(outpoint, supplied)
+            if supplied.witness_utxo is not None and TxOut.from_bdk(supplied.witness_utxo) != TxOut.from_bdk(
+                txout
+            ):
+                raise ValueError("PSBT previous output conflicts with transaction")
+        if existing:
+            if existing.utxo.txout != TxOut.from_bdk(txout):
+                raise ValueError("previous output conflicts with imported metadata")
+            cls.previous_output(outpoint, existing.psbt_input)
+            return existing
+        item = cls.from_outpoint(outpoint, txout, transaction, descriptors, network)
+        # Wallet descriptors are authoritative; imported signatures belong to the old transaction.
+        if supplied and item.wallet_id is None:
+            item.use_imported_input(copy(supplied))
+        cls.previous_output(outpoint, item.psbt_input)
+        return item
+
     @staticmethod
-    def previous_output(outpoint: OutPoint, psbt_input: bdk.Input) -> bdk.TxOut:
+    def transaction_output(outpoint: OutPoint, transaction: bdk.Transaction) -> bdk.TxOut:
+        """Return the output only if the transaction matches the requested outpoint."""
+        outputs = transaction.output()
+        if transaction.compute_txid() != outpoint.txid or not 0 <= outpoint.vout < len(outputs):
+            raise ValueError("invalid previous transaction or output index")
+        return outputs[outpoint.vout]
+
+    @classmethod
+    def previous_output(cls, outpoint: OutPoint, psbt_input: bdk.Input) -> bdk.TxOut:
         previous = psbt_input.non_witness_utxo
         if previous is None:
             raise ValueError(f"{outpoint}: full previous transaction required")
-        if previous.compute_txid() != outpoint.txid or not 0 <= outpoint.vout < len(previous.output()):
-            raise ValueError(f"{outpoint}: invalid previous transaction")
-        output = previous.output()[outpoint.vout]
+        try:
+            output = cls.transaction_output(outpoint, previous)
+        except ValueError as exc:
+            raise ValueError(f"{outpoint}: invalid previous transaction") from exc
         if psbt_input.witness_utxo is not None and TxOut.from_bdk(output) != TxOut.from_bdk(
             psbt_input.witness_utxo
         ):

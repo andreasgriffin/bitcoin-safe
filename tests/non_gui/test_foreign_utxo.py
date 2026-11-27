@@ -96,6 +96,51 @@ def transaction(scripts: list[bytes]) -> bdk.Transaction:
     return bdk.Transaction(raw + bytes.fromhex("00000000"))
 
 
+def test_foreign_utxo_from_transaction() -> None:
+    tx = transaction([b"\x00\x14" + b"\x42" * 20])
+    point = OutPoint(txid=tx.compute_txid(), vout=0)
+    output = tx.output()[0]
+    item = ForeignUtxo.from_transaction(point, tx, [], NETWORK, known=output)
+    assert item.utxo.outpoint == point
+    assert item.utxo.txout == TxOut.from_bdk(output)
+    assert ForeignUtxo.previous_output(point, item.psbt_input).value.to_sat() == 100_000
+    assert ForeignUtxo.from_transaction(point, tx, [], NETWORK, existing=item) is item
+
+    wrong_output = bdk.TxOut(value=bdk.Amount.from_sat(1), script_pubkey=output.script_pubkey)
+    with pytest.raises(ValueError, match="conflicts with wallet data"):
+        ForeignUtxo.from_transaction(point, tx, [], NETWORK, known=wrong_output)
+
+    supplied = ForeignUtxo.from_outpoint(point, output, None, [], NETWORK).psbt_input
+    supplied.witness_utxo = wrong_output
+    with pytest.raises(ValueError, match="PSBT previous output conflicts"):
+        ForeignUtxo.from_transaction(point, tx, [], NETWORK, supplied=supplied)
+
+
+@pytest.mark.parametrize("wrong_txid", [False, True])
+def test_foreign_utxo_from_transaction_rejects_invalid_outpoint(wrong_txid: bool) -> None:
+    tx = transaction([b"\x00\x14" + b"\x42" * 20])
+    point = OutPoint(
+        txid=bdk.Txid.from_string("ab" * 32) if wrong_txid else tx.compute_txid(),
+        vout=0 if wrong_txid else 1,
+    )
+    with pytest.raises(ValueError, match="invalid previous transaction or output index"):
+        ForeignUtxo.from_transaction(point, tx, [], NETWORK)
+
+
+def test_resolver_rejects_active_wallet_output_before_construction() -> None:
+    active = make_wallet(
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        "active",
+    )
+    address = active.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+    tx = transaction([bytes(address.script_pubkey().to_bytes())])
+    point = OutPoint(txid=tx.compute_txid(), vout=0)
+    fetch = AsyncMock(return_value=tx)
+    resolved, errors = asyncio.run(resolve_foreign_outpoints(active, [point], [active], fetch))
+    assert not resolved
+    assert len(errors) == 1 and "belongs to the active wallet" in errors[0]
+
+
 @pytest.fixture
 def wallets() -> tuple[MagicMock, MagicMock]:
     active = make_wallet(

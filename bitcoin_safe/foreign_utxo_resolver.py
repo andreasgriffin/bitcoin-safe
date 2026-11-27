@@ -31,13 +31,12 @@
 
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable, Sequence
-from copy import copy
+from collections.abc import Awaitable, Callable
 
 import bdkpython as bdk
 
 from .foreign_utxo import ForeignUtxo
-from .pythonbdk_types import OutPoint, TxOut
+from .pythonbdk_types import OutPoint
 from .wallet import SpentWalletOutputError, Wallet
 from .wallet_aggregation import collect_known_outputs_and_transactions
 
@@ -88,53 +87,18 @@ async def resolve_foreign_outpoints(
             transaction = transactions[outpoint.txid_str]
             if isinstance(transaction, Exception):
                 raise ValueError(f"Could not obtain full previous transaction: {transaction}")
-            resolved[outpoint] = _resolve_foreign_input(
-                active_wallet,
+            txout = ForeignUtxo.transaction_output(outpoint, transaction)
+            if active_wallet.bdkwallet.is_mine(txout.script_pubkey):
+                raise ValueError("This output belongs to the active wallet but is not spendable")
+            resolved[outpoint] = ForeignUtxo.from_transaction(
                 outpoint,
                 transaction,
-                known,
-                supplied_inputs.get(outpoint),
-                saved_inputs.get(outpoint),
                 descriptors,
+                active_wallet.network,
+                known=known,
+                supplied=supplied_inputs.get(outpoint),
+                existing=saved_inputs.get(outpoint),
             )
         except Exception as exc:
             errors.append(f"{outpoint}: {exc}")
     return resolved, errors
-
-
-def _resolve_foreign_input(
-    active_wallet: Wallet,
-    outpoint: OutPoint,
-    transaction: bdk.Transaction,
-    known: bdk.TxOut | None,
-    supplied: bdk.Input | None,
-    existing: ForeignUtxo | None,
-    descriptors: Sequence[tuple[str, bdk.Wallet]],
-) -> ForeignUtxo:
-    """Validate one funding output and construct its signing metadata without I/O."""
-    outputs = transaction.output()
-    if transaction.compute_txid() != outpoint.txid or not 0 <= outpoint.vout < len(outputs):
-        raise ValueError("invalid previous transaction or output index")
-    txout = outputs[outpoint.vout]
-    if known is not None and TxOut.from_bdk(known) != TxOut.from_bdk(txout):
-        raise ValueError("previous output conflicts with wallet data")
-    if supplied:
-        if supplied.non_witness_utxo is not None:
-            ForeignUtxo.previous_output(outpoint, supplied)
-        if supplied.witness_utxo is not None and TxOut.from_bdk(supplied.witness_utxo) != TxOut.from_bdk(
-            txout
-        ):
-            raise ValueError("PSBT previous output conflicts with transaction")
-    if active_wallet.bdkwallet.is_mine(txout.script_pubkey):
-        raise ValueError("This output belongs to the active wallet but is not spendable")
-    if existing:
-        if existing.utxo.txout != TxOut.from_bdk(txout):
-            raise ValueError("previous output conflicts with imported metadata")
-        ForeignUtxo.previous_output(outpoint, existing.psbt_input)
-        return existing
-    item = ForeignUtxo.from_outpoint(outpoint, txout, transaction, descriptors, active_wallet.network)
-    # Wallet descriptors are authoritative; imported signatures belong to the old transaction.
-    if supplied and item.wallet_id is None:
-        item.use_imported_input(copy(supplied))
-    ForeignUtxo.previous_output(outpoint, item.psbt_input)
-    return item
