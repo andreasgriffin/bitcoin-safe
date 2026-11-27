@@ -43,7 +43,7 @@ from bitcoin_safe.network_utils import ProxyInfo
 
 logger = logging.getLogger(__name__)
 
-CBF_UPDATE_INTERVAL = 1_000
+CBF_UPDATE_INTERVAL = 10_000
 
 PERSISTENCE_FILES = [
     Path("./data/bdk_persistence.sqlite"),
