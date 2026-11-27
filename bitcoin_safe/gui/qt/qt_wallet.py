@@ -2133,7 +2133,6 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if not self.wallet.client:
             return
         self._has_unacknowledged_sync_error = False
-        self.wallet.client.set_sync_status(SyncStatus.synced)
         self.signal_progress_info.emit(self.wallet.client.progress_info)
         self.signal_refresh_sync_status.emit()
         self.on_update(update_info)

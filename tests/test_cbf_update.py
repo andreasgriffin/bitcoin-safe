@@ -100,7 +100,7 @@ def test_cbf_update_against_local_bitcoind(bitcoin_core: Path, tmp_path: Path) -
             data_dir=cbf_data_dir,
             proxy_info=None,
             cbf_connections=1,
-            is_new_wallet=True,
+            is_new_wallet=False,  # The descriptor has already received funds.
         )
 
         cbf_sync.build_node()
@@ -118,7 +118,7 @@ def test_cbf_update_against_local_bitcoind(bitcoin_core: Path, tmp_path: Path) -
 
         # Apply the update and verify the wallet now has funds.
         assert update_info is not None
-        wallet.apply_update(update_info.update)
+        wallet.apply_update_events(update_info.update)
         wallet.persist(persister)
         assert wallet.balance().total.to_sat() > 0
 

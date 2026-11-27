@@ -70,7 +70,7 @@ from bitcoin_usb.software_signer import derive as software_signer_derive
 from btclib_wallet.psbt import PsbtIn
 
 from bitcoin_safe.client import Client
-from bitcoin_safe.client_helpers import UpdateInfo
+from bitcoin_safe.client_helpers import UpdateInfo, log_rejected_transactions
 from bitcoin_safe.constants import LOCAL_TX_LAST_SEEN
 from bitcoin_safe.locktime_estimation import is_nlocktime_already_valid
 from bitcoin_safe.network_config import PeerSelectionMode
@@ -1359,11 +1359,17 @@ class Wallet(BaseSaveableClass, CacheManager):
             return None
         wallet_events = self._apply_update(update=update_info.update)
         update_info.wallet_events = wallet_events
+        self.client.on_update(update_info)
         return update_info
 
     def _apply_update(self, update: bdk.Update) -> list[bdk.WalletEvent]:
         """Apply a client update to the local wallet caches."""
-        wallet_events = self.bdkwallet.apply_update_events(update)
+        try:
+            wallet_events = self.bdkwallet.apply_update_events(update)
+        except Exception as exc:
+            logger.warning("BDK could not apply wallet update: %s", exc)
+            raise
+        log_rejected_transactions(wallet_events)
         # Event handling reads transaction details through cached wallet lookups.
         # Drop the pre-update snapshot before looking up the newly applied txs.
         self.clear_cache()
@@ -3135,10 +3141,11 @@ class Wallet(BaseSaveableClass, CacheManager):
                                 script_pubkey=bdk.Script(prevout.script_pubkey),
                             ),
                         )
-        self.bdkwallet.apply_unconfirmed_txs(accepted)
+        wallet_events = self.bdkwallet.apply_unconfirmed_txs_events(accepted)
+        rejected = log_rejected_transactions(wallet_events)
         self.persist()
 
-        return accepted
+        return [entry for entry in accepted if str(entry.tx.compute_txid()) not in rejected]
 
     def advance_tip_to_addresses(self, addresses: list[str]) -> list[bdk.AddressInfo]:
         """Advance tip to address info."""

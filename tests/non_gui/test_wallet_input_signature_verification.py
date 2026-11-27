@@ -358,7 +358,7 @@ def test_apply_unconfirmed_processes_candidate_parent_child_in_any_order(monkeyp
         wallet.get_tx = lambda _txid: None
         wallet._verify_tx_signatures = Mock(return_value=True)
         _enable_dependency_verification(wallet)
-        wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
+        wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs_events=Mock(return_value=[]))
         wallet.persist = Mock()
 
         result = Wallet.apply_unconfirmed_txs(wallet, ordered, last_seen=4)
@@ -368,7 +368,26 @@ def test_apply_unconfirmed_processes_candidate_parent_child_in_any_order(monkeyp
             str(child.compute_txid()),
         }
         assert wallet._verify_tx_signatures.call_count == 2
-        assert wallet.bdkwallet.apply_unconfirmed_txs.call_count == 1
+        assert wallet.bdkwallet.apply_unconfirmed_txs_events.call_count == 1
+
+
+def test_apply_unconfirmed_logs_bdk_rejection(caplog) -> None:
+    tx = _raw_tx([(b"\x41" * 32, 0)], [(2_000, b"\x51")])
+    reason = bdk.TxRejectedReason.MISSING_PREVOUTS(input_index=0)
+    event = bdk.WalletEvent.TX_REJECTED(txid=tx.compute_txid(), tx=tx, reason=reason)
+    wallet = SimpleNamespace()
+    wallet.get_output_addresses = lambda _tx: []
+    wallet.advance_tip_to_addresses = lambda _addresses: []
+    wallet.get_tx = lambda _txid: None
+    wallet._verify_tx_signatures = Mock(return_value=True)
+    _enable_dependency_verification(wallet)
+    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs_events=Mock(return_value=[event]))
+    wallet.persist = Mock()
+
+    assert Wallet.apply_unconfirmed_txs(wallet, [tx], last_seen=4) == []
+    assert str(event.txid) in caplog.text
+    assert str(reason) in caplog.text
+    wallet.persist.assert_called_once_with()
 
 
 def test_apply_unconfirmed_rejects_valid_child_of_invalid_parent(monkeypatch) -> None:
@@ -382,7 +401,7 @@ def test_apply_unconfirmed_rejects_valid_child_of_invalid_parent(monkeypatch) ->
         side_effect=lambda tx, _outputs=None: tx.compute_txid() != parent.compute_txid()
     )
     _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
+    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs_events=Mock(return_value=[]))
     wallet.persist = Mock()
 
     # A parent known by another wallet still has to pass this wallet's verification.
@@ -393,7 +412,7 @@ def test_apply_unconfirmed_rejects_valid_child_of_invalid_parent(monkeypatch) ->
 
     assert result == []
     assert wallet._verify_tx_signatures.call_count == 1
-    assert wallet.bdkwallet.apply_unconfirmed_txs.call_args.args == ([],)
+    assert wallet.bdkwallet.apply_unconfirmed_txs_events.call_args.args == ([],)
 
 
 def test_apply_unconfirmed_provides_accepted_external_parent_output(monkeypatch) -> None:
@@ -411,7 +430,7 @@ def test_apply_unconfirmed_provides_accepted_external_parent_output(monkeypatch)
         )
     )
     _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
+    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs_events=Mock(return_value=[]))
     wallet.persist = Mock()
 
     Wallet.apply_unconfirmed_txs(wallet, [child, parent], last_seen=4)
@@ -435,7 +454,7 @@ def test_apply_unconfirmed_blocks_grandchild_after_invalid_parent() -> None:
 
     wallet._verify_tx_signatures = verify
     _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
+    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs_events=Mock(return_value=[]))
     wallet.persist = Mock()
 
     result = Wallet.apply_unconfirmed_txs(wallet, [grandchild, child, parent], last_seen=4)
@@ -453,7 +472,7 @@ def test_apply_unconfirmed_accepts_parent_but_not_invalid_child() -> None:
     wallet.get_tx = lambda _txid: None
     wallet._verify_tx_signatures = lambda tx, _outputs=None: tx.compute_txid() == parent.compute_txid()
     _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
+    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs_events=Mock(return_value=[]))
     wallet.persist = Mock()
 
     result = Wallet.apply_unconfirmed_txs(wallet, [child, parent], last_seen=4)
@@ -472,7 +491,7 @@ def test_apply_unconfirmed_verifies_independent_parent_child_chains() -> None:
     wallet.get_tx = lambda _txid: None
     wallet._verify_tx_signatures = Mock(return_value=True)
     _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
+    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs_events=Mock(return_value=[]))
     wallet.persist = Mock()
 
     result = Wallet.apply_unconfirmed_txs(wallet, [child_b, child_a, parent_b, parent_a], last_seen=4)
@@ -551,7 +570,7 @@ def test_apply_unconfirmed_rejects_tampered_signature() -> None:
         wallet.close()
 
 
-def test_sync_clears_wallet_caches_before_verifying_events(monkeypatch) -> None:
+def test_sync_clears_wallet_caches_before_verifying_events(monkeypatch, caplog) -> None:
     config = _TestConfig()
     config.network = bdk.Network.REGTEST
     protowallet = create_multisig_protowallet(
@@ -562,7 +581,10 @@ def test_sync_clears_wallet_caches_before_verifying_events(monkeypatch) -> None:
     )
     wallet = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
     calls: list[str] = []
-    monkeypatch.setattr(wallet.bdkwallet, "apply_update_events", lambda _update: [])
+    tx = _raw_tx([(b"\x41" * 32, 0)], [(2_000, b"\x51")])
+    reason = bdk.TxRejectedReason.INVALID_INPUT(input_index=0)
+    event = bdk.WalletEvent.TX_REJECTED(txid=tx.compute_txid(), tx=tx, reason=reason)
+    monkeypatch.setattr(wallet.bdkwallet, "apply_update_events", lambda _update: [event])
     monkeypatch.setattr(wallet, "clear_cache", lambda **_kwargs: calls.append("clear_cache"))
     monkeypatch.setattr(wallet, "_evict_txs_with_invalid_signatures", lambda _events: calls.append("verify"))
     monkeypatch.setattr(wallet, "persist", lambda: calls.append("persist"))
@@ -570,6 +592,8 @@ def test_sync_clears_wallet_caches_before_verifying_events(monkeypatch) -> None:
     wallet._apply_update(object())
 
     assert calls == ["clear_cache", "verify", "persist"]
+    assert str(event.txid) in caplog.text
+    assert str(reason) in caplog.text
     wallet.close()
 
 
