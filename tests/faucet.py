@@ -116,7 +116,9 @@ class Faucet:
             keystores=[keystore],
             backend=self.backend,
             config=self.config,
-            is_new_wallet=True,
+            # Funding can be mined before CBF's initial header sync completes.
+            # NEW_WALLET would skip those blocks, so scan from recovery instead.
+            is_new_wallet=False,
             bitcoin_core=self.bitcoin_core,
             loop_in_thread=self.loop_in_thread,
         )
