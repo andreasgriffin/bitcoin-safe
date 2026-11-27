@@ -63,6 +63,8 @@ debug_version_info_path = create_version_info_file(
 hiddenimports = []
 hiddenimports += collect_submodules('pkg_resources')  # workaround for https://github.com/pypa/setuptools/issues/1963
 hiddenimports += collect_submodules('hwilib') # otherwise hwilib doesnt get packaged
+# ReportLab barcode widgets import their implementations dynamically.
+hiddenimports += collect_submodules('reportlab.graphics.barcode')
 # External plugins are imported dynamically from the user config dir, so their
 # imports of plugin-host and packaged-app modules must be bundled explicitly.
 hiddenimports += list(EXTERNAL_PLUGIN_HIDDENIMPORTS)
