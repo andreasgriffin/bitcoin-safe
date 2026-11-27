@@ -1319,16 +1319,18 @@ class UITx_Viewer(UITx_Base):
         """Import trusted psbt."""
         try:
             parsed = read_psbt(import_psbt)
-        except ValueError as exc:
+            if psbt_is_finalized(parsed):
+                tx = import_psbt.extract_tx()
+                fee_info = FeeInfo(import_psbt.fee(), tx.vsize(), False, False)
+            else:
+                tx = None
+                fee_info = None
+        except Exception as exc:
             Message(self.tr("Could not open PSBT") + f"\n{exc}", type=MessageType.Error, parent=self)
             return
 
-        if psbt_is_finalized(parsed):
-            tx = import_psbt.extract_tx()
-            self.set_tx(
-                tx,
-                fee_info=FeeInfo(import_psbt.fee(), tx.vsize(), False, False),
-            )
+        if tx is not None:
+            self.set_tx(tx, fee_info=fee_info)
         else:
             self.set_psbt(import_psbt)
 
@@ -1675,12 +1677,14 @@ class UITx_Viewer(UITx_Base):
         """Show a PSBT and calculate its current fee and size."""
         try:
             parsed = read_psbt(psbt)
-        except ValueError as exc:
+            # The viewer still relies on checked extraction for txid and other controls.
+            # Reject a PSBT that cannot be extracted before replacing its current state.
+            tx = psbt.extract_tx()
+        except Exception as exc:
             Message(self.tr("Could not open PSBT") + f"\n{exc}", type=MessageType.Error, parent=self)
             return
         fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
         self.data = Data.from_psbt(psbt, network=self.network)
-        tx = psbt.extract_tx_unchecked_fee_rate()
         tx_status = self.get_tx_status(chain_position=None)
         self.fee_info = fee_info
 

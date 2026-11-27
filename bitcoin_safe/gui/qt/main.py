@@ -2147,6 +2147,7 @@ class MainWindow(UnlockableMainWindow):
                 logger.error("tx could not be converted to a psbt")
                 return None
 
+            extracted_tx = psbt.extract_tx()
             data = Data.from_psbt(psbt, network=self.config.network)
             txout_dict = psbt_prev_txouts(read_psbt(psbt))
             fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
@@ -2170,7 +2171,7 @@ class MainWindow(UnlockableMainWindow):
             logger.warning(f"wrong datatype {type(data.data)=}")
             return None
 
-        existing_tx_viewer = self.get_tx_viewer(txid=str(data.data.extract_tx().compute_txid()))
+        existing_tx_viewer = self.get_tx_viewer(txid=str(extracted_tx.compute_txid()))
         if existing_tx_viewer:
             # if the tab_data is a tx, then just dismiss the psbt (a tx is better than a psbt)
             if existing_tx_viewer.data.data_type == DataType.Tx:
@@ -2189,7 +2190,7 @@ class MainWindow(UnlockableMainWindow):
             mempool_manager=self.mempool_manager,
             network=self.config.network,
             data=data,
-            outpoints=get_prev_outpoints(psbt.extract_tx()),
+            outpoints=get_prev_outpoints(extracted_tx),
             client=self.get_client_of_any_wallet(),
             parent=self.tab_wallets,
             fee_info=fee_info,

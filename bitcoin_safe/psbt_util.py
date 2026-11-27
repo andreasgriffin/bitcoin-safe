@@ -217,15 +217,16 @@ def input_is_finalized(inp: PsbtIn, raw: bytes) -> bool:
     )
 
 
-def psbt_is_finalized(psbt: Psbt) -> bool:
+def _psbt_input_is_finalized(inp: PsbtIn) -> bool:
     try:
-        for inp in psbt.inputs:
-            out = previous_output(inp, inp.output_index if inp.output_index is not None else -1)
-            if not input_is_finalized(inp, out.script_pub_key.script if out is not None else b""):
-                return False
+        out = previous_output(inp, inp.output_index if inp.output_index is not None else -1)
     except ValueError:
         return False
-    return bool(psbt.inputs)
+    return input_is_finalized(inp, out.script_pub_key.script if out is not None else b"")
+
+
+def psbt_is_finalized(psbt: Psbt) -> bool:
+    return bool(psbt.inputs) and all(_psbt_input_is_finalized(inp) for inp in psbt.inputs)
 
 
 def input_sizer(inp: PsbtIn, txin: BtclibTxIn) -> list[int] | None:
@@ -762,8 +763,7 @@ class SigningInput:
         return None
 
     def is_fully_signed(self) -> bool:
-        out = self.previous_txout()
-        return input_is_finalized(self.source, out.spk_bytes if out else b"")
+        return _psbt_input_is_finalized(self.source)
 
     def _get_m_of_n(self) -> tuple[int, int] | None:
         if self.m_of_n:

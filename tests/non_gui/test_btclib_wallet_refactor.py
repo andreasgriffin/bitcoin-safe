@@ -33,6 +33,7 @@ import json
 
 import bdkpython as bdk
 import pytest
+from btclib.script import Witness
 from btclib.tx import TxOut as BtclibTxOut
 from btclib_wallet.psbt import Psbt, PsbtIn, miniscript_sizer
 
@@ -222,6 +223,26 @@ def test_conflicting_utxo_refuses_fee_estimate() -> None:
     assert not psbt_prev_txouts(parsed)
     assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt) is None
     assert psbt.serialize() == before
+
+
+@pytest.mark.parametrize("conflict", ["value", "txid"])
+def test_conflicting_utxo_cannot_be_reported_as_finalized(conflict: str) -> None:
+    parsed = read_psbt(p2wsh_psbt_0_2of3)
+    inp = parsed.inputs[0]
+    previous = inp.witness_utxo
+    assert previous is not None and inp.non_witness_utxo is not None
+    # These are structural finalization checks, not signature validation.
+    inp.final_script_witness = Witness([b"signature", inp.witness_script])
+    assert SigningInput(inp).is_fully_signed()
+    assert psbt_is_finalized(parsed)
+
+    if conflict == "value":
+        inp.witness_utxo = BtclibTxOut(previous.value + 1, previous.script_pub_key)
+    else:
+        inp.previous_tx_id = bytes(32)
+
+    assert not psbt_is_finalized(parsed)
+    assert not SigningInput(inp).is_fully_signed()
 
 
 def test_standard_psbt_fee_uses_upstream_estimator(monkeypatch: pytest.MonkeyPatch) -> None:
