@@ -35,7 +35,7 @@ import json
 import logging
 import os
 import shutil
-from collections.abc import Callable, Coroutine, Iterable
+from collections.abc import Callable, Coroutine, Iterable, Mapping
 from concurrent.futures import Future
 from datetime import timedelta
 from pathlib import Path
@@ -86,6 +86,7 @@ from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
 from bitcoin_safe.hardware_signers import HardwareSigners
+from bitcoin_safe.input_signature_verifier import Prevout
 from bitcoin_safe.keystore import KeyStore
 from bitcoin_safe.labels import LabelType
 from bitcoin_safe.network_config import ConnectionInfo, Peer
@@ -2379,7 +2380,12 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         keys = self.history_list.get_selected_keys()
         self.wallet_balance_chart.highlight_txids(txids=set(keys))
 
-    def apply_txs(self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN):
+    def apply_txs(
+        self,
+        txs: list[bdk.Transaction],
+        last_seen: int = LOCAL_TX_LAST_SEEN,
+        known_prevouts: Mapping[tuple[str, int], Prevout] | None = None,
+    ):
         """Apply txs."""
 
         txs_dict = {str(tx.compute_txid()): tx for tx in txs}
@@ -2404,11 +2410,13 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
 
         if append_hidden_tx:
             applied_txs += self.wallet.apply_unconfirmed_txs(
-                list(append_hidden_tx.values()), last_seen=int(datetime.datetime.now().timestamp())
+                list(append_hidden_tx.values()),
+                last_seen=int(datetime.datetime.now().timestamp()),
+                known_prevouts=known_prevouts,
             )
         if only_non_hidden_txs:
             applied_txs += self.wallet.apply_unconfirmed_txs(
-                list(only_non_hidden_txs.values()), last_seen=last_seen
+                list(only_non_hidden_txs.values()), last_seen=last_seen, known_prevouts=known_prevouts
             )
         if not applied_txs:
             return

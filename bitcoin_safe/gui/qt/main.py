@@ -1841,8 +1841,10 @@ class MainWindow(UnlockableMainWindow):
         return None
 
     def apply_txs_to_wallets(self, txs: list[bdk.Transaction], last_seen: int) -> None:
-        for qt_wallet in self.qt_wallets.values():
-            qt_wallet.apply_txs(txs, last_seen=last_seen)
+        qt_wallets = list(self.qt_wallets.values())
+        prevouts = Wallet.prevouts_from_wallets(txs, [qt_wallet.wallet for qt_wallet in qt_wallets])
+        for qt_wallet in qt_wallets:
+            qt_wallet.apply_txs(txs, last_seen=last_seen, known_prevouts=prevouts)
 
     def apply_txs_to_wallets_and_highlight(self, txs: list[bdk.Transaction], last_seen: int) -> None:
         """Apply txs to wallets."""
