@@ -48,6 +48,7 @@ from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.input_signature_verifier import Prevout
 from bitcoin_safe.pythonbdk_types import BlockchainType
+from bitcoin_safe.pythonbdk_types import OutPoint as WalletOutPoint
 from bitcoin_safe.wallet import ProtoWallet, Wallet
 from tests.helpers import TestConfig as _TestConfig
 from tests.non_gui.test_signers import TAPROOT_TEST_SEED
@@ -160,7 +161,37 @@ def _txid_bytes(tx: bdk.Transaction) -> bytes:
 
 
 class _GraphWallet(SimpleNamespace):
-    get_graph_prevout_evidence = Wallet.get_graph_prevout_evidence
+    get_graph_changesets = Wallet.get_graph_changesets
+    get_graph_transactions = Wallet.get_graph_transactions
+    iter_graph_txouts = Wallet.iter_graph_txouts
+    get_graph_transaction = Wallet.get_graph_transaction
+    get_graph_txout = Wallet.get_graph_txout
+
+
+def test_graph_lookup_returns_raw_data_and_preserves_staged_precedence() -> None:
+    parent = _raw_tx([(b"\x73" * 32, 0)], [(2_000, b"\x51")])
+    point = WalletOutPoint(txid=parent.compute_txid(), vout=0)
+    key = bdk.HashableOutPoint(point)
+    staged = bdk.TxOut(value=bdk.Amount.from_sat(2_000), script_pubkey=bdk.Script(b"\x51"))
+    persisted = bdk.TxOut(value=bdk.Amount.from_sat(3_000), script_pubkey=bdk.Script(b"\x52"))
+    staged_graph = Mock(return_value=SimpleNamespace(txs=[parent], txouts={key: staged}))
+    persisted_graph = Mock(return_value=SimpleNamespace(txs=[], txouts={key: persisted}))
+    wallet = _GraphWallet(
+        bdkwallet=SimpleNamespace(
+            get_tx=Mock(return_value=None),
+            staged=Mock(return_value=SimpleNamespace(tx_graph_changeset=staged_graph)),
+        ),
+        serialize_persistence=SimpleNamespace(change_set=SimpleNamespace(tx_graph_changeset=persisted_graph)),
+    )
+    transaction = wallet.get_graph_transaction(point.txid)
+    assert transaction is not None and transaction.compute_txid() == point.txid
+    output = wallet.get_graph_txout(point)
+    assert output is not None and output.value.to_sat() == 2_000
+    persisted_graph.assert_not_called()
+    assert [(op, output.value.to_sat()) for op, output in wallet.iter_graph_txouts([point])] == [
+        (point, 2_000),
+        (point, 3_000),
+    ]
 
 
 def test_prevouts_from_wallets_scans_each_graph_once() -> None:

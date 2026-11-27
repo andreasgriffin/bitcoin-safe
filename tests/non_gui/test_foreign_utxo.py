@@ -67,6 +67,13 @@ def make_wallet(seed: str, wallet_id: str) -> MagicMock:
     wallet.network = NETWORK
     wallet.bdkwallet = BdkWallet(receive, change, NETWORK, bdk.Persister.new_in_memory())
     wallet.serialize_persistence = SimpleNamespace(change_set=bdk.ChangeSet())
+    wallet.get_graph_changesets.side_effect = lambda: Wallet.get_graph_changesets(wallet)
+    wallet.get_graph_transactions.side_effect = lambda *args, **kwargs: Wallet.get_graph_transactions(
+        wallet, *args, **kwargs
+    )
+    wallet.iter_graph_txouts.side_effect = lambda *args, **kwargs: Wallet.iter_graph_txouts(
+        wallet, *args, **kwargs
+    )
     wallet.get_graph_transaction.side_effect = lambda txid: Wallet.get_graph_transaction(wallet, txid)
     wallet.get_graph_txout.side_effect = lambda outpoint: Wallet.get_graph_txout(wallet, outpoint)
     wallet.get_all_txos_dict.return_value = {}
@@ -615,7 +622,9 @@ def test_network_failure_does_not_discard_local_input(wallets: tuple[MagicMock, 
     tx = transaction([b"\x00\x14" + b"\x42" * 20])
     local = OutPoint(txid=tx.compute_txid(), vout=0)
     missing = OutPoint(txid=bdk.Txid.from_string("ab" * 32), vout=0)
-    active.get_graph_transaction.side_effect = lambda txid: tx if txid == local.txid else None
+    active.get_graph_transactions.side_effect = lambda txids, **kwargs: (
+        {local.txid_str: tx} if local.txid_str in txids else {}
+    )
     manager = MagicMock(spec=MempoolManager)
     manager.fetch_transaction = AsyncMock(side_effect=TimeoutError("timed out"))
     resolved, errors = asyncio.run(resolve_outpoints([local, missing], [active, other], active, manager))

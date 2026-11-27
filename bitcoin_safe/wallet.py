@@ -32,8 +32,9 @@ from __future__ import annotations
 import logging
 import random
 from collections import defaultdict
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from copy import copy
+from itertools import tee
 from pathlib import Path
 from time import time
 from typing import (
@@ -108,6 +109,7 @@ from .pythonbdk_types import (
     TxOut,
     UtxosForInputs,
     enum,
+    get_prev_outpoints,
     is_local,
     robust_address_str_from_script,
 )
@@ -2951,24 +2953,66 @@ class Wallet(BaseSaveableClass, CacheManager):
             hidden_txs[txid] = tx
         return hidden_txs
 
+    def get_graph_changesets(self) -> Iterator[bdk.TxGraphChangeSet]:
+        """Yield graph changesets in staged-first order, materializing them on demand."""
+        if staged := self.bdkwallet.staged():
+            yield staged.tx_graph_changeset()
+        if persisted := self.serialize_persistence.change_set:
+            yield persisted.tx_graph_changeset()
+
+    def get_graph_transactions(
+        self, txids: Iterable[str], *, graphs: Iterable[bdk.TxGraphChangeSet] | None = None
+    ) -> dict[str, bdk.Transaction]:
+        """Look up complete transactions by TXID, preferring canonical data.
+
+        Scan each graph at most once. An optional graph iterable lets callers reuse
+        the same changesets for other lookups within a single operation.
+        """
+        missing = set(txids)
+        found: dict[str, bdk.Transaction] = {}
+        for txid in tuple(missing):
+            canonical = self.bdkwallet.get_tx(bdk.Txid.from_string(txid))
+            if canonical is not None and str(canonical.transaction.compute_txid()) == txid:
+                found[txid] = canonical.transaction
+                missing.remove(txid)
+        if not missing:
+            return found
+
+        for graph in graphs if graphs is not None else self.get_graph_changesets():
+            for transaction in graph.txs:
+                txid = str(transaction.compute_txid())
+                if txid in missing:
+                    found[txid] = transaction
+                    missing.remove(txid)
+                    if not missing:
+                        return found
+        return found
+
+    def iter_graph_txouts(
+        self, outpoints: Iterable[OutPoint], *, graphs: Iterable[bdk.TxGraphChangeSet] | None = None
+    ) -> Iterator[tuple[OutPoint, bdk.TxOut]]:
+        """Yield standalone outputs, staged first, including conflicting observations.
+
+        Full transactions are not consulted. Callers decide how to resolve multiple
+        observations of the same outpoint.
+        """
+        keys = {bdk.HashableOutPoint(point): point for point in outpoints}
+        if not keys:
+            return
+        for graph in graphs if graphs is not None else self.get_graph_changesets():
+            txouts = graph.txouts
+            for key, point in keys.items():
+                if output := txouts.get(key):
+                    yield point, output
+
     def get_graph_transaction(self, txid: bdk.Txid) -> bdk.Transaction | None:
-        """Look up a transaction in canonical, staged, or persisted graph data."""
-        if canonical := self.bdkwallet.get_tx(txid):
-            return canonical.transaction
-        for changeset in (self.bdkwallet.staged(), self.serialize_persistence.change_set):
-            if changeset:
-                for transaction in changeset.tx_graph_changeset().txs:
-                    if str(transaction.compute_txid()) == str(txid):
-                        return transaction
-        return None
+        """Look up one complete transaction in canonical, staged, or persisted graph data."""
+        key = str(txid)
+        return self.get_graph_transactions({key}).get(key)
 
     def get_graph_txout(self, outpoint: OutPoint) -> bdk.TxOut | None:
-        """Find a standalone previous output in the wallet's transaction graph."""
-        key = bdk.HashableOutPoint(outpoint)
-        for changeset in (self.bdkwallet.staged(), self.serialize_persistence.change_set):
-            if changeset and (txout := changeset.tx_graph_changeset().txouts.get(key)):
-                return txout
-        return None
+        """Find the first standalone output in staged, then persisted graph data."""
+        return next((output for _, output in self.iter_graph_txouts([outpoint])), None)
 
     @staticmethod
     def find_known_wallet_output(outpoint: OutPoint, wallets: list[Wallet]) -> bdk.TxOut | None:
@@ -3005,8 +3049,14 @@ class Wallet(BaseSaveableClass, CacheManager):
                 for txid, detail in wallet.get_dict_fulltxdetail().items()
                 for point in detail.inputs
             }
-            txids = {op.txid_str: op.txid for op in outpoints}
-            transactions = {txid: wallet.get_graph_transaction(value) for txid, value in txids.items()}
+            transaction_graphs, output_graphs = tee(wallet.get_graph_changesets())
+            transactions = wallet.get_graph_transactions(
+                {op.txid_str for op in outpoints}, graphs=transaction_graphs
+            )
+            graph_txouts: dict[OutPoint, bdk.TxOut] = {}
+            for point, graph_output in wallet.iter_graph_txouts(outpoints, graphs=output_graphs):
+                # Preserve get_graph_txout's staged-first behavior for input importing.
+                graph_txouts.setdefault(point, graph_output)
             for op in outpoints:
                 if isinstance(results[op], Exception):
                     continue
@@ -3014,7 +3064,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                     if str(op) in spent:
                         raise SpentWalletOutputError(f"{op}: output is already spent by {spent[str(op)]}")
                     outputs: list[bdk.TxOut] = []
-                    if transaction := transactions[op.txid_str]:
+                    if transaction := transactions.get(op.txid_str):
                         if transaction.compute_txid() != op.txid or not 0 <= op.vout < len(
                             transaction.output()
                         ):
@@ -3024,7 +3074,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                         outputs.append(output.txout)
                     if op in utxos:
                         outputs.append(utxos[op])
-                    if output := wallet.get_graph_txout(op):
+                    if output := graph_txouts.get(op):
                         outputs.append(output)
                     if known := txos.get(str(op)):
                         if known.is_spent_by_txid:
@@ -3129,133 +3179,49 @@ class Wallet(BaseSaveableClass, CacheManager):
         return resolved, errors
 
     @staticmethod
-    def _external_input_outpoints(txs: list[bdk.Transaction]) -> dict[str, set[int]]:
-        """Group input outpoints by parent, excluding parents in the candidate batch."""
-        candidate_ids = {str(tx.compute_txid()) for tx in txs}
-        outpoints: dict[str, set[int]] = defaultdict(set)
-        for tx in txs:
-            for txin in tx.input():
-                outpoint = txin.previous_output
-                txid = str(outpoint.txid)
-                if txid not in candidate_ids:
-                    outpoints[txid].add(outpoint.vout)
-        return outpoints
-
-    @staticmethod
-    def _find_transactions(
-        transactions: Iterable[bdk.Transaction], txids: set[str]
-    ) -> dict[str, bdk.Transaction]:
-        """Find requested transactions in a single scan, stopping once all are found."""
-        missing = set(txids)
-        found: dict[str, bdk.Transaction] = {}
-        for tx in transactions:
-            if not missing:
-                break
-            txid = str(tx.compute_txid())
-            if txid in missing:
-                found[txid] = tx
-                missing.remove(txid)
-        return found
-
-    @staticmethod
-    def _prevouts_from_parent(parent: bdk.Transaction, vouts: Iterable[int]) -> dict[int, Prevout]:
-        """Extract requested outputs from a complete parent; ignore nonexistent indices."""
-        outputs = parent.output()
-        return {
-            vout: Prevout(TxOut.from_bdk(outputs[vout]).spk_bytes, outputs[vout].value.to_sat())
-            for vout in vouts
-            if 0 <= vout < len(outputs)
-        }
-
-    @staticmethod
-    def _standalone_prevout_evidence(
-        graphs: Iterable[bdk.TxGraphChangeSet], outpoints: Mapping[str, set[int]]
-    ) -> dict[tuple[str, int], set[Prevout]]:
-        """Collect distinct standalone outputs without treating them as authenticated parents."""
-        evidence: dict[tuple[str, int], set[Prevout]] = defaultdict(set)
-        if not outpoints:
-            return evidence
-        for graph in graphs:
-            txouts = graph.txouts
-            if not txouts:
-                continue
-            for txid, vouts in outpoints.items():
-                parent_txid = bdk.Txid.from_string(txid)
-                for vout in vouts:
-                    point = bdk.HashableOutPoint(OutPoint(txid=parent_txid, vout=vout))
-                    if output := txouts.get(point):
-                        evidence[(txid, vout)].add(
-                            Prevout(TxOut.from_bdk(output).spk_bytes, output.value.to_sat())
-                        )
-        return evidence
-
-    def get_graph_prevout_evidence(
-        self, outpoints: Mapping[str, set[int]]
-    ) -> tuple[dict[str, bdk.Transaction], dict[tuple[str, int], set[Prevout]]]:
-        """Find complete parents and standalone evidence for the remaining parents.
-
-        Canonical transactions take precedence over staged and persisted graph data.
-        Each graph is materialized and scanned at most once per call.
-        """
-        parents: dict[str, bdk.Transaction] = {}
-        missing: set[str] = set()
-        for txid in outpoints:
-            canonical = self.bdkwallet.get_tx(bdk.Txid.from_string(txid))
-            if canonical is None:
-                missing.add(txid)
-            elif str(canonical.transaction.compute_txid()) == txid:
-                parents[txid] = canonical.transaction
-
-        graphs: list[bdk.TxGraphChangeSet] = []
-        if missing:
-            for changeset in (self.bdkwallet.staged(), self.serialize_persistence.change_set):
-                if not missing:
-                    break
-                if changeset:
-                    graph = changeset.tx_graph_changeset()
-                    graphs.append(graph)
-                    found = Wallet._find_transactions(graph.txs, missing)
-                    parents.update(found)
-                    missing.difference_update(found)
-
-        unresolved = {txid: outpoints[txid] for txid in missing}
-        return parents, Wallet._standalone_prevout_evidence(graphs, unresolved)
-
-    @staticmethod
-    def _resolve_standalone_prevouts(
-        evidence: Mapping[tuple[str, int], set[Prevout]], unresolved: Mapping[str, set[int]]
-    ) -> dict[tuple[str, int], Prevout]:
-        """Use only unambiguous evidence for parents not found in any wallet."""
-        prevouts: dict[tuple[str, int], Prevout] = {}
-        for (txid, vout), outputs in evidence.items():
-            if txid not in unresolved or vout not in unresolved[txid]:
-                continue
-            if len(outputs) == 1:
-                prevouts[(txid, vout)] = next(iter(outputs))
-            elif len(outputs) > 1:
-                logger.warning(f"Conflicting standalone previous outputs for {txid}:{vout}")
-        return prevouts
-
-    @staticmethod
     def prevouts_from_wallets(
         txs: list[bdk.Transaction], wallets: list[Wallet]
     ) -> dict[tuple[str, int], Prevout]:
-        """Collect parent outputs from open wallets before applying any of the transactions."""
-        unresolved = Wallet._external_input_outpoints(txs)
+        """Collect prevouts, preferring complete parents over consistent standalone data."""
+        candidate_ids = {str(tx.compute_txid()) for tx in txs}
+        unresolved: dict[str, set[OutPoint]] = defaultdict(set)
+        for tx in txs:
+            for point in get_prev_outpoints(tx):
+                if point.txid_str not in candidate_ids:
+                    unresolved[point.txid_str].add(point)
+
         prevouts: dict[tuple[str, int], Prevout] = {}
         standalone: dict[tuple[str, int], set[Prevout]] = defaultdict(set)
         for wallet in wallets:
             if not unresolved:
                 break
-            parents, evidence = wallet.get_graph_prevout_evidence(unresolved)
+            # Both lookups share the same lazily materialized changesets.
+            transaction_graphs, output_graphs = tee(wallet.get_graph_changesets())
+            parents = wallet.get_graph_transactions(unresolved, graphs=transaction_graphs)
             for txid, parent in parents.items():
+                outputs = parent.output()
                 # A full parent is authoritative, even if the requested vout does not exist.
-                outputs = Wallet._prevouts_from_parent(parent, unresolved.pop(txid))
-                prevouts.update({(txid, vout): output for vout, output in outputs.items()})
-            for key, observed_prevouts in evidence.items():
-                standalone[key].update(observed_prevouts)
+                for point in unresolved.pop(txid):
+                    if 0 <= point.vout < len(outputs):
+                        output = outputs[point.vout]
+                        prevouts[(txid, point.vout)] = Prevout(
+                            TxOut.from_bdk(output).spk_bytes, output.value.to_sat()
+                        )
 
-        prevouts.update(Wallet._resolve_standalone_prevouts(standalone, unresolved))
+            remaining = (point for points in unresolved.values() for point in points)
+            for point, output in wallet.iter_graph_txouts(remaining, graphs=output_graphs):
+                standalone[(point.txid_str, point.vout)].add(
+                    Prevout(TxOut.from_bdk(output).spk_bytes, output.value.to_sat())
+                )
+
+        # Full parents found in later wallets supersede earlier standalone observations.
+        for key, observations in standalone.items():
+            if key[0] not in unresolved:
+                continue
+            if len(observations) == 1:
+                prevouts[key] = next(iter(observations))
+            else:
+                logger.warning(f"Conflicting standalone previous outputs for {key[0]}:{key[1]}")
         return prevouts
 
     def apply_unconfirmed_txs(
