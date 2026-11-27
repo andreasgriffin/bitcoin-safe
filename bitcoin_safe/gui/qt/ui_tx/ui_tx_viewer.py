@@ -1361,12 +1361,13 @@ class UITx_Viewer(UITx_Base):
         self.high_fee_rate_warning_label.update_fee_rate_warning(
             confirmation_status=tx_status.confirmation_status,
             fee_rate=self.fee_info.fee_rate() if self.fee_info else None,
+            fee_rate_is_upper_bound=bool(self.fee_info and self.fee_info.vsize_is_lower_bound),
             max_reasonable_fee_rate=self.mempool_manager.max_reasonable_fee_rate(),
         )
 
     def update_high_fee_warning_label(self, confirmation_status: TxConfirmationStatus):
         """Update high fee warning label."""
-        if confirmation_status != TxConfirmationStatus.LOCAL:
+        if confirmation_status not in (TxConfirmationStatus.LOCAL, TxConfirmationStatus.PSBT):
             self.high_fee_warning_label.setVisible(False)
             return
 

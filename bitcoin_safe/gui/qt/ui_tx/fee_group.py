@@ -99,9 +99,13 @@ class FeeRateWarningBar(NotificationBar):
         fee_rate: float | None,
         max_reasonable_fee_rate: float,
         confirmation_status: TxConfirmationStatus,
+        fee_rate_is_upper_bound: bool = False,
     ) -> None:
         """Update fee rate warning."""
-        if (fee_rate is None) or (confirmation_status != TxConfirmationStatus.LOCAL):
+        if fee_rate is None or confirmation_status not in (
+            TxConfirmationStatus.LOCAL,
+            TxConfirmationStatus.PSBT,
+        ):
             self.setVisible(False)
             return
         too_high = fee_rate > max_reasonable_fee_rate
@@ -110,7 +114,10 @@ class FeeRateWarningBar(NotificationBar):
 
         self.setVisible(too_high)
         if too_high:
-            title = html_f(self.tr("High fee rate!"), bf=True)
+            title = html_f(
+                self.tr("Possibly high fee rate!") if fee_rate_is_upper_bound else self.tr("High fee rate!"),
+                bf=True,
+            )
             description = self.tr("The high priority mempool fee rate is {rate}").format(
                 rate=format_fee_rate(
                     max_reasonable_fee_rate,
@@ -374,7 +381,24 @@ class FeeGroup(QObject):
 
     def updateUi(self) -> None:
         """UpdateUi."""
+        fee_info = self.fee_info
+        lower_bound = bool(fee_info and fee_info.vsize_is_lower_bound)
+        self.mempool_buttons.setVisible(not lower_bound)
+        if fee_info and lower_bound:
+            # Round the upper bound upward, not to the nearest display value.
+            rate = (fee_info.fee_amount + fee_info.vsize - 1) // fee_info.vsize
+            self.fee_rate_label.setText(self.tr("Fee rate at most {rate} sat/vB").format(rate=rate))
+            self.fee_rate_label.setToolTip(self.tr("The final transaction size cannot be estimated."))
+            self.form.set_row_visibility_of_widget(self.fee_rate_label, True)
+            self.form.set_row_visibility_of_widget(self.approximate_fee_label, False)
+            self.spin_fee_rate.setHidden(True)
+            self.spin_label.setHidden(True)
+            self.label_block_number.setHidden(True)
+            self.set_fee_amount_label()
+            return
+
         self.fee_rate_label.setText(self.tr("Transaction fee rate"))
+        self.fee_rate_label.setToolTip("")
         self.approximate_fee_label.setText(html_f(self.tr("Approximate rate"), bf=True))
 
         # only in editor mode
@@ -443,7 +467,12 @@ class FeeGroup(QObject):
     ) -> None:
         """Set cpfp label."""
 
-        if not this_fee_info or not unconfirmed_parents_fee_info:
+        if (
+            not this_fee_info
+            or not unconfirmed_parents_fee_info
+            or this_fee_info.vsize_is_lower_bound
+            or unconfirmed_parents_fee_info.vsize_is_lower_bound
+        ):
             self.form.set_row_visibility_of_widget(self.cpfp_fee_label, False)
             return
 
@@ -470,7 +499,7 @@ class FeeGroup(QObject):
         """Set fee info."""
         self.fee_info = fee_info
 
-        if not fee_info:
+        if not fee_info or fee_info.vsize_is_lower_bound:
             self.updateUi()
             return
 
@@ -495,6 +524,14 @@ class FeeGroup(QObject):
         # this has to be done first, because it will trigger signals
         # that will also set self.fee_amount from the spin edit
         """Set fee infos."""
+        if fee_info and fee_info.vsize_is_lower_bound:
+            # Keep status current for the absolute-fee warning, but do not feed
+            # the upper bound into the mempool projection or editable spinbox.
+            self.mempool_buttons.tx_status = tx_status
+            self.mempool_buttons.can_rbf_safely = can_rbf_safely
+            self.set_fee_info(fee_info)
+            return
+
         fee_rate = fee_info.fee_rate() if fee_info else None
         if fee_rate is not None:
             self.set_spin_fee_value(fee_rate)

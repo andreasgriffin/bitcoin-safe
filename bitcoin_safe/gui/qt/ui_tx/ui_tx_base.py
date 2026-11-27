@@ -130,7 +130,12 @@ class CPFPBar(NotificationBar):
         unconfirmed_parents_fee_info: FeeInfo | None,
         unconfirmed_ancestors: dict[str, TransactionDetails],
     ) -> None:
-        if not this_fee_info or not unconfirmed_parents_fee_info:
+        if (
+            not this_fee_info
+            or not unconfirmed_parents_fee_info
+            or this_fee_info.vsize_is_lower_bound
+            or unconfirmed_parents_fee_info.vsize_is_lower_bound
+        ):
             self.setVisible(False)
             return
 
@@ -347,7 +352,9 @@ class UITx_Base(SearchableTab):
         chain_position: bdk.ChainPosition | None,
     ) -> None:
         """Set fee group cpfp label."""
-        if chain_position and (chain_position.is_confirmed() or is_local(chain_position)):
+        if this_fee_info.vsize_is_lower_bound or (
+            chain_position and (chain_position.is_confirmed() or is_local(chain_position))
+        ):
             fee_group.set_cpfp_label(
                 this_fee_info=this_fee_info, unconfirmed_parents_fee_info=None, unconfirmed_ancestors={}
             )

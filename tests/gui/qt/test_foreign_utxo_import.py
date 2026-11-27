@@ -86,6 +86,47 @@ def creator_class_kwargs(creator: UITx_Creator) -> dict:
 
 
 @pytest.mark.marker_qt_2
+def test_unsigned_size_fee_bound_warnings(qtbot: QtBot) -> None:
+    from bitcoin_safe.gui.qt.ui_tx.fee_group import FeeGroup, FeeRateWarningBar, FeeWarningBar
+    from bitcoin_safe.psbt_util import FeeInfo
+    from bitcoin_safe.wallet import TxConfirmationStatus, TxStatus
+
+    network = bdk.Network.REGTEST
+    info = FeeInfo(400_000, 100, False, True, vsize_is_lower_bound=True)
+    status = TxStatus(None, None, lambda: 0, TxConfirmationStatus.PSBT)
+    ratio_bar = FeeWarningBar(network, "BTC")
+    rate_bar = FeeRateWarningBar(network)
+    qtbot.addWidget(ratio_bar)
+    qtbot.addWidget(rate_bar)
+    ratio_bar.set_fee_to_send_ratio(info, 1, network, status)
+    assert not ratio_bar.isHidden()
+    ratio_bar.set_fee_to_send_ratio(info, 100_000_000, network, status)
+    assert ratio_bar.isHidden()
+    rate_bar.update_fee_rate_warning(
+        info.fee_rate(), 10, status.confirmation_status, fee_rate_is_upper_bound=True
+    )
+    assert not rate_bar.isHidden()
+    rate_bar.update_fee_rate_warning(
+        info.fee_rate(), 10_000, status.confirmation_status, fee_rate_is_upper_bound=True
+    )
+    assert rate_bar.isHidden()
+
+    viewer = MagicMock()
+    UITx_Viewer.update_high_fee_warning_label(viewer, TxConfirmationStatus.PSBT)
+    viewer._update_high_fee_warning_label.assert_called_once()
+
+    # Updating the fee group must not project a confirmation time from a bound.
+    group = MagicMock()
+    group.tr.side_effect = lambda text: text
+    group.fee_info = info
+    FeeGroup.updateUi(group)
+    group.fee_rate_label.setText.assert_called_once_with("Fee rate at most 4000 sat/vB")
+    group.mempool_buttons.setVisible.assert_called_once_with(False)
+    group.mempool_buttons.refresh.assert_not_called()
+    group.set_fee_amount_label.assert_called_once()
+
+
+@pytest.mark.marker_qt_2
 @pytest.mark.parametrize("custom_category", [False, True])
 def test_unconfirmed_receiving_output_keeps_owning_wallet_category(
     qtbot: QtBot,

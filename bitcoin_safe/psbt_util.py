@@ -499,16 +499,23 @@ class FeeRate(bdk.FeeRate):
 
 class FeeInfo:
     def __init__(
-        self, fee_amount: int, vsize: int, fee_amount_is_estimated: bool, vsize_is_estimated: bool
+        self,
+        fee_amount: int,
+        vsize: int,
+        fee_amount_is_estimated: bool,
+        vsize_is_estimated: bool,
+        vsize_is_lower_bound: bool = False,
     ) -> None:
         """Initialize instance."""
         self.fee_amount = fee_amount
         self.vsize = vsize
         self.fee_amount_is_estimated = fee_amount_is_estimated
-        self.vsize_is_estimated = vsize_is_estimated
+        self.vsize_is_estimated = vsize_is_estimated or vsize_is_lower_bound
+        # An unsigned-size fallback is not a prediction of the final size.
+        self.vsize_is_lower_bound = vsize_is_lower_bound
 
     def fee_rate(self) -> float:
-        """Fee rate."""
+        """Fee rate (an upper bound when vsize_is_lower_bound and the fee is exact)."""
         return self.fee_amount / self.vsize
 
     def fee_rate_is_estimated(self):
@@ -565,19 +572,37 @@ class FeeInfo:
             fee = psbt.fee()
             if not analysis.inputs or fee < 0:
                 return None
+        except (ValueError, bdk.CalculateFeeError, bdk.PsbtError) as exc:  # pyright: ignore[reportGeneralTypeIssues]
+            logger.info("Could not determine PSBT fee: %s", exc)
+            return None
+
+        try:
             finalized = all(
                 input_is_finalized(inp, spent.script_pub_key.script)
                 for inp, spent in zip(analysis.inputs, spent_outputs, strict=True)
             )
             vsize = weight_to_vsize(TxWeight.from_psbt(analysis).estimate())
-        except (ValueError, bdk.CalculateFeeError, bdk.PsbtError) as exc:  # pyright: ignore[reportGeneralTypeIssues]
-            logger.info("Could not estimate PSBT weight with btclib: %s", exc)
-            return None
-        return FeeInfo(fee, vsize, vsize_is_estimated=not finalized, fee_amount_is_estimated=False)
+        except ValueError as exc:
+            logger.info("Could not estimate PSBT weight; using unsigned size: %s", exc)
+            # Strip all unlocking data, including partially finalized inputs.
+            # Every valid final transaction for this PSBT is at least this large.
+            vsize = len(unsigned_tx_bytes(psbt.extract_tx_unchecked_fee_rate()))
+            return cls(
+                fee,
+                vsize,
+                fee_amount_is_estimated=False,
+                vsize_is_estimated=True,
+                vsize_is_lower_bound=True,
+            )
+        return cls(fee, vsize, vsize_is_estimated=not finalized, fee_amount_is_estimated=False)
 
     def __add__(self, other: FeeInfo) -> FeeInfo:
         """Add."""
         if isinstance(other, FeeInfo):
+            if self.vsize_is_lower_bound or other.vsize_is_lower_bound:
+                # Mixing an unsigned-size bound with an ordinary estimate need
+                # not yield a bound. Callers must skip package-rate arithmetic.
+                raise ValueError("Cannot combine fee info with an unsigned-size lower bound")
             return FeeInfo(
                 fee_amount=self.fee_amount + other.fee_amount,
                 vsize=self.vsize + other.vsize,

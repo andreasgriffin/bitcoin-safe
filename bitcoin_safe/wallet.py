@@ -3363,7 +3363,7 @@ class ToolsTxUiInfo:
             recipient.checked_max_amount = checked_max_amount
             txinfos.recipients.append(recipient)
         # fee rate
-        txinfos.fee_rate = fee_info.fee_rate() if fee_info else None
+        txinfos.fee_rate = fee_info.fee_rate() if fee_info and not fee_info.vsize_is_lower_bound else None
         locktime = tx.lock_time()
         txinfos.nlocktime = locktime if locktime > 0 else None
         if txinfos.nlocktime is not None and current_height is not None:

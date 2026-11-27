@@ -87,6 +87,34 @@ def test_psbt_fee_estimate_uses_output_scripts() -> None:
         ).estimate()
     )
     assert estimate.fee_amount == psbt.fee()
+    assert not estimate.vsize_is_lower_bound
+
+
+def test_fee_info_falls_back_to_unsigned_size(monkeypatch: pytest.MonkeyPatch) -> None:
+    from bitcoin_safe.psbt_util import unsigned_tx_bytes
+
+    psbt = bdk.Psbt(p2wsh_psbt_0_2of3.serialize())
+    before = psbt.serialize()
+    expected_fee = psbt.fee()
+    exact_estimate = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+    assert exact_estimate is not None
+
+    def unsupported(*args, **kwargs):
+        raise ValueError("Unsupported satisfaction")
+
+    monkeypatch.setattr(TxWeight, "from_psbt", unsupported)
+    info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
+    assert info is not None
+    assert info.fee_amount == expected_fee
+    assert not info.fee_amount_is_estimated
+    assert info.vsize_is_estimated
+    assert info.vsize_is_lower_bound
+    assert info.vsize == len(unsigned_tx_bytes(psbt.extract_tx_unchecked_fee_rate()))
+    assert info.vsize <= exact_estimate.vsize
+    assert info.fee_rate() >= exact_estimate.fee_rate()
+    assert psbt.serialize() == before
+    with pytest.raises(ValueError):
+        info + exact_estimate
 
 
 def test_tx_weight_from_psbt_uses_previous_outputs_and_refuses_unknown() -> None:
@@ -109,6 +137,9 @@ def test_tx_weight_from_psbt_uses_previous_outputs_and_refuses_unknown() -> None
     # A real PSBT with missing spend data is not an estimateable draft.
     with pytest.raises(ValueError):
         psbt_weight(bdk.Psbt(parsed.b64encode(check_validity=False)))
+    assert (
+        FeeInfo.estimate_segwit_fee_rate_from_psbt(bdk.Psbt(parsed.b64encode(check_validity=False))) is None
+    )
     parsed.inputs.pop()
     estimate = psbt_weight(bdk.Psbt(parsed.b64encode(check_validity=False)))
     assert estimate.inputs == [InputWeight(), InputWeight(428, False)]
@@ -303,7 +334,12 @@ def test_psbt_estimation_and_final_signed_weight(wrapper: str) -> None:
             # from the hash. Refuse rather than assume a 1-of-1 script.
             with pytest.raises(ValueError):
                 psbt_weight(partial)
-            assert partial_fee is None
+            assert partial_fee is not None
+            assert partial_fee.fee_amount == actual.fee_amount
+            assert partial_fee.vsize_is_estimated
+            assert partial_fee.vsize_is_lower_bound
+            assert partial_fee.vsize <= signed.vsize()
+            assert partial_fee.fee_rate() >= actual.fee_rate()
         else:
             partial_weight = psbt_weight(partial)
             assert partial_weight.inputs[0].witness

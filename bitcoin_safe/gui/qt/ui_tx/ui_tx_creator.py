@@ -1562,6 +1562,9 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
             if not fee_info:
                 raise Exception("General RBF is currently not provided by bdk")
 
+            if fee_info.vsize_is_lower_bound:
+                raise ValueError(self.tr("Cannot estimate the replacement transaction size for RBF."))
+
             min_rbf_fee_rate = calc_minimum_rbf_fee_info(
                 fee_amount=fee_amount,
                 new_tx_vsize=fee_info.vsize,
