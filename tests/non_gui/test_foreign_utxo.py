@@ -39,11 +39,13 @@ import pytest
 from bitcoin_safe_lib.util import network_kind
 
 from bitcoin_safe.foreign_utxo import ForeignUtxo
+from bitcoin_safe.foreign_utxo_resolver import resolve_foreign_outpoints
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.outpoint_parser import parse_outpoints
 from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, Recipient, TxOut, UtxosForInputs
 from bitcoin_safe.tx import TxInputInfo, TxUiInfos
-from bitcoin_safe.wallet import BdkWallet, Wallet
+from bitcoin_safe.wallet import BdkWallet, SpentWalletOutputError, Wallet
+from bitcoin_safe.wallet_aggregation import collect_known_outputs, collect_known_outputs_and_transactions
 
 NETWORK = bdk.Network.REGTEST
 
@@ -54,7 +56,8 @@ def foreign_utxo(outpoint, txout, transaction, wallets):
 
 
 async def resolve_outpoints(outpoints, wallets, active_wallet, mempool_manager):
-    return await Wallet.resolve_foreign_outpoints(active_wallet, outpoints, wallets, mempool_manager)
+    fetch_transaction = mempool_manager.fetch_transaction if mempool_manager is not None else None
+    return await resolve_foreign_outpoints(active_wallet, outpoints, wallets, fetch_transaction)
 
 
 def make_wallet(seed: str, wallet_id: str) -> MagicMock:
@@ -67,8 +70,20 @@ def make_wallet(seed: str, wallet_id: str) -> MagicMock:
     wallet.network = NETWORK
     wallet.bdkwallet = BdkWallet(receive, change, NETWORK, bdk.Persister.new_in_memory())
     wallet.serialize_persistence = SimpleNamespace(change_set=bdk.ChangeSet())
+    wallet.get_graph_changesets.side_effect = lambda: Wallet.get_graph_changesets(wallet)
+    wallet.get_graph_transactions.side_effect = lambda *args, **kwargs: Wallet.get_graph_transactions(
+        wallet, *args, **kwargs
+    )
+    wallet.iter_graph_txouts.side_effect = lambda *args, **kwargs: Wallet.iter_graph_txouts(
+        wallet, *args, **kwargs
+    )
     wallet.get_graph_transaction.side_effect = lambda txid: Wallet.get_graph_transaction(wallet, txid)
     wallet.get_graph_txout.side_effect = lambda outpoint: Wallet.get_graph_txout(wallet, outpoint)
+    wallet.get_known_outputs_and_transactions.side_effect = lambda points: (
+        Wallet.get_known_outputs_and_transactions(wallet, points)
+    )
+    wallet.get_known_outputs.side_effect = lambda points: Wallet.get_known_outputs(wallet, points)
+    wallet.get_known_output.side_effect = lambda point: Wallet.get_known_output(wallet, point)
     wallet.get_all_txos_dict.return_value = {}
     wallet.get_dict_fulltxdetail.return_value = {}
     return wallet
@@ -79,6 +94,51 @@ def transaction(scripts: list[bytes]) -> bdk.Transaction:
     for script in scripts:
         raw += (100_000).to_bytes(8, "little") + bytes([len(script)]) + script
     return bdk.Transaction(raw + bytes.fromhex("00000000"))
+
+
+def test_foreign_utxo_from_transaction() -> None:
+    tx = transaction([b"\x00\x14" + b"\x42" * 20])
+    point = OutPoint(txid=tx.compute_txid(), vout=0)
+    output = tx.output()[0]
+    item = ForeignUtxo.from_transaction(point, tx, [], NETWORK, known=output)
+    assert item.utxo.outpoint == point
+    assert item.utxo.txout == TxOut.from_bdk(output)
+    assert ForeignUtxo.previous_output(point, item.psbt_input).value.to_sat() == 100_000
+    assert ForeignUtxo.from_transaction(point, tx, [], NETWORK, existing=item) is item
+
+    wrong_output = bdk.TxOut(value=bdk.Amount.from_sat(1), script_pubkey=output.script_pubkey)
+    with pytest.raises(ValueError, match="conflicts with wallet data"):
+        ForeignUtxo.from_transaction(point, tx, [], NETWORK, known=wrong_output)
+
+    supplied = ForeignUtxo.from_outpoint(point, output, None, [], NETWORK).psbt_input
+    supplied.witness_utxo = wrong_output
+    with pytest.raises(ValueError, match="PSBT previous output conflicts"):
+        ForeignUtxo.from_transaction(point, tx, [], NETWORK, supplied=supplied)
+
+
+@pytest.mark.parametrize("wrong_txid", [False, True])
+def test_foreign_utxo_from_transaction_rejects_invalid_outpoint(wrong_txid: bool) -> None:
+    tx = transaction([b"\x00\x14" + b"\x42" * 20])
+    point = OutPoint(
+        txid=bdk.Txid.from_string("ab" * 32) if wrong_txid else tx.compute_txid(),
+        vout=0 if wrong_txid else 1,
+    )
+    with pytest.raises(ValueError, match="invalid previous transaction or output index"):
+        ForeignUtxo.from_transaction(point, tx, [], NETWORK)
+
+
+def test_resolver_rejects_active_wallet_output_before_construction() -> None:
+    active = make_wallet(
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        "active",
+    )
+    address = active.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+    tx = transaction([bytes(address.script_pubkey().to_bytes())])
+    point = OutPoint(txid=tx.compute_txid(), vout=0)
+    fetch = AsyncMock(return_value=tx)
+    resolved, errors = asyncio.run(resolve_foreign_outpoints(active, [point], [active], fetch))
+    assert not resolved
+    assert len(errors) == 1 and "belongs to the active wallet" in errors[0]
 
 
 @pytest.fixture
@@ -95,8 +155,33 @@ def wallets() -> tuple[MagicMock, MagicMock]:
 
 def test_empty_outpoints_do_not_scan_wallets() -> None:
     wallet = MagicMock(spec=Wallet)
-    assert Wallet.get_known_wallet_outputs(set(), [wallet]) == {}
+    assert collect_known_outputs(set(), [wallet]) == {}
+    assert Wallet.get_known_outputs_and_transactions(wallet, set()) == ({}, {})
     assert not wallet.mock_calls
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+@pytest.mark.parametrize("spent", [False, True])
+def test_collect_known_outputs_merges_wallet_evidence(reverse: bool, spent: bool) -> None:
+    first_tx = transaction([b"\x51"])
+    second_tx = transaction([b"\x52"])
+    point = OutPoint(txid=first_tx.compute_txid(), vout=0)
+    first = MagicMock(spec=Wallet)
+    second = MagicMock(spec=Wallet)
+    first.get_known_outputs_and_transactions.return_value = (
+        {point: first_tx.output()[0]},
+        {point.txid_str: first_tx},
+    )
+    observation = SpentWalletOutputError("spent") if spent else second_tx.output()[0]
+    second.get_known_outputs_and_transactions.return_value = ({point: observation}, {})
+    sources = [second, first] if reverse else [first, second]
+
+    outputs, parents = collect_known_outputs_and_transactions({point}, sources)
+
+    assert isinstance(outputs[point], SpentWalletOutputError if spent else ValueError)
+    assert parents == {point.txid_str: first_tx}
+    first.get_known_outputs_and_transactions.assert_called_once_with({point})
+    second.get_known_outputs_and_transactions.assert_called_once_with({point})
 
 
 def test_parse_multiple_outpoints_and_report_errors() -> None:
@@ -136,7 +221,9 @@ def test_known_spent_foreign_input_is_rejected(wallets: tuple[MagicMock, MagicMo
     assert "already spent" in errors[0]
     manager.fetch_transaction.assert_not_awaited()
     resolved, errors = asyncio.run(
-        Wallet.resolve_foreign_outpoints(active, [point], [active, other], manager, skip_spent=True)
+        resolve_foreign_outpoints(
+            active, [point], [active, other], manager.fetch_transaction, skip_spent=True
+        )
     )
     assert not resolved
     assert not errors
@@ -247,7 +334,7 @@ def test_resolve_rejects_conflicting_psbt_previous_output(wallets: tuple[MagicMo
     manager = MagicMock(spec=MempoolManager)
     manager.fetch_transaction = AsyncMock(return_value=tx)
     resolved, errors = asyncio.run(
-        Wallet.resolve_foreign_outpoints(active, [op], [active, other], manager, {op: psbt_input})
+        resolve_foreign_outpoints(active, [op], [active, other], manager.fetch_transaction, {op: psbt_input})
     )
     assert not resolved
     assert "conflicts with transaction" in errors[0]
@@ -256,7 +343,7 @@ def test_resolve_rejects_conflicting_psbt_previous_output(wallets: tuple[MagicMo
     psbt_input.non_witness_utxo = tx
     manager.fetch_transaction.reset_mock()
     resolved, errors = asyncio.run(
-        Wallet.resolve_foreign_outpoints(active, [op], [active, other], manager, {op: psbt_input})
+        resolve_foreign_outpoints(active, [op], [active, other], manager.fetch_transaction, {op: psbt_input})
     )
     assert not resolved
     assert "conflicting previous outputs" in errors[0]
@@ -615,12 +702,19 @@ def test_network_failure_does_not_discard_local_input(wallets: tuple[MagicMock, 
     tx = transaction([b"\x00\x14" + b"\x42" * 20])
     local = OutPoint(txid=tx.compute_txid(), vout=0)
     missing = OutPoint(txid=bdk.Txid.from_string("ab" * 32), vout=0)
-    active.get_graph_transaction.side_effect = lambda txid: tx if txid == local.txid else None
+    active.get_graph_transactions.side_effect = lambda txids, **kwargs: (
+        {local.txid_str: tx} if local.txid_str in txids else {}
+    )
     manager = MagicMock(spec=MempoolManager)
     manager.fetch_transaction = AsyncMock(side_effect=TimeoutError("timed out"))
     resolved, errors = asyncio.run(resolve_outpoints([local, missing], [active, other], active, manager))
     assert set(resolved) == {local}
     assert len(errors) == 1 and str(missing) in errors[0] and "timed out" in errors[0]
+    # Parent evidence from the batch lookup is reused by the resolver.
+    for wallet in (active, other):
+        wallet.get_graph_transactions.assert_called_once()
+        wallet.get_graph_transaction.assert_not_called()
+    manager.fetch_transaction.assert_awaited_once_with(missing.txid)
 
 
 def test_downloaded_shared_transaction_replaces_output_only_data(
@@ -660,7 +754,7 @@ def test_imported_signatures_are_discarded(wallets: tuple[MagicMock, MagicMock])
     manager = MagicMock(spec=MempoolManager)
     manager.fetch_transaction = AsyncMock()
     imported, errors = asyncio.run(
-        Wallet.resolve_foreign_outpoints(active, [point], [active], manager, {point: supplied})
+        resolve_foreign_outpoints(active, [point], [active], manager.fetch_transaction, {point: supplied})
     )
     assert not errors
     result = imported[point].psbt_input

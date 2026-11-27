@@ -48,8 +48,11 @@ from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.input_signature_verifier import Prevout
 from bitcoin_safe.pythonbdk_types import BlockchainType
+from bitcoin_safe.pythonbdk_types import OutPoint as WalletOutPoint
 from bitcoin_safe.wallet import ProtoWallet, Wallet
+from bitcoin_safe.wallet_aggregation import prevouts_from_wallets
 from tests.helpers import TestConfig as _TestConfig
+from tests.non_gui.test_signers import TAPROOT_TEST_SEED
 from tests.non_gui.utils import create_keystore, create_multisig_protowallet
 
 
@@ -158,7 +161,187 @@ def _txid_bytes(tx: bdk.Transaction) -> bytes:
     return bytes.fromhex(str(tx.compute_txid()))
 
 
+class _GraphWallet(SimpleNamespace):
+    get_graph_changesets = Wallet.get_graph_changesets
+    get_graph_transactions = Wallet.get_graph_transactions
+    iter_graph_txouts = Wallet.iter_graph_txouts
+    get_graph_transaction = Wallet.get_graph_transaction
+    get_graph_txout = Wallet.get_graph_txout
+
+
+def test_graph_lookup_returns_raw_data_and_preserves_staged_precedence() -> None:
+    parent = _raw_tx([(b"\x73" * 32, 0)], [(2_000, b"\x51")])
+    point = WalletOutPoint(txid=parent.compute_txid(), vout=0)
+    key = bdk.HashableOutPoint(point)
+    staged = bdk.TxOut(value=bdk.Amount.from_sat(2_000), script_pubkey=bdk.Script(b"\x51"))
+    persisted = bdk.TxOut(value=bdk.Amount.from_sat(3_000), script_pubkey=bdk.Script(b"\x52"))
+    staged_graph = Mock(return_value=SimpleNamespace(txs=[parent], txouts={key: staged}))
+    persisted_graph = Mock(return_value=SimpleNamespace(txs=[], txouts={key: persisted}))
+    wallet = _GraphWallet(
+        bdkwallet=SimpleNamespace(
+            get_tx=Mock(return_value=None),
+            staged=Mock(return_value=SimpleNamespace(tx_graph_changeset=staged_graph)),
+        ),
+        serialize_persistence=SimpleNamespace(change_set=SimpleNamespace(tx_graph_changeset=persisted_graph)),
+    )
+    transaction = wallet.get_graph_transaction(point.txid)
+    assert transaction is not None and transaction.compute_txid() == point.txid
+    output = wallet.get_graph_txout(point)
+    assert output is not None and output.value.to_sat() == 2_000
+    persisted_graph.assert_not_called()
+    assert [(op, output.value.to_sat()) for op, output in wallet.iter_graph_txouts([point])] == [
+        (point, 2_000),
+        (point, 3_000),
+    ]
+
+
+def test_prevouts_from_wallets_scans_each_graph_once() -> None:
+    canonical = _raw_tx([(b"\x11" * 32, 0)], [(1_000, b"\x51")])
+    staged = _raw_tx([(b"\x22" * 32, 0)], [(2_000, b"\x51"), (3_000, b"\x51")])
+    persisted = _raw_tx([(b"\x33" * 32, 0)], [(4_000, b"\x51")])
+    candidate = _raw_tx([(b"\x44" * 32, 0)], [(5_000, b"\x51")])
+    child = _raw_tx(
+        [
+            (_txid_bytes(canonical), 0),
+            (_txid_bytes(staged), 0),
+            (_txid_bytes(staged), 1),
+            (_txid_bytes(persisted), 0),
+            (_txid_bytes(persisted), 1),  # Invalid output index.
+            (_txid_bytes(candidate), 0),  # Candidate parent must not be shared.
+            (b"\x55" * 32, 0),  # Unknown parent.
+        ],
+        [(1_000, b"\x51")],
+    )
+    staged_graph = Mock(return_value=SimpleNamespace(txs=[staged, candidate], txouts={}))
+    persisted_graph = Mock(return_value=SimpleNamespace(txs=[persisted], txouts={}))
+    get_tx = Mock(
+        side_effect=lambda txid: (
+            SimpleNamespace(transaction=canonical) if txid == canonical.compute_txid() else None
+        )
+    )
+    wallet = _GraphWallet(
+        bdkwallet=SimpleNamespace(
+            get_tx=get_tx, staged=Mock(return_value=SimpleNamespace(tx_graph_changeset=staged_graph))
+        ),
+        serialize_persistence=SimpleNamespace(change_set=SimpleNamespace(tx_graph_changeset=persisted_graph)),
+    )
+    assert prevouts_from_wallets([candidate, child], [wallet]) == {
+        (str(canonical.compute_txid()), 0): Prevout(b"\x51", 1_000),
+        (str(staged.compute_txid()), 0): Prevout(b"\x51", 2_000),
+        (str(staged.compute_txid()), 1): Prevout(b"\x51", 3_000),
+        (str(persisted.compute_txid()), 0): Prevout(b"\x51", 4_000),
+    }
+    staged_graph.assert_called_once_with()
+    persisted_graph.assert_called_once_with()
+    assert get_tx.call_count == 5  # Includes the candidate's own unknown parent.
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_prevouts_from_wallets_standalone_fallback(reverse: bool) -> None:
+    full_parent = _raw_tx([(b"\x61" * 32, 0)], [(1_000, b"\x51")])
+    candidate = _raw_tx([(b"\x62" * 32, 0)], [(2_000, b"\x51")])
+    shared = b"\x63" * 32
+    conflict = b"\x64" * 32
+    missing = b"\x65" * 32
+    child = _raw_tx(
+        [
+            (_txid_bytes(full_parent), 0),
+            (_txid_bytes(full_parent), 1),  # A full parent rules out this vout.
+            (_txid_bytes(candidate), 0),
+            (shared, 0),
+            (conflict, 0),
+            (missing, 0),
+        ],
+        [(1_000, b"\x51")],
+    )
+
+    def point(txid: bytes, vout: int = 0) -> bdk.HashableOutPoint:
+        return bdk.HashableOutPoint(bdk.OutPoint(txid=bdk.Txid.from_string(txid.hex()), vout=vout))
+
+    def output(value: int, script: bytes = b"\x51") -> bdk.TxOut:
+        return bdk.TxOut(value=bdk.Amount.from_sat(value), script_pubkey=bdk.Script(script))
+
+    def wallet(txs, staged_txouts, persisted_txouts):
+        staged_graph = Mock(return_value=SimpleNamespace(txs=[], txouts=staged_txouts))
+        persisted_graph = Mock(return_value=SimpleNamespace(txs=txs, txouts=persisted_txouts))
+        return _GraphWallet(
+            bdkwallet=SimpleNamespace(
+                get_tx=Mock(return_value=None),
+                staged=Mock(return_value=SimpleNamespace(tx_graph_changeset=staged_graph)),
+            ),
+            serialize_persistence=SimpleNamespace(
+                change_set=SimpleNamespace(tx_graph_changeset=persisted_graph)
+            ),
+        )
+
+    wallets = [
+        wallet(
+            [],
+            {
+                point(_txid_bytes(full_parent)): output(99_000),
+                point(_txid_bytes(full_parent), 1): output(99_000),
+                point(shared): output(3_000),
+                point(conflict): output(4_000),
+                point(_txid_bytes(candidate)): output(99_000),
+            },
+            {},
+        ),
+        wallet([full_parent], {}, {point(shared): output(3_000), point(conflict): output(4_000, b"\x52")}),
+    ]
+    if reverse:
+        wallets.reverse()
+    assert prevouts_from_wallets([candidate, child], wallets) == {
+        (str(full_parent.compute_txid()), 0): Prevout(b"\x51", 1_000),
+        (shared.hex(), 0): Prevout(b"\x51", 3_000),
+    }
+    for source in wallets:
+        source.bdkwallet.staged.assert_called_once_with()
+        source.bdkwallet.staged.return_value.tx_graph_changeset.assert_called_once_with()
+        source.serialize_persistence.change_set.tx_graph_changeset.assert_called_once_with()
+
+
+def test_prevouts_from_wallets_canonical_lookup_skips_graphs() -> None:
+    parent = _raw_tx([(b"\x71" * 32, 0)], [(2_000, b"\x51")])
+    child = _raw_tx([(_txid_bytes(parent), 0)], [(1_000, b"\x51")])
+    wallet = _GraphWallet(
+        bdkwallet=SimpleNamespace(
+            get_tx=Mock(return_value=SimpleNamespace(transaction=parent)), staged=Mock()
+        ),
+        serialize_persistence=SimpleNamespace(change_set=Mock()),
+    )
+    assert prevouts_from_wallets([child], [wallet]) == {
+        (str(parent.compute_txid()), 0): Prevout(b"\x51", 2_000)
+    }
+    wallet.bdkwallet.staged.assert_not_called()
+    wallet.serialize_persistence.change_set.tx_graph_changeset.assert_not_called()
+
+
+def test_prevouts_from_wallets_rejects_conflict_within_wallet() -> None:
+    txid = b"\x72" * 32
+    child = _raw_tx([(txid, 0)], [(1_000, b"\x51")])
+    point = bdk.HashableOutPoint(bdk.OutPoint(txid=bdk.Txid.from_string(txid.hex()), vout=0))
+    staged = bdk.TxOut(value=bdk.Amount.from_sat(2_000), script_pubkey=bdk.Script(b"\x51"))
+    persisted = bdk.TxOut(value=bdk.Amount.from_sat(3_000), script_pubkey=bdk.Script(b"\x51"))
+    wallet = _GraphWallet(
+        bdkwallet=SimpleNamespace(
+            get_tx=Mock(return_value=None),
+            staged=Mock(
+                return_value=SimpleNamespace(
+                    tx_graph_changeset=Mock(return_value=SimpleNamespace(txs=[], txouts={point: staged}))
+                )
+            ),
+        ),
+        serialize_persistence=SimpleNamespace(
+            change_set=SimpleNamespace(
+                tx_graph_changeset=Mock(return_value=SimpleNamespace(txs=[], txouts={point: persisted}))
+            )
+        ),
+    )
+    assert prevouts_from_wallets([child], [wallet]) == {}
+
+
 def _enable_dependency_verification(wallet: SimpleNamespace) -> None:
+    wallet._prevouts_of_tx = lambda tx, _outputs=None: ([None] * len(tx.input()), [False] * len(tx.input()))
     wallet._verify_candidate_transactions = lambda candidates, known_prevouts=None: (
         Wallet._verify_candidate_transactions(wallet, candidates, known_prevouts)
     )
@@ -439,7 +622,7 @@ def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> 
 
 @pytest.mark.parametrize("source", ["staged_output", "persisted_output", "graph_transaction"])
 def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str) -> None:
-    seed = "brown solve pair vast find mind maze birth peanut task resist mercy"
+    seed = TAPROOT_TEST_SEED
     config = _TestConfig()
     config.network = bdk.Network.REGTEST
     keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
@@ -485,7 +668,7 @@ def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str)
 
 
 def test_reported_collaborative_taproot_transaction_is_applied() -> None:
-    seed = "brown solve pair vast find mind maze birth peanut task resist mercy"
+    seed = TAPROOT_TEST_SEED
     config = _TestConfig()
     config.network = bdk.Network.REGTEST
     keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
@@ -531,12 +714,18 @@ def test_reported_collaborative_taproot_transaction_is_applied() -> None:
         assert owned == [True, False]
         assert prevouts[1] is None
         assert not wallet._verify_tx_signatures(tx)
-        other_wallet = SimpleNamespace(
-            get_graph_transaction=lambda txid: (
-                external_parent if txid == external_parent.compute_txid() else None
-            )
+        other_wallet = _GraphWallet(
+            bdkwallet=SimpleNamespace(
+                get_tx=lambda txid: (
+                    SimpleNamespace(transaction=external_parent)
+                    if txid == external_parent.compute_txid()
+                    else None
+                ),
+                staged=lambda: None,
+            ),
+            serialize_persistence=SimpleNamespace(change_set=None),
         )
-        shared_prevouts = Wallet.prevouts_from_wallets([tx], [wallet, other_wallet])
+        shared_prevouts = prevouts_from_wallets([tx], [wallet, other_wallet])
         assert wallet._verify_tx_signatures(tx, shared_prevouts)
         tampered = Tx.parse(tx.serialize())
         signature = bytearray(tampered.vin[0].script_witness.stack[0])
@@ -559,7 +748,7 @@ def test_reported_collaborative_taproot_transaction_is_applied() -> None:
 
 @pytest.mark.parametrize("reverse", [False, True])
 def test_p2p_spend_uses_prevouts_from_both_open_wallets(reverse: bool) -> None:
-    seed = "brown solve pair vast find mind maze birth peanut task resist mercy"
+    seed = TAPROOT_TEST_SEED
     config = _TestConfig()
     config.network = bdk.Network.REGTEST
     keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
@@ -604,7 +793,7 @@ def test_p2p_spend_uses_prevouts_from_both_open_wallets(reverse: bool) -> None:
         # Each wallet has only its own parent; the Taproot signature commits to both.
         assert not taproot._verify_tx_signatures(tx)
         assert other._verify_tx_signatures(tx)
-        shared_prevouts = Wallet.prevouts_from_wallets([tx], [taproot, other])
+        shared_prevouts = prevouts_from_wallets([tx], [taproot, other])
         assert taproot._verify_tx_signatures(tx, shared_prevouts)
         altered = Tx.parse(tx.serialize())
         signature = bytearray(altered.vin[1].script_witness.stack[0])
@@ -643,3 +832,76 @@ def test_p2p_spend_uses_prevouts_from_both_open_wallets(reverse: bool) -> None:
     finally:
         taproot.close()
         other.close()
+
+
+@pytest.mark.parametrize("parent_first", [True, False])
+@pytest.mark.parametrize("provide_known_prevouts", [True, False])
+def test_taproot_batch_retains_external_candidate_parent_output(
+    parent_first: bool, provide_known_prevouts: bool
+) -> None:
+    seed = TAPROOT_TEST_SEED
+    config = _TestConfig()
+    config.network = bdk.Network.REGTEST
+    keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
+    proto = ProtoWallet("taproot", 1, config.network, [keystore], AddressTypes.p2tr)
+    wallet = Wallet.from_protowallet(protowallet=proto, config=config, loop_in_thread=None)
+    try:
+        wallet_outpoint = _fund_wallet_with_unconfirmed_tx(wallet)
+        wallet_parent = wallet.get_tx(str(wallet_outpoint.txid))
+        assert wallet_parent is not None
+        wallet_output = wallet_parent.transaction.output()[0]
+        external_parent = _raw_tx([(b"\x24" * 32, 0)], [(25_000, b"\x00\x14" + b"\x44" * 20)])
+        external_output = external_parent.output()[0]
+        external_outpoint = bdk.OutPoint(txid=external_parent.compute_txid(), vout=0)
+        spend = _build_tx(
+            [(bytes.fromhex(str(wallet_outpoint.txid)), 0), (bytes.fromhex(str(external_outpoint.txid)), 0)],
+            [(1_000, b"\x00\x14" + b"\x55" * 20)],
+        )
+        root = bdk.DescriptorSecretKey(bdk.NetworkKind.TEST, bdk.Mnemonic.from_string(seed), "")
+        key = int.from_bytes(root.derive(bdk.DerivationPath("m/86h/1h/0h/0/0")).secret_bytes(), "big")
+        prevouts = [
+            TxOut(output.value.to_sat(), bytes(output.script_pubkey.to_bytes()))
+            for output in (wallet_output, external_output)
+        ]
+        message = sig_hash.taproot(spend, 0, prevouts, 0, 0, b"", b"")
+        spend.vin[0].script_witness = Witness(
+            [ssa.sign_(message, output_prvkey_from_merkle_root(key, b"")).serialize()]
+        )
+        spend.vin[1].script_witness = Witness([b"external witness"])
+        child = bdk.Transaction(spend.serialize(include_witness=True))
+        batch = [external_parent, child] if parent_first else [child, external_parent]
+        known_prevouts = (
+            {
+                (str(wallet_outpoint.txid), wallet_outpoint.vout): Prevout(
+                    bytes(wallet_output.script_pubkey.to_bytes()), wallet_output.value.to_sat()
+                )
+            }
+            if provide_known_prevouts
+            else None
+        )
+
+        applied = wallet.apply_unconfirmed_txs(batch, last_seen=2, known_prevouts=known_prevouts)
+
+        assert {entry.tx.compute_txid() for entry in applied} == {
+            external_parent.compute_txid(),
+            child.compute_txid(),
+        }
+        assert wallet.get_tx(str(child.compute_txid())) is not None
+        assert wallet.get_graph_transaction(external_parent.compute_txid()) is None
+        assert wallet._prevouts_of_tx(child)[0][1] == Prevout(
+            bytes(external_output.script_pubkey.to_bytes()), external_output.value.to_sat()
+        )
+        assert wallet._verify_tx_signatures(child)
+        restored = Wallet.from_dump(
+            wallet.dump(),
+            class_kwargs={"Wallet": {"config": config, "loop_in_thread": wallet.loop_in_thread}},
+        )
+        try:
+            assert restored._verify_tx_signatures(child)
+            event = bdk.WalletEvent.TX_UNCONFIRMED(txid=child.compute_txid(), tx=child, old_block_time=None)
+            restored._evict_txs_with_invalid_signatures([event])
+            assert restored.get_tx(str(child.compute_txid())) is not None
+        finally:
+            restored.close()
+    finally:
+        wallet.close()

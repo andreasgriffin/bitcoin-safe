@@ -32,8 +32,9 @@ from __future__ import annotations
 import logging
 import random
 from collections import defaultdict
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from copy import copy
+from itertools import tee
 from pathlib import Path
 from time import time
 from typing import (
@@ -95,7 +96,6 @@ from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
 from .input_signer_attribution import signers_per_input
 from .keystore import KeyStore
 from .labels import Labels, LabelType
-from .mempool_manager import MempoolManager
 from .pythonbdk_types import (
     AddressInfoMin,
     Balance,
@@ -2450,7 +2450,7 @@ class Wallet(BaseSaveableClass, CacheManager):
                     and not self.bdkwallet.get_utxo(outpoint)
                 ):
                     # Defense in depth for callers supplying TxInputInfo directly.
-                    known = Wallet.find_known_wallet_output(outpoint, [self])
+                    known = self.get_known_output(outpoint)
                     Wallet.validate_foreign_input(outpoint, item, known)
                     psbt_input, weight = copy(item.psbt_input), item.satisfaction_weight
                     psbt_input.sighash_type = None
@@ -2951,29 +2951,70 @@ class Wallet(BaseSaveableClass, CacheManager):
             hidden_txs[txid] = tx
         return hidden_txs
 
+    def get_graph_changesets(self) -> Iterator[bdk.TxGraphChangeSet]:
+        """Yield graph changesets in staged-first order, materializing them on demand."""
+        if staged := self.bdkwallet.staged():
+            yield staged.tx_graph_changeset()
+        if persisted := self.serialize_persistence.change_set:
+            yield persisted.tx_graph_changeset()
+
+    def get_graph_transactions(
+        self, txids: Iterable[str], *, graphs: Iterable[bdk.TxGraphChangeSet] | None = None
+    ) -> dict[str, bdk.Transaction]:
+        """Look up complete transactions by TXID, preferring canonical data.
+
+        Scan each graph at most once. An optional graph iterable lets callers reuse
+        the same changesets for other lookups within a single operation.
+        """
+        missing = set(txids)
+        found: dict[str, bdk.Transaction] = {}
+        for txid in tuple(missing):
+            canonical = self.bdkwallet.get_tx(bdk.Txid.from_string(txid))
+            if canonical is not None and str(canonical.transaction.compute_txid()) == txid:
+                found[txid] = canonical.transaction
+                missing.remove(txid)
+        if not missing:
+            return found
+
+        for graph in graphs if graphs is not None else self.get_graph_changesets():
+            for transaction in graph.txs:
+                txid = str(transaction.compute_txid())
+                if txid in missing:
+                    found[txid] = transaction
+                    missing.remove(txid)
+                    if not missing:
+                        return found
+        return found
+
+    def iter_graph_txouts(
+        self, outpoints: Iterable[OutPoint], *, graphs: Iterable[bdk.TxGraphChangeSet] | None = None
+    ) -> Iterator[tuple[OutPoint, bdk.TxOut]]:
+        """Yield standalone outputs, staged first, including conflicting observations.
+
+        Full transactions are not consulted. Callers decide how to resolve multiple
+        observations of the same outpoint.
+        """
+        keys = {bdk.HashableOutPoint(point): point for point in outpoints}
+        if not keys:
+            return
+        for graph in graphs if graphs is not None else self.get_graph_changesets():
+            txouts = graph.txouts
+            for key, point in keys.items():
+                if output := txouts.get(key):
+                    yield point, output
+
     def get_graph_transaction(self, txid: bdk.Txid) -> bdk.Transaction | None:
-        """Look up a transaction in canonical, staged, or persisted graph data."""
-        if canonical := self.bdkwallet.get_tx(txid):
-            return canonical.transaction
-        for changeset in (self.bdkwallet.staged(), self.serialize_persistence.change_set):
-            if changeset:
-                for transaction in changeset.tx_graph_changeset().txs:
-                    if str(transaction.compute_txid()) == str(txid):
-                        return transaction
-        return None
+        """Look up one complete transaction in canonical, staged, or persisted graph data."""
+        key = str(txid)
+        return self.get_graph_transactions({key}).get(key)
 
     def get_graph_txout(self, outpoint: OutPoint) -> bdk.TxOut | None:
-        """Find a standalone previous output in the wallet's transaction graph."""
-        key = bdk.HashableOutPoint(outpoint)
-        for changeset in (self.bdkwallet.staged(), self.serialize_persistence.change_set):
-            if changeset and (txout := changeset.tx_graph_changeset().txouts.get(key)):
-                return txout
-        return None
+        """Find the first standalone output in staged, then persisted graph data."""
+        return next((output for _, output in self.iter_graph_txouts([outpoint])), None)
 
-    @staticmethod
-    def find_known_wallet_output(outpoint: OutPoint, wallets: list[Wallet]) -> bdk.TxOut | None:
-        """Find wallet evidence for a prevout and reject inconsistent wallet data."""
-        output = Wallet.get_known_wallet_outputs({outpoint}, wallets)[outpoint]
+    def get_known_output(self, outpoint: OutPoint) -> bdk.TxOut | None:
+        """Find evidence for one output in this wallet, raising on inconsistent data."""
+        output = self.get_known_outputs({outpoint})[outpoint]
         if isinstance(output, Exception):
             raise output
         return output
@@ -2989,172 +3030,65 @@ class Wallet(BaseSaveableClass, CacheManager):
         if known is not None and TxOut.from_bdk(known) != previous:
             raise ValueError(f"{outpoint}: conflicting wallet output")
 
-    @staticmethod
-    def get_known_wallet_outputs(
-        outpoints: set[OutPoint], wallets: list[Wallet]
-    ) -> dict[OutPoint, bdk.TxOut | Exception | None]:
-        """Collect wallet evidence once per refresh, including known spending transactions."""
-        if not outpoints:
-            return {}
-        results: dict[OutPoint, bdk.TxOut | Exception | None] = {op: None for op in outpoints}
-        for wallet in wallets:
-            txos = wallet.get_all_txos_dict(include_not_mine=True)
-            utxos = {utxo.outpoint: utxo.txout for utxo in wallet.get_all_utxos()}
-            spent = {
-                point: txid
-                for txid, detail in wallet.get_dict_fulltxdetail().items()
-                for point in detail.inputs
-            }
-            txids = {op.txid_str: op.txid for op in outpoints}
-            transactions = {txid: wallet.get_graph_transaction(value) for txid, value in txids.items()}
-            for op in outpoints:
-                if isinstance(results[op], Exception):
-                    continue
-                try:
-                    if str(op) in spent:
-                        raise SpentWalletOutputError(f"{op}: output is already spent by {spent[str(op)]}")
-                    outputs: list[bdk.TxOut] = []
-                    if transaction := transactions[op.txid_str]:
-                        if transaction.compute_txid() != op.txid or not 0 <= op.vout < len(
-                            transaction.output()
-                        ):
-                            raise ValueError(f"{op}: invalid wallet transaction or output index")
-                        outputs.append(transaction.output()[op.vout])
-                    if output := wallet.bdkwallet.get_utxo(op):
-                        outputs.append(output.txout)
-                    if op in utxos:
-                        outputs.append(utxos[op])
-                    if output := wallet.get_graph_txout(op):
-                        outputs.append(output)
-                    if known := txos.get(str(op)):
-                        if known.is_spent_by_txid:
-                            raise SpentWalletOutputError(
-                                f"{op}: output is already spent by {known.is_spent_by_txid}"
-                            )
-                        outputs.append(known.txout)
-                    for output in outputs:
-                        previous = results[op]
-                        if isinstance(previous, Exception):
-                            raise previous
-                        if previous is not None and TxOut.from_bdk(previous) != TxOut.from_bdk(output):
-                            raise ValueError(f"{op}: conflicting wallet previous outputs")
-                        results[op] = output
-                except Exception as exc:
-                    results[op] = exc
-        return results
+    def get_known_outputs(self, outpoints: set[OutPoint]) -> dict[OutPoint, bdk.TxOut | Exception | None]:
+        """Collect output and spending evidence from this wallet."""
+        outputs, _ = self.get_known_outputs_and_transactions(outpoints)
+        return outputs
 
-    async def resolve_foreign_outpoints(
-        self,
-        outpoints: list[OutPoint],
-        wallets: list[Wallet],
-        mempool_manager: MempoolManager | None,
-        psbt_inputs: dict[OutPoint, bdk.Input] | None = None,
-        existing_inputs: dict[OutPoint, ForeignUtxo] | None = None,
-        skip_spent: bool = False,
-    ) -> tuple[dict[OutPoint, ForeignUtxo], list[str]]:
-        """Resolve each funding transaction once; pass no mempool manager to use local data only.
+    def get_known_outputs_and_transactions(
+        self, outpoints: set[OutPoint]
+    ) -> tuple[dict[OutPoint, bdk.TxOut | Exception | None], dict[str, bdk.Transaction]]:
+        """Collect this wallet's output evidence and complete parents in one graph scan.
 
-        Wallet snapshots can lag behind another wallet's unconfirmed spends. Skip those
-        entries when importing a wallet's UTXOs, but reject explicitly requested inputs.
+        Output errors include spent or conflicting outputs. A returned parent does
+        not imply that its outputs are spendable.
         """
-        resolved: dict[OutPoint, ForeignUtxo] = {}
-        errors: list[str] = []
-        transactions: dict[str, bdk.Transaction | Exception] = {}
-        supplied_inputs = psbt_inputs or {}
-        descriptors = [(wallet.id, wallet.bdkwallet) for wallet in wallets]
-        known_outputs = Wallet.get_known_wallet_outputs(set(outpoints), wallets)
-        # A saved input or PSBT can provide the funding transaction for another
-        # requested output of the same transaction.
-        for point, item in (existing_inputs or {}).items():
-            if item.psbt_input.non_witness_utxo is not None:
-                transactions[point.txid_str] = item.psbt_input.non_witness_utxo
-        for point, psbt_input in supplied_inputs.items():
-            if psbt_input.non_witness_utxo is not None:
-                transactions[point.txid_str] = psbt_input.non_witness_utxo
-        for outpoint in dict.fromkeys(outpoints):
-            try:
-                known = known_outputs[outpoint]
-                if skip_spent and isinstance(known, SpentWalletOutputError):
-                    continue
-                if isinstance(known, Exception):
-                    raise known
-                supplied = supplied_inputs.get(outpoint)
-                transaction = transactions.get(outpoint.txid_str)
-                if transaction is None:
-                    transaction = next(
-                        (tx for wallet in wallets if (tx := wallet.get_graph_transaction(outpoint.txid))),
-                        None,
-                    )
-                    if transaction is None:
-                        if mempool_manager is None:
-                            raise ValueError("full previous transaction is not available locally")
-                        try:
-                            transaction = await mempool_manager.fetch_transaction(outpoint.txid)
-                        except Exception as exc:
-                            transaction = exc
-                    transactions[outpoint.txid_str] = transaction
-                if isinstance(transaction, Exception):
-                    raise ValueError(f"Could not obtain full previous transaction: {transaction}")
-                if transaction.compute_txid() != outpoint.txid or not 0 <= outpoint.vout < len(
-                    transaction.output()
-                ):
-                    raise ValueError("invalid previous transaction or output index")
-                txout = transaction.output()[outpoint.vout]
-                if known is not None and TxOut.from_bdk(known) != TxOut.from_bdk(txout):
-                    raise ValueError("previous output conflicts with wallet data")
-                if supplied:
-                    if supplied.non_witness_utxo is not None:
-                        ForeignUtxo.previous_output(outpoint, supplied)
-                    if supplied.witness_utxo is not None and TxOut.from_bdk(
-                        supplied.witness_utxo
-                    ) != TxOut.from_bdk(txout):
-                        raise ValueError("PSBT previous output conflicts with transaction")
-                if self.bdkwallet.is_mine(txout.script_pubkey):
-                    raise ValueError("This output belongs to the active wallet but is not spendable")
-                existing = (existing_inputs or {}).get(outpoint)
-                if existing:
-                    if existing.utxo.txout != TxOut.from_bdk(txout):
-                        raise ValueError("previous output conflicts with imported metadata")
-                    ForeignUtxo.previous_output(outpoint, existing.psbt_input)
-                    resolved[outpoint] = existing
-                    continue
-                item = ForeignUtxo.from_outpoint(outpoint, txout, transaction, descriptors, self.network)
-                # Wallet descriptors are authoritative; imported signatures belong to the old transaction.
-                if supplied and item.wallet_id is None:
-                    item.use_imported_input(copy(supplied))
-                ForeignUtxo.previous_output(outpoint, item.psbt_input)
-                resolved[outpoint] = item
-            except Exception as exc:
-                errors.append(f"{outpoint}: {exc}")
-        return resolved, errors
-
-    @staticmethod
-    def prevouts_from_wallets(
-        txs: list[bdk.Transaction], wallets: list[Wallet]
-    ) -> dict[tuple[str, int], Prevout]:
-        """Collect parent outputs from open wallets before applying any of the transactions."""
-        candidate_ids = {str(tx.compute_txid()) for tx in txs}
-        outpoints = {
-            (str(txin.previous_output.txid), txin.previous_output.vout)
-            for tx in txs
-            for txin in tx.input()
-            if str(txin.previous_output.txid) not in candidate_ids
+        if not outpoints:
+            return {}, {}
+        results: dict[OutPoint, bdk.TxOut | Exception | None] = {op: None for op in outpoints}
+        txos = self.get_all_txos_dict(include_not_mine=True)
+        utxos = {utxo.outpoint: utxo.txout for utxo in self.get_all_utxos()}
+        spent = {
+            point: txid for txid, detail in self.get_dict_fulltxdetail().items() for point in detail.inputs
         }
-        prevouts: dict[tuple[str, int], Prevout] = {}
-        for txid in {txid for txid, _ in outpoints}:
-            for wallet in wallets:
-                parent = wallet.get_graph_transaction(bdk.Txid.from_string(txid))
-                if parent is None or str(parent.compute_txid()) != txid:
-                    continue
-                outputs = parent.output()
-                for _, vout in (point for point in outpoints if point[0] == txid):
-                    if vout < len(outputs):
-                        output = outputs[vout]
-                        prevouts[(txid, vout)] = Prevout(
-                            TxOut.from_bdk(output).spk_bytes, output.value.to_sat()
+        transaction_graphs, output_graphs = tee(self.get_graph_changesets())
+        transactions = self.get_graph_transactions(
+            {op.txid_str for op in outpoints}, graphs=transaction_graphs
+        )
+        graph_txouts: dict[OutPoint, bdk.TxOut] = {}
+        for point, graph_output in self.iter_graph_txouts(outpoints, graphs=output_graphs):
+            # Preserve get_graph_txout's staged-first behavior for input importing.
+            graph_txouts.setdefault(point, graph_output)
+        for op in outpoints:
+            try:
+                if str(op) in spent:
+                    raise SpentWalletOutputError(f"{op}: output is already spent by {spent[str(op)]}")
+                outputs: list[bdk.TxOut] = []
+                if transaction := transactions.get(op.txid_str):
+                    if transaction.compute_txid() != op.txid or not 0 <= op.vout < len(transaction.output()):
+                        raise ValueError(f"{op}: invalid wallet transaction or output index")
+                    outputs.append(transaction.output()[op.vout])
+                if utxo := self.bdkwallet.get_utxo(op):
+                    outputs.append(utxo.txout)
+                if op in utxos:
+                    outputs.append(utxos[op])
+                if stored_output := graph_txouts.get(op):
+                    outputs.append(stored_output)
+                if known := txos.get(str(op)):
+                    if known.is_spent_by_txid:
+                        raise SpentWalletOutputError(
+                            f"{op}: output is already spent by {known.is_spent_by_txid}"
                         )
-                break
-        return prevouts
+                    outputs.append(known.txout)
+                previous: bdk.TxOut | None = None
+                for output in outputs:
+                    if previous is not None and TxOut.from_bdk(previous) != TxOut.from_bdk(output):
+                        raise ValueError(f"{op}: conflicting wallet previous outputs")
+                    previous = output
+                results[op] = previous
+            except Exception as exc:
+                results[op] = exc
+        return results, transactions
 
     def apply_unconfirmed_txs(
         self,
@@ -3168,7 +3102,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.advance_tip_to_addresses([address for tx in txs for address in self.get_output_addresses(tx)])
 
         candidates = {str(tx.compute_txid()): tx for tx in txs}
-        remaining, _accepted_outputs = self._verify_candidate_transactions(candidates, known_prevouts)
+        remaining, accepted_outputs = self._verify_candidate_transactions(candidates, known_prevouts)
         accepted: list[bdk.UnconfirmedTx] = []
         for txid, tx in candidates.items():
             if txid in remaining:
@@ -3182,17 +3116,17 @@ class Wallet(BaseSaveableClass, CacheManager):
             ):
                 accepted.append(bdk.UnconfirmedTx(tx=tx, last_seen=last_seen))
 
-        # Retain verified supporting prevouts for later sync updates, when the
-        # other wallet might be closed and the transaction is verified again.
-        if known_prevouts:
+        # For example, BDK may discard an unrelated parent P while retaining
+        # our child C. Save P's accepted output so C can be checked again later.
+        if accepted_outputs:
             for entry in accepted:
-                _, owned_inputs = self._prevouts_of_tx(entry.tx, _accepted_outputs)
+                _, owned_inputs = self._prevouts_of_tx(entry.tx, accepted_outputs)
                 if not any(owned_inputs):
                     continue
                 for txin in entry.tx.input():
                     outpoint = txin.previous_output
                     key = (str(outpoint.txid), outpoint.vout)
-                    if (prevout := known_prevouts.get(key)) and key[0] not in candidates:
+                    if prevout := accepted_outputs.get(key):
                         self.bdkwallet.insert_txout(
                             outpoint,
                             bdk.TxOut(

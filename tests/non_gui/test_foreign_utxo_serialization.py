@@ -35,9 +35,9 @@ import bdkpython as bdk
 import pytest
 
 from bitcoin_safe.foreign_utxo import ForeignUtxo
+from bitcoin_safe.foreign_utxo_resolver import resolve_foreign_outpoints
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.pythonbdk_types import OutPoint
-from bitcoin_safe.wallet import Wallet
 from tests.non_gui.test_foreign_utxo import NETWORK, make_wallet, transaction
 
 
@@ -71,10 +71,10 @@ def test_missing_metadata_or_transaction_is_rejected() -> None:
     op = OutPoint(txid=tx.compute_txid(), vout=0)
     manager = MagicMock(spec=MempoolManager)
     manager.fetch_transaction = AsyncMock(return_value=tx)
-    result, errors = asyncio.run(Wallet.resolve_foreign_outpoints(active, [op], [active], manager))
+    result, errors = asyncio.run(resolve_foreign_outpoints(active, [op], [active], manager.fetch_transaction))
     assert not result and "descriptor" in errors[0]
     manager.fetch_transaction = AsyncMock(side_effect=ValueError("offline"))
-    result, errors = asyncio.run(Wallet.resolve_foreign_outpoints(active, [op], [active], manager))
+    result, errors = asyncio.run(resolve_foreign_outpoints(active, [op], [active], manager.fetch_transaction))
     assert not result and "full previous transaction" in errors[0]
 
 
@@ -102,7 +102,7 @@ def test_taproot_wallet_input_survives_restoration() -> None:
     manager = MagicMock(spec=MempoolManager)
     manager.fetch_transaction = AsyncMock()
     imported, errors = asyncio.run(
-        Wallet.resolve_foreign_outpoints(active, [point], [active, other], manager)
+        resolve_foreign_outpoints(active, [point], [active, other], manager.fetch_transaction)
     )
     assert not errors
     restored = ForeignUtxo._from_dumps(imported[point].dumps())
@@ -123,5 +123,7 @@ def test_backend_wrong_transaction_id_is_rejected() -> None:
     point = OutPoint.from_str("aa" * 32 + ":0")
     manager = MagicMock(spec=MempoolManager)
     manager.fetch_transaction = AsyncMock(return_value=transaction([b"\x00\x14" + b"\x44" * 20]))
-    imported, errors = asyncio.run(Wallet.resolve_foreign_outpoints(active, [point], [active], manager))
+    imported, errors = asyncio.run(
+        resolve_foreign_outpoints(active, [point], [active], manager.fetch_transaction)
+    )
     assert not imported and "invalid previous transaction" in errors[0]

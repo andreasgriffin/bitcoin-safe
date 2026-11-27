@@ -61,6 +61,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.constants import APP_NAME, MIN_RELAY_FEE
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.foreign_utxo import ForeignUtxo
+from bitcoin_safe.foreign_utxo_resolver import resolve_foreign_outpoints
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
@@ -97,6 +98,7 @@ from ....wallet import (
     get_tx_details,
     get_wallets,
 )
+from ....wallet_aggregation import collect_known_outputs
 from ..dialog_import import ImportDialog
 from ..my_treeview import MyItemDataRole
 from ..util import HLine, Message, MessageType
@@ -831,7 +833,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         wallets = get_wallets(self.wallet_functions)
         # Recheck current spendability and previous-output consistency for foreign inputs.
         foreign_outpoints = {op for op, item in tx_ui_infos.inputs.items() if item.psbt_input is not None}
-        known = Wallet.get_known_wallet_outputs(foreign_outpoints, [self.wallet, *wallets])
+        known = collect_known_outputs(foreign_outpoints, [self.wallet, *wallets])
         try:
             for outpoint, result in known.items():
                 if isinstance(result, Exception):
@@ -889,9 +891,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if not self.wallet:
             return {}
         wallets = [self.wallet, *[w for w in get_wallets(self.wallet_functions) if w != self.wallet]]
-        known = (
-            Wallet.get_known_wallet_outputs(set(self.foreign_inputs), wallets) if self.foreign_inputs else {}
-        )
+        known = collect_known_outputs(set(self.foreign_inputs), wallets)
         usable: dict[OutPoint, TxInputInfo] = {}
         for op, foreign in self.foreign_inputs.items():
             item = TxInputInfo(foreign.utxo, foreign.psbt_input, foreign.satisfaction_weight)
@@ -1060,8 +1060,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 self._set_import_busy(False)
 
         self.loop_in_thread.run_task(
-            wallet.resolve_foreign_outpoints(
-                foreign_points, wallets, None, supplied, dict(self.foreign_inputs)
+            resolve_foreign_outpoints(
+                wallet,
+                foreign_points,
+                wallets,
+                psbt_inputs=supplied,
+                existing_inputs=dict(self.foreign_inputs),
             ),
             on_success=on_success,
             on_done=on_done,
@@ -1168,12 +1172,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 self._set_import_busy(False)
 
         self.loop_in_thread.run_task(
-            wallet.resolve_foreign_outpoints(
+            resolve_foreign_outpoints(
+                wallet,
                 foreign_points,
                 wallets,
-                self.mempool_manager,
-                psbt_inputs,
-                dict(self.foreign_inputs),
+                fetch_transaction=self.mempool_manager.fetch_transaction,
+                psbt_inputs=psbt_inputs,
+                existing_inputs=dict(self.foreign_inputs),
                 skip_spent=skip_spent,
             ),
             on_success=on_success,
