@@ -33,14 +33,24 @@ from types import SimpleNamespace
 from unittest.mock import Mock
 
 import bdkpython as bdk
+import ecc.dsa as dsa
+import ecc.ssa as ssa
+import pytest
+from bitcoin_usb.address_types import AddressTypes
 from bitcoin_usb.software_signer import SoftwareSigner
+from btclib.hashes import hash160
+from btclib.script import sig_hash
+from btclib.script.taproot import output_prvkey_from_merkle_root
 from btclib.script.witness import Witness
 from btclib.tx import OutPoint, Tx, TxIn, TxOut
 
+from bitcoin_safe.gui.qt.main import MainWindow
+from bitcoin_safe.gui.qt.qt_wallet import QTWallet
 from bitcoin_safe.input_signature_verifier import Prevout
-from bitcoin_safe.wallet import Wallet
+from bitcoin_safe.pythonbdk_types import BlockchainType
+from bitcoin_safe.wallet import ProtoWallet, Wallet
 from tests.helpers import TestConfig as _TestConfig
-from tests.non_gui.utils import create_multisig_protowallet
+from tests.non_gui.utils import create_keystore, create_multisig_protowallet
 
 
 def _taproot_script_path_tx() -> bdk.Transaction:
@@ -149,8 +159,8 @@ def _txid_bytes(tx: bdk.Transaction) -> bytes:
 
 
 def _enable_dependency_verification(wallet: SimpleNamespace) -> None:
-    wallet._verify_candidate_transactions = lambda candidates: Wallet._verify_candidate_transactions(
-        wallet, candidates
+    wallet._verify_candidate_transactions = lambda candidates, known_prevouts=None: (
+        Wallet._verify_candidate_transactions(wallet, candidates, known_prevouts)
     )
 
 
@@ -192,7 +202,11 @@ def test_apply_unconfirmed_rejects_valid_child_of_invalid_parent(monkeypatch) ->
     wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
     wallet.persist = Mock()
 
-    result = Wallet.apply_unconfirmed_txs(wallet, [child, parent], last_seen=4)
+    # A parent known by another wallet still has to pass this wallet's verification.
+    shared_prevouts = {(str(parent.compute_txid()), 0): Prevout(b"\x51", 2_000)}
+    result = Wallet.apply_unconfirmed_txs(
+        wallet, [child, parent], last_seen=4, known_prevouts=shared_prevouts
+    )
 
     assert result == []
     assert wallet._verify_tx_signatures.call_count == 1
@@ -421,3 +435,211 @@ def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> 
         assert signers[0] == (wallet.keystores[0].fingerprint.upper(),)
     finally:
         wallet.close()
+
+
+@pytest.mark.parametrize("source", ["staged_output", "persisted_output", "graph_transaction"])
+def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str) -> None:
+    seed = "brown solve pair vast find mind maze birth peanut task resist mercy"
+    config = _TestConfig()
+    config.network = bdk.Network.REGTEST
+    keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
+    proto = ProtoWallet("taproot", 1, config.network, [keystore], AddressTypes.p2tr)
+    wallet = Wallet.from_protowallet(protowallet=proto, config=config, loop_in_thread=None)
+    try:
+        wallet_outpoint = _fund_wallet_with_unconfirmed_tx(wallet)
+        wallet_output = wallet.get_tx(str(wallet_outpoint.txid)).transaction.output()[0]
+        external_parent = _raw_tx([(b"\x24" * 32, 0)], [(25_000, b"\x00\x14" + b"\x44" * 20)])
+        external_outpoint = bdk.OutPoint(txid=external_parent.compute_txid(), vout=0)
+        external_output = external_parent.output()[0]
+        if source == "graph_transaction":
+            wallet.serialize_persistence.change_set = bdk.ChangeSet.from_tx_graph_changeset(
+                bdk.TxGraphChangeSet(
+                    txs=[external_parent], txouts={}, anchors=[], last_seen={}, first_seen={}, last_evicted={}
+                )
+            )
+        else:
+            wallet.bdkwallet.insert_txout(external_outpoint, external_output)
+            if source == "persisted_output":
+                wallet.persist()
+
+        spend = _build_tx(
+            [(bytes.fromhex(str(wallet_outpoint.txid)), 0), (bytes.fromhex(str(external_outpoint.txid)), 0)],
+            [(1_000, b"\x51")],
+        )
+        root = bdk.DescriptorSecretKey(bdk.NetworkKind.TEST, bdk.Mnemonic.from_string(seed), "")
+        private_key = int.from_bytes(root.derive(bdk.DerivationPath("m/86h/1h/0h/0/0")).secret_bytes(), "big")
+        prevouts = [
+            TxOut(output.value.to_sat(), bytes(output.script_pubkey.to_bytes()))
+            for output in (wallet_output, external_output)
+        ]
+        message = sig_hash.taproot(spend, 0, prevouts, 0, 0, b"", b"")
+        signature = ssa.sign_(message, output_prvkey_from_merkle_root(private_key, b"")).serialize()
+        spend.vin[0].script_witness = Witness([signature])
+        spend.vin[1].script_witness = Witness([b"external witness"])
+        tx = bdk.Transaction(spend.serialize(include_witness=True))
+
+        assert len(wallet.apply_unconfirmed_txs([tx], last_seen=2)) == 1
+        assert wallet.get_tx(str(tx.compute_txid())) is not None
+    finally:
+        wallet.close()
+
+
+def test_reported_collaborative_taproot_transaction_is_applied() -> None:
+    seed = "brown solve pair vast find mind maze birth peanut task resist mercy"
+    config = _TestConfig()
+    config.network = bdk.Network.REGTEST
+    keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
+    proto = ProtoWallet("taproot", 1, config.network, [keystore], AddressTypes.p2tr)
+    wallet = Wallet.from_protowallet(protowallet=proto, config=config, loop_in_thread=None)
+    wallet_parent = bdk.Transaction(
+        bytes.fromhex(
+            "0200000003ca10217a56139ad864793f21d8a0a893e668b1718a0b275a8380e92d8c726a8e0300000000ffffffff"
+            "e0f0176b6273ca73d107be2239aa999057bff47bb831c7cc3f7d4ab238259afc0100000000ffffffff"
+            "b09b312989d53c38d481311768ff78a3398b0388616b582be7be82bbab8037c20000000000fdffffff"
+            "01fef27b0000000000225120bd71811f07f20e24249dafc277d7e5234dd4b536ecbc3fa1b216ba249d441e89db130000"
+        )
+    )
+    external_parent = bdk.Transaction(
+        bytes.fromhex(
+            "020000000001025dc3d851ca8e98ea6ba9afede5b3d40bab19cca04f983918baac3db6f867564d0000000000fdffffff"
+            "26252979d4d1c0e2e0a75986ff2f11b3e50758cf182f4f33dce187709a9fe06c0000000000fdffffff"
+            "021d46000000000000156a1374657374696e670a0af09fab800a0af09fab8014958e0000000000160014"
+            "271ff1fa6574e88585a39acdf6f981fea2a3413b02473044022068067597ea72b466e6bffea3aa45fde629eb67dd4a91f6373f2817521ecbb1a5"
+            "02200fba112edb06f3105fdb23eda8eb01cc9fecf593a86bbb54577aacd9aa27e8490121022dac24bbe155d6055e7a35d1cf70cb5ab56aea867e385136f04968d4fc34b56f"
+            "02473044022034cbab0fa0e57210378ab9f3878f9ac2ccddc7a494dcd2b9713ac5ee2f0ac24202204c2482df74f1732355cde193427fb22def0011782d2c78221fcb85dfd45fe1ba"
+            "012102d92621e727e018223ac6d037c97c0a1e43a67e49ae0086c4eaa28791b5d7728ad8130000"
+        )
+    )
+    tx = bdk.Transaction(
+        bytes.fromhex(
+            "02000000000102b498694bb98a1583dbeddc4b58ccce741e72a17c0d7e9eebfba4e5f14e0aae8c0000000000ffffffff"
+            "ca7a0377e7931ddfa14137fa47e53bb7c1997791859282b71ad4dbb8705fdf130100000000fdffffff"
+            "057b7f00000000000022512097c889ad31058a264a3139dab8f2ad317de9f14c82e5d25244fbff457281a66d"
+            "bd3f0000000000001976a9147a0021c1d44b801484414c536a746949c92eefbc88ac3547090100000000160014dc88e2f7247f1208106d4405130bbc796dae714b"
+            "bd3f000000000000160014966ad337643b20be5ee98123ba8fb810d80c838fb44000000000000017a914facd48efdb88c9f36c44d2f9f5bc8857953ac31587"
+            "014094d14c521bbac49eac158d5461798868cc279b177099c73a3beed12d1cef8681e3d1d0d91b8ccdc99b097178302f1d204d0461d2ff3d7d17419825c46b91aaa8"
+            "02473044022029e19f477f6821b5d3a65a0c19149b2a07aee33d5c23a1233124c7364791bf860220709f9ab4a62bf63c5440eb588c5bc4fa57be756657ddd67a57e2eefa5442daa1"
+            "012103a18fcef2fc6a068a3aacf663125720d45a9f80e86f9f7274f03c12ea95ff5a22dc130000"
+        )
+    )
+    try:
+        assert str(tx.compute_txid()) == "e5a0d3daf9bb7121d4551da2a06fa46dd31df1bcf6652069596a8a7cc89899d0"
+        assert tx.input()[0].previous_output.txid == wallet_parent.compute_txid()
+        assert tx.input()[1].previous_output.txid == external_parent.compute_txid()
+        assert len(wallet.apply_unconfirmed_txs([wallet_parent], last_seen=1)) == 1
+        prevouts, owned = wallet._prevouts_of_tx(tx)
+        assert owned == [True, False]
+        assert prevouts[1] is None
+        assert not wallet._verify_tx_signatures(tx)
+        other_wallet = SimpleNamespace(
+            get_graph_transaction=lambda txid: (
+                external_parent if txid == external_parent.compute_txid() else None
+            )
+        )
+        shared_prevouts = Wallet.prevouts_from_wallets([tx], [wallet, other_wallet])
+        assert wallet._verify_tx_signatures(tx, shared_prevouts)
+        tampered = Tx.parse(tx.serialize())
+        signature = bytearray(tampered.vin[0].script_witness.stack[0])
+        signature[0] ^= 1
+        tampered.vin[0].script_witness = Witness([bytes(signature)])
+        assert (
+            wallet.apply_unconfirmed_txs(
+                [bdk.Transaction(tampered.serialize(include_witness=True))],
+                last_seen=2,
+                known_prevouts=shared_prevouts,
+            )
+            == []
+        )
+        assert len(wallet.apply_unconfirmed_txs([tx], last_seen=2, known_prevouts=shared_prevouts)) == 1
+        assert wallet.get_tx(str(tx.compute_txid())) is not None
+        assert wallet._verify_tx_signatures(tx)
+    finally:
+        wallet.close()
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_p2p_spend_uses_prevouts_from_both_open_wallets(reverse: bool) -> None:
+    seed = "brown solve pair vast find mind maze birth peanut task resist mercy"
+    config = _TestConfig()
+    config.network = bdk.Network.REGTEST
+    keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
+    proto = ProtoWallet("taproot", 1, config.network, [keystore], AddressTypes.p2tr)
+    taproot = Wallet.from_protowallet(protowallet=proto, config=config, loop_in_thread=None)
+    other, other_outpoint = _wallet_with_funded_unconfirmed_output()
+    try:
+        taproot_outpoint = _fund_wallet_with_unconfirmed_tx(taproot)
+        taproot_parent = taproot.get_tx(str(taproot_outpoint.txid)).transaction
+        other_parent = other.get_tx(str(other_outpoint.txid)).transaction
+        taproot_output = taproot_parent.output()[0]
+        other_output = other_parent.output()[0]
+        spend = _build_tx(
+            [(bytes.fromhex(str(taproot_outpoint.txid)), 0), (bytes.fromhex(str(other_outpoint.txid)), 0)],
+            [(1_000, b"\x51")],
+        )
+        taproot_root = bdk.DescriptorSecretKey(bdk.NetworkKind.TEST, bdk.Mnemonic.from_string(seed), "")
+        taproot_key = int.from_bytes(
+            taproot_root.derive(bdk.DerivationPath("m/86h/1h/0h/0/0")).secret_bytes(), "big"
+        )
+        outputs = [
+            TxOut(output.value.to_sat(), bytes(output.script_pubkey.to_bytes()))
+            for output in (taproot_output, other_output)
+        ]
+        message = sig_hash.taproot(spend, 0, outputs, 0, 0, b"", b"")
+        spend.vin[0].script_witness = Witness(
+            [ssa.sign_(message, output_prvkey_from_merkle_root(taproot_key, b"")).serialize()]
+        )
+        other_root = bdk.DescriptorSecretKey(
+            bdk.NetworkKind.TEST, bdk.Mnemonic.from_string(other.keystores[0].mnemonic), ""
+        )
+        other_key = int.from_bytes(
+            other_root.derive(bdk.DerivationPath("m/84h/1h/0h/0/0")).secret_bytes(), "big"
+        )
+        x, y = dsa.gen_keys(other_key)[1]
+        pubkey = bytes([2 + (y & 1)]) + x.to_bytes(32, "big")
+        script_code = b"\x76\xa9\x14" + hash160(pubkey) + b"\x88\xac"
+        message = sig_hash.segwit_v0(script_code, spend, 1, 1, other_output.value.to_sat())
+        spend.vin[1].script_witness = Witness([dsa.sign_(message, other_key).serialize() + b"\x01", pubkey])
+        tx = bdk.Transaction(spend.serialize(include_witness=True))
+
+        # Each wallet has only its own parent; the Taproot signature commits to both.
+        assert not taproot._verify_tx_signatures(tx)
+        assert other._verify_tx_signatures(tx)
+        shared_prevouts = Wallet.prevouts_from_wallets([tx], [taproot, other])
+        assert taproot._verify_tx_signatures(tx, shared_prevouts)
+        altered = Tx.parse(tx.serialize())
+        signature = bytearray(altered.vin[1].script_witness.stack[0])
+        signature[5] ^= 1
+        altered.vin[1].script_witness = Witness([bytes(signature), pubkey])
+        invalid = bdk.Transaction(altered.serialize(include_witness=True))
+        assert other.apply_unconfirmed_txs([invalid], last_seen=2, known_prevouts=shared_prevouts) == []
+        assert other.get_tx(str(tx.compute_txid())) is None
+
+        def qt_wallet(wallet: Wallet) -> SimpleNamespace:
+            wrapper = SimpleNamespace(wallet=wallet, refresh_caches_and_ui_lists=Mock())
+            wrapper.apply_txs = lambda txs, last_seen, known_prevouts: QTWallet.apply_txs(
+                wrapper, txs, last_seen, known_prevouts
+            )
+            return wrapper
+
+        wrappers = [qt_wallet(taproot), qt_wallet(other)]
+        if reverse:
+            wrappers.reverse()
+        window = SimpleNamespace(
+            qt_wallets={wallet.wallet.id: wallet for wallet in wrappers},
+            config=SimpleNamespace(
+                network=bdk.Network.REGTEST,
+                network_config=SimpleNamespace(server_type=BlockchainType.CompactBlockFilter),
+            ),
+        )
+        window.apply_txs_to_wallets = lambda txs, last_seen: MainWindow.apply_txs_to_wallets(
+            window, txs, last_seen
+        )
+        MainWindow.p2p_listening_on_tx(window, tx)
+
+        assert all(wallet.get_tx(str(tx.compute_txid())) is not None for wallet in (taproot, other))
+        # The supporting data survives the other wallet closing and later sync verification.
+        assert taproot._verify_tx_signatures(tx)
+        assert all(wrapper.refresh_caches_and_ui_lists.call_count == 1 for wrapper in wrappers)
+    finally:
+        taproot.close()
+        other.close()

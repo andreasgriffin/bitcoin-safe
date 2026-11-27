@@ -803,6 +803,92 @@ def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
 
 
 @pytest.mark.marker_qt_2
+@pytest.mark.parametrize("last_seen", [0, 2])
+def test_import_unconfirmed_payment_from_another_wallet(
+    qtbot: QtBot,
+    mytest_start_time: datetime,
+    test_config: ConfigForTest,
+    monkeypatch: pytest.MonkeyPatch,
+    last_seen: int,
+) -> None:
+    shutter = Shutter(qtbot, name=f"{mytest_start_time.timestamp()}_unconfirmed_payment_{last_seen}")
+    shutter.create_symlink(test_config=test_config)
+    with main_window_context(test_config=test_config) as main_window:
+        sender = setup_single_sig_wallet(
+            main_window, qtbot, shutter, test_config, f"sender_{last_seen}", test_seeds[0]
+        )
+        receiver = setup_single_sig_wallet(
+            main_window, qtbot, shutter, test_config, f"receiver_{last_seen}", test_seeds[1]
+        )
+        creator = sender.uitx_creator
+        sender_address = sender.wallet.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+        receiver_address = receiver.wallet.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
+        funding = transaction([bytes(sender_address.script_pubkey().to_bytes())])
+        sender.wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=funding, last_seen=1)])
+        payment = (
+            bdk.TxBuilder()
+            .add_utxo(OutPoint(txid=funding.compute_txid(), vout=0))
+            .manually_selected_only()
+            .drain_to(receiver_address.script_pubkey())
+            .finish(sender.wallet.bdkwallet)
+            .extract_tx()
+        )
+        for wallet in (sender.wallet, receiver.wallet):
+            wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=payment, last_seen=last_seen)])
+            wallet.clear_cache()
+        point = OutPoint(txid=payment.compute_txid(), vout=0)
+        assert point in {utxo.outpoint for utxo in receiver.wallet.get_all_utxos()}
+        messages: list[str] = []
+        monkeypatch.setattr(
+            "bitcoin_safe.gui.qt.ui_tx.ui_tx_creator.Message", lambda text, **kwargs: messages.append(text)
+        )
+        sender.tabs.setCurrentWidget(creator)
+        creator.import_wallet_utxos(receiver.wallet)
+        qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+        assert not messages
+        assert point in creator.foreign_inputs
+        row = creator.utxo_list.find_row_by_key(point)
+        assert row is not None
+        index = creator.utxo_list.proxy.mapFromSource(
+            creator.utxo_list._source_model.index(row, UTXOList.Columns.OUTPOINT)
+        )
+        assert not creator.utxo_list.isRowHidden(index.row(), index.parent())
+
+        # The receiving wallet spends the unconfirmed payment and gets unconfirmed change.
+        child = (
+            bdk.TxBuilder()
+            .add_utxo(point)
+            .manually_selected_only()
+            .add_recipient(sender_address.script_pubkey(), bdk.Amount.from_sat(10_000))
+            .finish(receiver.wallet.bdkwallet)
+            .extract_tx()
+        )
+        for wallet in (sender.wallet, receiver.wallet):
+            wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=child, last_seen=last_seen)])
+            wallet.clear_cache()
+        change = {
+            utxo.outpoint
+            for utxo in receiver.wallet.get_all_utxos()
+            if utxo.outpoint.txid == child.compute_txid()
+        }
+        assert change
+        creator.import_wallet_utxos(receiver.wallet)
+        qtbot.waitUntil(lambda: not creator._import_busy, timeout=10_000)
+        assert not messages
+        assert change <= creator.foreign_inputs.keys()
+        assert change <= set(creator.get_outpoints())
+        assert change <= creator.utxo_list.get_displayed_outpoints()
+        qtbot.waitUntil(lambda: not creator._input_change_timer.isActive(), timeout=10_000)
+        for outpoint in change:
+            row = creator.utxo_list.find_row_by_key(outpoint)
+            assert row is not None
+            index = creator.utxo_list.proxy.mapFromSource(
+                creator.utxo_list._source_model.index(row, UTXOList.Columns.OUTPOINT)
+            )
+            assert not creator.utxo_list.isRowHidden(index.row(), index.parent())
+
+
+@pytest.mark.marker_qt_2
 def test_import_utxos_from_all_open_wallets(
     qtbot: QtBot,
     mytest_start_time: datetime,

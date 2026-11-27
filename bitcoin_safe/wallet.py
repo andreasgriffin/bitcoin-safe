@@ -1391,20 +1391,24 @@ class Wallet(BaseSaveableClass, CacheManager):
         for tx_in in transaction.input():
             outpoint = (str(tx_in.previous_output.txid), tx_in.previous_output.vout)
             known_prevout = candidate_outputs.get(outpoint) if candidate_outputs else None
-            parent = self.get_tx(outpoint[0]) if known_prevout is None else None
-            if known_prevout is None and (parent is None or outpoint[1] >= len(parent.transaction.output())):
-                prevouts.append(None)
-                wallet_owned_inputs.append(False)
-                continue
             if known_prevout is None:
-                assert parent is not None
-                spent = parent.transaction.output()[outpoint[1]]
+                parent = self.get_tx(outpoint[0])
+                parent_tx = (
+                    parent.transaction if parent else self.get_graph_transaction(tx_in.previous_output.txid)
+                )
+                spent = (
+                    parent_tx.output()[outpoint[1]]
+                    if parent_tx and outpoint[1] < len(parent_tx.output())
+                    else self.get_graph_txout(OutPoint.from_bdk(tx_in.previous_output))
+                )
+                if spent is None:
+                    prevouts.append(None)
+                    wallet_owned_inputs.append(False)
+                    continue
                 known_prevout = Prevout(
                     script_pubkey=TxOut.from_bdk(spent).spk_bytes, value=spent.value.to_sat()
                 )
-                script_pubkey = spent.script_pubkey
-            else:
-                script_pubkey = bdk.Script(known_prevout.script_pubkey)
+            script_pubkey = bdk.Script(known_prevout.script_pubkey)
             # Prevout availability and ownership are independent: a collaborative
             # Taproot signature commits to known external inputs too, but their
             # signatures are not ours to verify.
@@ -1459,11 +1463,19 @@ class Wallet(BaseSaveableClass, CacheManager):
         return True
 
     def _verify_candidate_transactions(
-        self, transactions: Mapping[str, bdk.Transaction]
+        self,
+        transactions: Mapping[str, bdk.Transaction],
+        known_prevouts: Mapping[tuple[str, int], Prevout] | None = None,
     ) -> tuple[dict[str, bdk.Transaction], dict[tuple[str, int], Prevout]]:
         """Verify candidates parent-first in rounds, retaining rejected candidates and outputs."""
         remaining = dict(transactions)
-        accepted_outputs: dict[tuple[str, int], Prevout] = {}
+        # A candidate parent must be verified in this wallet before its outputs
+        # can be used, even if another wallet already knows that transaction.
+        accepted_outputs = {
+            outpoint: output
+            for outpoint, output in (known_prevouts or {}).items()
+            if outpoint[0] not in transactions
+        }
         while remaining:
             # Defer children while a candidate parent is unverified. That makes
             # results independent of input order and prevents a failed parent's
@@ -3116,8 +3128,39 @@ class Wallet(BaseSaveableClass, CacheManager):
                 errors.append(f"{outpoint}: {exc}")
         return resolved, errors
 
+    @staticmethod
+    def prevouts_from_wallets(
+        txs: list[bdk.Transaction], wallets: list[Wallet]
+    ) -> dict[tuple[str, int], Prevout]:
+        """Collect parent outputs from open wallets before applying any of the transactions."""
+        candidate_ids = {str(tx.compute_txid()) for tx in txs}
+        outpoints = {
+            (str(txin.previous_output.txid), txin.previous_output.vout)
+            for tx in txs
+            for txin in tx.input()
+            if str(txin.previous_output.txid) not in candidate_ids
+        }
+        prevouts: dict[tuple[str, int], Prevout] = {}
+        for txid in {txid for txid, _ in outpoints}:
+            for wallet in wallets:
+                parent = wallet.get_graph_transaction(bdk.Txid.from_string(txid))
+                if parent is None or str(parent.compute_txid()) != txid:
+                    continue
+                outputs = parent.output()
+                for _, vout in (point for point in outpoints if point[0] == txid):
+                    if vout < len(outputs):
+                        output = outputs[vout]
+                        prevouts[(txid, vout)] = Prevout(
+                            TxOut.from_bdk(output).spk_bytes, output.value.to_sat()
+                        )
+                break
+        return prevouts
+
     def apply_unconfirmed_txs(
-        self, txs: list[bdk.Transaction], last_seen: int = LOCAL_TX_LAST_SEEN
+        self,
+        txs: list[bdk.Transaction],
+        last_seen: int = LOCAL_TX_LAST_SEEN,
+        known_prevouts: Mapping[tuple[str, int], Prevout] | None = None,
     ) -> list[bdk.UnconfirmedTx]:
         """Add unconfirmed transactions to the cache and state."""
 
@@ -3125,7 +3168,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.advance_tip_to_addresses([address for tx in txs for address in self.get_output_addresses(tx)])
 
         candidates = {str(tx.compute_txid()): tx for tx in txs}
-        remaining, _accepted_outputs = self._verify_candidate_transactions(candidates)
+        remaining, _accepted_outputs = self._verify_candidate_transactions(candidates, known_prevouts)
         accepted: list[bdk.UnconfirmedTx] = []
         for txid, tx in candidates.items():
             if txid in remaining:
@@ -3139,6 +3182,24 @@ class Wallet(BaseSaveableClass, CacheManager):
             ):
                 accepted.append(bdk.UnconfirmedTx(tx=tx, last_seen=last_seen))
 
+        # Retain verified supporting prevouts for later sync updates, when the
+        # other wallet might be closed and the transaction is verified again.
+        if known_prevouts:
+            for entry in accepted:
+                _, owned_inputs = self._prevouts_of_tx(entry.tx, _accepted_outputs)
+                if not any(owned_inputs):
+                    continue
+                for txin in entry.tx.input():
+                    outpoint = txin.previous_output
+                    key = (str(outpoint.txid), outpoint.vout)
+                    if (prevout := known_prevouts.get(key)) and key[0] not in candidates:
+                        self.bdkwallet.insert_txout(
+                            outpoint,
+                            bdk.TxOut(
+                                value=bdk.Amount.from_sat(prevout.value),
+                                script_pubkey=bdk.Script(prevout.script_pubkey),
+                            ),
+                        )
         self.bdkwallet.apply_unconfirmed_txs(accepted)
         self.persist()
 
