@@ -159,6 +159,155 @@ def _txid_bytes(tx: bdk.Transaction) -> bytes:
     return bytes.fromhex(str(tx.compute_txid()))
 
 
+class _GraphWallet(SimpleNamespace):
+    get_graph_prevout_evidence = Wallet.get_graph_prevout_evidence
+
+
+def test_prevouts_from_wallets_scans_each_graph_once() -> None:
+    canonical = _raw_tx([(b"\x11" * 32, 0)], [(1_000, b"\x51")])
+    staged = _raw_tx([(b"\x22" * 32, 0)], [(2_000, b"\x51"), (3_000, b"\x51")])
+    persisted = _raw_tx([(b"\x33" * 32, 0)], [(4_000, b"\x51")])
+    candidate = _raw_tx([(b"\x44" * 32, 0)], [(5_000, b"\x51")])
+    child = _raw_tx(
+        [
+            (_txid_bytes(canonical), 0),
+            (_txid_bytes(staged), 0),
+            (_txid_bytes(staged), 1),
+            (_txid_bytes(persisted), 0),
+            (_txid_bytes(persisted), 1),  # Invalid output index.
+            (_txid_bytes(candidate), 0),  # Candidate parent must not be shared.
+            (b"\x55" * 32, 0),  # Unknown parent.
+        ],
+        [(1_000, b"\x51")],
+    )
+    staged_graph = Mock(return_value=SimpleNamespace(txs=[staged, candidate], txouts={}))
+    persisted_graph = Mock(return_value=SimpleNamespace(txs=[persisted], txouts={}))
+    get_tx = Mock(
+        side_effect=lambda txid: (
+            SimpleNamespace(transaction=canonical) if txid == canonical.compute_txid() else None
+        )
+    )
+    wallet = _GraphWallet(
+        bdkwallet=SimpleNamespace(
+            get_tx=get_tx, staged=Mock(return_value=SimpleNamespace(tx_graph_changeset=staged_graph))
+        ),
+        serialize_persistence=SimpleNamespace(change_set=SimpleNamespace(tx_graph_changeset=persisted_graph)),
+    )
+    assert Wallet.prevouts_from_wallets([candidate, child], [wallet]) == {
+        (str(canonical.compute_txid()), 0): Prevout(b"\x51", 1_000),
+        (str(staged.compute_txid()), 0): Prevout(b"\x51", 2_000),
+        (str(staged.compute_txid()), 1): Prevout(b"\x51", 3_000),
+        (str(persisted.compute_txid()), 0): Prevout(b"\x51", 4_000),
+    }
+    staged_graph.assert_called_once_with()
+    persisted_graph.assert_called_once_with()
+    assert get_tx.call_count == 5  # Includes the candidate's own unknown parent.
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_prevouts_from_wallets_standalone_fallback(reverse: bool) -> None:
+    full_parent = _raw_tx([(b"\x61" * 32, 0)], [(1_000, b"\x51")])
+    candidate = _raw_tx([(b"\x62" * 32, 0)], [(2_000, b"\x51")])
+    shared = b"\x63" * 32
+    conflict = b"\x64" * 32
+    missing = b"\x65" * 32
+    child = _raw_tx(
+        [
+            (_txid_bytes(full_parent), 0),
+            (_txid_bytes(full_parent), 1),  # A full parent rules out this vout.
+            (_txid_bytes(candidate), 0),
+            (shared, 0),
+            (conflict, 0),
+            (missing, 0),
+        ],
+        [(1_000, b"\x51")],
+    )
+
+    def point(txid: bytes, vout: int = 0) -> bdk.HashableOutPoint:
+        return bdk.HashableOutPoint(bdk.OutPoint(txid=bdk.Txid.from_string(txid.hex()), vout=vout))
+
+    def output(value: int, script: bytes = b"\x51") -> bdk.TxOut:
+        return bdk.TxOut(value=bdk.Amount.from_sat(value), script_pubkey=bdk.Script(script))
+
+    def wallet(txs, staged_txouts, persisted_txouts):
+        staged_graph = Mock(return_value=SimpleNamespace(txs=[], txouts=staged_txouts))
+        persisted_graph = Mock(return_value=SimpleNamespace(txs=txs, txouts=persisted_txouts))
+        return _GraphWallet(
+            bdkwallet=SimpleNamespace(
+                get_tx=Mock(return_value=None),
+                staged=Mock(return_value=SimpleNamespace(tx_graph_changeset=staged_graph)),
+            ),
+            serialize_persistence=SimpleNamespace(
+                change_set=SimpleNamespace(tx_graph_changeset=persisted_graph)
+            ),
+        )
+
+    wallets = [
+        wallet(
+            [],
+            {
+                point(_txid_bytes(full_parent)): output(99_000),
+                point(_txid_bytes(full_parent), 1): output(99_000),
+                point(shared): output(3_000),
+                point(conflict): output(4_000),
+                point(_txid_bytes(candidate)): output(99_000),
+            },
+            {},
+        ),
+        wallet([full_parent], {}, {point(shared): output(3_000), point(conflict): output(4_000, b"\x52")}),
+    ]
+    if reverse:
+        wallets.reverse()
+    assert Wallet.prevouts_from_wallets([candidate, child], wallets) == {
+        (str(full_parent.compute_txid()), 0): Prevout(b"\x51", 1_000),
+        (shared.hex(), 0): Prevout(b"\x51", 3_000),
+    }
+    for source in wallets:
+        source.bdkwallet.staged.assert_called_once_with()
+        source.bdkwallet.staged.return_value.tx_graph_changeset.assert_called_once_with()
+        source.serialize_persistence.change_set.tx_graph_changeset.assert_called_once_with()
+
+
+def test_prevouts_from_wallets_canonical_lookup_skips_graphs() -> None:
+    parent = _raw_tx([(b"\x71" * 32, 0)], [(2_000, b"\x51")])
+    child = _raw_tx([(_txid_bytes(parent), 0)], [(1_000, b"\x51")])
+    wallet = _GraphWallet(
+        bdkwallet=SimpleNamespace(
+            get_tx=Mock(return_value=SimpleNamespace(transaction=parent)), staged=Mock()
+        ),
+        serialize_persistence=SimpleNamespace(change_set=Mock()),
+    )
+    assert Wallet.prevouts_from_wallets([child], [wallet]) == {
+        (str(parent.compute_txid()), 0): Prevout(b"\x51", 2_000)
+    }
+    wallet.bdkwallet.staged.assert_not_called()
+    wallet.serialize_persistence.change_set.tx_graph_changeset.assert_not_called()
+
+
+def test_prevouts_from_wallets_rejects_conflict_within_wallet() -> None:
+    txid = b"\x72" * 32
+    child = _raw_tx([(txid, 0)], [(1_000, b"\x51")])
+    point = bdk.HashableOutPoint(bdk.OutPoint(txid=bdk.Txid.from_string(txid.hex()), vout=0))
+    staged = bdk.TxOut(value=bdk.Amount.from_sat(2_000), script_pubkey=bdk.Script(b"\x51"))
+    persisted = bdk.TxOut(value=bdk.Amount.from_sat(3_000), script_pubkey=bdk.Script(b"\x51"))
+    wallet = _GraphWallet(
+        bdkwallet=SimpleNamespace(
+            get_tx=Mock(return_value=None),
+            staged=Mock(
+                return_value=SimpleNamespace(
+                    tx_graph_changeset=Mock(return_value=SimpleNamespace(txs=[], txouts={point: staged}))
+                )
+            ),
+        ),
+        serialize_persistence=SimpleNamespace(
+            change_set=SimpleNamespace(
+                tx_graph_changeset=Mock(return_value=SimpleNamespace(txs=[], txouts={point: persisted}))
+            )
+        ),
+    )
+    assert Wallet.prevouts_from_wallets([child], [wallet]) == {}
+
+
 def _enable_dependency_verification(wallet: SimpleNamespace) -> None:
     wallet._prevouts_of_tx = lambda tx, _outputs=None: ([None] * len(tx.input()), [False] * len(tx.input()))
     wallet._verify_candidate_transactions = lambda candidates, known_prevouts=None: (
@@ -533,10 +682,16 @@ def test_reported_collaborative_taproot_transaction_is_applied() -> None:
         assert owned == [True, False]
         assert prevouts[1] is None
         assert not wallet._verify_tx_signatures(tx)
-        other_wallet = SimpleNamespace(
-            get_graph_transaction=lambda txid: (
-                external_parent if txid == external_parent.compute_txid() else None
-            )
+        other_wallet = _GraphWallet(
+            bdkwallet=SimpleNamespace(
+                get_tx=lambda txid: (
+                    SimpleNamespace(transaction=external_parent)
+                    if txid == external_parent.compute_txid()
+                    else None
+                ),
+                staged=lambda: None,
+            ),
+            serialize_persistence=SimpleNamespace(change_set=None),
         )
         shared_prevouts = Wallet.prevouts_from_wallets([tx], [wallet, other_wallet])
         assert wallet._verify_tx_signatures(tx, shared_prevouts)
