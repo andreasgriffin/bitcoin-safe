@@ -44,7 +44,8 @@ from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.outpoint_parser import parse_outpoints
 from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, Recipient, TxOut, UtxosForInputs
 from bitcoin_safe.tx import TxInputInfo, TxUiInfos
-from bitcoin_safe.wallet import BdkWallet, Wallet
+from bitcoin_safe.wallet import BdkWallet, SpentWalletOutputError, Wallet
+from bitcoin_safe.wallet_aggregation import collect_known_outputs, collect_known_outputs_and_transactions
 
 NETWORK = bdk.Network.REGTEST
 
@@ -78,6 +79,11 @@ def make_wallet(seed: str, wallet_id: str) -> MagicMock:
     )
     wallet.get_graph_transaction.side_effect = lambda txid: Wallet.get_graph_transaction(wallet, txid)
     wallet.get_graph_txout.side_effect = lambda outpoint: Wallet.get_graph_txout(wallet, outpoint)
+    wallet.get_known_outputs_and_transactions.side_effect = lambda points: (
+        Wallet.get_known_outputs_and_transactions(wallet, points)
+    )
+    wallet.get_known_outputs.side_effect = lambda points: Wallet.get_known_outputs(wallet, points)
+    wallet.get_known_output.side_effect = lambda point: Wallet.get_known_output(wallet, point)
     wallet.get_all_txos_dict.return_value = {}
     wallet.get_dict_fulltxdetail.return_value = {}
     return wallet
@@ -104,8 +110,33 @@ def wallets() -> tuple[MagicMock, MagicMock]:
 
 def test_empty_outpoints_do_not_scan_wallets() -> None:
     wallet = MagicMock(spec=Wallet)
-    assert Wallet.get_known_wallet_outputs(set(), [wallet]) == {}
+    assert collect_known_outputs(set(), [wallet]) == {}
+    assert Wallet.get_known_outputs_and_transactions(wallet, set()) == ({}, {})
     assert not wallet.mock_calls
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+@pytest.mark.parametrize("spent", [False, True])
+def test_collect_known_outputs_merges_wallet_evidence(reverse: bool, spent: bool) -> None:
+    first_tx = transaction([b"\x51"])
+    second_tx = transaction([b"\x52"])
+    point = OutPoint(txid=first_tx.compute_txid(), vout=0)
+    first = MagicMock(spec=Wallet)
+    second = MagicMock(spec=Wallet)
+    first.get_known_outputs_and_transactions.return_value = (
+        {point: first_tx.output()[0]},
+        {point.txid_str: first_tx},
+    )
+    observation = SpentWalletOutputError("spent") if spent else second_tx.output()[0]
+    second.get_known_outputs_and_transactions.return_value = ({point: observation}, {})
+    sources = [second, first] if reverse else [first, second]
+
+    outputs, parents = collect_known_outputs_and_transactions({point}, sources)
+
+    assert isinstance(outputs[point], SpentWalletOutputError if spent else ValueError)
+    assert parents == {point.txid_str: first_tx}
+    first.get_known_outputs_and_transactions.assert_called_once_with({point})
+    second.get_known_outputs_and_transactions.assert_called_once_with({point})
 
 
 def test_parse_multiple_outpoints_and_report_errors() -> None:

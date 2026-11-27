@@ -50,6 +50,7 @@ from bitcoin_safe.input_signature_verifier import Prevout
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.pythonbdk_types import OutPoint as WalletOutPoint
 from bitcoin_safe.wallet import ProtoWallet, Wallet
+from bitcoin_safe.wallet_aggregation import prevouts_from_wallets
 from tests.helpers import TestConfig as _TestConfig
 from tests.non_gui.test_signers import TAPROOT_TEST_SEED
 from tests.non_gui.utils import create_keystore, create_multisig_protowallet
@@ -224,7 +225,7 @@ def test_prevouts_from_wallets_scans_each_graph_once() -> None:
         ),
         serialize_persistence=SimpleNamespace(change_set=SimpleNamespace(tx_graph_changeset=persisted_graph)),
     )
-    assert Wallet.prevouts_from_wallets([candidate, child], [wallet]) == {
+    assert prevouts_from_wallets([candidate, child], [wallet]) == {
         (str(canonical.compute_txid()), 0): Prevout(b"\x51", 1_000),
         (str(staged.compute_txid()), 0): Prevout(b"\x51", 2_000),
         (str(staged.compute_txid()), 1): Prevout(b"\x51", 3_000),
@@ -289,7 +290,7 @@ def test_prevouts_from_wallets_standalone_fallback(reverse: bool) -> None:
     ]
     if reverse:
         wallets.reverse()
-    assert Wallet.prevouts_from_wallets([candidate, child], wallets) == {
+    assert prevouts_from_wallets([candidate, child], wallets) == {
         (str(full_parent.compute_txid()), 0): Prevout(b"\x51", 1_000),
         (shared.hex(), 0): Prevout(b"\x51", 3_000),
     }
@@ -308,7 +309,7 @@ def test_prevouts_from_wallets_canonical_lookup_skips_graphs() -> None:
         ),
         serialize_persistence=SimpleNamespace(change_set=Mock()),
     )
-    assert Wallet.prevouts_from_wallets([child], [wallet]) == {
+    assert prevouts_from_wallets([child], [wallet]) == {
         (str(parent.compute_txid()), 0): Prevout(b"\x51", 2_000)
     }
     wallet.bdkwallet.staged.assert_not_called()
@@ -336,7 +337,7 @@ def test_prevouts_from_wallets_rejects_conflict_within_wallet() -> None:
             )
         ),
     )
-    assert Wallet.prevouts_from_wallets([child], [wallet]) == {}
+    assert prevouts_from_wallets([child], [wallet]) == {}
 
 
 def _enable_dependency_verification(wallet: SimpleNamespace) -> None:
@@ -724,7 +725,7 @@ def test_reported_collaborative_taproot_transaction_is_applied() -> None:
             ),
             serialize_persistence=SimpleNamespace(change_set=None),
         )
-        shared_prevouts = Wallet.prevouts_from_wallets([tx], [wallet, other_wallet])
+        shared_prevouts = prevouts_from_wallets([tx], [wallet, other_wallet])
         assert wallet._verify_tx_signatures(tx, shared_prevouts)
         tampered = Tx.parse(tx.serialize())
         signature = bytearray(tampered.vin[0].script_witness.stack[0])
@@ -792,7 +793,7 @@ def test_p2p_spend_uses_prevouts_from_both_open_wallets(reverse: bool) -> None:
         # Each wallet has only its own parent; the Taproot signature commits to both.
         assert not taproot._verify_tx_signatures(tx)
         assert other._verify_tx_signatures(tx)
-        shared_prevouts = Wallet.prevouts_from_wallets([tx], [taproot, other])
+        shared_prevouts = prevouts_from_wallets([tx], [taproot, other])
         assert taproot._verify_tx_signatures(tx, shared_prevouts)
         altered = Tx.parse(tx.serialize())
         signature = bytearray(altered.vin[1].script_witness.stack[0])

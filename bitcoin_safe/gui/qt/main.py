@@ -134,6 +134,7 @@ from bitcoin_safe.theme import apply_theme_mode
 from bitcoin_safe.tx import HiddenTxUiInfos, TxBuilderInfos, TxUiInfos, short_tx_id
 from bitcoin_safe.util import OptExcInfo, filename_clean
 from bitcoin_safe.wallet import ProtoWallet, ToolsTxUiInfo, Wallet, get_wallets
+from bitcoin_safe.wallet_aggregation import prevouts_from_wallets
 from bitcoin_safe.wallet_import.bitcoin_safe_bridge import apply_bip329_labels
 from bitcoin_safe.wallet_import.model import WalletExchange
 from bitcoin_safe.wallet_util import get_default_categories
@@ -1842,7 +1843,7 @@ class MainWindow(UnlockableMainWindow):
 
     def apply_txs_to_wallets(self, txs: list[bdk.Transaction], last_seen: int) -> None:
         qt_wallets = list(self.qt_wallets.values())
-        prevouts = Wallet.prevouts_from_wallets(txs, [qt_wallet.wallet for qt_wallet in qt_wallets])
+        prevouts = prevouts_from_wallets(txs, [qt_wallet.wallet for qt_wallet in qt_wallets])
         for qt_wallet in qt_wallets:
             qt_wallet.apply_txs(txs, last_seen=last_seen, known_prevouts=prevouts)
 

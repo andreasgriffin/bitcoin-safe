@@ -39,6 +39,7 @@ import bdkpython as bdk
 from .foreign_utxo import ForeignUtxo
 from .pythonbdk_types import OutPoint, TxOut
 from .wallet import SpentWalletOutputError, Wallet
+from .wallet_aggregation import collect_known_outputs_and_transactions
 
 
 async def resolve_foreign_outpoints(
@@ -60,9 +61,7 @@ async def resolve_foreign_outpoints(
     supplied_inputs = psbt_inputs or {}
     saved_inputs = existing_inputs or {}
     descriptors = [(wallet.id, wallet.bdkwallet) for wallet in wallets]
-    known_outputs, local_transactions = Wallet.get_known_wallet_outputs_and_transactions(
-        set(outpoints), wallets
-    )
+    known_outputs, local_transactions = collect_known_outputs_and_transactions(set(outpoints), wallets)
     transactions: dict[str, bdk.Transaction | Exception] = dict(local_transactions)
     # Saved inputs override wallet parents; supplied PSBT parents override both.
     for point, item in saved_inputs.items():

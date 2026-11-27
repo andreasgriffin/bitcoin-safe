@@ -98,6 +98,7 @@ from ....wallet import (
     get_tx_details,
     get_wallets,
 )
+from ....wallet_aggregation import collect_known_outputs
 from ..dialog_import import ImportDialog
 from ..my_treeview import MyItemDataRole
 from ..util import HLine, Message, MessageType
@@ -832,7 +833,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         wallets = get_wallets(self.wallet_functions)
         # Recheck current spendability and previous-output consistency for foreign inputs.
         foreign_outpoints = {op for op, item in tx_ui_infos.inputs.items() if item.psbt_input is not None}
-        known = Wallet.get_known_wallet_outputs(foreign_outpoints, [self.wallet, *wallets])
+        known = collect_known_outputs(foreign_outpoints, [self.wallet, *wallets])
         try:
             for outpoint, result in known.items():
                 if isinstance(result, Exception):
@@ -890,9 +891,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         if not self.wallet:
             return {}
         wallets = [self.wallet, *[w for w in get_wallets(self.wallet_functions) if w != self.wallet]]
-        known = (
-            Wallet.get_known_wallet_outputs(set(self.foreign_inputs), wallets) if self.foreign_inputs else {}
-        )
+        known = collect_known_outputs(set(self.foreign_inputs), wallets)
         usable: dict[OutPoint, TxInputInfo] = {}
         for op, foreign in self.foreign_inputs.items():
             item = TxInputInfo(foreign.utxo, foreign.psbt_input, foreign.satisfaction_weight)
