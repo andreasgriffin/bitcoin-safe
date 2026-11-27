@@ -40,6 +40,7 @@ from unittest.mock import AsyncMock, MagicMock
 import bdkpython as bdk
 import pytest
 from bitcoin_safe_lib.gui.qt.satoshis import Satoshis
+from bitcoin_usb.software_signer import SoftwareSigner
 from PyQt6.QtCore import QItemSelectionModel, QSignalBlocker
 from pytestqt.qtbot import QtBot
 
@@ -919,16 +920,28 @@ def test_import_unconfirmed_payment_from_another_wallet(
         receiver_address = receiver.wallet.bdkwallet.reveal_next_address(bdk.KeychainKind.EXTERNAL).address
         funding = transaction([bytes(sender_address.script_pubkey().to_bytes())])
         sender.wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=funding, last_seen=1)])
-        payment = (
+        payment_psbt = (
             bdk.TxBuilder()
             .add_utxo(OutPoint(txid=funding.compute_txid(), vout=0))
             .manually_selected_only()
             .drain_to(receiver_address.script_pubkey())
             .finish(sender.wallet.bdkwallet)
-            .extract_tx()
         )
+        receive_descriptor, change_descriptor = sender.wallet.multipath_descriptor.to_single_descriptors()
+        signer = SoftwareSigner(
+            mnemonic=sender.wallet.keystores[0].mnemonic,
+            network=sender.wallet.network,
+            receive_descriptor=str(receive_descriptor),
+            change_descriptor=str(change_descriptor),
+        )
+        signed_psbt = signer.sign_psbt(payment_psbt)
+        assert signed_psbt is not None
+        payment = signed_psbt.extract_tx()
         for wallet in (sender.wallet, receiver.wallet):
-            wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=payment, last_seen=last_seen)])
+            events = wallet.bdkwallet.apply_unconfirmed_txs_events(
+                [bdk.UnconfirmedTx(tx=payment, last_seen=last_seen)]
+            )
+            assert not any(isinstance(event, bdk.WalletEvent.TX_REJECTED) for event in events)
             wallet.clear_cache()
         point = OutPoint(txid=payment.compute_txid(), vout=0)
         assert point in {utxo.outpoint for utxo in receiver.wallet.get_all_utxos()}
@@ -949,16 +962,28 @@ def test_import_unconfirmed_payment_from_another_wallet(
         assert not creator.utxo_list.isRowHidden(index.row(), index.parent())
 
         # The receiving wallet spends the unconfirmed payment and gets unconfirmed change.
-        child = (
+        child_psbt = (
             bdk.TxBuilder()
             .add_utxo(point)
             .manually_selected_only()
             .add_recipient(sender_address.script_pubkey(), bdk.Amount.from_sat(10_000))
             .finish(receiver.wallet.bdkwallet)
-            .extract_tx()
         )
+        receive_descriptor, change_descriptor = receiver.wallet.multipath_descriptor.to_single_descriptors()
+        signer = SoftwareSigner(
+            mnemonic=receiver.wallet.keystores[0].mnemonic,
+            network=receiver.wallet.network,
+            receive_descriptor=str(receive_descriptor),
+            change_descriptor=str(change_descriptor),
+        )
+        signed_psbt = signer.sign_psbt(child_psbt)
+        assert signed_psbt is not None
+        child = signed_psbt.extract_tx()
         for wallet in (sender.wallet, receiver.wallet):
-            wallet.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=child, last_seen=last_seen)])
+            events = wallet.bdkwallet.apply_unconfirmed_txs_events(
+                [bdk.UnconfirmedTx(tx=child, last_seen=last_seen)]
+            )
+            assert not any(isinstance(event, bdk.WalletEvent.TX_REJECTED) for event in events)
             wallet.clear_cache()
         change = {
             utxo.outpoint
