@@ -29,6 +29,10 @@
 
 from __future__ import annotations
 
+import json
+from hashlib import sha256
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from threading import Thread
 from types import SimpleNamespace
 from unittest.mock import Mock
 
@@ -340,7 +344,10 @@ def _event_wallet(reject_txids: set[str]) -> SimpleNamespace:
         get_output_addresses=lambda _tx: [],
         advance_tip_to_addresses=lambda _addresses: [],
         get_tx=lambda _txid: None,
-        _prevouts_of_tx=lambda tx, _outputs=None: ([None] * len(tx.input()), [False] * len(tx.input())),
+        _prevouts_of_tx=lambda tx, _outputs=None, **_kwargs: (
+            [None] * len(tx.input()),
+            [False] * len(tx.input()),
+        ),
         bdkwallet=SimpleNamespace(apply_unconfirmed_txs_events=Mock(side_effect=apply)),
         persist=Mock(),
     )
@@ -503,30 +510,166 @@ def test_real_bdk_rejects_unsigned_wallet_input(caplog) -> None:
         wallet.close()
 
 
+@pytest.mark.parametrize("conflict", [False, True])
+def test_graph_prevout_takes_precedence_and_is_not_reinserted(monkeypatch, caplog, conflict) -> None:
+    wallet, outpoint = _wallet_with_funded_unconfirmed_output()
+    try:
+        parent = wallet.get_tx(str(outpoint.txid))
+        assert parent is not None
+        output = parent.transaction.output()[outpoint.vout]
+        actual = Prevout(bytes(output.script_pubkey.to_bytes()), output.value.to_sat())
+        supplied = Prevout(b"\x51", actual.value + 1) if conflict else actual
+        spend = _create_signed_spend(wallet, outpoint)
+        known = {(str(outpoint.txid), outpoint.vout): supplied}
+        missing: list[tuple[bdk.OutPoint, Prevout]] = []
+        prevouts, owned = wallet._prevouts_of_tx(spend, known, missing_prevouts=missing)
+        assert prevouts == [actual]
+        assert owned == [True]
+        assert not missing
+        insert = Mock(wraps=wallet.bdkwallet.insert_txout)
+        monkeypatch.setattr(wallet.bdkwallet, "insert_txout", insert)
+        assert len(wallet.apply_unconfirmed_txs([spend], last_seen=2, known_prevouts=known)) == 1
+        insert.assert_not_called()
+        if conflict:
+            assert "Ignoring conflicting supplied prevout" in caplog.text
+    finally:
+        wallet.close()
+
+
+def _esplora_tx(tx: bdk.Transaction, previous: bdk.Transaction | None = None) -> dict:
+    """Serialize the fields consumed by rust-esplora-client, including the witness."""
+    parsed = Tx.parse(bytes(tx.serialize()))
+    outputs = [
+        {"value": output.value.to_sat(), "scriptpubkey": bytes(output.script_pubkey.to_bytes()).hex()}
+        for output in tx.output()
+    ]
+    inputs = []
+    for txin, native in zip(tx.input(), parsed.vin, strict=True):
+        point = txin.previous_output
+        prevout = None
+        if previous is not None and point.txid == previous.compute_txid():
+            output = previous.output()[point.vout]
+            prevout = {
+                "value": output.value.to_sat(),
+                "scriptpubkey": bytes(output.script_pubkey.to_bytes()).hex(),
+            }
+        inputs.append(
+            {
+                "txid": str(point.txid),
+                "vout": point.vout,
+                "prevout": prevout,
+                "scriptsig": native.script_sig.hex(),
+                "witness": [item.hex() for item in native.script_witness.stack],
+                "sequence": native.sequence,
+                "is_coinbase": False,
+            }
+        )
+    return {
+        "txid": str(tx.compute_txid()),
+        "version": parsed.version,
+        "locktime": parsed.lock_time,
+        "vin": inputs,
+        "vout": outputs,
+        "size": len(tx.serialize()),
+        "weight": len(parsed.serialize(include_witness=False)) * 3 + len(tx.serialize()),
+        "fee": 0,
+        "status": {"confirmed": False},
+    }
+
+
 def test_sync_clears_wallet_caches_before_persisting_events(monkeypatch, caplog) -> None:
-    config = _TestConfig()
-    config.network = bdk.Network.REGTEST
-    protowallet = create_multisig_protowallet(
-        threshold=1,
-        signers=1,
-        key_origins=["m/84h/1h/0h"],
-        network=config.network,
-    )
-    wallet = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
-    calls: list[str] = []
-    tx = _raw_tx([(b"\x41" * 32, 0)], [(2_000, b"\x51")])
-    reason = bdk.TxRejectedReason.INVALID_INPUT(input_index=0)
-    event = bdk.WalletEvent.TX_REJECTED(txid=tx.compute_txid(), tx=tx, reason=reason)
-    monkeypatch.setattr(wallet.bdkwallet, "apply_update_events", lambda _update: [event])
-    monkeypatch.setattr(wallet, "clear_cache", lambda **_kwargs: calls.append("clear_cache"))
-    monkeypatch.setattr(wallet, "persist", lambda: calls.append("persist"))
+    wallet, outpoint = _wallet_with_funded_unconfirmed_output()
+    try:
+        funding = wallet.get_tx(str(outpoint.txid))
+        assert funding is not None
+        parent = funding.transaction
+        spend = _create_signed_spend(wallet, outpoint)
+        tampered = Tx.parse(bytes(spend.serialize()))
+        witness = tampered.vin[0].script_witness.stack
+        signature = bytearray(witness[0])
+        signature[5] ^= 1
+        tampered.vin[0].script_witness = Witness([bytes(signature), *witness[1:]])
+        invalid = bdk.Transaction(tampered.serialize(include_witness=True))
+        assert invalid.compute_txid() == spend.compute_txid()
 
-    wallet._apply_update(object())
+        # Simulate an untrusted chain source. Only the HTTP responses are fake;
+        # both Esplora's Update construction and BDK's verifier are real.
+        script = bytes(parent.output()[outpoint.vout].script_pubkey.to_bytes())
+        history_path = f"/scripthash/{sha256(script).hexdigest()}/txs"
+        genesis = {
+            "id": "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
+            "height": 0,
+            "version": 1,
+            "timestamp": 1296688602,
+            "tx_count": 1,
+            "size": 285,
+            "weight": 1140,
+            "merkle_root": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+            "previousblockhash": None,
+            "mediantime": 1296688602,
+            "nonce": 2,
+            "bits": 0x207FFFFF,
+            "difficulty": 1.0,
+        }
+        history = [_esplora_tx(invalid, parent), _esplora_tx(parent)]
 
-    assert calls == ["clear_cache", "persist"]
-    assert str(event.txid) in caplog.text
-    assert str(reason) in caplog.text
-    wallet.close()
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(self) -> None:
+                if self.path == "/blocks":
+                    response = [genesis]
+                elif self.path == history_path:
+                    response = history
+                elif self.path.startswith("/scripthash/") and self.path.endswith("/txs"):
+                    response = []
+                else:
+                    self.send_error(404)
+                    return
+                body = json.dumps(response).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+        with ThreadingHTTPServer(("127.0.0.1", 0), Handler) as server:
+            thread = Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                client = bdk.EsploraClient(f"http://127.0.0.1:{server.server_port}", timeout=5)
+                request = wallet.bdkwallet.start_sync_with_revealed_spks().build()
+                update = client.sync(request=request, parallel_requests=1)
+            finally:
+                server.shutdown()
+                thread.join()
+
+        calls: list[str] = []
+        clear_cache = wallet.clear_cache
+        persist = wallet.persist
+
+        def record_clear(**kwargs):
+            calls.append("clear_cache")
+            clear_cache(**kwargs)
+
+        def record_persist():
+            calls.append("persist")
+            persist()
+
+        monkeypatch.setattr(wallet, "clear_cache", record_clear)
+        monkeypatch.setattr(wallet, "persist", record_persist)
+        events = wallet._apply_update(update)
+
+        assert calls[:2] == ["clear_cache", "persist"]
+        rejected = [event for event in events if isinstance(event, bdk.WalletEvent.TX_REJECTED)]
+        assert any(
+            event.txid == invalid.compute_txid()
+            and isinstance(event.reason, bdk.TxRejectedReason.INVALID_INPUT)
+            for event in rejected
+        )
+        assert str(invalid.compute_txid()) in caplog.text
+        assert wallet.get_tx(str(invalid.compute_txid())) is None
+        assert wallet.get_tx(str(parent.compute_txid())) is not None
+    finally:
+        wallet.close()
 
 
 def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> None:
@@ -543,13 +686,14 @@ def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> 
 
 
 @pytest.mark.parametrize("source", ["staged_output", "persisted_output", "graph_transaction"])
-def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str) -> None:
+def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str, monkeypatch) -> None:
     seed = TAPROOT_TEST_SEED
     config = _TestConfig()
     config.network = bdk.Network.REGTEST
     keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
     proto = ProtoWallet("taproot", 1, config.network, [keystore], AddressTypes.p2tr)
     wallet = Wallet.from_protowallet(protowallet=proto, config=config, loop_in_thread=None)
+    original_wallet = wallet
     try:
         wallet_outpoint = _fund_wallet_with_unconfirmed_tx(wallet)
         wallet_output = wallet.get_tx(str(wallet_outpoint.txid)).transaction.output()[0]
@@ -557,10 +701,23 @@ def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str)
         external_outpoint = bdk.OutPoint(txid=external_parent.compute_txid(), vout=0)
         external_output = external_parent.output()[0]
         if source == "graph_transaction":
-            wallet.serialize_persistence.change_set = bdk.ChangeSet.from_tx_graph_changeset(
-                bdk.TxGraphChangeSet(
-                    txs=[external_parent], txouts={}, anchors=[], last_seen={}, first_seen={}, last_evicted={}
+            # Load the complete parent into the actual BDK graph. Merely replacing
+            # the Python persistence snapshot does not change the live BDK graph.
+            wallet.serialize_persistence.persist(
+                bdk.ChangeSet.from_tx_graph_changeset(
+                    bdk.TxGraphChangeSet(
+                        txs=[external_parent],
+                        txouts={},
+                        anchors=[],
+                        last_seen={},
+                        first_seen={},
+                        last_evicted={},
+                    )
                 )
+            )
+            wallet = Wallet.from_dump(
+                wallet.dump(),
+                class_kwargs={"Wallet": {"config": config, "loop_in_thread": wallet.loop_in_thread}},
             )
         else:
             wallet.bdkwallet.insert_txout(external_outpoint, external_output)
@@ -583,10 +740,16 @@ def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str)
         spend.vin[1].script_witness = Witness([b"external witness"])
         tx = bdk.Transaction(spend.serialize(include_witness=True))
 
-        assert len(wallet.apply_unconfirmed_txs([tx], last_seen=2)) == 1
+        insert = Mock(wraps=wallet.bdkwallet.insert_txout)
+        monkeypatch.setattr(wallet.bdkwallet, "insert_txout", insert)
+        conflicting = {(str(external_outpoint.txid), external_outpoint.vout): Prevout(b"\x51", 1)}
+        assert len(wallet.apply_unconfirmed_txs([tx], last_seen=2, known_prevouts=conflicting)) == 1
         assert wallet.get_tx(str(tx.compute_txid())) is not None
+        insert.assert_not_called()
     finally:
         wallet.close()
+        if wallet is not original_wallet:
+            original_wallet.close()
 
 
 def test_reported_collaborative_taproot_transaction_is_applied() -> None:

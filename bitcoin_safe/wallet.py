@@ -1380,37 +1380,46 @@ class Wallet(BaseSaveableClass, CacheManager):
         self,
         transaction: bdk.Transaction,
         candidate_outputs: Mapping[tuple[str, int], Prevout] | None = None,
+        *,
+        missing_prevouts: list[tuple[bdk.OutPoint, Prevout]] | None = None,
     ) -> tuple[list[Prevout | None], list[bool]]:
         """Return known prevouts and independent wallet ownership flags in input order.
 
-        ``candidate_outputs`` maps an outpoint ``(txid_hex, vout)`` to the output it spends
-        (``Prevout``: scriptPubKey bytes and value in satoshis). It supplies prevouts that the
-        wallet cannot look up itself, such as the outputs of unconfirmed parents in a PSBT.
-        Outpoints missing from it are looked up in the wallet's transactions. Pass None when
-        the wallet's own transactions are the only source.
+        Prefer complete graph transactions, then stored standalone outputs. Use
+        candidate outputs only to fill gaps; never overwrite graph evidence.
+        If supplied, ``missing_prevouts`` collects the outputs to insert into BDK.
         """
         prevouts: list[Prevout | None] = []
         wallet_owned_inputs: list[bool] = []
         for tx_in in transaction.input():
-            outpoint = (str(tx_in.previous_output.txid), tx_in.previous_output.vout)
-            known_prevout = candidate_outputs.get(outpoint) if candidate_outputs else None
+            point = tx_in.previous_output
+            outpoint = (str(point.txid), point.vout)
+            supplied = candidate_outputs.get(outpoint) if candidate_outputs else None
+            parent = self.get_tx(outpoint[0])
+            parent_tx = parent.transaction if parent else self.get_graph_transaction(point.txid)
+            if parent_tx is not None and not 0 <= point.vout < len(parent_tx.output()):
+                # A complete transaction proves that this outpoint does not exist.
+                logger.warning("Invalid previous output index: %s:%s", *outpoint)
+                prevouts.append(None)
+                wallet_owned_inputs.append(False)
+                continue
+            spent = (
+                parent_tx.output()[point.vout]
+                if parent_tx is not None
+                else self.get_graph_txout(OutPoint.from_bdk(point))
+            )
+            if spent is not None:
+                known_prevout: Prevout | None = Prevout(TxOut.from_bdk(spent).spk_bytes, spent.value.to_sat())
+                if supplied is not None and supplied != known_prevout:
+                    logger.warning("Ignoring conflicting supplied prevout %s:%s", *outpoint)
+            else:
+                known_prevout = supplied
+                if known_prevout is not None and missing_prevouts is not None:
+                    missing_prevouts.append((point, known_prevout))
             if known_prevout is None:
-                parent = self.get_tx(outpoint[0])
-                parent_tx = (
-                    parent.transaction if parent else self.get_graph_transaction(tx_in.previous_output.txid)
-                )
-                spent = (
-                    parent_tx.output()[outpoint[1]]
-                    if parent_tx and outpoint[1] < len(parent_tx.output())
-                    else self.get_graph_txout(OutPoint.from_bdk(tx_in.previous_output))
-                )
-                if spent is None:
-                    prevouts.append(None)
-                    wallet_owned_inputs.append(False)
-                    continue
-                known_prevout = Prevout(
-                    script_pubkey=TxOut.from_bdk(spent).spk_bytes, value=spent.value.to_sat()
-                )
+                prevouts.append(None)
+                wallet_owned_inputs.append(False)
+                continue
             script_pubkey = bdk.Script(known_prevout.script_pubkey)
             # Prevout availability and ownership are independent: a collaborative
             # Taproot signature commits to known external inputs too, but their
@@ -3039,17 +3048,17 @@ class Wallet(BaseSaveableClass, CacheManager):
                     continue
 
                 # Taproot may require foreign prevouts as well as our own.
-                prevouts, owned_inputs = self._prevouts_of_tx(tx, available)
+                missing_prevouts: list[tuple[bdk.OutPoint, Prevout]] = []
+                _, owned_inputs = self._prevouts_of_tx(tx, available, missing_prevouts=missing_prevouts)
                 if any(owned_inputs):
-                    for txin, prevout in zip(tx.input(), prevouts, strict=True):
-                        if prevout is not None:
-                            self.bdkwallet.insert_txout(
-                                txin.previous_output,
-                                bdk.TxOut(
-                                    value=bdk.Amount.from_sat(prevout.value),
-                                    script_pubkey=bdk.Script(prevout.script_pubkey),
-                                ),
-                            )
+                    for point, prevout in missing_prevouts:
+                        self.bdkwallet.insert_txout(
+                            point,
+                            bdk.TxOut(
+                                value=bdk.Amount.from_sat(prevout.value),
+                                script_pubkey=bdk.Script(prevout.script_pubkey),
+                            ),
+                        )
                 batch.append(bdk.UnconfirmedTx(tx=tx, last_seen=last_seen))
 
             if not batch:

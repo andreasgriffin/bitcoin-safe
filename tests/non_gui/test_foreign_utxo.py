@@ -231,6 +231,8 @@ def test_known_spent_foreign_input_is_rejected(wallets: tuple[MagicMock, MagicMo
 
 
 def test_import_wallet_utxos_after_parent_transaction_update(wallets: tuple[MagicMock, MagicMock]) -> None:
+    from bitcoin_usb.software_signer import SoftwareSigner
+
     from tests.helpers import TestConfig
     from tests.non_gui.utils import create_multisig_protowallet
 
@@ -246,15 +248,25 @@ def test_import_wallet_utxos_after_parent_transaction_update(wallets: tuple[Magi
         other.clear_cache()
         spent = OutPoint(txid=funding.compute_txid(), vout=0)
         remaining = OutPoint(txid=funding.compute_txid(), vout=1)
-        child = (
+        psbt = (
             bdk.TxBuilder()
             .add_utxo(spent)
             .manually_selected_only()
             .drain_to(address.script_pubkey())
             .finish(other.bdkwallet)
-            .extract_tx()
         )
-        other.bdkwallet.apply_unconfirmed_txs([bdk.UnconfirmedTx(tx=child, last_seen=0)])
+        receive, change = other.multipath_descriptor.to_single_descriptors()
+        signer = SoftwareSigner(
+            mnemonic=other.keystores[0].mnemonic,
+            network=NETWORK,
+            receive_descriptor=str(receive),
+            change_descriptor=str(change),
+        )
+        signed = signer.sign_psbt(psbt)
+        assert signed is not None
+        child = signed.extract_tx()
+        events = other.bdkwallet.apply_unconfirmed_txs_events([bdk.UnconfirmedTx(tx=child, last_seen=0)])
+        assert not any(isinstance(event, bdk.WalletEvent.TX_REJECTED) for event in events)
         other.clear_cache()
         child_outpoint = OutPoint(txid=child.compute_txid(), vout=0)
         assert {utxo.outpoint for utxo in other.get_all_utxos()} == {remaining, child_outpoint}
