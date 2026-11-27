@@ -50,6 +50,7 @@ from bitcoin_safe.input_signature_verifier import Prevout
 from bitcoin_safe.pythonbdk_types import BlockchainType
 from bitcoin_safe.wallet import ProtoWallet, Wallet
 from tests.helpers import TestConfig as _TestConfig
+from tests.non_gui.test_signers import TAPROOT_TEST_SEED
 from tests.non_gui.utils import create_keystore, create_multisig_protowallet
 
 
@@ -159,6 +160,7 @@ def _txid_bytes(tx: bdk.Transaction) -> bytes:
 
 
 def _enable_dependency_verification(wallet: SimpleNamespace) -> None:
+    wallet._prevouts_of_tx = lambda tx, _outputs=None: ([None] * len(tx.input()), [False] * len(tx.input()))
     wallet._verify_candidate_transactions = lambda candidates, known_prevouts=None: (
         Wallet._verify_candidate_transactions(wallet, candidates, known_prevouts)
     )
@@ -439,7 +441,7 @@ def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> 
 
 @pytest.mark.parametrize("source", ["staged_output", "persisted_output", "graph_transaction"])
 def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str) -> None:
-    seed = "brown solve pair vast find mind maze birth peanut task resist mercy"
+    seed = TAPROOT_TEST_SEED
     config = _TestConfig()
     config.network = bdk.Network.REGTEST
     keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
@@ -485,7 +487,7 @@ def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str)
 
 
 def test_reported_collaborative_taproot_transaction_is_applied() -> None:
-    seed = "brown solve pair vast find mind maze birth peanut task resist mercy"
+    seed = TAPROOT_TEST_SEED
     config = _TestConfig()
     config.network = bdk.Network.REGTEST
     keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
@@ -559,7 +561,7 @@ def test_reported_collaborative_taproot_transaction_is_applied() -> None:
 
 @pytest.mark.parametrize("reverse", [False, True])
 def test_p2p_spend_uses_prevouts_from_both_open_wallets(reverse: bool) -> None:
-    seed = "brown solve pair vast find mind maze birth peanut task resist mercy"
+    seed = TAPROOT_TEST_SEED
     config = _TestConfig()
     config.network = bdk.Network.REGTEST
     keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
@@ -643,3 +645,76 @@ def test_p2p_spend_uses_prevouts_from_both_open_wallets(reverse: bool) -> None:
     finally:
         taproot.close()
         other.close()
+
+
+@pytest.mark.parametrize("parent_first", [True, False])
+@pytest.mark.parametrize("provide_known_prevouts", [True, False])
+def test_taproot_batch_retains_external_candidate_parent_output(
+    parent_first: bool, provide_known_prevouts: bool
+) -> None:
+    seed = TAPROOT_TEST_SEED
+    config = _TestConfig()
+    config.network = bdk.Network.REGTEST
+    keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
+    proto = ProtoWallet("taproot", 1, config.network, [keystore], AddressTypes.p2tr)
+    wallet = Wallet.from_protowallet(protowallet=proto, config=config, loop_in_thread=None)
+    try:
+        wallet_outpoint = _fund_wallet_with_unconfirmed_tx(wallet)
+        wallet_parent = wallet.get_tx(str(wallet_outpoint.txid))
+        assert wallet_parent is not None
+        wallet_output = wallet_parent.transaction.output()[0]
+        external_parent = _raw_tx([(b"\x24" * 32, 0)], [(25_000, b"\x00\x14" + b"\x44" * 20)])
+        external_output = external_parent.output()[0]
+        external_outpoint = bdk.OutPoint(txid=external_parent.compute_txid(), vout=0)
+        spend = _build_tx(
+            [(bytes.fromhex(str(wallet_outpoint.txid)), 0), (bytes.fromhex(str(external_outpoint.txid)), 0)],
+            [(1_000, b"\x00\x14" + b"\x55" * 20)],
+        )
+        root = bdk.DescriptorSecretKey(bdk.NetworkKind.TEST, bdk.Mnemonic.from_string(seed), "")
+        key = int.from_bytes(root.derive(bdk.DerivationPath("m/86h/1h/0h/0/0")).secret_bytes(), "big")
+        prevouts = [
+            TxOut(output.value.to_sat(), bytes(output.script_pubkey.to_bytes()))
+            for output in (wallet_output, external_output)
+        ]
+        message = sig_hash.taproot(spend, 0, prevouts, 0, 0, b"", b"")
+        spend.vin[0].script_witness = Witness(
+            [ssa.sign_(message, output_prvkey_from_merkle_root(key, b"")).serialize()]
+        )
+        spend.vin[1].script_witness = Witness([b"external witness"])
+        child = bdk.Transaction(spend.serialize(include_witness=True))
+        batch = [external_parent, child] if parent_first else [child, external_parent]
+        known_prevouts = (
+            {
+                (str(wallet_outpoint.txid), wallet_outpoint.vout): Prevout(
+                    bytes(wallet_output.script_pubkey.to_bytes()), wallet_output.value.to_sat()
+                )
+            }
+            if provide_known_prevouts
+            else None
+        )
+
+        applied = wallet.apply_unconfirmed_txs(batch, last_seen=2, known_prevouts=known_prevouts)
+
+        assert {entry.tx.compute_txid() for entry in applied} == {
+            external_parent.compute_txid(),
+            child.compute_txid(),
+        }
+        assert wallet.get_tx(str(child.compute_txid())) is not None
+        assert wallet.get_graph_transaction(external_parent.compute_txid()) is None
+        assert wallet._prevouts_of_tx(child)[0][1] == Prevout(
+            bytes(external_output.script_pubkey.to_bytes()), external_output.value.to_sat()
+        )
+        assert wallet._verify_tx_signatures(child)
+        restored = Wallet.from_dump(
+            wallet.dump(),
+            class_kwargs={"Wallet": {"config": config, "loop_in_thread": wallet.loop_in_thread}},
+        )
+        try:
+            assert restored._verify_tx_signatures(child)
+            event = bdk.WalletEvent.TX_UNCONFIRMED(txid=child.compute_txid(), tx=child, old_block_time=None)
+            restored._evict_txs_with_invalid_signatures([event])
+            assert restored.get_tx(str(child.compute_txid())) is not None
+        finally:
+            restored.close()
+    finally:
+        wallet.close()

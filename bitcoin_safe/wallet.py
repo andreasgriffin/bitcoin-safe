@@ -3168,7 +3168,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.advance_tip_to_addresses([address for tx in txs for address in self.get_output_addresses(tx)])
 
         candidates = {str(tx.compute_txid()): tx for tx in txs}
-        remaining, _accepted_outputs = self._verify_candidate_transactions(candidates, known_prevouts)
+        remaining, accepted_outputs = self._verify_candidate_transactions(candidates, known_prevouts)
         accepted: list[bdk.UnconfirmedTx] = []
         for txid, tx in candidates.items():
             if txid in remaining:
@@ -3182,17 +3182,17 @@ class Wallet(BaseSaveableClass, CacheManager):
             ):
                 accepted.append(bdk.UnconfirmedTx(tx=tx, last_seen=last_seen))
 
-        # Retain verified supporting prevouts for later sync updates, when the
-        # other wallet might be closed and the transaction is verified again.
-        if known_prevouts:
+        # For example, BDK may discard an unrelated parent P while retaining
+        # our child C. Save P's accepted output so C can be checked again later.
+        if accepted_outputs:
             for entry in accepted:
-                _, owned_inputs = self._prevouts_of_tx(entry.tx, _accepted_outputs)
+                _, owned_inputs = self._prevouts_of_tx(entry.tx, accepted_outputs)
                 if not any(owned_inputs):
                     continue
                 for txin in entry.tx.input():
                     outpoint = txin.previous_output
                     key = (str(outpoint.txid), outpoint.vout)
-                    if (prevout := known_prevouts.get(key)) and key[0] not in candidates:
+                    if prevout := accepted_outputs.get(key):
                         self.bdkwallet.insert_txout(
                             outpoint,
                             bdk.TxOut(

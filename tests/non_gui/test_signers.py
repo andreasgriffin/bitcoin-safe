@@ -151,6 +151,8 @@ evil resemble crush tenant ridge elder castle cloth cereal start sweet empower
 resource frequent color unknown sibling oxygen grocery fiction foil over awkward shallow
 music problem march blind power train found shadow ostrich raven brain injury
 romance slush habit speed type also grace coffee grape inquiry receive filter""".splitlines()
+TAPROOT_TEST_SEED = "brown solve pair vast find mind maze birth peanut task resist mercy"
+test_seeds.append(TAPROOT_TEST_SEED)
 
 
 class My(QObject):
