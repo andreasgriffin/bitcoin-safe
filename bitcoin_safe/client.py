@@ -185,11 +185,21 @@ class Client:
             self.status_msg = translate("Client", "Chain height {height}").format(height=info.height)
             if isinstance(self.client, CbfSync):
                 return self._update_cbf_sync_status()
-        elif isinstance(info, bdk.Info.FILTER_ADDED) and isinstance(self.client, CbfSync):
+        elif isinstance(info, (bdk.Info.CF_HEADERS_ADDED, bdk.Info.FILTER_ADDED)) and isinstance(
+            self.client, CbfSync
+        ):
             height = self.client.get_height()
-            if height:
-                self.progress = min(self.MAX_PROGRESS_WHILE_SYNC, info.height / height)
-            self.status_msg = ""
+            if isinstance(info, bdk.Info.CF_HEADERS_ADDED):
+                # Reserve the second half of the bar for scanning compact filters.
+                if height:
+                    self.progress = 0.5 * min(1.0, info.height / height)
+                self.status_msg = translate("Client", "Compact filter headers: {height}").format(
+                    height=info.height
+                )
+            else:
+                if height:
+                    self.progress = min(self.MAX_PROGRESS_WHILE_SYNC, 0.5 + 0.5 * info.height / height)
+                self.status_msg = translate("Client", "Compact filters: {height}").format(height=info.height)
 
         if isinstance(info, bdk.Info.BLOCK_RECEIVED):
             if self._sync_status is SyncStatus.synced:

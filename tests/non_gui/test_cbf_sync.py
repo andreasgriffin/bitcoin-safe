@@ -103,3 +103,38 @@ def test_cbf_intermediate_updates_do_not_mark_wallet_synced(tmp_path):
     client.on_update(update)
     assert client.sync_status == SyncStatus.synced
     assert client.progress == 1
+
+
+def test_cbf_header_and_filter_progress(tmp_path):
+    wallet = Mock()
+    wallet.latest_checkpoint.return_value.height = 0
+    cbf = CbfSync("test", wallet, [], tmp_path, None, 1)
+    cbf._height = 2_000
+    client = object.__new__(Client)
+    client.client = cbf
+    client._sync_status = SyncStatus.syncing
+    client.progress = 0.0
+    client.status_msg = ""
+
+    client.handle_log_info(bdk.Info.CF_HEADERS_ADDED(height=1_000))
+    assert client.progress == pytest.approx(0.25)
+    assert "1000" in client.status_msg
+    assert client.sync_status == SyncStatus.syncing
+
+    client.handle_log_info(bdk.Info.CF_HEADERS_ADDED(height=2_000))
+    assert client.progress == pytest.approx(0.5)
+    assert client.sync_status == SyncStatus.syncing
+
+    client.handle_log_info(bdk.Info.FILTER_ADDED(height=1_000))
+    assert client.progress == pytest.approx(0.75)
+    assert "1000" in client.status_msg
+    assert client.sync_status == SyncStatus.syncing
+
+    client.handle_log_info(bdk.Info.FILTER_ADDED(height=2_000))
+    assert client.progress == Client.MAX_PROGRESS_WHILE_SYNC
+    assert client.sync_status == SyncStatus.syncing
+
+    wallet.latest_checkpoint.return_value.height = 2_000
+    client.on_update(Mock())
+    assert client.progress == 1
+    assert client.sync_status == SyncStatus.synced

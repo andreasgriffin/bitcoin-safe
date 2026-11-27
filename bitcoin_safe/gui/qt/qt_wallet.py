@@ -351,6 +351,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
     signal_wallet_update = cast(SignalProtocol[[UpdateInfo]], pyqtSignal(UpdateInfo))
     signal_refresh_sync_status = cast(SignalProtocol[[]], pyqtSignal())
     signal_request_open_network_settings = cast(SignalProtocol[[]], pyqtSignal())
+    signal_request_open_network_map = cast(SignalProtocol[[]], pyqtSignal())
     signal_psbt_created = cast(SignalProtocol[[TxBuilderInfos]], pyqtSignal(object))
 
     @property
@@ -1788,6 +1789,11 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         )
         self.signal_tracker.connect(self.signal_progress_info, history_list_with_toolbar._set_progress_info)
         history_list_with_toolbar.signal_export_pdf_statement.connect(self.export_pdf_statement)
+        progress_bar = history_list_with_toolbar.cbf_progress_bar
+        progress_bar.enable_network_map_menu()
+        self.signal_tracker.connect(
+            progress_bar.signal_request_open_network_map, self.signal_request_open_network_map.emit
+        )
 
         list_widget = self.create_list_tab(history_list_with_toolbar, tabs)
         tab.searchable_list = history_list_with_toolbar.searchable_list
@@ -2111,8 +2117,10 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         if not self.wallet.client:
             return
 
-        if self.wallet.client.handle_log_info(info):
+        status_changed = self.wallet.client.handle_log_info(info)
+        if status_changed or isinstance(info, (bdk.Info.CF_HEADERS_ADDED, bdk.Info.FILTER_ADDED)):
             self.signal_progress_info.emit(self.wallet.client.progress_info)
+        if status_changed:
             self.signal_refresh_sync_status.emit()
 
     def _handle_client_log_warning(self, warning: bdk.Warning):

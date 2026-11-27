@@ -546,6 +546,7 @@ def test_add_qt_wallet_does_not_restore_tutorial_step_twice(
         tabs=SimpleNamespace(setIcon=Mock(), setTitle=Mock()),
         wallet_signals=SimpleNamespace(updated=SimpleNamespace(emit=Mock())),
         signal_request_open_network_settings=wallet_signal,
+        signal_request_open_network_map=Mock(),
         signal_progress_info=wallet_signal,
         signal_refresh_sync_status=wallet_signal,
     )
@@ -562,6 +563,7 @@ def test_add_qt_wallet_does_not_restore_tutorial_step_twice(
         signal_tracker=SimpleNamespace(connect=Mock()),
         show_address=Mock(),
         open_network_settings=Mock(),
+        open_network_map=Mock(),
         refresh_global_network_map=Mock(),
         p2p_listening_update_lists=Mock(),
         update_all_history_initial_sync_widgets=Mock(),
@@ -572,6 +574,9 @@ def test_add_qt_wallet_does_not_restore_tutorial_step_twice(
     result = MainWindow.add_qt_wallet(main_window, qt_wallet, focus=False)
 
     assert result is qt_wallet
+    main_window.signal_tracker.connect.assert_any_call(
+        qt_wallet.signal_request_open_network_map, main_window.open_network_map
+    )
     wizard.set_current_index.assert_not_called()
     wizard.set_visibilities.assert_called_once_with()
 

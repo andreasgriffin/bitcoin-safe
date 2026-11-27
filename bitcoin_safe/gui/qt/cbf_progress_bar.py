@@ -32,8 +32,12 @@ from __future__ import annotations
 import logging
 import sys
 from datetime import timedelta
+from typing import cast
 
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
 from bitcoin_safe_lib.gui.qt.util import age
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QProgressBar, QWidget
 
 from bitcoin_safe.client import ProgressInfo, SyncStatus
@@ -44,6 +48,8 @@ logger = logging.getLogger(__name__)
 
 
 class CBFProgressBar(QProgressBar):
+    signal_request_open_network_map = cast(SignalProtocol[[]], pyqtSignal())
+
     def __init__(
         self, config: UserConfig, show_rich_infos: bool = True, parent: QWidget | None = None
     ) -> None:
@@ -54,6 +60,14 @@ class CBFProgressBar(QProgressBar):
         self.setMinimumWidth(300)
         self.setRange(0, 100)
         self.set_progressbar(progress=0, text="0%", tooltip="")
+        self._network_map_action = QAction(self.tr("Open Network Map"), self)
+        self._network_map_action.triggered.connect(lambda: self.signal_request_open_network_map.emit())
+
+    def enable_network_map_menu(self) -> None:
+        """Offer the Network Map action on wallet-owned progress bars."""
+        if self._network_map_action not in self.actions():
+            self.addAction(self._network_map_action)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.ActionsContextMenu)
 
     def _set_progress_info(self, progress_info: ProgressInfo):
         """Set progress info."""
