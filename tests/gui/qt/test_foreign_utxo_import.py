@@ -46,18 +46,20 @@ from pytestqt.qtbot import QtBot
 from bitcoin_safe.foreign_utxo import ForeignUtxo
 from bitcoin_safe.foreign_utxo_resolver import resolve_foreign_outpoints
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
+from bitcoin_safe.gui.qt.main import MainWindow
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer import UITx_Viewer
 from bitcoin_safe.gui.qt.util import ColorScheme
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
-from bitcoin_safe.psbt_util import InputWeight, TxWeight, weight_to_vsize
+from bitcoin_safe.psbt_util import FeeInfo, InputWeight, TxWeight, read_psbt, weight_to_vsize
 from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, Recipient, TxOut
 from bitcoin_safe.signals import UpdateFilter, UpdateFilterReason
 from bitcoin_safe.tx import TxUiInfos
 from tests.gui.qt.helpers import Shutter, main_window_context, setup_single_sig_wallet
 from tests.helpers import TestConfig as ConfigForTest
 from tests.non_gui.test_foreign_utxo import make_wallet, transaction
+from tests.non_gui.test_psbt_util import p2wsh_psbt_0_2of3
 from tests.non_gui.test_signers import test_seeds
 
 
@@ -81,6 +83,47 @@ def creator_class_kwargs(creator: UITx_Creator) -> dict:
             fx=creator.fx,
         ),
     }
+
+
+@pytest.mark.marker_qt_2
+def test_unsigned_size_fee_bound_warnings(qtbot: QtBot) -> None:
+    from bitcoin_safe.gui.qt.ui_tx.fee_group import FeeGroup, FeeRateWarningBar, FeeWarningBar
+    from bitcoin_safe.psbt_util import FeeInfo
+    from bitcoin_safe.wallet import TxConfirmationStatus, TxStatus
+
+    network = bdk.Network.REGTEST
+    info = FeeInfo(400_000, 100, False, True, vsize_is_lower_bound=True)
+    status = TxStatus(None, None, lambda: 0, TxConfirmationStatus.PSBT)
+    ratio_bar = FeeWarningBar(network, "BTC")
+    rate_bar = FeeRateWarningBar(network)
+    qtbot.addWidget(ratio_bar)
+    qtbot.addWidget(rate_bar)
+    ratio_bar.set_fee_to_send_ratio(info, 1, network, status)
+    assert not ratio_bar.isHidden()
+    ratio_bar.set_fee_to_send_ratio(info, 100_000_000, network, status)
+    assert ratio_bar.isHidden()
+    rate_bar.update_fee_rate_warning(
+        info.fee_rate(), 10, status.confirmation_status, fee_rate_is_upper_bound=True
+    )
+    assert not rate_bar.isHidden()
+    rate_bar.update_fee_rate_warning(
+        info.fee_rate(), 10_000, status.confirmation_status, fee_rate_is_upper_bound=True
+    )
+    assert rate_bar.isHidden()
+
+    viewer = MagicMock()
+    UITx_Viewer.update_high_fee_warning_label(viewer, TxConfirmationStatus.PSBT)
+    viewer._update_high_fee_warning_label.assert_called_once()
+
+    # Updating the fee group must not project a confirmation time from a bound.
+    group = MagicMock()
+    group.tr.side_effect = lambda text: text
+    group.fee_info = info
+    FeeGroup.updateUi(group)
+    group.fee_rate_label.setText.assert_called_once_with("Fee rate at most 4000 sat/vB")
+    group.mempool_buttons.setVisible.assert_called_once_with(False)
+    group.mempool_buttons.refresh.assert_not_called()
+    group.set_fee_amount_label.assert_called_once()
 
 
 @pytest.mark.marker_qt_2
@@ -318,6 +361,57 @@ def test_spent_selection_stays_visible_and_can_be_deselected(
         row = creator.utxo_list.find_row_by_key(spent)
         assert row is not None
         assert creator.utxo_list._source_model.item(row, UTXOList.Columns.STATUS).text() == ""
+
+
+@pytest.fixture
+def psbt_without_input_utxos() -> bdk.Psbt:
+    native = read_psbt(p2wsh_psbt_0_2of3)
+    for inp in native.inputs:
+        inp.witness_utxo = None
+        inp.non_witness_utxo = None
+    psbt = bdk.Psbt(native.b64encode(check_validity=False))
+    assert FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt) is None
+    with pytest.raises(bdk.ExtractTxError.MissingInputValue):
+        psbt.extract_tx()
+    return psbt
+
+
+@pytest.mark.marker_qt_2
+def test_open_incomplete_psbt_reports_error_without_creating_tab(
+    psbt_without_input_utxos: bdk.Psbt, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    window = MagicMock()
+    window.config.network = bdk.Network.REGTEST
+    window.tr.side_effect = lambda text: text
+    message = MagicMock()
+    monkeypatch.setattr("bitcoin_safe.gui.qt.main.Message", message)
+    create_viewer = MagicMock()
+    monkeypatch.setattr("bitcoin_safe.gui.qt.main.create_tx_viewer", create_viewer)
+
+    assert MainWindow.open_psbt_in_tab(window, psbt_without_input_utxos) is None
+    message.assert_called_once()
+    assert "lacks the input UTXOs" in message.call_args.args[0]
+    window.get_tx_viewer.assert_not_called()
+    create_viewer.assert_not_called()
+
+
+@pytest.mark.marker_qt_2
+def test_set_incomplete_psbt_preserves_viewer_state(
+    psbt_without_input_utxos: bdk.Psbt, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    viewer = MagicMock()
+    viewer.tr.side_effect = lambda text: text
+    viewer.network = bdk.Network.REGTEST
+    original_data = viewer.data
+    original_fee_info = viewer.fee_info
+    message = MagicMock()
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.Message", message)
+
+    UITx_Viewer.set_psbt(viewer, psbt_without_input_utxos)
+    message.assert_called_once()
+    assert viewer.data is original_data
+    assert viewer.fee_info is original_fee_info
+    viewer.get_tx_status.assert_not_called()
 
 
 @pytest.mark.marker_qt_2
@@ -604,9 +698,8 @@ def test_import_mixed_psbt_resolves_and_rebuilds_outputs(
             (script, 0 if script == bytes(raw_script.to_bytes()) else value) for script, value in payments
         ]
         infos = creator.get_tx_ui_infos()
-        mn = wallet.get_mn_tuple()
         expected_weight = TxWeight(
-            [InputWeight(mn, satisfaction_weight=foreign.satisfaction_weight)] * 2,
+            [InputWeight(foreign.satisfaction_weight)] * 2,
             [bdk.Script(script) for script, _ in payments] + [bdk.Script(change_script)],
         ).estimate()
         fee_estimate = creator.estimate_fee_info(2)

@@ -88,7 +88,17 @@ from bitcoin_safe.tx import HiddenTxUiInfos, PostBroadcastEnum, short_tx_id
 
 from ....config import UserConfig
 from ....mempool_manager import MempoolManager
-from ....psbt_util import FeeInfo, InputEnrichment, PubKeyInfo, SimplePSBT, unsigned_tx_bytes
+from ....psbt_util import (
+    FeeInfo,
+    PubKeyInfo,
+    SigningInput,
+    analyze_signing_inputs,
+    group_signing_inputs,
+    psbt_input_utxos,
+    psbt_is_finalized,
+    read_psbt,
+    unsigned_tx_bytes,
+)
 from ....pythonbdk_types import (
     OutPoint,
     PythonUtxo,
@@ -1048,11 +1058,10 @@ class UITx_Viewer(UITx_Base):
         logger.debug(f"queuing broadcast tx {short_tx_id(tx.compute_txid())}")
         self._broadcast(tx)
 
-    def enrich_simple_psbt_with_wallet_data(self, simple_psbt: SimplePSBT) -> SimplePSBT:
-        """Enrich simple psbt with wallet data."""
-        outpoint_dict: dict[str, InputEnrichment] = {}
-        for simple_input in simple_psbt.inputs:
-            wallet = get_wallet_for_psbt_input(simple_input, self.wallet_functions)
+    def enrich_signing_inputs(self, inputs: list[SigningInput]) -> list[SigningInput]:
+        """Enrich signing progress with local wallet data."""
+        for simple_input in inputs:
+            wallet = get_wallet_for_psbt_input(simple_input.source, self.wallet_functions)
             if not wallet:
                 continue
             unresolved = [info for info in simple_input.pubkeys if info.pubkey and not info.fingerprint]
@@ -1076,13 +1085,9 @@ class UITx_Viewer(UITx_Base):
                 )
                 for keystore in wallet.keystores
             ]
-            outpoint_dict[str(simple_input.txin.previous_output)] = InputEnrichment(
-                wallet_id=wallet.id,
-                m_of_n=wallet.get_mn_tuple(),
-                pubkeys=wallet_pubkeys,
-            )
+            simple_input.enrich(wallet.id, wallet.get_mn_tuple(), wallet_pubkeys)
 
-        return simple_psbt.enrich_with_outpoint_data(outpoint_dict)
+        return inputs
 
     @staticmethod
     def _normalize_fingerprint(fingerprint: str | None) -> str:
@@ -1107,7 +1112,9 @@ class UITx_Viewer(UITx_Base):
         requested_fingerprints = set(self._normalize_fingerprints(fingerprints))
         return [fingerprint for fingerprint in signing_fingerprints if fingerprint in requested_fingerprints]
 
-    def get_combined_signature_importers(self, psbt: bdk.Psbt) -> dict[str, list[AbstractSignatureImporter]]:
+    def get_combined_signature_importers(
+        self, psbt: bdk.Psbt, *, signing_inputs: list[SigningInput] | None = None
+    ) -> dict[str, list[AbstractSignatureImporter]]:
         """Get combined signature importers."""
         signature_importers: dict[str, list[AbstractSignatureImporter]] = {}
         completed_steps: list[tuple[str, list[AbstractSignatureImporter]]] = []
@@ -1128,26 +1135,23 @@ class UITx_Viewer(UITx_Base):
                     result.append((wallet, matching_fingerprints))
             return result
 
-        simple_psbt = SimplePSBT.from_psbt(psbt)
-        simple_psbt = self.enrich_simple_psbt_with_wallet_data(simple_psbt)
+        if signing_inputs is None:
+            signing_inputs = self.enrich_signing_inputs(analyze_signing_inputs(psbt))
 
         wallets: list[Wallet] = get_wallets(self.wallet_functions)
 
-        for input_group in simple_psbt.group_inputs():
-            if not input_group.inputs:
-                continue
+        for input_group in group_signing_inputs(signing_inputs):
             m, _n = input_group.m_of_n
-            signed_signers = list(input_group.signed_signers())
-            unsigned_signers = list(input_group.unsigned_signers())
-            unsigned_signer_identifiers = list(input_group.unsigned_signer_identifiers)
-            unsigned_fingerprints = self._normalize_fingerprints(unsigned_signer_identifiers)
+            signed_signers = list(input_group.completed_signers.items())
+            unsigned_signers = input_group.pending_signers
+            unsigned_fingerprints = self._normalize_fingerprints(unsigned_signers)
 
             # only add a maximum of m *(all_signature_importers) for each wallet
             for i in range(m):
                 signer_list: list[AbstractSignatureImporter] = []
                 step_key = f"{input_group.group_id}.{i}"
                 if signed_signers:
-                    signer_id, _pubkey_info, signatures = signed_signers.pop(0)
+                    signer_id, signatures = signed_signers.pop(0)
                     normalized_fingerprint = self._normalize_fingerprint(signer_id)
                     display_label = normalized_fingerprint or signer_id
                     signer_identity = SignerIdentity(
@@ -1180,7 +1184,7 @@ class UITx_Viewer(UITx_Base):
                         SignatureImporterWallet(
                             wallet_with_seed,
                             self.network,
-                            display_label=input_group.display_label,
+                            display_label=input_group.group_id,
                             signer_identities=[
                                 SignerIdentity(id=fingerprint, fingerprint=fingerprint)
                                 for fingerprint in matching_fingerprints
@@ -1205,7 +1209,7 @@ class UITx_Viewer(UITx_Base):
                             fingerprint=self._normalize_fingerprint(signer_identifier),
                             label=signer_identifier,
                         )
-                        for signer_identifier, _pubkey_info in unsigned_signers
+                        for signer_identifier in unsigned_signers
                     ]
                     if not signer_identities:
                         signer_identities = [
@@ -1214,7 +1218,7 @@ class UITx_Viewer(UITx_Base):
                     signer_list.append(
                         cls(
                             self.network,
-                            display_label=input_group.display_label,
+                            display_label=input_group.group_id,
                             signer_identities=signer_identities,
                             loop_in_thread=self.loop_in_thread,
                             close_all_video_widgets=self.signals.close_all_video_widgets,
@@ -1244,10 +1248,14 @@ class UITx_Viewer(UITx_Base):
         # to problems with multithreading.
         clear_layout(self.tx_singning_steps_container_layout)
 
-        signature_importers = self.get_combined_signature_importers(self.data.data)
+        signing_inputs = self.enrich_signing_inputs(analyze_signing_inputs(self.data.data))
+        signature_importers = self.get_combined_signature_importers(
+            self.data.data, signing_inputs=signing_inputs
+        )
 
         tx_singning_steps = TxSigningSteps(
             signature_importer_dict=signature_importers,
+            signing_inputs=signing_inputs,
             psbt=self.data.data,
             network=self.network,
             wallet_functions=self.wallet_functions,
@@ -1309,15 +1317,20 @@ class UITx_Viewer(UITx_Base):
 
     def import_trusted_psbt(self, import_psbt: bdk.Psbt) -> None:
         """Import trusted psbt."""
-        simple_psbt = SimplePSBT.from_psbt(import_psbt)
+        try:
+            parsed = read_psbt(import_psbt)
+            if psbt_is_finalized(parsed):
+                tx = import_psbt.extract_tx()
+                fee_info = FeeInfo(import_psbt.fee(), tx.vsize(), False, False)
+            else:
+                tx = None
+                fee_info = None
+        except Exception as exc:
+            Message(self.tr("Could not open PSBT") + f"\n{exc}", type=MessageType.Error, parent=self)
+            return
 
-        tx = import_psbt.extract_tx()
-
-        if simple_psbt.inputs and all(inp.is_fully_signed() for inp in simple_psbt.inputs):
-            self.set_tx(
-                tx,
-                fee_info=FeeInfo(import_psbt.fee(), tx.vsize(), False, False),
-            )
+        if tx is not None:
+            self.set_tx(tx, fee_info=fee_info)
         else:
             self.set_psbt(import_psbt)
 
@@ -1348,12 +1361,13 @@ class UITx_Viewer(UITx_Base):
         self.high_fee_rate_warning_label.update_fee_rate_warning(
             confirmation_status=tx_status.confirmation_status,
             fee_rate=self.fee_info.fee_rate() if self.fee_info else None,
+            fee_rate_is_upper_bound=bool(self.fee_info and self.fee_info.vsize_is_lower_bound),
             max_reasonable_fee_rate=self.mempool_manager.max_reasonable_fee_rate(),
         )
 
     def update_high_fee_warning_label(self, confirmation_status: TxConfirmationStatus):
         """Update high fee warning label."""
-        if confirmation_status != TxConfirmationStatus.LOCAL:
+        if confirmation_status not in (TxConfirmationStatus.LOCAL, TxConfirmationStatus.PSBT):
             self.high_fee_warning_label.setVisible(False)
             return
 
@@ -1662,9 +1676,16 @@ class UITx_Viewer(UITx_Base):
 
     def set_psbt(self, psbt: bdk.Psbt) -> None:
         """Show a PSBT and calculate its current fee and size."""
+        try:
+            parsed = read_psbt(psbt)
+            # The viewer still relies on checked extraction for txid and other controls.
+            # Reject a PSBT that cannot be extracted before replacing its current state.
+            tx = psbt.extract_tx()
+        except Exception as exc:
+            Message(self.tr("Could not open PSBT") + f"\n{exc}", type=MessageType.Error, parent=self)
+            return
         fee_info = FeeInfo.estimate_segwit_fee_rate_from_psbt(psbt)
         self.data = Data.from_psbt(psbt, network=self.network)
-        tx = psbt.extract_tx()
         tx_status = self.get_tx_status(chain_position=None)
         self.fee_info = fee_info
 
@@ -1692,7 +1713,8 @@ class UITx_Viewer(UITx_Base):
         self.set_tab_properties(chain_position=None)
         self.update_all_totals()
         self.export_data_simple.add_meta_data(self.recipients.get_address_labels_dict())
-        self.handle_cpfp(tx=psbt.extract_tx(), this_fee_info=fee_info, chain_position=None)
+        if fee_info is not None:
+            self.handle_cpfp(tx=tx, this_fee_info=fee_info, chain_position=None)
         self._update_txid_controls()
         self._set_warning_bars(
             outpoints=[OutPoint.from_bdk(inp.previous_output) for inp in tx.input()],
@@ -1700,7 +1722,7 @@ class UITx_Viewer(UITx_Base):
             tx_status=tx_status,
             nlocktime=tx.lock_time(),
         )
-        txo_dict = SimplePSBT.from_psbt(psbt).outpoints_as_python_utxo_dict(self.network)
+        txo_dict = psbt_input_utxos(parsed, self.network)
         txo_dict.update(self._get_python_txos())
         self.set_sankey(tx, fee_info=fee_info, txo_dict=txo_dict)
         self._set_signed_by_column(tx)

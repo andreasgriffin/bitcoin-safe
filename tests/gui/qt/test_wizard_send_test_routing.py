@@ -283,6 +283,10 @@ def test_update_tx_progress_passes_wizard_signer_groups(monkeypatch: pytest.Monk
 
     monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.clear_layout", lambda layout: None)
     monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.TxSigningSteps", DummyTxSigningSteps)
+    signing_inputs = []
+    analyze = Mock(return_value=signing_inputs)
+    monkeypatch.setattr("bitcoin_safe.gui.qt.ui_tx.ui_tx_viewer.analyze_signing_inputs", analyze)
+    importer_factory = Mock(return_value={"wallet.0": []})
 
     fake_self = SimpleNamespace(
         data=SimpleNamespace(data_type=DataType.PSBT, data=tr_psbt_singlesig),
@@ -294,12 +298,16 @@ def test_update_tx_progress_passes_wizard_signer_groups(monkeypatch: pytest.Monk
         network=bdk.Network.REGTEST,
         wallet_functions=SimpleNamespace(),
         loop_in_thread=None,
-        get_combined_signature_importers=lambda psbt: {"wallet.0": []},
+        enrich_signing_inputs=lambda inputs: inputs,
+        get_combined_signature_importers=importer_factory,
     )
 
     result = UITx_Viewer.update_tx_progress(fake_self)
 
     assert isinstance(result, DummyTxSigningSteps)
+    analyze.assert_called_once_with(tr_psbt_singlesig)
+    importer_factory.assert_called_once_with(tr_psbt_singlesig, signing_inputs=signing_inputs)
+    assert captured_kwargs["signing_inputs"] is signing_inputs
     assert captured_kwargs["wizard_send_test_index"] == 1
     assert captured_kwargs["wizard_send_test_signer_groups"] == [["A", "B"], ["B", "C"]]
 

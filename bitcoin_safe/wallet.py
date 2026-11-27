@@ -67,6 +67,7 @@ from bitcoin_safe_lib.util import (
 )
 from bitcoin_usb.address_types import DescriptorInfo
 from bitcoin_usb.software_signer import derive as software_signer_derive
+from btclib_wallet.psbt import PsbtIn
 
 from bitcoin_safe.client import Client
 from bitcoin_safe.client_helpers import UpdateInfo
@@ -76,7 +77,7 @@ from bitcoin_safe.network_config import PeerSelectionMode
 from bitcoin_safe.network_utils import ProxyInfo
 from bitcoin_safe.output_validation import validate_raw_output_script, validate_transaction_outputs
 from bitcoin_safe.persister.serialize_persistence import SerializePersistence
-from bitcoin_safe.psbt_util import FeeInfo, FeeRate, SimpleInput
+from bitcoin_safe.psbt_util import FeeInfo, FeeRate, address_derivations, previous_txout
 from bitcoin_safe.wallet_util import (
     WalletDifference,
     WalletDifferences,
@@ -2241,13 +2242,13 @@ class Wallet(BaseSaveableClass, CacheManager):
         """Return True if the address belongs to this wallet."""
         return address in self.get_addresses()
 
-    def owns_psbt_input(self, simple_input: SimpleInput) -> bool:
+    def owns_psbt_input(self, simple_input: PsbtIn) -> bool:
         """Return whether this wallet's descriptor controls a PSBT input."""
-        previous_txout = simple_input.previous_txout()
-        if not previous_txout:
+        previous = previous_txout(simple_input)
+        if not previous:
             return False
 
-        script_pubkey = previous_txout.script_pubkey
+        script_pubkey = previous.script_pubkey
         if self.bdkwallet.is_mine(script_pubkey):
             return True
 
@@ -2260,7 +2261,7 @@ class Wallet(BaseSaveableClass, CacheManager):
         return any(
             (descriptors[keychain].derive_address(index, self.network).script_pubkey().to_bytes())
             == script_bytes
-            for keychain, index in simple_input.address_derivations()
+            for keychain, index in address_derivations(simple_input)
         )
 
     @instance_lru_cache()
@@ -3171,7 +3172,7 @@ def get_wallets(wallet_functions: WalletFunctions) -> list[Wallet]:
     return list(wallet_functions.get_wallets().values())
 
 
-def get_wallet_for_psbt_input(simple_input: SimpleInput, wallet_functions: WalletFunctions) -> Wallet | None:
+def get_wallet_for_psbt_input(simple_input: PsbtIn, wallet_functions: WalletFunctions) -> Wallet | None:
     """Return the first loaded wallet whose descriptor controls the input."""
     for wallet in get_wallets(wallet_functions):
         if wallet.owns_psbt_input(simple_input):
@@ -3362,7 +3363,7 @@ class ToolsTxUiInfo:
             recipient.checked_max_amount = checked_max_amount
             txinfos.recipients.append(recipient)
         # fee rate
-        txinfos.fee_rate = fee_info.fee_rate() if fee_info else None
+        txinfos.fee_rate = fee_info.fee_rate() if fee_info and not fee_info.vsize_is_lower_bound else None
         locktime = tx.lock_time()
         txinfos.nlocktime = locktime if locktime > 0 else None
         if txinfos.nlocktime is not None and current_height is not None:

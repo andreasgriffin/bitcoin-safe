@@ -609,7 +609,7 @@ def test_foreign_only_witness_input_requires_previous_transaction(
     wallets: tuple[MagicMock, MagicMock],
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    from bitcoin_safe.psbt_util import SimplePSBT
+    from bitcoin_safe.psbt_util import psbt_prev_txouts, read_psbt
 
     active, other = wallets
     tx = transaction([b"\x00\x14" + b"\x42" * 20])
@@ -629,7 +629,7 @@ def test_foreign_only_witness_input_requires_previous_transaction(
     item.psbt_input.non_witness_utxo = tx
     result = Wallet.create_psbt(active, infos)
     assert len(result.psbt.extract_tx().input()) == 1
-    assert SimplePSBT.from_psbt(result.psbt).get_prev_txouts()[str(op)].value.to_sat() == 100_000
+    assert psbt_prev_txouts(read_psbt(result.psbt))[str(op)].value.to_sat() == 100_000
     infos.recipients.append(Recipient(address="script:6a026869", amount=0))
     with_script = Wallet.create_psbt(active, infos).psbt.extract_tx_unchecked_fee_rate()
     assert any(
