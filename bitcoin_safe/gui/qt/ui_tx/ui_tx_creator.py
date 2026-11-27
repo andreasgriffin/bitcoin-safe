@@ -61,6 +61,7 @@ from PyQt6.QtWidgets import (
 from bitcoin_safe.constants import APP_NAME, MIN_RELAY_FEE
 from bitcoin_safe.execute_config import GENERAL_RBF_AVAILABLE
 from bitcoin_safe.foreign_utxo import ForeignUtxo
+from bitcoin_safe.foreign_utxo_resolver import resolve_foreign_outpoints
 from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.block_change_signals import BlockChangesSignals
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
@@ -1060,8 +1061,12 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 self._set_import_busy(False)
 
         self.loop_in_thread.run_task(
-            wallet.resolve_foreign_outpoints(
-                foreign_points, wallets, None, supplied, dict(self.foreign_inputs)
+            resolve_foreign_outpoints(
+                wallet,
+                foreign_points,
+                wallets,
+                psbt_inputs=supplied,
+                existing_inputs=dict(self.foreign_inputs),
             ),
             on_success=on_success,
             on_done=on_done,
@@ -1168,12 +1173,13 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
                 self._set_import_busy(False)
 
         self.loop_in_thread.run_task(
-            wallet.resolve_foreign_outpoints(
+            resolve_foreign_outpoints(
+                wallet,
                 foreign_points,
                 wallets,
-                self.mempool_manager,
-                psbt_inputs,
-                dict(self.foreign_inputs),
+                fetch_transaction=self.mempool_manager.fetch_transaction,
+                psbt_inputs=psbt_inputs,
+                existing_inputs=dict(self.foreign_inputs),
                 skip_spent=skip_spent,
             ),
             on_success=on_success,

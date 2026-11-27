@@ -39,6 +39,7 @@ import pytest
 from bitcoin_safe_lib.util import network_kind
 
 from bitcoin_safe.foreign_utxo import ForeignUtxo
+from bitcoin_safe.foreign_utxo_resolver import resolve_foreign_outpoints
 from bitcoin_safe.mempool_manager import MempoolManager
 from bitcoin_safe.outpoint_parser import parse_outpoints
 from bitcoin_safe.pythonbdk_types import OutPoint, PythonUtxo, Recipient, TxOut, UtxosForInputs
@@ -54,7 +55,8 @@ def foreign_utxo(outpoint, txout, transaction, wallets):
 
 
 async def resolve_outpoints(outpoints, wallets, active_wallet, mempool_manager):
-    return await Wallet.resolve_foreign_outpoints(active_wallet, outpoints, wallets, mempool_manager)
+    fetch_transaction = mempool_manager.fetch_transaction if mempool_manager is not None else None
+    return await resolve_foreign_outpoints(active_wallet, outpoints, wallets, fetch_transaction)
 
 
 def make_wallet(seed: str, wallet_id: str) -> MagicMock:
@@ -143,7 +145,9 @@ def test_known_spent_foreign_input_is_rejected(wallets: tuple[MagicMock, MagicMo
     assert "already spent" in errors[0]
     manager.fetch_transaction.assert_not_awaited()
     resolved, errors = asyncio.run(
-        Wallet.resolve_foreign_outpoints(active, [point], [active, other], manager, skip_spent=True)
+        resolve_foreign_outpoints(
+            active, [point], [active, other], manager.fetch_transaction, skip_spent=True
+        )
     )
     assert not resolved
     assert not errors
@@ -254,7 +258,7 @@ def test_resolve_rejects_conflicting_psbt_previous_output(wallets: tuple[MagicMo
     manager = MagicMock(spec=MempoolManager)
     manager.fetch_transaction = AsyncMock(return_value=tx)
     resolved, errors = asyncio.run(
-        Wallet.resolve_foreign_outpoints(active, [op], [active, other], manager, {op: psbt_input})
+        resolve_foreign_outpoints(active, [op], [active, other], manager.fetch_transaction, {op: psbt_input})
     )
     assert not resolved
     assert "conflicts with transaction" in errors[0]
@@ -263,7 +267,7 @@ def test_resolve_rejects_conflicting_psbt_previous_output(wallets: tuple[MagicMo
     psbt_input.non_witness_utxo = tx
     manager.fetch_transaction.reset_mock()
     resolved, errors = asyncio.run(
-        Wallet.resolve_foreign_outpoints(active, [op], [active, other], manager, {op: psbt_input})
+        resolve_foreign_outpoints(active, [op], [active, other], manager.fetch_transaction, {op: psbt_input})
     )
     assert not resolved
     assert "conflicting previous outputs" in errors[0]
@@ -630,6 +634,11 @@ def test_network_failure_does_not_discard_local_input(wallets: tuple[MagicMock, 
     resolved, errors = asyncio.run(resolve_outpoints([local, missing], [active, other], active, manager))
     assert set(resolved) == {local}
     assert len(errors) == 1 and str(missing) in errors[0] and "timed out" in errors[0]
+    # Parent evidence from the batch lookup is reused by the resolver.
+    for wallet in (active, other):
+        wallet.get_graph_transactions.assert_called_once()
+        wallet.get_graph_transaction.assert_not_called()
+    manager.fetch_transaction.assert_awaited_once_with(missing.txid)
 
 
 def test_downloaded_shared_transaction_replaces_output_only_data(
@@ -669,7 +678,7 @@ def test_imported_signatures_are_discarded(wallets: tuple[MagicMock, MagicMock])
     manager = MagicMock(spec=MempoolManager)
     manager.fetch_transaction = AsyncMock()
     imported, errors = asyncio.run(
-        Wallet.resolve_foreign_outpoints(active, [point], [active], manager, {point: supplied})
+        resolve_foreign_outpoints(active, [point], [active], manager.fetch_transaction, {point: supplied})
     )
     assert not errors
     result = imported[point].psbt_input

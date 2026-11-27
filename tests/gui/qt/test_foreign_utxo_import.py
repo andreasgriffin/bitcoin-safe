@@ -44,6 +44,7 @@ from PyQt6.QtCore import QItemSelectionModel, QSignalBlocker
 from pytestqt.qtbot import QtBot
 
 from bitcoin_safe.foreign_utxo import ForeignUtxo
+from bitcoin_safe.foreign_utxo_resolver import resolve_foreign_outpoints
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList
 from bitcoin_safe.gui.qt.my_treeview import MyItemDataRole
 from bitcoin_safe.gui.qt.ui_tx.ui_tx_creator import UITx_Creator
@@ -1416,15 +1417,16 @@ def test_psbt_merge_rechecks_selection_after_resolution(
             .finish(wallet.bdkwallet)
         )
         started, release = Event(), Event()
-        resolve = wallet.resolve_foreign_outpoints
 
         async def delayed_resolve(*args, **kwargs):
             started.set()
             while not release.is_set():
                 await asyncio.sleep(0.01)
-            return await resolve(*args, **kwargs)
+            return await resolve_foreign_outpoints(*args, **kwargs)
 
-        monkeypatch.setattr(wallet, "resolve_foreign_outpoints", delayed_resolve)
+        monkeypatch.setattr(
+            "bitcoin_safe.gui.qt.ui_tx.ui_tx_creator.resolve_foreign_outpoints", delayed_resolve
+        )
         errors: list[str] = []
         monkeypatch.setattr(
             "bitcoin_safe.gui.qt.ui_tx.ui_tx_creator.Message", lambda text, **kwargs: errors.append(text)
