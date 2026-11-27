@@ -93,7 +93,7 @@ from .descriptors import (
 )
 from .foreign_utxo import ForeignUtxo
 from .i18n import translate
-from .input_signature_verifier import InputVerdict, Prevout, verify_transaction
+from .input_signature_verifier import Prevout, verify_transaction
 from .input_signer_attribution import signers_per_input
 from .keystore import KeyStore
 from .labels import Labels, LabelType
@@ -1370,11 +1370,7 @@ class Wallet(BaseSaveableClass, CacheManager):
             logger.warning("BDK could not apply wallet update: %s", exc)
             raise
         log_rejected_transactions(wallet_events)
-        # Event handling reads transaction details through cached wallet lookups.
-        # Drop the pre-update snapshot before looking up the newly applied txs.
         self.clear_cache()
-        self._evict_txs_with_invalid_signatures(wallet_events)
-
         self.persist()
 
         logger.info(f"Applied update with events {[type(event) for event in wallet_events]}")
@@ -1445,114 +1441,6 @@ class Wallet(BaseSaveableClass, CacheManager):
         ]
         keystores = [keystore for keystore in self.keystores if keystore is not None]
         return signers_per_input(verification.results, keychain_indices, keystores, self.network)
-
-    def _verify_tx_signatures(
-        self,
-        transaction: bdk.Transaction,
-        candidate_outputs: Mapping[tuple[str, int], Prevout] | None = None,
-    ) -> bool:
-        """Check wallet-owned input signatures; this does not validate external inputs."""
-        try:
-            prevouts, wallet_owned_inputs = self._prevouts_of_tx(transaction, candidate_outputs)
-            verification = verify_transaction(transaction, prevouts, wallet_owned_inputs)
-        except Exception:
-            logger.exception(f"Failed to verify wallet inputs of transaction {transaction.compute_txid()}")
-            return False
-        has_unchecked_wallet_input = any(
-            verdict is InputVerdict.unchecked and wallet_owned
-            for verdict, wallet_owned in zip(verification.verdicts, wallet_owned_inputs, strict=True)
-        )
-        if verification.is_invalid or has_unchecked_wallet_input:
-            logger.error(
-                f"Transaction {transaction.compute_txid()} has an invalid or unverifiable wallet input"
-            )
-            return False
-        return True
-
-    def _verify_candidate_transactions(
-        self,
-        transactions: Mapping[str, bdk.Transaction],
-        known_prevouts: Mapping[tuple[str, int], Prevout] | None = None,
-    ) -> tuple[dict[str, bdk.Transaction], dict[tuple[str, int], Prevout]]:
-        """Verify candidates parent-first in rounds, retaining rejected candidates and outputs."""
-        remaining = dict(transactions)
-        # A candidate parent must be verified in this wallet before its outputs
-        # can be used, even if another wallet already knows that transaction.
-        accepted_outputs = {
-            outpoint: output
-            for outpoint, output in (known_prevouts or {}).items()
-            if outpoint[0] not in transactions
-        }
-        while remaining:
-            # Defer children while a candidate parent is unverified. That makes
-            # results independent of input order and prevents a failed parent's
-            # already-available output from being treated as trusted.
-            added = [
-                txid
-                for txid, tx in remaining.items()
-                if not {str(txin.previous_output.txid) for txin in tx.input()}.intersection(remaining)
-                and self._verify_tx_signatures(tx, accepted_outputs)
-            ]
-            if not added:
-                break
-            for txid in added:
-                tx = remaining.pop(txid)
-                accepted_outputs.update(
-                    {
-                        (txid, vout): Prevout(
-                            script_pubkey=TxOut.from_bdk(output).spk_bytes,
-                            value=output.value.to_sat(),
-                        )
-                        for vout, output in enumerate(tx.output())
-                    }
-                )
-        return remaining, accepted_outputs
-
-    def _evict_txs_with_invalid_signatures(self, wallet_events: list[bdk.WalletEvent]) -> None:
-        """Evict unconfirmed txs of an applied update whose signatures do not verify.
-
-        bdk does not expose the txs of an update before it is applied, so the check runs
-        on the wallet state after the update. The evicted tx is not returned to the wallet
-        later, because its eviction time is newer than its last-seen time.
-        """
-        event_txids = {
-            str(event.txid) for event in wallet_events if isinstance(event, bdk.WalletEvent.TX_UNCONFIRMED)
-        }
-        if not event_txids:
-            return
-        # Include unconfirmed candidate ancestors, not only event txids: BDK
-        # already exposes their outputs, but that availability does not establish
-        # that a candidate parent passed our wallet-signature policy.
-        available_candidates = {
-            tx.txid: tx.transaction
-            for tx in self.get_txs().values()
-            if isinstance(tx.chain_position, bdk.ChainPosition.UNCONFIRMED)
-        }
-        for txid in event_txids:
-            wallet_tx = self.get_tx(txid)
-            if wallet_tx:
-                available_candidates[txid] = wallet_tx.transaction
-        candidate_ids = set(event_txids)
-        # Include the whole connected unconfirmed chain in either direction so
-        # event arrival order cannot omit an unverified ancestor or descendant.
-        changed = True
-        while changed:
-            changed = False
-            for txid, transaction in available_candidates.items():
-                parents = {str(txin.previous_output.txid) for txin in transaction.input()}
-                if txid in candidate_ids or parents.intersection(candidate_ids):
-                    expanded = candidate_ids | parents.intersection(available_candidates)
-                    expanded.add(txid)
-                    if expanded != candidate_ids:
-                        candidate_ids = expanded
-                        changed = True
-        candidates = {
-            txid: available_candidates[txid] for txid in candidate_ids if txid in available_candidates
-        }
-        remaining, _accepted_outputs = self._verify_candidate_transactions(candidates)
-        txids_to_evict = list(remaining)
-        if txids_to_evict:
-            self.apply_evicted_txs(txids_to_evict, evicted_at=int(time()))
 
     def forward_search_unused_address(
         self, category: str | None = None, is_change=False
@@ -3109,43 +2997,79 @@ class Wallet(BaseSaveableClass, CacheManager):
         self.advance_tip_to_addresses([address for tx in txs for address in self.get_output_addresses(tx)])
 
         candidates = {str(tx.compute_txid()): tx for tx in txs}
-        remaining, accepted_outputs = self._verify_candidate_transactions(candidates, known_prevouts)
+        pending = dict(candidates)
+        parents = {
+            txid: {str(txin.previous_output.txid) for txin in tx.input()} for txid, tx in candidates.items()
+        }
+        available = {
+            key: output for key, output in (known_prevouts or {}).items() if key[0] not in candidates
+        }
         accepted: list[bdk.UnconfirmedTx] = []
-        for txid, tx in candidates.items():
-            if txid in remaining:
-                continue
-            wallet_tx = self.get_tx(txid)
-            if not (
-                wallet_tx
-                and isinstance(wallet_tx.chain_position, bdk.ChainPosition.UNCONFIRMED)
-                and wallet_tx.chain_position.timestamp
-                and wallet_tx.chain_position.timestamp >= last_seen
-            ):
-                accepted.append(bdk.UnconfirmedTx(tx=tx, last_seen=last_seen))
+        rejected: set[str] = set()
 
-        # For example, BDK may discard an unrelated parent P while retaining
-        # our child C. Save P's accepted output so C can be checked again later.
-        if accepted_outputs:
-            for entry in accepted:
-                _, owned_inputs = self._prevouts_of_tx(entry.tx, accepted_outputs)
-                if not any(owned_inputs):
+        # Submit parents first, and never supply a rejected parent's outputs to
+        # its children. BDK, not the Python script verifier, decides validity.
+        while pending:
+            ready = [txid for txid in pending if not parents[txid].intersection(pending)]
+            if not ready:
+                logger.warning("Unresolvable unconfirmed transaction dependencies: %s", list(pending))
+                break
+            batch: list[bdk.UnconfirmedTx] = []
+            for txid in ready:
+                tx = pending.pop(txid)
+                if parents[txid].intersection(rejected):
+                    rejected.add(txid)
+                    logger.warning("Skipping transaction %s with a rejected parent", txid)
                     continue
-                for txin in entry.tx.input():
-                    outpoint = txin.previous_output
-                    key = (str(outpoint.txid), outpoint.vout)
-                    if prevout := accepted_outputs.get(key):
-                        self.bdkwallet.insert_txout(
-                            outpoint,
-                            bdk.TxOut(
-                                value=bdk.Amount.from_sat(prevout.value),
-                                script_pubkey=bdk.Script(prevout.script_pubkey),
-                            ),
-                        )
-        wallet_events = self.bdkwallet.apply_unconfirmed_txs_events(accepted)
-        rejected = log_rejected_transactions(wallet_events)
-        self.persist()
+                wallet_tx = self.get_tx(txid)
+                if (
+                    wallet_tx
+                    and isinstance(wallet_tx.chain_position, bdk.ChainPosition.UNCONFIRMED)
+                    and wallet_tx.chain_position.timestamp
+                    and wallet_tx.chain_position.timestamp >= last_seen
+                ):
+                    # This transaction was already applied, so its outputs can
+                    # support children in this batch without resubmitting it.
+                    available.update(
+                        {
+                            (txid, vout): Prevout(TxOut.from_bdk(output).spk_bytes, output.value.to_sat())
+                            for vout, output in enumerate(wallet_tx.transaction.output())
+                        }
+                    )
+                    continue
 
-        return [entry for entry in accepted if str(entry.tx.compute_txid()) not in rejected]
+                # Taproot may require foreign prevouts as well as our own.
+                prevouts, owned_inputs = self._prevouts_of_tx(tx, available)
+                if any(owned_inputs):
+                    for txin, prevout in zip(tx.input(), prevouts, strict=True):
+                        if prevout is not None:
+                            self.bdkwallet.insert_txout(
+                                txin.previous_output,
+                                bdk.TxOut(
+                                    value=bdk.Amount.from_sat(prevout.value),
+                                    script_pubkey=bdk.Script(prevout.script_pubkey),
+                                ),
+                            )
+                batch.append(bdk.UnconfirmedTx(tx=tx, last_seen=last_seen))
+
+            if not batch:
+                continue
+            wallet_events = self.bdkwallet.apply_unconfirmed_txs_events(batch)
+            rejected.update(log_rejected_transactions(wallet_events))
+            for entry in batch:
+                txid = str(entry.tx.compute_txid())
+                if txid in rejected:
+                    continue
+                accepted.append(entry)
+                available.update(
+                    {
+                        (txid, vout): Prevout(TxOut.from_bdk(output).spk_bytes, output.value.to_sat())
+                        for vout, output in enumerate(entry.tx.output())
+                    }
+                )
+
+        self.persist()
+        return accepted
 
     def advance_tip_to_addresses(self, addresses: list[str]) -> list[bdk.AddressInfo]:
         """Advance tip to address info."""
