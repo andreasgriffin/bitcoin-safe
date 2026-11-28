@@ -177,8 +177,8 @@ class CategoryList(MyTreeView[CategoryInfo]):
         self.update_content()
 
         # signals
-        self.signals.any_wallet_updated.connect(self.update_with_filter)
-        self.fx.signal_data_updated.connect(self.on_update_fx_rates)
+        self._external_signal_tracker.connect(self.signals.any_wallet_updated, self.update_with_filter)
+        self._external_signal_tracker.connect(self.fx.signal_data_updated, self.on_update_fx_rates)
 
     def set_category_core(self, category_core: CategoryCore | None):
         """Set category core."""
@@ -463,8 +463,10 @@ class CategoryListWithToolbar(TreeViewWithToolbar):
         self.utxo_list = category_list
         self.set_category_core(category_core=category_list.category_core)
         self.create_layout()
-        self.utxo_list.signals.language_switch.connect(self.updateUi)
-        self.utxo_list.signals.any_wallet_updated.connect(self.update_with_filter)
+        self._external_signal_tracker.connect(self.utxo_list.signals.language_switch, self.updateUi)
+        self._external_signal_tracker.connect(
+            self.utxo_list.signals.any_wallet_updated, self.update_with_filter
+        )
 
     def create_toolbar_with_menu(self, title: str):
         """Create toolbar with menu."""

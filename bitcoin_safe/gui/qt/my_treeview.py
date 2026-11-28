@@ -72,7 +72,7 @@ from typing import (
     cast,
 )
 
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from bitcoin_safe_lib.gui.qt.util import str_to_qbytearray
 from bitcoin_safe_lib.storage import BaseSaveableClass, filtered_for_init
 from bitcoin_safe_lib.util import unique_elements
@@ -592,6 +592,7 @@ class MyTreeView[T](ColorCorrectedTreeView, BaseSaveableClass):
         """Initialize instance."""
         super().__init__(parent)
         self.signals = signals
+        self._external_signal_tracker = SignalTracker()
         self._source_model = MyStandardItemModel(key_column=self.key_column, parent=self)
         self.config = config
         self.hidden_columns_enum = set(hidden_columns_enum or set())
@@ -659,8 +660,8 @@ class MyTreeView[T](ColorCorrectedTreeView, BaseSaveableClass):
         self.setAlternatingRowColors(True)
 
         # signals
-        self.signals.language_switch.connect(self.updateUi)
-        self.signals.currency_switch.connect(self.updateUi)
+        self._external_signal_tracker.connect(self.signals.language_switch, self.updateUi)
+        self._external_signal_tracker.connect(self.signals.currency_switch, self.updateUi)
 
     def dump(self) -> dict[str, Any]:
         """Dump."""
@@ -1612,6 +1613,7 @@ class MyTreeView[T](ColorCorrectedTreeView, BaseSaveableClass):
 
     def close(self) -> bool:
         """Close."""
+        self._external_signal_tracker.disconnect_all()
         self.proxy.close()
         self._source_model.clear()
         self.setParent(None)
@@ -1654,9 +1656,10 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
         self.toolbar_is_visible = toolbar_is_visible
         self.searchable_list = searchable_list
         self.default_export_csv_filename = "export.csv"
+        self._external_signal_tracker = SignalTracker()
 
         # signals
-        self.searchable_list.signal_finished_update.connect(self.updateUi)
+        self._external_signal_tracker.connect(self.searchable_list.signal_finished_update, self.updateUi)
         # in searchable_list signal_update will be sent after the update. and since this
         # is relevant for the balance to show, i need to update also the balance label
         # which is done in updateUi
@@ -1777,6 +1780,7 @@ class TreeViewWithToolbar(SearchableTab, BaseSaveableClass):
 
     def close(self) -> bool:
         """Close."""
+        self._external_signal_tracker.disconnect_all()
         if self.searchable_list:
             self.searchable_list.close()
             self.searchable_list = None

@@ -262,8 +262,10 @@ class UTXOList(MyTreeView[OutPoint]):
         self.update_content()
 
         # signals
-        wallet_functions.signals.any_wallet_updated.connect(self.update_with_filter)
-        self.fx.signal_data_updated.connect(self.on_update_fx_rates)
+        self._external_signal_tracker.connect(
+            wallet_functions.signals.any_wallet_updated, self.update_with_filter
+        )
+        self._external_signal_tracker.connect(self.fx.signal_data_updated, self.on_update_fx_rates)
 
     def dump(self) -> dict[str, Any]:
         """Dump."""
@@ -764,8 +766,10 @@ class UtxoListWithToolbar(TreeViewWithToolbar):
             self.utxo_list.setSelectionModel(selection_model)
         self.utxo_list.signal_selection_changed.connect(self.update_labels)
         self.create_layout()
-        self.utxo_list.signals.language_switch.connect(self.updateUi)
-        self.utxo_list.signals.any_wallet_updated.connect(self.update_with_filter)
+        self._external_signal_tracker.connect(self.utxo_list.signals.language_switch, self.updateUi)
+        self._external_signal_tracker.connect(
+            self.utxo_list.signals.any_wallet_updated, self.update_with_filter
+        )
         self.balance_label.setHidden(False)
 
     def dump(self) -> dict[str, Any]:

@@ -232,6 +232,7 @@ class UITx_Viewer(UITx_Base):
         self.network = network
         self.fee_info = fee_info
         self.client = client
+        self.utxo_list_with_toolbar = widget_utxo_with_toolbar
         self.utxo_list = widget_utxo_with_toolbar.utxo_list
         self.chain_position = chain_position
         self._forced_update = False
@@ -454,8 +455,8 @@ class UITx_Viewer(UITx_Base):
         # ensure that the linking warning bar appears (needs all tx loaded)
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.on_any_wallet_update)
         self.signal_tracker.connect(self.signals.signal_broadcast_complete, self.on_broadcast_complete)
-        self.signals.currency_switch.connect(self.update_all_totals)
-        self.utxo_list.signal_finished_update.connect(self.update_all_totals)
+        self.signal_tracker.connect(self.signals.currency_switch, self.update_all_totals)
+        self.signal_tracker.connect(self.utxo_list.signal_finished_update, self.update_all_totals)
         self.column_fee.fee_group.mempool_buttons.signal_rbf_icon.connect(self._on_rbf_icon)
         self.column_fee.fee_group.mempool_buttons.signal_cpfp_icon.connect(self._on_cpfp_icon)
         self.column_fee.fee_group.mempool_buttons.signal_edit_with_fee_icon.connect(
@@ -1771,10 +1772,13 @@ class UITx_Viewer(UITx_Base):
 
     def close(self):
         """Close."""
-        self.column_sankey.close()
-        self.column_recipients.close()
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
+        self.label_line_edit.close()
+        self.column_sankey.close()
+        self.column_recipients.close()
+        self.utxo_list_with_toolbar.close()
+        self.searchable_list = None
         self.setVisible(False)
         self.setParent(None)
         return super().close()
