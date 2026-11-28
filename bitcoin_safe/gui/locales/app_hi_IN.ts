@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>हस्ताक्षरित psbt का txid मूल txid से मेल नहीं खाता</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>हस्ताक्षरित लेनदेन मूल लेनदेन से मेल नहीं खाता।</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>bdk लाइब्रेरी त्रुटि। अंतिम चरण के दौरान txid को नहीं बदला जाना चाहिए</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>अंतिम रूप देते समय लेनदेन बदल गया।</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>अमान्य आउटपुट स्क्रिप्ट</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>पता गायब</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>रॉ आउटपुट स्क्रिप्ट</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>नेटवर्क मानचित्र खोलें</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>बीता समय: {passed_time}</translation>
 		</message>
@@ -811,6 +826,16 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>कॉम्पैक्ट फ़िल्टर हेडर: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>कॉम्पैक्ट फ़िल्टर: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>नोड्स से कनेक्ट हो रहा है</translation>
 		</message>
@@ -878,8 +903,8 @@ Funds may be at risk. Read the guidance now and migrate to a seed generated with
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>विदेशी UTXOs जोड़ें</translation>
+			<source>Add</source>
+			<translation>जोड़ें</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1508,10 +1533,20 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>अधिकतम शुल्क दर {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>शुल्क दर को ठीक-ठीक नहीं जाना जा सकता,
 क्योंकि लेनदेन का अंतिम आकार अज्ञात है।</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>लेनदेन के अंतिम आकार का अनुमान नहीं लगाया जा सकता।</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1539,6 +1574,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>उच्च शुल्क दर!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>शुल्क दर संभवतः अधिक है!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1814,6 +1854,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>मौजूदा सिंक की का उपयोग करके क्लाउड से लेबल्स को पुनर्स्थापित करें</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>चुनी गई फ़ाइलों में से एक नहीं मिली। फ़ाइल पथ जाँचें और फिर प्रयास करें।</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>चुनी गई फ़ाइलों में से एक को पढ़ा नहीं जा सकता। उसकी अनुमतियाँ जाँचें और फिर प्रयास करें।</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>चुनी गई फ़ाइलों में से एक को पढ़ा नहीं जा सकता। फ़ाइलें जाँचें और फिर प्रयास करें।</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>यह एक फ़ोल्डर है। इसे खोलें और इसके अंदर की वॉलेट फ़ाइल चुनें।</translation>
 		</message>
 	</context>
 	<context>
@@ -2161,6 +2223,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>seed वह रहस्य है जो लेनदेन पर हस्ताक्षर करने में सक्षम बनाता है। एकल हस्ताक्षर वॉलेट के लिए यह फंड पर पूर्ण नियंत्रण देता है।</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>xPub की गहराई या अंतिम चाइल्ड कुंजी की संख्या कुंजी के मूल स्रोत से मेल नहीं खाती।</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2689,6 +2756,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>वॉलेट फ़ाइल आयात करें</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>उत्तराधिकार का अवलोकन</translation>
 		</message>
@@ -2831,6 +2903,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>कृपया पहले वॉलेट चुनें।</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>कृपया वॉलेट फ़ाइल पूरी तरह लोड होने तक प्रतीक्षा करें।</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3710,6 +3787,16 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet पर हॉट वॉलेट अक्षम हैं। आप वास्तविक Bitcoin का उपयोग किए बिना {app_name} का परीक्षण करने के लिए Testnet पर स्विच कर सकते हैं।</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>दूसरी वॉलेट फ़ाइल से आयात करें</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>{} से वॉलेट का सार्वजनिक डेटा और लेबल आयात करें।</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4653,6 +4740,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>OP_RETURN बनाएँ</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>OP_RETURN आउटपुट में शामिल किया जाने वाला टेक्स्ट:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5192,8 +5291,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>हस्ताक्षरित psbt का txid मूल Transaction Identifier से मेल नहीं खाता। रद्द करना</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>हस्ताक्षरित लेनदेन मूल लेनदेन से मेल नहीं खाता। प्रक्रिया रद्द की जा रही है।</translation>
 		</message>
 	</context>
 	<context>
@@ -5785,8 +5884,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>इनपुट्स जोड़ें</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>सभी खुले वॉलेट से UTXO जोड़ें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>विदेशी UTXOs जोड़ें</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5801,8 +5905,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>RBF के लिए प्रतिस्थापन लेनदेन के आकार का अनुमान नहीं लगाया जा सकता।</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>शुल्क दर बदलें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>इनपुट आयात नहीं किए जा सके: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>PSBT मर्ज नहीं की जा सकी: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5816,8 +5935,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>पिछले लेनदेन डाउनलोड करें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>हर पंक्ति में txid:vout प्रारूप में एक UTXO दर्ज करें।</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>PSBT अपेक्षित थी</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>शुल्क दर बहुत कम है</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>यदि कोई पिछला लेनदेन स्थानीय रूप से उपलब्ध नहीं है, तो उसे कॉन्फ़िगर किए गए ब्लॉक एक्सप्लोरर ({explorer}) से डाउनलोड किया जाता है। सर्वर देख सकता है कि किन लेनदेन ID का अनुरोध किया गया है।</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>वॉलेट से UTXO आयात करें</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5826,8 +5970,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>PSBT लोड करें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>UTXOs लोड करें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>दूसरी PSBT मर्ज करें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>कोई ब्लॉक एक्सप्लोरर कॉन्फ़िगर नहीं किया गया है, इसलिए अनुपलब्ध लेनदेन डाउनलोड नहीं किए जा सकते।</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>PSBT पेस्ट करें</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>एक PSBT पेस्ट करें।</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5838,19 +6007,13 @@ otherwise you may not be able to broadcast it.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>कृपया UTXO यहाँ पेस्ट करें</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>कृपया UTXO यहाँ पेस्ट करें, प्रारूप में txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>कृपया बाएं तरफ एक इनपुट श्रेणी चुनें, जो लेन-देन प्राप्तकर्ताओं के अनुरूप हो।</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>गोपनीयता सूचना: Bitcoin Safe पहले स्थानीय रूप से उपलब्ध वॉलेट डेटा में खोज करता है।</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5861,6 +6024,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>बाएँ सूची से एक या एक से अधिक UTXO चुनें, या “विशिष्ट UTXO चुनें” ऊपर का चयन हटा दें ताकि {app_name} आपकी लेनदेन के लिए सबसे अच्छे कॉइन चुन सके।</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>कुछ पिछले लेनदेन कॉन्फ़िगर किए गए ब्लॉक एक्सप्लोरर से डाउनलोड करने होंगे। एक्सप्लोरर अनुरोधित लेनदेन ID देख सकता है। क्या उन्हें डाउनलोड करें?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>कुछ चुने गए इनपुट उपलब्ध नहीं हैं।</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>टेक्स्ट फ़ाइलें (*.txt);;सभी फ़ाइलें (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT में वर्तमान लेनदेन में पहले से चुने गए इनपुट हैं: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5893,6 +6076,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>लेनदेन प्रसारित नहीं किया जा सका</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>PSBT खोली नहीं जा सकी</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5960,6 +6148,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>लेन-देन {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>अज्ञात हस्ताक्षरकर्ता</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6098,8 +6291,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>बाहरी इनपुट हटाएँ</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>इनके द्वारा हस्ताक्षरित</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>खर्च किया गया</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6110,6 +6313,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Tx</source>
 			<translation>टीएक्स</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>अनुपलब्ध</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>अज्ञात</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6244,6 +6457,358 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>बैलेंस ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>एक हस्ताक्षरकर्ता का फ़िंगरप्रिंट 00000000 पर सेट है। यह अस्थायी मान मूल हस्ताक्षरकर्ता की पहचान नहीं करता; वास्तविक फ़िंगरप्रिंट उपलब्ध होने पर इसे बदलें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>खाता</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>पते की CSV फ़ाइल बहुत बड़ी है।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>BIP-329 लेबल (वैकल्पिक)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>{signer} के लिए BIP39 पासफ़्रेज़:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>हस्ताक्षरकर्ताओं के BIP39 पासफ़्रेज़</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>वापस</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>ब्राउज़ करें…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>यह वॉलेट फ़ाइल पढ़ी नहीं जा सकती। इसकी अनुमतियाँ जाँचें और फिर प्रयास करें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>यह वॉलेट फ़ाइल पढ़ी नहीं जा सकती। फ़ाइल जाँचें और फिर प्रयास करें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>वॉलेट फ़ाइल का पथ निर्धारित नहीं किया जा सकता। ब्राउज़ करें विकल्प का उपयोग करके फ़ाइल चुनें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>फ़ाइल पढ़ने से पहले ब्राउज़ करें विकल्प का उपयोग करके वॉलेट फ़ाइल चुनें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>पते की CSV चुनें</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>एक खाता चुनें और आयात करें विकल्प चुनें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>एक खाता चुनें और आयात करें विकल्प चुनें। हस्ताक्षरकर्ता के अनुपलब्ध विवरण माँगे जाएँगे।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>लेबल फ़ाइल चुनें</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>वॉलेट फ़ाइल चुनें</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>नेटवर्क की पुष्टि करें</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Electrum स्टोरेज xpub पढ़ी नहीं जा सकी: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Ledger खाते खोजें</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Electrum हस्ताक्षरकर्ता का डेरिवेशन पथ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Electrum हस्ताक्षरकर्ता का फ़िंगरप्रिंट</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>Electrum वॉलेट फ़ाइल: BIE1 पासवर्ड का उपयोग करता है। यदि मूल USB हार्डवेयर वॉलेट Electrum के स्टोरेज-कुंजी डेरिवेशन पथ का समर्थन करता है, तो BIE2 उससे अनलॉक होता है।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>एक मान्य खाता डेरिवेशन पथ दर्ज करें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>अपने Ledger हस्ताक्षरकर्ता पर दिखाया गया 8-वर्ण वाला मास्टर फ़िंगरप्रिंट दर्ज करें:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Electrum हस्ताक्षरकर्ता {number} के लिए खाता डेरिवेशन पथ दर्ज करें:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>अपने Ledger हस्ताक्षरकर्ता पर दिखाया गया खाता डेरिवेशन पथ दर्ज करें (उदाहरण के लिए m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Electrum हस्ताक्षरकर्ता {number} का वास्तविक मास्टर फ़िंगरप्रिंट दर्ज करें। हार्डवेयर हस्ताक्षरकर्ता या उसके मूल बैकअप पर फ़िंगरप्रिंट जाँचें:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>स्रोत वॉलेट का पासवर्ड दर्ज करें:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>अपने Ledger Live ऐप्लिकेशन का पासवर्ड दर्ज करें:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>आयात करें</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>वॉलेट फ़ाइल आयात करें</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>लेबल फ़ाइल बहुत बड़ी है।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Ledger Live खातों को आपकी स्थानीय उपयोगकर्ता-डेटा फ़ाइल app.json से स्वचालित रूप से पढ़ा जाता है। फ़ाइल चुनने की आवश्यकता नहीं है। ऐप्लिकेशन का पासवर्ड आवश्यक हो सकता है, डिवाइस का PIN नहीं।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>डिफ़ॉल्ट उपयोगकर्ता-डेटा फ़ोल्डर में Ledger Live की app.json फ़ाइल नहीं मिली।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>डिफ़ॉल्ट उपयोगकर्ता-डेटा फ़ोल्डर में Ledger Live की app.json फ़ाइल नहीं मिली। Ledger Live → सेटिंग्स → सहायता → उपयोगकर्ता डेटा देखें खोलें और जाँचें कि ऐप्लिकेशन अपने खाते स्थानीय रूप से संग्रहीत करता है।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live को ऐप्लिकेशन पासवर्ड की आवश्यकता है।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Ledger खाता डेरिवेशन पथ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Ledger हस्ताक्षरकर्ता का फ़िंगरप्रिंट</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>इस प्रारूप में अंतर्निहित पासवर्ड सुरक्षा समर्थित नहीं है। सार्वजनिक वॉलेट या खाता निर्यात फ़ाइल चुनें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>केवल वॉलेट का सार्वजनिक डेटा आयात किया जाता है। धन प्राप्त करने से पहले पहले प्राप्ति और छुट्टे के पतों का स्रोत वॉलेट से मिलान करें। हस्ताक्षर करने के लिए मूल हस्ताक्षरकर्ता या डिवाइस आवश्यक है।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>फ़ाइल पढ़ने के बाद प्रत्येक सॉफ़्टवेयर हस्ताक्षरकर्ता के लिए पासफ़्रेज़ अलग-अलग माँगे जाते हैं।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>वॉलेट फ़ाइल पढ़ें</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>वॉलेट फ़ाइल पढ़ी जा रही है…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>वॉलेट आयात की समीक्षा करें</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>इस Electrum फ़ाइल को एन्क्रिप्ट करने के लिए उपयोग किए गए हार्डवेयर वॉलेट को चुनें और अनलॉक करें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>इस एन्क्रिप्टेड वॉलेट के लिए Electrum प्रारूप चुनें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>हस्ताक्षरकर्ता का पासफ़्रेज़ दर्ज करना रद्द किया गया। कोई वॉलेट आयात नहीं किया गया।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>हस्ताक्षरकर्ता {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>Sparrow JSON और पासवर्ड-सुरक्षित H2 वॉलेट फ़ाइलें समर्थित हैं। आयात करने से पहले Sparrow बंद करें। H2 आयात हस्ताक्षरकर्ता डेटा पुनर्प्राप्त करने के लिए स्वचालित रूप से BIP39 सीड पढ़ता है। मेननेट सीड आयात नहीं किए जाते; सत्यापित टेस्ट नेटवर्क सीड हस्ताक्षर के लिए सहेजे जा सकते हैं और मेननेट के धन को भी नियंत्रित कर सकते हैं।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Sparrow हस्ताक्षरकर्ता का BIP39 पासफ़्रेज़</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>Specter पते की CSV (वैकल्पिक)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Ledger डिस्क्रिप्टर में असमर्थित कुंजी मूल स्रोत है।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>मास्टर फ़िंगरप्रिंट में ठीक आठ हेक्साडेसिमल वर्ण होने चाहिए।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>स्रोत वॉलेट में मेननेट सीड था। उसे न तो रखा गया, न आयात किया गया। अपना मूल रिकवरी बैकअप सुरक्षित रखें; यह वॉलेट उस सीड से हस्ताक्षर नहीं कर सकता।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>स्रोत वॉलेट का नेटवर्क सक्रिय नेटवर्क से मेल नहीं खाता।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>वॉलेट फ़ाइल नहीं मिली। ब्राउज़ करें विकल्प का उपयोग करके कोई मौजूदा फ़ाइल चुनें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>इस Sparrow फ़ाइल में डिस्क्रिप्टर को फिर से बनाने के लिए पर्याप्त सार्वजनिक जानकारी नहीं है। BIP39 पासफ़्रेज़ जाँचें और फ़ाइल दोबारा पढ़ें, या Sparrow से सार्वजनिक डिस्क्रिप्टर निर्यात करें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>इस खाते को आयात नहीं किया जा सकता क्योंकि इसका पूर्ण प्राप्ति और छुट्टे का डिस्क्रिप्टर उपलब्ध नहीं है। स्रोत वॉलेट से संगत डिस्क्रिप्टर निर्यात करें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>यह फ़ाइल सटीक नेटवर्क निर्धारित नहीं करती। पुष्टि करें कि यह वॉलेट सक्रिय नेटवर्क से संबंधित है: {network}।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>यह एक फ़ोल्डर है। इसे खोलें और इसके अंदर की वॉलेट फ़ाइल चुनें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>इस आयात स्क्रीन पर USB डिवाइस की पहुँच उपलब्ध नहीं है।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>USB हार्डवेयर वॉलेट का चयन रद्द हो गया या विफल रहा।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>सत्यापित टेस्ट नेटवर्क BIP39 सीड आयात किए जाएँगे और इस वॉलेट के साथ सहेजे जाएँगे। ये सीड मेननेट के धन को भी नियंत्रित कर सकते हैं; इस वॉलेट को रिकवरी बैकअप की तरह सुरक्षित रखें। धन प्राप्त करने से पहले पहले प्राप्ति और छुट्टे के पतों का स्रोत वॉलेट से मिलान करें।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>वॉलेट फ़ाइल</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>वॉलेट प्रारूप</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>वॉलेट आयात</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Wasabi वॉलेट का सार्वजनिक डेटा बिना पासवर्ड के आयात किया जाता है। समर्थित नेटिव SegWit लेबल सत्यापित कुंजी पथों से रूपांतरित किए जाते हैं। जिन लेबल की पहचान नहीं की जा सकती, उनके लिए आप BIP-329 लेबल फ़ाइल भी चुन सकते हैं।</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>डिस्क्रिप्टर अनुपलब्ध</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>तैयार</translation>
 		</message>
 	</context>
 	<context>
@@ -9226,6 +9791,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>सभी प्रविष्टियाँ - कुल: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>छुट्टे का UTXO</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>प्राप्ति का UTXO</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9357,6 +9939,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>OP_RETURN आउटपुट की राशि शून्य होनी चाहिए।</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>आउटपुट स्क्रिप्ट खाली नहीं हो सकती।</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9369,6 +9961,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>पते पर भेजा जा रहा है: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>लेनदेन बनाते समय इस आउटपुट स्क्रिप्ट की अनुमति नहीं है।</translation>
 		</message>
 		<name>wallet</name>
 		<message>

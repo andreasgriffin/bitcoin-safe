@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>Txid dari psbt yang ditandatangani tidak cocok dengan txid asli</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>Transaksi yang ditandatangani tidak cocok dengan transaksi asli.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>Kesalahan pustaka bdk. Txid tidak boleh diubah selama finalisasi</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>Transaksi berubah selama finalisasi.</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>Skrip output tidak valid</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>Alamat hilang</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>Skrip output mentah</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>Buka Peta Jaringan</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>Waktu berlalu: {passed_time}</translation>
 		</message>
@@ -812,6 +827,16 @@ memiliki transaksi yang terhubung ke alamat lain. Apakah Anda yakin ingin mengub
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>Header filter ringkas: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>Filter ringkas: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>Menghubungkan ke node</translation>
 		</message>
@@ -880,8 +905,8 @@ Dana mungkin berisiko. Baca panduannya sekarang dan migrasikan ke seed yang dibu
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>Tambah UTXO asing</translation>
+			<source>Add</source>
+			<translation>Tambah</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1510,9 +1535,19 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>Tarif biaya maksimal {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>Tarif biaya tidak dapat diketahui secara pasti karena ukuran akhir transaksi belum diketahui.</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>Ukuran akhir transaksi tidak dapat diperkirakan.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1540,6 +1575,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>Tarif biaya tinggi!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>Tarif biaya mungkin tinggi!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1815,6 +1855,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>Pulihkan label dari cloud menggunakan kunci sinkronisasi yang ada</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>Salah satu file yang dipilih tidak ditemukan. Periksa jalur file dan coba lagi.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>Salah satu file yang dipilih tidak dapat dibaca. Periksa izinnya dan coba lagi.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>Salah satu file yang dipilih tidak dapat dibaca. Periksa file dan coba lagi.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Ini adalah folder. Buka folder dan pilih file dompet di dalamnya.</translation>
 		</message>
 	</context>
 	<context>
@@ -2164,6 +2226,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>Seed adalah rahasia yang memungkinkan penandatanganan transaksi.
 Untuk dompet tanda tangan tunggal, seed memberikan kendali penuh atas dana.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>Kedalaman xPub atau nomor anak terakhir tidak cocok dengan asal kunci.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2693,6 +2760,11 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>Impor file dompet</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>Ringkasan pewarisan</translation>
 		</message>
@@ -2835,6 +2907,11 @@ Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>Harap pilih dompet terlebih dahulu.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>Harap tunggu hingga file dompet selesai dimuat.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3721,6 +3798,16 @@ Menggunakan lebih banyak peer meningkatkan cakupan tetapi menggunakan lebih bany
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Hot wallet dinonaktifkan di Bitcoin Mainnet.
 Anda dapat beralih ke Testnet untuk menguji {app_name} tanpa menggunakan Bitcoin sungguhan.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>Impor dari file dompet lain</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>Impor data publik dompet dan label dari {}.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4668,6 +4755,18 @@ Keluaran tetap sama; hanya biayanya yang berubah.</translation>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>Buat OP_RETURN</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>Teks yang akan disertakan dalam output OP_RETURN:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5208,8 +5307,8 @@ Jika Anda salah di sini, uang Anda hilang!</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>Txid dari psbt yang ditandatangani tidak cocok dengan txid asli. Membatalkan</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>Transaksi yang ditandatangani tidak cocok dengan transaksi asli. Membatalkan.</translation>
 		</message>
 	</context>
 	<context>
@@ -5802,8 +5901,13 @@ Simpan, dan saat Anda klik 'impor kunci sinkronisasi', itu akan memulihkan label
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>Tambah Input</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>Tambahkan UTXO dari semua dompet yang terbuka</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>Tambah UTXO asing</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5818,8 +5922,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>Tidak dapat memperkirakan ukuran transaksi pengganti untuk RBF.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Ubah tarif biaya</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>Tidak dapat mengimpor input: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>Tidak dapat menggabungkan PSBT: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5833,8 +5952,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>Unduh transaksi sebelumnya</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>Masukkan satu UTXO per baris dalam format txid:vout.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>PSBT diperlukan</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>Tarif biaya terlalu rendah</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>Jika transaksi sebelumnya tidak tersedia secara lokal, transaksi tersebut diunduh dari penjelajah blok yang dikonfigurasi ({explorer}). Server dapat melihat ID transaksi mana yang diminta.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>Impor UTXO dari dompet</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5843,8 +5987,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>Muat PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>Muat UTXO</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>Gabungkan PSBT lain</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>Tidak ada penjelajah blok yang dikonfigurasi, sehingga transaksi yang hilang tidak dapat diunduh.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>Tempel PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>Tempel sebuah PSBT.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5855,19 +6024,13 @@ jika tidak, Anda mungkin tidak dapat menyiarkan transaksi.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>Harap tempel UTXO di sini</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>Harap tempel UTXO di sini dalam format  txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>Harap pilih kategori input di sebelah kiri, yang sesuai dengan penerima transaksi.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>Pemberitahuan privasi: Bitcoin Safe terlebih dahulu mencari data dompet yang tersedia secara lokal.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5878,6 +6041,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>Pilih satu atau lebih UTXO dari daftar di sebelah kiri, atau hapus centang “Pilih UTXO spesifik” di atas untuk membiarkan {app_name} memilih koin terbaik untuk transaksi Anda.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>Beberapa transaksi sebelumnya harus diunduh dari penjelajah blok yang dikonfigurasi. Penjelajah dapat melihat ID transaksi yang diminta. Unduh transaksi tersebut?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>Beberapa input yang dipilih tidak tersedia.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>File teks (*.txt);;Semua file (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT berisi input yang sudah dipilih dalam transaksi saat ini: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5910,6 +6093,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>Tidak dapat menyiarkan transaksi</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>Tidak dapat membuka PSBT</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5979,6 +6167,11 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Transaksi {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>Penanda tangan tidak dikenal</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6117,8 +6310,18 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>Hapus input eksternal</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>Ditandatangani oleh</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>Dibelanjakan</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6129,6 +6332,16 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>Tidak tersedia</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Tidak dikenal</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6263,6 +6476,358 @@ Penyiaran akan gagal. Apakah Anda tetap ingin menyiarkan?</translation>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>Saldo ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>Sidik jari penanda tangan diatur ke 00000000. Nilai pengganti ini tidak mengidentifikasi penanda tangan asli; ganti dengan sidik jari yang sebenarnya jika tersedia.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>Akun</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>CSV alamat terlalu besar.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>Label BIP-329 (opsional)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>Frasa sandi BIP39 untuk {signer}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>Frasa sandi BIP39 penanda tangan</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>Kembali</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>Telusuri…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>Tidak dapat membaca file dompet ini. Periksa izinnya dan coba lagi.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>Tidak dapat membaca file dompet ini. Periksa file dan coba lagi.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>Tidak dapat menentukan jalur file dompet. Pilih file menggunakan Telusuri.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>Pilih file dompet menggunakan Telusuri sebelum membacanya.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>Pilih CSV alamat</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>Pilih akun dan pilih Impor.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>Pilih akun dan pilih Impor. Detail penanda tangan yang belum tersedia akan diminta.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>Pilih file label</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>Pilih file dompet</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>Konfirmasi jaringan</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Tidak dapat membaca xpub penyimpanan Electrum: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Temukan akun Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Jalur derivasi penanda tangan Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Sidik jari penanda tangan Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>File dompet Electrum: BIE1 menggunakan kata sandi. BIE2 dibuka dengan dompet perangkat keras USB asli, jika mendukung jalur derivasi kunci penyimpanan Electrum.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>Masukkan jalur derivasi akun yang valid.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>Masukkan sidik jari master 8 karakter yang ditampilkan oleh penanda tangan Ledger Anda:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Masukkan jalur derivasi akun untuk penanda tangan Electrum {number}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>Masukkan jalur derivasi akun yang ditampilkan oleh penanda tangan Ledger Anda (misalnya m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Masukkan sidik jari master yang sebenarnya untuk penanda tangan Electrum {number}. Periksa sidik jari pada penanda tangan perangkat keras atau cadangan aslinya:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>Masukkan kata sandi dompet sumber:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>Masukkan kata sandi aplikasi Ledger Live Anda:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>Impor</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>Impor file dompet</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>File label terlalu besar.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Akun Ledger Live dibaca secara otomatis dari file data pengguna lokal app.json Anda. Tidak perlu memilih file. Kata sandi aplikasi mungkin diperlukan, bukan PIN perangkat.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>File app.json Ledger Live tidak ditemukan di folder data pengguna default.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>File app.json Ledger Live tidak ditemukan di folder data pengguna default. Buka Ledger Live → Pengaturan → Bantuan → Lihat data pengguna, dan pastikan aplikasi menyimpan akunnya secara lokal.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live memerlukan kata sandi aplikasi.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Jalur derivasi akun Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Sidik jari penanda tangan Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>Perlindungan kata sandi bawaan tidak didukung untuk format ini. Pilih ekspor publik dompet atau akun.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>Hanya data publik dompet yang diimpor. Verifikasi alamat penerimaan dan kembalian pertama dengan membandingkannya dengan dompet sumber sebelum menerima dana. Penandatanganan memerlukan penanda tangan atau perangkat asli.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>Frasa sandi diminta secara terpisah untuk setiap penanda tangan perangkat lunak setelah file dibaca.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>Baca file dompet</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>Membaca file dompet…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>Tinjau impor dompet</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>Pilih dan buka kunci dompet perangkat keras yang digunakan untuk mengenkripsi file Electrum ini.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>Pilih format Electrum untuk dompet terenkripsi ini.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>Pengisian frasa sandi penanda tangan dibatalkan. Tidak ada dompet yang diimpor.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>Penanda tangan {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>File dompet Sparrow JSON dan H2 yang dilindungi kata sandi didukung. Tutup Sparrow sebelum mengimpor. Impor H2 secara otomatis membaca seed BIP39 untuk memulihkan data penanda tangan. Seed jaringan utama tidak diimpor; seed jaringan uji yang terverifikasi dapat disimpan untuk penandatanganan dan juga dapat mengendalikan dana jaringan utama.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Frasa sandi BIP39 penanda tangan Sparrow</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>CSV alamat Specter (opsional)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Deskriptor Ledger memiliki asal kunci yang tidak didukung.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>Sidik jari master harus berisi tepat delapan karakter heksadesimal.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>Dompet sumber berisi seed jaringan utama. Seed tersebut tidak disimpan atau diimpor. Simpan cadangan pemulihan asli Anda; dompet ini tidak dapat menandatangani dengan seed tersebut.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>Jaringan dompet sumber tidak cocok dengan jaringan aktif.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>File dompet tidak ditemukan. Pilih file yang ada menggunakan Telusuri.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>File Sparrow ini tidak berisi informasi publik yang cukup untuk merekonstruksi deskriptor. Periksa frasa sandi BIP39 dan baca file lagi, atau ekspor deskriptor publik dari Sparrow.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>Akun ini tidak dapat diimpor karena deskriptor penerimaan dan kembalian lengkapnya tidak tersedia. Ekspor deskriptor yang kompatibel dari dompet sumber.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>File ini tidak menentukan jaringan secara pasti. Konfirmasikan bahwa dompet ini termasuk dalam jaringan aktif: {network}.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Ini adalah folder. Buka folder dan pilih file dompet di dalamnya.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>Akses perangkat USB tidak tersedia untuk layar impor ini.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>Pemilihan dompet perangkat keras USB dibatalkan atau gagal.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>Seed BIP39 jaringan uji yang terverifikasi akan diimpor dan disimpan bersama dompet ini. Seed ini juga dapat mengendalikan dana jaringan utama; lindungi dompet ini seperti cadangan pemulihan. Verifikasi alamat penerimaan dan kembalian pertama dengan membandingkannya dengan dompet sumber sebelum menerima dana.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>File dompet</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>Format dompet</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>Impor dompet</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Data publik dompet Wasabi diimpor tanpa kata sandi. Label SegWit native yang didukung dikonversi dari jalur kunci yang terverifikasi. Anda juga dapat memilih file label BIP-329 untuk label yang tidak dapat ditentukan.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>deskriptor tidak tersedia</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>siap</translation>
 		</message>
 	</context>
 	<context>
@@ -9253,6 +9818,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>Semua entri - total: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>UTXO kembalian</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>UTXO penerimaan</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9384,6 +9966,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>Output OP_RETURN harus memiliki jumlah nol.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>Skrip output tidak boleh kosong.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9396,6 +9988,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>Mengirim ke alamat: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>Skrip output ini tidak diizinkan saat membuat transaksi.</translation>
 		</message>
 		<name>wallet</name>
 		<message>

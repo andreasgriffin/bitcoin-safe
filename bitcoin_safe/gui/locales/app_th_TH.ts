@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>txid ของ psbt ที่เซ็นแล้วไม่ตรงกับ txid เดิม</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>ธุรกรรมที่ลงนามแล้วไม่ตรงกับธุรกรรมเดิม</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>ข้อผิดพลาดของไลบรารี bdk ไม่ควรเปลี่ยน txid ในระหว่างการสรุปผล</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>ธุรกรรมมีการเปลี่ยนแปลงระหว่างการดำเนินการขั้นสุดท้าย</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>สคริปต์เอาต์พุตไม่ถูกต้อง</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>ที่อยู่หายไป</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>สคริปต์เอาต์พุตแบบดิบ</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>เปิดแผนที่เครือข่าย</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>เวลาที่ผ่านไป: {passed_time}</translation>
 		</message>
@@ -811,6 +826,16 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>ส่วนหัวของตัวกรองแบบกะทัดรัด: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>ตัวกรองแบบกะทัดรัด: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>กำลังเชื่อมต่อกับโหนด</translation>
 		</message>
@@ -878,8 +903,8 @@ Funds may be at risk. Read the guidance now and migrate to a seed generated with
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>เพิ่ม UTXOs ต่างประเทศ</translation>
+			<source>Add</source>
+			<translation>เพิ่ม</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1508,9 +1533,19 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>อัตราค่าธรรมเนียมไม่เกิน {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>ไม่สามารถทราบอัตราค่าธรรมเนียมได้อย่างแน่นอน เนื่องจากขนาดสุดท้ายของธุรกรรมยังไม่ทราบ</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>ไม่สามารถประมาณขนาดสุดท้ายของธุรกรรมได้</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1538,6 +1573,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>อัตราค่าธรรมเนียมสูง!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>อัตราค่าธรรมเนียมอาจสูงเกินไป!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1813,6 +1853,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>กู้คืนป้ายกำกับจากคลาวด์โดยใช้กุญแจซิงค์ที่มีอยู่</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>ไม่พบไฟล์ที่เลือกไว้ไฟล์หนึ่ง ตรวจสอบเส้นทางไฟล์แล้วลองอีกครั้ง</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>ไม่สามารถอ่านไฟล์ที่เลือกไว้ไฟล์หนึ่งได้ ตรวจสอบสิทธิ์การเข้าถึงไฟล์แล้วลองอีกครั้ง</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>ไม่สามารถอ่านไฟล์ที่เลือกไว้ไฟล์หนึ่งได้ ตรวจสอบไฟล์แล้วลองอีกครั้ง</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>นี่คือโฟลเดอร์ ให้เปิดโฟลเดอร์แล้วเลือกไฟล์กระเป๋าเงินที่อยู่ภายใน</translation>
 		</message>
 	</context>
 	<context>
@@ -2160,6 +2222,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>seed คือความลับที่ทำให้การลงนามธุรกรรมเป็นไปได้ สำหรับกระเป๋าเงินแบบลายเซ็นเดียว seed จะให้สิทธิ์ควบคุมเงินอย่างเต็มที่</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>ความลึกของ xPub หรือหมายเลขคีย์ลูกสุดท้ายไม่ตรงกับที่มาของคีย์</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2688,6 +2755,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>นำเข้าไฟล์กระเป๋าเงิน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>ภาพรวมการรับมรดก</translation>
 		</message>
@@ -2830,6 +2902,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>โปรดเลือกกระเป๋าเงินก่อน</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>โปรดรอจนกว่าไฟล์กระเป๋าเงินจะโหลดเสร็จ</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3707,6 +3784,16 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>วอลเล็ตแบบ Hot wallet ถูกปิดใช้งานบน Bitcoin Mainnet คุณสามารถสลับไปยัง Testnet เพื่อทดสอบ {app_name} โดยไม่ต้องใช้ Bitcoin จริง</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>นำเข้าจากไฟล์กระเป๋าเงินอื่น</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>นำเข้าข้อมูลสาธารณะของกระเป๋าเงินและป้ายกำกับจาก {}</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4650,6 +4737,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>สร้าง OP_RETURN</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>ข้อความที่จะรวมไว้ในเอาต์พุต OP_RETURN:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5189,8 +5288,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>txid ของ psbt ที่เซ็นแล้วไม่ตรงกับ txid เดิม การดำเนินการถูกยกเลิก</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>ธุรกรรมที่ลงนามแล้วไม่ตรงกับธุรกรรมเดิม กำลังยกเลิกการดำเนินการ</translation>
 		</message>
 	</context>
 	<context>
@@ -5782,8 +5881,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>เพิ่มอินพุต</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>เพิ่ม UTXO จากกระเป๋าเงินทั้งหมดที่เปิดอยู่</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>เพิ่ม UTXOs ต่างประเทศ</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5798,8 +5902,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>ไม่สามารถประมาณขนาดธุรกรรมทดแทนสำหรับ RBF ได้</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>เปลี่ยนอัตราค่าธรรมเนียม</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>ไม่สามารถนำเข้าอินพุตได้: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>ไม่สามารถรวม PSBT ได้: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5813,8 +5932,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>ดาวน์โหลดธุรกรรมก่อนหน้า</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>ป้อน UTXO หนึ่งรายการต่อบรรทัดในรูปแบบ txid:vout</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>ต้องการข้อมูล PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>อัตราค่าธรรมเนียมต่ำเกินไป</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>หากไม่มีธุรกรรมก่อนหน้าในเครื่อง ระบบจะดาวน์โหลดจากตัวสำรวจบล็อกที่กำหนดค่าไว้ ({explorer}) เซิร์ฟเวอร์สามารถเห็นได้ว่ามีการขอ ID ธุรกรรมใดบ้าง</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>นำเข้า UTXO จากกระเป๋าเงิน</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5823,8 +5967,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>โหลด PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>โหลด UTXOs</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>รวมกับ PSBT อื่น</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>ยังไม่ได้กำหนดค่าตัวสำรวจบล็อก จึงไม่สามารถดาวน์โหลดธุรกรรมที่ขาดหายไปได้</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>วาง PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>วาง PSBT</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5834,19 +6003,13 @@ otherwise you may not be able to broadcast it.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>โปรดวาง UTXO ที่นี่</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>โปรดวาง UTXO ที่นี่ในรูปแบบ txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>โปรดเลือกหมวดหมู่อินพุตทางด้านซ้ายที่ตรงกับผู้รับธุรกรรม</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>ประกาศความเป็นส่วนตัว: Bitcoin Safe จะค้นหาข้อมูลกระเป๋าเงินที่มีอยู่ในเครื่องก่อน</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5857,6 +6020,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>เลือก UTXO หนึ่งรายการหรือมากกว่านั้นจากรายการด้านซ้าย หรือยกเลิก “เลือก UTXO เฉพาะ” ด้านบนเพื่อให้ {app_name} เลือกเหรียญที่ดีที่สุดสำหรับธุรกรรมของคุณ</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>ต้องดาวน์โหลดธุรกรรมก่อนหน้าบางรายการจากตัวสำรวจบล็อกที่กำหนดค่าไว้ ตัวสำรวจสามารถเห็น ID ธุรกรรมที่ร้องขอได้ ต้องการดาวน์โหลดหรือไม่?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>อินพุตที่เลือกบางรายการไม่พร้อมใช้งาน</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>ไฟล์ข้อความ (*.txt);;ไฟล์ทั้งหมด (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT มีอินพุตที่เลือกไว้แล้วในธุรกรรมปัจจุบัน: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5889,6 +6072,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>ไม่สามารถเผยแพร่ธุรกรรมได้</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>ไม่สามารถเปิด PSBT ได้</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5956,6 +6144,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>ธุรกรรม {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>ไม่รู้จักตัวลงนาม</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6094,8 +6287,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>ลบอินพุตจากภายนอก</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>ลงนามโดย</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>ใช้จ่ายแล้ว</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6106,6 +6309,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>ไม่พร้อมใช้งาน</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>ไม่ทราบ</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6240,6 +6453,358 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>ยอดเงิน ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>ลายนิ้วมือของตัวลงนามหนึ่งตัวถูกตั้งเป็น 00000000 ค่าชั่วคราวนี้ไม่สามารถระบุตัวลงนามเดิมได้ ให้แทนที่ด้วยลายนิ้วมือจริงเมื่อมีข้อมูล</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>บัญชี</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>ไฟล์ CSV ที่อยู่มีขนาดใหญ่เกินไป</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>ป้ายกำกับ BIP-329 (ไม่บังคับ)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>วลีรหัสผ่าน BIP39 สำหรับ {signer}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>วลีรหัสผ่าน BIP39 ของตัวลงนาม</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>ย้อนกลับ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>เรียกดู…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>ไม่สามารถอ่านไฟล์กระเป๋าเงินนี้ได้ ตรวจสอบสิทธิ์การเข้าถึงไฟล์แล้วลองอีกครั้ง</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>ไม่สามารถอ่านไฟล์กระเป๋าเงินนี้ได้ ตรวจสอบไฟล์แล้วลองอีกครั้ง</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>ไม่สามารถระบุเส้นทางไฟล์กระเป๋าเงินได้ เลือกไฟล์โดยใช้ปุ่มเรียกดู</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>เลือกไฟล์กระเป๋าเงินโดยใช้ปุ่มเรียกดูก่อนอ่านไฟล์</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>เลือก CSV ที่อยู่</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>เลือกบัญชีแล้วเลือกนำเข้า</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>เลือกบัญชีแล้วเลือกนำเข้า ระบบจะขอรายละเอียดตัวลงนามที่ขาดหายไป</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>เลือกไฟล์ป้ายกำกับ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>เลือกไฟล์กระเป๋าเงิน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>ยืนยันเครือข่าย</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>ไม่สามารถอ่าน xpub สำหรับการจัดเก็บของ Electrum ได้: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>ค้นหาบัญชี Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>เส้นทางการสร้างคีย์ของตัวลงนาม Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>ลายนิ้วมือของตัวลงนาม Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>ไฟล์กระเป๋าเงิน Electrum: BIE1 ใช้รหัสผ่าน ส่วน BIE2 ปลดล็อกด้วยกระเป๋าเงินฮาร์ดแวร์ USB เดิม หากรองรับเส้นทางการสร้างคีย์สำหรับจัดเก็บของ Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>ป้อนเส้นทางการสร้างคีย์บัญชีที่ถูกต้อง</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>ป้อนลายนิ้วมือหลัก 8 อักขระที่แสดงบนตัวลงนาม Ledger ของคุณ:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>ป้อนเส้นทางการสร้างคีย์บัญชีสำหรับตัวลงนาม Electrum {number}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>ป้อนเส้นทางการสร้างคีย์บัญชีที่แสดงบนตัวลงนาม Ledger ของคุณ (เช่น m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>ป้อนลายนิ้วมือหลักที่แท้จริงของตัวลงนาม Electrum {number} ตรวจสอบลายนิ้วมือบนตัวลงนามฮาร์ดแวร์หรือข้อมูลสำรองเดิม:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>ป้อนรหัสผ่านของกระเป๋าเงินต้นทาง:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>ป้อนรหัสผ่านแอปพลิเคชัน Ledger Live ของคุณ:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>นำเข้า</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>นำเข้าไฟล์กระเป๋าเงิน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>ไฟล์ป้ายกำกับมีขนาดใหญ่เกินไป</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>ระบบจะอ่านบัญชี Ledger Live โดยอัตโนมัติจากไฟล์ข้อมูลผู้ใช้ app.json ในเครื่อง ไม่จำเป็นต้องเลือกไฟล์ อาจต้องใช้รหัสผ่านแอปพลิเคชัน ไม่ใช่ PIN ของอุปกรณ์</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>ไม่พบ app.json ของ Ledger Live ในโฟลเดอร์ข้อมูลผู้ใช้เริ่มต้น</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>ไม่พบ app.json ของ Ledger Live ในโฟลเดอร์ข้อมูลผู้ใช้เริ่มต้น เปิด Ledger Live → การตั้งค่า → ความช่วยเหลือ → ดูข้อมูลผู้ใช้ แล้วตรวจสอบว่าแอปพลิเคชันจัดเก็บบัญชีไว้ในเครื่อง</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live ต้องใช้รหัสผ่านแอปพลิเคชัน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>เส้นทางการสร้างคีย์บัญชี Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>ลายนิ้วมือของตัวลงนาม Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>รูปแบบนี้ไม่รองรับการป้องกันด้วยรหัสผ่านในตัว เลือกไฟล์ส่งออกข้อมูลสาธารณะของกระเป๋าเงินหรือบัญชี</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>นำเข้าเฉพาะข้อมูลสาธารณะของกระเป๋าเงิน ตรวจสอบที่อยู่รับเงินและที่อยู่เงินทอนแรกโดยเปรียบเทียบกับกระเป๋าเงินต้นทางก่อนรับเงิน การลงนามต้องใช้ตัวลงนามหรืออุปกรณ์เดิม</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>ระบบจะขอวลีรหัสผ่านแยกกันสำหรับตัวลงนามซอฟต์แวร์แต่ละตัวหลังจากอ่านไฟล์</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>อ่านไฟล์กระเป๋าเงิน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>กำลังอ่านไฟล์กระเป๋าเงิน…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>ตรวจสอบการนำเข้ากระเป๋าเงิน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>เลือกและปลดล็อกกระเป๋าเงินฮาร์ดแวร์ที่ใช้เข้ารหัสไฟล์ Electrum นี้</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>เลือกรูปแบบ Electrum สำหรับกระเป๋าเงินที่เข้ารหัสนี้</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>ยกเลิกการป้อนวลีรหัสผ่านของตัวลงนามแล้ว ไม่มีการนำเข้ากระเป๋าเงิน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>ผู้ลงนาม {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>รองรับไฟล์กระเป๋าเงิน Sparrow แบบ JSON และ H2 ที่ป้องกันด้วยรหัสผ่าน ปิด Sparrow ก่อนนำเข้า การนำเข้า H2 จะอ่านซีด BIP39 โดยอัตโนมัติเพื่อกู้คืนข้อมูลตัวลงนาม จะไม่นำเข้าซีดของเครือข่ายหลัก แต่ซีดของเครือข่ายทดสอบที่ผ่านการตรวจสอบอาจถูกบันทึกไว้เพื่อใช้ลงนาม และยังสามารถควบคุมเงินบนเครือข่ายหลักได้ด้วย</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>วลีรหัสผ่าน BIP39 ของตัวลงนาม Sparrow</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>CSV ที่อยู่ Specter (ไม่บังคับ)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>ดีสคริปเตอร์ Ledger มีที่มาของคีย์ที่ไม่รองรับ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>ลายนิ้วมือหลักต้องประกอบด้วยอักขระฐานสิบหกแปดตัวพอดี</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>กระเป๋าเงินต้นทางมีซีดของเครือข่ายหลัก ซีดนี้ไม่ได้ถูกเก็บไว้หรือนำเข้า โปรดเก็บข้อมูลสำรองสำหรับการกู้คืนเดิมไว้ กระเป๋าเงินนี้ไม่สามารถลงนามด้วยซีดดังกล่าวได้</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>เครือข่ายของกระเป๋าเงินต้นทางไม่ตรงกับเครือข่ายที่ใช้งานอยู่</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>ไม่พบไฟล์กระเป๋าเงิน เลือกไฟล์ที่มีอยู่โดยใช้ปุ่มเรียกดู</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>ไฟล์ Sparrow นี้มีข้อมูลสาธารณะไม่เพียงพอที่จะสร้างดีสคริปเตอร์ขึ้นใหม่ ตรวจสอบวลีรหัสผ่าน BIP39 แล้วอ่านไฟล์อีกครั้ง หรือส่งออกดีสคริปเตอร์สาธารณะจาก Sparrow</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>ไม่สามารถนำเข้าบัญชีนี้ได้เนื่องจากไม่มีดีสคริปเตอร์สำหรับการรับเงินและเงินทอนที่สมบูรณ์ ส่งออกดีสคริปเตอร์ที่เข้ากันได้จากกระเป๋าเงินต้นทาง</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>ไฟล์นี้ไม่สามารถระบุเครือข่ายได้อย่างแน่ชัด ยืนยันว่ากระเป๋าเงินนี้อยู่บนเครือข่ายที่ใช้งานอยู่: {network}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>นี่คือโฟลเดอร์ ให้เปิดโฟลเดอร์แล้วเลือกไฟล์กระเป๋าเงินที่อยู่ภายใน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>ไม่สามารถเข้าถึงอุปกรณ์ USB ได้จากหน้าจอนำเข้านี้</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>การเลือกกระเป๋าเงินฮาร์ดแวร์ USB ถูกยกเลิกหรือล้มเหลว</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>ซีด BIP39 ของเครือข่ายทดสอบที่ผ่านการตรวจสอบจะถูกนำเข้าและบันทึกพร้อมกระเป๋าเงินนี้ ซีดเหล่านี้ยังสามารถควบคุมเงินบนเครือข่ายหลักได้ด้วย ให้ปกป้องกระเป๋าเงินนี้เช่นเดียวกับข้อมูลสำรองสำหรับการกู้คืน ตรวจสอบที่อยู่รับเงินและที่อยู่เงินทอนแรกโดยเปรียบเทียบกับกระเป๋าเงินต้นทางก่อนรับเงิน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>ไฟล์กระเป๋าเงิน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>รูปแบบกระเป๋าเงิน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>นำเข้ากระเป๋าเงิน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>ระบบนำเข้าข้อมูลสาธารณะของกระเป๋าเงิน Wasabi โดยไม่ต้องใช้รหัสผ่าน ป้ายกำกับ Native SegWit ที่รองรับจะถูกแปลงจากเส้นทางคีย์ที่ผ่านการตรวจสอบ คุณยังสามารถเลือกไฟล์ป้ายกำกับ BIP-329 สำหรับป้ายกำกับที่ไม่สามารถระบุได้</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>ดีสคริปเตอร์ไม่พร้อมใช้งาน</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>พร้อม</translation>
 		</message>
 	</context>
 	<context>
@@ -9222,6 +9787,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>รายการทั้งหมด - รวม: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>UTXO เงินทอน</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>UTXO รับเงิน</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9353,6 +9935,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>เอาต์พุต OP_RETURN ต้องมีจำนวนเงินเป็นศูนย์</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>สคริปต์เอาต์พุตต้องไม่ว่างเปล่า</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9365,6 +9957,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>กำลังส่งไปยังที่อยู่: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>ไม่อนุญาตให้ใช้สคริปต์เอาต์พุตนี้เมื่อสร้างธุรกรรม</translation>
 		</message>
 		<name>wallet</name>
 		<message>
