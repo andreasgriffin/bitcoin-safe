@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>شناسهٔ تراکنش PSBT امضاشده با شناسه تراکنش اصلی مطابقت ندارد</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>تراکنش امضاشده با تراکنش اصلی مطابقت ندارد.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>خطای کتابخانه bdk. شناسه تراکنش (txid) نباید هنگام نهایی‌سازی تغییر کند</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>تراکنش در حین نهایی‌سازی تغییر کرد.</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>اسکریپت خروجی نامعتبر</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>آدرس موجود نیست</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>اسکریپت خام خروجی</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>باز کردن نقشه شبکه</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>زمان سپری‌شده: {passed_time}</translation>
 		</message>
@@ -812,6 +827,16 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>سرآیندهای فیلتر فشرده: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>فیلترهای فشرده: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>در حال اتصال به نودها</translation>
 		</message>
@@ -880,8 +905,8 @@ Funds may be at risk. Read the guidance now and migrate to a seed generated with
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>افزودن UTXOهای خارجی</translation>
+			<source>Add</source>
+			<translation>افزودن</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1510,9 +1535,19 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>نرخ کارمزد حداکثر {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>نرخ کارمزد دقیقاً قابل تعیین نیست، زیرا اندازه نهایی تراکنش ناشناخته است.</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>اندازه نهایی تراکنش قابل تخمین نیست.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1540,6 +1575,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>نرخ کارمزد بالا!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>نرخ کارمزد احتمالاً بالاست!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1815,6 +1855,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>بازیابی برچسب‌ها از فضای ابری با استفاده از کلید همگام‌سازی موجود</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>یکی از فایل‌های انتخاب‌شده پیدا نشد. مسیر فایل‌ها را بررسی کنید و دوباره تلاش کنید.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>یکی از فایل‌های انتخاب‌شده قابل خواندن نیست. مجوزهای دسترسی آن را بررسی کنید و دوباره تلاش کنید.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>یکی از فایل‌های انتخاب‌شده قابل خواندن نیست. فایل‌ها را بررسی کنید و دوباره تلاش کنید.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>این یک پوشه است. آن را باز کنید و فایل کیف پول داخل آن را انتخاب کنید.</translation>
 		</message>
 	</context>
 	<context>
@@ -2164,6 +2226,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>seed همان راز است که امضای تراکنش را ممکن می‌کند.
 برای یک کیف پول تک‌امضایی، کنترل کامل وجوه را فراهم می‌کند.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>عمق xPub یا شماره آخرین کلید فرزند با منشأ کلید مطابقت ندارد.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2693,6 +2760,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>درون‌ریزی فایل کیف پول</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>نمای کلی ارث</translation>
 		</message>
@@ -2835,6 +2907,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>لطفاً ابتدا کیف پول را انتخاب کنید.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>لطفاً تا پایان بارگذاری فایل کیف پول صبر کنید.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3720,6 +3797,16 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>کیف‌پول‌های داغ در Bitcoin Mainnet غیرفعال هستند.
 می‌توانید برای آزمایش {app_name} بدون استفاده از Bitcoin واقعی، به Testnet تغییر دهید.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>درون‌ریزی از فایل کیف پول دیگر</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>درون‌ریزی داده‌های عمومی کیف پول و برچسب‌ها از {}.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4667,6 +4754,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>ایجاد OP_RETURN</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>متنی که در خروجی OP_RETURN قرار می‌گیرد:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5207,8 +5306,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>txid در psbt امضاشده با txid اصلی مطابقت ندارد. در حال لغو</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>تراکنش امضاشده با تراکنش اصلی مطابقت ندارد. عملیات در حال لغو است.</translation>
 		</message>
 	</context>
 	<context>
@@ -5801,8 +5900,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>افزودن ورودی‌ها</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>افزودن UTXO از همه کیف پول‌های باز</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>افزودن UTXOهای خارجی</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5817,8 +5921,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>اندازه تراکنش جایگزین برای RBF قابل تخمین نیست.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>تغییر نرخ کارمزد</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>درون‌ریزی ورودی‌ها انجام نشد: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>ادغام PSBT انجام نشد: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5832,8 +5951,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>دانلود تراکنش‌های قبلی</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>در هر خط یک UTXO با قالب txid:vout وارد کنید.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>یک PSBT انتظار می‌رفت</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>نرخ کارمزد خیلی کم است</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>اگر تراکنش قبلی به‌صورت محلی در دسترس نباشد، از کاوشگر بلوک تنظیم‌شده ({explorer}) دانلود می‌شود. سرور می‌تواند ببیند شناسه کدام تراکنش‌ها درخواست شده است.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>درون‌ریزی UTXO از کیف پول</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5842,8 +5986,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>بارگذاری PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>بارگیری UTXOها</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>ادغام با PSBT دیگر</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>هیچ کاوشگر بلوکی تنظیم نشده است، بنابراین تراکنش‌های ناموجود قابل دانلود نیستند.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>جای‌گذاری PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>یک PSBT جای‌گذاری کنید.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5853,19 +6022,13 @@ otherwise you may not be able to broadcast it.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>لطفاً UTXO را اینجا جای‌گذاری کنید</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>لطفاً UTXO را در اینجا با قالب txid:outpoint txid:outpoint جای‌گذاری کنید</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>لطفاً یک دستهٔ ورودی در سمت چپ انتخاب کنید که با گیرندگان تراکنش مطابقت دارد.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>اطلاعیه حریم خصوصی: Bitcoin Safe ابتدا داده‌های کیف پول موجود در دستگاه را جست‌وجو می‌کند.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5876,6 +6039,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>یک یا چند UTXO را از فهرست سمت چپ انتخاب کنید، یا تیک «انتخاب UTXOهای خاص» در بالا را بردارید تا {app_name} بهترین سکه‌ها را برای تراکنش‌تان انتخاب کند.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>برخی تراکنش‌های قبلی باید از کاوشگر بلوک تنظیم‌شده دانلود شوند. کاوشگر می‌تواند شناسه‌های تراکنش درخواستی را ببیند. دانلود شوند؟</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>برخی ورودی‌های انتخاب‌شده در دسترس نیستند.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>فایل‌های متنی (*.txt);;همه فایل‌ها (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT شامل ورودی‌هایی است که قبلاً در تراکنش فعلی انتخاب شده‌اند: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5908,6 +6091,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>امکان انتشار تراکنش در شبکه وجود نداشت</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>نتوانستیم PSBT را باز کنیم</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5977,6 +6165,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>تراکنش {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>امضاکننده ناشناخته</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6115,8 +6308,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>حذف ورودی‌های خارجی</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>امضاشده توسط</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>خرج‌شده</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6127,6 +6330,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Tx</source>
 			<translation>تراکنش</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>در دسترس نیست</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>ناشناخته</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6261,6 +6474,358 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>موجودی ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>اثر انگشت یکی از امضاکننده‌ها روی 00000000 تنظیم شده است. این مقدار موقت امضاکننده اصلی را مشخص نمی‌کند؛ در صورت دسترسی به اثر انگشت واقعی، آن را جایگزین کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>حساب</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>فایل CSV آدرس‌ها بیش از حد بزرگ است.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>برچسب‌های BIP-329 (اختیاری)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>عبارت عبور BIP39 برای {signer}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>عبارت‌های عبور BIP39 امضاکننده‌ها</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>عقب</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>مرور…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>این فایل کیف پول قابل خواندن نیست. مجوزهای دسترسی آن را بررسی کنید و دوباره تلاش کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>این فایل کیف پول قابل خواندن نیست. فایل را بررسی کنید و دوباره تلاش کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>مسیر فایل کیف پول قابل شناسایی نیست. با استفاده از مرور، فایل را انتخاب کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>پیش از خواندن، با استفاده از مرور یک فایل کیف پول انتخاب کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>انتخاب CSV آدرس‌ها</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>یک حساب انتخاب کنید و گزینه درون‌ریزی را بزنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>یک حساب انتخاب کنید و گزینه درون‌ریزی را بزنید. اطلاعات ناقص امضاکننده‌ها درخواست خواهد شد.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>انتخاب فایل برچسب‌ها</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>انتخاب فایل کیف پول</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>تأیید شبکه</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>خواندن xpub ذخیره‌سازی Electrum انجام نشد: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>شناسایی حساب‌های Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>مسیر مشتق‌سازی امضاکننده Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>اثر انگشت امضاکننده Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>فایل کیف پول Electrum: ‏BIE1 از رمز عبور استفاده می‌کند. BIE2 با کیف پول سخت‌افزاری USB اصلی باز می‌شود، به شرطی که از مسیر مشتق‌سازی کلید ذخیره‌سازی Electrum پشتیبانی کند.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>یک مسیر مشتق‌سازی معتبر حساب وارد کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>اثر انگشت اصلی 8 کاراکتری نمایش‌داده‌شده در امضاکننده Ledger خود را وارد کنید:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>مسیر مشتق‌سازی حساب برای امضاکننده Electrum شماره {number} را وارد کنید:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>مسیر مشتق‌سازی حساب نمایش‌داده‌شده در امضاکننده Ledger خود را وارد کنید (برای مثال m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>اثر انگشت اصلی واقعی امضاکننده Electrum شماره {number} را وارد کنید. اثر انگشت را در امضاکننده سخت‌افزاری یا نسخه پشتیبان اصلی آن بررسی کنید:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>رمز عبور کیف پول مبدأ را وارد کنید:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>رمز عبور برنامه Ledger Live خود را وارد کنید:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>وارد کردن</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>درون‌ریزی فایل کیف پول</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>فایل برچسب‌ها بیش از حد بزرگ است.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>حساب‌های Ledger Live به‌طور خودکار از فایل محلی داده‌های کاربر app.json خوانده می‌شوند. نیازی به انتخاب فایل نیست. ممکن است رمز عبور برنامه لازم باشد، نه PIN دستگاه.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>فایل app.json مربوط به Ledger Live در پوشه پیش‌فرض داده‌های کاربر پیدا نشد.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>فایل app.json مربوط به Ledger Live در پوشه پیش‌فرض داده‌های کاربر پیدا نشد. مسیر Ledger Live → تنظیمات → راهنما → مشاهده داده‌های کاربر را باز کنید و بررسی کنید که برنامه حساب‌های خود را به‌صورت محلی ذخیره می‌کند.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live به رمز عبور برنامه نیاز دارد.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>مسیر مشتق‌سازی حساب Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>اثر انگشت امضاکننده Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>محافظت داخلی با رمز عبور برای این قالب پشتیبانی نمی‌شود. یک فایل برون‌ریزی عمومی کیف پول یا حساب انتخاب کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>فقط داده‌های عمومی کیف پول درون‌ریزی می‌شوند. پیش از دریافت وجه، اولین آدرس‌های دریافت و باقیمانده را با کیف پول مبدأ تطبیق دهید. امضا کردن به امضاکننده یا دستگاه اصلی نیاز دارد.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>پس از خواندن فایل، عبارت‌های عبور برای هر امضاکننده نرم‌افزاری جداگانه درخواست می‌شوند.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>خواندن فایل کیف پول</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>در حال خواندن فایل کیف پول…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>بازبینی درون‌ریزی کیف پول</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>کیف پول سخت‌افزاری استفاده‌شده برای رمزگذاری این فایل Electrum را انتخاب و قفل آن را باز کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>قالب Electrum را برای این کیف پول رمزگذاری‌شده انتخاب کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>ورود عبارت عبور امضاکننده لغو شد. هیچ کیف پولی درون‌ریزی نشد.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>امضاکننده {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>فایل‌های کیف پول Sparrow JSON و H2 محافظت‌شده با رمز عبور پشتیبانی می‌شوند. پیش از درون‌ریزی Sparrow را ببندید. درون‌ریزی H2 به‌طور خودکار سیدهای BIP39 را برای بازیابی داده‌های امضاکننده‌ها می‌خواند. سیدهای شبکه اصلی درون‌ریزی نمی‌شوند؛ سیدهای تأییدشده شبکه‌های آزمایشی ممکن است برای امضا ذخیره شوند و می‌توانند وجوه شبکه اصلی را نیز کنترل کنند.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>عبارت عبور BIP39 امضاکننده Sparrow</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>CSV آدرس‌های Specter (اختیاری)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>توصیفگر Ledger دارای منشأ کلید پشتیبانی‌نشده است.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>اثر انگشت اصلی باید دقیقاً شامل هشت کاراکتر شانزده‌شانزدهی باشد.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>کیف پول مبدأ حاوی یک سید شبکه اصلی بود. این سید نگهداری یا درون‌ریزی نشد. نسخه پشتیبان بازیابی اصلی خود را نگه دارید؛ این کیف پول نمی‌تواند با آن سید امضا کند.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>شبکه کیف پول مبدأ با شبکه فعال مطابقت ندارد.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>فایل کیف پول پیدا نشد. با استفاده از مرور، یک فایل موجود انتخاب کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>این فایل Sparrow اطلاعات عمومی کافی برای بازسازی توصیفگر ندارد. عبارت عبور BIP39 را بررسی کنید و فایل را دوباره بخوانید، یا یک توصیفگر عمومی از Sparrow برون‌ریزی کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>این حساب قابل درون‌ریزی نیست زیرا توصیفگر کامل دریافت و باقیمانده آن در دسترس نیست. یک توصیفگر سازگار از کیف پول مبدأ برون‌ریزی کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>این فایل شبکه دقیق را مشخص نمی‌کند. تأیید کنید که این کیف پول متعلق به شبکه فعال است: {network}.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>این یک پوشه است. آن را باز کنید و فایل کیف پول داخل آن را انتخاب کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>دسترسی به دستگاه USB در این صفحه درون‌ریزی امکان‌پذیر نیست.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>انتخاب کیف پول سخت‌افزاری USB لغو شد یا ناموفق بود.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>سیدهای BIP39 تأییدشده شبکه‌های آزمایشی درون‌ریزی و همراه این کیف پول ذخیره خواهند شد. این سیدها می‌توانند وجوه شبکه اصلی را نیز کنترل کنند؛ از این کیف پول مانند نسخه پشتیبان بازیابی محافظت کنید. پیش از دریافت وجه، اولین آدرس‌های دریافت و باقیمانده را با کیف پول مبدأ تطبیق دهید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>فایل کیف پول</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>قالب کیف پول</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>درون‌ریزی کیف پول</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>داده‌های عمومی کیف پول Wasabi بدون رمز عبور درون‌ریزی می‌شوند. برچسب‌های پشتیبانی‌شده SegWit بومی از مسیرهای تأییدشده کلید تبدیل می‌شوند. همچنین می‌توانید برای برچسب‌هایی که قابل شناسایی نیستند، یک فایل برچسب BIP-329 انتخاب کنید.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>توصیفگر در دسترس نیست</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>آماده</translation>
 		</message>
 	</context>
 	<context>
@@ -9251,6 +9816,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>همه موارد - مجموع: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>UTXO باقیمانده</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>UTXO دریافتی</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9382,6 +9964,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>مبلغ خروجی‌های OP_RETURN باید صفر باشد.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>اسکریپت خروجی نمی‌تواند خالی باشد.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9394,6 +9986,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>ارسال به آدرس‌ها: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>هنگام ایجاد تراکنش، استفاده از این اسکریپت خروجی مجاز نیست.</translation>
 		</message>
 		<name>wallet</name>
 		<message>

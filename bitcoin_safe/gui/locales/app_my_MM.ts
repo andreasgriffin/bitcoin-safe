@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်ကွဲပြားသည်</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>လက်မှတ်ထိုးထားသော ငွေလွှဲမှုသည် မူလငွေလွှဲမှုနှင့် မကိုက်ညီပါ။</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>bdk စာကြည့်တိုက် အမှား။ ပြီးဆုံးစဉ်အတွင်း txid ကို မပြောင်းလဲသင့်ပါ</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>အပြီးသတ်နေစဉ် ငွေလွှဲမှု ပြောင်းလဲသွားပါသည်။</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>မမှန်ကန်သော အထွက် script</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>လိပ်စာမရှိပါ</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>မပြုပြင်ရသေးသော အထွက် script</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>ကွန်ရက်မြေပုံကို ဖွင့်ရန်</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>ကုန်လွန်ချိန်: {passed_time}</translation>
 		</message>
@@ -811,6 +826,16 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>ကျစ်လျစ်စစ်ထုတ်ကိရိယာ ခေါင်းစီးများ: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>ကျစ်လျစ်စစ်ထုတ်ကိရိယာများ: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>Node များနှင့် ချိတ်ဆက်နေပါသည်</translation>
 		</message>
@@ -878,8 +903,8 @@ Funds may be at risk. Read the guidance now and migrate to a seed generated with
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>ပြင်ပသော UTXOs ထည့်ပါ</translation>
+			<source>Add</source>
+			<translation>ထည့်ရန်</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1508,9 +1533,19 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>အခကြေးငွေနှုန်း အများဆုံး {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>အလုပ်ချိန်နှုန်းကို တိကျစွာ မသိနိုင်ပါ၊ ငွေလွဲလုပ်ဆောင်မှု၏ အဆုံးသတ်အရွယ်အစား မသိသေးပါ။</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>ငွေလွှဲမှု၏ နောက်ဆုံးအရွယ်အစားကို ခန့်မှန်း၍မရပါ။</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1538,6 +1573,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>အခကြေးငွေ အရမ်း မြင့်နေပါသည်!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>အခကြေးငွေနှုန်း မြင့်မားနိုင်ပါသည်!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1813,6 +1853,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>ရှိပြီးသား sync key ဖြင့်တိုက်ရိုက်အဝေးမှတံဆိပ်များပြန်ယူပါ</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>ရွေးထားသော ဖိုင်တစ်ခုကို ရှာမတွေ့ပါ။ ဖိုင်လမ်းကြောင်းများကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>ရွေးထားသော ဖိုင်တစ်ခုကို ဖတ်၍မရပါ။ ၎င်း၏ အသုံးပြုခွင့်များကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>ရွေးထားသော ဖိုင်တစ်ခုကို ဖတ်၍မရပါ။ ဖိုင်များကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>၎င်းသည် ဖိုင်တွဲတစ်ခုဖြစ်သည်။ ဖွင့်ပြီး အတွင်းရှိ ပိုက်ဆံအိတ်ဖိုင်ကို ရွေးပါ။</translation>
 		</message>
 	</context>
 	<context>
@@ -2160,6 +2222,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>seed သည် transaction signing ကို လုပ်ဆောင်နိုင်စေသော လျှို့ဝှက်ချက်ဖြစ်သည်။ single signature wallet အတွက် ၎င်းသည် ရန်ပုံငွေများအပေါ် အပြည့်အဝ ထိန်းချုပ်ခွင့် ပေးသည်။</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>xPub ၏ အနက် သို့မဟုတ် နောက်ဆုံး ဆင့်ပွားသော့နံပါတ်သည် သော့၏မူလရင်းမြစ်နှင့် မကိုက်ညီပါ။</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2688,6 +2755,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>ပိုက်ဆံအိတ်ဖိုင် တင်သွင်းရန်</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>အမွေဆက်ခံမှု အကျဉ်းချုပ်</translation>
 		</message>
@@ -2830,6 +2902,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>ဦးစွာပိုက်ဆံအိတ်ကိုရွေးပါ။</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>ပိုက်ဆံအိတ်ဖိုင်ကို အပြီးဖွင့်တင်ပြီးသည်အထိ စောင့်ပါ။</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3707,6 +3784,16 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet တွင် hot wallet များကို ပိတ်ထားသည်။ Bitcoin အစစ်ကို မသုံးဘဲ {app_name} ကို စမ်းသပ်ရန် Testnet သို့ ပြောင်းနိုင်သည်။</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>အခြား ပိုက်ဆံအိတ်ဖိုင်မှ တင်သွင်းရန်</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>{} မှ ပိုက်ဆံအိတ်၏ အများသိဒေတာနှင့် အညွှန်းများကို တင်သွင်းရန်။</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4650,6 +4737,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>OP_RETURN ဖန်တီးရန်</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>OP_RETURN အထွက်တွင် ထည့်သွင်းမည့် စာသား:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5189,8 +5288,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>လက်မှတ်ထားသော psbt ၏ txid သည်မူရင်း txid နှင့်မကိုက်ညီပါ။ ဖျက်သိမ်းပါ။</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>လက်မှတ်ထိုးထားသော ငွေလွှဲမှုသည် မူလငွေလွှဲမှုနှင့် မကိုက်ညီပါ။ လုပ်ဆောင်မှုကို ရပ်ဆိုင်းနေပါသည်။</translation>
 		</message>
 	</context>
 	<context>
@@ -5782,8 +5881,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>ဝင်ငွေထည့်ပါ</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>ဖွင့်ထားသော ပိုက်ဆံအိတ်အားလုံးမှ UTXO များ ထည့်ရန်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>ပြင်ပသော UTXOs ထည့်ပါ</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5798,8 +5902,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>RBF အတွက် အစားထိုးငွေလွှဲမှု၏ အရွယ်အစားကို ခန့်မှန်း၍မရပါ။</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>ကြေးနှုန်း ပြောင်းရန်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>အဝင်များကို တင်သွင်း၍မရပါ: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>PSBT ကို ပေါင်းစည်း၍မရပါ: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5813,8 +5932,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>ယခင်ငွေလွှဲမှုများကို ဒေါင်းလုဒ်လုပ်ရန်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>တစ်ကြောင်းလျှင် UTXO တစ်ခုကို txid:vout ပုံစံဖြင့် ထည့်ပါ။</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>PSBT တစ်ခု လိုအပ်ပါသည်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>အခကြေးနှုန်း နိမ့်လွန်းနေသည်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>ယခင်ငွေလွှဲမှုတစ်ခုကို စက်တွင်း၌ မရရှိနိုင်ပါက သတ်မှတ်ထားသော ဘလောက်ရှာဖွေကြည့်ရှုစနစ် ({explorer}) မှ ဒေါင်းလုဒ်လုပ်ပါသည်။ ဆာဗာသည် တောင်းဆိုထားသော ငွေလွှဲမှု ID များကို မြင်နိုင်ပါသည်။</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>ပိုက်ဆံအိတ်မှ UTXO များ တင်သွင်းရန်</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5823,8 +5967,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>PSBT ဖွင့်တင်ရန်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>UTXOs တင်ပါ</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>အခြား PSBT နှင့် ပေါင်းစည်းရန်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>ဘလောက်ရှာဖွေကြည့်ရှုစနစ်ကို သတ်မှတ်မထားသဖြင့် ပျောက်ဆုံးနေသော ငွေလွှဲမှုများကို ဒေါင်းလုဒ်လုပ်၍မရပါ။</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>PSBT တစ်ခု ကူးထည့်ရန်</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>PSBT တစ်ခု ကူးထည့်ပါ။</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5834,19 +6003,13 @@ otherwise you may not be able to broadcast it.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>UTXO ကိုကပ်ရောက်ပါ</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>UTXO ကိုဒီပုံစံနဲ့ကပ်ရောက်ပါ: txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>ဘယ်ဘက်ရှိဝင်ငွေအုပ်စုကိုရွေးပါ၊ သူသည်ငွေလွှဲလက်ခံသူနှင့်ကိုက်ညီသည်။</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>ကိုယ်ရေးအချက်အလက်ဆိုင်ရာ အသိပေးချက်: Bitcoin Safe သည် စက်တွင်း၌ ရရှိနိုင်သော ပိုက်ဆံအိတ်ဒေတာကို ဦးစွာ ရှာဖွေပါသည်။</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5857,6 +6020,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>ဘယ်ဘက်ရှိစာရင်းမှ UTXO တစ်ခု သို့မဟုတ် တစ်ထပ်ထပ်ရွေးပါ၊ သို့မဟုတ် “အထူးသဖြင့် UTXO များကို ရွေးပါ” ကို အထက်တွင် ဖယ်ရှားပြီး {app_name} သို့ သင့်လုပ်ငန်းအတွက် အကောင်းဆုံး ကွက်တမ်းများကို ရွေးခွင့်ပြုပါ။</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>ယခင်ငွေလွှဲမှုအချို့ကို သတ်မှတ်ထားသော ဘလောက်ရှာဖွေကြည့်ရှုစနစ်မှ ဒေါင်းလုဒ်လုပ်ရန် လိုအပ်ပါသည်။ ထိုစနစ်သည် တောင်းဆိုထားသော ငွေလွှဲမှု ID များကို မြင်နိုင်ပါသည်။ ဒေါင်းလုဒ်လုပ်မည်လား?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>ရွေးထားသော အဝင်အချို့ကို မရရှိနိုင်ပါ။</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>စာသားဖိုင်များ (*.txt);;ဖိုင်အားလုံး (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT တွင် လက်ရှိငွေလွှဲမှု၌ ရွေးထားပြီးသော အဝင်များ ပါဝင်နေပါသည်: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5889,6 +6072,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>ငွေလွှဲမှုကို ကွန်ရက်သို့ ထုတ်လွှင့်၍ မရပါ</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>PSBT ကို ဖွင့်၍ မရပါ</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5956,6 +6144,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>ငွေလွှဲ {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>မသိရှိသော လက်မှတ်ထိုးကိရိယာ</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6094,8 +6287,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>ပြင်ပအဝင်များကို ဖယ်ရှားရန်</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>လက်မှတ်ရေးထိုးသူ</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>အသုံးပြုပြီး</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6106,6 +6309,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>မရရှိနိုင်ပါ</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>မသိ</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6240,6 +6453,358 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>လက်ကျန်ငွေ ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>လက်မှတ်ထိုးကိရိယာတစ်ခု၏ လက်ဗွေကို 00000000 ဟု သတ်မှတ်ထားပါသည်။ ဤယာယီတန်ဖိုးသည် မူလလက်မှတ်ထိုးကိရိယာကို မခွဲခြားနိုင်ပါ။ အမှန်တကယ် လက်ဗွေ ရရှိလာပါက အစားထိုးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>အကောင့်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>လိပ်စာ CSV ဖိုင်သည် အလွန်ကြီးမားနေပါသည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>BIP-329 အညွှန်းများ (မဖြစ်မနေ မဟုတ်ပါ)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>{signer} အတွက် BIP39 စကားဝှက်စု:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>လက်မှတ်ထိုးကိရိယာများ၏ BIP39 စကားဝှက်စုများ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>နောက်သို့</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>ဖိုင်ရှာရန်…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>ဤပိုက်ဆံအိတ်ဖိုင်ကို ဖတ်၍မရပါ။ ၎င်း၏ အသုံးပြုခွင့်များကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>ဤပိုက်ဆံအိတ်ဖိုင်ကို ဖတ်၍မရပါ။ ဖိုင်ကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>ပိုက်ဆံအိတ်ဖိုင်၏ လမ်းကြောင်းကို မသတ်မှတ်နိုင်ပါ။ ဖိုင်ရှာရန်ကို အသုံးပြု၍ ဖိုင်ကို ရွေးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>မဖတ်မီ ဖိုင်ရှာရန်ကို အသုံးပြု၍ ပိုက်ဆံအိတ်ဖိုင်တစ်ခုကို ရွေးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>လိပ်စာ CSV ရွေးရန်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>အကောင့်တစ်ခုကို ရွေးပြီး တင်သွင်းရန်ကို ရွေးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>အကောင့်တစ်ခုကို ရွေးပြီး တင်သွင်းရန်ကို ရွေးပါ။ လိုအပ်နေသော လက်မှတ်ထိုးကိရိယာ အချက်အလက်များကို တောင်းဆိုပါမည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>အညွှန်းဖိုင် ရွေးရန်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>ပိုက်ဆံအိတ်ဖိုင် ရွေးရန်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>ကွန်ရက် အတည်ပြုရန်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Electrum သိုလှောင်မှု xpub ကို ဖတ်၍မရပါ: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Ledger အကောင့်များ ရှာဖွေရန်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Electrum လက်မှတ်ထိုးကိရိယာ၏ သော့ဆင့်ပွားလမ်းကြောင်း</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Electrum လက်မှတ်ထိုးကိရိယာ၏ လက်ဗွေ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>Electrum ပိုက်ဆံအိတ်ဖိုင်: BIE1 သည် စကားဝှက်ကို အသုံးပြုသည်။ မူလ USB ဟာ့ဒ်ဝဲပိုက်ဆံအိတ်သည် Electrum ၏ သိုလှောင်မှုသော့ ဆင့်ပွားလမ်းကြောင်းကို ပံ့ပိုးပါက ၎င်းဖြင့် BIE2 ကို လော့ခ်ဖွင့်နိုင်သည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>မှန်ကန်သော အကောင့်သော့ဆင့်ပွားလမ်းကြောင်းကို ထည့်ပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>သင့် Ledger လက်မှတ်ထိုးကိရိယာတွင် ပြထားသော စာလုံး 8 လုံးပါ ပင်မသော့လက်ဗွေကို ထည့်ပါ:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Electrum လက်မှတ်ထိုးကိရိယာ {number} အတွက် အကောင့်သော့ဆင့်ပွားလမ်းကြောင်းကို ထည့်ပါ:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>သင့် Ledger လက်မှတ်ထိုးကိရိယာတွင် ပြထားသော အကောင့်သော့ဆင့်ပွားလမ်းကြောင်းကို ထည့်ပါ (ဥပမာ m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Electrum လက်မှတ်ထိုးကိရိယာ {number} ၏ အမှန်တကယ် ပင်မသော့လက်ဗွေကို ထည့်ပါ။ ဟာ့ဒ်ဝဲလက်မှတ်ထိုးကိရိယာ သို့မဟုတ် ၎င်း၏ မူလအရန်မိတ္တူတွင် လက်ဗွေကို စစ်ဆေးပါ:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>မူလပိုက်ဆံအိတ်၏ စကားဝှက်ကို ထည့်ပါ:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>သင့် Ledger Live အက်ပ်၏ စကားဝှက်ကို ထည့်ပါ:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>တင်သွင်းပါ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>ပိုက်ဆံအိတ်ဖိုင် တင်သွင်းရန်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>အညွှန်းဖိုင်သည် အလွန်ကြီးမားနေပါသည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Ledger Live အကောင့်များကို သင့်စက်တွင်းရှိ အသုံးပြုသူဒေတာဖိုင် app.json မှ အလိုအလျောက် ဖတ်ပါသည်။ ဖိုင်ရွေးရန် မလိုအပ်ပါ။ စက်၏ PIN မဟုတ်ဘဲ အက်ပ်၏ စကားဝှက် လိုအပ်နိုင်ပါသည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>ပုံသေ အသုံးပြုသူဒေတာဖိုင်တွဲတွင် Ledger Live ၏ app.json ကို ရှာမတွေ့ပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>ပုံသေ အသုံးပြုသူဒေတာဖိုင်တွဲတွင် Ledger Live ၏ app.json ကို ရှာမတွေ့ပါ။ Ledger Live → ဆက်တင်များ → အကူအညီ → အသုံးပြုသူဒေတာ ကြည့်ရန်ကို ဖွင့်ပြီး အက်ပ်သည် ၎င်း၏ အကောင့်များကို စက်တွင်း၌ သိမ်းဆည်းထားခြင်း ရှိမရှိ စစ်ဆေးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live အတွက် အက်ပ်စကားဝှက် လိုအပ်ပါသည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Ledger အကောင့်၏ သော့ဆင့်ပွားလမ်းကြောင်း</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Ledger လက်မှတ်ထိုးကိရိယာ၏ လက်ဗွေ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>ဤဖော်မတ်အတွက် မူလပါဝင်သော စကားဝှက်ကာကွယ်မှုကို မပံ့ပိုးပါ။ အများသိပိုက်ဆံအိတ် သို့မဟုတ် အကောင့်ဒေတာ ထုတ်ယူထားသောဖိုင်ကို ရွေးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>ပိုက်ဆံအိတ်၏ အများသိဒေတာကိုသာ တင်သွင်းပါသည်။ ငွေလက်ခံခြင်းမပြုမီ ပထမဆုံး လက်ခံလိပ်စာနှင့် အမ်းငွေလိပ်စာများကို မူလပိုက်ဆံအိတ်နှင့် တိုက်ဆိုင်စစ်ဆေးပါ။ လက်မှတ်ထိုးရန် မူလလက်မှတ်ထိုးကိရိယာ သို့မဟုတ် စက် လိုအပ်ပါသည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>ဖိုင်ကို ဖတ်ပြီးနောက် ဆော့ဖ်ဝဲလက်မှတ်ထိုးကိရိယာတစ်ခုစီအတွက် စကားဝှက်စုများကို သီးခြား တောင်းဆိုပါသည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>ပိုက်ဆံအိတ်ဖိုင် ဖတ်ရန်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>ပိုက်ဆံအိတ်ဖိုင် ဖတ်နေပါသည်…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>ပိုက်ဆံအိတ် တင်သွင်းမှုကို ပြန်လည်စစ်ဆေးရန်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>ဤ Electrum ဖိုင်ကို ကုဒ်ဝှက်ရန် အသုံးပြုခဲ့သော ဟာ့ဒ်ဝဲပိုက်ဆံအိတ်ကို ရွေးပြီး လော့ခ်ဖွင့်ပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>ဤကုဒ်ဝှက်ထားသော ပိုက်ဆံအိတ်အတွက် Electrum ဖော်မတ်ကို ရွေးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>လက်မှတ်ထိုးကိရိယာ၏ စကားဝှက်စု ထည့်သွင်းမှုကို ပယ်ဖျက်လိုက်ပါသည်။ မည်သည့်ပိုက်ဆံအိတ်ကိုမျှ တင်သွင်းခြင်း မပြုခဲ့ပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>လက်မှတ်ထိုးသူ {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>Sparrow JSON နှင့် စကားဝှက်ကာကွယ်ထားသော H2 ပိုက်ဆံအိတ်ဖိုင်များကို ပံ့ပိုးပါသည်။ မတင်သွင်းမီ Sparrow ကို ပိတ်ပါ။ H2 တင်သွင်းမှုသည် လက်မှတ်ထိုးကိရိယာဒေတာကို ပြန်လည်ရယူရန် BIP39 seed များကို အလိုအလျောက် ဖတ်ပါသည်။ ပင်မကွန်ရက် seed များကို တင်သွင်းခြင်း မပြုပါ။ အတည်ပြုထားသော စမ်းသပ်ကွန်ရက် seed များကို လက်မှတ်ထိုးရန် သိမ်းဆည်းနိုင်ပြီး ပင်မကွန်ရက်ရှိ ငွေများကိုလည်း ထိန်းချုပ်နိုင်ပါသည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Sparrow လက်မှတ်ထိုးကိရိယာ၏ BIP39 စကားဝှက်စု</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>Specter လိပ်စာ CSV (မဖြစ်မနေ မဟုတ်ပါ)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Ledger descriptor တွင် မပံ့ပိုးသော သော့မူလရင်းမြစ် ပါဝင်နေပါသည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>ပင်မသော့လက်ဗွေတွင် hexadecimal အက္ခရာ ရှစ်လုံးတိတိ ပါဝင်ရမည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>မူလပိုက်ဆံအိတ်တွင် ပင်မကွန်ရက် seed တစ်ခု ပါဝင်ခဲ့ပါသည်။ ၎င်းကို သိမ်းထားခြင်း သို့မဟုတ် တင်သွင်းခြင်း မပြုခဲ့ပါ။ မူလပြန်လည်ရယူရေး အရန်မိတ္တူကို သိမ်းထားပါ။ ဤပိုက်ဆံအိတ်သည် ထို seed ဖြင့် လက်မှတ်မထိုးနိုင်ပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>မူလပိုက်ဆံအိတ်၏ ကွန်ရက်သည် လက်ရှိအသုံးပြုနေသော ကွန်ရက်နှင့် မကိုက်ညီပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>ပိုက်ဆံအိတ်ဖိုင်ကို ရှာမတွေ့ပါ။ ဖိုင်ရှာရန်ကို အသုံးပြု၍ ရှိပြီးသားဖိုင်ကို ရွေးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>ဤ Sparrow ဖိုင်တွင် descriptor ကို ပြန်လည်တည်ဆောက်ရန် လုံလောက်သော အများသိအချက်အလက် မပါဝင်ပါ။ BIP39 စကားဝှက်စုကို စစ်ဆေးပြီး ဖိုင်ကို ထပ်ဖတ်ပါ၊ သို့မဟုတ် Sparrow မှ အများသိ descriptor တစ်ခု ထုတ်ယူပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>ငွေလက်ခံခြင်းနှင့် အမ်းငွေအတွက် ပြည့်စုံသော descriptor မရရှိနိုင်သဖြင့် ဤအကောင့်ကို တင်သွင်း၍မရပါ။ မူလပိုက်ဆံအိတ်မှ လိုက်ဖက်သော descriptor တစ်ခု ထုတ်ယူပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>ဤဖိုင်မှ ကွန်ရက်အတိအကျကို မသတ်မှတ်နိုင်ပါ။ ဤပိုက်ဆံအိတ်သည် လက်ရှိအသုံးပြုနေသော ကွန်ရက်နှင့် သက်ဆိုင်ကြောင်း အတည်ပြုပါ: {network}။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>၎င်းသည် ဖိုင်တွဲတစ်ခုဖြစ်သည်။ ဖွင့်ပြီး အတွင်းရှိ ပိုက်ဆံအိတ်ဖိုင်ကို ရွေးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>ဤတင်သွင်းမှုမျက်နှာပြင်တွင် USB စက်များကို အသုံးပြု၍မရပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>USB ဟာ့ဒ်ဝဲပိုက်ဆံအိတ် ရွေးချယ်မှုကို ပယ်ဖျက်ခဲ့သည် သို့မဟုတ် မအောင်မြင်ခဲ့ပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>အတည်ပြုထားသော စမ်းသပ်ကွန်ရက် BIP39 seed များကို တင်သွင်းပြီး ဤပိုက်ဆံအိတ်နှင့်အတူ သိမ်းဆည်းပါမည်။ ဤ seed များသည် ပင်မကွန်ရက်ရှိ ငွေများကိုလည်း ထိန်းချုပ်နိုင်ပါသည်။ ဤပိုက်ဆံအိတ်ကို ပြန်လည်ရယူရေး အရန်မိတ္တူကဲ့သို့ ကာကွယ်ပါ။ ငွေလက်ခံခြင်းမပြုမီ ပထမဆုံး လက်ခံလိပ်စာနှင့် အမ်းငွေလိပ်စာများကို မူလပိုက်ဆံအိတ်နှင့် တိုက်ဆိုင်စစ်ဆေးပါ။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>ပိုက်ဆံအိတ်ဖိုင်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>ပိုက်ဆံအိတ်ဖော်မတ်</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>ပိုက်ဆံအိတ် တင်သွင်းမှု</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Wasabi ပိုက်ဆံအိတ်၏ အများသိဒေတာကို စကားဝှက်မပါဘဲ တင်သွင်းပါသည်။ ပံ့ပိုးထားသော Native SegWit အညွှန်းများကို အတည်ပြုထားသော သော့လမ်းကြောင်းများမှ ပြောင်းလဲပေးပါသည်။ မသတ်မှတ်နိုင်သော အညွှန်းများအတွက် BIP-329 အညွှန်းဖိုင်တစ်ခုကိုလည်း ရွေးနိုင်ပါသည်။</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>descriptor မရရှိနိုင်ပါ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>အသင့်ဖြစ်ပါသည်</translation>
 		</message>
 	</context>
 	<context>
@@ -9223,6 +9788,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>မှတ်တမ်းအားလုံး - စုစုပေါင်း: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>အမ်းငွေ UTXO</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>ငွေလက်ခံ UTXO</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9354,6 +9936,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>OP_RETURN အထွက်များ၏ ပမာဏသည် သုည ဖြစ်ရမည်။</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>အထွက် script သည် ဗလာမဖြစ်ရပါ။</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9366,6 +9958,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>လိပ်စာများသို့ ပို့နေသည်: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>ငွေလွှဲမှုတစ်ခု ဖန်တီးရာတွင် ဤအထွက် script ကို ခွင့်မပြုပါ။</translation>
 		</message>
 		<name>wallet</name>
 		<message>

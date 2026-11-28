@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>TXID підписаної PSBT не збігається з оригінальним TXID</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>Підписана транзакція не відповідає початковій транзакції.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>Помилка бібліотеки bdk. TXID не слід змінювати під час фіналізації</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>Транзакція змінилася під час фіналізації.</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>Неприпустимий скрипт виходу</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>Відсутня адреса</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>Необроблений скрипт виходу</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>Відкрити мапу мережі</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>Минуло часу: {passed_time}</translation>
 		</message>
@@ -812,6 +827,16 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>Заголовки компактних фільтрів: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>Компактні фільтри: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>Підключення до вузлів</translation>
 		</message>
@@ -880,8 +905,8 @@ Funds may be at risk. Read the guidance now and migrate to a seed generated with
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>Додати зовнішні UTXO</translation>
+			<source>Add</source>
+			<translation>Додати</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1510,10 +1535,20 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>Ставка комісії не більше ніж {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>Точну комісію неможливо визначити,
 оскільки остаточний розмір транзакції невідомий.</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>Неможливо оцінити остаточний розмір транзакції.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1541,6 +1576,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>Висока ставка комісії!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>Можливо, висока ставка комісії!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1816,6 +1856,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>Відновити мітки з хмари, використовуючи наявний ключ синхронізації</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>Один із вибраних файлів не знайдено. Перевірте шляхи до файлів і спробуйте ще раз.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>Не вдалося прочитати один із вибраних файлів. Перевірте права доступу до нього та спробуйте ще раз.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>Не вдалося прочитати один із вибраних файлів. Перевірте файли та спробуйте ще раз.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Це папка. Відкрийте її та виберіть файл гаманця всередині.</translation>
 		</message>
 	</context>
 	<context>
@@ -2165,6 +2227,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>Seed — це секрет, який дає змогу підписувати транзакції.
 Для гаманця з одним підписом він надає повний контроль над коштами.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>Глибина xPub або номер останнього дочірнього ключа не відповідає походженню ключа.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2694,6 +2761,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>Імпортувати файл гаманця</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>Огляд спадкування</translation>
 		</message>
@@ -2836,6 +2908,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>Спершу виберіть гаманець.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>Зачекайте, доки файл гаманця повністю завантажиться.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3722,6 +3799,16 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Гарячі гаманці вимкнено в Bitcoin Mainnet.
 Ви можете перемкнутися на Testnet, щоб протестувати {app_name} без використання справжніх Bitcoin.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>Імпортувати з іншого файлу гаманця</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>Імпортувати публічні дані гаманця та мітки з {}.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4669,6 +4756,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>Створити OP_RETURN</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>Текст для включення у вихід OP_RETURN:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5209,8 +5308,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>TXID підписаної PSBT не збігається з оригінальним TXID. Перериваємо</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>Підписана транзакція не відповідає початковій транзакції. Операція переривається.</translation>
 		</message>
 	</context>
 	<context>
@@ -5803,8 +5902,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>Додати входи</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>Додати UTXO з усіх відкритих гаманців</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>Додати зовнішні UTXO</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5819,8 +5923,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>Неможливо оцінити розмір транзакції заміни для RBF.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Змінити ставку комісії</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>Не вдалося імпортувати входи: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>Не вдалося об’єднати PSBT: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5834,8 +5953,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>Завантажити попередні транзакції</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>Введіть по одному UTXO на рядок у форматі txid:vout.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>Очікувалася PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>Занадто низький розмір комісії</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>Якщо попередня транзакція недоступна локально, вона завантажується з налаштованого оглядача блоків ({explorer}). Сервер може бачити, які ідентифікатори транзакцій запитуються.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>Імпортувати UTXO з гаманця</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5844,8 +5988,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>Завантажити PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>Завантажити UTXO</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>Об’єднати з іншою PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>Оглядач блоків не налаштовано, тому відсутні транзакції неможливо завантажити.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>Вставити PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>Вставте PSBT.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5856,19 +6025,13 @@ otherwise you may not be able to broadcast it.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>Будь ласка, вставте тут UTXO</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>Будь ласка, вставте тут UTXO у форматі txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>Будь ласка, ліворуч виберіть категорію входів, що відповідає одержувачам транзакції.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>Повідомлення про конфіденційність: Bitcoin Safe спочатку виконує пошук у локально доступних даних гаманців.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5879,6 +6042,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>Виберіть один або кілька UTXO зі списку ліворуч або зніміть позначку «Вибрати конкретні UTXO» вище, щоб дозволити {app_name} вибрати найкращі монети для вашої транзакції.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>Деякі попередні транзакції потрібно завантажити з налаштованого оглядача блоків. Оглядач може бачити запитувані ідентифікатори транзакцій. Завантажити їх?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>Деякі вибрані входи недоступні.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>Текстові файли (*.txt);;Усі файли (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT містить входи, вже вибрані в поточній транзакції: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5911,6 +6094,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>Не вдалося передати транзакцію в мережу</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>Не вдалося відкрити PSBT</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5980,6 +6168,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Транзакція {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>Невідомий підписувач</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6118,8 +6311,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>Видалити сторонні входи</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>Підписано</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>Витрачено</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6130,6 +6333,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>Недоступно</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Невідомо</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6264,6 +6477,358 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>Баланс ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>Відбиток одного з підписувачів установлено на 00000000. Це тимчасове значення не ідентифікує початкового підписувача; замініть його справжнім відбитком, коли він стане доступним.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>Обліковий запис</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>CSV-файл адрес завеликий.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>Мітки BIP-329 (необов’язково)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>Парольна фраза BIP39 для {signer}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>Парольні фрази BIP39 підписувачів</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>Назад</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>Огляд…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>Не вдалося прочитати цей файл гаманця. Перевірте права доступу до нього та спробуйте ще раз.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>Не вдалося прочитати цей файл гаманця. Перевірте файл і спробуйте ще раз.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>Не вдалося визначити шлях до файлу гаманця. Виберіть файл за допомогою кнопки «Огляд».</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>Перед читанням виберіть файл гаманця за допомогою кнопки «Огляд».</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>Вибрати CSV-файл адрес</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>Виберіть обліковий запис і натисніть «Імпортувати».</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>Виберіть обліковий запис і натисніть «Імпортувати». Відсутні відомості про підписувачів буде запитано.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>Вибрати файл міток</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>Вибрати файл гаманця</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>Підтвердити мережу</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Не вдалося прочитати xpub сховища Electrum: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Виявити облікові записи Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Шлях деривації підписувача Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Відбиток підписувача Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>Файл гаманця Electrum: BIE1 використовує пароль. BIE2 розблоковується початковим апаратним USB-гаманцем, якщо він підтримує шлях деривації ключа сховища Electrum.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>Введіть дійсний шлях деривації облікового запису.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>Введіть 8-символьний майстер-відбиток, показаний вашим підписувачем Ledger:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Введіть шлях деривації облікового запису для підписувача Electrum {number}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>Введіть шлях деривації облікового запису, показаний вашим підписувачем Ledger (наприклад, m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Введіть справжній майстер-відбиток підписувача Electrum {number}. Перевірте відбиток на апаратному підписувачі або в його початковій резервній копії:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>Введіть пароль гаманця-джерела:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>Введіть пароль застосунку Ledger Live:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>Імпорт</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>Імпортувати файл гаманця</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>Файл міток завеликий.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Облікові записи Ledger Live автоматично зчитуються з вашого локального файлу даних користувача app.json. Вибирати файл не потрібно. Може знадобитися пароль застосунку, а не PIN-код пристрою.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>Файл app.json Ledger Live не знайдено в типовій папці даних користувача.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>Файл app.json Ledger Live не знайдено в типовій папці даних користувача. Відкрийте Ledger Live → Налаштування → Довідка → Переглянути дані користувача та перевірте, чи застосунок зберігає облікові записи локально.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live потребує пароль застосунку.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Шлях деривації облікового запису Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Відбиток підписувача Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>Вбудований захист паролем для цього формату не підтримується. Виберіть файл експорту публічних даних гаманця або облікового запису.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>Імпортуються лише публічні дані гаманця. Перш ніж отримувати кошти, звірте перші адреси отримання та решти з гаманцем-джерелом. Для підписання потрібен початковий підписувач або пристрій.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>Після читання файлу парольні фрази запитуються окремо для кожного програмного підписувача.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>Прочитати файл гаманця</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>Читання файлу гаманця…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>Перевірити імпорт гаманця</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>Виберіть і розблокуйте апаратний гаманець, використаний для шифрування цього файлу Electrum.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>Виберіть формат Electrum для цього зашифрованого гаманця.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>Введення парольної фрази підписувача скасовано. Жодного гаманця не імпортовано.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>Підписувач {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>Підтримуються файли гаманців Sparrow у форматі JSON і захищені паролем файли H2. Закрийте Sparrow перед імпортом. Під час імпорту H2 автоматично зчитуються сіди BIP39 для відновлення даних підписувачів. Сіди основної мережі не імпортуються; перевірені сіди тестових мереж можуть зберігатися для підписання, а також можуть контролювати кошти основної мережі.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Парольна фраза BIP39 підписувача Sparrow</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>CSV-файл адрес Specter (необов’язково)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Дескриптор Ledger містить непідтримуване походження ключа.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>Майстер-відбиток має містити рівно вісім шістнадцяткових символів.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>Гаманець-джерело містив сід основної мережі. Його не було збережено чи імпортовано. Зберігайте свою початкову резервну копію для відновлення; цей гаманець не може підписувати з використанням цього сіду.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>Мережа гаманця-джерела не відповідає активній мережі.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>Файл гаманця не знайдено. Виберіть наявний файл за допомогою кнопки «Огляд».</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>Цей файл Sparrow не містить достатньо публічної інформації для відтворення дескриптора. Перевірте парольну фразу BIP39 та прочитайте файл повторно або експортуйте публічний дескриптор зі Sparrow.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>Цей обліковий запис неможливо імпортувати, оскільки його повний дескриптор отримання та решти недоступний. Експортуйте сумісний дескриптор із гаманця-джерела.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>Цей файл не дає змоги точно визначити мережу. Підтвердьте, що цей гаманець належить до активної мережі: {network}.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Це папка. Відкрийте її та виберіть файл гаманця всередині.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>Доступ до USB-пристроїв на цьому екрані імпорту недоступний.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>Вибір апаратного USB-гаманця скасовано або завершився помилкою.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>Перевірені сіди BIP39 тестових мереж буде імпортовано та збережено разом із цим гаманцем. Ці сіди також можуть контролювати кошти основної мережі; захищайте цей гаманець так само, як резервну копію для відновлення. Перш ніж отримувати кошти, звірте перші адреси отримання та решти з гаманцем-джерелом.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>Файл гаманця</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>Формат гаманця</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>Імпорт гаманця</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Публічні дані гаманця Wasabi імпортуються без пароля. Підтримувані мітки нативного SegWit перетворюються з перевірених шляхів ключів. Для міток, які неможливо визначити, також можна вибрати файл міток BIP-329.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>дескриптор недоступний</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>готово</translation>
 		</message>
 	</context>
 	<context>
@@ -9254,6 +9819,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>Усі записи - загалом: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>UTXO решти</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>UTXO отримання</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9385,6 +9967,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>Виходи OP_RETURN повинні мати нульову суму.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>Скрипт виходу не може бути порожнім.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9397,6 +9989,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>Надсилання на адреси: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>Цей скрипт виходу не дозволено використовувати під час створення транзакції.</translation>
 		</message>
 		<name>wallet</name>
 		<message>

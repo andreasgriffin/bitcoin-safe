@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>서명된 트랜잭션이 원본 트랜잭션과 일치하지 않습니다.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>bdk 라이브러리 오류. 최종화 중에 txid를 변경해서는 안 됩니다</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>최종 확정 과정에서 트랜잭션이 변경되었습니다.</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>유효하지 않은 출력 스크립트</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>주소 누락</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>원시 출력 스크립트</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>네트워크 지도 열기</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>경과 시간: {passed_time}</translation>
 		</message>
@@ -810,6 +825,16 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>컴팩트 필터 헤더: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>컴팩트 필터: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>노드에 연결 중</translation>
 		</message>
@@ -878,8 +903,8 @@ Funds may be at risk. Read the guidance now and migrate to a seed generated with
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>외부 UTXO 추가</translation>
+			<source>Add</source>
+			<translation>추가</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1508,9 +1533,19 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>수수료율 최대 {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>거래의 최종 크기를 알 수 없기 때문에 수수료율을 정확히 알 수 없습니다.</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>최종 트랜잭션 크기를 추정할 수 없습니다.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1538,6 +1573,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>높은 수수료율!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>수수료율이 높을 수 있습니다!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1813,6 +1853,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>기존 동기화 키를 사용하여 클라우드에서 명칭 복원</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>선택한 파일 중 하나를 찾을 수 없습니다. 파일 경로를 확인하고 다시 시도하세요.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>선택한 파일 중 하나를 읽을 수 없습니다. 파일 권한을 확인하고 다시 시도하세요.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>선택한 파일 중 하나를 읽을 수 없습니다. 파일을 확인하고 다시 시도하세요.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>이것은 폴더입니다. 폴더를 열고 그 안의 지갑 파일을 선택하세요.</translation>
 		</message>
 	</context>
 	<context>
@@ -2162,6 +2224,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>seed는 거래 서명을 가능하게 하는 비밀입니다.
 단일 서명 지갑의 경우 자금에 대한 완전한 제어권을 제공합니다.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>xPub 깊이 또는 마지막 자식 키 번호가 키 출처와 일치하지 않습니다.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2691,6 +2758,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>지갑 파일 가져오기</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>상속 개요</translation>
 		</message>
@@ -2833,6 +2905,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>먼저 지갑을 선택하세요.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>지갑 파일 로딩이 완료될 때까지 기다려 주세요.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3718,6 +3795,16 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet에서는 핫 월렛이 비활성화되어 있습니다.
 실제 Bitcoin을 사용하지 않고 {app_name}를 테스트하려면 Testnet으로 전환할 수 있습니다.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>다른 지갑 파일에서 가져오기</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>{}에서 공개 지갑 데이터 및 라벨을 가져옵니다.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4664,6 +4751,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>OP_RETURN 생성</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>OP_RETURN 출력에 포함할 텍스트:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5204,8 +5303,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>서명된 psbt의 txid가 원래 txid와 일치하지 않습니다. 중단</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>서명된 트랜잭션이 원본 트랜잭션과 일치하지 않습니다. 작업을 중단합니다.</translation>
 		</message>
 	</context>
 	<context>
@@ -5798,8 +5897,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>입력 추가</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>열려 있는 모든 지갑에서 UTXO 추가</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>외부 UTXO 추가</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5814,8 +5918,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>RBF 대체 트랜잭션의 크기를 추정할 수 없습니다.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>수수료율 변경</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>입력을 가져올 수 없습니다: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>PSBT를 병합할 수 없습니다: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5829,8 +5948,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>이전 트랜잭션 다운로드</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>한 줄에 하나의 UTXO를 txid:vout 형식으로 입력하세요.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>PSBT가 필요합니다</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>수수료율이 너무 낮습니다</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>이전 트랜잭션을 로컬에서 사용할 수 없는 경우 설정된 블록 탐색기({explorer})에서 다운로드합니다. 서버는 어떤 트랜잭션 ID가 요청되는지 확인할 수 있습니다.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>지갑에서 UTXO 가져오기</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5839,8 +5983,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>PSBT 불러오기</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>UTXO 로드</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>다른 PSBT 병합</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>블록 탐색기가 설정되지 않아 누락된 트랜잭션을 다운로드할 수 없습니다.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>PSBT 붙여넣기</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>PSBT를 붙여넣으세요.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5850,19 +6019,13 @@ otherwise you may not be able to broadcast it.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>UTXO를 여기에 붙여넣으세요</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>다음 형식으로 UTXO를 붙여넣으세요 txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>왼쪽에서 트랜잭션 수령인에 맞는 입력 카테고리를 선택하세요.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>개인정보 보호 안내: Bitcoin Safe는 먼저 로컬에서 사용할 수 있는 지갑 데이터를 검색합니다.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5873,6 +6036,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>왼쪽 목록에서 하나 이상의 UTXO를 선택하거나 위의 “특정 UTXO 선택”을 선택 해제해 {app_name} 가 거래에 가장 적절한 코인을 선택하도록 하세요.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>일부 이전 트랜잭션은 설정된 블록 탐색기에서 다운로드해야 합니다. 탐색기는 요청된 트랜잭션 ID를 확인할 수 있습니다. 다운로드하시겠습니까?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>선택한 입력 중 일부를 사용할 수 없습니다.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>텍스트 파일 (*.txt);;모든 파일 (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT에 현재 트랜잭션에서 이미 선택한 입력이 포함되어 있습니다: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5905,6 +6088,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>트랜잭션을 브로드캐스트할 수 없습니다</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>PSBT를 열 수 없습니다</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5974,6 +6162,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>트랜잭션 {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>알 수 없는 서명자</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6112,8 +6305,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>외부 입력 제거</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>서명자</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>사용됨</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6124,6 +6327,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>사용할 수 없음</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>알 수 없음</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6258,6 +6471,358 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>잔액 ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>서명자 지문이 00000000으로 설정되어 있습니다. 이 임시 값은 원래 서명자를 식별하지 못합니다. 실제 지문을 확인할 수 있게 되면 교체하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>계정</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>주소 CSV 파일이 너무 큽니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>BIP-329 라벨(선택 사항)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>{signer}의 BIP39 패스프레이즈:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>서명자 BIP39 패스프레이즈</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>뒤로</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>찾아보기…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>이 지갑 파일을 읽을 수 없습니다. 파일 권한을 확인하고 다시 시도하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>이 지갑 파일을 읽을 수 없습니다. 파일을 확인하고 다시 시도하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>지갑 파일 경로를 확인할 수 없습니다. 찾아보기를 사용하여 파일을 선택하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>파일을 읽기 전에 찾아보기를 사용하여 지갑 파일을 선택하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>주소 CSV 선택</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>계정을 선택하고 가져오기를 선택하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>계정을 선택하고 가져오기를 선택하세요. 누락된 서명자 정보를 요청합니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>라벨 파일 선택</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>지갑 파일 선택</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>네트워크 확인</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Electrum 저장소 xpub을 읽을 수 없습니다: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Ledger 계정 검색</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Electrum 서명자 파생 경로</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Electrum 서명자 지문</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>Electrum 지갑 파일: BIE1은 비밀번호를 사용합니다. BIE2는 Electrum의 저장소 키 파생 경로를 지원하는 경우 원래의 USB 하드웨어 지갑으로 잠금을 해제합니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>유효한 계정 파생 경로를 입력하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>Ledger 서명자에 표시된 8자리 마스터 지문을 입력하세요:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Electrum 서명자 {number}의 계정 파생 경로를 입력하세요:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>Ledger 서명자에 표시된 계정 파생 경로를 입력하세요(예: m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Electrum 서명자 {number}의 실제 마스터 지문을 입력하세요. 하드웨어 서명자 또는 원래 백업에서 지문을 확인하세요:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>원본 지갑 비밀번호를 입력하세요:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>Ledger Live 애플리케이션 비밀번호를 입력하세요:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>가져오기</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>지갑 파일 가져오기</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>라벨 파일이 너무 큽니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Ledger Live 계정은 로컬 사용자 데이터 파일 app.json에서 자동으로 읽습니다. 파일을 선택할 필요가 없습니다. 기기 PIN이 아닌 애플리케이션 비밀번호가 필요할 수 있습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>기본 사용자 데이터 폴더에서 Ledger Live app.json 파일을 찾을 수 없습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>기본 사용자 데이터 폴더에서 Ledger Live app.json 파일을 찾을 수 없습니다. Ledger Live → 설정 → 도움말 → 사용자 데이터 보기로 이동하여 애플리케이션이 계정을 로컬에 저장하는지 확인하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live에 애플리케이션 비밀번호가 필요합니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Ledger 계정 파생 경로</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Ledger 서명자 지문</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>이 형식은 자체 비밀번호 보호를 지원하지 않습니다. 공개 지갑 또는 계정 내보내기 파일을 선택하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>공개 지갑 데이터만 가져옵니다. 자금을 받기 전에 첫 수신 주소와 거스름돈 주소를 원본 지갑과 대조하여 확인하세요. 서명하려면 원래 서명자 또는 기기가 필요합니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>파일을 읽은 후 각 소프트웨어 서명자의 패스프레이즈를 개별적으로 요청합니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>지갑 파일 읽기</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>지갑 파일 읽는 중…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>지갑 가져오기 검토</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>이 Electrum 파일을 암호화하는 데 사용한 하드웨어 지갑을 선택하고 잠금을 해제하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>이 암호화된 지갑의 Electrum 형식을 선택하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>서명자 패스프레이즈 입력이 취소되었습니다. 가져온 지갑이 없습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>서명자 {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>Sparrow JSON 및 비밀번호로 보호된 H2 지갑 파일을 지원합니다. 가져오기 전에 Sparrow를 종료하세요. H2 가져오기는 서명자 데이터를 복구하기 위해 BIP39 시드를 자동으로 읽습니다. 메인넷 시드는 가져오지 않습니다. 검증된 테스트 네트워크 시드는 서명용으로 저장될 수 있으며 메인넷 자금도 제어할 수 있습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Sparrow 서명자 BIP39 패스프레이즈</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>Specter 주소 CSV(선택 사항)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Ledger 디스크립터에 지원되지 않는 키 출처가 있습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>마스터 지문은 정확히 8개의 16진수 문자로 구성되어야 합니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>원본 지갑에 메인넷 시드가 포함되어 있었습니다. 해당 시드는 보관하거나 가져오지 않았습니다. 원래 복구 백업을 보관하세요. 이 지갑은 해당 시드로 서명할 수 없습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>원본 지갑의 네트워크가 활성 네트워크와 일치하지 않습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>지갑 파일을 찾을 수 없습니다. 찾아보기를 사용하여 존재하는 파일을 선택하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>이 Sparrow 파일에는 디스크립터를 재구성할 충분한 공개 정보가 없습니다. BIP39 패스프레이즈를 확인하고 파일을 다시 읽거나 Sparrow에서 공개 디스크립터를 내보내세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>전체 수신 및 거스름돈 디스크립터를 사용할 수 없어 이 계정을 가져올 수 없습니다. 원본 지갑에서 호환되는 디스크립터를 내보내세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>이 파일로는 정확한 네트워크를 확인할 수 없습니다. 이 지갑이 활성 네트워크에 속하는지 확인하세요: {network}.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>이것은 폴더입니다. 폴더를 열고 그 안의 지갑 파일을 선택하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>이 가져오기 화면에서는 USB 기기에 접근할 수 없습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>USB 하드웨어 지갑 선택이 취소되었거나 실패했습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>검증된 테스트 네트워크 BIP39 시드를 가져와 이 지갑에 저장합니다. 이 시드는 메인넷 자금도 제어할 수 있으므로 이 지갑을 복구 백업처럼 보호하세요. 자금을 받기 전에 첫 수신 주소와 거스름돈 주소를 원본 지갑과 대조하여 확인하세요.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>지갑 파일</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>지갑 형식</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>지갑 가져오기</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Wasabi 공개 지갑 데이터는 비밀번호 없이 가져옵니다. 지원되는 네이티브 SegWit 라벨은 검증된 키 경로에서 변환됩니다. 확인할 수 없는 라벨의 경우 BIP-329 라벨 파일을 선택할 수도 있습니다.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>디스크립터 사용 불가</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>준비됨</translation>
 		</message>
 	</context>
 	<context>
@@ -9246,6 +9811,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>모든 항목 - 합계: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>거스름돈 UTXO</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>수신 UTXO</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9377,6 +9959,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>OP_RETURN 출력의 금액은 0이어야 합니다.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>출력 스크립트는 비워 둘 수 없습니다.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9389,6 +9981,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>주소로 전송 중: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>트랜잭션 생성 시 이 출력 스크립트는 허용되지 않습니다.</translation>
 		</message>
 		<name>wallet</name>
 		<message>

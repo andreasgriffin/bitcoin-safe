@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>Il txid del psbt firmato non corrisponde al txid originale</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>La transazione firmata non corrisponde alla transazione originale.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>Errore della libreria bdk. Il txid non deve essere modificato durante la finalizzazione</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>La transazione è cambiata durante la finalizzazione.</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>Script di output non valido</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>Indirizzo mancante</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>Script di output grezzo</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>Apri la mappa della rete</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>Tempo trascorso: {passed_time}</translation>
 		</message>
@@ -812,6 +827,16 @@ hanno già transazioni collegate ad altri indirizzi. Sei sicuro di voler cambiar
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>Intestazioni dei filtri compatti: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>Filtri compatti: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>Connessione ai nodi</translation>
 		</message>
@@ -880,8 +905,8 @@ I fondi potrebbero essere a rischio. Leggi subito le indicazioni e passa a un se
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>Aggiungi UTXO esterni</translation>
+			<source>Add</source>
+			<translation>Aggiungi</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1510,10 +1535,20 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>Tasso di commissione massimo di {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>Il tasso di commissione non può essere conosciuto esattamente,
 poiché la dimensione finale della transazione è sconosciuta.</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>Impossibile stimare la dimensione finale della transazione.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1541,6 +1576,11 @@ poiché la dimensione finale della transazione è sconosciuta.</translation>
 		<message>
 			<source>High fee rate!</source>
 			<translation>Tasso di commissione alto!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>Tasso di commissione potenzialmente elevato!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1816,6 +1856,28 @@ poiché la dimensione finale della transazione è sconosciuta.</translation>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>Ripristina etichette dalla nuvem utilizzando una chiave di sincronizzazione esistente</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>Impossibile trovare uno dei file selezionati. Controlla i percorsi dei file e riprova.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>Impossibile leggere uno dei file selezionati. Controllane le autorizzazioni e riprova.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>Impossibile leggere uno dei file selezionati. Controlla i file e riprova.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Questa è una cartella. Aprila e seleziona il file del portafoglio al suo interno.</translation>
 		</message>
 	</context>
 	<context>
@@ -2165,6 +2227,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>Il seed è il segreto che consente la firma delle transazioni.
 Per un portafoglio a firma singola dà il pieno controllo sui fondi.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>La profondità della xPub o il numero dell'ultima chiave figlia non corrisponde all'origine della chiave.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2694,6 +2761,11 @@ Puoi passare a Testnet per provare {app_name} senza usare Bitcoin reali.</transl
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>Importa file del portafoglio</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>Panoramica dell'eredità</translation>
 		</message>
@@ -2836,6 +2908,11 @@ Puoi passare a Testnet per provare {app_name} senza usare Bitcoin reali.</transl
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>Si prega di selezionare prima il portafoglio.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>Attendi il completamento del caricamento del file del portafoglio.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3724,6 +3801,16 @@ L’uso di più peer migliora la copertura ma utilizza più larghezza di banda e
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>I wallet hot sono disabilitati su Bitcoin Mainnet.
 Puoi passare a Testnet per provare {app_name} senza usare Bitcoin reali.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>Importa da un altro file del portafoglio</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>Importa i dati pubblici del portafoglio e le etichette da {}.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4671,6 +4758,18 @@ Gli output rimangono invariati; cambia solo la commissione.</translation>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>Genera OP_RETURN</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>Testo da includere nell'output OP_RETURN:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5211,8 +5310,8 @@ Se commetti un errore qui, i tuoi soldi sono persi!</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>Il txid del psbt firmato non corrisponde al txid originale. Interruzione</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>La transazione firmata non corrisponde alla transazione originale. Operazione interrotta.</translation>
 		</message>
 	</context>
 	<context>
@@ -5805,8 +5904,13 @@ Salvatela, e quando cliccherai su 'importa chiave di sincronizzazione', dovrebbe
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>Aggiungi Input</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>Aggiungi UTXO da tutti i portafogli aperti</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>Aggiungi UTXO esterni</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5821,8 +5925,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>Impossibile stimare la dimensione della transazione sostitutiva per RBF.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Modifica il tasso della commissione</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>Impossibile importare gli input: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>Impossibile unire la PSBT: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5836,8 +5955,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>Scarica le transazioni precedenti</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>Inserisci un UTXO per riga nel formato txid:vout.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>Era prevista una PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>Commissione troppo bassa</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>Se una transazione precedente non è disponibile localmente, viene scaricata dall'esploratore di blocchi configurato ({explorer}). Il server può vedere quali ID di transazione vengono richiesti.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>Importa UTXO dal portafoglio</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5846,8 +5990,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>Carica PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>Carica UTXO</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>Unisci un'altra PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>Non è configurato alcun esploratore di blocchi, quindi non è possibile scaricare le transazioni mancanti.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>Incolla una PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>Incolla una PSBT.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5858,19 +6027,13 @@ altrimenti potresti non riuscire a trasmetterla.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>Incolla qui l'UTXO</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>Incolla qui l'UTXO nel formato txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>Si prega di selezionare una categoria di input sulla sinistra, che si adatti ai destinatari della transazione.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>Informativa sulla privacy: Bitcoin Safe cerca prima nei dati del portafoglio disponibili localmente.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5881,6 +6044,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>Seleziona uno o più UTXO dalla lista a sinistra, oppure deseleziona “Seleziona UTXO specifici” sopra per lasciare che {app_name} scelga le migliori monete per la tua transazione.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>Alcune transazioni precedenti devono essere scaricate dall'esploratore di blocchi configurato. L'esploratore può vedere gli ID di transazione richiesti. Vuoi scaricarle?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>Alcuni input selezionati non sono disponibili.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>File di testo (*.txt);;Tutti i file (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>La PSBT contiene input già selezionati nella transazione corrente: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5913,6 +6096,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>Impossibile trasmettere la transazione</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>Impossibile aprire la PSBT</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5982,6 +6170,11 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Transazione {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>Firmatario sconosciuto</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6120,8 +6313,18 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>Rimuovi input esterni</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>Firmato da</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>Speso</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6132,6 +6335,16 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>Non disponibile</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Sconosciuto</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6266,6 +6479,358 @@ La trasmissione fallirà. Vuoi comunque trasmettere?</translation>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>Saldo ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>L'impronta digitale di un firmatario è impostata su 00000000. Questo segnaposto non identifica il firmatario originale; sostituiscilo con l'impronta digitale reale quando sarà disponibile.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>Account</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>Il file CSV degli indirizzi è troppo grande.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>Etichette BIP-329 (facoltativo)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>Passphrase BIP39 per {signer}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>Passphrase BIP39 dei firmatari</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>Indietro</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>Sfoglia…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>Impossibile leggere questo file del portafoglio. Controllane le autorizzazioni e riprova.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>Impossibile leggere questo file del portafoglio. Controlla il file e riprova.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>Impossibile risolvere il percorso del file del portafoglio. Seleziona il file usando Sfoglia.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>Seleziona un file del portafoglio usando Sfoglia prima di leggerlo.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>Scegli il CSV degli indirizzi</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>Scegli un account e seleziona Importa.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>Scegli un account e seleziona Importa. Verranno richiesti i dati mancanti dei firmatari.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>Scegli il file delle etichette</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>Scegli il file del portafoglio</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>Conferma la rete</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Impossibile leggere la xpub di archiviazione di Electrum: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Rileva account Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Derivazione del firmatario Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Impronta digitale del firmatario Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>File del portafoglio Electrum: BIE1 utilizza una password. BIE2 si sblocca con il portafoglio hardware USB originale, se supporta il percorso di derivazione della chiave di archiviazione di Electrum.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>Inserisci un percorso di derivazione dell'account valido.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>Inserisci l'impronta digitale master di 8 caratteri mostrata dal tuo firmatario Ledger:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Inserisci il percorso di derivazione dell'account per il firmatario Electrum {number}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>Inserisci il percorso di derivazione dell'account mostrato dal tuo firmatario Ledger (ad esempio m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Inserisci l'impronta digitale master autentica del firmatario Electrum {number}. Controlla l'impronta sul firmatario hardware o nel suo backup originale:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>Inserisci la password del portafoglio di origine:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>Inserisci la password dell'applicazione Ledger Live:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>Importa</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>Importa file del portafoglio</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>Il file delle etichette è troppo grande.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Gli account Ledger Live vengono letti automaticamente dal file locale dei dati utente app.json. Non è necessario selezionare un file. Potrebbe essere richiesta la password dell'applicazione, non il PIN del dispositivo.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>Il file app.json di Ledger Live non è stato trovato nella cartella predefinita dei dati utente.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>Il file app.json di Ledger Live non è stato trovato nella cartella predefinita dei dati utente. Apri Ledger Live → Impostazioni → Aiuto → Visualizza dati utente e verifica che l'applicazione memorizzi gli account localmente.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live richiede una password dell'applicazione.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Derivazione dell'account Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Impronta digitale del firmatario Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>La protezione nativa tramite password non è supportata per questo formato. Seleziona un'esportazione pubblica del portafoglio o dell'account.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>Vengono importati solo i dati pubblici del portafoglio. Verifica i primi indirizzi di ricezione e di resto confrontandoli con il portafoglio di origine prima di ricevere fondi. Per firmare è necessario il firmatario o il dispositivo originale.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>Le passphrase vengono richieste separatamente per ogni firmatario software dopo la lettura del file.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>Leggi il file del portafoglio</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>Lettura del file del portafoglio…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>Verifica l'importazione del portafoglio</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>Seleziona e sblocca il portafoglio hardware utilizzato per cifrare questo file Electrum.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>Seleziona il formato Electrum per questo portafoglio cifrato.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>Inserimento della passphrase del firmatario annullato. Nessun portafoglio è stato importato.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>Firmatario {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>Sono supportati i file del portafoglio Sparrow JSON e H2 protetti da password. Chiudi Sparrow prima di importare. L'importazione H2 legge automaticamente i seed BIP39 per recuperare i dati dei firmatari. I seed della rete principale non vengono importati; i seed verificati delle reti di test possono essere salvati per la firma e possono anche controllare fondi della rete principale.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Passphrase BIP39 del firmatario Sparrow</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>CSV degli indirizzi Specter (facoltativo)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Il descrittore Ledger contiene un'origine della chiave non supportata.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>L'impronta digitale master deve contenere esattamente otto caratteri esadecimali.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>Il portafoglio di origine conteneva un seed della rete principale. Non è stato conservato né importato. Conserva il backup di ripristino originale; questo portafoglio non può firmare con quel seed.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>La rete del portafoglio di origine non corrisponde alla rete attiva.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>Impossibile trovare il file del portafoglio. Seleziona un file esistente usando Sfoglia.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>Questo file Sparrow non contiene informazioni pubbliche sufficienti per ricostruire il descrittore. Controlla la passphrase BIP39 e rileggi il file oppure esporta un descrittore pubblico da Sparrow.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>Impossibile importare questo account perché il suo descrittore completo di ricezione e resto non è disponibile. Esporta un descrittore compatibile dal portafoglio di origine.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>Questo file non determina la rete esatta. Conferma che questo portafoglio appartiene alla rete attiva: {network}.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Questa è una cartella. Aprila e seleziona il file del portafoglio al suo interno.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>L'accesso ai dispositivi USB non è disponibile in questa schermata di importazione.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>La selezione del portafoglio hardware USB è stata annullata o non è riuscita.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>I seed BIP39 verificati delle reti di test verranno importati e salvati con questo portafoglio. Questi seed possono controllare anche fondi della rete principale; proteggi questo portafoglio come un backup di ripristino. Verifica i primi indirizzi di ricezione e di resto confrontandoli con il portafoglio di origine prima di ricevere fondi.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>File del portafoglio</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>Formato del portafoglio</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>Importazione del portafoglio</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>I dati pubblici del portafoglio Wasabi vengono importati senza password. Le etichette SegWit native supportate vengono convertite dai percorsi delle chiavi verificati. Puoi anche selezionare un file di etichette BIP-329 per le etichette che non possono essere risolte.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>descrittore non disponibile</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>pronto</translation>
 		</message>
 	</context>
 	<context>
@@ -9256,6 +9821,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>Tutte le voci - totale: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>UTXO di resto</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>UTXO di ricezione</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9387,6 +9969,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>Gli output OP_RETURN devono avere un importo pari a zero.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>Lo script di output non può essere vuoto.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9399,6 +9991,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>Invio agli indirizzi: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>Questo script di output non è consentito durante la creazione di una transazione.</translation>
 		</message>
 		<name>wallet</name>
 		<message>

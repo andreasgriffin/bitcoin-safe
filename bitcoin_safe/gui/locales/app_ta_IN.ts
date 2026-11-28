@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>கையொப்பமிடப்பட்ட psbt இன் txid அசல் txid உடன் பொருந்தவில்லை</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>கையொப்பமிடப்பட்ட பரிவர்த்தனை அசல் பரிவர்த்தனையுடன் பொருந்தவில்லை.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>bdk நூலகப் பிழை. இறுதி செய்யும் போது txid மாற்றப்படக்கூடாது</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>இறுதி செய்யும்போது பரிவர்த்தனை மாறிவிட்டது.</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>செல்லாத வெளியீட்டு ஸ்கிரிப்ட்</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>முகவரி இல்லை</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>மூல வெளியீட்டு ஸ்கிரிப்ட்</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>நெட்வொர்க் வரைபடத்தைத் திற</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>கடந்த நேரம்: {passed_time}</translation>
 		</message>
@@ -812,6 +827,16 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>சுருக்கமான வடிகட்டி தலைப்புகள்: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>சுருக்கமான வடிகட்டிகள்: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>முனைகளுடன் இணைக்கிறது</translation>
 		</message>
@@ -880,8 +905,8 @@ Funds may be at risk. Read the guidance now and migrate to a seed generated with
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>வெளிநாட்டு UTXO களைச் சேர்க்கவும்</translation>
+			<source>Add</source>
+			<translation>சேர்</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1514,10 +1539,20 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>அதிகபட்சக் கட்டண விகிதம் {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>கட்டண விகிதத்தை சரியாக அறிய முடியாது. 
 பரிவர்த்தனையின் இறுதி அளவு தெரியவில்லை என்பதால்.</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>பரிவர்த்தனையின் இறுதி அளவை மதிப்பிட முடியவில்லை.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1545,6 +1580,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>அதிக கட்டணம்!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>கட்டண விகிதம் அதிகமாக இருக்கலாம்!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1820,6 +1860,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>ஏற்கனவே உள்ள ஒத்திசைவு விசையைப் பயன்படுத்தி மேகக்கணியிலிருந்து லேபிள்களை மீட்டெடுக்கவும்</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>தேர்ந்தெடுத்த கோப்புகளில் ஒன்றைக் கண்டறிய முடியவில்லை. கோப்புப் பாதைகளைச் சரிபார்த்து மீண்டும் முயலவும்.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>தேர்ந்தெடுத்த கோப்புகளில் ஒன்றைப் படிக்க முடியவில்லை. அதன் அணுகல் அனுமதிகளைச் சரிபார்த்து மீண்டும் முயலவும்.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>தேர்ந்தெடுத்த கோப்புகளில் ஒன்றைப் படிக்க முடியவில்லை. கோப்புகளைச் சரிபார்த்து மீண்டும் முயலவும்.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>இது ஒரு கோப்புறை. அதைத் திறந்து உள்ளே இருக்கும் வாலட் கோப்பைத் தேர்ந்தெடுக்கவும்.</translation>
 		</message>
 	</context>
 	<context>
@@ -2171,6 +2233,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>விதை என்பது பரிவர்த்தனை கையொப்பத்தை செயல்படுத்தும் மறைபொருள்.
 ஒரு ஒற்றை கையொப்ப பணப்பைக்கு அது நிதியின் மீது முழு கட்டுப்பாட்டை அளிக்கிறது.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>xPub ஆழம் அல்லது கடைசிச் சேய் விசையின் எண் விசையின் மூலத்துடன் பொருந்தவில்லை.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2700,6 +2767,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>வாலட் கோப்பை இறக்குமதி செய்</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>வாரிசுரிமை மேலோட்டம்</translation>
 		</message>
@@ -2842,6 +2914,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</transl
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>முதலில் பணப்பையைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>வாலட் கோப்பு முழுமையாக ஏற்றப்படும் வரை காத்திருக்கவும்.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3730,6 +3807,16 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>மற்றொரு வாலட் கோப்பிலிருந்து இறக்குமதி செய்</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>{} இலிருந்து வாலட்டின் பொதுத் தரவையும் லேபிள்களையும் இறக்குமதி செய்.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4683,6 +4770,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>OP_RETURN உருவாக்கு</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>OP_RETURN வெளியீட்டில் சேர்க்க வேண்டிய உரை:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5223,8 +5322,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>கையொப்பமிடப்பட்ட psbt இன் txid அசல் txid உடன் பொருந்தவில்லை. கருக்கலைப்பு</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>கையொப்பமிடப்பட்ட பரிவர்த்தனை அசல் பரிவர்த்தனையுடன் பொருந்தவில்லை. செயல்பாடு நிறுத்தப்படுகிறது.</translation>
 		</message>
 	</context>
 	<context>
@@ -5819,8 +5918,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>உள்ளீடுகளைச் சேர்க்கவும்</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>திறந்திருக்கும் அனைத்து வாலட்களிலிருந்தும் UTXO-களைச் சேர்</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>வெளிநாட்டு UTXO களைச் சேர்க்கவும்</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5836,8 +5940,23 @@ UTXOகளை ஒருங்கிணைப்பதற்கும் எத�
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>RBF-க்கான மாற்றுப் பரிவர்த்தனையின் அளவை மதிப்பிட முடியவில்லை.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>கட்டண விகிதத்தை மாற்றவும்</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>உள்ளீடுகளை இறக்குமதி செய்ய முடியவில்லை: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>PSBT-ஐ ஒன்றிணைக்க முடியவில்லை: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5851,8 +5970,33 @@ UTXOகளை ஒருங்கிணைப்பதற்கும் எத�
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>முந்தைய பரிவர்த்தனைகளைப் பதிவிறக்கு</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>ஒவ்வொரு வரியிலும் txid:vout வடிவத்தில் ஒரு UTXO-ஐ உள்ளிடவும்.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>PSBT எதிர்பார்க்கப்பட்டது</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>கட்டண விகிதம் மிகவும் குறைவு</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>முந்தைய பரிவர்த்தனை உள்ளூரில் கிடைக்கவில்லை எனில், அது கட்டமைக்கப்பட்ட பிளாக் எக்ஸ்ப்ளோரரிலிருந்து ({explorer}) பதிவிறக்கப்படும். எந்தப் பரிவர்த்தனை ID-கள் கோரப்படுகின்றன என்பதைச் சேவையகம் பார்க்க முடியும்.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>வாலட்டிலிருந்து UTXO-களை இறக்குமதி செய்</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5861,8 +6005,33 @@ UTXOகளை ஒருங்கிணைப்பதற்கும் எத�
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>PSBT-ஐ ஏற்று</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>UTXOகளை ஏற்றவும்</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>மற்றொரு PSBT-ஐ ஒன்றிணை</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>பிளாக் எக்ஸ்ப்ளோரர் எதுவும் கட்டமைக்கப்படவில்லை, எனவே விடுபட்ட பரிவர்த்தனைகளைப் பதிவிறக்க முடியாது.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>PSBT-ஐ ஒட்டு</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>ஒரு PSBT-ஐ ஒட்டவும்.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5873,20 +6042,13 @@ otherwise you may not be able to broadcast it.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>UTXO ஐ இங்கே ஒட்டவும்</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>UTXO ஐ இங்கே txid:outpoint வடிவத்தில் ஒட்டவும் 
-txid:அவுட்பாயிண்ட்</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>பரிவர்த்தனை பெறுநர்களுக்குப் பொருந்தக்கூடிய, இடதுபுறத்தில் உள்ளீட்டு வகையைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>தனியுரிமை அறிவிப்பு: Bitcoin Safe முதலில் உள்ளூரில் கிடைக்கும் வாலட் தரவில் தேடுகிறது.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5897,6 +6059,26 @@ txid:அவுட்பாயிண்ட்</translation>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>இடதுபுறத்தில் உள்ள பட்டியலிலிருந்து ஒன்று அல்லது அதற்கு மேற்பட்ட UTXOகளைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் பரிவர்த்தனைக்கான சிறந்த நாணயங்களை {app_name} தேர்வு செய்ய மேலே உள்ள "குறிப்பிட்ட UTXOகளைத் தேர்ந்தெடு" என்பதைத் தேர்வுசெய்யவும்.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>சில முந்தைய பரிவர்த்தனைகளைக் கட்டமைக்கப்பட்ட பிளாக் எக்ஸ்ப்ளோரரிலிருந்து பதிவிறக்க வேண்டும். கோரப்பட்ட பரிவர்த்தனை ID-களை எக்ஸ்ப்ளோரர் பார்க்க முடியும். அவற்றைப் பதிவிறக்கவா?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>தேர்ந்தெடுத்த சில உள்ளீடுகள் கிடைக்கவில்லை.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>உரைக் கோப்புகள் (*.txt);;அனைத்துக் கோப்புகள் (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>தற்போதைய பரிவர்த்தனையில் ஏற்கெனவே தேர்ந்தெடுத்த உள்ளீடுகள் PSBT-இல் உள்ளன: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5929,6 +6111,11 @@ txid:அவுட்பாயிண்ட்</translation>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>பரிவர்த்தனையை ஒளிபரப்ப முடியவில்லை</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>PSBT ஐ திறக்க முடியவில்லை</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5998,6 +6185,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>பரிவர்த்தனை {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>அறியப்படாத கையொப்பமிடுபவர்</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6136,8 +6328,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>வெளிப்புற உள்ளீடுகளை நீக்கு</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>கையொப்பமிட்டவர்</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>செலவழித்தது</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6148,6 +6350,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>கிடைக்கவில்லை</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>தெரியவில்லை</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6282,6 +6494,358 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>இருப்பு ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>ஒரு கையொப்பமிடுபவரின் கைரேகை 00000000 என அமைக்கப்பட்டுள்ளது. இந்தத் தற்காலிக மதிப்பு அசல் கையொப்பமிடுபவரை அடையாளம் காட்டாது; உண்மையான கைரேகை கிடைத்தவுடன் அதை மாற்றவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>கணக்கு</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>முகவரி CSV கோப்பு மிகப் பெரியது.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>BIP-329 லேபிள்கள் (விருப்பத்தேர்வு)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>{signer} க்கான BIP39 கடவுச்சொற்றொடர்:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>கையொப்பமிடுபவர்களின் BIP39 கடவுச்சொற்றொடர்கள்</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>பின்</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>உலாவு…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>இந்த வாலட் கோப்பைப் படிக்க முடியவில்லை. அதன் அணுகல் அனுமதிகளைச் சரிபார்த்து மீண்டும் முயலவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>இந்த வாலட் கோப்பைப் படிக்க முடியவில்லை. கோப்பைச் சரிபார்த்து மீண்டும் முயலவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>வாலட் கோப்புப் பாதையைத் தீர்மானிக்க முடியவில்லை. உலாவு என்பதைப் பயன்படுத்திக் கோப்பைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>படிக்கும் முன் உலாவு என்பதைப் பயன்படுத்தி வாலட் கோப்பைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>முகவரி CSV-ஐத் தேர்ந்தெடு</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>ஒரு கணக்கைத் தேர்ந்தெடுத்து இறக்குமதி செய் என்பதைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>ஒரு கணக்கைத் தேர்ந்தெடுத்து இறக்குமதி செய் என்பதைத் தேர்ந்தெடுக்கவும். விடுபட்ட கையொப்பமிடுபவர் விவரங்கள் கேட்கப்படும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>லேபிள் கோப்பைத் தேர்ந்தெடு</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>வாலட் கோப்பைத் தேர்ந்தெடு</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>நெட்வொர்க்கை உறுதிப்படுத்து</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Electrum சேமிப்பக xpub-ஐப் படிக்க முடியவில்லை: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Ledger கணக்குகளைக் கண்டறி</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Electrum கையொப்பமிடுபவரின் விசை வழித்தோன்றல் பாதை</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Electrum கையொப்பமிடுபவரின் கைரேகை</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>Electrum வாலட் கோப்பு: BIE1 கடவுச்சொல்லைப் பயன்படுத்துகிறது. Electrum-இன் சேமிப்பக விசை வழித்தோன்றல் பாதையை அசல் USB வன்பொருள் வாலட் ஆதரித்தால், அதன் மூலம் BIE2 திறக்கப்படும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>செல்லுபடியாகும் கணக்கு விசை வழித்தோன்றல் பாதையை உள்ளிடவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>உங்கள் Ledger கையொப்பமிடுபவரில் காட்டப்படும் 8 எழுத்து முதன்மைக் கைரேகையை உள்ளிடவும்:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Electrum கையொப்பமிடுபவர் {number} க்கான கணக்கு விசை வழித்தோன்றல் பாதையை உள்ளிடவும்:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>உங்கள் Ledger கையொப்பமிடுபவரில் காட்டப்படும் கணக்கு விசை வழித்தோன்றல் பாதையை உள்ளிடவும் (எடுத்துக்காட்டாக m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Electrum கையொப்பமிடுபவர் {number} இன் உண்மையான முதன்மைக் கைரேகையை உள்ளிடவும். வன்பொருள் கையொப்பமிடுபவரில் அல்லது அதன் அசல் காப்புப்பிரதியில் கைரேகையைச் சரிபார்க்கவும்:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>மூல வாலட்டின் கடவுச்சொல்லை உள்ளிடவும்:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>உங்கள் Ledger Live செயலியின் கடவுச்சொல்லை உள்ளிடவும்:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>இறக்குமதி</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>வாலட் கோப்பை இறக்குமதி செய்</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>லேபிள் கோப்பு மிகப் பெரியது.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Ledger Live கணக்குகள் உள்ளூர் பயனர் தரவுக் கோப்பான app.json இலிருந்து தானாகப் படிக்கப்படும். கோப்பைத் தேர்ந்தெடுக்க வேண்டியதில்லை. சாதனத்தின் PIN அல்ல, செயலியின் கடவுச்சொல் தேவைப்படலாம்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>இயல்புநிலை பயனர் தரவுக் கோப்புறையில் Ledger Live app.json கோப்பைக் கண்டறிய முடியவில்லை.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>இயல்புநிலை பயனர் தரவுக் கோப்புறையில் Ledger Live app.json கோப்பைக் கண்டறிய முடியவில்லை. Ledger Live → அமைப்புகள் → உதவி → பயனர் தரவைக் காண்க என்பதைத் திறந்து, செயலி தனது கணக்குகளை உள்ளூரில் சேமிக்கிறதா எனச் சரிபார்க்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live-க்குச் செயலியின் கடவுச்சொல் தேவை.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Ledger கணக்கு விசை வழித்தோன்றல் பாதை</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Ledger கையொப்பமிடுபவரின் கைரேகை</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>இந்த வடிவத்தில் உள்ளமைந்த கடவுச்சொல் பாதுகாப்பு ஆதரிக்கப்படவில்லை. பொதுத் தரவைக் கொண்ட வாலட் அல்லது கணக்கு ஏற்றுமதிக் கோப்பைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>வாலட்டின் பொதுத் தரவு மட்டுமே இறக்குமதி செய்யப்படும். நிதியைப் பெறுவதற்கு முன் முதல் பெறுதல் மற்றும் மீதித் தொகை முகவரிகளை மூல வாலட்டுடன் ஒப்பிட்டுச் சரிபார்க்கவும். கையொப்பமிட அசல் கையொப்பமிடுபவர் அல்லது சாதனம் தேவை.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>கோப்பைப் படித்த பிறகு ஒவ்வொரு மென்பொருள் கையொப்பமிடுபவருக்கும் தனித்தனியாகக் கடவுச்சொற்றொடர்கள் கேட்கப்படும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>வாலட் கோப்பைப் படி</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>வாலட் கோப்பு படிக்கப்படுகிறது…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>வாலட் இறக்குமதியை மதிப்பாய்வு செய்</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>இந்த Electrum கோப்பை மறையாக்கப் பயன்படுத்தப்பட்ட வன்பொருள் வாலட்டைத் தேர்ந்தெடுத்துத் திறக்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>இந்த மறையாக்கப்பட்ட வாலட்டுக்கான Electrum வடிவத்தைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>கையொப்பமிடுபவரின் கடவுச்சொற்றொடர் உள்ளீடு ரத்து செய்யப்பட்டது. எந்த வாலட்டும் இறக்குமதி செய்யப்படவில்லை.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>கையொப்பமிட்டவர் {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>Sparrow JSON மற்றும் கடவுச்சொல்லால் பாதுகாக்கப்பட்ட H2 வாலட் கோப்புகள் ஆதரிக்கப்படுகின்றன. இறக்குமதிக்கு முன் Sparrow-ஐ மூடவும். H2 இறக்குமதி கையொப்பமிடுபவரின் தரவை மீட்டெடுக்க BIP39 சீட்களைத் தானாகப் படிக்கிறது. மெயின்நெட் சீட்கள் இறக்குமதி செய்யப்படாது; சரிபார்க்கப்பட்ட சோதனை நெட்வொர்க் சீட்கள் கையொப்பமிடச் சேமிக்கப்படலாம், மேலும் மெயின்நெட் நிதியையும் கட்டுப்படுத்தலாம்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Sparrow கையொப்பமிடுபவரின் BIP39 கடவுச்சொற்றொடர்</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>Specter முகவரி CSV (விருப்பத்தேர்வு)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Ledger டிஸ்கிரிப்டரில் ஆதரிக்கப்படாத விசை மூலம் உள்ளது.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>முதன்மைக் கைரேகையில் சரியாக எட்டு பதினாறும எண்முறை எழுத்துகள் இருக்க வேண்டும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>மூல வாலட்டில் மெயின்நெட் சீட் இருந்தது. அது தக்கவைக்கப்படவோ இறக்குமதி செய்யப்படவோ இல்லை. உங்கள் அசல் மீட்புக் காப்புப்பிரதியைப் பாதுகாக்கவும்; இந்த வாலட்டால் அந்தச் சீட்டைப் பயன்படுத்திக் கையொப்பமிட முடியாது.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>மூல வாலட்டின் நெட்வொர்க் செயலில் உள்ள நெட்வொர்க்குடன் பொருந்தவில்லை.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>வாலட் கோப்பைக் கண்டறிய முடியவில்லை. உலாவு என்பதைப் பயன்படுத்தி ஏற்கெனவே உள்ள கோப்பைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>இந்த Sparrow கோப்பில் டிஸ்கிரிப்டரை மீண்டும் உருவாக்கப் போதுமான பொதுத் தகவல் இல்லை. BIP39 கடவுச்சொற்றொடரைச் சரிபார்த்து கோப்பை மீண்டும் படிக்கவும் அல்லது Sparrow-இலிருந்து பொதுத் டிஸ்கிரிப்டரை ஏற்றுமதி செய்யவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>முழுமையான பெறுதல் மற்றும் மீதித் தொகை டிஸ்கிரிப்டர் கிடைக்காததால் இந்தக் கணக்கை இறக்குமதி செய்ய முடியாது. மூல வாலட்டிலிருந்து இணக்கமான டிஸ்கிரிப்டரை ஏற்றுமதி செய்யவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>இந்தக் கோப்பு சரியான நெட்வொர்க்கைத் தீர்மானிக்கவில்லை. இந்த வாலட் செயலில் உள்ள நெட்வொர்க்கைச் சேர்ந்தது என்பதை உறுதிப்படுத்தவும்: {network}.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>இது ஒரு கோப்புறை. அதைத் திறந்து உள்ளே இருக்கும் வாலட் கோப்பைத் தேர்ந்தெடுக்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>இந்த இறக்குமதித் திரையில் USB சாதன அணுகல் கிடைக்கவில்லை.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>USB வன்பொருள் வாலட் தேர்வு ரத்து செய்யப்பட்டது அல்லது தோல்வியடைந்தது.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>சரிபார்க்கப்பட்ட சோதனை நெட்வொர்க் BIP39 சீட்கள் இறக்குமதி செய்யப்பட்டு இந்த வாலட்டுடன் சேமிக்கப்படும். இந்தச் சீட்கள் மெயின்நெட் நிதியையும் கட்டுப்படுத்தலாம்; இந்த வாலட்டை மீட்புக் காப்புப்பிரதியைப் போல் பாதுகாக்கவும். நிதியைப் பெறுவதற்கு முன் முதல் பெறுதல் மற்றும் மீதித் தொகை முகவரிகளை மூல வாலட்டுடன் ஒப்பிட்டுச் சரிபார்க்கவும்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>வாலட் கோப்பு</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>வாலட் வடிவம்</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>வாலட் இறக்குமதி</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Wasabi வாலட்டின் பொதுத் தரவு கடவுச்சொல் இல்லாமல் இறக்குமதி செய்யப்படுகிறது. ஆதரிக்கப்படும் நேட்டிவ் SegWit லேபிள்கள் சரிபார்க்கப்பட்ட விசைப் பாதைகளிலிருந்து மாற்றப்படுகின்றன. தீர்மானிக்க முடியாத லேபிள்களுக்கு BIP-329 லேபிள் கோப்பையும் தேர்ந்தெடுக்கலாம்.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>டிஸ்கிரிப்டர் கிடைக்கவில்லை</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>தயார்</translation>
 		</message>
 	</context>
 	<context>
@@ -9284,6 +9848,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>அனைத்துப் பதிவுகள் - மொத்தம்: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>மீதித் தொகை UTXO</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>பெறுதல் UTXO</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9415,6 +9996,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>OP_RETURN வெளியீடுகளின் தொகை பூஜ்ஜியமாக இருக்க வேண்டும்.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>வெளியீட்டு ஸ்கிரிப்ட் காலியாக இருக்கக் கூடாது.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9427,6 +10018,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>முகவரிகளுக்கு அனுப்புகிறது: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>பரிவர்த்தனையை உருவாக்கும்போது இந்த வெளியீட்டு ஸ்கிரிப்ட் அனுமதிக்கப்படாது.</translation>
 		</message>
 		<name>wallet</name>
 		<message>

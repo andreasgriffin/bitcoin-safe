@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>txid của psbt đã ký không khớp với txid gốc</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>Giao dịch đã ký không khớp với giao dịch gốc.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>Lỗi thư viện bdk. txid không được thay đổi trong quá trình hoàn tất</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>Giao dịch đã thay đổi trong quá trình hoàn tất.</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>Tập lệnh đầu ra không hợp lệ</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>Thiếu địa chỉ</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>Tập lệnh đầu ra thô</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>Mở bản đồ mạng</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>Thời gian đã qua: {passed_time}</translation>
 		</message>
@@ -812,6 +827,16 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>Tiêu đề bộ lọc thu gọn: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>Bộ lọc thu gọn: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>Đang kết nối tới các node</translation>
 		</message>
@@ -880,8 +905,8 @@ Tiền có thể gặp rủi ro. Hãy đọc hướng dẫn ngay và chuyển sa
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>Thêm UTXO bên ngoài</translation>
+			<source>Add</source>
+			<translation>Thêm</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1510,10 +1535,20 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>Mức phí tối đa {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>Tỷ lệ phí không thể biết chính xác,
 vì kích thước cuối cùng của giao dịch chưa biết.</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>Không thể ước tính kích thước cuối cùng của giao dịch.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1541,6 +1576,11 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		<message>
 			<source>High fee rate!</source>
 			<translation>Tỷ lệ phí cao!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>Mức phí có thể cao!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1816,6 +1856,28 @@ vì kích thước cuối cùng của giao dịch chưa biết.</translation>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>Khôi phục nhãn từ cloud bằng khóa đồng bộ hiện có</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>Không tìm thấy một tệp đã chọn. Kiểm tra đường dẫn tệp rồi thử lại.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>Không thể đọc một tệp đã chọn. Kiểm tra quyền truy cập của tệp rồi thử lại.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>Không thể đọc một tệp đã chọn. Kiểm tra các tệp rồi thử lại.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Đây là thư mục. Hãy mở thư mục và chọn tệp ví bên trong.</translation>
 		</message>
 	</context>
 	<context>
@@ -2165,6 +2227,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>Seed là bí mật cho phép ký giao dịch.
 Đối với ví chữ ký đơn, nó cho phép toàn quyền kiểm soát tiền.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>Độ sâu xPub hoặc số thứ tự khóa con cuối cùng không khớp với nguồn gốc khóa.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2694,6 +2761,11 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>Nhập tệp ví</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>Tổng quan về thừa kế</translation>
 		</message>
@@ -2836,6 +2908,11 @@ Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>Vui lòng chọn ví trước.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>Vui lòng đợi cho đến khi tải xong tệp ví.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3722,6 +3799,16 @@ Dùng nhiều peer cải thiện phạm vi nhưng dùng nhiều băng thông và
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Ví nóng bị tắt trên Bitcoin Mainnet.
 Bạn có thể chuyển sang Testnet để thử nghiệm {app_name} mà không cần dùng Bitcoin thật.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>Nhập từ tệp ví khác</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>Nhập dữ liệu ví công khai và nhãn từ {}.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4668,6 +4755,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>Tạo OP_RETURN</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>Văn bản cần đưa vào đầu ra OP_RETURN:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5208,8 +5307,8 @@ Nếu bạn sai ở đây, tiền của bạn sẽ mất!</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>txid của psbt đã ký không khớp với txid gốc. Đang hủy</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>Giao dịch đã ký không khớp với giao dịch gốc. Đang hủy thao tác.</translation>
 		</message>
 	</context>
 	<context>
@@ -5803,8 +5902,13 @@ Nếu bạn muốn tiếp tục dùng cả hai, vui lòng đặt lại khóa đ�
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>Thêm đầu vào</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>Thêm UTXO từ tất cả các ví đang mở</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>Thêm UTXO bên ngoài</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5819,8 +5923,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>Không thể ước tính kích thước giao dịch thay thế cho RBF.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Thay đổi tỷ lệ phí</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>Không thể nhập đầu vào: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>Không thể hợp nhất PSBT: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5834,8 +5953,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>Tải xuống các giao dịch trước đó</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>Nhập mỗi UTXO trên một dòng theo định dạng txid:vout.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>Cần một PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>Tỷ lệ phí quá thấp</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>Nếu giao dịch trước đó không có sẵn cục bộ, giao dịch sẽ được tải xuống từ trình khám phá khối đã cấu hình ({explorer}). Máy chủ có thể thấy những ID giao dịch nào được yêu cầu.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>Nhập UTXO từ ví</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5844,8 +5988,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>Tải PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>Tải UTXO</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>Hợp nhất PSBT khác</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>Chưa cấu hình trình khám phá khối nên không thể tải xuống các giao dịch còn thiếu.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>Dán PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>Hãy dán một PSBT.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5856,19 +6025,13 @@ nếu không bạn có thể không phát được giao dịch.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>Vui lòng dán UTXO vào đây</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>Vui lòng dán UTXO vào đây theo định dạng  txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>Vui lòng chọn một danh mục đầu vào ở bên trái phù hợp với các người nhận của giao dịch.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>Thông báo quyền riêng tư: Bitcoin Safe trước tiên tìm kiếm trong dữ liệu ví có sẵn cục bộ.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5879,6 +6042,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>Chọn một hoặc nhiều UTXO từ danh sách bên trái, hoặc bỏ chọn "Chọn UTXO cụ thể" ở phía trên để {app_name} tự chọn coin tốt nhất cho giao dịch của bạn.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>Một số giao dịch trước đó phải được tải xuống từ trình khám phá khối đã cấu hình. Trình khám phá có thể thấy các ID giao dịch được yêu cầu. Tải chúng xuống?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>Một số đầu vào đã chọn không khả dụng.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>Tệp văn bản (*.txt);;Tất cả tệp (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT chứa các đầu vào đã được chọn trong giao dịch hiện tại: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5911,6 +6094,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>Không thể phát giao dịch lên mạng</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>Không thể mở PSBT</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5980,6 +6168,11 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Giao dịch {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>Trình ký không xác định</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6118,8 +6311,18 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>Xóa đầu vào bên ngoài</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>Được ký bởi</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>Đã chi tiêu</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6130,6 +6333,16 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>Không khả dụng</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Không rõ</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6264,6 +6477,358 @@ Phát sóng sẽ thất bại. Bạn có muốn phát sóng dù vậy không?</t
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>Số dư ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>Dấu vân tay của một trình ký được đặt thành 00000000. Giá trị giữ chỗ này không xác định được trình ký gốc; hãy thay bằng dấu vân tay thực khi có.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>Tài khoản</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>Tệp CSV địa chỉ quá lớn.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>Nhãn BIP-329 (không bắt buộc)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>Cụm mật khẩu BIP39 cho {signer}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>Cụm mật khẩu BIP39 của trình ký</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>Quay lại</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>Duyệt…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>Không thể đọc tệp ví này. Kiểm tra quyền truy cập của tệp rồi thử lại.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>Không thể đọc tệp ví này. Kiểm tra tệp rồi thử lại.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>Không thể xác định đường dẫn tệp ví. Chọn tệp bằng nút Duyệt.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>Chọn tệp ví bằng nút Duyệt trước khi đọc.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>Chọn CSV địa chỉ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>Chọn một tài khoản rồi chọn Nhập.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>Chọn một tài khoản rồi chọn Nhập. Các thông tin còn thiếu về trình ký sẽ được yêu cầu.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>Chọn tệp nhãn</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>Chọn tệp ví</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>Xác nhận mạng</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Không thể đọc xpub lưu trữ Electrum: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Khám phá tài khoản Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Đường dẫn dẫn xuất của trình ký Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Dấu vân tay của trình ký Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>Tệp ví Electrum: BIE1 sử dụng mật khẩu. BIE2 được mở khóa bằng ví phần cứng USB ban đầu nếu ví hỗ trợ đường dẫn dẫn xuất khóa lưu trữ của Electrum.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>Nhập đường dẫn dẫn xuất tài khoản hợp lệ.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>Nhập dấu vân tay chính gồm 8 ký tự hiển thị trên trình ký Ledger của bạn:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Nhập đường dẫn dẫn xuất tài khoản cho trình ký Electrum {number}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>Nhập đường dẫn dẫn xuất tài khoản hiển thị trên trình ký Ledger của bạn (ví dụ m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Nhập dấu vân tay chính thực của trình ký Electrum {number}. Kiểm tra dấu vân tay trên trình ký phần cứng hoặc bản sao lưu gốc của nó:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>Nhập mật khẩu ví nguồn:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>Nhập mật khẩu ứng dụng Ledger Live của bạn:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>Nhập</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>Nhập tệp ví</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>Tệp nhãn quá lớn.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Các tài khoản Ledger Live được đọc tự động từ tệp dữ liệu người dùng cục bộ app.json của bạn. Không cần chọn tệp. Có thể cần mật khẩu ứng dụng, không phải mã PIN thiết bị.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>Không tìm thấy app.json của Ledger Live trong thư mục dữ liệu người dùng mặc định.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>Không tìm thấy app.json của Ledger Live trong thư mục dữ liệu người dùng mặc định. Mở Ledger Live → Cài đặt → Trợ giúp → Xem dữ liệu người dùng và kiểm tra xem ứng dụng có lưu tài khoản cục bộ hay không.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live yêu cầu mật khẩu ứng dụng.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Đường dẫn dẫn xuất tài khoản Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Dấu vân tay của trình ký Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>Định dạng này không hỗ trợ bảo vệ bằng mật khẩu tích hợp. Chọn bản xuất công khai của ví hoặc tài khoản.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>Chỉ nhập dữ liệu ví công khai. Đối chiếu các địa chỉ nhận và địa chỉ tiền thừa đầu tiên với ví nguồn trước khi nhận tiền. Việc ký yêu cầu trình ký hoặc thiết bị gốc.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>Cụm mật khẩu được yêu cầu riêng cho từng trình ký phần mềm sau khi đọc tệp.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>Đọc tệp ví</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>Đang đọc tệp ví…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>Xem lại thông tin nhập ví</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>Chọn và mở khóa ví phần cứng đã dùng để mã hóa tệp Electrum này.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>Chọn định dạng Electrum cho ví đã mã hóa này.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>Đã hủy nhập cụm mật khẩu của trình ký. Không có ví nào được nhập.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>Người ký {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>Hỗ trợ tệp ví Sparrow JSON và H2 được bảo vệ bằng mật khẩu. Đóng Sparrow trước khi nhập. Quá trình nhập H2 tự động đọc seed BIP39 để khôi phục dữ liệu trình ký. Seed mạng chính không được nhập; seed mạng thử nghiệm đã xác minh có thể được lưu để ký và cũng có thể kiểm soát tiền trên mạng chính.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Cụm mật khẩu BIP39 của trình ký Sparrow</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>CSV địa chỉ Specter (không bắt buộc)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Bộ mô tả Ledger có nguồn gốc khóa không được hỗ trợ.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>Dấu vân tay chính phải chứa đúng tám ký tự thập lục phân.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>Ví nguồn chứa một seed mạng chính. Seed này không được lưu giữ hoặc nhập. Hãy giữ bản sao lưu khôi phục ban đầu; ví này không thể ký bằng seed đó.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>Mạng của ví nguồn không khớp với mạng đang hoạt động.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>Không tìm thấy tệp ví. Chọn tệp hiện có bằng nút Duyệt.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>Tệp Sparrow này không có đủ thông tin công khai để tái tạo bộ mô tả. Kiểm tra cụm mật khẩu BIP39 và đọc lại tệp hoặc xuất bộ mô tả công khai từ Sparrow.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>Không thể nhập tài khoản này vì không có bộ mô tả đầy đủ cho địa chỉ nhận và địa chỉ tiền thừa. Xuất bộ mô tả tương thích từ ví nguồn.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>Tệp này không xác định chính xác mạng. Xác nhận ví này thuộc mạng đang hoạt động: {network}.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Đây là thư mục. Hãy mở thư mục và chọn tệp ví bên trong.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>Không thể truy cập thiết bị USB trên màn hình nhập này.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>Việc chọn ví phần cứng USB đã bị hủy hoặc thất bại.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>Các seed BIP39 mạng thử nghiệm đã xác minh sẽ được nhập và lưu cùng ví này. Các seed này cũng có thể kiểm soát tiền trên mạng chính; hãy bảo vệ ví này như bản sao lưu khôi phục. Đối chiếu các địa chỉ nhận và địa chỉ tiền thừa đầu tiên với ví nguồn trước khi nhận tiền.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>Tệp ví</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>Định dạng ví</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>Nhập ví</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Dữ liệu ví công khai Wasabi được nhập mà không cần mật khẩu. Các nhãn SegWit gốc được hỗ trợ được chuyển đổi từ các đường dẫn khóa đã xác minh. Bạn cũng có thể chọn tệp nhãn BIP-329 cho những nhãn không thể xác định.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>bộ mô tả không khả dụng</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>sẵn sàng</translation>
 		</message>
 	</context>
 	<context>
@@ -9253,6 +9818,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>Tất cả mục - tổng cộng: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>UTXO tiền thừa</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>UTXO nhận tiền</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9384,6 +9966,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>Đầu ra OP_RETURN phải có số tiền bằng không.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>Tập lệnh đầu ra không được để trống.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9396,6 +9988,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>Đang gửi đến địa chỉ: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>Tập lệnh đầu ra này không được phép khi tạo giao dịch.</translation>
 		</message>
 		<name>wallet</name>
 		<message>

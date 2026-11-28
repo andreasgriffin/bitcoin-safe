@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>El txid del PSBT signat no coincideix amb el txid original</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>La transacció signada no coincideix amb la transacció original.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>Error de la llibreria bdk. El txid no s'hauria de canviar durant la finalització</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>La transacció ha canviat durant la finalització.</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>Script de sortida no vàlid</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>Falta adreça</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>Script de sortida en brut</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>Obre el mapa de la xarxa</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>Temps transcorregut: {passed_time}</translation>
 		</message>
@@ -812,6 +827,16 @@ ja tenen transaccions que enllacen amb altres adreces. Segur que vols canviar-ne
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>Capçaleres dels filtres compactes: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>Filtres compactes: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>Connectant-se als nodes</translation>
 		</message>
@@ -880,8 +905,8 @@ Els fons poden estar en risc. Llegiu ara les instruccions i migreu a una llavor 
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>Afegeix UTXOs externs</translation>
+			<source>Add</source>
+			<translation>Afegeix</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1510,10 +1535,20 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>Taxa de comissió de com a màxim {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>La taxa de comissió no es pot conèixer exactament,
 ja que la mida final de la transacció és desconeguda.</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>No es pot estimar la mida final de la transacció.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1541,6 +1576,11 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>High fee rate!</source>
 			<translation>Taxa de comissió alta!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>Taxa de comissió possiblement elevada!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1816,6 +1856,28 @@ ja que la mida final de la transacció és desconeguda.</translation>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>Restaura etiquetes del núvol utilitzant una clau de sincronització existent</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>No s'ha trobat un dels fitxers seleccionats. Comprova els camins dels fitxers i torna-ho a provar.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>No es pot llegir un dels fitxers seleccionats. Comprova'n els permisos i torna-ho a provar.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>No es pot llegir un dels fitxers seleccionats. Comprova els fitxers i torna-ho a provar.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Això és una carpeta. Obre-la i selecciona el fitxer de cartera que conté.</translation>
 		</message>
 	</context>
 	<context>
@@ -2165,6 +2227,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>La seed és el secret que permet signar transaccions.
 Per a una cartera de signatura única, dona control total sobre els fons.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>La profunditat de la xPub o el número del darrer fill no coincideix amb l'origen de la clau.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2694,6 +2761,11 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>Importa un fitxer de cartera</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>Resum de l'herència</translation>
 		</message>
@@ -2836,6 +2908,11 @@ Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</tran
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>Selecciona primer la cartera.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>Espera fins que s'hagi acabat de carregar el fitxer de cartera.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3722,6 +3799,16 @@ Utilitzar més parells millora la cobertura però consumeix més amplada de band
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Els moneders calents estan desactivats a Bitcoin Mainnet.
 Pots canviar a Testnet per provar {app_name} sense utilitzar Bitcoin real.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>Importa des d'un altre fitxer de cartera</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>Importa les dades públiques de la cartera i les etiquetes des de {}.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4669,6 +4756,18 @@ Les sortides es mantenen; només canvia la comissió.</translation>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>Genera OP_RETURN</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>Text que cal incloure a la sortida OP_RETURN:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5209,8 +5308,8 @@ Si t'equivoques aquí, perdràs els teus diners!</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>El txid del PSBT signat no coincideix amb el txid original. S'aborta</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>La transacció signada no coincideix amb la transacció original. S'interromp l'operació.</translation>
 		</message>
 	</context>
 	<context>
@@ -5803,8 +5902,13 @@ Desa-la, i quan facis clic a «importa clau de sincronització», s'haurien de r
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>Afegeix entrades</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>Afegeix UTXO de totes les carteres obertes</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>Afegeix UTXOs externs</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5819,8 +5923,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>No es pot estimar la mida de la transacció de substitució per a RBF.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Canvia la taxa de comissió</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>No s'han pogut importar les entrades: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>No s'ha pogut fusionar la PSBT: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5834,8 +5953,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>Descarrega les transaccions anteriors</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>Introdueix un UTXO per línia en el format txid:vout.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>S'esperava una PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>Taxa de comissió massa baixa</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>Si una transacció anterior no està disponible localment, es descarrega de l'explorador de blocs configurat ({explorer}). El servidor pot veure quins identificadors de transacció se sol·liciten.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>Importa UTXO de la cartera</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5844,8 +5988,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>Carrega PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>Carrega UTXOs</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>Fusiona amb una altra PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>No s'ha configurat cap explorador de blocs, de manera que no es poden descarregar les transaccions que falten.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>Enganxa una PSBT</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>Enganxa una PSBT.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5856,19 +6025,13 @@ en cas contrari potser no podreu transmetre-la.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>Enganxa aquí els UTXO</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>Si us plau, enganxa aquí l'UTXO en el format  txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>Selecciona una categoria d'entrada a l'esquerra que s'ajusti als destinataris de la transacció.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>Avís de privadesa: Bitcoin Safe cerca primer entre les dades de cartera disponibles localment.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5879,6 +6042,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>Selecciona un o més UTXO de la llista de l’esquerra, o desmarca “Seleccionar UTXO específics” a sobre per deixar que {app_name} esculli les millors monedes per a la teva transacció.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>Cal descarregar algunes transaccions anteriors de l'explorador de blocs configurat. L'explorador pot veure els identificadors de transacció sol·licitats. Les vols descarregar?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>Algunes entrades seleccionades no estan disponibles.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>Fitxers de text (*.txt);;Tots els fitxers (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>La PSBT conté entrades que ja s'han seleccionat a la transacció actual: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5911,6 +6094,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>No s'ha pogut difondre la transacció</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>No s'ha pogut obrir la PSBT</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5980,6 +6168,11 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>Transacció {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>Signant desconegut</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6118,8 +6311,18 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>Elimina les entrades alienes</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>Signat per</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>Gastat</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6130,6 +6333,16 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>No disponible</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Desconegut</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6264,6 +6477,358 @@ La transmissió fallarà. Voleu transmetre igualment?</translation>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>Saldo ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>L'empremta digital d'un signant està establerta a 00000000. Aquest valor provisional no identifica el signant original; substitueix-lo per l'empremta digital real quan estigui disponible.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>Compte</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>El CSV d'adreces és massa gran.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>Etiquetes BIP-329 (opcional)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>Frase de contrasenya BIP39 per a {signer}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>Frases de contrasenya BIP39 dels signants</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>Enrere</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>Navega…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>No es pot llegir aquest fitxer de cartera. Comprova'n els permisos i torna-ho a provar.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>No es pot llegir aquest fitxer de cartera. Comprova el fitxer i torna-ho a provar.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>No es pot resoldre el camí del fitxer de cartera. Tria el fitxer amb Navega.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>Tria un fitxer de cartera amb Navega abans de llegir-lo.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>Tria el CSV d'adreces</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>Tria un compte i selecciona Importa.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>Tria un compte i selecciona Importa. Se sol·licitaran les dades dels signants que faltin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>Tria el fitxer d'etiquetes</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>Tria el fitxer de cartera</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>Confirma la xarxa</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>No s'ha pogut llegir la xpub d'emmagatzematge d'Electrum: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Detecta comptes Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Derivació del signant Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Empremta digital del signant Electrum</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>Fitxer de cartera Electrum: BIE1 utilitza una contrasenya. BIE2 es desbloqueja amb la cartera de maquinari USB original, si admet el camí de derivació de la clau d'emmagatzematge d'Electrum.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>Introdueix un camí de derivació de compte vàlid.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>Introdueix l'empremta digital mestra de 8 caràcters que mostra el teu signant Ledger:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Introdueix el camí de derivació del compte del signant Electrum {number}:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>Introdueix el camí de derivació del compte que mostra el teu signant Ledger (per exemple, m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Introdueix l'empremta digital mestra autèntica del signant Electrum {number}. Comprova l'empremta digital al signant de maquinari o a la seva còpia de seguretat original:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>Introdueix la contrasenya de la cartera d'origen:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>Introdueix la contrasenya de l'aplicació Ledger Live:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>Importa</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>Importa un fitxer de cartera</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>El fitxer d'etiquetes és massa gran.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Els comptes de Ledger Live es llegeixen automàticament del fitxer local de dades d'usuari app.json. No cal seleccionar cap fitxer. Pot ser necessària la contrasenya de l'aplicació, no el PIN del dispositiu.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>No s'ha trobat el fitxer app.json de Ledger Live a la carpeta de dades d'usuari per defecte.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>No s'ha trobat el fitxer app.json de Ledger Live a la carpeta de dades d'usuari per defecte. Obre Ledger Live → Configuració → Ajuda → Mostra les dades d'usuari i comprova que l'aplicació emmagatzema els comptes localment.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live requereix una contrasenya d'aplicació.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Derivació del compte Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Empremta digital del signant Ledger</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>Aquest format no admet protecció nativa amb contrasenya. Selecciona una exportació pública de cartera o de compte.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>Només s'importen les dades públiques de la cartera. Verifica les primeres adreces de recepció i de canvi comparant-les amb la cartera d'origen abans de rebre fons. Per signar cal el signant o el dispositiu original.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>Les frases de contrasenya se sol·liciten per separat per a cada signant de programari després de llegir el fitxer.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>Llegeix el fitxer de cartera</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>S'està llegint el fitxer de cartera…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>Revisa la importació de la cartera</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>Selecciona i desbloqueja la cartera de maquinari que es va utilitzar per xifrar aquest fitxer Electrum.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>Selecciona el format Electrum d'aquesta cartera xifrada.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>S'ha cancel·lat la introducció de la frase de contrasenya del signant. No s'ha importat cap cartera.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>Signant {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>S'admeten fitxers de cartera Sparrow JSON i H2 protegits amb contrasenya. Tanca Sparrow abans d'importar. La importació H2 llegeix automàticament les llavors BIP39 per recuperar les dades dels signants. Les llavors de la xarxa principal no s'importen; les llavors verificades de xarxes de prova es poden desar per signar i també poden controlar fons de la xarxa principal.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Frase de contrasenya BIP39 del signant Sparrow</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>CSV d'adreces de Specter (opcional)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>El descriptor Ledger té un origen de clau no admès.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>L'empremta digital mestra ha de contenir exactament vuit caràcters hexadecimals.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>La cartera d'origen contenia una llavor de la xarxa principal. No s'ha conservat ni importat. Conserva la còpia de seguretat de recuperació original; aquesta cartera no pot signar amb aquesta llavor.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>La xarxa de la cartera d'origen no coincideix amb la xarxa activa.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>No s'ha trobat el fitxer de cartera. Tria un fitxer existent amb Navega.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>Aquest fitxer Sparrow no conté prou informació pública per reconstruir el descriptor. Comprova la frase de contrasenya BIP39 i torna a llegir el fitxer, o exporta un descriptor públic de Sparrow.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>Aquest compte no es pot importar perquè el descriptor complet de recepció i canvi no està disponible. Exporta un descriptor compatible de la cartera d'origen.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>Aquest fitxer no determina la xarxa exacta. Confirma que aquesta cartera pertany a la xarxa activa: {network}.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Això és una carpeta. Obre-la i selecciona el fitxer de cartera que conté.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>L'accés a dispositius USB no està disponible en aquesta pantalla d'importació.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>S'ha cancel·lat la selecció de la cartera de maquinari USB o ha fallat.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>Les llavors BIP39 verificades de xarxes de prova s'importaran i es desaran amb aquesta cartera. Aquestes llavors també poden controlar fons de la xarxa principal; protegeix aquesta cartera com una còpia de seguretat de recuperació. Verifica les primeres adreces de recepció i de canvi comparant-les amb la cartera d'origen abans de rebre fons.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>Fitxer de cartera</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>Format de cartera</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>Importació de cartera</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Les dades públiques de la cartera Wasabi s'importen sense contrasenya. Les etiquetes SegWit natives admeses es converteixen a partir de camins de clau verificats. També pots seleccionar un fitxer d'etiquetes BIP-329 per a les etiquetes que no es puguin resoldre.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>descriptor no disponible</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>preparat</translation>
 		</message>
 	</context>
 	<context>
@@ -9254,6 +9819,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>Totes les entrades - total: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>UTXO de canvi</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>UTXO de recepció</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9385,6 +9967,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>Les sortides OP_RETURN han de tenir un import zero.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>L'script de sortida no pot estar buit.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9397,6 +9989,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>Enviant a adreces: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>Aquest script de sortida no es permet en crear una transacció.</translation>
 		</message>
 		<name>wallet</name>
 		<message>

@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>İmzalanan psbt'nin txid'si orijinal txid ile eşleşmiyor</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>İmzalanan işlem orijinal işlemle eşleşmiyor.</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>bdk kütüphane hatası. Txid sonlandırma sırasında değiştirilmemelidir</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>İşlem sonlandırma sırasında değişti.</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>Geçersiz çıktı betiği</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>Eksik Adres</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>Ham çıktı betiği</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>Ağ Haritasını Aç</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>Geçen süre: {passed_time}</translation>
 		</message>
@@ -812,6 +827,16 @@ adresleri halihazırda diğer adreslerle bağlantılı işlemlere sahip. Onları
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>Kompakt filtre başlıkları: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>Kompakt filtreler: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>Düğümlere bağlanılıyor</translation>
 		</message>
@@ -880,8 +905,8 @@ Fonlar risk altında olabilir. Kılavuzu şimdi okuyun ve sabit ürün yazılım
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>Yabancı UTXO ekle</translation>
+			<source>Add</source>
+			<translation>Ekle</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1510,10 +1535,20 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>En fazla {rate} sat/vB işlem ücreti oranı</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>Ücret oranı tam olarak bilinemez,
 çünkü işlemin nihai boyutu bilinmiyor.</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>Nihai işlem boyutu tahmin edilemiyor.</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1541,6 +1576,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>Yüksek ücret oranı!</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>İşlem ücreti oranı yüksek olabilir!</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1816,6 +1856,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>Mevcut bir senkronizasyon anahtarı kullanarak buluttan etiketleri geri yükle</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>Seçilen dosyalardan biri bulunamadı. Dosya yollarını kontrol edip tekrar deneyin.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>Seçilen dosyalardan biri okunamıyor. İzinlerini kontrol edip tekrar deneyin.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>Seçilen dosyalardan biri okunamıyor. Dosyaları kontrol edip tekrar deneyin.</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Bu bir klasör. Klasörü açıp içindeki cüzdan dosyasını seçin.</translation>
 		</message>
 	</context>
 	<context>
@@ -2165,6 +2227,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>Seed, işlem imzalamayı mümkün kılan sırdır.
 Tek imzalı bir cüzdan için fonlar üzerinde tam kontrol sağlar.</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>xPub derinliği veya son alt anahtar numarası anahtar kökeniyle eşleşmiyor.</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2694,6 +2761,11 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>Cüzdan dosyasını içe aktar</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>Miras genel görünümü</translation>
 		</message>
@@ -2836,6 +2908,11 @@ Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebil
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>Lütfen önce cüzdanı seçin.</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>Lütfen cüzdan dosyasının yüklenmesi tamamlanana kadar bekleyin.</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3722,6 +3799,16 @@ Daha fazla eş kullanmak kapsama alanını artırır ancak daha fazla bant geni�
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet üzerinde sıcak cüzdanlar devre dışıdır.
 Gerçek Bitcoin kullanmadan {app_name}’i test etmek için Testnet’e geçebilirsiniz.</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>Başka bir cüzdan dosyasından içe aktar</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>{} kaynağından açık cüzdan verilerini ve etiketleri içe aktar.</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4669,6 +4756,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>OP_RETURN oluştur</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>OP_RETURN çıktısına eklenecek metin:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5209,8 +5308,8 @@ Burada hata yaparsanız paranız kaybolur!</translation>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>İmzalanan psbt’nin txid’si orijinal txid ile eşleşmiyor. İşlem iptal edildi</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>İmzalanan işlem orijinal işlemle eşleşmiyor. İşlem iptal ediliyor.</translation>
 		</message>
 	</context>
 	<context>
@@ -5803,8 +5902,13 @@ Bunu kaydedin, ve 'senkronizasyon anahtarını içe aktar' tıkladığınızda e
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>Girdiler ekle</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>Tüm açık cüzdanlardan UTXO ekle</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>Yabancı UTXO ekle</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5819,8 +5923,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>RBF için yerine geçecek işlemin boyutu tahmin edilemiyor.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>Ücret oranını değiştir</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>Girdiler içe aktarılamadı: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>PSBT birleştirilemedi: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5834,8 +5953,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>Önceki işlemleri indir</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>Her satıra txid:vout biçiminde bir UTXO girin.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>PSBT bekleniyordu</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>Ücret oranı çok düşük</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>Önceki bir işlem yerel olarak mevcut değilse yapılandırılmış blok gezgininden ({explorer}) indirilir. Sunucu hangi işlem kimliklerinin istendiğini görebilir.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>Cüzdandan UTXO içe aktar</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5844,8 +5988,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>PSBT yükle</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>UTXO’ları yükle</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>Başka bir PSBT ile birleştir</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>Blok gezgini yapılandırılmadığı için eksik işlemler indirilemiyor.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>PSBT yapıştır</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>Bir PSBT yapıştırın.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5856,19 +6025,13 @@ aksi halde işlemi yayınlayamayabilirsiniz.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>Lütfen buraya UTXO yapıştırın</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>Lütfen buraya UTXO’yu şu formatta yapıştırın txid:outpoint txid:outpoint</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>Lütfen solda, işlem alıcılarına uygun bir giriş kategorisi seçin.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>Gizlilik bildirimi: Bitcoin Safe önce yerel olarak mevcut cüzdan verilerinde arama yapar.</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5879,6 +6042,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>Soldaki listeden bir veya daha fazla UTXO seçin veya yukarıdaki “Belirli UTXO’ları seç” seçeneğinin işaretini kaldırarak {app_name}’in işleminiz için en uygun coinleri seçmesine izin verin.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>Bazı önceki işlemler yapılandırılmış blok gezgininden indirilmelidir. Gezgin istenen işlem kimliklerini görebilir. İndirilsin mi?</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>Seçilen girdilerden bazıları kullanılamıyor.</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>Metin dosyaları (*.txt);;Tüm dosyalar (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT, mevcut işlemde zaten seçilmiş girdiler içeriyor: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5911,6 +6094,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>İşlem yayınlanamadı</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>PSBT açılamadı</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5980,6 +6168,11 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>İşlem {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>Bilinmeyen imzalayıcı</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6118,8 +6311,18 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>Yabancı girdileri kaldır</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>İmzalayan</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>Harcanan</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6130,6 +6333,16 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Tx</source>
 			<translation>Tx</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>Kullanılamıyor</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>Bilinmeyen</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6264,6 +6477,358 @@ Yayınlama başarısız olacaktır. Yine de yayınlamak istiyor musunuz?</transl
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>Bakiye ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>Bir imzalayıcı parmak izi 00000000 olarak ayarlanmış. Bu yer tutucu orijinal imzalayıcıyı tanımlamaz; gerçek parmak izi mevcut olduğunda bununla değiştirin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>Hesap</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>Adres CSV dosyası çok büyük.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>BIP-329 etiketleri (isteğe bağlı)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>{signer} için BIP39 parola ifadesi:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>İmzalayıcı BIP39 parola ifadeleri</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>Geri</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>Gözat…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>Bu cüzdan dosyası okunamıyor. İzinlerini kontrol edip tekrar deneyin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>Bu cüzdan dosyası okunamıyor. Dosyayı kontrol edip tekrar deneyin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>Cüzdan dosyasının yolu çözümlenemiyor. Gözat ile dosyayı seçin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>Okumadan önce Gözat ile bir cüzdan dosyası seçin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>Adres CSV dosyasını seç</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>Bir hesap seçin ve İçe aktar seçeneğine tıklayın.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>Bir hesap seçin ve İçe aktar seçeneğine tıklayın. Eksik imzalayıcı bilgileri istenecektir.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>Etiket dosyasını seç</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>Cüzdan dosyasını seç</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>Ağı onayla</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Electrum depolama xpub anahtarı okunamadı: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Ledger hesaplarını keşfet</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Electrum imzalayıcı türetme yolu</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Electrum imzalayıcı parmak izi</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>Electrum cüzdan dosyası: BIE1 parola kullanır. BIE2, Electrum'un depolama anahtarı türetme yolunu destekliyorsa orijinal USB donanım cüzdanıyla açılır.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>Geçerli bir hesap türetme yolu girin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>Ledger imzalayıcınızda gösterilen 8 karakterli ana parmak izini girin:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Electrum imzalayıcısı {number} için hesap türetme yolunu girin:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>Ledger imzalayıcınızda gösterilen hesap türetme yolunu girin (örneğin m/84h/0h/0h):</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Electrum imzalayıcısı {number} için gerçek ana parmak izini girin. Donanım imzalayıcısındaki veya orijinal yedeğindeki parmak izini kontrol edin:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>Kaynak cüzdanın parolasını girin:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>Ledger Live uygulama parolanızı girin:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>İçe aktar</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>Cüzdan dosyasını içe aktar</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>Etiket dosyası çok büyük.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Ledger Live hesapları yerel app.json kullanıcı verisi dosyanızdan otomatik olarak okunur. Dosya seçmeniz gerekmez. Cihaz PIN'i değil, uygulama parolası gerekebilir.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>Ledger Live app.json dosyası varsayılan kullanıcı verisi klasöründe bulunamadı.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>Ledger Live app.json dosyası varsayılan kullanıcı verisi klasöründe bulunamadı. Ledger Live → Ayarlar → Yardım → Kullanıcı verilerini görüntüle yolunu açın ve uygulamanın hesapları yerel olarak sakladığını kontrol edin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live bir uygulama parolası gerektiriyor.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Ledger hesap türetme yolu</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Ledger imzalayıcı parmak izi</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>Bu biçim için yerleşik parola koruması desteklenmiyor. Açık bir cüzdan veya hesap dışa aktarma dosyası seçin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>Yalnızca açık cüzdan verileri içe aktarılır. Para almadan önce ilk alım ve para üstü adreslerini kaynak cüzdanla karşılaştırarak doğrulayın. İmzalama için orijinal imzalayıcı veya cihaz gerekir.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>Dosya okunduktan sonra her yazılım imzalayıcısının parola ifadesi ayrı ayrı istenir.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>Cüzdan dosyasını oku</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>Cüzdan dosyası okunuyor…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>Cüzdan içe aktarımını incele</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>Bu Electrum dosyasını şifrelemek için kullanılan donanım cüzdanını seçip kilidini açın.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>Bu şifreli cüzdan için Electrum biçimini seçin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>İmzalayıcı parola ifadesi girişi iptal edildi. Hiçbir cüzdan içe aktarılmadı.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>İmzalayıcı {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>Sparrow JSON ve parola korumalı H2 cüzdan dosyaları desteklenir. İçe aktarmadan önce Sparrow'u kapatın. H2 içe aktarımı, imzalayıcı verilerini kurtarmak için BIP39 tohumlarını otomatik olarak okur. Ana ağ tohumları içe aktarılmaz; doğrulanmış test ağı tohumları imzalama için kaydedilebilir ve ana ağdaki fonları da kontrol edebilir.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Sparrow imzalayıcısının BIP39 parola ifadesi</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>Specter adres CSV dosyası (isteğe bağlı)</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Ledger tanımlayıcısında desteklenmeyen bir anahtar kökeni var.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>Ana parmak izi tam olarak sekiz onaltılık karakter içermelidir.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>Kaynak cüzdan bir ana ağ tohumu içeriyordu. Bu tohum saklanmadı veya içe aktarılmadı. Orijinal kurtarma yedeğinizi saklayın; bu cüzdan söz konusu tohumla imzalama yapamaz.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>Kaynak cüzdanın ağı etkin ağla eşleşmiyor.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>Cüzdan dosyası bulunamadı. Gözat ile mevcut bir dosya seçin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>Bu Sparrow dosyası tanımlayıcıyı yeniden oluşturmak için yeterli açık bilgi içermiyor. BIP39 parola ifadesini kontrol edip dosyayı yeniden okuyun veya Sparrow'dan açık bir tanımlayıcı dışa aktarın.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>Bu hesap içe aktarılamıyor çünkü alım ve para üstü için eksiksiz tanımlayıcısı mevcut değil. Kaynak cüzdandan uyumlu bir tanımlayıcı dışa aktarın.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>Bu dosya kesin ağı belirlemiyor. Bu cüzdanın etkin ağa ait olduğunu onaylayın: {network}.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>Bu bir klasör. Klasörü açıp içindeki cüzdan dosyasını seçin.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>Bu içe aktarma ekranında USB cihaz erişimi kullanılamıyor.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>USB donanım cüzdanı seçimi iptal edildi veya başarısız oldu.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>Doğrulanmış test ağı BIP39 tohumları içe aktarılacak ve bu cüzdanla birlikte kaydedilecektir. Bu tohumlar ana ağdaki fonları da kontrol edebilir; bu cüzdanı bir kurtarma yedeği gibi koruyun. Para almadan önce ilk alım ve para üstü adreslerini kaynak cüzdanla karşılaştırarak doğrulayın.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>Cüzdan dosyası</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>Cüzdan biçimi</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>Cüzdan içe aktarımı</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Wasabi açık cüzdan verileri parola olmadan içe aktarılır. Desteklenen yerel SegWit etiketleri doğrulanmış anahtar yollarından dönüştürülür. Çözümlenemeyen etiketler için bir BIP-329 etiket dosyası da seçebilirsiniz.</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>tanımlayıcı kullanılamıyor</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>hazır</translation>
 		</message>
 	</context>
 	<context>
@@ -9254,6 +9819,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>Tüm kayıtlar - toplam: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>Para üstü UTXO'su</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>Alım UTXO'su</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9385,6 +9967,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>OP_RETURN çıktılarının tutarı sıfır olmalıdır.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>Çıktı betiği boş olamaz.</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9397,6 +9989,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>Adreslere gönderiliyor: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>İşlem oluştururken bu çıktı betiğine izin verilmez.</translation>
 		</message>
 		<name>wallet</name>
 		<message>

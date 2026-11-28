@@ -60,13 +60,13 @@
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid</source>
-			<translation>署名されたpsbtのtxidが元のtxidと一致しません</translation>
+			<source>The signed transaction does not match the original transaction.</source>
+			<translation>署名済みトランザクションが元のトランザクションと一致しません。</translation>
 		</message>
 		<name>AbstractSignatureImporter</name>
 		<message>
-			<source>bdk libary error. The txid should not be changed during finalizing</source>
-			<translation>bdk ライブラリエラー。最終処理中に txid を変更してはいけません</translation>
+			<source>The transaction changed during finalization.</source>
+			<translation>最終化の過程でトランザクションが変更されました。</translation>
 		</message>
 	</context>
 	<context>
@@ -121,8 +121,18 @@
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
+			<source>Invalid output script</source>
+			<translation>無効な出力スクリプト</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
 			<source>Missing Address</source>
 			<translation>アドレスが不足しています</translation>
+		</message>
+		<name>AddressAnalyzer</name>
+		<message>
+			<source>Raw output script</source>
+			<translation>生の出力スクリプト</translation>
 		</message>
 		<name>AddressAnalyzer</name>
 		<message>
@@ -592,6 +602,11 @@ The error was: {error}</source>
 	<context>
 		<name>CBFProgressBar</name>
 		<message>
+			<source>Open Network Map</source>
+			<translation>ネットワークマップを開く</translation>
+		</message>
+		<name>CBFProgressBar</name>
+		<message>
 			<source>Past time: {passed_time}</source>
 			<translation>経過時間: {passed_time}</translation>
 		</message>
@@ -811,6 +826,16 @@ have transactions linking to other addresses already. Are you sure you want to c
 		</message>
 		<name>Client</name>
 		<message>
+			<source>Compact filter headers: {height}</source>
+			<translation>コンパクトフィルターヘッダー: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
+			<source>Compact filters: {height}</source>
+			<translation>コンパクトフィルター: {height}</translation>
+		</message>
+		<name>Client</name>
+		<message>
 			<source>Connecting to nodes</source>
 			<translation>ノードに接続中</translation>
 		</message>
@@ -878,8 +903,8 @@ Funds may be at risk. Read the guidance now and migrate to a seed generated with
 	<context>
 		<name>ColumnInputs</name>
 		<message>
-			<source>Add foreign UTXOs</source>
-			<translation>外部UTXOを追加</translation>
+			<source>Add</source>
+			<translation>追加</translation>
 		</message>
 		<name>ColumnInputs</name>
 		<message>
@@ -1508,9 +1533,19 @@ A reasonable minimum value is 20</source>
 		</message>
 		<name>FeeGroup</name>
 		<message>
+			<source>Fee rate at most {rate} sat/vB</source>
+			<translation>手数料率は最大 {rate} sat/vB</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
 			<source>The fee rate cannot be known exactly,
 since the final size of the transaction is unknown.</source>
 			<translation>取引の最終サイズが不明なため、手数料率を正確に知ることはできません。</translation>
+		</message>
+		<name>FeeGroup</name>
+		<message>
+			<source>The final transaction size cannot be estimated.</source>
+			<translation>最終的なトランザクションサイズを推定できません。</translation>
 		</message>
 		<name>FeeGroup</name>
 		<message>
@@ -1538,6 +1573,11 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>High fee rate!</source>
 			<translation>高い手数料率！</translation>
+		</message>
+		<name>FeeRateWarningBar</name>
+		<message>
+			<source>Possibly high fee rate!</source>
+			<translation>手数料率が高い可能性があります！</translation>
 		</message>
 		<name>FeeRateWarningBar</name>
 		<message>
@@ -1812,6 +1852,28 @@ since the final size of the transaction is unknown.</source>
 		<message>
 			<source>Restore labels from cloud using an existing sync key</source>
 			<translation>既存の同期キーを使用してクラウドからラベルを復元</translation>
+		</message>
+	</context>
+	<context>
+		<name>ImportWorker</name>
+		<message>
+			<source>A selected file could not be found. Check the file paths and try again.</source>
+			<translation>選択したファイルの一つが見つかりませんでした。ファイルパスを確認して再試行してください。</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check its permissions and try again.</source>
+			<translation>選択したファイルの一つを読み込めません。アクセス権限を確認して再試行してください。</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>Cannot read a selected file. Check the files and try again.</source>
+			<translation>選択したファイルの一つを読み込めません。ファイルを確認して再試行してください。</translation>
+		</message>
+		<name>ImportWorker</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>これはフォルダーです。フォルダーを開き、中のウォレットファイルを選択してください。</translation>
 		</message>
 	</context>
 	<context>
@@ -2159,6 +2221,11 @@ transactions (PSBTs) correctly and is connected to the xPub.</source>
 			<source>The seed is the secret, that enables transaction signing.
 For a single signature wallet it gives full control over the funds.</source>
 			<translation>seed はトランザクション署名を可能にする秘密です。単一署名ウォレットでは、資金を完全に制御できます。</translation>
+		</message>
+		<name>KeyStoreUI</name>
+		<message>
+			<source>The xPub depth or final child number does not match the key origin.</source>
+			<translation>xPub の深さまたは最後の子キー番号がキーの起点情報と一致しません。</translation>
 		</message>
 		<name>KeyStoreUI</name>
 		<message>
@@ -2687,6 +2754,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		</message>
 		<name>MainWindow</name>
 		<message>
+			<source>Import wallet file</source>
+			<translation>ウォレットファイルをインポート</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
 			<source>Inheritance overview</source>
 			<translation>相続の概要</translation>
 		</message>
@@ -2829,6 +2901,11 @@ You can switch to Testnet to test {app_name} without using real Bitcoin.</source
 		<message>
 			<source>Please select the wallet first.</source>
 			<translation>トランザクション/PSBTを開く</translation>
+		</message>
+		<name>MainWindow</name>
+		<message>
+			<source>Please wait until the wallet file has finished loading.</source>
+			<translation>ウォレットファイルの読み込みが完了するまでお待ちください。</translation>
 		</message>
 		<name>MainWindow</name>
 		<message>
@@ -3707,6 +3784,16 @@ Using more peers improves coverage but uses more bandwidth and connections.</sou
 			<source>Hot wallets are disabled on Bitcoin Mainnet.
 You can switch to Testnet to test {app_name} without using real Bitcoin.</source>
 			<translation>Bitcoin Mainnet ではホットウォレットが無効になっています。実際の Bitcoin を使用せずに {app_name} をテストするには、Testnet に切り替えることができます。</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import from another wallet file</source>
+			<translation>別のウォレットファイルからインポート</translation>
+		</message>
+		<name>NewWalletWelcomeScreen</name>
+		<message>
+			<source>Import public wallet data and labels from {}.</source>
+			<translation>{} からウォレットの公開データとラベルをインポートします。</translation>
 		</message>
 		<name>NewWalletWelcomeScreen</name>
 		<message>
@@ -4651,6 +4738,18 @@ Outputs stay the same; only the fee changes.</source>
 		</message>
 	</context>
 	<context>
+		<name>RecipientBox</name>
+		<message>
+			<source>Generate OP_RETURN</source>
+			<translation>OP_RETURN を生成</translation>
+		</message>
+		<name>RecipientBox</name>
+		<message>
+			<source>Text to include in the OP_RETURN output:</source>
+			<translation>OP_RETURN 出力に含めるテキスト:</translation>
+		</message>
+	</context>
+	<context>
 		<name>RecipientWidget</name>
 		<message>
 			<source>Address</source>
@@ -5190,8 +5289,8 @@ If you make a mistake here, your money is lost!</source>
 		</message>
 		<name>SignatureImporterWallet</name>
 		<message>
-			<source>The txid of the signed psbt doesnt match the original txid. Aborting</source>
-			<translation>署名されたPSBTのtxidが元のtxidと一致しません</translation>
+			<source>The signed transaction does not match the original transaction. Aborting.</source>
+			<translation>署名済みトランザクションが元のトランザクションと一致しません。処理を中止します。</translation>
 		</message>
 	</context>
 	<context>
@@ -5782,8 +5881,13 @@ If you want to keep using both, please reset the Chat &amp; Sync sync key (nsec)
 	<context>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Add Inputs</source>
-			<translation>入力を追加</translation>
+			<source>Add UTXOs from all open wallets</source>
+			<translation>開いているすべてのウォレットから UTXO を追加</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Add foreign UTXOs</source>
+			<translation>外部UTXOを追加</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5798,8 +5902,23 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Cannot estimate the replacement transaction size for RBF.</source>
+			<translation>RBF の代替トランザクションのサイズを推定できません。</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Change fee rate</source>
 			<translation>手数料レートを変更</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not import inputs: {error}</source>
+			<translation>入力をインポートできませんでした: {error}</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Could not merge PSBT: {error}</source>
+			<translation>PSBT を結合できませんでした: {error}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5813,8 +5932,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Download previous transactions</source>
+			<translation>以前のトランザクションをダウンロード</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Enter one UTXO per line in the format txid:vout.</source>
+			<translation>1 行につき 1 つの UTXO を txid:vout 形式で入力してください。</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Expected a PSBT</source>
+			<translation>PSBT が必要です</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Fee rate too low</source>
 			<translation>手数料率が低すぎます</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>If a previous transaction is not available locally, it downloads it from the configured block explorer ({explorer}). The server can see which transaction IDs are requested.</source>
+			<translation>以前のトランザクションがローカルにない場合、設定済みのブロックエクスプローラー ({explorer}) からダウンロードします。サーバーは要求されたトランザクション ID を確認できます。</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Import UTXOs from wallet</source>
+			<translation>ウォレットから UTXO をインポート</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5823,8 +5967,33 @@ below {rate} to consolidate UTXOs and reduce future fees</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
+			<source>Load PSBT</source>
+			<translation>PSBT を読み込む</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
 			<source>Load UTXOs</source>
 			<translation>UTXOを読み込む</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Merge other PSBT</source>
+			<translation>別の PSBT を結合</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>No block explorer is configured, so missing transactions cannot be downloaded.</source>
+			<translation>ブロックエクスプローラーが設定されていないため、不足しているトランザクションをダウンロードできません。</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT</source>
+			<translation>PSBT を貼り付け</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Paste a PSBT.</source>
+			<translation>PSBT を貼り付けてください。</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5834,19 +6003,13 @@ otherwise you may not be able to broadcast it.</source>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
-			<source>Please paste UTXO here</source>
-			<translation>UTXOをここに貼り付けてください</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
-			<source>Please paste UTXO here in the format  txid:outpoint
-txid:outpoint</source>
-			<translation>txid:outpoint txid:outpointの形式でUTXOをここに貼り付けてください</translation>
-		</message>
-		<name>UITx_Creator</name>
-		<message>
 			<source>Please select an input category on the left, that fits the transaction recipients.</source>
 			<translation>左側の入力カテゴリを選択して、トランザクションの受取人に合わせてください。</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Privacy notice: Bitcoin Safe first searches its locally available wallet data.</source>
+			<translation>プライバシーに関する通知: Bitcoin Safe は、まずローカルで利用可能なウォレットデータを検索します。</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5857,6 +6020,26 @@ txid:outpoint</source>
 		<message>
 			<source>Select one or more UTXOs from the list on the left, or uncheck "Select specific UTXOs" above to let {app_name} pick the best coins for your transaction.</source>
 			<translation>左のリストから1つまたは複数のUTXOを選択するか、上部の「特定のUTXOを選択」のチェックをオフにして、{app_name} に最適なコインを選ばせてください。</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some previous transactions must be downloaded from the configured block explorer. The explorer can see the requested transaction IDs. Download them?</source>
+			<translation>以前のトランザクションの一部を設定済みのブロックエクスプローラーからダウンロードする必要があります。エクスプローラーは要求されたトランザクション ID を確認できます。ダウンロードしますか？</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Some selected inputs are unavailable.</source>
+			<translation>選択した入力の一部が利用できません。</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>Text files (*.txt);;All files (*)</source>
+			<translation>テキストファイル (*.txt);;すべてのファイル (*)</translation>
+		</message>
+		<name>UITx_Creator</name>
+		<message>
+			<source>The PSBT contains inputs already selected in the current transaction: {outpoints}</source>
+			<translation>PSBT に現在のトランザクションですでに選択されている入力が含まれています: {outpoints}</translation>
 		</message>
 		<name>UITx_Creator</name>
 		<message>
@@ -5889,6 +6072,11 @@ txid:outpoint</source>
 		<message>
 			<source>Could not broadcast transaction</source>
 			<translation>トランザクションをブロードキャストできませんでした</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Could not open PSBT</source>
+			<translation>PSBT を開けませんでした</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -5956,6 +6144,11 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Transaction {txid}</source>
 			<translation>トランザクション {txid}</translation>
+		</message>
+		<name>UITx_Viewer</name>
+		<message>
+			<source>Unknown signer</source>
+			<translation>不明な署名者</translation>
 		</message>
 		<name>UITx_Viewer</name>
 		<message>
@@ -6094,8 +6287,18 @@ Do you want to broadcast anyway?</source>
 		</message>
 		<name>UTXOList</name>
 		<message>
+			<source>Remove foreign inputs</source>
+			<translation>外部の入力を削除</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
 			<source>Signed by</source>
 			<translation>署名者</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Spent</source>
+			<translation>使用済み</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6106,6 +6309,16 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Tx</source>
 			<translation>Tx（トランザクション）</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unavailable</source>
+			<translation>利用不可</translation>
+		</message>
+		<name>UTXOList</name>
+		<message>
+			<source>Unknown</source>
+			<translation>不明</translation>
 		</message>
 		<name>UTXOList</name>
 		<message>
@@ -6240,6 +6453,358 @@ Do you want to broadcast anyway?</source>
 		<message>
 			<source>Balance ({unit})</source>
 			<translation>残高 ({unit})</translation>
+		</message>
+	</context>
+	<context>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>A signer fingerprint is set to 00000000. This placeholder does not identify the original signer; replace it with the real fingerprint when available.</source>
+			<translation>署名者のフィンガープリントが 00000000 に設定されています。この仮の値では元の署名者を識別できません。実際のフィンガープリントが判明したら置き換えてください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Account</source>
+			<translation>アカウント</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Address CSV is too large.</source>
+			<translation>アドレス CSV ファイルが大きすぎます。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP-329 labels (optional)</source>
+			<translation>BIP-329 ラベル（任意）</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 passphrase for {signer}:</source>
+			<translation>{signer} の BIP39 パスフレーズ:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>BIP39 signer passphrases</source>
+			<translation>署名者の BIP39 パスフレーズ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Back</source>
+			<translation>戻る</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Browse…</source>
+			<translation>参照…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check its permissions and try again.</source>
+			<translation>このウォレットファイルを読み込めません。アクセス権限を確認して再試行してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot read this wallet file. Check the file and try again.</source>
+			<translation>このウォレットファイルを読み込めません。ファイルを確認して再試行してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Cannot resolve the wallet file path. Choose the file using Browse.</source>
+			<translation>ウォレットファイルのパスを解決できません。「参照」を使用してファイルを選択してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose a wallet file using Browse before reading it.</source>
+			<translation>読み込む前に「参照」を使用してウォレットファイルを選択してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose address CSV</source>
+			<translation>アドレス CSV を選択</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import.</source>
+			<translation>アカウントを選択し、「インポート」を選択してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose an account and select Import. Missing signer details will be requested.</source>
+			<translation>アカウントを選択し、「インポート」を選択してください。不足している署名者の情報は後で入力を求められます。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose labels file</source>
+			<translation>ラベルファイルを選択</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Choose wallet file</source>
+			<translation>ウォレットファイルを選択</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Confirm network</source>
+			<translation>ネットワークを確認</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Could not read Electrum storage xpub: {error}</source>
+			<translation>Electrum のストレージ xpub を読み込めませんでした: {error}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Discover Ledger accounts</source>
+			<translation>Ledger アカウントを検出</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer derivation</source>
+			<translation>Electrum 署名者の導出パス</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum signer fingerprint</source>
+			<translation>Electrum 署名者のフィンガープリント</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Electrum wallet file: BIE1 uses a password. BIE2 unlocks with the original USB hardware wallet, if it supports Electrum's storage-key derivation path.</source>
+			<translation>Electrum ウォレットファイル: BIE1 はパスワードを使用します。BIE2 は、Electrum のストレージキー導出パスに対応している場合、元の USB ハードウェアウォレットでロック解除できます。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter a valid account derivation path.</source>
+			<translation>有効なアカウント導出パスを入力してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the 8-character master fingerprint shown by your Ledger signer:</source>
+			<translation>Ledger 署名者に表示されている 8 文字のマスターフィンガープリントを入力してください:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path for Electrum signer {number}:</source>
+			<translation>Electrum 署名者 {number} のアカウント導出パスを入力してください:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the account derivation path shown by your Ledger signer (for example m/84h/0h/0h):</source>
+			<translation>Ledger 署名者に表示されているアカウント導出パスを入力してください（例: m/84h/0h/0h）:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the genuine master fingerprint for Electrum signer {number}. Check the fingerprint on the hardware signer or its original backup:</source>
+			<translation>Electrum 署名者 {number} の実際のマスターフィンガープリントを入力してください。ハードウェア署名者または元のバックアップでフィンガープリントを確認してください:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter the source wallet password:</source>
+			<translation>インポート元のウォレットのパスワードを入力してください:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Enter your Ledger Live application password:</source>
+			<translation>Ledger Live アプリケーションのパスワードを入力してください:</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import</source>
+			<translation>手動</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Import wallet file</source>
+			<translation>ウォレットファイルをインポート</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Labels file is too large.</source>
+			<translation>ラベルファイルが大きすぎます。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live accounts are read automatically from your local app.json user-data file. No file selection is needed. An application password may be required, not the device PIN.</source>
+			<translation>Ledger Live のアカウントは、ローカルのユーザーデータファイル app.json から自動的に読み込まれます。ファイルを選択する必要はありません。デバイスの PIN ではなく、アプリケーションのパスワードが必要な場合があります。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder.</source>
+			<translation>既定のユーザーデータフォルダーに Ledger Live の app.json が見つかりませんでした。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live app.json was not found in the default user-data folder. Open Ledger Live → Settings → Help → View user data, and check that the application stores its accounts locally.</source>
+			<translation>既定のユーザーデータフォルダーに Ledger Live の app.json が見つかりませんでした。Ledger Live → 設定 → ヘルプ → ユーザーデータを表示 を開き、アプリケーションがアカウントをローカルに保存していることを確認してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger Live requires an application password.</source>
+			<translation>Ledger Live のアプリケーションパスワードが必要です。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger account derivation</source>
+			<translation>Ledger アカウントの導出パス</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Ledger signer fingerprint</source>
+			<translation>Ledger 署名者のフィンガープリント</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Native password protection is not supported for this format. Select a public wallet or account export.</source>
+			<translation>この形式はネイティブのパスワード保護に対応していません。ウォレットまたはアカウントの公開エクスポートファイルを選択してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Only public wallet data is imported. Verify the first receive and change addresses against the source wallet before receiving funds. Signing requires the original signer or device.</source>
+			<translation>ウォレットの公開データのみがインポートされます。資金を受け取る前に、最初の受取アドレスとお釣りアドレスをインポート元のウォレットと照合してください。署名には元の署名者またはデバイスが必要です。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Passphrases are requested separately for each software signer after reading the file.</source>
+			<translation>ファイルを読み込んだ後、ソフトウェア署名者ごとに個別にパスフレーズの入力を求められます。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Read wallet file</source>
+			<translation>ウォレットファイルを読み込む</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Reading wallet file…</source>
+			<translation>ウォレットファイルを読み込み中…</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Review wallet import</source>
+			<translation>ウォレットのインポート内容を確認</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select and unlock the hardware wallet used to encrypt this Electrum file.</source>
+			<translation>この Electrum ファイルの暗号化に使用したハードウェアウォレットを選択し、ロックを解除してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Select the Electrum format for this encrypted wallet.</source>
+			<translation>この暗号化されたウォレットの Electrum 形式を選択してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer passphrase entry cancelled. No wallet was imported.</source>
+			<translation>署名者のパスフレーズ入力がキャンセルされました。ウォレットはインポートされませんでした。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Signer {index}</source>
+			<translation>署名者 {index}</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow JSON and password-protected H2 wallet files are supported. Close Sparrow before importing. H2 imports automatically read BIP39 seeds to recover signer data. Mainnet seeds are not imported; verified test-network seeds may be saved for signing and can also control mainnet funds.</source>
+			<translation>Sparrow の JSON およびパスワードで保護された H2 ウォレットファイルに対応しています。インポートする前に Sparrow を終了してください。H2 のインポートでは署名者データを復元するため、BIP39 シードが自動的に読み込まれます。メインネットのシードはインポートされません。検証済みのテストネットワークのシードは署名用に保存される場合があり、メインネットの資金も管理できます。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Sparrow signer BIP39 passphrase</source>
+			<translation>Sparrow 署名者の BIP39 パスフレーズ</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Specter address CSV (optional)</source>
+			<translation>Specter のアドレス CSV（任意）</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The Ledger descriptor has an unsupported key origin.</source>
+			<translation>Ledger ディスクリプターに未対応のキー起点情報が含まれています。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The master fingerprint must contain exactly eight hexadecimal characters.</source>
+			<translation>マスターフィンガープリントは正確に 8 桁の16進数である必要があります。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet contained a mainnet seed. It was not retained or imported. Keep your original recovery backup; this wallet cannot sign with that seed.</source>
+			<translation>インポート元のウォレットにメインネットのシードが含まれていました。このシードは保持もインポートもされていません。元の復元用バックアップを保管してください。このウォレットはそのシードで署名できません。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The source wallet network does not match the active network.</source>
+			<translation>インポート元のウォレットのネットワークが現在のネットワークと一致しません。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>The wallet file could not be found. Choose an existing file using Browse.</source>
+			<translation>ウォレットファイルが見つかりませんでした。「参照」を使用して既存のファイルを選択してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This Sparrow file does not contain enough public information to reconstruct the descriptor. Check the BIP39 passphrase and read the file again, or export a public descriptor from Sparrow.</source>
+			<translation>この Sparrow ファイルにはディスクリプターを再構築するための十分な公開情報が含まれていません。BIP39 パスフレーズを確認してファイルを再度読み込むか、Sparrow から公開ディスクリプターをエクスポートしてください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This account cannot be imported because its complete receive-and-change descriptor is unavailable. Export a compatible descriptor from the source wallet.</source>
+			<translation>受取とお釣りの完全なディスクリプターを利用できないため、このアカウントをインポートできません。インポート元のウォレットから互換性のあるディスクリプターをエクスポートしてください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This file does not establish the exact network. Confirm that this wallet belongs to the active network: {network}.</source>
+			<translation>このファイルでは正確なネットワークを特定できません。このウォレットが現在のネットワークに属していることを確認してください: {network}。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>This is a folder. Open it and select the wallet file inside.</source>
+			<translation>これはフォルダーです。フォルダーを開き、中のウォレットファイルを選択してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB device access is unavailable for this import screen.</source>
+			<translation>このインポート画面では USB デバイスにアクセスできません。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>USB hardware wallet selection was cancelled or failed.</source>
+			<translation>USB ハードウェアウォレットの選択がキャンセルされたか、失敗しました。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Verified test-network BIP39 seeds will be imported and saved with this wallet. These seeds can also control mainnet funds; protect this wallet like a recovery backup. Verify the first receive and change addresses against the source wallet before receiving funds.</source>
+			<translation>検証済みのテストネットワークの BIP39 シードがインポートされ、このウォレットとともに保存されます。これらのシードはメインネットの資金も管理できるため、このウォレットを復元用バックアップと同様に保護してください。資金を受け取る前に、最初の受取アドレスとお釣りアドレスをインポート元のウォレットと照合してください。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet file</source>
+			<translation>ウォレットファイル</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet format</source>
+			<translation>ウォレット形式</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wallet import</source>
+			<translation>ウォレットのインポート</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>Wasabi public wallet data is imported without a password. Supported native SegWit labels are converted from verified key paths. You can also select a BIP-329 labels file for labels that cannot be resolved.</source>
+			<translation>Wasabi ウォレットの公開データはパスワードなしでインポートされます。対応するネイティブ SegWit のラベルは、検証済みのキーパスから変換されます。解決できないラベルについては、BIP-329 ラベルファイルも選択できます。</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>descriptor unavailable</source>
+			<translation>ディスクリプター利用不可</translation>
+		</message>
+		<name>WalletFileImportScreen</name>
+		<message>
+			<source>ready</source>
+			<translation>準備完了</translation>
 		</message>
 	</context>
 	<context>
@@ -9220,6 +9785,23 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 	</context>
 	<context>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>All entries - total: {amount}</source>
+			<translation>すべての項目 - 合計: {amount}</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Change UTXO</source>
+			<translation>お釣り UTXO</translation>
+		</message>
+		<name>utxo_copy_menu</name>
+		<message>
+			<source>Receiving UTXO</source>
+			<translation>受取 UTXO</translation>
+		</message>
+	</context>
+	<context>
 		<name>utxo_list</name>
 		<message>
 			<source>Confirmed UTXO</source>
@@ -9351,6 +9933,16 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		</message>
 		<name>wallet</name>
 		<message>
+			<source>OP_RETURN outputs must have an amount of zero.</source>
+			<translation>OP_RETURN 出力の金額はゼロでなければなりません。</translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>Output script cannot be empty.</source>
+			<translation>出力スクリプトを空にすることはできません。</translation>
+		</message>
+		<name>wallet</name>
+		<message>
 			<source>PSBT</source>
 			<translation>PSBT</translation>
 		</message>
@@ -9363,6 +9955,11 @@ Pick a fee above the minimum fee rate {rate_min}.</source>
 		<message>
 			<source>Sending to addresses: </source>
 			<translation>アドレスへ送信中: </translation>
+		</message>
+		<name>wallet</name>
+		<message>
+			<source>This output script is not allowed when creating a transaction.</source>
+			<translation>トランザクションの作成時にこの出力スクリプトは使用できません。</translation>
 		</message>
 		<name>wallet</name>
 		<message>
