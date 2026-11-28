@@ -86,9 +86,12 @@ from PyQt6.QtWidgets import (
     QLayout,
     QLineEdit,
     QMessageBox,
+    QProxyStyle,
     QPushButton,
     QSizePolicy,
     QStyle,
+    QStyleHintReturn,
+    QStyleOption,
     QSystemTrayIcon,
     QToolButton,
     QToolTip,
@@ -108,8 +111,24 @@ if TYPE_CHECKING:
     from bitcoin_safe.gui.qt.custom_edits import AnalyzerState
 
 
+class ComboBoxPopupStyle(QProxyStyle):
+    def styleHint(
+        self,
+        hint: QStyle.StyleHint,
+        option: QStyleOption | None = None,
+        widget: QWidget | None = None,
+        returnData: QStyleHintReturn | None = None,
+    ) -> int:
+        if hint == QStyle.StyleHint.SH_ComboBox_Popup:
+            return 0
+        return super().styleHint(hint, option, widget, returnData)
+
+
 def configure_combobox_popup(combo: QComboBox) -> None:
-    combo.setStyleSheet("QComboBox { combobox-popup: 0; }")
+    # A widget stylesheet freezes the combo's palette when the app theme changes.
+    style = ComboBoxPopupStyle()
+    style.setParent(combo)
+    combo.setStyle(style)
     combo.setMaxVisibleItems(20)
 
 

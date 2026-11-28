@@ -53,13 +53,15 @@ from bitcoin_safe_lib.storage import BaseSaveableClass
 from bitcoin_safe_lib.util import network_kind
 from btcpay_tools.btcpay_subscription_api.models import SubscriptionStatusCode, SubscriptionStatusResponse
 from packaging.version import Version
-from PyQt6.QtGui import QColor, QIcon, QPixmap
+from PyQt6.QtGui import QColor, QIcon, QPalette, QPixmap
 from PyQt6.QtWidgets import (
     QApplication,
+    QComboBox,
     QDialog,
     QHBoxLayout,
     QSizePolicy,
     QStackedWidget,
+    QStyle,
     QVBoxLayout,
     QWidget,
 )
@@ -132,6 +134,7 @@ from bitcoin_safe.plugin_framework.subscription_manager import (
 )
 from bitcoin_safe.signals import Signals, WalletFunctions
 from bitcoin_safe.signature_manager import KnownGPGKeys
+from bitcoin_safe.theme import ThemeMode
 from tests.btcpay_support import (
     TEST_MONTHLY_PLAN_ID,
     TEST_SCHEDULE_PRODUCT_ID,
@@ -2931,6 +2934,40 @@ def test_settings_tabs_refresh_on_language_switch(qapp: QApplication, tmp_path: 
         assert settings.tabText(settings.indexOf(settings.network_settings_ui)) == "Network"
     finally:
         settings.close()
+
+
+def test_settings_combo_boxes_follow_theme_selection(qapp: QApplication, tmp_path: Path) -> None:
+    original_palette = QPalette(qapp.palette())
+    config = _make_config(tmp_path)
+    signals = Signals()
+    language_chooser = LanguageChooser(
+        config=config,
+        signals_language_switch=[signals.language_switch],
+        signals_currency_switch=signals.currency_switch,
+        parent=None,
+    )
+    settings = Settings(config=config, signals=signals, language_chooser=language_chooser, fx=_DummyFX())
+    try:
+        settings.setCurrentWidget(settings.langauge_ui)
+        settings.show()
+        qapp.processEvents()
+        theme_combo = settings.langauge_ui.theme_combo
+        assert theme_combo is not None
+        combos = settings.findChildren(QComboBox)
+        assert len(combos) >= 7
+
+        for theme_mode in (ThemeMode.LIGHT, ThemeMode.DARK, ThemeMode.LIGHT):
+            theme_combo.setCurrentIndex(theme_combo.findData(theme_mode))
+            qapp.processEvents()
+            for combo in combos:
+                for role in (QPalette.ColorRole.Button, QPalette.ColorRole.ButtonText):
+                    assert combo.palette().color(role) == qapp.palette().color(role)
+                for role in (QPalette.ColorRole.Base, QPalette.ColorRole.Text):
+                    assert combo.view().palette().color(role) == qapp.palette().color(role)
+                assert combo.style().styleHint(QStyle.StyleHint.SH_ComboBox_Popup) == 0
+    finally:
+        settings.close()
+        qapp.setPalette(original_palette)
 
 
 def test_settings_use_maximum_tab_height(qapp: QApplication, tmp_path: Path) -> None:
