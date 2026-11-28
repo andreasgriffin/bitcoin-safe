@@ -138,7 +138,7 @@ def test_category_manager_can_reopen_after_shortcut(
 
 
 @pytest.mark.parametrize("tx_type", ["creator", "viewer"])
-def test_transaction_widget_disconnects_currency_updates_on_close(
+def test_transaction_widget_disconnects_updates_on_close(
     qtbot: QtBot, monkeypatch: pytest.MonkeyPatch, tx_type: str
 ) -> None:
     from bitcoin_qr_tools.data import Data, DataType
@@ -175,7 +175,18 @@ def test_transaction_widget_disconnects_currency_updates_on_close(
     calls.clear()
     signals.currency_switch.emit()
     assert calls == [widget]
+    calls.clear()
+    if isinstance(widget, UITx_Viewer):
+        original_close = widget.label_line_edit.close
+
+        def close_label() -> bool:
+            signals.currency_switch.emit()
+            widget.utxo_list.signal_finished_update.emit()
+            return original_close()
+
+        monkeypatch.setattr(widget.label_line_edit, "close", close_label)
     widget.close()
+    assert calls == []
     calls.clear()
     signals.currency_switch.emit()
     assert calls == []
