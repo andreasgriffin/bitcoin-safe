@@ -270,7 +270,7 @@ class CategoryManager(QWidget):
             )
         )
 
-    def close(self) -> bool:
-        """Close."""
+    def dispose(self) -> bool:
+        """Release the category list when its wallet is closed."""
         self.category_list_with_toolbar.close()
-        return super().close()
+        return self.close()

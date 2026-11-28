@@ -455,7 +455,7 @@ class UITx_Viewer(UITx_Base):
         # ensure that the linking warning bar appears (needs all tx loaded)
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.on_any_wallet_update)
         self.signal_tracker.connect(self.signals.signal_broadcast_complete, self.on_broadcast_complete)
-        self.signals.currency_switch.connect(self.update_all_totals)
+        self.signal_tracker.connect(self.signals.currency_switch, self.update_all_totals)
         self.utxo_list.signal_finished_update.connect(self.update_all_totals)
         self.column_fee.fee_group.mempool_buttons.signal_rbf_icon.connect(self._on_rbf_icon)
         self.column_fee.fee_group.mempool_buttons.signal_cpfp_icon.connect(self._on_cpfp_icon)

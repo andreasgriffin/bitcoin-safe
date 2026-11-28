@@ -346,7 +346,7 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.column_inputs.checkBox_manual_coin_select.checkStateChanged.connect(
             self.coin_selection_checkbox_state_change
         )
-        self.mempool_manager.signal_data_updated.connect(self.update_fee_rate_to_mempool)
+        self.signal_tracker.connect(self.mempool_manager.signal_data_updated, self.update_fee_rate_to_mempool)
         self.signal_tracker.connect(self.utxo_list.signal_selection_changed, self.on_utxo_selection_changed)
         self.recipients.signal_amount_changed.connect(self.on_signal_amount_changed)
         self.recipients.signal_added_recipient.connect(self.on_recipients_added)
@@ -354,8 +354,8 @@ class UITx_Creator(UITx_Base, BaseSaveableClass):
         self.recipients.signal_recipients_imported.connect(self.on_recipients_imported)
         self.category_list.signal_selection_changed.connect(self.on_category_selection_changed)
         self.column_fee.fee_group.signal_fee_rate_change.connect(self.on_fee_rate_change)
-        self.signals.language_switch.connect(self.updateUi)
-        self.signals.currency_switch.connect(self.update_all_totals)
+        self.signal_tracker.connect(self.signals.language_switch, self.updateUi)
+        self.signal_tracker.connect(self.signals.currency_switch, self.update_all_totals)
         self.signal_tracker.connect(self.signals.any_wallet_updated, self.on_wallet_updated)
 
         # must be after setting signals, to trigger signals when adding a recipient
