@@ -703,6 +703,7 @@ class Recipients(QWidget):
         self.fx = fx
         self.allow_edit = allow_edit
         self.network = network
+        self.signal_tracker = SignalTracker()
 
         self.header_widget = header_widget
         self.setup_header_widget()
@@ -726,7 +727,7 @@ class Recipients(QWidget):
         self.set_allow_edit(allow_edit)
 
         self.updateUi()
-        self.wallet_functions.signals.language_switch.connect(self.updateUi)
+        self.signal_tracker.connect(self.wallet_functions.signals.language_switch, self.updateUi)
 
     def setup_header_widget(self):
         """Setup header widget."""
@@ -1058,6 +1059,7 @@ class Recipients(QWidget):
         return len(self._all_recipients)
 
     def close(self) -> bool:
+        self.signal_tracker.disconnect_all()
         for box in self.get_recipient_group_boxes():
             box.close()
         return super().close()

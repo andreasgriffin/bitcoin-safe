@@ -42,7 +42,8 @@ from bitcoin_safe.fx import FX
 from bitcoin_safe.gui.qt.category_manager.category_core import CategoryCore
 from bitcoin_safe.gui.qt.category_manager.category_list import CategoryList, CategoryListWithToolbar
 from bitcoin_safe.gui.qt.category_manager.category_manager import CategoryManager
-from bitcoin_safe.gui.qt.ui_tx.recipients import RecipientWidget
+from bitcoin_safe.gui.qt.ui_tx.header_widget import HeaderWidget
+from bitcoin_safe.gui.qt.ui_tx.recipients import Recipients, RecipientWidget
 from bitcoin_safe.gui.qt.utxo_list import UTXOList, UtxoListWithToolbar
 from bitcoin_safe.signals import Signals, UpdateFilter, WalletFunctions, WalletSignals
 from bitcoin_safe.wallet import Wallet
@@ -192,3 +193,40 @@ def test_transaction_widget_disconnects_updates_on_close(
     assert calls == []
     mempool.close()
     fx.close()
+
+
+def test_recipients_disconnect_language_before_closing_boxes(
+    qtbot: QtBot, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    signals = Signals()
+    wallet_functions = WalletFunctions(signals)
+    calls: list[Recipients] = []
+    original_update = Recipients.updateUi
+
+    def record_update(widget: Recipients) -> None:
+        calls.append(widget)
+        original_update(widget)
+
+    monkeypatch.setattr(Recipients, "updateUi", record_update)
+    first = Recipients(wallet_functions, bdk.Network.REGTEST, None, HeaderWidget())
+    second = Recipients(wallet_functions, bdk.Network.REGTEST, None, HeaderWidget())
+    qtbot.addWidget(first)
+    qtbot.addWidget(second)
+    box = first.add_recipient()
+    original_close = box.close
+
+    def close_box() -> bool:
+        signals.language_switch.emit()
+        return original_close()
+
+    monkeypatch.setattr(box, "close", close_box)
+    calls.clear()
+    first.close()
+    assert calls == [second]
+    calls.clear()
+    signals.language_switch.emit()
+    assert calls == [second]
+    second.close()
+    calls.clear()
+    signals.language_switch.emit()
+    assert calls == []
