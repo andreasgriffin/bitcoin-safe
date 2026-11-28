@@ -53,7 +53,8 @@ def test_cbf_sync_close_shuts_down_node() -> None:
 @pytest.mark.parametrize(
     ("checkpoint", "is_new_wallet", "expected"),
     [
-        (0, True, bdk.ScanType.NEW_WALLET),
+        # Restore NEW_WALLET once https://github.com/2140-dev/kyoto/issues/681 is resolved.
+        (0, True, bdk.ScanType.RECOVERY),
         (0, False, bdk.ScanType.RECOVERY),
         (100, True, bdk.ScanType.SYNC),
         (100, False, bdk.ScanType.SYNC),

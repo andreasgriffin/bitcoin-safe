@@ -220,8 +220,10 @@ class CbfSync:
         self._height = self.wallet.latest_checkpoint().height
         if self._height != 0:
             scan_type = bdk.ScanType.SYNC()
-        elif self.is_new_wallet:
-            scan_type = bdk.ScanType.NEW_WALLET()
+        # NEW_WALLET can miss payments confirmed during initial header sync.
+        # Uncomment once https://github.com/2140-dev/kyoto/issues/681 is resolved.
+        # elif self.is_new_wallet:
+        #     scan_type = bdk.ScanType.NEW_WALLET()
         else:
             recovery_point = get_recovery_point(
                 DescriptorInfo.from_str(
