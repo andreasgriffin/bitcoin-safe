@@ -29,6 +29,10 @@
 
 from __future__ import annotations
 
+import json
+from hashlib import sha256
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from threading import Thread
 from types import SimpleNamespace
 from unittest.mock import Mock
 
@@ -113,22 +117,6 @@ def _wallet_with_funded_unconfirmed_output() -> tuple[Wallet, bdk.OutPoint]:
     )
     wallet = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
     return wallet, _fund_wallet_with_unconfirmed_tx(wallet)
-
-
-def test_unchecked_known_wallet_input_is_rejected() -> None:
-    transaction = _taproot_script_path_tx()
-    wallet = SimpleNamespace(
-        _prevouts_of_tx=lambda _tx: ([Prevout(b"\x51\x20" + b"\x00" * 32, 2_000)], [True])
-    )
-
-    assert not Wallet._verify_tx_signatures(wallet, transaction)
-
-
-def test_unchecked_unknown_input_does_not_reject_transaction() -> None:
-    transaction = _taproot_script_path_tx()
-    wallet = SimpleNamespace(_prevouts_of_tx=lambda _tx, _candidates=None: ([None], [False]))
-
-    assert Wallet._verify_tx_signatures(wallet, transaction)
 
 
 def test_known_external_parent_output_is_preserved_without_wallet_ownership() -> None:
@@ -340,183 +328,68 @@ def test_prevouts_from_wallets_rejects_conflict_within_wallet() -> None:
     assert prevouts_from_wallets([child], [wallet]) == {}
 
 
-def _enable_dependency_verification(wallet: SimpleNamespace) -> None:
-    wallet._prevouts_of_tx = lambda tx, _outputs=None: ([None] * len(tx.input()), [False] * len(tx.input()))
-    wallet._verify_candidate_transactions = lambda candidates, known_prevouts=None: (
-        Wallet._verify_candidate_transactions(wallet, candidates, known_prevouts)
+def _event_wallet(reject_txids: set[str]) -> SimpleNamespace:
+    def apply(batch):
+        return [
+            bdk.WalletEvent.TX_REJECTED(
+                txid=entry.tx.compute_txid(),
+                tx=entry.tx,
+                reason=bdk.TxRejectedReason.INVALID_INPUT(input_index=0),
+            )
+            for entry in batch
+            if str(entry.tx.compute_txid()) in reject_txids
+        ]
+
+    return SimpleNamespace(
+        get_output_addresses=lambda _tx: [],
+        advance_tip_to_addresses=lambda _addresses: [],
+        get_tx=lambda _txid: None,
+        _prevouts_of_tx=lambda tx, _outputs=None, **_kwargs: (
+            [None] * len(tx.input()),
+            [False] * len(tx.input()),
+        ),
+        bdkwallet=SimpleNamespace(apply_unconfirmed_txs_events=Mock(side_effect=apply)),
+        persist=Mock(),
     )
 
 
-def test_apply_unconfirmed_processes_candidate_parent_child_in_any_order(monkeypatch) -> None:
-    for parent_first in (True, False):
-        parent = _raw_tx([(b"\x41" * 32, 0)], [(2_000, b"\x51")])
-        child = _raw_tx([(_txid_bytes(parent), 0)], [(1_000, b"\x51")])
-        ordered = [parent, child] if parent_first else [child, parent]
-        wallet = SimpleNamespace()
-        wallet.get_output_addresses = lambda _tx: []
-        wallet.advance_tip_to_addresses = lambda _addresses: []
-        wallet.get_tx = lambda _txid: None
-        wallet._verify_tx_signatures = Mock(return_value=True)
-        _enable_dependency_verification(wallet)
-        wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
-        wallet.persist = Mock()
-
-        result = Wallet.apply_unconfirmed_txs(wallet, ordered, last_seen=4)
-
-        assert {str(entry.tx.compute_txid()) for entry in result} == {
-            str(parent.compute_txid()),
-            str(child.compute_txid()),
-        }
-        assert wallet._verify_tx_signatures.call_count == 2
-        assert wallet.bdkwallet.apply_unconfirmed_txs.call_count == 1
-
-
-def test_apply_unconfirmed_rejects_valid_child_of_invalid_parent(monkeypatch) -> None:
-    parent = _raw_tx([(b"\x41" * 32, 0)], [(2_000, b"\x51")])
-    child = _raw_tx([(_txid_bytes(parent), 0)], [(1_000, b"\x51")])
-    wallet = SimpleNamespace()
-    wallet.get_output_addresses = lambda _tx: []
-    wallet.advance_tip_to_addresses = lambda _addresses: []
-    wallet.get_tx = lambda _txid: None
-    wallet._verify_tx_signatures = Mock(
-        side_effect=lambda tx, _outputs=None: tx.compute_txid() != parent.compute_txid()
-    )
-    _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
-    wallet.persist = Mock()
-
-    # A parent known by another wallet still has to pass this wallet's verification.
-    shared_prevouts = {(str(parent.compute_txid()), 0): Prevout(b"\x51", 2_000)}
-    result = Wallet.apply_unconfirmed_txs(
-        wallet, [child, parent], last_seen=4, known_prevouts=shared_prevouts
-    )
-
-    assert result == []
-    assert wallet._verify_tx_signatures.call_count == 1
-    assert wallet.bdkwallet.apply_unconfirmed_txs.call_args.args == ([],)
-
-
-def test_apply_unconfirmed_provides_accepted_external_parent_output(monkeypatch) -> None:
-    external_script = b"\x00\x14" + b"\x44" * 20
-    parent = _raw_tx([(b"\x41" * 32, 0)], [(2_000, external_script)])
-    child = _raw_tx([(_txid_bytes(parent), 0)], [(1_000, b"\x51")])
-    observed: list[dict[tuple[str, int], Prevout] | None] = []
-    wallet = SimpleNamespace()
-    wallet.get_output_addresses = lambda _tx: []
-    wallet.advance_tip_to_addresses = lambda _addresses: []
-    wallet.get_tx = lambda _txid: None
-    wallet._verify_tx_signatures = Mock(
-        side_effect=lambda _tx, outputs=None: (
-            observed.append(outputs.copy() if outputs is not None else None) or True
-        )
-    )
-    _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
-    wallet.persist = Mock()
-
-    Wallet.apply_unconfirmed_txs(wallet, [child, parent], last_seen=4)
-
-    assert observed[1] == {(str(parent.compute_txid()), 0): Prevout(external_script, 2_000)}
-
-
-def test_apply_unconfirmed_blocks_grandchild_after_invalid_parent() -> None:
+@pytest.mark.parametrize("parent_first", [True, False])
+@pytest.mark.parametrize("reject_index", [None, 0, 1])
+def test_apply_unconfirmed_processes_dependencies(parent_first, reject_index, caplog) -> None:
     parent = _raw_tx([(b"\x41" * 32, 0)], [(3_000, b"\x51")])
     child = _raw_tx([(_txid_bytes(parent), 0)], [(2_000, b"\x51")])
     grandchild = _raw_tx([(_txid_bytes(child), 0)], [(1_000, b"\x51")])
-    verified: list[str] = []
-    wallet = SimpleNamespace()
-    wallet.get_output_addresses = lambda _tx: []
-    wallet.advance_tip_to_addresses = lambda _addresses: []
-    wallet.get_tx = lambda _txid: None
+    ordered = [parent, child, grandchild]
+    reject_txids = {str(ordered[reject_index].compute_txid())} if reject_index is not None else set()
+    wallet = _event_wallet(reject_txids)
+    expected = ordered if reject_index is None else ordered[:reject_index]
+    shared_prevouts = {(str(parent.compute_txid()), 0): Prevout(b"\x51", 3_000)}
 
-    def verify(tx, _outputs=None):
-        verified.append(str(tx.compute_txid()))
-        return tx.compute_txid() != parent.compute_txid()
-
-    wallet._verify_tx_signatures = verify
-    _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
-    wallet.persist = Mock()
-
-    result = Wallet.apply_unconfirmed_txs(wallet, [grandchild, child, parent], last_seen=4)
-
-    assert result == []
-    assert verified == [str(parent.compute_txid())]
-
-
-def test_apply_unconfirmed_accepts_parent_but_not_invalid_child() -> None:
-    parent = _raw_tx([(b"\x41" * 32, 0)], [(2_000, b"\x51")])
-    child = _raw_tx([(_txid_bytes(parent), 0)], [(1_000, b"\x51")])
-    wallet = SimpleNamespace()
-    wallet.get_output_addresses = lambda _tx: []
-    wallet.advance_tip_to_addresses = lambda _addresses: []
-    wallet.get_tx = lambda _txid: None
-    wallet._verify_tx_signatures = lambda tx, _outputs=None: tx.compute_txid() == parent.compute_txid()
-    _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
-    wallet.persist = Mock()
-
-    result = Wallet.apply_unconfirmed_txs(wallet, [child, parent], last_seen=4)
-
-    assert [str(entry.tx.compute_txid()) for entry in result] == [str(parent.compute_txid())]
-
-
-def test_apply_unconfirmed_verifies_independent_parent_child_chains() -> None:
-    parent_a = _raw_tx([(b"\x41" * 32, 0)], [(2_000, b"\x51")])
-    child_a = _raw_tx([(_txid_bytes(parent_a), 0)], [(1_000, b"\x51")])
-    parent_b = _raw_tx([(b"\x42" * 32, 0)], [(4_000, b"\x51")])
-    child_b = _raw_tx([(_txid_bytes(parent_b), 0)], [(3_000, b"\x51")])
-    wallet = SimpleNamespace()
-    wallet.get_output_addresses = lambda _tx: []
-    wallet.advance_tip_to_addresses = lambda _addresses: []
-    wallet.get_tx = lambda _txid: None
-    wallet._verify_tx_signatures = Mock(return_value=True)
-    _enable_dependency_verification(wallet)
-    wallet.bdkwallet = SimpleNamespace(apply_unconfirmed_txs=Mock())
-    wallet.persist = Mock()
-
-    result = Wallet.apply_unconfirmed_txs(wallet, [child_b, child_a, parent_b, parent_a], last_seen=4)
-
-    assert {str(entry.tx.compute_txid()) for entry in result} == {
-        str(parent_a.compute_txid()),
-        str(child_a.compute_txid()),
-        str(parent_b.compute_txid()),
-        str(child_b.compute_txid()),
-    }
-    assert wallet._verify_tx_signatures.call_count == 4
-
-
-def test_sync_keeps_invalid_parent_and_evicts_descendants() -> None:
-    parent = _raw_tx([(b"\x41" * 32, 0)], [(2_000, b"\x51")])
-    child = _raw_tx([(_txid_bytes(parent), 0)], [(1_000, b"\x51")])
-    grandchild = _raw_tx([(_txid_bytes(child), 0)], [(500, b"\x51")])
-    transactions = [parent, child, grandchild]
-    details = {
-        str(tx.compute_txid()): SimpleNamespace(
-            txid=str(tx.compute_txid()),
-            transaction=tx,
-            chain_position=bdk.ChainPosition.UNCONFIRMED(timestamp=1),
-        )
-        for tx in transactions
-    }
-    event = bdk.WalletEvent.TX_UNCONFIRMED(txid=parent.compute_txid(), tx=parent, old_block_time=None)
-    wallet = SimpleNamespace()
-    wallet.get_txs = lambda: details
-    wallet.get_tx = lambda txid: details.get(txid)
-    wallet._verify_tx_signatures = Mock(
-        side_effect=lambda tx, _outputs=None: tx.compute_txid() != parent.compute_txid()
+    result = Wallet.apply_unconfirmed_txs(
+        wallet, ordered if parent_first else ordered[::-1], last_seen=4, known_prevouts=shared_prevouts
     )
-    _enable_dependency_verification(wallet)
-    wallet.apply_evicted_txs = Mock()
 
-    Wallet._evict_txs_with_invalid_signatures(wallet, [event])
+    assert [entry.tx.compute_txid() for entry in result] == [tx.compute_txid() for tx in expected]
+    calls = wallet.bdkwallet.apply_unconfirmed_txs_events.call_args_list
+    submitted = [entry.tx.compute_txid() for call in calls for entry in call.args[0]]
+    expected_submitted = ordered if reject_index is None else ordered[: reject_index + 1]
+    assert submitted == [tx.compute_txid() for tx in expected_submitted]
+    for txid in reject_txids:
+        assert txid in caplog.text
+    wallet.persist.assert_called_once_with()
 
-    assert wallet._verify_tx_signatures.call_count == 1
-    assert set(wallet.apply_evicted_txs.call_args.args[0]) == {
-        str(parent.compute_txid()),
-        str(child.compute_txid()),
-        str(grandchild.compute_txid()),
-    }
+
+def test_apply_unconfirmed_logs_bdk_missing_prevouts(caplog) -> None:
+    tx = _raw_tx([(b"\x41" * 32, 0)], [(2_000, b"\x51")])
+    reason = bdk.TxRejectedReason.MISSING_PREVOUTS(input_index=0)
+    event = bdk.WalletEvent.TX_REJECTED(txid=tx.compute_txid(), tx=tx, reason=reason)
+    wallet = _event_wallet(set())
+    wallet.bdkwallet.apply_unconfirmed_txs_events = Mock(return_value=[event])
+
+    assert Wallet.apply_unconfirmed_txs(wallet, [tx], last_seen=4) == []
+    assert str(event.txid) in caplog.text
+    assert str(reason) in caplog.text
+    wallet.persist.assert_called_once_with()
 
 
 def test_apply_unconfirmed_accepts_real_bdk_signed_spend() -> None:
@@ -551,60 +424,252 @@ def test_apply_unconfirmed_rejects_tampered_signature() -> None:
         wallet.close()
 
 
-def test_sync_clears_wallet_caches_before_verifying_events(monkeypatch) -> None:
-    config = _TestConfig()
-    config.network = bdk.Network.REGTEST
-    protowallet = create_multisig_protowallet(
-        threshold=1,
-        signers=1,
-        key_origins=["m/84h/1h/0h"],
-        network=config.network,
-    )
-    wallet = Wallet.from_protowallet(protowallet=protowallet, config=config, loop_in_thread=None)
-    calls: list[str] = []
-    monkeypatch.setattr(wallet.bdkwallet, "apply_update_events", lambda _update: [])
-    monkeypatch.setattr(wallet, "clear_cache", lambda **_kwargs: calls.append("clear_cache"))
-    monkeypatch.setattr(wallet, "_evict_txs_with_invalid_signatures", lambda _events: calls.append("verify"))
-    monkeypatch.setattr(wallet, "persist", lambda: calls.append("persist"))
-
-    wallet._apply_update(object())
-
-    assert calls == ["clear_cache", "verify", "persist"]
-    wallet.close()
+def _signed_chain_spend(parent: bdk.Transaction, vout: int, key: int) -> bdk.Transaction:
+    """Create a real P2WPKH spend back to the same wallet address."""
+    output = parent.output()[vout]
+    script = bytes(output.script_pubkey.to_bytes())
+    x, y = dsa.gen_keys(key)[1]
+    pubkey = bytes([2 + (y & 1)]) + x.to_bytes(32, "big")
+    assert script == b"\x00\x14" + hash160(pubkey)
+    tx = _build_tx([(_txid_bytes(parent), vout)], [(output.value.to_sat() - 1_000, script)])
+    script_code = b"\x76\xa9\x14" + hash160(pubkey) + b"\x88\xac"
+    message = sig_hash.segwit_v0(script_code, tx, 0, 1, output.value.to_sat())
+    tx.vin[0].script_witness = Witness([dsa.sign_(message, key).serialize() + b"\x01", pubkey])
+    return bdk.Transaction(tx.serialize(include_witness=True))
 
 
-def test_sync_evicts_and_returns_invalid_unconfirmed_transaction(monkeypatch) -> None:
+@pytest.mark.parametrize("parent_first", [True, False])
+@pytest.mark.parametrize("reject_index", [None, 0, 1], ids=["valid", "invalid-parent", "invalid-child"])
+def test_real_bdk_verifies_independent_transaction_chains(parent_first, reject_index, caplog) -> None:
+    wallet, outpoint = _wallet_with_funded_unconfirmed_output()
+    try:
+        funding = wallet.get_tx(str(outpoint.txid))
+        assert funding is not None
+        first = funding.transaction
+        output = first.output()[outpoint.vout]
+        script = bytes(output.script_pubkey.to_bytes())
+        # Another incoming payment spends an unknown foreign input. BDK cannot
+        # verify that input, but must still discover our receiving output.
+        second = _raw_tx([(b"\x43" * 32, 0)], [(output.value.to_sat(), script)])
+        assert len(wallet.apply_unconfirmed_txs([second], last_seen=1)) == 1
+        assert wallet.get_tx(str(second.compute_txid())) is not None
+
+        root = bdk.DescriptorSecretKey(
+            bdk.NetworkKind.TEST, bdk.Mnemonic.from_string(wallet.keystores[0].mnemonic), ""
+        )
+        key = int.from_bytes(root.derive(bdk.DerivationPath("m/84h/1h/0h/0/0")).secret_bytes(), "big")
+        parent = _signed_chain_spend(first, outpoint.vout, key)
+        child = _signed_chain_spend(parent, 0, key)
+        grandchild = _signed_chain_spend(child, 0, key)
+        independent_parent = _signed_chain_spend(second, 0, key)
+        independent_child = _signed_chain_spend(independent_parent, 0, key)
+        chain = [parent, child, grandchild]
+        expected = chain if reject_index is None else chain[:reject_index]
+        expected = [*expected, independent_parent, independent_child]
+        candidates = chain.copy()
+        if reject_index is not None:
+            original = chain[reject_index]
+            tampered = Tx.parse(bytes(original.serialize()))
+            signature = bytearray(tampered.vin[0].script_witness.stack[0])
+            signature[5] ^= 1
+            tampered.vin[0].script_witness = Witness(
+                [bytes(signature), *tampered.vin[0].script_witness.stack[1:]]
+            )
+            candidates[reject_index] = bdk.Transaction(tampered.serialize(include_witness=True))
+            assert candidates[reject_index].compute_txid() == original.compute_txid()
+
+        # Even if another wallet supplies a candidate parent's output, that
+        # parent must be accepted before its descendants can be submitted.
+        known_prevouts = {(str(parent.compute_txid()), 0): Prevout(script, parent.output()[0].value.to_sat())}
+        batch = [*candidates, independent_parent, independent_child]
+        applied = wallet.apply_unconfirmed_txs(
+            batch if parent_first else batch[::-1], last_seen=2, known_prevouts=known_prevouts
+        )
+        expected_ids = {str(tx.compute_txid()) for tx in expected}
+        assert {str(entry.tx.compute_txid()) for entry in applied} == expected_ids
+        for tx in batch:
+            txid = str(tx.compute_txid())
+            assert (wallet.get_tx(txid) is not None) == (txid in expected_ids)
+        if reject_index is not None:
+            assert str(chain[reject_index].compute_txid()) in caplog.text
+    finally:
+        wallet.close()
+
+
+def test_real_bdk_rejects_unsigned_wallet_input(caplog) -> None:
     wallet, outpoint = _wallet_with_funded_unconfirmed_output()
     try:
         spend = _create_signed_spend(wallet, outpoint)
-        tampered = Tx.parse(bytes(spend.serialize()))
-        signature = bytearray(tampered.vin[0].script_witness.stack[0])
-        signature[5] ^= 1
-        tampered.vin[0].script_witness = Witness(
-            [bytes(signature), *tampered.vin[0].script_witness.stack[1:]]
-        )
-        invalid_tx = bdk.Transaction(tampered.serialize(include_witness=True))
-        event = bdk.WalletEvent.TX_UNCONFIRMED(
-            txid=invalid_tx.compute_txid(), tx=invalid_tx, old_block_time=None
-        )
-        evicted: list[list[str]] = []
-        monkeypatch.setattr(wallet.bdkwallet, "apply_update_events", lambda _update: [event])
-        monkeypatch.setattr(
-            wallet,
-            "get_tx",
-            lambda _txid: SimpleNamespace(transaction=invalid_tx),
-        )
-        monkeypatch.setattr(wallet, "_verify_tx_signatures", lambda _tx, _outputs=None: False)
-        monkeypatch.setattr(wallet, "apply_evicted_txs", lambda txids, evicted_at: evicted.append(txids))
-        monkeypatch.setattr(wallet, "persist", lambda: None)
-
-        update_result = wallet._apply_update(object())
-        events = update_result[0] if isinstance(update_result, tuple) else update_result
-
-        assert events == [event]
+        unsigned = Tx.parse(bytes(spend.serialize()))
+        unsigned.vin[0].script_witness = Witness([])
+        tx = bdk.Transaction(unsigned.serialize(include_witness=False))
+        assert wallet.apply_unconfirmed_txs([tx], last_seen=2) == []
+        assert wallet.get_tx(str(tx.compute_txid())) is None
+        assert str(tx.compute_txid()) in caplog.text
     finally:
         wallet.close()
-        assert str(invalid_tx.compute_txid()) in evicted[0]
+
+
+@pytest.mark.parametrize("conflict", [False, True])
+def test_graph_prevout_takes_precedence_and_is_not_reinserted(monkeypatch, caplog, conflict) -> None:
+    wallet, outpoint = _wallet_with_funded_unconfirmed_output()
+    try:
+        parent = wallet.get_tx(str(outpoint.txid))
+        assert parent is not None
+        output = parent.transaction.output()[outpoint.vout]
+        actual = Prevout(bytes(output.script_pubkey.to_bytes()), output.value.to_sat())
+        supplied = Prevout(b"\x51", actual.value + 1) if conflict else actual
+        spend = _create_signed_spend(wallet, outpoint)
+        known = {(str(outpoint.txid), outpoint.vout): supplied}
+        missing: list[tuple[bdk.OutPoint, Prevout]] = []
+        prevouts, owned = wallet._prevouts_of_tx(spend, known, missing_prevouts=missing)
+        assert prevouts == [actual]
+        assert owned == [True]
+        assert not missing
+        insert = Mock(wraps=wallet.bdkwallet.insert_txout)
+        monkeypatch.setattr(wallet.bdkwallet, "insert_txout", insert)
+        assert len(wallet.apply_unconfirmed_txs([spend], last_seen=2, known_prevouts=known)) == 1
+        insert.assert_not_called()
+        if conflict:
+            assert "Ignoring conflicting supplied prevout" in caplog.text
+    finally:
+        wallet.close()
+
+
+def _esplora_tx(tx: bdk.Transaction, previous: bdk.Transaction | None = None) -> dict:
+    """Serialize the fields consumed by rust-esplora-client, including the witness."""
+    parsed = Tx.parse(bytes(tx.serialize()))
+    outputs = [
+        {"value": output.value.to_sat(), "scriptpubkey": bytes(output.script_pubkey.to_bytes()).hex()}
+        for output in tx.output()
+    ]
+    inputs = []
+    for txin, native in zip(tx.input(), parsed.vin, strict=True):
+        point = txin.previous_output
+        prevout = None
+        if previous is not None and point.txid == previous.compute_txid():
+            output = previous.output()[point.vout]
+            prevout = {
+                "value": output.value.to_sat(),
+                "scriptpubkey": bytes(output.script_pubkey.to_bytes()).hex(),
+            }
+        inputs.append(
+            {
+                "txid": str(point.txid),
+                "vout": point.vout,
+                "prevout": prevout,
+                "scriptsig": native.script_sig.hex(),
+                "witness": [item.hex() for item in native.script_witness.stack],
+                "sequence": native.sequence,
+                "is_coinbase": False,
+            }
+        )
+    return {
+        "txid": str(tx.compute_txid()),
+        "version": parsed.version,
+        "locktime": parsed.lock_time,
+        "vin": inputs,
+        "vout": outputs,
+        "size": len(tx.serialize()),
+        "weight": len(parsed.serialize(include_witness=False)) * 3 + len(tx.serialize()),
+        "fee": 0,
+        "status": {"confirmed": False},
+    }
+
+
+def test_sync_clears_wallet_caches_before_persisting_events(monkeypatch, caplog) -> None:
+    wallet, outpoint = _wallet_with_funded_unconfirmed_output()
+    try:
+        funding = wallet.get_tx(str(outpoint.txid))
+        assert funding is not None
+        parent = funding.transaction
+        spend = _create_signed_spend(wallet, outpoint)
+        tampered = Tx.parse(bytes(spend.serialize()))
+        witness = tampered.vin[0].script_witness.stack
+        signature = bytearray(witness[0])
+        signature[5] ^= 1
+        tampered.vin[0].script_witness = Witness([bytes(signature), *witness[1:]])
+        invalid = bdk.Transaction(tampered.serialize(include_witness=True))
+        assert invalid.compute_txid() == spend.compute_txid()
+
+        # Simulate an untrusted chain source. Only the HTTP responses are fake;
+        # both Esplora's Update construction and BDK's verifier are real.
+        script = bytes(parent.output()[outpoint.vout].script_pubkey.to_bytes())
+        history_path = f"/scripthash/{sha256(script).hexdigest()}/txs"
+        genesis = {
+            "id": "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
+            "height": 0,
+            "version": 1,
+            "timestamp": 1296688602,
+            "tx_count": 1,
+            "size": 285,
+            "weight": 1140,
+            "merkle_root": "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b",
+            "previousblockhash": None,
+            "mediantime": 1296688602,
+            "nonce": 2,
+            "bits": 0x207FFFFF,
+            "difficulty": 1.0,
+        }
+        history = [_esplora_tx(invalid, parent), _esplora_tx(parent)]
+
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(self) -> None:
+                if self.path == "/blocks":
+                    response = [genesis]
+                elif self.path == history_path:
+                    response = history
+                elif self.path.startswith("/scripthash/") and self.path.endswith("/txs"):
+                    response = []
+                else:
+                    self.send_error(404)
+                    return
+                body = json.dumps(response).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+        with ThreadingHTTPServer(("127.0.0.1", 0), Handler) as server:
+            thread = Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            try:
+                client = bdk.EsploraClient(f"http://127.0.0.1:{server.server_port}", timeout=5)
+                request = wallet.bdkwallet.start_sync_with_revealed_spks().build()
+                update = client.sync(request=request, parallel_requests=1)
+            finally:
+                server.shutdown()
+                thread.join()
+
+        calls: list[str] = []
+        clear_cache = wallet.clear_cache
+        persist = wallet.persist
+
+        def record_clear(**kwargs):
+            calls.append("clear_cache")
+            clear_cache(**kwargs)
+
+        def record_persist():
+            calls.append("persist")
+            persist()
+
+        monkeypatch.setattr(wallet, "clear_cache", record_clear)
+        monkeypatch.setattr(wallet, "persist", record_persist)
+        events = wallet._apply_update(update)
+
+        assert calls[:2] == ["clear_cache", "persist"]
+        rejected = [event for event in events if isinstance(event, bdk.WalletEvent.TX_REJECTED)]
+        assert any(
+            event.txid == invalid.compute_txid()
+            and isinstance(event.reason, bdk.TxRejectedReason.INVALID_INPUT)
+            for event in rejected
+        )
+        assert str(invalid.compute_txid()) in caplog.text
+        assert wallet.get_tx(str(invalid.compute_txid())) is None
+        assert wallet.get_tx(str(parent.compute_txid())) is not None
+    finally:
+        wallet.close()
 
 
 def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> None:
@@ -621,13 +686,14 @@ def test_signers_of_tx_inputs_attributes_real_bdk_signed_spend_to_keystore() -> 
 
 
 @pytest.mark.parametrize("source", ["staged_output", "persisted_output", "graph_transaction"])
-def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str) -> None:
+def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str, monkeypatch) -> None:
     seed = TAPROOT_TEST_SEED
     config = _TestConfig()
     config.network = bdk.Network.REGTEST
     keystore = create_keystore(seed, "m/86h/1h/0h", "taproot", config.network)
     proto = ProtoWallet("taproot", 1, config.network, [keystore], AddressTypes.p2tr)
     wallet = Wallet.from_protowallet(protowallet=proto, config=config, loop_in_thread=None)
+    original_wallet = wallet
     try:
         wallet_outpoint = _fund_wallet_with_unconfirmed_tx(wallet)
         wallet_output = wallet.get_tx(str(wallet_outpoint.txid)).transaction.output()[0]
@@ -635,10 +701,23 @@ def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str)
         external_outpoint = bdk.OutPoint(txid=external_parent.compute_txid(), vout=0)
         external_output = external_parent.output()[0]
         if source == "graph_transaction":
-            wallet.serialize_persistence.change_set = bdk.ChangeSet.from_tx_graph_changeset(
-                bdk.TxGraphChangeSet(
-                    txs=[external_parent], txouts={}, anchors=[], last_seen={}, first_seen={}, last_evicted={}
+            # Load the complete parent into the actual BDK graph. Merely replacing
+            # the Python persistence snapshot does not change the live BDK graph.
+            wallet.serialize_persistence.persist(
+                bdk.ChangeSet.from_tx_graph_changeset(
+                    bdk.TxGraphChangeSet(
+                        txs=[external_parent],
+                        txouts={},
+                        anchors=[],
+                        last_seen={},
+                        first_seen={},
+                        last_evicted={},
+                    )
                 )
+            )
+            wallet = Wallet.from_dump(
+                wallet.dump(),
+                class_kwargs={"Wallet": {"config": config, "loop_in_thread": wallet.loop_in_thread}},
             )
         else:
             wallet.bdkwallet.insert_txout(external_outpoint, external_output)
@@ -661,10 +740,16 @@ def test_taproot_spend_uses_external_prevout_from_transaction_graph(source: str)
         spend.vin[1].script_witness = Witness([b"external witness"])
         tx = bdk.Transaction(spend.serialize(include_witness=True))
 
-        assert len(wallet.apply_unconfirmed_txs([tx], last_seen=2)) == 1
+        insert = Mock(wraps=wallet.bdkwallet.insert_txout)
+        monkeypatch.setattr(wallet.bdkwallet, "insert_txout", insert)
+        conflicting = {(str(external_outpoint.txid), external_outpoint.vout): Prevout(b"\x51", 1)}
+        assert len(wallet.apply_unconfirmed_txs([tx], last_seen=2, known_prevouts=conflicting)) == 1
         assert wallet.get_tx(str(tx.compute_txid())) is not None
+        insert.assert_not_called()
     finally:
         wallet.close()
+        if wallet is not original_wallet:
+            original_wallet.close()
 
 
 def test_reported_collaborative_taproot_transaction_is_applied() -> None:
@@ -713,7 +798,7 @@ def test_reported_collaborative_taproot_transaction_is_applied() -> None:
         prevouts, owned = wallet._prevouts_of_tx(tx)
         assert owned == [True, False]
         assert prevouts[1] is None
-        assert not wallet._verify_tx_signatures(tx)
+        assert wallet.apply_unconfirmed_txs([tx], last_seen=2) == []
         other_wallet = _GraphWallet(
             bdkwallet=SimpleNamespace(
                 get_tx=lambda txid: (
@@ -726,7 +811,6 @@ def test_reported_collaborative_taproot_transaction_is_applied() -> None:
             serialize_persistence=SimpleNamespace(change_set=None),
         )
         shared_prevouts = prevouts_from_wallets([tx], [wallet, other_wallet])
-        assert wallet._verify_tx_signatures(tx, shared_prevouts)
         tampered = Tx.parse(tx.serialize())
         signature = bytearray(tampered.vin[0].script_witness.stack[0])
         signature[0] ^= 1
@@ -741,7 +825,11 @@ def test_reported_collaborative_taproot_transaction_is_applied() -> None:
         )
         assert len(wallet.apply_unconfirmed_txs([tx], last_seen=2, known_prevouts=shared_prevouts)) == 1
         assert wallet.get_tx(str(tx.compute_txid())) is not None
-        assert wallet._verify_tx_signatures(tx)
+        external_point = tx.input()[1].previous_output
+        assert (
+            wallet._prevouts_of_tx(tx)[0][1]
+            == shared_prevouts[(str(external_point.txid), external_point.vout)]
+        )
     finally:
         wallet.close()
 
@@ -791,10 +879,8 @@ def test_p2p_spend_uses_prevouts_from_both_open_wallets(reverse: bool) -> None:
         tx = bdk.Transaction(spend.serialize(include_witness=True))
 
         # Each wallet has only its own parent; the Taproot signature commits to both.
-        assert not taproot._verify_tx_signatures(tx)
-        assert other._verify_tx_signatures(tx)
+        assert taproot.apply_unconfirmed_txs([tx], last_seen=2) == []
         shared_prevouts = prevouts_from_wallets([tx], [taproot, other])
-        assert taproot._verify_tx_signatures(tx, shared_prevouts)
         altered = Tx.parse(tx.serialize())
         signature = bytearray(altered.vin[1].script_witness.stack[0])
         signature[5] ^= 1
@@ -827,7 +913,10 @@ def test_p2p_spend_uses_prevouts_from_both_open_wallets(reverse: bool) -> None:
 
         assert all(wallet.get_tx(str(tx.compute_txid())) is not None for wallet in (taproot, other))
         # The supporting data survives the other wallet closing and later sync verification.
-        assert taproot._verify_tx_signatures(tx)
+        assert (
+            taproot._prevouts_of_tx(tx)[0][1]
+            == shared_prevouts[(str(other_outpoint.txid), other_outpoint.vout)]
+        )
         assert all(wrapper.refresh_caches_and_ui_lists.call_count == 1 for wrapper in wrappers)
     finally:
         taproot.close()
@@ -891,15 +980,15 @@ def test_taproot_batch_retains_external_candidate_parent_output(
         assert wallet._prevouts_of_tx(child)[0][1] == Prevout(
             bytes(external_output.script_pubkey.to_bytes()), external_output.value.to_sat()
         )
-        assert wallet._verify_tx_signatures(child)
         restored = Wallet.from_dump(
             wallet.dump(),
             class_kwargs={"Wallet": {"config": config, "loop_in_thread": wallet.loop_in_thread}},
         )
         try:
-            assert restored._verify_tx_signatures(child)
-            event = bdk.WalletEvent.TX_UNCONFIRMED(txid=child.compute_txid(), tx=child, old_block_time=None)
-            restored._evict_txs_with_invalid_signatures([event])
+            assert restored._prevouts_of_tx(child)[0][1] == Prevout(
+                bytes(external_output.script_pubkey.to_bytes()), external_output.value.to_sat()
+            )
+            assert len(restored.apply_unconfirmed_txs([child], last_seen=3)) == 1
             assert restored.get_tx(str(child.compute_txid())) is not None
         finally:
             restored.close()

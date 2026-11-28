@@ -91,7 +91,8 @@ def test_funded_seed_wallet_session(
         keystores=[keystore],
         backend=backend,
         config=test_config_session,
-        is_new_wallet=True,
+        # The funding fixture may mine before initial CBF sync completes.
+        is_new_wallet=False,
         bitcoin_core=bitcoin_core,
         loop_in_thread=loop_in_thread,
     )

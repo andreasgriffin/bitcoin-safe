@@ -43,6 +43,8 @@ from bitcoin_safe.network_utils import ProxyInfo
 
 logger = logging.getLogger(__name__)
 
+CBF_UPDATE_INTERVAL = 10_000
+
 PERSISTENCE_FILES = [
     Path("./data/bdk_persistence.sqlite"),
     Path("./data/signet/headers.db"),
@@ -85,8 +87,8 @@ class CbfSync:
 
     def _handle_log_info(self, info: bdk.Info):
         """Handle log info."""
-        if isinstance(info, bdk.Info.PROGRESS):
-            self._height = info.chain_height
+        if isinstance(info, bdk.Info.NEW_CHAIN_HEIGHT):
+            self._height = info.height
 
         logger.info(f"{self.wallet_id} - {info}")
 
@@ -100,7 +102,7 @@ class CbfSync:
 
     def _handle_log_warning(self, warning: bdk.Warning):
         """Handle log warning."""
-        logger.info(f"{self.wallet_id} - {warning}")
+        logger.warning(f"{self.wallet_id} - {warning}")
 
     def _handle_update(self, update: UpdateInfo):
         """Handle update."""
@@ -139,6 +141,11 @@ class CbfSync:
             raise
         except Exception as exc:
             logger.error(f"Failed to fetch info message: {exc}")
+            return None
+        # Filter events arrive for every block in BDK 3.2. Avoid flooding the GUI.
+        if isinstance(info, bdk.Info.FILTER_ADDED) and (
+            info.height % CBF_UPDATE_INTERVAL != 0 and info.height != self._height
+        ):
             return None
         if info is not None:
             self._handle_log_info(info)
@@ -210,34 +217,27 @@ class CbfSync:
         self,
     ):
         """Build node."""
-        derivation_index = max(
-            self.gap,
-            self.wallet.derivation_index(keychain=bdk.KeychainKind.EXTERNAL) or 0,
-            self.wallet.derivation_index(keychain=bdk.KeychainKind.INTERNAL) or 0,
-        )
-        if self.is_new_wallet and self.wallet.latest_checkpoint().height == 0:
-            scan_type = bdk.ScanType.RECOVERY(
-                used_script_index=derivation_index,
-                checkpoint=cast(bdk.RecoveryPoint, bdk.RecoveryPoint.TAPROOT_ACTIVATION()),
-            )
+        self._height = self.wallet.latest_checkpoint().height
+        if self._height != 0:
+            scan_type = bdk.ScanType.SYNC()
+        # NEW_WALLET can miss payments confirmed during initial header sync.
+        # Uncomment once https://github.com/2140-dev/kyoto/issues/681 is resolved.
+        # elif self.is_new_wallet:
+        #     scan_type = bdk.ScanType.NEW_WALLET()
         else:
-            if self.wallet.latest_checkpoint().height == 0:
-                recovery_point = get_recovery_point(
-                    DescriptorInfo.from_str(
-                        str(self.wallet.public_descriptor(keychain=bdk.KeychainKind.EXTERNAL))
-                    ).address_type,
-                    network=self.wallet.network(),
-                )
-                scan_type = bdk.ScanType.RECOVERY(
-                    used_script_index=derivation_index,
-                    checkpoint=recovery_point,
-                )
-            else:
-                scan_type = bdk.ScanType.SYNC()
+            recovery_point = get_recovery_point(
+                DescriptorInfo.from_str(
+                    str(self.wallet.public_descriptor(keychain=bdk.KeychainKind.EXTERNAL))
+                ).address_type,
+                network=self.wallet.network(),
+            )
+            scan_type = bdk.ScanType.RECOVERY(checkpoint=recovery_point)
+        # Recovery uses the wallet's revealed scripts and lookahead in BDK 3.2.
+        # Kyoto no longer exposes a data_dir option.
         builder = (
             bdk.CbfBuilder()
             .scan_type(scan_type=cast(bdk.ScanType, scan_type))
-            .data_dir(data_dir=str(self.data_dir))
+            .emit_update_every_n_blocks(CBF_UPDATE_INTERVAL)
         )
         if self.proxy_info:
             builder = builder.socks5_proxy(proxy=self.proxy_info.to_bdk())

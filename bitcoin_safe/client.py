@@ -181,17 +181,25 @@ class Client:
 
     def handle_log_info(self, info: bdk.Info) -> bool:
         """Handle log info and returns if the sync_status was changed ."""
-        if isinstance(info, bdk.Info.PROGRESS):
-            new_progress = info.filters_downloaded_percent / 100
-            if self.sync_status == SyncStatus.synced:
-                # do not downgrade the sync status, merely on a Info.PROGRESS
-                return False
-            self.progress = min(self.MAX_PROGRESS_WHILE_SYNC, new_progress)
-            self.status_msg = (
-                translate("Client", "Chain height {height}").format(height=info.chain_height)
-                if info.filters_downloaded_percent == 0
-                else ""
-            )
+        if isinstance(info, bdk.Info.NEW_CHAIN_HEIGHT):
+            self.status_msg = translate("Client", "Chain height {height}").format(height=info.height)
+            if isinstance(self.client, CbfSync):
+                return self._update_cbf_sync_status()
+        elif isinstance(info, (bdk.Info.CF_HEADERS_ADDED, bdk.Info.FILTER_ADDED)) and isinstance(
+            self.client, CbfSync
+        ):
+            height = self.client.get_height()
+            if isinstance(info, bdk.Info.CF_HEADERS_ADDED):
+                # Reserve the second half of the bar for scanning compact filters.
+                if height:
+                    self.progress = 0.5 * min(1.0, info.height / height)
+                self.status_msg = translate("Client", "Compact filter headers: {height}").format(
+                    height=info.height
+                )
+            else:
+                if height:
+                    self.progress = min(self.MAX_PROGRESS_WHILE_SYNC, 0.5 + 0.5 * info.height / height)
+                self.status_msg = translate("Client", "Compact filters: {height}").format(height=info.height)
 
         if isinstance(info, bdk.Info.BLOCK_RECEIVED):
             if self._sync_status is SyncStatus.synced:
@@ -203,7 +211,20 @@ class Client:
                 count=len(self._downloaded_blocks)
             )
 
+        if isinstance(self.client, CbfSync):
+            return self._update_cbf_sync_status()
         return self.set_sync_status(SyncStatus.syncing if self.progress < 1 else SyncStatus.synced)
+
+    def _update_cbf_sync_status(self) -> bool:
+        """Only report synced when the applied wallet checkpoint reaches the header tip."""
+        assert isinstance(self.client, CbfSync)
+        height = self.client.get_height()
+        if height and self.client.wallet.latest_checkpoint().height >= height:
+            self.progress = 1
+            self.status_msg = ""
+            return self.set_sync_status(SyncStatus.synced)
+        self.progress = min(self.progress, self.MAX_PROGRESS_WHILE_SYNC)
+        return self.set_sync_status(SyncStatus.syncing)
 
     @property
     def passed_time(self):
@@ -234,6 +255,9 @@ class Client:
 
     def on_update(self, update_info: UpdateInfo):
         """On update  and returns if the sync_status was changed ."""
+        if isinstance(self.client, CbfSync):
+            self._update_cbf_sync_status()
+            return
         self.progress = 1
         self.status_msg = ""
         self.set_sync_status(SyncStatus.synced)
@@ -241,7 +265,8 @@ class Client:
     def queue_update(self, update_info: UpdateInfo) -> None:
         """Queue update."""
         self._update_queue.put_nowait(update_info)
-        self.on_update(update_info)
+        if not isinstance(self.client, CbfSync):
+            self.on_update(update_info)
 
     def needs_progress_bar(
         self,

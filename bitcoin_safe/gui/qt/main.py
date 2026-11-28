@@ -2912,6 +2912,7 @@ class MainWindow(UnlockableMainWindow):
         self.signal_tracker.connect(
             qt_wallet.signal_request_open_network_settings, self.open_network_settings
         )
+        self.signal_tracker.connect(qt_wallet.signal_request_open_network_map, self.open_network_map)
         self.signal_tracker.connect(qt_wallet.signal_progress_info, self.refresh_global_network_map)
         self.signal_tracker.connect(qt_wallet.signal_refresh_sync_status, self.refresh_global_network_map)
 

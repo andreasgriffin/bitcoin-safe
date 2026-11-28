@@ -39,6 +39,16 @@ import bdkpython as bdk
 logger = logging.getLogger(__name__)
 
 
+def log_rejected_transactions(events: list[bdk.WalletEvent]) -> set[str]:
+    """Log BDK verification failures and return the rejected transaction IDs."""
+    rejected = set()
+    for event in events:
+        if isinstance(event, bdk.WalletEvent.TX_REJECTED):
+            logger.warning("BDK rejected transaction %s: %s", event.txid, event.reason)
+            rejected.add(str(event.txid))
+    return rejected
+
+
 class SyncStatus(enum.Enum):
     unknown = enum.auto()
     unsynced = enum.auto()

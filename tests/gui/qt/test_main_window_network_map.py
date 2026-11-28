@@ -29,9 +29,11 @@
 
 from __future__ import annotations
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication
 from pytestqt.qtbot import QtBot
 
+from bitcoin_safe.gui.qt.cbf_progress_bar import CBFProgressBar
 from bitcoin_safe.gui.qt.network_map_widget import NetworkMapWidget
 
 from ...helpers import TestConfig
@@ -42,7 +44,16 @@ def test_network_map_tool_tab_is_lazy_and_reusable(qtbot: QtBot, test_config: Te
     with main_window_context(test_config=test_config) as main_window:
         assert main_window.global_network_map_widget is None
 
-        main_window.open_network_map()
+        progress_bar = CBFProgressBar(config=test_config)
+        qtbot.addWidget(progress_bar)
+        assert not progress_bar.actions()
+        progress_bar.enable_network_map_menu()
+        progress_bar.enable_network_map_menu()  # Reused history toolbar must not duplicate the action.
+        assert progress_bar.contextMenuPolicy() == Qt.ContextMenuPolicy.ActionsContextMenu
+        (action,) = progress_bar.actions()
+        assert action.text() == progress_bar.tr("Open Network Map")
+        progress_bar.signal_request_open_network_map.connect(main_window.open_network_map)
+        action.trigger()
         QApplication.processEvents()
 
         first_widget = main_window.global_network_map_widget

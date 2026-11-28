@@ -39,6 +39,8 @@ from typing import cast
 import bdkpython as bdk
 from bitcoin_safe_lib.util import network_kind
 
+from bitcoin_safe.client_helpers import log_rejected_transactions
+
 
 def parse_args() -> argparse.Namespace:
     """Parse args."""
@@ -83,7 +85,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--new-wallet",
         action="store_true",
-        help="Force using the NEW scan type even if the wallet has state",
+        help="Use NEW_WALLET only for a descriptor that has never been used",
     )
     parser.add_argument(
         "--recovery-height",
@@ -187,21 +189,18 @@ async def run_sync(args: argparse.Namespace) -> None:
 
     if args.recovery_height is not None:
         scan_type = bdk.ScanType.RECOVERY(
-            used_script_index=100, checkpoint=cast(bdk.RecoveryPoint, bdk.RecoveryPoint.SEGWIT_ACTIVATION())
+            checkpoint=cast(bdk.RecoveryPoint, bdk.RecoveryPoint.SEGWIT_ACTIVATION())
         )
-    elif args.new_wallet or wallet.latest_checkpoint().height == 0:
+    elif args.new_wallet:
+        scan_type = bdk.ScanType.NEW_WALLET()
+    elif wallet.latest_checkpoint().height == 0:
         scan_type = bdk.ScanType.RECOVERY(
-            used_script_index=100, checkpoint=cast(bdk.RecoveryPoint, bdk.RecoveryPoint.TAPROOT_ACTIVATION())
+            checkpoint=cast(bdk.RecoveryPoint, bdk.RecoveryPoint.GENESIS_BLOCK())
         )
     else:
         scan_type = bdk.ScanType.SYNC()
 
-    builder = (
-        bdk.CbfBuilder()
-        .scan_type(cast(bdk.ScanType, scan_type))
-        .data_dir(str(data_dir))
-        .connections(args.connections)
-    )
+    builder = bdk.CbfBuilder().scan_type(cast(bdk.ScanType, scan_type)).connections(args.connections)
 
     peers = build_peers(args.peers)
     if peers:
@@ -220,7 +219,7 @@ async def run_sync(args: argparse.Namespace) -> None:
 
     try:
         update = await client.update()
-        wallet.apply_update(update)
+        log_rejected_transactions(wallet.apply_update_events(update))
         wallet.persist(persister)
     finally:
         client.shutdown()

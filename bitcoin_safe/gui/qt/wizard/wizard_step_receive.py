@@ -229,6 +229,11 @@ class ReceiveTest(BaseTab):
             left_widget_layout.addWidget(self.quick_receive)
 
             self.cbf_progress_bar = CBFProgressBar(config=self.refs.qt_wallet.config, parent=widget)
+            self.cbf_progress_bar.enable_network_map_menu()
+            self.signal_tracker.connect(
+                self.cbf_progress_bar.signal_request_open_network_map,
+                self.refs.qt_wallet.signal_request_open_network_map.emit,
+            )
             left_widget_layout.addWidget(self.cbf_progress_bar)
             self.signal_tracker.connect(
                 self.refs.qt_wallet.signal_progress_info, self.cbf_progress_bar._set_progress_info
