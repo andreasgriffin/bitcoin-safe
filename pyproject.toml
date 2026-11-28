@@ -42,7 +42,7 @@ numpy = "2.2.1" # error in wine/pyinstaller when increased
 pysocks = "^1.7.1"
 psutil = "^7.0.0"
 bitcoin-nostr-chat =  { git = "https://github.com/andreasgriffin/bitcoin-nostr-chat.git", branch = "main"  }
-bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", branch = "bdk3.2" }
+bitcoin-usb =   { git = "https://github.com/andreasgriffin/bitcoin-usb.git", branch = "main" }
 bitcoin-qr-tools = {  git = "https://github.com/andreasgriffin/bitcoin-qr-tools.git", branch = "main" }
 bitcoin-safe-lib = {  git = "https://github.com/andreasgriffin/bitcoin-safe-lib.git", branch = "main" }
 btcpay-tools = { git = "https://github.com/andreasgriffin/btcpay-tools.git", branch = "main" }
