@@ -419,7 +419,7 @@ class AddressList(MyTreeView[str]):
         self.updateUi()
 
         # signals
-        self.fx.signal_data_updated.connect(self.on_update_fx_rates)
+        self._external_signal_tracker.connect(self.fx.signal_data_updated, self.on_update_fx_rates)
 
     def _set_wallets(self, wallets: list[Wallet] | None):
         """Set wallets."""
@@ -1081,8 +1081,10 @@ class AddressListWithToolbar(TreeViewWithToolbar):
         self.create_layout()
         self.updateUi()
 
-        self.address_list.signals.language_switch.connect(self.updateUi)
-        self.address_list.signals.any_wallet_updated.connect(self.update_with_filter)
+        self._external_signal_tracker.connect(self.address_list.signals.language_switch, self.updateUi)
+        self._external_signal_tracker.connect(
+            self.address_list.signals.any_wallet_updated, self.update_with_filter
+        )
         self.category_combobox.currentIndexChanged.connect(self.on_change_category_menu)
 
     def set_category_core(self, category_core: CategoryCore | None):

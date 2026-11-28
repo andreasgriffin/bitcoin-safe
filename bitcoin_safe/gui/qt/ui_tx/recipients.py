@@ -407,6 +407,7 @@ class RecipientWidget(QWidget):
 
     def close(self) -> bool:
         self.signal_tracker.disconnect_all()
+        self.label_line_edit.close()
         return super().close()
 
 

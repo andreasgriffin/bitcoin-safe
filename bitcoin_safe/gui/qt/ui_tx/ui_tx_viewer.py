@@ -232,6 +232,7 @@ class UITx_Viewer(UITx_Base):
         self.network = network
         self.fee_info = fee_info
         self.client = client
+        self.utxo_list_with_toolbar = widget_utxo_with_toolbar
         self.utxo_list = widget_utxo_with_toolbar.utxo_list
         self.chain_position = chain_position
         self._forced_update = False
@@ -1771,8 +1772,11 @@ class UITx_Viewer(UITx_Base):
 
     def close(self):
         """Close."""
+        self.label_line_edit.close()
         self.column_sankey.close()
         self.column_recipients.close()
+        self.utxo_list_with_toolbar.close()
+        self.searchable_list = None
         self.signal_tracker.disconnect_all()
         SignalTools.disconnect_all_signals_from(self)
         self.setVisible(False)

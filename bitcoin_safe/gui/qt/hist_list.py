@@ -1003,9 +1003,11 @@ class HistListWithToolbar(TreeViewWithToolbar):
         )
 
         # signals
-        self.hist_list.signals.language_switch.connect(self.updateUi)
+        self._external_signal_tracker.connect(self.hist_list.signals.language_switch, self.updateUi)
         for wallet in self.hist_list.wallets:
-            self.hist_list.wallet_functions.wallet_signals[wallet.id].updated.connect(self.update_with_filter)
+            self._external_signal_tracker.connect(
+                self.hist_list.wallet_functions.wallet_signals[wallet.id].updated, self.update_with_filter
+            )
         self.updateUi()
 
     def _on_sync_button_clicked(self):

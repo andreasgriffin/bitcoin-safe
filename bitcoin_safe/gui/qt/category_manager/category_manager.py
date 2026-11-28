@@ -272,5 +272,5 @@ class CategoryManager(QWidget):
 
     def close(self) -> bool:
         """Close."""
-        self.category_list.close()
+        self.category_list_with_toolbar.close()
         return super().close()

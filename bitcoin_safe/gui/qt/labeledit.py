@@ -33,7 +33,7 @@ import logging
 from collections.abc import Callable
 from typing import cast
 
-from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol
+from bitcoin_safe_lib.gui.qt.signal_tracker import SignalProtocol, SignalTracker
 from PyQt6 import QtGui
 from PyQt6.QtCore import QEvent, QObject, QStringListModel, Qt, pyqtSignal
 from PyQt6.QtGui import QKeyEvent
@@ -242,7 +242,12 @@ class WalletLabelAndCategoryEdit(LabelAndCategoryEdit):
 
         self.label_edit.signal_enterPressed.connect(self.on_label_edited)
         self.label_edit.signal_textEditedAndFocusLost.connect(self.on_label_edited)
-        self.wallet_functions.signals.any_wallet_updated.connect(self.update_with_filter)
+        self.signal_tracker = SignalTracker()
+        self.signal_tracker.connect(self.wallet_functions.signals.any_wallet_updated, self.update_with_filter)
+
+    def close(self) -> bool:
+        self.signal_tracker.disconnect_all()
+        return super().close()
 
     def get_wallets_to_store_label(self, ref: str) -> set[Wallet]:
         """Will return wallets where it occurs in ANY transaction.
