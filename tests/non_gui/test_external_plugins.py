@@ -42,6 +42,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace, TracebackType
 from typing import Any
+from unittest.mock import patch
 
 import bdkpython as bdk
 import pysequoia
@@ -1835,6 +1836,33 @@ def test_from_config_creates_default_source_when_file_missing(tmp_path: Path) ->
 
     assert DEFAULT_PLUGIN_SOURCE_ID in registry.sources
     assert ExternalPluginRegistry.get_repository_path(config).exists()
+
+
+@pytest.mark.parametrize("existing_file", [False, True])
+def test_from_config_does_not_add_default_source_in_development(tmp_path: Path, existing_file: bool) -> None:
+    config = _make_config(tmp_path)
+    existing = ExternalPluginRegistry(config=config)
+    if existing_file:
+        existing._write_source(
+            PluginSource(
+                source_id="user-source",
+                display_name="User Source",
+                manifest_url="https://dummy.example/source.toml",
+                pinned_source_public_key="key",
+                auth_config=PluginSourceAuthConfig(),
+            )
+        )
+        existing.save()
+
+    with patch("bitcoin_safe.plugin_framework.external_plugin_registry.IS_PRODUCTION", False):
+        registry = ExternalPluginRegistry.from_config(config)
+
+    assert registry.sources == existing.sources
+    reloaded = ExternalPluginRegistry._from_file(
+        filename=str(ExternalPluginRegistry.get_repository_path(config)),
+        class_kwargs={ExternalPluginRegistry.__name__: {"config": config}},
+    )
+    assert reloaded.sources == existing.sources
 
 
 def test_from_config_seeds_default_source_into_existing_registry_without_it(tmp_path: Path) -> None:

@@ -57,6 +57,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from bitcoin_safe import __version__
 from bitcoin_safe.config import UserConfig
 from bitcoin_safe.constants import APP_NAME
+from bitcoin_safe.execute_config import IS_PRODUCTION
 from bitcoin_safe.network_utils import ProxyInfo, fetch_bytes
 from bitcoin_safe.plugin_framework.external_plugin_registry_dataclasses import (
     SOURCE_MANIFEST_FILENAME,
@@ -449,7 +450,7 @@ class ExternalPluginRegistry(BaseSaveableClass):
         return registry
 
     def _add_default_source_if_missing(self) -> bool:
-        if DEFAULT_PLUGIN_SOURCE_ID in self.sources:
+        if not IS_PRODUCTION or DEFAULT_PLUGIN_SOURCE_ID in self.sources:
             return False
         self._write_source(self._default_source())
         return True
