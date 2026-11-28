@@ -252,7 +252,8 @@ class PluginClient(QWidget, BaseSaveableClass):
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.0"):
             pass
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.1"):
-            dct["tab_text"] = dct["title"]
+            if (title := dct.get("title")) is not None:
+                dct.setdefault("tab_text", title)
         if fast_version(str(dct["VERSION"])) <= fast_version("0.0.2"):
             dct.setdefault("plugin_source", PluginClientSource.BUILTIN.value)
             dct.setdefault("plugin_bundle_id", None)
