@@ -108,10 +108,11 @@ class CategoryManager(QWidget):
 
         self._layout.addWidget(self.button_box)
 
+        # The window can be reopened until the wallet closes it.
         self.shortcut_close = QShortcut(QKeySequence("Ctrl+W"), self)
-        self.shortcut_close.activated.connect(self.close)
+        self.shortcut_close.activated.connect(self.hide)
         self.shortcut_close2 = QShortcut(QKeySequence("ESC"), self)
-        self.shortcut_close2.activated.connect(self.close)
+        self.shortcut_close2.activated.connect(self.hide)
 
     def showEvent(self, a0: QShowEvent | None) -> None:
         super().showEvent(a0)
@@ -270,7 +271,7 @@ class CategoryManager(QWidget):
             )
         )
 
-    def dispose(self) -> bool:
+    def close(self) -> bool:
         """Release the category list when its wallet is closed."""
         self.category_list_with_toolbar.close()
-        return self.close()
+        return super().close()

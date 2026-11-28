@@ -2469,7 +2469,7 @@ class QTWallet(QtWalletBase, BaseSaveableClass):
         self.quick_receive.close()
         self.address_tab.close()
         self.address_list_with_toolbar.close()
-        self.category_manager.dispose()
+        self.category_manager.close()
         if self.network_map_widget:
             self.network_map_widget.close()
         self.history_tab.close()

@@ -130,7 +130,7 @@ def test_category_manager_can_reopen_after_shortcut(
     signals.any_wallet_updated.emit(UpdateFilter(refresh_all=True))
     assert manager.category_list.model().rowCount() == 2
 
-    manager.dispose()
+    manager.close()
     assert manager.isHidden()
     assert signals.receivers(signals.any_wallet_updated) == 0
     assert fx.receivers(fx.signal_data_updated) == 0
